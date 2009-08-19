@@ -1,0 +1,124 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{BD933E0E-B3FD-470B-B53B-56DA8BC27467}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{9EEDE95F-8333-4957-B270-02D3CD4629B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC", "Applications\openPDC\openPDC.csproj", "{0BF2447E-252D-4712-B154-E350AF463081}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDCConsole", "Applications\openPDCConsole\openPDCConsole.csproj", "{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infragistics", "Infragistics", "{3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\Infragistics\Infragistics2.Shared.v7.2.dll = Dependencies\Infragistics\Infragistics2.Shared.v7.2.dll
+		Dependencies\Infragistics\Infragistics2.Shared.v7.2.xml = Dependencies\Infragistics\Infragistics2.Shared.v7.2.xml
+		Dependencies\Infragistics\Infragistics2.Win.Misc.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.Misc.v7.2.dll
+		Dependencies\Infragistics\Infragistics2.Win.Misc.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.Misc.v7.2.xml
+		Dependencies\Infragistics\Infragistics2.Win.UltraWinChart.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.UltraWinChart.v7.2.dll
+		Dependencies\Infragistics\Infragistics2.Win.UltraWinChart.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.UltraWinChart.v7.2.xml
+		Dependencies\Infragistics\Infragistics2.Win.UltraWinEditors.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.UltraWinEditors.v7.2.dll
+		Dependencies\Infragistics\Infragistics2.Win.UltraWinEditors.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.UltraWinEditors.v7.2.xml
+		Dependencies\Infragistics\Infragistics2.Win.UltraWinMaskedEdit.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.UltraWinMaskedEdit.v7.2.dll
+		Dependencies\Infragistics\Infragistics2.Win.UltraWinMaskedEdit.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.UltraWinMaskedEdit.v7.2.xml
+		Dependencies\Infragistics\Infragistics2.Win.UltraWinStatusBar.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.UltraWinStatusBar.v7.2.dll
+		Dependencies\Infragistics\Infragistics2.Win.UltraWinStatusBar.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.UltraWinStatusBar.v7.2.xml
+		Dependencies\Infragistics\Infragistics2.Win.UltraWinTabControl.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.UltraWinTabControl.v7.2.dll
+		Dependencies\Infragistics\Infragistics2.Win.UltraWinTabControl.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.UltraWinTabControl.v7.2.xml
+		Dependencies\Infragistics\Infragistics2.Win.UltraWinTree.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.UltraWinTree.v7.2.dll
+		Dependencies\Infragistics\Infragistics2.Win.UltraWinTree.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.UltraWinTree.v7.2.xml
+		Dependencies\Infragistics\Infragistics2.Win.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.v7.2.dll
+		Dependencies\Infragistics\Infragistics2.Win.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.v7.2.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{CDEEFA49-6184-4E99-9559-C7BBD7588F3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TVA.PhasorProtocols", "Libraries\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj", "{54CA98CC-2F0A-41F2-879D-0E42B17E8544}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualHistorianAdapters", "Libraries\Adapters\VirtualHistorian\VirtualHistorianAdapters.csproj", "{A139B16F-A59E-4E4F-A464-8EF4C45F0F3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NASPInet", "Libraries\Adapters\NASPInet\NASPInet.csproj", "{F8902AA2-1A9A-451B-89D1-7FEA30C34C48}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PMU Connection Tester", "Tools\PMU Connection Tester\PMU Connection Tester.vbproj", "{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 7
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs07.codeplex.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Applications\\openPDC\\openPDC.csproj
+		SccProjectTopLevelParentUniqueName1 = Synchrophasor.sln
+		SccProjectName1 = Applications/openPDC
+		SccLocalPath1 = Applications\\openPDC
+		SccProjectUniqueName2 = Applications\\openPDCConsole\\openPDCConsole.csproj
+		SccProjectTopLevelParentUniqueName2 = Synchrophasor.sln
+		SccProjectName2 = Applications/openPDCConsole
+		SccLocalPath2 = Applications\\openPDCConsole
+		SccProjectUniqueName3 = Libraries\\Adapters\\NASPInet\\NASPInet.csproj
+		SccProjectTopLevelParentUniqueName3 = Synchrophasor.sln
+		SccProjectName3 = Libraries/Adapters/NASPInet
+		SccLocalPath3 = Libraries\\Adapters\\NASPInet
+		SccProjectUniqueName4 = Libraries\\Adapters\\VirtualHistorian\\VirtualHistorianAdapters.csproj
+		SccProjectTopLevelParentUniqueName4 = Synchrophasor.sln
+		SccProjectName4 = Libraries/Adapters/VirtualHistorian
+		SccLocalPath4 = Libraries\\Adapters\\VirtualHistorian
+		SccProjectUniqueName5 = Libraries\\TVA.PhasorProtocols\\TVA.PhasorProtocols.csproj
+		SccProjectTopLevelParentUniqueName5 = Synchrophasor.sln
+		SccProjectName5 = Libraries/TVA.PhasorProtocols
+		SccLocalPath5 = Libraries\\TVA.PhasorProtocols
+		SccProjectUniqueName6 = Tools\\PMU\u0020Connection\u0020Tester\\PMU\u0020Connection\u0020Tester.vbproj
+		SccProjectTopLevelParentUniqueName6 = Synchrophasor.sln
+		SccProjectName6 = Tools/PMU\u0020Connection\u0020Tester
+		SccLocalPath6 = Tools\\PMU\u0020Connection\u0020Tester
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0BF2447E-252D-4712-B154-E350AF463081}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BF2447E-252D-4712-B154-E350AF463081}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BF2447E-252D-4712-B154-E350AF463081}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BF2447E-252D-4712-B154-E350AF463081}.Release|Any CPU.Build.0 = Release|Any CPU
+		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A139B16F-A59E-4E4F-A464-8EF4C45F0F3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A139B16F-A59E-4E4F-A464-8EF4C45F0F3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A139B16F-A59E-4E4F-A464-8EF4C45F0F3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A139B16F-A59E-4E4F-A464-8EF4C45F0F3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8902AA2-1A9A-451B-89D1-7FEA30C34C48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8902AA2-1A9A-451B-89D1-7FEA30C34C48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8902AA2-1A9A-451B-89D1-7FEA30C34C48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8902AA2-1A9A-451B-89D1-7FEA30C34C48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0BF2447E-252D-4712-B154-E350AF463081} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
+		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
+		{3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
+		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
+		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
+		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
+		{A139B16F-A59E-4E4F-A464-8EF4C45F0F3E} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
+		{F8902AA2-1A9A-451B-89D1-7FEA30C34C48} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
+	EndGlobalSection
+EndGlobal
