@@ -51,7 +51,7 @@
     <Reference Include="System" />
     <Reference Include="TVA.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Framework\Current Version\Build\Output\Release\TVA.Core.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
