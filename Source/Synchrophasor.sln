@@ -47,9 +47,41 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NASPInet", "Libraries\Adapt
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PMU Connection Tester", "Tools\PMU Connection Tester\PMU Connection Tester.vbproj", "{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openPDCManager", "openPDCManager", "{94B7694B-F813-47FF-8C50-33DCA32D183D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Data", "Applications\openPDCManager\Web.Data\Web.Data.csproj", "{5314055B-EA03-4E15-8653-83F011D7A00E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Applications\openPDCManager\Services\Services.csproj", "{D96C8A3A-7E03-43C6-B401-41778D81FF70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silverlight", "Applications\openPDCManager\Silverlight\Silverlight.csproj", "{3D0DC382-3C00-48A7-B9FF-D3154F8BEDF1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D96C8A3A-7E03-43C6-B401-41778D81FF70} = {D96C8A3A-7E03-43C6-B401-41778D81FF70}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Applications\openPDCManager\Web\Web.csproj", "{0B8D74B6-5556-4118-8A97-2F182F32DE50}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Silverlight", "Silverlight", "{20A58D77-CB7C-444E-A084-C61B40639B60}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.v9.1.dll = Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.v9.1.dll
+		Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.XamWebMenu.v9.1.dll = Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.XamWebMenu.v9.1.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microsoft", "Microsoft", "{89F8C302-E1C2-4C61-9CFB-CB4879B04B38}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\Microsoft\System.ServiceModel.PollingDuplex.dll = Dependencies\Microsoft\System.ServiceModel.PollingDuplex.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Silverlight", "Silverlight", "{2C391997-493B-4A29-9441-67A521602CFB}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\Microsoft\Silverlight\Microsoft.VirtualEarth.MapControl.dll = Dependencies\Microsoft\Silverlight\Microsoft.VirtualEarth.MapControl.dll
+		Dependencies\Microsoft\Silverlight\System.Windows.Controls.DataVisualization.Toolkit.dll = Dependencies\Microsoft\Silverlight\System.Windows.Controls.DataVisualization.Toolkit.dll
+		Dependencies\Microsoft\Silverlight\System.Windows.Controls.Layout.Toolkit.dll = Dependencies\Microsoft\Silverlight\System.Windows.Controls.Layout.Toolkit.dll
+		Dependencies\Microsoft\Silverlight\System.Windows.Controls.Toolkit.dll = Dependencies\Microsoft\Silverlight\System.Windows.Controls.Toolkit.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
+		SccNumberOfProjects = 11
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs07.codeplex.com/
 		SccLocalPath0 = .
@@ -77,6 +109,22 @@ Global
 		SccProjectTopLevelParentUniqueName6 = Synchrophasor.sln
 		SccProjectName6 = Tools/PMU\u0020Connection\u0020Tester
 		SccLocalPath6 = Tools\\PMU\u0020Connection\u0020Tester
+		SccProjectUniqueName7 = Applications\\openPDCManager\\Web.Data\\Web.Data.csproj
+		SccProjectTopLevelParentUniqueName7 = Synchrophasor.sln
+		SccProjectName7 = Applications/openPDCManager/Web.Data
+		SccLocalPath7 = Applications\\openPDCManager\\Web.Data
+		SccProjectUniqueName8 = Applications\\openPDCManager\\Services\\Services.csproj
+		SccProjectTopLevelParentUniqueName8 = Synchrophasor.sln
+		SccProjectName8 = Applications/openPDCManager/Services
+		SccLocalPath8 = Applications\\openPDCManager\\Services
+		SccProjectUniqueName9 = Applications\\openPDCManager\\Silverlight\\Silverlight.csproj
+		SccProjectTopLevelParentUniqueName9 = Synchrophasor.sln
+		SccProjectName9 = Applications/openPDCManager/Silverlight
+		SccLocalPath9 = Applications\\openPDCManager\\Silverlight
+		SccProjectUniqueName10 = Applications\\openPDCManager\\Web\\Web.csproj
+		SccProjectTopLevelParentUniqueName10 = Synchrophasor.sln
+		SccProjectName10 = Applications/openPDCManager/Web
+		SccLocalPath10 = Applications\\openPDCManager\\Web
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +155,22 @@ Global
 		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5314055B-EA03-4E15-8653-83F011D7A00E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5314055B-EA03-4E15-8653-83F011D7A00E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5314055B-EA03-4E15-8653-83F011D7A00E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5314055B-EA03-4E15-8653-83F011D7A00E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D96C8A3A-7E03-43C6-B401-41778D81FF70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D96C8A3A-7E03-43C6-B401-41778D81FF70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D96C8A3A-7E03-43C6-B401-41778D81FF70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D96C8A3A-7E03-43C6-B401-41778D81FF70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D0DC382-3C00-48A7-B9FF-D3154F8BEDF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D0DC382-3C00-48A7-B9FF-D3154F8BEDF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D0DC382-3C00-48A7-B9FF-D3154F8BEDF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D0DC382-3C00-48A7-B9FF-D3154F8BEDF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B8D74B6-5556-4118-8A97-2F182F32DE50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B8D74B6-5556-4118-8A97-2F182F32DE50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B8D74B6-5556-4118-8A97-2F182F32DE50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B8D74B6-5556-4118-8A97-2F182F32DE50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -114,11 +178,19 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0BF2447E-252D-4712-B154-E350AF463081} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
+		{94B7694B-F813-47FF-8C50-33DCA32D183D} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
 		{3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
+		{89F8C302-E1C2-4C61-9CFB-CB4879B04B38} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
+		{20A58D77-CB7C-444E-A084-C61B40639B60} = {3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}
 		{A139B16F-A59E-4E4F-A464-8EF4C45F0F3E} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{F8902AA2-1A9A-451B-89D1-7FEA30C34C48} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
+		{5314055B-EA03-4E15-8653-83F011D7A00E} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
+		{D96C8A3A-7E03-43C6-B401-41778D81FF70} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
+		{3D0DC382-3C00-48A7-B9FF-D3154F8BEDF1} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
+		{0B8D74B6-5556-4118-8A97-2F182F32DE50} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
+		{2C391997-493B-4A29-9441-67A521602CFB} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
 	EndGlobalSection
 EndGlobal

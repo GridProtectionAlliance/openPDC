@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://samples.microsoft.com/silverlight2/duplex" elementFormDefault="qualified" targetNamespace="http://samples.microsoft.com/silverlight2/duplex" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="DuplexMessage">
+    <xs:sequence />
+  </xs:complexType>
+  <xs:element name="DuplexMessage" nillable="true" type="tns:DuplexMessage" />
+  <xs:complexType name="DisconnectMessage">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DuplexMessage">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DisconnectMessage" nillable="true" type="tns:DisconnectMessage" />
+  <xs:complexType name="ConnectMessage">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DuplexMessage">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ConnectMessage" nillable="true" type="tns:ConnectMessage" />
+</xs:schema>

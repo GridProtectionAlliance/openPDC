@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:tns="http://tempuri.org/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="PhasorDataService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IPhasorDataService_GetPdcList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPdcList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetPdcList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPdcListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetValidatedPmuList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetValidatedPmuList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetValidatedPmuList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetValidatedPmuListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetAllPmuList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllPmuList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetAllPmuList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllPmuListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetHistorianList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetHistorianList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetHistorianList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetHistorianListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetCalculatedMeasurementList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCalculatedMeasurementList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetCalculatedMeasurementList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCalculatedMeasurementListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOutputStreamList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOutputStreamListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetCompanyList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCompanyList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetCompanyList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCompanyListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetVendorList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVendorList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetVendorList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVendorListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetProtocolList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetProtocolList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetProtocolList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetProtocolListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetTransportProtocolList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTransportProtocolList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetTransportProtocolList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTransportProtocolListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetParityList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetParityList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetParityList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetParityListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetStopBitList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetStopBitList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetStopBitList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetStopBitListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetTimeZonesList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTimeZonesList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetTimeZonesList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTimeZonesListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetStatusReportList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetStatusReportList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetStatusReportList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetStatusReportListResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IPhasorDataService">
+    <wsdl:operation name="GetPdcList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetPdcList" message="tns:IPhasorDataService_GetPdcList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetPdcListResponse" message="tns:IPhasorDataService_GetPdcList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetValidatedPmuList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetValidatedPmuList" message="tns:IPhasorDataService_GetValidatedPmuList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetValidatedPmuListResponse" message="tns:IPhasorDataService_GetValidatedPmuList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllPmuList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetAllPmuList" message="tns:IPhasorDataService_GetAllPmuList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetAllPmuListResponse" message="tns:IPhasorDataService_GetAllPmuList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetHistorianList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetHistorianList" message="tns:IPhasorDataService_GetHistorianList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetHistorianListResponse" message="tns:IPhasorDataService_GetHistorianList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCalculatedMeasurementList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetCalculatedMeasurementList" message="tns:IPhasorDataService_GetCalculatedMeasurementList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetCalculatedMeasurementListResponse" message="tns:IPhasorDataService_GetCalculatedMeasurementList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOutputStreamList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamList" message="tns:IPhasorDataService_GetOutputStreamList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamListResponse" message="tns:IPhasorDataService_GetOutputStreamList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompanyList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetCompanyList" message="tns:IPhasorDataService_GetCompanyList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetCompanyListResponse" message="tns:IPhasorDataService_GetCompanyList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVendorList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetVendorList" message="tns:IPhasorDataService_GetVendorList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetVendorListResponse" message="tns:IPhasorDataService_GetVendorList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProtocolList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocolList" message="tns:IPhasorDataService_GetProtocolList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocolListResponse" message="tns:IPhasorDataService_GetProtocolList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTransportProtocolList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetTransportProtocolList" message="tns:IPhasorDataService_GetTransportProtocolList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetTransportProtocolListResponse" message="tns:IPhasorDataService_GetTransportProtocolList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetParityList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetParityList" message="tns:IPhasorDataService_GetParityList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetParityListResponse" message="tns:IPhasorDataService_GetParityList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetStopBitList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetStopBitList" message="tns:IPhasorDataService_GetStopBitList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetStopBitListResponse" message="tns:IPhasorDataService_GetStopBitList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTimeZonesList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetTimeZonesList" message="tns:IPhasorDataService_GetTimeZonesList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetTimeZonesListResponse" message="tns:IPhasorDataService_GetTimeZonesList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetStatusReportList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetStatusReportList" message="tns:IPhasorDataService_GetStatusReportList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetStatusReportListResponse" message="tns:IPhasorDataService_GetStatusReportList_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IPhasorDataService" type="tns:IPhasorDataService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetPdcList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetPdcList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetValidatedPmuList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetValidatedPmuList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllPmuList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetAllPmuList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetHistorianList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetHistorianList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCalculatedMeasurementList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetCalculatedMeasurementList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOutputStreamList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompanyList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetCompanyList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVendorList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetVendorList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProtocolList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetProtocolList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTransportProtocolList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetTransportProtocolList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetParityList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetParityList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStopBitList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetStopBitList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTimeZonesList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetTimeZonesList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStatusReportList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetStatusReportList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PhasorDataService">
+    <wsdl:port name="BasicHttpBinding_IPhasorDataService" binding="tns:BasicHttpBinding_IPhasorDataService">
+      <soap:address location="http://localhost:1068/Service/PhasorDataService.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

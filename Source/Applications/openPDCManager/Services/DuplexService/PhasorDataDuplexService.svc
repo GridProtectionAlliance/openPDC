@@ -1,0 +1,5 @@
+﻿<%@ServiceHost 
+    Language="C#" 
+    Debug="true" 
+    Factory="PCS.Services.DuplexService.PhasorDataDuplexServiceFactory" 
+    Service="PCS.Services.DuplexService.LivePhasorDataService" %>

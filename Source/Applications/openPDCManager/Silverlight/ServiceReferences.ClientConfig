@@ -1,0 +1,19 @@
+﻿<configuration>
+    <system.serviceModel>
+        <bindings>
+            <basicHttpBinding>
+                <binding name="BasicHttpBinding_IPhasorDataService" maxBufferSize="2147483647"
+                    maxReceivedMessageSize="2147483647">
+                    <security mode="None">
+                        <transport realm="" />
+                    </security>
+                </binding>
+            </basicHttpBinding>
+        </bindings>
+        <client>
+            <endpoint address="http://localhost:1068/Service/PhasorDataService.svc"
+                binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IPhasorDataService"
+                contract="PhasorDataServiceProxy.IPhasorDataService" name="BasicHttpBinding_IPhasorDataService" />
+        </client>
+    </system.serviceModel>
+</configuration>

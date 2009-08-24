@@ -1,0 +1,7 @@
+<OutOfBrowserSettings ShortName="TVA NERC Phasor Concentration System" EnableGPUAcceleration="False" ShowInstallMenuItem="True">
+  <OutOfBrowserSettings.Blurb>TVA NERC Phasor Concentration System</OutOfBrowserSettings.Blurb>
+  <OutOfBrowserSettings.WindowSettings>
+    <WindowSettings Title="TVA NERC PCS" Height="900" Width="1200" />
+  </OutOfBrowserSettings.WindowSettings>
+  <OutOfBrowserSettings.Icons />
+</OutOfBrowserSettings>

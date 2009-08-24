@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="openPDCManager.Silverlight.MasterLayoutControl"
+    xmlns:igMenu="clr-namespace:Infragistics.Silverlight.XamWebMenu;assembly=Infragistics.Silverlight.XamWebMenu.v9.1"      
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation" 
+    >
+        
+    <Grid x:Name="LayoutRoot" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel x:Name="StackPanelHeaderLayout" Orientation="Horizontal" Grid.Row="0" Background="{StaticResource HeaderBackgroundBrush}">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                <TextBlock Text="North American Electric Reliability Corporation" Style="{StaticResource LargeWhiteTextWithEffectStyle}" Margin="7,5,0,-5"/>
+                <TextBlock Text="Phasor Concentration System" Style="{StaticResource MainTitleStyle}" Margin="5,-5,0,10"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="Execution Mode: " Style="{StaticResource SmallWhiteTextStyle}" />
+                    <TextBlock x:Name="TextBlockExecutionMode" Style="{StaticResource SmallWhiteTextStyle}" />
+                    <Button x:Name="ButtonChangeMode" Template="{StaticResource SmallImageButtonTemplate}" Content="Images/Mode.png" 
+                     ToolTipService.ToolTip="Click Here to Change Execution Mode" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="Connectivity: " Style="{StaticResource SmallWhiteTextStyle}"/>
+                    <TextBlock x:Name="TextBlockConnectivity" Style="{StaticResource SmallWhiteTextWithEffectStyle}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+        
+    </Grid>
+        
+</UserControl>

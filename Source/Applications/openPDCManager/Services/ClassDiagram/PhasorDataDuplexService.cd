@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="PCS.Services.DuplexService.ConnectMessage" Collapsed="true">
+    <Position X="0.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\ConnectMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PCS.Services.DuplexService.DisconnectMessage" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\DisconnectMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PCS.Services.DuplexService.DuplexMessage" Collapsed="true">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\DuplexMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PCS.Services.DuplexService.DuplexService">
+    <Position X="3.5" Y="3.75" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="PCS.Services.DuplexService.DuplexService.PushMessageState">
+        <TypeIdentifier>
+          <NewMemberFileName>DuplexService\DuplexService.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>EAAAAAJBCAAAAAAQAAAAAAAgAAAAAAIAAACAIAAAAQg=</HashCode>
+      <FileName>DuplexService\DuplexService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PCS.Services.DuplexService.DuplexServiceFactory&lt;T&gt;">
+    <Position X="0.5" Y="3.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\DuplexServiceFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PCS.Services.DuplexService.LivePhasorDataMessage">
+    <Position X="5" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQQAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\LivePhasorDataMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PCS.Services.DuplexService.LivePhasorDataService">
+    <Position X="5.75" Y="3.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>DuplexService\LivePhasorDataService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PCS.Services.DuplexService.PhasorDataDuplexServiceFactory" Collapsed="true">
+    <Position X="0.5" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\PhasorDataDuplexServiceFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="PCS.Services.DuplexService.IUniversalDuplexCallbackContract">
+    <Position X="7.25" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\IUniversalDuplexCallbackContract.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="PCS.Services.DuplexService.IUniversalDuplexContract">
+    <Position X="7.25" Y="1.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\IUniversalDuplexContract.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>
