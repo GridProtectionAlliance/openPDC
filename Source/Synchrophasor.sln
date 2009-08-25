@@ -48,6 +48,9 @@ EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PMU Connection Tester", "Tools\PMU Connection Tester\PMU Connection Tester.vbproj", "{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openPDCManager", "openPDCManager", "{94B7694B-F813-47FF-8C50-33DCA32D183D}"
+	ProjectSection(SolutionItems) = preProject
+		Applications\openPDCManager\Readme.txt = Applications\openPDCManager\Readme.txt
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Data", "Applications\openPDCManager\Web.Data\Web.Data.csproj", "{5314055B-EA03-4E15-8653-83F011D7A00E}"
 EndProject
