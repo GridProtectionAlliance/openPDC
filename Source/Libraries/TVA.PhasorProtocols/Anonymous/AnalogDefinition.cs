@@ -42,11 +42,9 @@ namespace TVA.PhasorProtocols.Anonymous
         /// </summary>
         /// <param name="parent">The <see cref="ConfigurationCell"/> parent of this <see cref="AnalogDefinition"/>.</param>
         /// <param name="label">The label of this <see cref="AnalogDefinition"/>.</param>
-        /// <param name="scale">The integer scaling value of this <see cref="AnalogDefinition"/>.</param>
-        /// <param name="offset">The offset of this <see cref="AnalogDefinition"/>.</param>
         /// <param name="type">The <see cref="AnalogType"/> of this <see cref="AnalogDefinition"/>.</param>
-        public AnalogDefinition(ConfigurationCell parent, string label, uint scale, double offset, AnalogType type)
-            : base(parent, label, scale, offset, type)
+        public AnalogDefinition(ConfigurationCell parent, string label, AnalogType type)
+            : base(parent, label, 1, 0.0, type)
         {
         }
 

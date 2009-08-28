@@ -53,9 +53,8 @@ namespace TVA.PhasorProtocols.Anonymous
         /// Creates a new <see cref="ConfigurationCell"/> from specified parameters.
         /// </summary>
         /// <param name="idCode">The numeric ID code for this <see cref="ConfigurationCell"/>.</param>
-        /// <param name="isVirtual">Assigns flag that determines if this <see cref="ConfigurationCell"/> is virtual.</param>
-        public ConfigurationCell(ushort idCode, bool isVirtual)
-            : this(null, idCode, isVirtual)
+        public ConfigurationCell(ushort idCode)
+            : this(null, idCode)
         {
         }
 
@@ -64,8 +63,7 @@ namespace TVA.PhasorProtocols.Anonymous
         /// </summary>
         /// <param name="parent">The reference to parent <see cref="ConfigurationFrame"/> of this <see cref="ConfigurationCell"/>.</param>
         /// <param name="idCode">The numeric ID code for this <see cref="ConfigurationCell"/>.</param>
-        /// <param name="isVirtual">Assigns flag that determines if this <see cref="ConfigurationCell"/> is virtual.</param>
-        public ConfigurationCell(ConfigurationFrame parent, ushort idCode, bool isVirtual)
+        public ConfigurationCell(ConfigurationFrame parent, ushort idCode)
             : base(parent, idCode, int.MaxValue, int.MaxValue, int.MaxValue)
 		{			
 			m_signalReferences = new Dictionary<SignalType, string[]>();
@@ -73,7 +71,6 @@ namespace TVA.PhasorProtocols.Anonymous
 			m_frequencyDataFormat = DataFormat.FloatingPoint;
 			m_phasorDataFormat = DataFormat.FloatingPoint;
 			m_phasorCoordinateFormat = CoordinateFormat.Polar;
-            m_isVirtual = isVirtual;
 		}
 
         /// <summary>

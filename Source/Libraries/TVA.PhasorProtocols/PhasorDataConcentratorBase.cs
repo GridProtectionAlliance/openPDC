@@ -95,9 +95,9 @@ namespace TVA.PhasorProtocols
 
         // Suggested table definitions for the phasor data concentrator base class:
 
-        //    - OutputStreams               Stream ID, Name, ID, Analog Count, Digital Count, etc.
-        //    - OutputStreamPhasors         Device ID, Type (I or V), Name, Order, etc.
-        //    - OutputStreamMeasurements    Device ID, MeasurementKey, Destination SignalReference
+        //    - OutputStreamDevice          Stream ID, Name, ID, Analog Count, Digital Count, etc.
+        //    - OutputStreamPhasor          Device ID, Type (I or V), Name, Order, etc.
+        //    - OutputStreamMeasurement     Device ID, MeasurementKey, Destination SignalReference
 
         // Proposed internal data structures used to collate information:
 
@@ -485,24 +485,22 @@ namespace TVA.PhasorProtocols
             SignalReference signal;
             SignalReference[] signals;
             MeasurementKey measurementKey;
-            PhasorType phasorType;
+            PhasorType type;
             AnalogType analogType;
-            char phaseType;
+            char phase;
             string label;
             int order;
-            uint scale;
-            double offset;
 
             // Define a protocol independent configuration frame
             m_baseConfigurationFrame = new ConfigurationFrame(m_idCode, DateTime.UtcNow.Ticks, (ushort)base.FramesPerSecond);
 
             // Define configuration cells (i.e., PMU's that will appear in outgoing data stream)
-            foreach (DataRow deviceRow in DataSource.Tables["OutputStreams"].Select(string.Format("StreamID={0}", ID)))
+            foreach (DataRow deviceRow in DataSource.Tables["OutputStreamDevice"].Select(string.Format("AdapterID={0}", ID), "LoadOrder"))
             {
                 try
                 {
                     // Create a new configuration cell
-                    cell = new ConfigurationCell(m_baseConfigurationFrame, ushort.Parse(deviceRow["ID"].ToString()), deviceRow["IsVirtual"].ToNonNullString("false").ParseBoolean());
+                    cell = new ConfigurationCell(m_baseConfigurationFrame, ushort.Parse(deviceRow["ID"].ToString()));
 
                     // The base class defaults to floating-point, polar values, derived classes can change
                     cell.PhasorDataFormat = DataFormat.FloatingPoint;
@@ -510,22 +508,22 @@ namespace TVA.PhasorProtocols
                     cell.FrequencyDataFormat = DataFormat.FloatingPoint;
                     cell.AnalogDataFormat = DataFormat.FloatingPoint;
 
-                    cell.IDLabel = deviceRow["Acronym"].ToString().Trim();
-                    cell.StationName = deviceRow["Name"].ToString().TruncateRight(cell.MaximumStationNameLength).Trim();
+                    cell.IDLabel = deviceRow["Name"].ToString().Trim();
+                    cell.StationName = deviceRow["Acronym"].ToString().TruncateRight(cell.MaximumStationNameLength).Trim();
 
                     // Define all the phasors configured for this device
-                    foreach (DataRow phasorRow in DataSource.Tables["OutputStreamPhasors"].Select(string.Format("DeviceID={0}", cell.IDCode), "Order"))
+                    foreach (DataRow phasorRow in DataSource.Tables["OutputStreamDevicePhasor"].Select(string.Format("OutputStreamDeviceID={0}", cell.IDCode), "LoadOrder"))
                     {
-                        order = int.Parse(phasorRow["Order"].ToNonNullString("0"));
+                        order = int.Parse(phasorRow["LoadOrder"].ToNonNullString("0"));
                         label = phasorRow["Label"].ToNonNullString("Phasor " + order).Trim().RemoveDuplicateWhiteSpace().TruncateRight(labelLength - 4);
-                        phasorType = phasorRow["PhasorType"].ToNonNullString("V").Trim().ToUpper().StartsWith("V") ? PhasorType.Voltage : PhasorType.Current;
-                        phaseType = phasorRow["PhaseType"].ToNonNullString("+").Trim().ToUpper()[0];
+                        type = phasorRow["Type"].ToNonNullString("V").Trim().ToUpper().StartsWith("V") ? PhasorType.Voltage : PhasorType.Current;
+                        phase = phasorRow["Phase"].ToNonNullString("+").Trim().ToUpper()[0];
                         
                         cell.PhasorDefinitions.Add(
                             new PhasorDefinition(
                                 cell,
-                                GeneratePhasorLabel(label, phaseType, phasorType),
-                                phasorType,
+                                GeneratePhasorLabel(label, phase, type),
+                                type,
                                 null));
                     }
 
@@ -534,34 +532,31 @@ namespace TVA.PhasorProtocols
                     cell.FrequencyDefinition = new FrequencyDefinition(cell, label);
                     
                     // Optionally define all the analogs configured for this device
-                    if (DataSource.Tables.Contains("OutputStreamAnalogs"))
+                    if (DataSource.Tables.Contains("OutputStreamDeviceAnalog"))
                     {
-                        foreach (DataRow analogRow in DataSource.Tables["OutputStreamAnalogs"].Select(string.Format("DeviceID={0}", cell.IDCode), "Order"))
+                        foreach (DataRow analogRow in DataSource.Tables["OutputStreamDeviceAnalog"].Select(string.Format("OutputStreamDeviceID={0}", cell.IDCode), "LoadOrder"))
                         {
-                            order = int.Parse(analogRow["Order"].ToNonNullString("0"));
+                            order = int.Parse(analogRow["LoadOrder"].ToNonNullString("0"));
                             label = analogRow["Label"].ToNonNullString("Analog " + order).Trim().RemoveDuplicateWhiteSpace().TruncateRight(labelLength);
-                            scale = uint.Parse(analogRow["Scale"].ToNonNullString("1"));
-                            offset = double.Parse(analogRow["Offset"].ToNonNullString("0.0"));
                             analogType = analogRow["AnalogType"].ToNonNullString("SinglePointOnWave").ConvertToType<AnalogType>();
 
                             cell.AnalogDefinitions.Add(
                                 new AnalogDefinition(
                                     cell,
                                     label,
-                                    scale,
-                                    offset,
                                     analogType));
                         }
                     }
 
                     // Optionally define all the digitals configured for this device
-                    if (DataSource.Tables.Contains("OutputStreamDigitals"))
+                    if (DataSource.Tables.Contains("OutputStreamDeviceDigital"))
                     {
-                        foreach (DataRow digitalRow in DataSource.Tables["OutputStreamDigitals"].Select(string.Format("DeviceID={0}", cell.IDCode), "Order"))
+                        foreach (DataRow digitalRow in DataSource.Tables["OutputStreamDeviceDigital"].Select(string.Format("OutputStreamDeviceID={0}", cell.IDCode), "LoadOrder"))
                         {
-                            order = int.Parse(digitalRow["Order"].ToNonNullString("0"));
+                            order = int.Parse(digitalRow["LoadOrder"].ToNonNullString("0"));
                             label = digitalRow["Label"].ToNonNullString("Digital " + order).Trim().RemoveDuplicateWhiteSpace().TruncateRight(labelLength);
 
+                            // TODO: Management web site needs to define all 16-labels per digital as "formatted" string
                             cell.DigitalDefinitions.Add(
                                 new DigitalDefinition(
                                     cell,
@@ -583,7 +578,7 @@ namespace TVA.PhasorProtocols
             m_signalReferences = new Dictionary<MeasurementKey, SignalReference[]>();
             
             // Define measurement to signals cross reference dictionary
-            foreach (DataRow measurementRow in DataSource.Tables["OutputStreamMeasurements"].Select(string.Format("StreamID={0}", ID)))
+            foreach (DataRow measurementRow in DataSource.Tables["OutputStreamMeasurement"].Select(string.Format("AdapterID={0}", ID)))
             {
                 try
                 {
@@ -892,13 +887,13 @@ namespace TVA.PhasorProtocols
         // Static Methods
 
         // Generate a descriptive phasor label
-        private static string GeneratePhasorLabel(string phasorlabel, char phaseType, PhasorType phasorType)
+        private static string GeneratePhasorLabel(string phasorlabel, char phase, PhasorType type)
         {
             StringBuilder label = new StringBuilder();
 
             label.Append(phasorlabel);
 
-            switch (phaseType)
+            switch (phase)
             {
                 case '+':   // Positive sequence
                     label.Append(" +S");
@@ -923,12 +918,11 @@ namespace TVA.PhasorProtocols
                     break;
             }
 
-            label.Append(phasorType == PhasorType.Voltage ? 'V' : 'I');
+            label.Append(type == PhasorType.Voltage ? 'V' : 'I');
 
             return label.ToString();
         }
 
-        #endregion
-        
+        #endregion        
     }
 }

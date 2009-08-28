@@ -37,6 +37,7 @@ namespace TVA.PhasorProtocols
         private uint m_id;
         private string m_source;
         private MeasurementKey m_key;
+        private Guid m_signalID;
         private string m_tagName;
         private Ticks m_timestamp;
         private int m_valueIndex;
@@ -136,6 +137,21 @@ namespace TVA.PhasorProtocols
                     m_key = new MeasurementKey(m_id, m_source);
 
                 return m_key;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="Guid"/> based signal ID of this <see cref="ChannelValueMeasurement{T}"/>, if available.
+        /// </summary>
+        public virtual Guid SignalID
+        {
+            get
+            {
+                return m_signalID;
+            }
+            set
+            {
+                m_signalID = value;
             }
         }
 

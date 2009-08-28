@@ -109,7 +109,7 @@
             // m_remotingServer
             // 
             this.m_remotingServer.ConfigurationString = "Port=8500";
-            this.m_remotingServer.Encryption = TVA.Security.Cryptography.CipherStrength.Level6;
+            this.m_remotingServer.Encryption = TVA.Security.Cryptography.CipherStrength.Level5;
             this.m_remotingServer.Handshake = true;
             this.m_remotingServer.PayloadAware = true;
             this.m_remotingServer.PersistSettings = true;

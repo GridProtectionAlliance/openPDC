@@ -74,7 +74,7 @@ namespace openPDC
             else
             {
                 // Actual passphrase value is decrypted and updated at runtime so that value is obfuscated and not stored as a directly readable string in the executable or configuration file
-                m_remotingClient.SharedSecret = "O5ztzVTI5LojZEMONpq/8fscA0ClC79/OBbj8MwKZTaMmRjCBDUSjE5t3Npl1zBAQpo6qlUD6Jz4hpfywQBBIkqzy1DWvB9fPjgrb1sZkqUod9XsrCaMlM5osmdvprxOMCw7ZLd8pXbRuJ+RThcOgH7JXap9Xo2mt0zrmhOFhZT41GtlPVjlCGgKegSlaX9snnVMackXyW5I4Uaj+mI4YHaojZBdQco9glyQogdCywlTQSldCyos8Zl8pgVfT/jkqcixbML4NWvZVgZ6XIjAHcPp2yL95MA8M8KpjH1cZoc=".Decrypt("4PM3kCB137N62J31h057N8CwydTFLh58B218k0dr35n42qw3G2", CipherStrength.Level6);
+                //m_remotingClient.SharedSecret = "O5ztzVTI5LojZEMONpq/8fscA0ClC79/OBbj8MwKZTaMmRjCBDUSjE5t3Npl1zBAQpo6qlUD6Jz4hpfywQBBIkqzy1DWvB9fPjgrb1sZkqUod9XsrCaMlM5osmdvprxOMCw7ZLd8pXbRuJ+RThcOgH7JXap9Xo2mt0zrmhOFhZT41GtlPVjlCGgKegSlaX9snnVMackXyW5I4Uaj+mI4YHaojZBdQco9glyQogdCywlTQSldCyos8Zl8pgVfT/jkqcixbML4NWvZVgZ6XIjAHcPp2yL95MA8M8KpjH1cZoc=".Decrypt("4PM3kCB137N62J31h057N8CwydTFLh58B218k0dr35n42qw3G2", CipherStrength.Level6);
             }
 
             // Connect to service and send commands. 

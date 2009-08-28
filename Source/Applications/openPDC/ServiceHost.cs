@@ -144,7 +144,7 @@ namespace openPDC
             CategorizedSettingsElementCollection remotingServerSettings = configFile.Settings[m_remotingServer.SettingsCategory];
             
             // Actual passphrase value is decrypted and updated at runtime so that value is obfuscated and not stored as a directly readable string in the executable or configuration file
-            m_remotingServer.SharedSecret = "O5ztzVTI5LojZEMONpq/8fscA0ClC79/OBbj8MwKZTaMmRjCBDUSjE5t3Npl1zBAQpo6qlUD6Jz4hpfywQBBIkqzy1DWvB9fPjgrb1sZkqUod9XsrCaMlM5osmdvprxOMCw7ZLd8pXbRuJ+RThcOgH7JXap9Xo2mt0zrmhOFhZT41GtlPVjlCGgKegSlaX9snnVMackXyW5I4Uaj+mI4YHaojZBdQco9glyQogdCywlTQSldCyos8Zl8pgVfT/jkqcixbML4NWvZVgZ6XIjAHcPp2yL95MA8M8KpjH1cZoc=".Decrypt("4PM3kCB137N62J31h057N8CwydTFLh58B218k0dr35n42qw3G2", CipherStrength.Level6);
+            //m_remotingServer.SharedSecret = "O5ztzVTI5LojZEMONpq/8fscA0ClC79/OBbj8MwKZTaMmRjCBDUSjE5t3Npl1zBAQpo6qlUD6Jz4hpfywQBBIkqzy1DWvB9fPjgrb1sZkqUod9XsrCaMlM5osmdvprxOMCw7ZLd8pXbRuJ+RThcOgH7JXap9Xo2mt0zrmhOFhZT41GtlPVjlCGgKegSlaX9snnVMackXyW5I4Uaj+mI4YHaojZBdQco9glyQogdCywlTQSldCyos8Zl8pgVfT/jkqcixbML4NWvZVgZ6XIjAHcPp2yL95MA8M8KpjH1cZoc=".Decrypt("4PM3kCB137N62J31h057N8CwydTFLh58B218k0dr35n42qw3G2", CipherStrength.Level6);
 
             // System settings
             CategorizedSettingsElementCollection systemSettings = configFile.Settings["systemSettings"];
@@ -382,7 +382,7 @@ namespace openPDC
         {
             DataSet configuration = null;
             DataTable entities, entity;
-            string entityName;
+            string name;
 
             switch (configType)
             {
@@ -400,8 +400,8 @@ namespace openPDC
                         configuration = new DataSet("Iaon");
 
                         // Load configuration entities defined in database
-                        entities = connection.RetrieveData("SELECT * FROM ConfigurationEntities WHERE Enabled <> 0 ORDER BY LoadOrder");
-                        entities.TableName = "ConfigurationEntities";
+                        entities = connection.RetrieveData("SELECT * FROM ConfigurationEntity WHERE Enabled <> 0 ORDER BY LoadOrder");
+                        entities.TableName = "ConfigurationEntity";
                         
                         // Add configuration entities table to system configuration for reference
                         configuration.Tables.Add(entities.Copy());
@@ -410,11 +410,11 @@ namespace openPDC
                         foreach (DataRow row in entities.Rows)
                         {
                             // Load configuration entity data filtered by node ID
-                            entityName = row["EntityName"].ToString();
-                            entity = connection.RetrieveData(string.Format("SELECT * FROM {0} WHERE NodeID={{{1}}}", entityName, m_nodeID));
-                            entity.TableName = entityName;
+                            name = row["Name"].ToString();
+                            entity = connection.RetrieveData(string.Format("SELECT * FROM {0} WHERE NodeID={{{1}}} AND Enabled <> 0 ORDER BY LoadOrder", name, m_nodeID));
+                            entity.TableName = name;
 
-                            DisplayStatusMessage("Loaded entity {0} with {1} rows of data...", entityName, entity.Rows.Count);
+                            DisplayStatusMessage("Loaded configuration entity {0} with {1} rows of data...", name, entity.Rows.Count);
 
                             // Remove redundant node ID column
                             entity.Columns.Remove("NodeID");

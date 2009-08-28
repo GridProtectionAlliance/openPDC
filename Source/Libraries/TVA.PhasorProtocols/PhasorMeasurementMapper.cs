@@ -47,7 +47,6 @@ namespace TVA.PhasorProtocols
         private Ticks m_lastReportTime;
         private ushort m_accessID;
         private bool m_isConcentrator;
-        private bool m_isVirtual;
         private bool m_receivedConfigFrame;
         private long m_bytesReceived;
         private bool m_disposed;
@@ -154,25 +153,14 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets flag that determines if the source device for this mapper connection is virtual.
-        /// </summary>
-        public bool IsVirtual
-        {
-            get
-            {
-                return m_isVirtual;
-            }
-        }
-
-        /// <summary>
         /// Gets flag that determines if the data input connects asynchronously.
         /// </summary>
         protected override bool UseAsyncConnect
         {
             get
             {
-                // We only use asynchronous connection on non-virtual devices
-                return !m_isVirtual;
+                // We use asynchronous connection on devices
+                return true;
             }
         }
 
@@ -192,57 +180,52 @@ namespace TVA.PhasorProtocols
                 status.AppendLine();
                 status.AppendFormat("    Manual time adjustment: {0} seconds", m_timeAdjustmentTicks.ToSeconds().ToString("0.000"));
                 status.AppendLine();
-                status.AppendFormat("         Device is virtual: {0}", m_isVirtual);
-                status.AppendLine();
                 
                 if (m_frameParser != null)
                     status.Append(m_frameParser.Status);
 
-                if (!m_isVirtual)
+                status.AppendLine();
+                status.Append("Parsed Frame Quality Statistics".CenterText(78));
+                status.AppendLine();
+                status.AppendLine();
+                //                      1         2         3         4         5         6         7
+                //             123456789012345678901234567890123456789012345678901234567890123456789012345678
+                status.Append("Device                  Bad Data   Bad Time    Frame      Total    Last Report");
+                status.AppendLine();
+                status.Append(" Name                    Frames     Frames     Errors     Frames      Time");
+                status.AppendLine();
+                //                      1         2            1          1          1          1          1
+                //             1234567890123456789012 1234567890 1234567890 1234567890 1234567890 123456789012
+                status.Append("---------------------- ---------- ---------- ---------- ---------- ------------");
+                status.AppendLine();
+
+                IConfigurationCell parsedDevice;
+                string stationName;
+
+                foreach (ConfigurationCell definedDevice in m_definedDevices.Values)
                 {
-                    status.AppendLine();
-                    status.Append("Parsed Frame Quality Statistics".CenterText(78));
-                    status.AppendLine();
-                    status.AppendLine();
-                    //                      1         2         3         4         5         6         7
-                    //             123456789012345678901234567890123456789012345678901234567890123456789012345678
-                    status.Append("Device                  Bad Data   Bad Time    Frame      Total    Last Report");
-                    status.AppendLine();
-                    status.Append(" Name                    Frames     Frames     Errors     Frames      Time");
-                    status.AppendLine();
-                    //                      1         2            1          1          1          1          1
-                    //             1234567890123456789012 1234567890 1234567890 1234567890 1234567890 123456789012
-                    status.Append("---------------------- ---------- ---------- ---------- ---------- ------------");
-                    status.AppendLine();
+                    stationName = null;
 
-                    IConfigurationCell parsedDevice;
-                    string stationName;
+                    // Attempt to lookup station name in configuration frame of connected device
+                    if (m_frameParser != null && m_frameParser.ConfigurationFrame != null && m_frameParser.ConfigurationFrame.Cells.TryGetByIDCode(definedDevice.IDCode, out parsedDevice))
+                        stationName = parsedDevice.StationName;
 
-                    foreach (ConfigurationCell definedDevice in m_definedDevices.Values)
-                    {
-                        stationName = null;
+                    // We will default to defined name if parsed name is unavailable
+                    if (string.IsNullOrEmpty(stationName))
+                        stationName = "[" + definedDevice.IDLabel + "]";
 
-                        // Attempt to lookup station name in configuration frame of connected device
-                        if (m_frameParser != null && m_frameParser.ConfigurationFrame != null && m_frameParser.ConfigurationFrame.Cells.TryGetByIDCode(definedDevice.IDCode, out parsedDevice))
-                            stationName = parsedDevice.StationName;
-
-                        // We will default to defined name if parsed name is unavailable
-                        if (string.IsNullOrEmpty(stationName))
-                            stationName = "[" + definedDevice.IDLabel + "]";
-
-                        status.Append(stationName.TruncateRight(22).PadRight(22));
-                        status.Append(' ');
-                        status.Append(definedDevice.TotalDataQualityErrors.ToString().CenterText(10));
-                        status.Append(' ');
-                        status.Append(definedDevice.TotalTimeQualityErrors.ToString().CenterText(10));
-                        status.Append(' ');
-                        status.Append(definedDevice.TotalDeviceErrors.ToString().CenterText(10));
-                        status.Append(' ');
-                        status.Append(definedDevice.TotalFrames.ToString().CenterText(10));
-                        status.Append(' ');
-                        status.Append(((DateTime)definedDevice.LastReportTime).ToString("HH:mm:ss.fff"));
-                        status.AppendLine();
-                    }
+                    status.Append(stationName.TruncateRight(22).PadRight(22));
+                    status.Append(' ');
+                    status.Append(definedDevice.TotalDataQualityErrors.ToString().CenterText(10));
+                    status.Append(' ');
+                    status.Append(definedDevice.TotalTimeQualityErrors.ToString().CenterText(10));
+                    status.Append(' ');
+                    status.Append(definedDevice.TotalDeviceErrors.ToString().CenterText(10));
+                    status.Append(' ');
+                    status.Append(definedDevice.TotalFrames.ToString().CenterText(10));
+                    status.Append(' ');
+                    status.Append(((DateTime)definedDevice.LastReportTime).ToString("HH:mm:ss.fff"));
+                    status.AppendLine();
                 }
 				
 				status.AppendLine();
@@ -360,11 +343,6 @@ namespace TVA.PhasorProtocols
             m_accessID = ushort.Parse(settings["accessID"].ToString());
             
             // Load optional mapper specific connection parameters
-            if (settings.TryGetValue("virtual", out setting))
-                m_isVirtual = setting.ParseBoolean();
-            else
-                m_isVirtual = false;
-
             if (settings.TryGetValue("timeZone", out setting))
                 m_timezone = TimeZoneInfo.FindSystemTimeZoneById(setting);
             else
@@ -381,40 +359,37 @@ namespace TVA.PhasorProtocols
                 m_dataStreamMonitor.Interval = 35000.0D;
 
             // Create a new phasor protocol frame parser for non-virtual connections
-            if (!m_isVirtual)
+            MultiProtocolFrameParser frameParser = new MultiProtocolFrameParser();
+
+            // Most of the parameters in the connection string will be for the frame parser so we provide all of them,
+            // other parameters will simply be ignored
+            frameParser.ConnectionString = ConnectionString;
+
+            // For captured data simulations we will inject a simulated timestamp and auto-repeat file stream...
+            if (frameParser.TransportProtocol == TransportProtocol.File)
             {
-                MultiProtocolFrameParser frameParser = new MultiProtocolFrameParser();
+                if (settings.TryGetValue("definedFrameRate", out setting))
+                    frameParser.DefinedFrameRate = 1.0D / double.Parse(setting);
+                else
+                    frameParser.DefinedFrameRate = 1.0D / 30.0D;
 
-                // Most of the parameters in the connection string will be for the frame parser so we provide all of them,
-                // other parameters will simply be ignored
-                frameParser.ConnectionString = ConnectionString;
+                if (settings.TryGetValue("simulateTimestamp", out setting))
+                    frameParser.InjectSimulatedTimestamp = setting.ParseBoolean();
+                else
+                    frameParser.InjectSimulatedTimestamp = true;
 
-                // For captured data simulations we will inject a simulated timestamp and auto-repeat file stream...
-                if (frameParser.TransportProtocol == TransportProtocol.File)
-                {
-                    if (settings.TryGetValue("definedFrameRate", out setting))
-                        frameParser.DefinedFrameRate = 1.0D / double.Parse(setting);
-                    else
-                        frameParser.DefinedFrameRate = 1.0D / 30.0D;
-
-                    if (settings.TryGetValue("simulateTimestamp", out setting))
-                        frameParser.InjectSimulatedTimestamp = setting.ParseBoolean();
-                    else
-                        frameParser.InjectSimulatedTimestamp = true;
-
-                    if (settings.TryGetValue("autoRepeatFile", out setting))
-                        frameParser.AutoRepeatCapturedPlayback = setting.ParseBoolean();
-                    else
-                        frameParser.AutoRepeatCapturedPlayback = true;
-                }
-
-                // Provide access ID to frame parser as this may be necessary to make a phasor connection
-                frameParser.DeviceID = m_accessID;
-                frameParser.SourceName = Name;
-
-                // Assign reference to frame parser and attach to needed events
-                this.FrameParser = frameParser;
+                if (settings.TryGetValue("autoRepeatFile", out setting))
+                    frameParser.AutoRepeatCapturedPlayback = setting.ParseBoolean();
+                else
+                    frameParser.AutoRepeatCapturedPlayback = true;
             }
+
+            // Provide access ID to frame parser as this may be necessary to make a phasor connection
+            frameParser.DeviceID = m_accessID;
+            frameParser.SourceName = Name;
+
+            // Assign reference to frame parser and attach to needed events
+            this.FrameParser = frameParser;
 
             // Load device list for this mapper connection
             m_definedDevices = new Dictionary<ushort, ConfigurationCell>();
@@ -433,7 +408,7 @@ namespace TVA.PhasorProtocols
                 // Making a connection to a concentrator that can support multiple devices
                 foreach (DataRow row in DataSource.Tables["ActiveConcentratorDevices"].Select(string.Format("Acronym='{0}'", Name)))
                 {
-                    definedDevice = new ConfigurationCell(ushort.Parse(row["AccessID"].ToString()), m_isVirtual);
+                    definedDevice = new ConfigurationCell(ushort.Parse(row["AccessID"].ToString()));
                     definedDevice.IDLabel = row["Acronym"].ToString();
                     definedDevice.Tag = uint.Parse(row["ID"].ToString());
                     m_definedDevices.Add(definedDevice.IDCode, definedDevice);
@@ -454,7 +429,7 @@ namespace TVA.PhasorProtocols
             else
             {
                 // Making a connection to a single device
-                definedDevice = new ConfigurationCell(m_accessID, m_isVirtual);
+                definedDevice = new ConfigurationCell(m_accessID);
                 definedDevice.IDLabel = Name;
                 definedDevice.Tag = ID;
                 m_definedDevices.Add(definedDevice.IDCode, definedDevice);
@@ -501,12 +476,7 @@ namespace TVA.PhasorProtocols
                 OnStatusMessage("Sent device command \"{0}\"...", command);
             }
             else
-            {
-                if (m_isVirtual)
-                    OnStatusMessage("Cannot send command to virtual device.");
-                else
-                    OnStatusMessage("Failed to send device command \"{0}\", no frame parser is defined.");
-            }
+                OnStatusMessage("Failed to send device command \"{0}\", no frame parser is defined.");
         }
 
         /// <summary>
@@ -575,12 +545,7 @@ namespace TVA.PhasorProtocols
                 }
             }
             else
-            {
-                if (m_isVirtual)
-                    status.Append("Virtual Device".CenterText(maxLength));
-                else
-                    status.Append("** Not connected");
-            }
+                status.Append("** Not connected");
 
             return status.ToString();
         }

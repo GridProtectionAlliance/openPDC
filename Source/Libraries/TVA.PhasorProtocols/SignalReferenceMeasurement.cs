@@ -39,7 +39,7 @@ namespace TVA.PhasorProtocols
         /// <param name="measurement">Source <see cref="IMeasurement"/> value.</param>
         /// <param name="signalReference">Associated <see cref="SignalReference"/>.</param>
         public SignalReferenceMeasurement(IMeasurement measurement, SignalReference signalReference)
-            : base(measurement.ID, measurement.Source, measurement.Value, measurement.Adder, measurement.Multiplier, measurement.Timestamp)
+            : base(measurement.ID, measurement.Source, measurement.SignalID, measurement.Value, measurement.Adder, measurement.Multiplier, measurement.Timestamp)
         {
             base.ValueQualityIsGood = measurement.ValueQualityIsGood;
             base.TimestampQualityIsGood = measurement.TimestampQualityIsGood;
