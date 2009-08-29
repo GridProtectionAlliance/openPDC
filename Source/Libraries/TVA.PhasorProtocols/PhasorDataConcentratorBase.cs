@@ -628,7 +628,7 @@ namespace TVA.PhasorProtocols
             m_configurationFrame = CreateNewConfigurationFrame(m_baseConfigurationFrame);
 
             // Cache new protocol specific configuration frame
-            CacheConfigurationFrame(m_configurationFrame);
+            CacheConfigurationFrame(m_configurationFrame, Name);
         }
 
         /// <summary>
@@ -807,19 +807,20 @@ namespace TVA.PhasorProtocols
         /// Serialize configuration frame to cache folder for later use (if needed).
         /// </summary>
         /// <param name="configurationFrame">New <see cref="IConfigurationFrame"/> to cache.</param>
+        /// <param name="name">Name to use when caching the <paramref name="configurationFrame"/>.</param>
         /// <remarks>
         /// Derived concentrators can call this method to manually serialize their protocol specific
         /// configuration frames. Note that after initial call to <see cref="CreateNewConfigurationFrame"/>
         /// this method will be call automatically.
         /// </remarks>
-        protected void CacheConfigurationFrame(IConfigurationFrame configurationFrame)
+        protected void CacheConfigurationFrame(IConfigurationFrame configurationFrame, string name)
 		{		
 			// Cache configuration frame for reference
 			OnStatusMessage("Caching configuration frame...");
 			
             // Cache configuration on an independent thread in case this takes some time
             ThreadPool.QueueUserWorkItem(TVA.PhasorProtocols.Anonymous.ConfigurationFrame.Cache,
-                new EventArgs<IConfigurationFrame, Action<Exception>, string>(configurationFrame, OnProcessException, Name));
+                new EventArgs<IConfigurationFrame, Action<Exception>, string>(configurationFrame, OnProcessException, name));
         }
 
         #region [ Data Channel Event Handlers ]
