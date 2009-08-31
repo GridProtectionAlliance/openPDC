@@ -495,7 +495,7 @@ namespace TVA.PhasorProtocols
             m_baseConfigurationFrame = new ConfigurationFrame(m_idCode, DateTime.UtcNow.Ticks, (ushort)base.FramesPerSecond);
 
             // Define configuration cells (i.e., PMU's that will appear in outgoing data stream)
-            foreach (DataRow deviceRow in DataSource.Tables["OutputStreamDevice"].Select(string.Format("AdapterID={0}", ID), "LoadOrder"))
+            foreach (DataRow deviceRow in DataSource.Tables["OutputStreamDevices"].Select(string.Format("AdapterID={0}", ID), "LoadOrder"))
             {
                 try
                 {
@@ -512,7 +512,7 @@ namespace TVA.PhasorProtocols
                     cell.StationName = deviceRow["Acronym"].ToString().TruncateRight(cell.MaximumStationNameLength).Trim();
 
                     // Define all the phasors configured for this device
-                    foreach (DataRow phasorRow in DataSource.Tables["OutputStreamDevicePhasor"].Select(string.Format("OutputStreamDeviceID={0}", cell.IDCode), "LoadOrder"))
+                    foreach (DataRow phasorRow in DataSource.Tables["OutputStreamDevicePhasors"].Select(string.Format("OutputStreamDeviceID={0}", cell.IDCode), "LoadOrder"))
                     {
                         order = int.Parse(phasorRow["LoadOrder"].ToNonNullString("0"));
                         label = phasorRow["Label"].ToNonNullString("Phasor " + order).Trim().RemoveDuplicateWhiteSpace().TruncateRight(labelLength - 4);
@@ -532,9 +532,9 @@ namespace TVA.PhasorProtocols
                     cell.FrequencyDefinition = new FrequencyDefinition(cell, label);
                     
                     // Optionally define all the analogs configured for this device
-                    if (DataSource.Tables.Contains("OutputStreamDeviceAnalog"))
+                    if (DataSource.Tables.Contains("OutputStreamDeviceAnalogs"))
                     {
-                        foreach (DataRow analogRow in DataSource.Tables["OutputStreamDeviceAnalog"].Select(string.Format("OutputStreamDeviceID={0}", cell.IDCode), "LoadOrder"))
+                        foreach (DataRow analogRow in DataSource.Tables["OutputStreamDeviceAnalogs"].Select(string.Format("OutputStreamDeviceID={0}", cell.IDCode), "LoadOrder"))
                         {
                             order = int.Parse(analogRow["LoadOrder"].ToNonNullString("0"));
                             label = analogRow["Label"].ToNonNullString("Analog " + order).Trim().RemoveDuplicateWhiteSpace().TruncateRight(labelLength);
@@ -549,9 +549,9 @@ namespace TVA.PhasorProtocols
                     }
 
                     // Optionally define all the digitals configured for this device
-                    if (DataSource.Tables.Contains("OutputStreamDeviceDigital"))
+                    if (DataSource.Tables.Contains("OutputStreamDeviceDigitals"))
                     {
-                        foreach (DataRow digitalRow in DataSource.Tables["OutputStreamDeviceDigital"].Select(string.Format("OutputStreamDeviceID={0}", cell.IDCode), "LoadOrder"))
+                        foreach (DataRow digitalRow in DataSource.Tables["OutputStreamDeviceDigitals"].Select(string.Format("OutputStreamDeviceID={0}", cell.IDCode), "LoadOrder"))
                         {
                             order = int.Parse(digitalRow["LoadOrder"].ToNonNullString("0"));
                             label = digitalRow["Label"].ToNonNullString("Digital " + order).Trim().RemoveDuplicateWhiteSpace().TruncateRight(labelLength);
@@ -578,7 +578,7 @@ namespace TVA.PhasorProtocols
             m_signalReferences = new Dictionary<MeasurementKey, SignalReference[]>();
             
             // Define measurement to signals cross reference dictionary
-            foreach (DataRow measurementRow in DataSource.Tables["OutputStreamMeasurement"].Select(string.Format("AdapterID={0}", ID)))
+            foreach (DataRow measurementRow in DataSource.Tables["OutputStreamMeasurements"].Select(string.Format("AdapterID={0}", ID)))
             {
                 try
                 {

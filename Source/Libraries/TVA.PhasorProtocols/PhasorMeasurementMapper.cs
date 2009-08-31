@@ -406,7 +406,7 @@ namespace TVA.PhasorProtocols
                 deviceStatus.AppendLine();
 
                 // Making a connection to a concentrator that can support multiple devices
-                foreach (DataRow row in DataSource.Tables["ActiveConcentratorDevices"].Select(string.Format("Acronym='{0}'", Name)))
+                foreach (DataRow row in DataSource.Tables["InputStreamConcentratorDevices"].Select(string.Format("ParentID={0}", ID)))
                 {
                     definedDevice = new ConfigurationCell(ushort.Parse(row["AccessID"].ToString()));
                     definedDevice.IDLabel = row["Acronym"].ToString();
@@ -438,7 +438,7 @@ namespace TVA.PhasorProtocols
             // Load active device measurements for this mapper connection
             m_definedMeasurements = new Dictionary<string, IMeasurement>();
 
-            foreach (DataRow row in DataSource.Tables["ActiveDeviceMeasurements"].Select(string.Format("Acronym='{0}'", Name)))
+            foreach (DataRow row in DataSource.Tables["InputStreamMeasurements"].Select(string.Format("AdapterID={0}", ID)))
             {
                 signalReference = row["SignalReference"].ToString();
 
