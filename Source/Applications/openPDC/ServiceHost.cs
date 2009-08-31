@@ -382,7 +382,6 @@ namespace openPDC
         {
             DataSet configuration = null;
             DataTable entities, entity;
-            string name;
 
             switch (configType)
             {
@@ -410,11 +409,10 @@ namespace openPDC
                         foreach (DataRow row in entities.Rows)
                         {
                             // Load configuration entity data filtered by node ID
-                            name = row["Name"].ToString();
-                            entity = connection.RetrieveData(string.Format("SELECT * FROM {0} WHERE NodeID={{{1}}} AND Enabled <> 0 ORDER BY LoadOrder", name, m_nodeID));
-                            entity.TableName = name;
+                            entity = connection.RetrieveData(string.Format("SELECT * FROM {0} WHERE NodeID={{{1}}} AND Enabled <> 0 ORDER BY LoadOrder", row["SourceName"].ToString(), m_nodeID));
+                            entity.TableName = row["RuntimeName"].ToString();
 
-                            DisplayStatusMessage("Loaded configuration entity {0} with {1} rows of data...", name, entity.Rows.Count);
+                            DisplayStatusMessage("Loaded configuration entity {0} with {1} rows of data...", entity.TableName, entity.Rows.Count);
 
                             // Remove redundant node ID column
                             entity.Columns.Remove("NodeID");
