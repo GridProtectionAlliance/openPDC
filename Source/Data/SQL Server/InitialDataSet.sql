@@ -1,3 +1,8 @@
+-- Script auto-generated generated from Access database openPDC.mdb function GenerateInitialDataScript()
+-- 09/01/2009 1:08:31 PM
+
+USE [openPDC]
+GO
 INSERT INTO Company(Acronym, MapAcronym, Name, LoadOrder) VALUES('AEP', 'AEP', 'American Electric Power', 1)
 INSERT INTO Company(Acronym, MapAcronym, Name, LoadOrder) VALUES('AGP', 'AGP', 'Allegheny Power', 2)
 INSERT INTO Company(Acronym, MapAcronym, Name, LoadOrder) VALUES('AMR', 'AMR', 'Ameren', 3)
