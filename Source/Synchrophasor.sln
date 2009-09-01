@@ -91,10 +91,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{E7006E3E-A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", "{9A59B9E0-A36F-4C52-8568-CB004B20885B}"
 	ProjectSection(SolutionItems) = preProject
+		Data\SQL Server\InitialDataSet.sql = Data\SQL Server\InitialDataSet.sql
 		Data\SQL Server\openPDC.sql = Data\SQL Server\openPDC.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Access", "Access", "{F0072CE5-12A6-4713-BBD0-B57966ED2339}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Access\openPDC.mdb = Data\Access\openPDC.mdb
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySQL", "MySQL", "{41F2680B-D656-47F5-9A0D-3605BF886774}"
 EndProject
