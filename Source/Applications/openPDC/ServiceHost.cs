@@ -156,9 +156,10 @@ namespace openPDC
             systemSettings.Add("ConfigurationType", "Database", "Specifies type of configuration: Database, WebService or XmlFile");
             systemSettings.Add("ConnectionString", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\\Databases\\PhasorMeasurementData.mdb", "Configuration database connection string");
             systemSettings.Add("CachedConfigurationFile", "CachedConfiguration.xml", "File name for last known good system configuration (only cached for a Database or WebService connection)");
-            systemSettings.Add("Example.Database.SqlServer", "Provider=SQLOLEDB;Data Source=serverName;Initial Catalog=databaseName;User ID=userName;pwd=Password", "Example SQL Server database connection string");
-            systemSettings.Add("Example.Database.MicrosoftAccess", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=databaseFilename.mdb", "Example Microsoft Access database connection string");
-            systemSettings.Add("Example.WebService", "https://naspi.tva.com/LoadConfigurationData.aspx", "Example web service connection string");
+            systemSettings.Add("Example.Database.SqlServer", "Provider=SQLOLEDB;Data Source=serverName;Initial Catalog=openPDC;User ID=userName;Password=password", "Example SQL Server database connection string");
+            systemSettings.Add("Example.Database.MicrosoftAccess", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=openPDC.mdb", "Example Microsoft Access database connection string");
+            systemSettings.Add("Example.Database.MySQL", "Provider=MySQLProv;Data Source=serverName;Initial Catalog=openPDC;User ID=userName;Password=password", "Example Microsoft Access database connection string");
+            systemSettings.Add("Example.WebService", "https://naspi.tva.com/openPDC/LoadConfigurationData.aspx", "Example web service connection string");
             systemSettings.Add("Example.XmlFile", "SystemConfiguration.xml", "Example XML configuration file connection string");
 
             // Broadcast message settings

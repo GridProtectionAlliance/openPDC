@@ -6,6 +6,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation\PMU Connection Tester Help Documents.zip = Documentation\PMU Connection Tester Help Documents.zip
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}"
 EndProject
@@ -97,10 +100,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Access", "Access", "{F0072CE5-12A6-4713-BBD0-B57966ED2339}"
 	ProjectSection(SolutionItems) = preProject
-		Data\Access\openPDC.mdb = Data\Access\openPDC.mdb
+		Data\Access\openPDC.zip = Data\Access\openPDC.zip
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySQL", "MySQL", "{41F2680B-D656-47F5-9A0D-3605BF886774}"
+	ProjectSection(SolutionItems) = preProject
+		Data\MySQL\InitialDataSet.sql = Data\MySQL\InitialDataSet.sql
+		Data\MySQL\openPDC.sql = Data\MySQL\openPDC.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
