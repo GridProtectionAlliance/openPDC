@@ -86,7 +86,6 @@ CREATE TABLE Node(
 	CONSTRAINT PK_Node PRIMARY KEY (ID ASC)
 );
 
-DROP TRIGGER IF EXISTS UpdateNodeGuid;
 CREATE TRIGGER UpdateNodeGuid BEFORE INSERT ON Node FOR EACH ROW
 SET NEW.ID = UUID();
 
@@ -190,7 +189,6 @@ CREATE TABLE Measurement(
 	CONSTRAINT IX_Measurement_PointTag UNIQUE KEY (PointTag ASC)
 );
 
-DROP TRIGGER IF EXISTS UpdateMeasurementGuid;
 CREATE TRIGGER UpdateMeasurementGuid BEFORE INSERT ON Measurement FOR EACH ROW
 SET NEW.SignalID = UUID();
 
@@ -538,7 +536,7 @@ AS
 SELECT Device.NodeID, Historian.Acronym + ':' + Measurement.PointID AS ID, Measurement.SignalID, Measurement.PointTag, 
 	Measurement.AlternateTag, Device.Acronym AS Source, Protocol.Acronym AS Protocol, SignalType.Acronym AS SignalType, 
 	Phasor.Type AS PhasorType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier, Company.Acronym AS Company, 
-	Device.Longitude, Device.Latitude
+	Device.Longitude, Device.Latitude, Measurement.Description
 FROM Company RIGHT OUTER JOIN
 	Device ON Company.ID = Device.CompanyID RIGHT OUTER JOIN
 	Measurement LEFT OUTER JOIN
