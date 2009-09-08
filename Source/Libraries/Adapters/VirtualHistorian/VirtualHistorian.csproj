@@ -10,7 +10,7 @@
     <StartupObject>
     </StartupObject>
     <RootNamespace>VirtualHistorian</RootNamespace>
-    <AssemblyName>VirtualHistorianAdapters</AssemblyName>
+    <AssemblyName>VirtualHistorian</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -71,7 +71,6 @@
   -->
   <Import Project="$(MSBuildBinPath)/Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>COPY "$(TargetPath)" "$(OutDir)..\Applications\openPDC\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -76,10 +76,12 @@ namespace openPDC
 
         // System settings
         private Guid m_nodeID;
+        private string m_nodeIDQueryString;
         private DataSet m_configuration;
         private ConfigurationType m_configurationType;
         private string m_connectionString;
         private string m_cachedConfigurationFile;
+        private bool m_uniqueAdapterIDs;
 
         // Broadcast message settings
         private ProcessQueue<string> m_statusMessageQueue;
@@ -142,25 +144,19 @@ namespace openPDC
 
             // Remoting server settings
             CategorizedSettingsElementCollection remotingServerSettings = configFile.Settings[m_remotingServer.SettingsCategory];
-            
-            // Actual passphrase value is decrypted and updated at runtime so that value is obfuscated and not stored as a directly readable string in the executable or configuration file
-            //m_remotingServer.SharedSecret = "O5ztzVTI5LojZEMONpq/8fscA0ClC79/OBbj8MwKZTaMmRjCBDUSjE5t3Npl1zBAQpo6qlUD6Jz4hpfywQBBIkqzy1DWvB9fPjgrb1sZkqUod9XsrCaMlM5osmdvprxOMCw7ZLd8pXbRuJ+RThcOgH7JXap9Xo2mt0zrmhOFhZT41GtlPVjlCGgKegSlaX9snnVMackXyW5I4Uaj+mI4YHaojZBdQco9glyQogdCywlTQSldCyos8Zl8pgVfT/jkqcixbML4NWvZVgZ6XIjAHcPp2yL95MA8M8KpjH1cZoc=".Decrypt("4PM3kCB137N62J31h057N8CwydTFLh58B218k0dr35n42qw3G2", CipherStrength.Level6);
 
             // System settings
             CategorizedSettingsElementCollection systemSettings = configFile.Settings["systemSettings"];
-#if DEBUG
-            systemSettings.Add("NodeID", "{60ACE9D2-3026-40A3-AD7E-1EB9DE6DCA34}", "Unique Node ID");
-#else
             systemSettings.Add("NodeID", Guid.NewGuid().ToString(), "Unique Node ID");
-#endif
             systemSettings.Add("ConfigurationType", "Database", "Specifies type of configuration: Database, WebService or XmlFile");
-            systemSettings.Add("ConnectionString", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\\Databases\\PhasorMeasurementData.mdb", "Configuration database connection string");
-            systemSettings.Add("CachedConfigurationFile", "CachedConfiguration.xml", "File name for last known good system configuration (only cached for a Database or WebService connection)");
+            systemSettings.Add("ConnectionString", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=openPDC.mdb", "Configuration database connection string");
+            systemSettings.Add("CachedConfigurationFile", "SystemConfiguration.xml", "File name for last known good system configuration (only cached for a Database or WebService connection)");
             systemSettings.Add("Example.Database.SqlServer", "Provider=SQLOLEDB;Data Source=serverName;Initial Catalog=openPDC;User ID=userName;Password=password", "Example SQL Server database connection string");
             systemSettings.Add("Example.Database.MicrosoftAccess", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=openPDC.mdb", "Example Microsoft Access database connection string");
             systemSettings.Add("Example.Database.MySQL", "Provider=MySQLProv;Data Source=serverName;Initial Catalog=openPDC;User ID=userName;Password=password", "Example Microsoft Access database connection string");
             systemSettings.Add("Example.WebService", "https://naspi.tva.com/openPDC/LoadConfigurationData.aspx", "Example web service connection string");
             systemSettings.Add("Example.XmlFile", "SystemConfiguration.xml", "Example XML configuration file connection string");
+            systemSettings.Add("UniqueAdaptersIDs", "True", "Set to true if all runtime adapter ID's will be unique to allow for easier adapter specification");
 
             // Broadcast message settings
             CategorizedSettingsElementCollection broadcastMessageSettings = configFile.Settings["broadcastMessageSettings"];
@@ -172,12 +168,31 @@ namespace openPDC
             thresholdSettings.Add("MeasurementWarningThreshold", "100000", "Number of unarchived measurements allowed in any output adapter queue before displaying a warning message");
             thresholdSettings.Add("MeasurementDumpingThreshold", "500000", "Number of unarchived measurements allowed in any output adapter queue before taking evasive action and dumping data");
             thresholdSettings.Add("DefaultSampleSizeWarningThreshold", "10", "Default number of unpublished samples (in seconds) allowed in any action adapter queue before displaying a warning message");
+            
+            // Define configuration cache sub-directory
+            string cachePath = string.Format("{0}\\ConfigurationCache\\", FilePath.GetAbsolutePath(""));
+
+            // Make sure configuration cache directory exists
+            if (!Directory.Exists(cachePath))
+                Directory.CreateDirectory(cachePath);
 
             // Initialize system settings
             m_nodeID = systemSettings["NodeID"].ValueAs<Guid>();
             m_configurationType = systemSettings["ConfigurationType"].ValueAs<ConfigurationType>();
             m_connectionString = systemSettings["ConnectionString"].Value;
-            m_cachedConfigurationFile = FilePath.GetAbsolutePath(systemSettings["CachedConfigurationFile"].Value);
+            m_cachedConfigurationFile = cachePath + systemSettings["CachedConfigurationFile"].Value;
+            m_uniqueAdapterIDs = systemSettings["UniqueAdaptersIDs"].ValueAsBoolean(true);
+
+            // Define guid with query string delimeters according to database needs
+            Dictionary<string, string> settings = m_connectionString.ParseKeyValuePairs();
+            string setting;
+
+            if (settings.TryGetValue("Provider", out setting))
+                if (setting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.CurrentCultureIgnoreCase))
+                    m_nodeIDQueryString = "{" + m_nodeID + "}";
+
+            if (string.IsNullOrEmpty(m_nodeIDQueryString))
+                m_nodeIDQueryString = "'" + m_nodeID + "'";
 
             // Initialize broadcast message settings
             m_messageDisplayTimepan = broadcastMessageSettings["MessageDisplayTimespan"].ValueAsInt32();
@@ -410,7 +425,7 @@ namespace openPDC
                         foreach (DataRow row in entities.Rows)
                         {
                             // Load configuration entity data filtered by node ID
-                            entity = connection.RetrieveData(string.Format("SELECT * FROM {0} WHERE NodeID={{{1}}} AND Enabled <> 0 ORDER BY LoadOrder", row["SourceName"].ToString(), m_nodeID));
+                            entity = connection.RetrieveData(string.Format("SELECT * FROM {0} WHERE NodeID={1}", row["SourceName"].ToString(), m_nodeIDQueryString));
                             entity.TableName = row["RuntimeName"].ToString();
 
                             DisplayStatusMessage("Loaded configuration entity {0} with {1} rows of data...", entity.TableName, entity.Rows.Count);
@@ -495,7 +510,7 @@ namespace openPDC
                 // Back up existing configuration file, if any
                 if (File.Exists(m_cachedConfigurationFile))
                 {
-                    string backupConfigFile = FilePath.GetAbsolutePath(FilePath.GetFileNameWithoutExtension(m_cachedConfigurationFile) + ".backup");
+                    string backupConfigFile = m_cachedConfigurationFile + ".backup";
 
                     if (File.Exists(backupConfigFile))
                         File.Delete(backupConfigFile);
@@ -602,7 +617,7 @@ namespace openPDC
         private void HealthMonitorProcessHandler(string name, object[] parameters)
         {
             string requestCommand = "Health";
-            ClientRequestHandler requestHandler = m_serviceHelper.GetClientRequestHandler(requestCommand);
+            ClientRequestHandler requestHandler = m_serviceHelper.FindClientRequestHandler(requestCommand);
 
             if (requestHandler != null)
             {
@@ -666,7 +681,11 @@ namespace openPDC
                 // Adapter ID is numeric, lookup by adapter ID
                 uint id = uint.Parse(adapterID);
 
+                // Try requested collection
                 if (collection.TryGetAdapterByID(id, out adapter))
+                    return adapter;
+                // Try looking for ID in any collection if all runtime ID's are unique
+                else if (m_uniqueAdapterIDs && m_allAdapters.TryGetAnyAdapterByID(id, out adapter, out collection))
                     return adapter;
                 else
                     SendResponse(requestInfo, false, "Failed to find adapter with ID \"{0}\" in {1}.", id, collection.Name);

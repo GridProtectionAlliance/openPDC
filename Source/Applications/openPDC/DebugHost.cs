@@ -47,7 +47,7 @@ namespace openPDC
         private void DebugHost_Load(object sender, EventArgs e)
         {
             // Start remote console sesstion
-            m_remoteConsole = Process.Start(FilePath.GetAbsolutePath("IaonHostConsole.exe"));
+            m_remoteConsole = Process.Start(FilePath.GetAbsolutePath("openPDCConsole.exe"));
 
             // Initialize text.
             m_productName = AssemblyInfo.EntryAssembly.Title;

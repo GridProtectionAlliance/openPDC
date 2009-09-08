@@ -44,7 +44,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{CD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TVA.PhasorProtocols", "Libraries\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj", "{54CA98CC-2F0A-41F2-879D-0E42B17E8544}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualHistorianAdapters", "Libraries\Adapters\VirtualHistorian\VirtualHistorianAdapters.csproj", "{A139B16F-A59E-4E4F-A464-8EF4C45F0F3E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualHistorian", "Libraries\Adapters\VirtualHistorian\VirtualHistorian.csproj", "{A139B16F-A59E-4E4F-A464-8EF4C45F0F3E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NASPInet", "Libraries\Adapters\NASPInet\NASPInet.csproj", "{F8902AA2-1A9A-451B-89D1-7FEA30C34C48}"
 EndProject
@@ -96,17 +96,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", 
 	ProjectSection(SolutionItems) = preProject
 		Data\SQL Server\InitialDataSet.sql = Data\SQL Server\InitialDataSet.sql
 		Data\SQL Server\openPDC.sql = Data\SQL Server\openPDC.sql
+		Data\SQL Server\SampleDataSet.sql = Data\SQL Server\SampleDataSet.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Access", "Access", "{F0072CE5-12A6-4713-BBD0-B57966ED2339}"
 	ProjectSection(SolutionItems) = preProject
-		Data\Access\openPDC.zip = Data\Access\openPDC.zip
+		Data\Access\openPDC-InitialData.zip = Data\Access\openPDC-InitialData.zip
+		Data\Access\openPDC-SampleData.zip = Data\Access\openPDC-SampleData.zip
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySQL", "MySQL", "{41F2680B-D656-47F5-9A0D-3605BF886774}"
 	ProjectSection(SolutionItems) = preProject
 		Data\MySQL\InitialDataSet.sql = Data\MySQL\InitialDataSet.sql
 		Data\MySQL\openPDC.sql = Data\MySQL\openPDC.sql
+		Data\MySQL\SampleDataSet.sql = Data\MySQL\SampleDataSet.sql
 	EndProjectSection
 EndProject
 Global
@@ -127,34 +130,34 @@ Global
 		SccProjectTopLevelParentUniqueName3 = Synchrophasor.sln
 		SccProjectName3 = Libraries/Adapters/NASPInet
 		SccLocalPath3 = Libraries\\Adapters\\NASPInet
-		SccProjectUniqueName4 = Libraries\\Adapters\\VirtualHistorian\\VirtualHistorianAdapters.csproj
+		SccProjectUniqueName4 = Libraries\\TVA.PhasorProtocols\\TVA.PhasorProtocols.csproj
 		SccProjectTopLevelParentUniqueName4 = Synchrophasor.sln
-		SccProjectName4 = Libraries/Adapters/VirtualHistorian
-		SccLocalPath4 = Libraries\\Adapters\\VirtualHistorian
-		SccProjectUniqueName5 = Libraries\\TVA.PhasorProtocols\\TVA.PhasorProtocols.csproj
+		SccProjectName4 = Libraries/TVA.PhasorProtocols
+		SccLocalPath4 = Libraries\\TVA.PhasorProtocols
+		SccProjectUniqueName5 = Tools\\PMU\u0020Connection\u0020Tester\\PMU\u0020Connection\u0020Tester.vbproj
 		SccProjectTopLevelParentUniqueName5 = Synchrophasor.sln
-		SccProjectName5 = Libraries/TVA.PhasorProtocols
-		SccLocalPath5 = Libraries\\TVA.PhasorProtocols
-		SccProjectUniqueName6 = Tools\\PMU\u0020Connection\u0020Tester\\PMU\u0020Connection\u0020Tester.vbproj
+		SccProjectName5 = Tools/PMU\u0020Connection\u0020Tester
+		SccLocalPath5 = Tools\\PMU\u0020Connection\u0020Tester
+		SccProjectUniqueName6 = Applications\\openPDCManager\\Web.Data\\Web.Data.csproj
 		SccProjectTopLevelParentUniqueName6 = Synchrophasor.sln
-		SccProjectName6 = Tools/PMU\u0020Connection\u0020Tester
-		SccLocalPath6 = Tools\\PMU\u0020Connection\u0020Tester
-		SccProjectUniqueName7 = Applications\\openPDCManager\\Web.Data\\Web.Data.csproj
+		SccProjectName6 = Applications/openPDCManager/Web.Data
+		SccLocalPath6 = Applications\\openPDCManager\\Web.Data
+		SccProjectUniqueName7 = Applications\\openPDCManager\\Services\\Services.csproj
 		SccProjectTopLevelParentUniqueName7 = Synchrophasor.sln
-		SccProjectName7 = Applications/openPDCManager/Web.Data
-		SccLocalPath7 = Applications\\openPDCManager\\Web.Data
-		SccProjectUniqueName8 = Applications\\openPDCManager\\Services\\Services.csproj
+		SccProjectName7 = Applications/openPDCManager/Services
+		SccLocalPath7 = Applications\\openPDCManager\\Services
+		SccProjectUniqueName8 = Applications\\openPDCManager\\Silverlight\\Silverlight.csproj
 		SccProjectTopLevelParentUniqueName8 = Synchrophasor.sln
-		SccProjectName8 = Applications/openPDCManager/Services
-		SccLocalPath8 = Applications\\openPDCManager\\Services
-		SccProjectUniqueName9 = Applications\\openPDCManager\\Silverlight\\Silverlight.csproj
+		SccProjectName8 = Applications/openPDCManager/Silverlight
+		SccLocalPath8 = Applications\\openPDCManager\\Silverlight
+		SccProjectUniqueName9 = Applications\\openPDCManager\\Web\\Web.csproj
 		SccProjectTopLevelParentUniqueName9 = Synchrophasor.sln
-		SccProjectName9 = Applications/openPDCManager/Silverlight
-		SccLocalPath9 = Applications\\openPDCManager\\Silverlight
-		SccProjectUniqueName10 = Applications\\openPDCManager\\Web\\Web.csproj
+		SccProjectName9 = Applications/openPDCManager/Web
+		SccLocalPath9 = Applications\\openPDCManager\\Web
+		SccProjectUniqueName10 = Libraries\\Adapters\\VirtualHistorian\\VirtualHistorian.csproj
 		SccProjectTopLevelParentUniqueName10 = Synchrophasor.sln
-		SccProjectName10 = Applications/openPDCManager/Web
-		SccLocalPath10 = Applications\\openPDCManager\\Web
+		SccProjectName10 = Libraries/Adapters/VirtualHistorian
+		SccLocalPath10 = Libraries\\Adapters\\VirtualHistorian
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

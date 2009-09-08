@@ -336,6 +336,7 @@ namespace TVA.PhasorProtocols
         {
             Dictionary<string, string> settings = Settings;
             ConfigurationCell definedDevice;
+            MeasurementKey pointID;
             string setting, signalReference;
 
             // Load required mapper specific connection parameters
@@ -438,7 +439,7 @@ namespace TVA.PhasorProtocols
             // Load active device measurements for this mapper connection
             m_definedMeasurements = new Dictionary<string, IMeasurement>();
 
-            foreach (DataRow row in DataSource.Tables["InputStreamMeasurements"].Select(string.Format("AdapterID={0}", ID)))
+            foreach (DataRow row in DataSource.Tables["ActiveMeasurements"].Select(string.Format("DeviceID={0}", ID)))
             {
                 signalReference = row["SignalReference"].ToString();
 
@@ -446,12 +447,16 @@ namespace TVA.PhasorProtocols
                 {
                     try
                     {
+                        // Get measurement's point ID formatted as a measurement key
+                        pointID = MeasurementKey.Parse(row["ID"].ToString());
+
+                        // Create a reference to this measurement associated with this adapter
                         m_definedMeasurements.Add(signalReference, new Measurement(
-                            uint.Parse(row["PointID"].ToString()),
-                            row["Historian"].ToString(),
+                            pointID.ID,
+                            pointID.Source,
                             signalReference,
-                            double.Parse(row["Adder"].ToString()),
-                            double.Parse(row["Multiplier"].ToString())));
+                            double.Parse(row["Adder"].ToNonNullString("0.0")),
+                            double.Parse(row["Multiplier"].ToNonNullString("1.0"))));
                     }
                     catch (Exception ex)
                     {

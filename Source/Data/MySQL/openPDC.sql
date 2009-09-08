@@ -264,8 +264,8 @@ CREATE TABLE Historian(
 	ID INT AUTO_INCREMENT NOT NULL,
 	Acronym NVARCHAR(50) NOT NULL,
 	Name NVARCHAR(100) NULL,
-	AssemblyName TEXT UNICODE NOT NULL,
-	TypeName TEXT UNICODE NOT NULL,
+	AssemblyName TEXT UNICODE NULL,
+	TypeName TEXT UNICODE NULL,
 	ConnectionString TEXT UNICODE NULL,
 	IsLocal BIT NOT NULL DEFAULT 0,
 	Description TEXT UNICODE NULL,
@@ -399,20 +399,11 @@ FROM OutputStreamMeasurement LEFT OUTER JOIN
   Runtime ON OutputStreamMeasurement.AdapterID = Runtime.SourceID AND Runtime.SourceTable = 'OutputStream'
 ORDER BY OutputStreamMeasurement.HistorianID, OutputStreamMeasurement.PointID;
 
-CREATE VIEW RuntimeInputStreamMeasurement
-AS
-SELECT Device.NodeID, Runtime.ID AS AdapterID, Measurement.PointID, Historian.Acronym AS Historian, Measurement.Adder, 
-  Measurement.Multiplier
-FROM Device RIGHT OUTER JOIN
-  Measurement ON Device.ID = Measurement.DeviceID LEFT OUTER JOIN
-  Historian ON Measurement.HistorianID = Historian.ID LEFT OUTER JOIN
-  Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = 'Device'
-WHERE (Device.Enabled <> 0) AND (Measurement.Enabled <> 0);
-
 CREATE VIEW RuntimeHistorian
 AS
-SELECT Historian.NodeID, Runtime.ID, Historian.Acronym AS AdapterName, 'TVA.Historian.dll' AS AssemblyName, 
-  IF(IsLocal = 1, 'TVA.Historian.TimeSeriesData.LocalOutputAdapter', 'TVA.Historian.TimeSeriesData.RemoteOutputAdapter') AS TypeName, 
+SELECT Historian.NodeID, Runtime.ID, Historian.Acronym AS AdapterName,
+  COALESCE(Historian.AssemblyName, 'TVA.Historian.dll') AS AssemblyName, 
+  COALESCE(Historian.TypeName, IF(IsLocal = 1, 'TVA.Historian.TimeSeriesData.LocalOutputAdapter', 'TVA.Historian.TimeSeriesData.RemoteOutputAdapter')) AS TypeName, 
   Historian.ConnectionString + '; sourceIDs=' + Historian.Acronym AS ConnectionString
 FROM Historian LEFT OUTER JOIN
   Runtime ON Historian.ID = Runtime.SourceID AND Runtime.SourceTable = 'Historian'
@@ -423,7 +414,8 @@ CREATE VIEW RuntimeDevice
 AS
 SELECT Device.NodeID, Runtime.ID, Device.Acronym AS AdapterName, 'TVA.PhasorProtocols.dll' AS AssemblyName, 
   'TVA.PhasorProtocols.PhasorMeasurementMapper' AS TypeName,
-  Device.ConnectionString + '; isConcentrator=' + CONVERT(Device.IsConcentrator,  CHAR(10))
+  Device.ConnectionString + '; isConcentrator=' + CONVERT(Device.IsConcentrator, CHAR(10))
+  + '; accessID=' + CONVERT(Device.AccessID, CHAR(10))
   + IF(Device.TimeZone IS NULL,'', '; timeZone=' + Device.TimeZone)
   + '; timeAdjustmentTicks=' + CONVERT(Device.TimeAdjustmentTicks, CHAR(10))
   + IF(Protocol.Acronym IS NULL, '', '; phasorProtocol=' + Protocol.Acronym)
@@ -443,7 +435,7 @@ FROM CustomOutputAdapter LEFT OUTER JOIN
 WHERE (CustomOutputAdapter.Enabled <> 0)
 ORDER BY CustomOutputAdapter.LoadOrder;
 
-CREATE VIEW RuntimeInputStreamConcentratorDevice
+CREATE VIEW RuntimeInputStreamDevice
 AS
 SELECT Device.NodeID, Runtime_P.ID AS ParentID, Runtime.ID, Device.Acronym, Device.AccessID
 FROM Device LEFT OUTER JOIN
@@ -463,7 +455,7 @@ ORDER BY CustomInputAdapter.LoadOrder;
 
 CREATE VIEW RuntimeOutputStreamDevice
 AS
-SELECT OutputStreamDevice.NodeID, Runtime.ID AS AdapterID, OutputStreamDevice.ID, OutputStreamDevice.Acronym, 
+SELECT OutputStreamDevice.NodeID, Runtime.ID AS ParentID, OutputStreamDevice.ID, OutputStreamDevice.Acronym, 
   OutputStreamDevice.BpaAcronym, OutputStreamDevice.Name, OutputStreamDevice.LoadOrder
 FROM OutputStreamDevice LEFT OUTER JOIN
   Runtime ON OutputStreamDevice.AdapterID = Runtime.SourceID AND Runtime.SourceTable = 'OutputStream'
@@ -534,8 +526,8 @@ ORDER BY CalculatedMeasurement.LoadOrder;
 CREATE VIEW ActiveMeasurement
 AS
 SELECT Device.NodeID, Historian.Acronym + ':' + Measurement.PointID AS ID, Measurement.SignalID, Measurement.PointTag, 
-	Measurement.AlternateTag, Device.Acronym AS Source, Protocol.Acronym AS Protocol, SignalType.Acronym AS SignalType, 
-	Phasor.Type AS PhasorType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier, Company.Acronym AS Company, 
+	Measurement.AlternateTag, Measurement.SignalReference, Device.Acronym AS Device, Runtime.ID AS DeviceID, Protocol.Acronym AS Protocol,
+	SignalType.Acronym AS SignalType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier, Company.Acronym AS Company, 
 	Device.Longitude, Device.Latitude, Measurement.Description
 FROM Company RIGHT OUTER JOIN
 	Device ON Company.ID = Device.CompanyID RIGHT OUTER JOIN
@@ -544,7 +536,8 @@ FROM Company RIGHT OUTER JOIN
 	Phasor ON Measurement.DeviceID = Phasor.DeviceID AND 
 	Measurement.PhasorSourceIndex = Phasor.SourceIndex LEFT OUTER JOIN
 	Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
-	Historian ON Measurement.HistorianID = Historian.ID
+	Historian ON Measurement.HistorianID = Historian.ID LEFT OUTER JOIN
+	Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = 'Device'
 WHERE (Device.Enabled <> 0);
 
 CREATE VIEW IaonOutputAdapter

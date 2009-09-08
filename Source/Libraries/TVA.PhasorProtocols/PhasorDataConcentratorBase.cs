@@ -495,7 +495,7 @@ namespace TVA.PhasorProtocols
             m_baseConfigurationFrame = new ConfigurationFrame(m_idCode, DateTime.UtcNow.Ticks, (ushort)base.FramesPerSecond);
 
             // Define configuration cells (i.e., PMU's that will appear in outgoing data stream)
-            foreach (DataRow deviceRow in DataSource.Tables["OutputStreamDevices"].Select(string.Format("AdapterID={0}", ID), "LoadOrder"))
+            foreach (DataRow deviceRow in DataSource.Tables["OutputStreamDevices"].Select(string.Format("ParentID={0}", ID), "LoadOrder"))
             {
                 try
                 {

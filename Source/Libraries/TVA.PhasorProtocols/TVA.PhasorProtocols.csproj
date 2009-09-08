@@ -319,4 +319,7 @@
     </PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)/Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>COPY "$(TargetPath)" "..\$(OutDir)..\Applications\openPDC\$(TargetFileName)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
