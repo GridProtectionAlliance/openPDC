@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Input/Action/Output Interface Adapters Host Console Monitor")]
-[assembly: AssemblyDescription("Iaon Host Service Console Monitor")]
+[assembly: AssemblyTitle("openPDC Console Monitor")]
+[assembly: AssemblyDescription("openPDC Console Monitor")]
 [assembly: AssemblyCompany("TVA")]
 [assembly: AssemblyProduct("Synchrophasor Projects")]
 [assembly: AssemblyCopyright("Copyright © TVA 2009")]
