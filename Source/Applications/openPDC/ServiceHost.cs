@@ -20,7 +20,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.OleDb;
 using System.IO;
 using System.Reflection;
 using System.ServiceProcess;
@@ -80,6 +79,7 @@ namespace openPDC
         private DataSet m_configuration;
         private ConfigurationType m_configurationType;
         private string m_connectionString;
+        private string m_dataProvider;
         private string m_cachedConfigurationFile;
         private bool m_uniqueAdapterIDs;
 
@@ -150,12 +150,14 @@ namespace openPDC
             systemSettings.Add("NodeID", Guid.NewGuid().ToString(), "Unique Node ID");
             systemSettings.Add("ConfigurationType", "Database", "Specifies type of configuration: Database, WebService or XmlFile");
             systemSettings.Add("ConnectionString", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=openPDC.mdb", "Configuration database connection string");
+            systemSettings.Add("DataProvider", "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089};ConnectionType=System.Data.OleDb.OleDbConnection;AdapterType=System.Data.OleDb.OleDbDataAdapter", "Configuration database .NET provider string");
             systemSettings.Add("CachedConfigurationFile", "SystemConfiguration.xml", "File name for last known good system configuration (only cached for a Database or WebService connection)");
-            systemSettings.Add("Example.Database.SqlServer", "Provider=SQLOLEDB;Data Source=serverName;Initial Catalog=openPDC;User ID=userName;Password=password", "Example SQL Server database connection string");
-            systemSettings.Add("Example.Database.MicrosoftAccess", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=openPDC.mdb", "Example Microsoft Access database connection string");
-            systemSettings.Add("Example.Database.MySQL", "Provider=MySQLProv;Data Source=serverName;Initial Catalog=openPDC;User ID=userName;Password=password", "Example Microsoft Access database connection string");
-            systemSettings.Add("Example.WebService", "https://naspi.tva.com/openPDC/LoadConfigurationData.aspx", "Example web service connection string");
-            systemSettings.Add("Example.XmlFile", "SystemConfiguration.xml", "Example XML configuration file connection string");
+            systemSettings.Add("Example.SqlServer.ConnectionString", "Data Source=serverName;Initial Catalog=openPDC;User Id=userName;Password=password;AssemblyName=System.Data;ConnectionType=System.Data.SqlClient.SqlConnection;AdapterType=System.Data.SqlClient.SqlDataAdapter", "Example SQL Server database connection string");
+            systemSettings.Add("Example.MicrosoftAccess.ConnectionString", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=openPDC.mdb;AssemblyName=System.Data;ConnectionType=System.Data.OleDb.OleDbConnection;AdapterType=System.Data.OleDb.OleDbDataAdapter", "Example Microsoft Access database connection string");
+            systemSettings.Add("Example.MySQL.ConnectionString", "Server=serverName;Database=openPDC;Uid=root;Pwd=password;AssemblyName=MySql.Data;ConnectionType=MySql.Data.MySqlClient.MySqlConnection;AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter", "Example MySQL database connection string");
+            systemSettings.Add("Example.Oracle.ConnectionString", "Data Source=openPDC;User Id=username;Password=password;Integrated Security=no;AssemblyName=System.Data.OracleClient;ConnectionType=System.Data.OracleClient.OracleConnection;AdapterType=System.Data.OracleClient.OracleDataAdapter", "Example Oracle database connection string");
+            systemSettings.Add("Example.WebService.ConnectionString", "https://naspi.tva.com/openPDC/LoadConfigurationData.aspx", "Example web service connection string");
+            systemSettings.Add("Example.XmlFile.ConnectionString", "SystemConfiguration.xml", "Example XML configuration file connection string");
             systemSettings.Add("UniqueAdaptersIDs", "True", "Set to true if all runtime adapter ID's will be unique to allow for easier adapter specification");
 
             // Broadcast message settings
@@ -180,6 +182,7 @@ namespace openPDC
             m_nodeID = systemSettings["NodeID"].ValueAs<Guid>();
             m_configurationType = systemSettings["ConfigurationType"].ValueAs<ConfigurationType>();
             m_connectionString = systemSettings["ConnectionString"].Value;
+            m_dataProvider = systemSettings["DataProvider"].Value;
             m_cachedConfigurationFile = cachePath + systemSettings["CachedConfigurationFile"].Value;
             m_uniqueAdapterIDs = systemSettings["UniqueAdaptersIDs"].ValueAsBoolean(true);
 
@@ -224,13 +227,13 @@ namespace openPDC
 
             // Create health exporter
             m_healthExporter = new MultipleDestinationExporter("HealthExporter", Timeout.Infinite);
-            m_healthExporter.Initialize(new ExportDestination[] { new ExportDestination("C:\\Health.txt", false, "", "", "") });
+            m_healthExporter.Initialize(new ExportDestination[] { new ExportDestination(FilePath.GetAbsolutePath("Health.txt"), false, "", "", "") });
             m_healthExporter.StatusMessage += StatusMessageHandler;
             m_serviceHelper.ServiceComponents.Add(m_healthExporter);
             
             // Create status exporter
             m_statusExporter = new MultipleDestinationExporter("StatusExporter", Timeout.Infinite);
-            m_statusExporter.Initialize(new ExportDestination[] { new ExportDestination("C:\\Status.txt", false, "", "", "") });
+            m_statusExporter.Initialize(new ExportDestination[] { new ExportDestination(FilePath.GetAbsolutePath("Status.txt"), false, "", "", "") });
             m_statusExporter.StatusMessage += StatusMessageHandler;
             m_serviceHelper.ServiceComponents.Add(m_statusExporter);
 
@@ -402,12 +405,32 @@ namespace openPDC
             switch (configType)
             {
                 case ConfigurationType.Database:
-                    // Attempt to load configuration from database based connection
-                    OleDbConnection connection = null;
+                    // Attempt to load configuration from a database connection
+                    IDbConnection connection = null;
+                    Dictionary<string, string> settings;
+                    string assemblyName, connectionTypeName, adapterTypeName;
+                    Assembly assembly;
+                    Type connectionType, adapterType;
 
                     try
                     {
-                        connection = new OleDbConnection(m_connectionString);
+                        settings = m_dataProvider.ParseKeyValuePairs();
+                        assemblyName = settings["AssemblyName"].ToNonNullString();
+                        connectionTypeName = settings["ConnectionType"].ToNonNullString();
+                        adapterTypeName = settings["AdapterType"].ToNonNullString();
+
+                        if (string.IsNullOrEmpty(connectionTypeName))
+                            throw new InvalidOperationException("Database connection type was not defined.");
+
+                        if (string.IsNullOrEmpty(adapterTypeName))
+                            throw new InvalidOperationException("Database adapter type was not defined.");
+
+                        assembly = Assembly.Load(new AssemblyName(assemblyName));
+                        connectionType = assembly.GetType(connectionTypeName);
+                        adapterType = assembly.GetType(adapterTypeName);
+                        
+                        connection = (IDbConnection)Activator.CreateInstance(connectionType);
+                        connection.ConnectionString = m_connectionString;
                         connection.Open();
 
                         DisplayStatusMessage("Database configuration connection opened.");
@@ -415,7 +438,7 @@ namespace openPDC
                         configuration = new DataSet("Iaon");
 
                         // Load configuration entities defined in database
-                        entities = connection.RetrieveData("SELECT * FROM ConfigurationEntity WHERE Enabled <> 0 ORDER BY LoadOrder");
+                        entities = connection.RetrieveData(adapterType, "SELECT * FROM ConfigurationEntity WHERE Enabled <> 0 ORDER BY LoadOrder");
                         entities.TableName = "ConfigurationEntity";
                         
                         // Add configuration entities table to system configuration for reference
@@ -425,7 +448,7 @@ namespace openPDC
                         foreach (DataRow row in entities.Rows)
                         {
                             // Load configuration entity data filtered by node ID
-                            entity = connection.RetrieveData(string.Format("SELECT * FROM {0} WHERE NodeID={1}", row["SourceName"].ToString(), m_nodeIDQueryString));
+                            entity = connection.RetrieveData(adapterType, string.Format("SELECT * FROM {0} WHERE NodeID={1}", row["SourceName"].ToString(), m_nodeIDQueryString));
                             entity.TableName = row["RuntimeName"].ToString();
 
                             DisplayStatusMessage("Loaded configuration entity {0} with {1} rows of data...", entity.TableName, entity.Rows.Count);
@@ -452,7 +475,6 @@ namespace openPDC
                         if (connection != null && connection.State == ConnectionState.Open)
                             connection.Close();
 
-                        OleDbConnection.ReleaseObjectPool();
                         DisplayStatusMessage("Database configuration connection closed.");
                     }
 
@@ -527,7 +549,7 @@ namespace openPDC
             try
             {
                 // Write current data set to a file
-                configuration.WriteXml(m_cachedConfigurationFile, XmlWriteMode.IgnoreSchema);
+                configuration.WriteXml(m_cachedConfigurationFile, XmlWriteMode.WriteSchema);
                 DisplayStatusMessage("Successfully cached current configuration.");
             }
             catch (Exception ex)
