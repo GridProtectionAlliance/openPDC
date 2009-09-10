@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using TVA;
 using TVA.Historian.Files;
+using TVA.Historian.Services;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
 
@@ -34,7 +35,8 @@ namespace HistorianAdapters
 
         // Fields
         private ArchiveFile m_archive;
-        private long m_archiveMeasurements;
+        private Services m_archiveServices;
+        private long m_measurementsArchived;
         private bool m_disposed;
 
         #endregion
@@ -110,14 +112,22 @@ namespace HistorianAdapters
             m_archive.MetadataFile = metadataFile;
             m_archive.StateFile = stateFile;
             m_archive.IntercomFile = intercomFile;
+
+            // Provide web service support.
+            m_archiveServices = new Services();
+            m_archiveServices.AdapterLoaded += ArchiveServices_AdapterLoaded;
+            m_archiveServices.AdapterUnloaded += ArchiveServices_AdapterUnloaded;
+            m_archiveServices.Initialize();
         }
 
         /// <summary>
         /// Gets a short one-line status of this <see cref="LocalOutputAdapter"/>.
         /// </summary>
+        /// <param name="maxLength">Maximum length of the status message.</param>
+        /// <returns>Text of the status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return string.Format("Archived {0} measurements locally...", m_archiveMeasurements).CenterText(maxLength);
+            return string.Format("Archived {0} measurements locally...", m_measurementsArchived).CenterText(maxLength);
         }
        
         /// <summary>
@@ -130,10 +140,14 @@ namespace HistorianAdapters
             {
                 try
                 {
-                    // This will be done regardless of whether the object is finalized or disposed.
                     if (disposing)
                     {
-                        // This will be done only when the object is disposed by calling Dispose().
+                        // Stop web services.
+                        m_archiveServices.AdapterLoaded -= ArchiveServices_AdapterLoaded;
+                        m_archiveServices.AdapterUnloaded -= ArchiveServices_AdapterUnloaded;
+                        m_archiveServices.Dispose();
+
+                        // Close all the files.
                         m_archive.Dispose();
                         m_archive.MetadataFile.Dispose();
                         m_archive.StateFile.Dispose();
@@ -184,7 +198,27 @@ namespace HistorianAdapters
             {
                 m_archive.WriteData(new ArchiveData(measurement));
             }
-            m_archiveMeasurements += measurements.Length;
+            m_measurementsArchived += measurements.Length;
+        }
+
+        private void ArchiveServices_AdapterLoaded(object sender, EventArgs<IService> e)
+        {
+            e.Argument.Archive = m_archive;
+            e.Argument.ServiceProcessError += ArchiveServices_ServiceProcessError;
+            OnStatusMessage("{0} web services has been loaded.", e.Argument.GetType().Name);
+        }
+
+        private void ArchiveServices_AdapterUnloaded(object sender, EventArgs<IService> e)
+        {
+            e.Argument.Archive = null;
+            e.Argument.ServiceProcessError -= ArchiveServices_ServiceProcessError;
+            OnStatusMessage("{0} web services has been unloaded.", e.Argument.GetType().Name);
+        }
+
+        private void ArchiveServices_ServiceProcessError(object sender, EventArgs<Exception> e)
+        {
+            // Notify of the exception encountered when processing a web service request.
+            OnProcessException(e.Argument);
         }
 
         #endregion
