@@ -9,8 +9,8 @@
     <OutputType>Library</OutputType>
     <StartupObject>
     </StartupObject>
-    <RootNamespace>VirtualHistorian</RootNamespace>
-    <AssemblyName>VirtualHistorian</AssemblyName>
+    <RootNamespace>HistorianAdapters</RootNamespace>
+    <AssemblyName>HistorianAdapters</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -29,8 +29,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>..\..\..\..\Build\Output\Debug\Libraries\</OutputPath>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>..\..\..\..\Build\Output\Debug\Libraries\HistorianAdapters.XML</DocumentationFile>
     <NOWARN>
     </NOWARN>
     <DefineConstants>DEBUG</DefineConstants>
@@ -41,8 +40,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>..\..\..\..\Build\Output\Release\Libraries\</OutputPath>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>..\..\..\..\Build\Output\Release\Libraries\HistorianAdapters.XML</DocumentationFile>
     <NOWARN>
     </NOWARN>
   </PropertyGroup>
@@ -57,7 +55,7 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OutputAdapter.cs" />
+    <Compile Include="VirtualOutputAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

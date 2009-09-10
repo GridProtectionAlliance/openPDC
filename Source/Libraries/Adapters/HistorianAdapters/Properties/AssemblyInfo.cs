@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NERC PCS Virtual Historian Adapter")]
-[assembly: AssemblyDescription("Virtual Test Archiver")]
+[assembly: AssemblyTitle("NERC PCS Historian Adapters")]
+[assembly: AssemblyDescription("Historian input and output adapters.")]
 [assembly: AssemblyCompany("TVA")]
 [assembly: AssemblyProduct("Synchrophasor Projects")]
 [assembly: AssemblyCopyright("Copyright © TVA 2009")]
-[assembly: AssemblyTrademark("Author: J. Ritchie Carroll, Gbtc")]
+[assembly: AssemblyTrademark("Author: J. Ritchie Carroll, Pinal C. Patel")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug Build")]
 #else

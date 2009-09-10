@@ -1,5 +1,5 @@
 //*******************************************************************************************************
-//  OutputAdapter.cs
+//  VirtualOutputAdapter.cs
 //  Copyright © 2009 - TVA, all rights reserved - Gbtc
 //
 //  Build Environment: C#, Visual Studio 2008
@@ -24,12 +24,12 @@ namespace VirtualHistorian
     /// <summary>
     /// Represents a virtual historian ouput adapter used for testing purposes - no data gets archived.
     /// </summary>
-    public class OutputAdapter : OutputAdapterBase
+    public class VirtualOutputAdapter : OutputAdapterBase
     {
         #region [ Properties ]
 
         /// <summary>
-        /// Returns a flag that determines if measurements sent to this <see cref="ArchiveStream"/> are
+        /// Returns a flag that determines if measurements sent to this <see cref="VirtualOutputAdapter"/> are
         /// destined for archival.
         /// </summary>
         public override bool OutputIsForArchive
@@ -41,7 +41,7 @@ namespace VirtualHistorian
         }
 
         /// <summary>
-        /// Gets flag that determines if this <see cref="ArchiveStream"/> uses an asynchronous connection.
+        /// Gets flag that determines if this <see cref="VirtualOutputAdapter"/> uses an asynchronous connection.
         /// </summary>
         protected override bool UseAsyncConnect
         {
@@ -56,14 +56,14 @@ namespace VirtualHistorian
         #region [ Methods ]
 
         /// <summary>
-        /// Attempts to connect to this <see cref="ArchiveStream"/>.
+        /// Attempts to connect to this <see cref="VirtualOutputAdapter"/>.
         /// </summary>
         protected override void AttemptConnection()
         {
         }
 
         /// <summary>
-        /// Attempts to disconnect from this <see cref="ArchiveStream"/>.
+        /// Attempts to disconnect from this <see cref="VirtualOutputAdapter"/>.
         /// </summary>
         protected override void AttemptDisconnection()
         {
@@ -77,7 +77,7 @@ namespace VirtualHistorian
         }
 
         /// <summary>
-        /// Gets a short one-line status of this <see cref="ArchiveStream"/>.
+        /// Gets a short one-line status of this <see cref="VirtualOutputAdapter"/>.
         /// </summary>
         public override string GetShortStatus(int maxLength)
         {

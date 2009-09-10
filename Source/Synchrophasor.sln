@@ -44,7 +44,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{CD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TVA.PhasorProtocols", "Libraries\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj", "{54CA98CC-2F0A-41F2-879D-0E42B17E8544}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualHistorian", "Libraries\Adapters\VirtualHistorian\VirtualHistorian.csproj", "{A139B16F-A59E-4E4F-A464-8EF4C45F0F3E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HistorianAdapters", "Libraries\Adapters\HistorianAdapters\HistorianAdapters.csproj", "{A139B16F-A59E-4E4F-A464-8EF4C45F0F3E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NASPInet", "Libraries\Adapters\NASPInet\NASPInet.csproj", "{F8902AA2-1A9A-451B-89D1-7FEA30C34C48}"
 EndProject
@@ -154,7 +154,7 @@ Global
 		SccProjectTopLevelParentUniqueName9 = Synchrophasor.sln
 		SccProjectName9 = Applications/openPDCManager/Web
 		SccLocalPath9 = Applications\\openPDCManager\\Web
-		SccProjectUniqueName10 = Libraries\\Adapters\\VirtualHistorian\\VirtualHistorian.csproj
+		SccProjectUniqueName10 = Libraries\\Adapters\\VirtualHistorian\\HistorianAdapters.csproj
 		SccProjectTopLevelParentUniqueName10 = Synchrophasor.sln
 		SccProjectName10 = Libraries/Adapters/VirtualHistorian
 		SccLocalPath10 = Libraries\\Adapters\\VirtualHistorian
