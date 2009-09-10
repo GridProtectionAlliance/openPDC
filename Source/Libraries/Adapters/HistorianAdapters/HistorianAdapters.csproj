@@ -47,14 +47,28 @@
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="TVA.Communication, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Historian\Current Version\Build\Output\Debug\Libraries\TVA.Communication.dll</HintPath>
+    </Reference>
     <Reference Include="TVA.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Core.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Historian\Current Version\Build\Output\Debug\Libraries\TVA.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="TVA.Historian, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Historian\Current Version\Build\Output\Debug\Libraries\TVA.Historian.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InputAdapter.cs" />
+    <Compile Include="LocalOutputAdapter.cs" />
+    <Compile Include="RemoteOutputAdapter.cs" />
     <Compile Include="VirtualOutputAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

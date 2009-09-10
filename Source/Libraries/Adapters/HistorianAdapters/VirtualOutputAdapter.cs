@@ -19,7 +19,7 @@ using TVA;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
 
-namespace VirtualHistorian
+namespace HistorianAdapters
 {
     /// <summary>
     /// Represents a virtual historian ouput adapter used for testing purposes - no data gets archived.
