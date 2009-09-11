@@ -44,7 +44,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{CD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TVA.PhasorProtocols", "Libraries\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj", "{54CA98CC-2F0A-41F2-879D-0E42B17E8544}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HistorianAdapters", "Libraries\Adapters\HistorianAdapters\HistorianAdapters.csproj", "{A139B16F-A59E-4E4F-A464-8EF4C45F0F3E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualHistorian", "Libraries\Adapters\VirtualHistorian\VirtualHistorian.csproj", "{A139B16F-A59E-4E4F-A464-8EF4C45F0F3E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NASPInet", "Libraries\Adapters\NASPInet\NASPInet.csproj", "{F8902AA2-1A9A-451B-89D1-7FEA30C34C48}"
 EndProject
@@ -112,9 +112,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySQL", "MySQL", "{41F2680B
 		Data\MySQL\SampleDataSet.sql = Data\MySQL\SampleDataSet.sql
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HistorianAdapters", "Libraries\Adapters\HistorianAdapters\HistorianAdapters.csproj", "{8A1BCFAA-19E8-408A-8C72-170B1211DC27}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 11
+		SccNumberOfProjects = 12
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs07.codeplex.com/
 		SccLocalPath0 = .
@@ -154,10 +156,14 @@ Global
 		SccProjectTopLevelParentUniqueName9 = Synchrophasor.sln
 		SccProjectName9 = Applications/openPDCManager/Web
 		SccLocalPath9 = Applications\\openPDCManager\\Web
-		SccProjectUniqueName10 = Libraries\\Adapters\\VirtualHistorian\\HistorianAdapters.csproj
+		SccProjectUniqueName10 = Libraries\\Adapters\\VirtualHistorian\\VirtualHistorian.csproj
 		SccProjectTopLevelParentUniqueName10 = Synchrophasor.sln
 		SccProjectName10 = Libraries/Adapters/VirtualHistorian
 		SccLocalPath10 = Libraries\\Adapters\\VirtualHistorian
+		SccProjectUniqueName11 = Libraries\\Adapters\\HistorianAdapters\\HistorianAdapters.csproj
+		SccProjectTopLevelParentUniqueName11 = Synchrophasor.sln
+		SccProjectName11 = Libraries/Adapters/HistorianAdapters
+		SccLocalPath11 = Libraries\\Adapters\\HistorianAdapters
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -204,6 +210,10 @@ Global
 		{0B8D74B6-5556-4118-8A97-2F182F32DE50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B8D74B6-5556-4118-8A97-2F182F32DE50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B8D74B6-5556-4118-8A97-2F182F32DE50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -221,6 +231,7 @@ Global
 		{20A58D77-CB7C-444E-A084-C61B40639B60} = {3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}
 		{A139B16F-A59E-4E4F-A464-8EF4C45F0F3E} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{F8902AA2-1A9A-451B-89D1-7FEA30C34C48} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
+		{8A1BCFAA-19E8-408A-8C72-170B1211DC27} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{5314055B-EA03-4E15-8653-83F011D7A00E} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{D96C8A3A-7E03-43C6-B401-41778D81FF70} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{3D0DC382-3C00-48A7-B9FF-D3154F8BEDF1} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
