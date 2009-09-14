@@ -27,7 +27,7 @@
  Original Software Designation: openPDC
  Original Software Title: The TVA Open Source Phasor Data Concentrator
  User Registration Requested. Please Visit https://naspi.tva.com/Registration/
- Point of Contact for Original Software: J. Ritchie Carroll <jrcarrol@tva.gov>
+ Point of Contact for Original Software: J. Ritchie Carroll <mailto:jrcarrol@tva.gov>
 
  1. DEFINITIONS
 
@@ -224,7 +224,7 @@
  Recipient hereby agrees to all terms and conditions herein.
 
  F. Point of Contact: Any Recipient contact with Government Agency is to be directed to the designated
- representative as follows: J. Ritchie Carroll <jrcarrol@tva.gov>.
+ representative as follows: J. Ritchie Carroll <mailto:jrcarrol@tva.gov>.
 
 */
 #endregion
