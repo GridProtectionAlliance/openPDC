@@ -83,6 +83,7 @@
   -->
   <Import Project="$(MSBuildBinPath)/Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>COPY "$(TargetPath)" "$(OutDir)..\Applications\openPDC\$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>COPY "$(TargetPath)" "$(OutDir)..\Applications\openPDC\$(TargetFileName)"
+COPY "$(TargetDir)TVA.Historian.dll" ""$(OutDir)..\Applications\openPDC\TVA.Historian.dll"</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -1,11 +1,11 @@
 -- Script auto-generated generated from Access database openPDC.mdb method GenerateSampleDataScript
--- 9/10/2009 8:03:54 AM
+-- 09/14/2009 3:52:24 PM
 
 USE openPDC
 
 INSERT INTO Node(Name, CompanyID, Description, Master, LoadOrder, Enabled) VALUES('Development', 29, 'Development node', 1, 0, 1);
 UPDATE Node SET ID='e7a5235d-cb6f-4864-a96e-a8686f36e599' WHERE Name='Development';
-INSERT INTO Historian(NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 'LocalDevArchive', 'Local Development Archive', 'VirtualHistorian.dll', 'VirtualHistorian.OutputAdapter', '', 1, 'Local development archive', 0, 1);
+INSERT INTO Historian(NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 'LocalDevArchive', 'Local Development Archive', 'HistorianAdapters.dll', 'HistorianAdapters.LocalOutputAdapter', '', 1, 'Local development archive', 0, 1);
 INSERT INTO Device(NodeID, Acronym, Name, IsConcentrator, CompanyID, HistorianID, AccessID, VendorDeviceID, ProtocolID, Longitude, Latitude, InterconnectionID, ConnectionString, MeasuredLines, LoadOrder, Enabled) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 'SHELBY', 'Shelby', 0, 29, 1, 2, 2, 3, -89.803823, 35.387099, 1, 'transportProtocol=File; file=Sample1344.PmuCapture', 3, 0, 1);
 INSERT INTO Phasor(DeviceID, Label, Type, Phase, SourceIndex) VALUES(1, '500 kV Bus 1', 'V', '+', 1);
 INSERT INTO Phasor(DeviceID, Label, Type, Phase, SourceIndex) VALUES(1, '500 kV Bus 2', 'V', '+', 2);

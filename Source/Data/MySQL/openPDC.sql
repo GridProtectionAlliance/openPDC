@@ -402,9 +402,9 @@ ORDER BY OutputStreamMeasurement.HistorianID, OutputStreamMeasurement.PointID;
 CREATE VIEW RuntimeHistorian
 AS
 SELECT Historian.NodeID, Runtime.ID, Historian.Acronym AS AdapterName,
- COALESCE(Historian.AssemblyName, 'TVA.Historian.dll') AS AssemblyName, 
- COALESCE(Historian.TypeName, IF(IsLocal = 1, 'TVA.Historian.TimeSeriesData.LocalOutputAdapter', 'TVA.Historian.TimeSeriesData.RemoteOutputAdapter')) AS TypeName, 
- Historian.ConnectionString + '; sourceIDs=' + Historian.Acronym AS ConnectionString
+ COALESCE(Historian.AssemblyName, 'HistorianAdapters.dll') AS AssemblyName, 
+ COALESCE(Historian.TypeName, IF(IsLocal = 1, 'HistorianAdapters.LocalOutputAdapter', 'HistorianAdapters.RemoteOutputAdapter')) AS TypeName, 
+ IF(Historian.ConnectionString IS NULL, '', Historian.ConnectionString + '; ') + 'instanceName=' + Historian.Acronym + '; sourceIDs=' + Historian.Acronym AS ConnectionString
 FROM Historian LEFT OUTER JOIN
  Runtime ON Historian.ID = Runtime.SourceID AND Runtime.SourceTable = 'Historian'
 WHERE (Historian.Enabled <> 0)

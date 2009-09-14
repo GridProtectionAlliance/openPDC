@@ -24,6 +24,7 @@ using TVA;
 using TVA.Historian.Files;
 using TVA.Historian.MetadataProviders;
 using TVA.Historian.Services;
+using TVA.IO;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
 
@@ -106,7 +107,7 @@ namespace HistorianAdapters
 
             // Validate settings.
             if (!settings.TryGetValue("archivepath", out archivePath))
-                throw new ArgumentException("ArchivePath is missing. Example: ArchivePath=c:\\;InstanceName=XX");
+                archivePath = FilePath.GetAbsolutePath("");
 
             if (!settings.TryGetValue("instancename", out instanceName))
                 throw new ArgumentException("InstanceName is missing. Example: ArchivePath=c:\\;InstanceName=XX");
@@ -231,14 +232,32 @@ namespace HistorianAdapters
         /// </summary>
         protected override void AttemptDisconnection()
         {
-            m_archive.Save();
-            m_archive.Close();
-            m_archive.MetadataFile.Save();
-            m_archive.MetadataFile.Close();
-            m_archive.StateFile.Save();
-            m_archive.StateFile.Close();
-            m_archive.IntercomFile.Save();
-            m_archive.IntercomFile.Close();
+            if (m_archive != null)
+            {
+                if (m_archive.IsOpen)
+                {
+                    m_archive.Save();
+                    m_archive.Close();
+                }
+
+                if (m_archive.MetadataFile != null && m_archive.MetadataFile.IsOpen)
+                {
+                    m_archive.MetadataFile.Save();
+                    m_archive.MetadataFile.Close();
+                }
+
+                if (m_archive.StateFile != null && m_archive.StateFile.IsOpen)
+                {
+                    m_archive.StateFile.Save();
+                    m_archive.StateFile.Close();
+                }
+
+                if (m_archive.IntercomFile != null && m_archive.IntercomFile.IsOpen)
+                {
+                    m_archive.IntercomFile.Save();
+                    m_archive.IntercomFile.Close();
+                }
+            }
         }
 
         /// <summary>

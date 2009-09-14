@@ -29,7 +29,6 @@ namespace HistorianAdapters
     /// <summary>
     /// Represents the class for parsing incoming measurements from a TVA historian data stream.
     /// </summary>
-    [CLSCompliant(false)]
     public class InputAdapter : InputAdapterBase
 	{
         #region [ Members ]
