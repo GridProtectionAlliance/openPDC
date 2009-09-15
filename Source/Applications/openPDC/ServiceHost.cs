@@ -295,7 +295,7 @@ namespace openPDC
         private DataSet m_configuration;
         private ConfigurationType m_configurationType;
         private string m_connectionString;
-        private string m_dataProvider;
+        private string m_dataProviderString;
         private string m_cachedConfigurationFile;
         private bool m_uniqueAdapterIDs;
 
@@ -358,23 +358,29 @@ namespace openPDC
             // Make sure default service settings exist
             ConfigurationFile configFile = ConfigurationFile.Current;
 
-            // Remoting server settings
-            CategorizedSettingsElementCollection remotingServerSettings = configFile.Settings[m_remotingServer.SettingsCategory];
-
             // System settings
             CategorizedSettingsElementCollection systemSettings = configFile.Settings["systemSettings"];
             systemSettings.Add("NodeID", Guid.NewGuid().ToString(), "Unique Node ID");
             systemSettings.Add("ConfigurationType", "Database", "Specifies type of configuration: Database, WebService or XmlFile");
             systemSettings.Add("ConnectionString", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=openPDC.mdb", "Configuration database connection string");
-            systemSettings.Add("DataProvider", "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089};ConnectionType=System.Data.OleDb.OleDbConnection;AdapterType=System.Data.OleDb.OleDbDataAdapter", "Configuration database .NET provider string");
+            systemSettings.Add("DataProviderString", "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089};ConnectionType=System.Data.OleDb.OleDbConnection;AdapterType=System.Data.OleDb.OleDbDataAdapter", "Configuration database ADO.NET data provider assembly type creation string");
             systemSettings.Add("CachedConfigurationFile", "SystemConfiguration.xml", "File name for last known good system configuration (only cached for a Database or WebService connection)");
-            systemSettings.Add("Example.SqlServer.ConnectionString", "Data Source=serverName;Initial Catalog=openPDC;User Id=userName;Password=password;AssemblyName=System.Data;ConnectionType=System.Data.SqlClient.SqlConnection;AdapterType=System.Data.SqlClient.SqlDataAdapter", "Example SQL Server database connection string");
-            systemSettings.Add("Example.MicrosoftAccess.ConnectionString", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=openPDC.mdb;AssemblyName=System.Data;ConnectionType=System.Data.OleDb.OleDbConnection;AdapterType=System.Data.OleDb.OleDbDataAdapter", "Example Microsoft Access database connection string");
-            systemSettings.Add("Example.MySQL.ConnectionString", "Server=serverName;Database=openPDC;Uid=root;Pwd=password;AssemblyName=MySql.Data;ConnectionType=MySql.Data.MySqlClient.MySqlConnection;AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter", "Example MySQL database connection string");
-            systemSettings.Add("Example.Oracle.ConnectionString", "Data Source=openPDC;User Id=username;Password=password;Integrated Security=no;AssemblyName=System.Data.OracleClient;ConnectionType=System.Data.OracleClient.OracleConnection;AdapterType=System.Data.OracleClient.OracleDataAdapter", "Example Oracle database connection string");
-            systemSettings.Add("Example.WebService.ConnectionString", "https://naspi.tva.com/openPDC/LoadConfigurationData.aspx", "Example web service connection string");
-            systemSettings.Add("Example.XmlFile.ConnectionString", "SystemConfiguration.xml", "Example XML configuration file connection string");
             systemSettings.Add("UniqueAdaptersIDs", "True", "Set to true if all runtime adapter ID's will be unique to allow for easier adapter specification");
+
+            // Example connection settings
+            CategorizedSettingsElementCollection exampleSettings = configFile.Settings["exampleConnectionSettings"];
+            exampleSettings.Add("SqlServer.ConnectionString", "Data Source=serverName;Initial Catalog=openPDC;User Id=userName;Password=password", "Example SQL Server database connection string");
+            exampleSettings.Add("SqlServer.DataProviderString", "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089};ConnectionType=System.Data.SqlClient.SqlConnection;AdapterType=System.Data.SqlClient.SqlDataAdapter", "Example SQL Server database .NET provider string");
+            exampleSettings.Add("MySQL.ConnectionString", "Server=serverName;Database=openPDC;Uid=root;Pwd=password", "Example MySQL database connection string");
+            exampleSettings.Add("MySQL.DataProviderString", "AssemblyName={MySql.Data, Version=5.2.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d};ConnectionType=MySql.Data.MySqlClient.MySqlConnection;AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter", "Example MySQL database .NET provider string");
+            exampleSettings.Add("Oracle.ConnectionString", "Data Source=openPDC;User Id=username;Password=password;Integrated Security=no", "Example Oracle database connection string");
+            exampleSettings.Add("Oracle.DataProviderString", "AssemblyName={System.Data.OracleClient, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089};ConnectionType=System.Data.OracleClient.OracleConnection;AdapterType=System.Data.OracleClient.OracleDataAdapter", "Example Oracle database .NET provider string");
+            exampleSettings.Add("OleDB.ConnectionString", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=openPDC.mdb", "Example Microsoft Access (via OleDb) database connection string");
+            exampleSettings.Add("OleDB.DataProviderString", "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089};ConnectionType=System.Data.OleDb.OleDbConnection;AdapterType=System.Data.OleDb.OleDbDataAdapter", "Example OleDb database .NET provider string");
+            exampleSettings.Add("Odbc.ConnectionString", "Driver={SQL Server Native Client 10.0};Server=serverName;Database=openPDC;Uid=userName;Pwd=password;", "Example ODBC database connection string");
+            exampleSettings.Add("Odbc.DataProviderString", "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089};ConnectionType=System.Data.Odbc.OdbcConnection;AdapterType=System.Data.Odbc.OdbcDataAdapter", "Example ODBC database .NET provider string");
+            exampleSettings.Add("WebService.ConnectionString", "https://naspi.tva.com/openPDC/LoadConfigurationData.aspx", "Example web service connection string");
+            exampleSettings.Add("XmlFile.ConnectionString", "SystemConfiguration.xml", "Example XML configuration file connection string");
 
             // Broadcast message settings
             CategorizedSettingsElementCollection broadcastMessageSettings = configFile.Settings["broadcastMessageSettings"];
@@ -398,7 +404,7 @@ namespace openPDC
             m_nodeID = systemSettings["NodeID"].ValueAs<Guid>();
             m_configurationType = systemSettings["ConfigurationType"].ValueAs<ConfigurationType>();
             m_connectionString = systemSettings["ConnectionString"].Value;
-            m_dataProvider = systemSettings["DataProvider"].Value;
+            m_dataProviderString = systemSettings["DataProviderString"].Value;
             m_cachedConfigurationFile = cachePath + systemSettings["CachedConfigurationFile"].Value;
             m_uniqueAdapterIDs = systemSettings["UniqueAdaptersIDs"].ValueAsBoolean(true);
 
@@ -630,7 +636,7 @@ namespace openPDC
 
                     try
                     {
-                        settings = m_dataProvider.ParseKeyValuePairs();
+                        settings = m_dataProviderString.ParseKeyValuePairs();
                         assemblyName = settings["AssemblyName"].ToNonNullString();
                         connectionTypeName = settings["ConnectionType"].ToNonNullString();
                         adapterTypeName = settings["AdapterType"].ToNonNullString();
@@ -688,8 +694,8 @@ namespace openPDC
                     }
                     finally
                     {
-                        if (connection != null && connection.State == ConnectionState.Open)
-                            connection.Close();
+                        if (connection != null)
+                            connection.Dispose();
 
                         DisplayStatusMessage("Database configuration connection closed.");
                     }

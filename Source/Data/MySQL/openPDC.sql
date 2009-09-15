@@ -23,7 +23,7 @@ CREATE TABLE Company(
 	Acronym NVARCHAR(50) NOT NULL,
 	MapAcronym NCHAR(3) NOT NULL,
 	Name NVARCHAR(100) NOT NULL,
-	URL TEXT NULL,
+	URL LONGTEXT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
   CONSTRAINT PK_Company PRIMARY KEY (ID ASC)
 );
@@ -31,7 +31,7 @@ CREATE TABLE Company(
 CREATE TABLE ConfigurationEntity(
 	SourceName NVARCHAR(100) NOT NULL,
 	RuntimeName NVARCHAR(100) NOT NULL,
-	Description TEXT NULL,
+	Description LONGTEXT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled BIT NOT NULL DEFAULT 0
 );
@@ -42,7 +42,7 @@ CREATE TABLE Vendor(
 	Name NVARCHAR(100) NOT NULL,
 	PhoneNumber NVARCHAR(100) NULL,
 	ContactEmail NVARCHAR(100) NULL,
-	URL TEXT NULL,
+	URL LONGTEXT NULL,
 	CONSTRAINT PK_Vendor PRIMARY KEY (ID ASC)
 );
 
@@ -78,8 +78,8 @@ CREATE TABLE Node(
 	CompanyID INT NULL,
 	Longitude DECIMAL(9, 6) NULL,
 	Latitude DECIMAL(9, 6) NULL,
-	Description TEXT NULL,
-	Image TEXT NULL,
+	Description LONGTEXT NULL,
+	Image LONGTEXT NULL,
 	Master BIT NOT NULL DEFAULT 0,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled BIT NOT NULL DEFAULT 0,
@@ -120,11 +120,11 @@ CREATE TABLE Device(
 	Longitude DECIMAL(9, 6) NULL,
 	Latitude DECIMAL(9, 6) NULL,
 	InterconnectionID INT NULL,
-	ConnectionString TEXT NULL,
+	ConnectionString LONGTEXT NULL,
 	TimeZone NVARCHAR(128) NULL,
 	TimeAdjustmentTicks BIGINT NOT NULL DEFAULT 0,
 	DataLossInterval FLOAT NOT NULL DEFAULT 35,
-	ContactList TEXT NULL,
+	ContactList LONGTEXT NULL,
 	MeasuredLines INT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled BIT NOT NULL DEFAULT 0,
@@ -135,8 +135,8 @@ CREATE TABLE VendorDevice(
 	ID INT AUTO_INCREMENT NOT NULL,
 	VendorID INT NOT NULL DEFAULT 10,
 	Name NVARCHAR(100) NOT NULL,
-	Description TEXT NULL,
-	URL TEXT NULL,
+	Description LONGTEXT NULL,
+	URL LONGTEXT NULL,
 	CONSTRAINT PK_VendorDevice PRIMARY KEY (ID ASC)
 );
 
@@ -182,7 +182,7 @@ CREATE TABLE Measurement(
 	SignalReference TEXT NOT NULL,
 	Adder FLOAT NOT NULL DEFAULT 0.0,
 	Multiplier FLOAT NOT NULL DEFAULT 1.0,
-	Description TEXT NULL,
+	Description LONGTEXT NULL,
 	Enabled BIT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_Measurement PRIMARY KEY (SignalID ASC),
 	CONSTRAINT IX_Measurement UNIQUE KEY (PointID ASC),
@@ -232,10 +232,10 @@ CREATE TABLE CalculatedMeasurement(
 	Name NVARCHAR(100) NULL,
 	AssemblyName TEXT NOT NULL,
 	TypeName TEXT NOT NULL,
-	ConnectionString TEXT NULL,
+	ConnectionString LONGTEXT NULL,
 	ConfigSection NVARCHAR(100) NULL,
-	InputMeasurements TEXT NULL,
-	OutputMeasurements TEXT NULL,
+	InputMeasurements LONGTEXT NULL,
+	OutputMeasurements LONGTEXT NULL,
 	MinimumMeasurementsToUse INT NOT NULL DEFAULT -1,
 	FramesPerSecond INT NOT NULL DEFAULT 30,
 	LagTime FLOAT NOT NULL DEFAULT 3.0,
@@ -253,7 +253,7 @@ CREATE TABLE CustomActionAdapter(
 	AdapterName NVARCHAR(50) NOT NULL,
 	AssemblyName TEXT NOT NULL,
 	TypeName TEXT NOT NULL,
-	ConnectionString TEXT NULL,
+	ConnectionString LONGTEXT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled BIT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_CustomActionAdapter PRIMARY KEY (ID ASC)
@@ -264,11 +264,11 @@ CREATE TABLE Historian(
 	ID INT AUTO_INCREMENT NOT NULL,
 	Acronym NVARCHAR(50) NOT NULL,
 	Name NVARCHAR(100) NULL,
-	AssemblyName TEXT NULL,
-	TypeName TEXT NULL,
-	ConnectionString TEXT NULL,
+	AssemblyName LONGTEXT NULL,
+	TypeName LONGTEXT NULL,
+	ConnectionString LONGTEXT NULL,
 	IsLocal BIT NOT NULL DEFAULT 0,
-	Description TEXT NULL,
+	Description LONGTEXT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled BIT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_Historian PRIMARY KEY (ID ASC)
@@ -280,7 +280,7 @@ CREATE TABLE CustomInputAdapter(
 	AdapterName NVARCHAR(50) NOT NULL,
 	AssemblyName TEXT NOT NULL,
 	TypeName TEXT NOT NULL,
-	ConnectionString TEXT NULL,
+	ConnectionString LONGTEXT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled BIT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_CustomInputAdapter PRIMARY KEY (ID ASC)
@@ -292,9 +292,9 @@ CREATE TABLE OutputStream(
 	Acronym NVARCHAR(50) NOT NULL,
 	Name NVARCHAR(100) NULL,
 	Type INT NOT NULL DEFAULT 0,
-	ConnectionString TEXT NULL,
+	ConnectionString LONGTEXT NULL,
 	IDCode INT NOT NULL DEFAULT 0,
-	CommandChannel TEXT NULL,
+	CommandChannel LONGTEXT NULL,
 	AutoPublishConfigFrame BIT NOT NULL DEFAULT 0,
 	AutoStartDataChannel BIT NOT NULL DEFAULT 1,
 	NominalFrequency INT NOT NULL DEFAULT 60,
@@ -314,7 +314,7 @@ CREATE TABLE CustomOutputAdapter(
 	AdapterName NVARCHAR(50) NOT NULL,
 	AssemblyName TEXT NOT NULL,
 	TypeName TEXT NOT NULL,
-	ConnectionString TEXT NULL,
+	ConnectionString LONGTEXT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled BIT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_CustomOutputAdapter PRIMARY KEY (ID ASC)
@@ -396,33 +396,33 @@ SELECT OutputStreamMeasurement.NodeID, Runtime.ID AS AdapterID, Historian.Acrony
  OutputStreamMeasurement.PointID, OutputStreamMeasurement.SignalReference
 FROM OutputStreamMeasurement LEFT OUTER JOIN
  Historian ON OutputStreamMeasurement.HistorianID = Historian.ID LEFT OUTER JOIN
- Runtime ON OutputStreamMeasurement.AdapterID = Runtime.SourceID AND Runtime.SourceTable = 'OutputStream'
+ Runtime ON OutputStreamMeasurement.AdapterID = Runtime.SourceID AND Runtime.SourceTable = N'OutputStream'
 ORDER BY OutputStreamMeasurement.HistorianID, OutputStreamMeasurement.PointID;
 
 CREATE VIEW RuntimeHistorian
 AS
 SELECT Historian.NodeID, Runtime.ID, Historian.Acronym AS AdapterName,
- COALESCE(Historian.AssemblyName, 'HistorianAdapters.dll') AS AssemblyName, 
- COALESCE(Historian.TypeName, IF(IsLocal = 1, 'HistorianAdapters.LocalOutputAdapter', 'HistorianAdapters.RemoteOutputAdapter')) AS TypeName, 
- IF(Historian.ConnectionString IS NULL, '', Historian.ConnectionString + '; ') + 'instanceName=' + Historian.Acronym + '; sourceIDs=' + Historian.Acronym AS ConnectionString
+ COALESCE(Historian.AssemblyName, N'HistorianAdapters.dll') AS AssemblyName, 
+ COALESCE(Historian.TypeName, IF(IsLocal = 1, N'HistorianAdapters.LocalOutputAdapter', N'HistorianAdapters.RemoteOutputAdapter')) AS TypeName, 
+ CONCAT_WS(';', Historian.ConnectionString, CONCAT(N'instanceName=', Historian.Acronym), CONCAT(N'sourceIDs=', Historian.Acronym)) AS ConnectionString
 FROM Historian LEFT OUTER JOIN
- Runtime ON Historian.ID = Runtime.SourceID AND Runtime.SourceTable = 'Historian'
+ Runtime ON Historian.ID = Runtime.SourceID AND Runtime.SourceTable = N'Historian'
 WHERE (Historian.Enabled <> 0)
 ORDER BY Historian.LoadOrder;
 
 CREATE VIEW RuntimeDevice
 AS
-SELECT Device.NodeID, Runtime.ID, Device.Acronym AS AdapterName, 'TVA.PhasorProtocols.dll' AS AssemblyName, 
- 'TVA.PhasorProtocols.PhasorMeasurementMapper' AS TypeName,
- Device.ConnectionString + '; isConcentrator=' + CONVERT(Device.IsConcentrator, CHAR(10))
- + '; accessID=' + CONVERT(Device.AccessID, CHAR(10))
- + IF(Device.TimeZone IS NULL,'', '; timeZone=' + Device.TimeZone)
- + '; timeAdjustmentTicks=' + CONVERT(Device.TimeAdjustmentTicks, CHAR(10))
- + IF(Protocol.Acronym IS NULL, '', '; phasorProtocol=' + Protocol.Acronym)
- + '; dataLossInterval=' + CONVERT(Device.DataLossInterval, CHAR(10)) AS ConnectionString
+SELECT Device.NodeID, Runtime.ID, Device.Acronym AS AdapterName, N'TVA.PhasorProtocols.dll' AS AssemblyName, 
+ N'TVA.PhasorProtocols.PhasorMeasurementMapper' AS TypeName,
+ CONCAT_WS(';', Device.ConnectionString, CONCAT(N'isConcentrator=', Device.IsConcentrator),
+ CONCAT(N'accessID=', Device.AccessID),
+ IF(Device.TimeZone IS NULL,'', CONCAT(N'timeZone=', Device.TimeZone)),
+ CONCAT(N'timeAdjustmentTicks=', Device.TimeAdjustmentTicks),
+ IF(Protocol.Acronym IS NULL, N'', CONCAT(N'phasorProtocol=', Protocol.Acronym)),
+ CONCAT(N'dataLossInterval=', Device.DataLossInterval)) AS ConnectionString
 FROM Device LEFT OUTER JOIN
  Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
- Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = 'Device'
+ Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device'
 WHERE (Device.Enabled <> 0)
 ORDER BY Device.LoadOrder;
 
@@ -431,7 +431,7 @@ AS
 SELECT CustomOutputAdapter.NodeID, Runtime.ID, CustomOutputAdapter.AdapterName, 
  CustomOutputAdapter.AssemblyName, CustomOutputAdapter.TypeName, CustomOutputAdapter.ConnectionString
 FROM CustomOutputAdapter LEFT OUTER JOIN
- Runtime ON CustomOutputAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = 'CustomOutputAdapter'
+ Runtime ON CustomOutputAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = N'CustomOutputAdapter'
 WHERE (CustomOutputAdapter.Enabled <> 0)
 ORDER BY CustomOutputAdapter.LoadOrder;
 
@@ -439,8 +439,8 @@ CREATE VIEW RuntimeInputStreamDevice
 AS
 SELECT Device.NodeID, Runtime_P.ID AS ParentID, Runtime.ID, Device.Acronym, Device.AccessID
 FROM Device LEFT OUTER JOIN
- Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = 'Device' LEFT OUTER JOIN
- Runtime AS Runtime_P ON Device.ParentID = Runtime_P.SourceID AND Runtime_P.SourceTable = 'Device'
+ Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device' LEFT OUTER JOIN
+ Runtime AS Runtime_P ON Device.ParentID = Runtime_P.SourceID AND Runtime_P.SourceTable = N'Device'
 WHERE (Device.IsConcentrator = 0) AND (Device.Enabled <> 0) AND (Device.ParentID IS NOT NULL)
 ORDER BY Device.LoadOrder;
 
@@ -449,7 +449,7 @@ AS
 SELECT CustomInputAdapter.NodeID, Runtime.ID, CustomInputAdapter.AdapterName, 
  CustomInputAdapter.AssemblyName, CustomInputAdapter.TypeName, CustomInputAdapter.ConnectionString
 FROM CustomInputAdapter LEFT OUTER JOIN
- Runtime ON CustomInputAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = 'CustomInputAdapter'
+ Runtime ON CustomInputAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = N'CustomInputAdapter'
 WHERE (CustomInputAdapter.Enabled <> 0)
 ORDER BY CustomInputAdapter.LoadOrder;
 
@@ -458,21 +458,21 @@ AS
 SELECT OutputStreamDevice.NodeID, Runtime.ID AS ParentID, OutputStreamDevice.ID, OutputStreamDevice.Acronym, 
  OutputStreamDevice.BpaAcronym, OutputStreamDevice.Name, OutputStreamDevice.LoadOrder
 FROM OutputStreamDevice LEFT OUTER JOIN
- Runtime ON OutputStreamDevice.AdapterID = Runtime.SourceID AND Runtime.SourceTable = 'OutputStream'
+ Runtime ON OutputStreamDevice.AdapterID = Runtime.SourceID AND Runtime.SourceTable = N'OutputStream'
 WHERE (OutputStreamDevice.Enabled <> 0)
 ORDER BY OutputStreamDevice.LoadOrder;
 
 CREATE VIEW RuntimeOutputStream
 AS
 SELECT OutputStream.NodeID, Runtime.ID, OutputStream.Acronym AS AdapterName, 
- 'TVA.PhasorProtocols.dll' AS AssemblyName, 
- IF(Type = 1, 'TVA.PhasorProtocols.BpaPdcStream.Concentrator', 'TVA.PhasorProtocols.IeeeC37_118.Concentrator') AS TypeName,
- OutputStream.ConnectionString + '; framesPerSecond=' + CONVERT(OutputStream.FramesPerSecond, CHAR(10)) 
- + '; lagTime=' + CONVERT(OutputStream.LagTime, CHAR(10)) + '; leadTime=' + CONVERT(OutputStream.LeadTime, CHAR(10)) 
- + '; useLocalClockAsRealTime=' + CONVERT(OutputStream.UseLocalClockAsRealTime, CHAR(10)) 
- + '; allowSortsByArrival=' + CONVERT(OutputStream.AllowSortsByArrival, CHAR(10)) AS ConnectionString
+ N'TVA.PhasorProtocols.dll' AS AssemblyName, 
+ IF(Type = 1, N'TVA.PhasorProtocols.BpaPdcStream.Concentrator', N'TVA.PhasorProtocols.IeeeC37_118.Concentrator') AS TypeName,
+ CONCAT_WS(';', OutputStream.ConnectionString, CONCAT(N'framesPerSecond=', OutputStream.FramesPerSecond),
+ CONCAT(N'lagTime=', OutputStream.LagTime), CONCAT(N'leadTime=', OutputStream.LeadTime),
+ CONCAT(N'useLocalClockAsRealTime=', OutputStream.UseLocalClockAsRealTime), 
+ CONCAT(N'allowSortsByArrival=', OutputStream.AllowSortsByArrival)) AS ConnectionString
 FROM OutputStream LEFT OUTER JOIN
- Runtime ON OutputStream.ID = Runtime.SourceID AND Runtime.SourceTable = 'OutputStream'
+ Runtime ON OutputStream.ID = Runtime.SourceID AND Runtime.SourceTable = N'OutputStream'
 WHERE (OutputStream.Enabled <> 0)
 ORDER BY OutputStream.LoadOrder;
 
@@ -481,7 +481,7 @@ AS
 SELECT CustomActionAdapter.NodeID, Runtime.ID, CustomActionAdapter.AdapterName, 
  CustomActionAdapter.AssemblyName, CustomActionAdapter.TypeName, CustomActionAdapter.ConnectionString
 FROM CustomActionAdapter LEFT OUTER JOIN
- Runtime ON CustomActionAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = 'CustomActionAdapter'
+ Runtime ON CustomActionAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = N'CustomActionAdapter'
 WHERE (CustomActionAdapter.Enabled <> 0)
 ORDER BY CustomActionAdapter.LoadOrder;
 
@@ -495,7 +495,7 @@ SELECT Device.CompanyID, Company.Acronym AS CompanyAcronym, Company.Name AS Comp
  Protocol.Acronym AS ProtocolAcronym, Protocol.Name AS ProtocolName, Measurement.SignalTypeID, 
  Measurement.PhasorSourceIndex, Phasor.Label AS PhasorLabel, Phasor.Type AS PhasorType, Phasor.Phase, 
  Measurement.SignalReference, Measurement.Adder, Measurement.Multiplier, Measurement.Description, Measurement.Enabled, 
- COALESCE(SignalType.EngineeringUnits, '') AS EngineeringUnits, SignalType.Source, SignalType.Acronym AS SignalAcronym, 
+ COALESCE(SignalType.EngineeringUnits, N'') AS EngineeringUnits, SignalType.Source, SignalType.Acronym AS SignalAcronym, 
  SignalType.Name AS SignalName, SignalType.Suffix AS SignalTypeSuffix, Device.Longitude, Device.Latitude
 FROM Company RIGHT OUTER JOIN
  Device ON Company.ID = Device.CompanyID RIGHT OUTER JOIN
@@ -511,21 +511,21 @@ CREATE VIEW RuntimeCalculatedMeasurement
 AS
 SELECT CalculatedMeasurement.NodeID, Runtime.ID, CalculatedMeasurement.Acronym AS AdapterName, 
  CalculatedMeasurement.AssemblyName, CalculatedMeasurement.TypeName,
- IF(ConfigSection IS NULL, '', 'configurationSection=' + ConfigSection + '; ')
- + 'minimumMeasurementsToUse=' + CONVERT(CalculatedMeasurement.MinimumMeasurementsToUse, CHAR(10))
- + '; framesPerSecond=' + CONVERT(CalculatedMeasurement.FramesPerSecond, CHAR(10))
- + '; lagTime=' + CONVERT(CalculatedMeasurement.LagTime, CHAR(10)) 
- + '; leadTime=' + CONVERT(CalculatedMeasurement.LeadTime, CHAR(10))
- + IF(InputMeasurements IS NULL, '', '; inputMeasurementKeys={' + InputMeasurements + '}')
- + IF(OutputMeasurements IS NULL, '', '; outputMeasurements={' + OutputMeasurements + '}') AS ConnectionString
+ CONCAT_WS(';', IF(ConfigSection IS NULL, N'', CONCAT(N'configurationSection=', ConfigSection)),
+ CONCAT(N'minimumMeasurementsToUse=', CalculatedMeasurement.MinimumMeasurementsToUse),
+ CONCAT(N'framesPerSecond=', CalculatedMeasurement.FramesPerSecond),
+ CONCAT(N'lagTime=', CalculatedMeasurement.LagTime),
+ CONCAT(N'leadTime=', CalculatedMeasurement.LeadTime),
+ IF(InputMeasurements IS NULL, N'', CONCAT(N'inputMeasurementKeys={', InputMeasurements, N'}')),
+ IF(OutputMeasurements IS NULL, N'', CONCAT(N'outputMeasurements={', OutputMeasurements, N'}'))) AS ConnectionString
 FROM CalculatedMeasurement LEFT OUTER JOIN
- Runtime ON CalculatedMeasurement.ID = Runtime.SourceID AND Runtime.SourceTable = 'CalculatedMeasurement'
+ Runtime ON CalculatedMeasurement.ID = Runtime.SourceID AND Runtime.SourceTable = N'CalculatedMeasurement'
 WHERE (CalculatedMeasurement.Enabled <> 0)
 ORDER BY CalculatedMeasurement.LoadOrder;
 
 CREATE VIEW ActiveMeasurement
 AS
-SELECT Device.NodeID, Historian.Acronym + ':' + Measurement.PointID AS ID, Measurement.SignalID, Measurement.PointTag, 
+SELECT Device.NodeID, CONCAT_WS(':', Historian.Acronym, Measurement.PointID) AS ID, Measurement.SignalID, Measurement.PointTag, 
 	Measurement.AlternateTag, Measurement.SignalReference, Device.Acronym AS Device, Runtime.ID AS DeviceID, Protocol.Acronym AS Protocol,
 	SignalType.Acronym AS SignalType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier, Company.Acronym AS Company, 
 	Device.Longitude, Device.Latitude, Measurement.Description
@@ -537,7 +537,7 @@ FROM Company RIGHT OUTER JOIN
 	Measurement.PhasorSourceIndex = Phasor.SourceIndex LEFT OUTER JOIN
 	Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
 	Historian ON Measurement.HistorianID = Historian.ID LEFT OUTER JOIN
-	Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = 'Device'
+	Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device'
 WHERE (Device.Enabled <> 0);
 
 CREATE VIEW IaonOutputAdapter
@@ -567,168 +567,64 @@ UNION
 SELECT NodeID, ID, AdapterName, AssemblyName, TypeName, ConnectionString
 FROM RuntimeCustomActionAdapter;
 
+CREATE VIEW HistorianMetadata
+AS
+SELECT PointID AS HistorianID, IF(SignalAcronym = N'DIGI', 1, 0) AS DataType, PointTag AS Name, SignalReference AS Synonym1, 
+SignalAcronym AS Synonym2, AlternateTag AS Synonym3, Description, VendorDeviceDescription AS HardwareInfo, N'' AS Remarks, 
+HistorianAcronym AS PlantCode, 1 AS UnitNumber, DeviceAcronym AS SystemName, ProtocolID AS SourceID, Enabled, 0.0333333 AS ScanRate, 
+0 AS CompressionMinTime, 0 AS CompressionMaxTime, EngineeringUnits,
+CASE SignalAcronym WHEN N'FREQ' THEN 59.95 WHEN N'VPHM' THEN 475000 WHEN N'IPHM' THEN 0 WHEN N'VPHA' THEN -181 WHEN N'IPHA' THEN -181 ELSE 0 END AS LowWarning,
+CASE SignalAcronym WHEN N'FREQ' THEN 60.05 WHEN N'VPHM' THEN 525000 WHEN N'IPHM' THEN 3150 WHEN N'VPHA' THEN 181 WHEN N'IPHA' THEN 181 ELSE 0 END AS HighWarning,
+CASE SignalAcronym WHEN N'FREQ' THEN 59.90 WHEN N'VPHM' THEN 450000 WHEN N'IPHM' THEN 0 WHEN N'VPHA' THEN -181 WHEN N'IPHA' THEN -181 ELSE 0 END AS LowAlarm,
+CASE SignalAcronym WHEN N'FREQ' THEN 60.10 WHEN N'VPHM' THEN 550000 WHEN N'IPHM' THEN 3300 WHEN N'VPHA' THEN 181 WHEN N'IPHA' THEN 181 ELSE 0 END AS HighAlarm,
+CASE SignalAcronym WHEN N'FREQ' THEN 59.95 WHEN N'VPHM' THEN 475000 WHEN N'IPHM' THEN 0 WHEN N'VPHA' THEN -180 WHEN N'IPHA' THEN -180 ELSE 0 END AS LowRange,
+CASE SignalAcronym WHEN N'FREQ' THEN 60.05 WHEN N'VPHM' THEN 525000 WHEN N'IPHM' THEN 3000 WHEN N'VPHA' THEN 180 WHEN N'IPHA' THEN 180 ELSE 0 END AS HighRange,
+0.0 AS CompressionLimit, 0.0 AS ExceptionLimit, CASE SignalAcronym WHEN N'DIGI' THEN 0 ELSE 7 END AS DisplayDigits, N'' AS SetDescription,
+'' AS ClearDescription, 0 AS AlarmState, 5 AS ChangeSecurity, 0 AS AccessSecurity, 0 AS StepCheck, 0 AS AlarmEnabled, 0 AS AlarmFlags, 0 AS AlarmDelay,
+0 AS AlarmToFile, 0 AS AlarmByEmail, 0 AS AlarmByPager, 0 AS AlarmByPhone, ContactList AS AlarmEmails, N'' AS AlarmPagers, N'' AS AlarmPhones
+FROM MeasurementDetail;
+
 CREATE TRIGGER CustomActionAdapter_RuntimeSync_Insert AFTER INSERT ON CustomActionAdapter
-FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, 'CustomActionAdapter');
+FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, N'CustomActionAdapter');
 
 CREATE TRIGGER CustomActionAdapter_RuntimeSync_Delete BEFORE DELETE ON CustomActionAdapter
-FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = 'CustomActionAdapter';
+FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = N'CustomActionAdapter';
 
 CREATE TRIGGER CustomInputAdapter_RuntimeSync_Insert AFTER INSERT ON CustomInputAdapter
-FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, 'CustomInputAdapter');
+FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, N'CustomInputAdapter');
 
 CREATE TRIGGER CustomInputAdapter_RuntimeSync_Delete BEFORE DELETE ON CustomInputAdapter
-FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = 'CustomInputAdapter';
+FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = N'CustomInputAdapter';
 
 CREATE TRIGGER CustomOutputAdapter_RuntimeSync_Insert AFTER INSERT ON CustomOutputAdapter
-FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, 'CustomOutputAdapter');
+FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, N'CustomOutputAdapter');
 
 CREATE TRIGGER CustomOutputAdapter_RuntimeSync_Delete BEFORE DELETE ON CustomOutputAdapter
-FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = 'CustomOutputAdapter';
+FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = N'CustomOutputAdapter';
 
 CREATE TRIGGER Device_RuntimeSync_Insert AFTER INSERT ON Device
-FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, 'Device');
+FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, N'Device');
 
 CREATE TRIGGER Device_RuntimeSync_Delete BEFORE DELETE ON Device
-FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = 'Device';
+FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = N'Device';
 
 CREATE TRIGGER CalculatedMeasurement_RuntimeSync_Insert AFTER INSERT ON CalculatedMeasurement
-FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, 'CalculatedMeasurement');
+FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, N'CalculatedMeasurement');
 
 CREATE TRIGGER CalculatedMeasurement_RuntimeSync_Delete BEFORE DELETE ON CalculatedMeasurement
-FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = 'CalculatedMeasurement';
+FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = N'CalculatedMeasurement';
 
 CREATE TRIGGER OutputStream_RuntimeSync_Insert AFTER INSERT ON OutputStream
-FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, 'OutputStream');
+FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, N'OutputStream');
 
 CREATE TRIGGER OutputStream_RuntimeSync_Delete BEFORE DELETE ON OutputStream
-FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = 'OutputStream';
+FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = N'OutputStream';
 
 CREATE TRIGGER Historian_RuntimeSync_Insert AFTER INSERT ON Historian
-FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, 'Historian');
+FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, N'Historian');
 
 CREATE TRIGGER Historian_RuntimeSync_Delete BEFORE DELETE ON Historian
-FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = 'Historian';
-
--- =============================================
--- Author:    Pinal C. Patel
--- Create date: 07/23/09
--- Description:  
--- =============================================
-DELIMITER $$
-CREATE PROCEDURE GetHistorianMetadata(plantCode VARCHAR(24))
-BEGIN
-	-- Fill the table variable with the rows for your result set
-	DECLARE warningThreshold FLOAT;
-	DECLARE alarmThreshold FLOAT;
-	DECLARE voltage FLOAT;
-	DECLARE amps FLOAT;
-
-	CREATE TEMPORARY TABLE historianMetadata
-	(
-		HistorianID INT, 
-		DataType INT,
-		Name VARCHAR(40),
-		Synonym1 VARCHAR(40),
-		Synonym2 VARCHAR(40),
-		Synonym3 VARCHAR(40),
-		Description VARCHAR(80),
-		HardwareInfo VARCHAR(512),
-		Remarks VARCHAR(512),
-		PlantCode VARCHAR(24),
-		UnitNumber INT,
-		SystemName VARCHAR(24),
-		SourceID INT,
-		Enabled INT,
-		ScanRate FLOAT,
-		CompressionMinTime INT,
-		CompressionMaxTime INT,
-		EngineeringUnits VARCHAR(24),
-		LowWarning FLOAT,
-		HighWarning FLOAT,
-		LowAlarm FLOAT,
-		HighAlarm FLOAT,
-		LowRange FLOAT,
-		HighRange FLOAT,
-		CompressionLimit FLOAT,
-		ExceptionLimit FLOAT,
-		DisplayDigits INT,
-		SetDescription VARCHAR(24),
-		ClearDescription VARCHAR(24),
-		AlarmState INT,
-		ChangeSecurity INT,
-		AccessSecurity INT,
-		StepCheck INT,
-		AlarmEnabled INT,
-		AlarmFlags INT,
-		AlarmDelay FLOAT,
-		AlarmToFile INT,
-		AlarmByEmail INT,
-		AlarmByPager INT,
-		AlarmByPhone INT,
-		AlarmEmails VARCHAR(512),
-		AlarmPagers VARCHAR(40),
-		AlarmPhones VARCHAR(40)
-	)
-	TABLESPACE MEMORY;
-	
-	SET warningThreshold = 5.0 / 100.0;
-	SET alarmThreshold = 10.0 / 100.0;
-	SET voltage = 500000;
-	SET amps = 3000;
-
-	INSERT INTO historianMetadata
-	SELECT 
-		HistorianID       = PointID,
-		DataType        = IF(SignalAcronym = 'DIGI', 1, 0),
-		Name          = PointTag,
-		Synonym1        = SignalReference,
-		Synonym2        = SignalAcronym,
-		Synonym3        = AlternateTag,
-		Description       = Description,
-		HardwareInfo      = VendorDeviceDescription,
-		Remarks         = '',
-		PlantCode        = HistorianAcronym,
-		UnitNumber       = 1,
-		SystemName       = DeviceAcronym,
-		SourceID        = ProtocolID,
-		Enabled         = Enabled,
-		ScanRate        = 1.0 / 30.0,
-		CompressionMinTime   = 0,
-		CompressionMaxTime   = 0,
-		EngineeringUnits    = EngineeringUnits,
-		LowWarning       = CASE SignalAcronym WHEN 'FREQ' THEN 59.95 WHEN 'VPHM' THEN voltage - voltage * warningThreshold WHEN 'IPHM' THEN 0 WHEN 'VPHA' THEN -181 WHEN 'IPHA' THEN -181 ELSE 0 END,
-		HighWarning       = CASE SignalAcronym WHEN 'FREQ' THEN 60.05 WHEN 'VPHM' THEN voltage + voltage * warningThreshold WHEN 'IPHM' THEN amps + amps * warningThreshold WHEN 'VPHA' THEN 181 WHEN 'IPHA' THEN 181 ELSE 0 END,
-		LowAlarm        = CASE SignalAcronym WHEN 'FREQ' THEN 59.90 WHEN 'VPHM' THEN voltage - voltage * alarmThreshold WHEN 'IPHM' THEN 0 WHEN 'VPHA' THEN -181 WHEN 'IPHA' THEN -181 ELSE 0 END,
-		HighAlarm        = CASE SignalAcronym WHEN 'FREQ' THEN 60.10 WHEN 'VPHM' THEN voltage + voltage * alarmThreshold WHEN 'IPHM' THEN amps + amps * alarmThreshold WHEN 'VPHA' THEN 181 WHEN 'IPHA' THEN 181 ELSE 0 END,
-		LowRange        = CASE SignalAcronym WHEN 'FREQ' THEN 59.95 WHEN 'VPHM' THEN voltage - voltage * warningThreshold WHEN 'IPHM' THEN 0 WHEN 'VPHA' THEN -180 WHEN 'IPHA' THEN -180 ELSE 0 END,
-		HighRange        = CASE SignalAcronym WHEN 'FREQ' THEN 60.05 WHEN 'VPHM' THEN voltage + voltage * warningThreshold WHEN 'IPHM' THEN amps WHEN 'VPHA' THEN 180 WHEN 'IPHA' THEN 180 ELSE 0 END,
-		CompressionLimit    = 0.0,
-		ExceptionLimit     = 0.0,
-		DisplayDigits      = CASE SignalAcronym WHEN 'DIGI' THEN 0 ELSE 7 END,
-		SetDescription     = '',
-		ClearDescription    = '',
-		AlarmState       = 0,
-		ChangeSecurity     = 5,
-		AccessSecurity     = 0,
-		StepCheck        = 0,
-		AlarmEnabled      = 0,
-		AlarmFlags       = 0,
-		AlarmDelay       = 0,
-		AlarmToFile       = 0,
-		AlarmByEmail      = 0,
-		AlarmByPager      = 0,
-		AlarmByPhone      = 0,
-		AlarmEmails       = ContactList,
-		AlarmPagers       = '',
-		AlarmPhones       = ''
-	FROM MeasurementDetail
-	WHERE HistorianAcronym LIKE plantCode
-	ORDER BY HistorianID;
-
-	SELECT * FROM historianMetadata;
-	DROP TABLE historianMetadata;
-END$$
-DELIMITER ;
+FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = N'Historian';
 
 /*
 CREATE FUNCTION StringToGuid(str CHAR(36)) RETURNS BINARY(16)
