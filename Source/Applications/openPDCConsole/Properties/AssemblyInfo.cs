@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("openPDC Console Monitor")]
 [assembly: AssemblyCompany("TVA")]
 [assembly: AssemblyProduct("Synchrophasor Projects")]
-[assembly: AssemblyCopyright("Copyright © TVA 2009")]
+[assembly: AssemblyCopyright("No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.")]
 [assembly: AssemblyTrademark("Author: J. Ritchie Carroll, Gbtc")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug Build")]
