@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Standard Phasor Protocol Implementations")]
 [assembly: AssemblyCompany("TVA")]
 [assembly: AssemblyProduct("Synchrophasor Projects")]
-[assembly: AssemblyCopyright("Copyright © 2009, TVA")]
+[assembly: AssemblyCopyright("No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.")]
 [assembly: AssemblyTrademark("Author: James R. Carroll, Gbtc")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug Build")]
