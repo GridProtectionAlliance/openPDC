@@ -37,7 +37,7 @@
 //       Added support for SEL Fast Message protocol.
 //  08/07/2009 - Josh L. Patterson
 //       Edited Comments.
-//  9/15/2009 - Stephen C. Wills
+//  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
 //
 //*******************************************************************************************************

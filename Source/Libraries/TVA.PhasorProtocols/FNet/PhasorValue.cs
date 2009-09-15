@@ -10,7 +10,7 @@
 //  -----------------------------------------------------------------------------------------------------
 //  02/08/2007 - J. Ritchie Carroll & Jian Ryan Zuo
 //       Generated original version of source code.
-//  9/15/2009 - Stephen C. Wills
+//  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
 //
 //*******************************************************************************************************
