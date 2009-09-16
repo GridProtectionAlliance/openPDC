@@ -232,22 +232,23 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace openPDCManager.Web.Data.Entities
 {
     public class Historian
     {
+		public Guid NodeID { get; set; }
         public int ID { get; set; }
         public string Acronym { get; set; }
         public string Name { get; set; }
-        public string ConnectionString { get; set; }
+		public string AssemblyName { get; set; }
+		public string TypeName { get; set; }
+		public string ConnectionString { get; set; }
+		public bool IsLocal { get; set; }
         public string Description { get; set; }
+		public int LoadOrder { get; set; }
         public bool Enabled { get; set; }
-        public string TypeName { get; set; }
-        public string AssemblyName { get; set; }
-        public string HistorianLongName { get; set; }
+		public string NodeName { get; set; }
+        //public string HistorianLongName { get; set; }
     }
 }

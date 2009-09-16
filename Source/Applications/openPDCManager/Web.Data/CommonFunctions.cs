@@ -247,363 +247,609 @@ namespace openPDCManager.Web.Data
 	/// </summary>
     public class CommonFunctions
     {    
-		public static Dictionary<string, int> GetVendorDeviceDistribution()
-        {
-            Dictionary<string, int> deviceDistribution = new Dictionary<string,int>();
-            string queryString = "SELECT dbo.Vendor.Name AS VendorName, COUNT(*) AS PmuCount FROM dbo.Pmu " +
-                    "LEFT OUTER JOIN dbo.VendorDevice ON dbo.Pmu.VendorDeviceID = dbo.VendorDevice.ID " +
-                    "INNER JOIN dbo.Vendor ON dbo.VendorDevice.VendorID = dbo.Vendor.ID WHERE (dbo.Pmu.Validated = '1') " +
-                    "GROUP BY dbo.Vendor.Name Order By VendorName";
-            SqlCommand command = new SqlCommand(queryString);
-            DataAccess obj = new DataAccess();
-            DataTable resultTable = new DataTable();
-            resultTable = obj.GetDataTable(command, true);
-            foreach (DataRow row in resultTable.Rows)
-            {
-                deviceDistribution.Add(row["VendorName"].ToString(), Convert.ToInt32(row["PmuCount"]));
-            }
-            return deviceDistribution;           
-        }
-        public static List<Pdc> GetPdcList()
-        {
-            List<Pdc> pdcList = new List<Pdc>();
+		#region " Old Code"
+		//public static Dictionary<string, int> GetVendorDeviceDistribution()
+		//{
+		//    Dictionary<string, int> deviceDistribution = new Dictionary<string,int>();
+		//    string queryString = "SELECT dbo.Vendor.Name AS VendorName, COUNT(*) AS PmuCount FROM dbo.Pmu " +
+		//            "LEFT OUTER JOIN dbo.VendorDevice ON dbo.Pmu.VendorDeviceID = dbo.VendorDevice.ID " +
+		//            "INNER JOIN dbo.Vendor ON dbo.VendorDevice.VendorID = dbo.Vendor.ID WHERE (dbo.Pmu.Validated = '1') " +
+		//            "GROUP BY dbo.Vendor.Name Order By VendorName";
+		//    SqlCommand command = new SqlCommand(queryString);
+		//    DataAccess obj = new DataAccess();
+		//    DataTable resultTable = new DataTable();
+		//    resultTable = obj.GetDataTable(command, true);
+		//    foreach (DataRow row in resultTable.Rows)
+		//    {
+		//        deviceDistribution.Add(row["VendorName"].ToString(), Convert.ToInt32(row["PmuCount"]));
+		//    }
+		//    return deviceDistribution;           
+		//}
+		//public static List<Pdc> GetPdcList()
+		//{
+		//    List<Pdc> pdcList = new List<Pdc>();
 
-            SqlCommand command = new SqlCommand("Select * From PdcDetail");
-            DataAccess obj = new DataAccess();
-            DataTable resultTable = new DataTable();
-            resultTable = obj.GetDataTable(command, true);
+		//    SqlCommand command = new SqlCommand("Select * From PdcDetail");
+		//    DataAccess obj = new DataAccess();
+		//    DataTable resultTable = new DataTable();
+		//    resultTable = obj.GetDataTable(command, true);
 
-            pdcList = (from item in resultTable.AsEnumerable()
-                       orderby item.Field<string>("Acronym")
-                      select new Pdc() { 
-                          ID = item.Field<int>("ID"),
-                          Acronym = item.Field<string>("Acronym"),
-                          Name = item.Field<string>("Name"),
-                          CompanyID = item.Field<int>("CompanyID"),
-                          CompanyAcronym = item.Field<string>("CompanyAcronym"),
-                          CompanyName = item.Field<string>("CompanyName"),
-                          AccessID = item.Field<int>("AccessID"),
-                          VendorDeviceID = item.Field<int>("VendorDeviceID"),
-                          VendorDeviceName = item.Field<string>("VendorDeviceName"),
-                          VendorDeviceDescription = item.Field<string>("VendorDeviceDescription"),
-                          ProtocolID = item.Field<int>("ProtocolID"),
-                          ProtocolAcronym = item.Field<string>("ProtocolAcronym"),
-                          ProtocolName = item.Field<string>("ProtocolName"),
-                          Longitude = item.Field<decimal>("Longitude"),
-                          Latitude = item.Field<decimal>("Latitude"),
-                          ConnectionString = item.Field<string>("ConnectionString"),
-                          AdditionalConnectionInfo = item.Field<string>("AdditionalConnectionInfo"),
-                          TimeZone = item.Field<string>("TimeZone"),
-                          TimeOffsetTicks = item.Field<string>("TimeOffsetTicks"),
-                          FramesPerSecond = item.Field<int>("FramesPerSecond"),
-                          EmailList = item.Field<string>("EmailList"),
-                          Enabled = item.Field<bool>("Enabled")
-                      }).ToList();
-            return pdcList;
-        }
-        public static List<BasicPmuInfo> GetValidatedPmuList()
-        {
-            List<BasicPmuInfo> pmuList = new List<BasicPmuInfo>();
-            SqlCommand command = new SqlCommand("Select ID, Acronym, Name, CompanyName, CompanyAcronym, Longitude, Latitude, VendorName, ProtocolName, Reporting, Active From MapDataActiveState Where Validated = '1'");
-            DataAccess obj = new DataAccess();
-            DataTable resultTable = new DataTable();
-            resultTable = obj.GetDataTable(command, true);
-            pmuList = (from item in resultTable.AsEnumerable()
-                       orderby item.Field<string>("Acronym")
-                       select new BasicPmuInfo()
-                       {
-                          ID = item.Field<int>("ID"),
-                          Acronym = item.Field<string>("Acronym"),
-                          Name = item.Field<string>("Name"),
-                          CompanyName = item.Field<string>("CompanyName"), 
-                          CompanyAcronym = item.Field<string>("CompanyAcronym"),
-                          Longitude = item.Field<decimal>("Longitude"),
-                          Latitude = item.Field<decimal>("Latitude"),
-                          DeviceName = item.Field<string>("VendorName"),
-                          ProtocolName = item.Field<string>("ProtocolName"),
-                          Reporting = item.Field<bool>("Reporting"),
-                          Active = item.Field<bool>("Active")
-                      }).ToList();
-            return pmuList;
-        }
-		public static List<BasicPmuInfo> GetAllPmuList()
+		//    pdcList = (from item in resultTable.AsEnumerable()
+		//               orderby item.Field<string>("Acronym")
+		//              select new Pdc() { 
+		//                  ID = item.Field<int>("ID"),
+		//                  Acronym = item.Field<string>("Acronym"),
+		//                  Name = item.Field<string>("Name"),
+		//                  CompanyID = item.Field<int>("CompanyID"),
+		//                  CompanyAcronym = item.Field<string>("CompanyAcronym"),
+		//                  CompanyName = item.Field<string>("CompanyName"),
+		//                  AccessID = item.Field<int>("AccessID"),
+		//                  VendorDeviceID = item.Field<int>("VendorDeviceID"),
+		//                  VendorDeviceName = item.Field<string>("VendorDeviceName"),
+		//                  VendorDeviceDescription = item.Field<string>("VendorDeviceDescription"),
+		//                  ProtocolID = item.Field<int>("ProtocolID"),
+		//                  ProtocolAcronym = item.Field<string>("ProtocolAcronym"),
+		//                  ProtocolName = item.Field<string>("ProtocolName"),
+		//                  Longitude = item.Field<decimal>("Longitude"),
+		//                  Latitude = item.Field<decimal>("Latitude"),
+		//                  ConnectionString = item.Field<string>("ConnectionString"),
+		//                  AdditionalConnectionInfo = item.Field<string>("AdditionalConnectionInfo"),
+		//                  TimeZone = item.Field<string>("TimeZone"),
+		//                  TimeOffsetTicks = item.Field<string>("TimeOffsetTicks"),
+		//                  FramesPerSecond = item.Field<int>("FramesPerSecond"),
+		//                  EmailList = item.Field<string>("EmailList"),
+		//                  Enabled = item.Field<bool>("Enabled")
+		//              }).ToList();
+		//    return pdcList;
+		//}
+		//public static List<BasicPmuInfo> GetValidatedPmuList()
+		//{
+		//    List<BasicPmuInfo> pmuList = new List<BasicPmuInfo>();
+		//    SqlCommand command = new SqlCommand("Select ID, Acronym, Name, CompanyName, CompanyAcronym, Longitude, Latitude, VendorName, ProtocolName, Reporting, Active From MapDataActiveState Where Validated = '1'");
+		//    DataAccess obj = new DataAccess();
+		//    DataTable resultTable = new DataTable();
+		//    resultTable = obj.GetDataTable(command, true);
+		//    pmuList = (from item in resultTable.AsEnumerable()
+		//               orderby item.Field<string>("Acronym")
+		//               select new BasicPmuInfo()
+		//               {
+		//                  ID = item.Field<int>("ID"),
+		//                  Acronym = item.Field<string>("Acronym"),
+		//                  Name = item.Field<string>("Name"),
+		//                  CompanyName = item.Field<string>("CompanyName"), 
+		//                  CompanyAcronym = item.Field<string>("CompanyAcronym"),
+		//                  Longitude = item.Field<decimal>("Longitude"),
+		//                  Latitude = item.Field<decimal>("Latitude"),
+		//                  DeviceName = item.Field<string>("VendorName"),
+		//                  ProtocolName = item.Field<string>("ProtocolName"),
+		//                  Reporting = item.Field<bool>("Reporting"),
+		//                  Active = item.Field<bool>("Active")
+		//              }).ToList();
+		//    return pmuList;
+		//}
+		//public static List<BasicPmuInfo> GetAllPmuList()
+		//{
+		//    List<BasicPmuInfo> pmuList = new List<BasicPmuInfo>();
+		//    SqlCommand command = new SqlCommand("Select ID, Acronym, Name, CompanyName, CompanyAcronym, Longitude, Latitude, VendorName, ProtocolName, Reporting, Active, Validated, InProgress From MapDataActiveState Where CompanyID = 29 AND BpaAcronym NOT IN ('BFNP','SQNP','MRFB','WRTC','ALCO')");
+		//    DataAccess obj = new DataAccess();
+		//    DataTable resultTable = new DataTable();
+		//    resultTable = obj.GetDataTable(command, true);
+		//    pmuList = (from item in resultTable.AsEnumerable()
+		//               orderby item.Field<string>("Acronym")
+		//               select new BasicPmuInfo()
+		//               {
+		//                  ID = item.Field<int>("ID"),
+		//                  Acronym = item.Field<string>("Acronym"),
+		//                  Name = item.Field<string>("Name"),
+		//                  CompanyName = item.Field<string>("CompanyName"), 
+		//                  CompanyAcronym = item.Field<string>("CompanyAcronym"),
+		//                  Longitude = item.Field<decimal>("Longitude"),
+		//                  Latitude = item.Field<decimal>("Latitude"),
+		//                  DeviceName = item.Field<string>("VendorName"),
+		//                  ProtocolName = item.Field<string>("ProtocolName"),
+		//                  Reporting = item.Field<bool>("Reporting"),
+		//                  Active = item.Field<bool>("Active"),
+		//                  Validated = item.Field<bool>("Validated"),
+		//                  InProgress = item.Field<bool>("InProgress")
+		//              }).ToList();
+		//    return pmuList;
+		//}
+		//public static List<InterconnectionStatus> GetInterconnectionStatus()
+		//{
+		//    List<InterconnectionStatus> interConnectionStatusList = new List<InterconnectionStatus>();
+
+		//    SqlCommand command = new SqlCommand("CompanyStatus");
+		//    DataAccess obj = new DataAccess();
+		//    DataSet resultSet = new DataSet();
+		//    resultSet.Tables.Add(obj.GetDataTable(command, false));
+		//    resultSet.Tables[0].TableName = "CurrentStatus";
+
+		//    command = new SqlCommand("Select * From InterconnectionPmuSummary Order By PmuCount DESC, Interconnection");
+		//    resultSet.Tables.Add(obj.GetDataTable(command, true));
+		//    resultSet.Tables[1].TableName = "InterconnectionSummary";
+
+		//    //resultSet.Relations.Add("InterconnectionSummary", resultSet.Tables["InterconnectionSummary"].Columns["Interconnection"],
+		//    //                            resultSet.Tables["CurrentStatus"].Columns["Interconnection"]);
+
+		//    interConnectionStatusList = (from item in resultSet.Tables["InterconnectionSummary"].AsEnumerable()
+		//                                 select new InterconnectionStatus()
+		//                                 {
+		//                                     InterConnection = item.Field<string>("Interconnection"),
+		//                                     TotalPmus = "Total " + item.Field<int>("PmuCount").ToString() + " PMUs",
+		//                                     DisplayName = item.Field<string>("Description"),
+		//                                     CompanyStatus = (from cs in resultSet.Tables["CurrentStatus"].AsEnumerable()
+		//                                                      where cs.Field<string>("Interconnection") == item.Field<string>("Interconnection")
+		//                                                      select new MemberStatus()
+		//                                                      {
+		//                                                          Name = cs.Field<string>("CompanyName"),
+		//                                                          MeasuredLines = cs.Field<int>("MeasuredLines"),
+		//                                                          TotalDevices = cs.Field<int>("PmuCount"),
+		//                                                          ValidatedDevices = cs.Field<int>("ValidatedPmus"),
+		//                                                          ReportingDevices = cs.Field<int>("ReportingPmus"),
+		//                                                          Status = cs.Field<string>("Status")
+		//                                                      }).ToList()
+		//                                 }).ToList();
+
+		//    return interConnectionStatusList;
+		//}
+		//public static List<PmuDistribution> GetPmuDistribution()
+		//{
+		//    List<PmuDistribution> pmuDistributionList = new List<PmuDistribution>();
+
+		//    SqlCommand command = new SqlCommand("PmuStatistics");
+		//    DataAccess obj = new DataAccess();
+		//    DataTable resultTable = new DataTable();
+		//    resultTable = obj.GetDataTable(command, false);
+
+		//    pmuDistributionList = (from item in resultTable.AsEnumerable()
+		//                           select new PmuDistribution()
+		//                           {   Status = item.Field<string>("Status"),
+		//                               EasternCount = item.Field<string>("Eastern"),
+		//                               WesternCount = item.Field<string>("Western"),
+		//                               TexasCount = item.Field<string>("Texas"),
+		//                               QuebecCount = item.Field<string>("Quebec"),
+		//                               AlaskanCount = item.Field<string>("Alaskan"),
+		//                               HawaiiCount = item.Field<string>("Hawaii"),
+		//                               Total = item.Field<int>("Total")
+		//                           }).ToList();
+		//    return pmuDistributionList;
+		//}
+		////public static List<Historian> GetHistorianList()
+		////{
+		////    List<Historian> historianList = new List<Historian>();
+		////    SqlCommand command = new SqlCommand("Select *, Acronym + ': ' + [Name] As HistorianLongName From Historian Order By [Name]");
+		////    DataAccess obj = new DataAccess();
+		////    DataTable resultTable = new DataTable();
+		////    resultTable = obj.GetDataTable(command, true);
+
+		////    historianList = (from item in resultTable.AsEnumerable()
+		////                     orderby item.Field<string>("Name")
+		////                     select new Historian()
+		////                     {
+		////                         ID = item.Field<int>("ID"),
+		////                         Acronym = item.Field<string>("Acronym"),
+		////                         Name = item.Field<string>("Name"),
+		////                         ConnectionString = item.Field<string>("ConnectionString"),
+		////                         Description = item.Field<string>("Description"),
+		////                         Enabled = item.Field<bool>("Enabled"),
+		////                         TypeName = item.Field<string>("TypeName"),
+		////                         AssemblyName = item.Field<string>("AssemblyName"),
+		////                         HistorianLongName = item.Field<string>("HistorianLongName")
+		////                     }).ToList();
+
+		////    return historianList;
+		////}
+		//public static List<CalculatedMeasurement> GetCalculatedMeasurementList()
+		//{
+		//    List<CalculatedMeasurement> calculatedMeasurementList = new List<CalculatedMeasurement>();
+		//    SqlCommand command = new SqlCommand("Select * From CalculatedMeasurement");
+		//    DataAccess obj = new DataAccess();
+		//    DataTable resultTable = new DataTable();
+		//    resultTable = obj.GetDataTable(command, true);
+
+		//    calculatedMeasurementList = (from item in resultTable.AsEnumerable()
+		//                                 orderby item.Field<string>("Name")
+		//                                 select new CalculatedMeasurement()
+		//                                 {
+		//                                     ID = item.Field<int>("ID"),
+		//                                     Name = item.Field<string>("Name"),
+		//                                     TypeName = item.Field<string>("TypeName"),
+		//                                     AssemblyName = item.Field<string>("AssemblyName"),
+		//                                     ConfigSection = item.Field<string>("ConfigSection"),
+		//                                     OutputMeasurementsSql = item.Field<string>("OutputMeasurementsSql"),
+		//                                     InputMeasurementsSql = item.Field<string>("InputMeasurementsSql"),
+		//                                     MinimumInputMeasurements = item.Field<int>("MinimumInputMeasurements"),
+		//                                     ExpectedFrameRate = item.Field<int>("ExpectedFrameRate"),
+		//                                     //LagTime = item.Field<decimal>("LagTime"),
+		//                                     //LeadTime = item.Field<decimal>("LeadTime"),
+		//                                     Enabled = item.Field<bool>("Enabled")
+		//                                 }).ToList();
+
+		//    return calculatedMeasurementList;
+		//}
+		//public static List<OutputStream> GetOutputStreamList()
+		//{
+		//    List<OutputStream> outputStreamList = new List<OutputStream>();
+		//    SqlCommand command = new SqlCommand("Select ID, Name, Type, ConnectionString, IsNull(PmuFilterSql, '') AS PmuFilterSql, IDCode, FrameRate, NominalFrequency, LagTime, LeadTime, Enabled From Concentrator");
+		//    DataAccess obj = new DataAccess();
+		//    DataTable resultTable = new DataTable();
+		//    resultTable = obj.GetDataTable(command, true);
+
+		//    outputStreamList = (from item in resultTable.AsEnumerable()
+		//                        orderby item.Field<string>("Name")
+		//                        select new OutputStream()
+		//                        {
+		//                            ID = item.Field<int>("ID"),
+		//                            Name = item.Field<string>("Name"),
+		//                            Type = item.Field<string>("Type"),
+		//                            ConnectionString = item.Field<string>("ConnectionString"),
+		//                            PmuFilterSql = item.Field<string>("PmuFilterSql"),
+		//                            IDCode = item.Field<int>("IDCode"),
+		//                            FrameRate = item.Field<int>("FrameRate"),
+		//                            NominalFrequency = item.Field<int>("NominalFrequency"),
+		//                            //LagTime = item.Field<decimal>("LagTime"),
+		//                            //LeadTime = item.Field<decimal>("LeadTime"),
+		//                            Enabled = item.Field<bool>("Enabled")
+		//                        }).ToList();
+
+		//    return outputStreamList;
+		//}
+		////public static Dictionary<int, string> GetCompanyList()
+		////{
+		////    Dictionary<int, string> companyList = new Dictionary<int, string>();
+		////    SqlCommand command = new SqlCommand("Select ID, Name From Company Order By Name");
+		////    DataAccess obj = new DataAccess();
+		////    DataTable resultTable = new DataTable();
+		////    resultTable = obj.GetDataTable(command, true);
+		////    foreach (DataRow row in resultTable.Rows)
+		////    {
+		////        companyList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+		////    }
+		////    return companyList;
+		////}
+		//public static Dictionary<int, string> GetVendorList()
+		//{
+		//    Dictionary<int, string> vendorList = new Dictionary<int, string>();
+		//    SqlCommand command = new SqlCommand("Select ID, Description From VendorDevice Order By Description");
+		//    DataAccess obj = new DataAccess();
+		//    DataTable resultTable = new DataTable();
+		//    resultTable = obj.GetDataTable(command, true);
+		//    foreach (DataRow row in resultTable.Rows)
+		//    {
+		//        vendorList.Add(Convert.ToInt32(row["ID"]), row["Description"].ToString());
+		//    }
+		//    return vendorList;
+		//}
+		//public static Dictionary<int, string> GetProtocolList()
+		//{
+		//    Dictionary<int, string> protocolList = new Dictionary<int, string>();
+		//    SqlCommand command = new SqlCommand("Select ID, Name From Protocol Order By Name");
+		//    DataAccess obj = new DataAccess();
+		//    DataTable resultTable = new DataTable();
+		//    resultTable = obj.GetDataTable(command, true);
+		//    foreach (DataRow row in resultTable.Rows)
+		//    {
+		//        protocolList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+		//    }
+		//    return protocolList;
+		//}
+		//public static List<string> GetTransportProtocolList()
+		//{
+		//    List<string> transportProtocolList = new List<string>();
+		//    transportProtocolList.Add("TCP");
+		//    transportProtocolList.Add("UDP");
+		//    transportProtocolList.Add("Serial");
+		//    return transportProtocolList;
+		//}
+		//public static List<string> GetParityList()
+		//{
+		//    List<string> parityList = new List<string>();
+		//    foreach (string parity in Enum.GetNames(typeof(Parity)))
+		//    {
+		//        parityList.Add(parity);
+		//    }
+		//    return parityList;
+		//}
+		//public static List<string> GetStopBitList()
+		//{
+		//    List<string> stopBitList = new List<string>();
+		//    foreach (string stopBit in Enum.GetNames(typeof(StopBits)))
+		//    {
+		//        stopBitList.Add(stopBit);
+		//    }
+		//    return stopBitList;
+		//}
+		//public static Dictionary<string, string> GetTimeZonesList()
+		//{
+		//    Dictionary<string, string> timeZoneList = new Dictionary<string, string>();
+
+		//    List<TimeZoneInfo> timeZoneInfoList = System.TimeZoneInfo.GetSystemTimeZones().ToList<TimeZoneInfo>();
+		//    foreach (TimeZoneInfo timeZoneInfo in timeZoneInfoList)
+		//    {
+		//        timeZoneList.Add(timeZoneInfo.DisplayName, timeZoneInfo.StandardName);
+		//    }			
+		//    return timeZoneList;
+		//}
+		//public static List<StatusReport> GetStatusReportList()
+		//{
+		//    List<StatusReport> statusReportList = new List<StatusReport>();
+
+		//    SqlCommand command = new SqlCommand("NaspiReportData");
+		//    DataAccess obj = new DataAccess();
+		//    DataSet resultSet = new DataSet();
+		//    obj.GetDataSet(command, ref resultSet, false);
+
+		//    //resultSet.Tables[0].TableName = "CompanyStatus";
+		//    //resultSet.Tables[0].TableName = "PmuStatus";
+
+		//    statusReportList = (from item in resultSet.Tables[0].AsEnumerable()
+		//                        select new StatusReport()
+		//                        {
+		//                            ID = item.Field<int>("ID"),
+		//                            Acronym = item.Field<string>("Acronym"),
+		//                            CompanyName = item.Field<string>("CompanyName"),
+		//                            Status = item.Field<string>("Status"),
+		//                            PmusStatus = (from ps in resultSet.Tables[1].AsEnumerable()
+		//                                          where ps.Field<int>("CompanyID") == item.Field<int>("ID")
+		//                                          select new PmuStatus()
+		//                                          {
+		//                                              Acronym = ps.Field<string>("Acronym"),
+		//                                              Name = ps.Field<string>("Name"),
+		//                                              DeviceDescription = ps.Field<string>("DeviceDescription"),
+		//                                              ProtocolName = ps.Field<string>("ProtocolName"),
+		//                                              StatusColor = (
+		//                                                            ps.Field<bool>("Validated") == false ? "Gray" :
+		//                                                            ps.Field<bool>("Reporting") == false ? "Red" : "Green"
+		//                                                            )
+		//                                          }).ToList()
+		//                        }).ToList();
+
+		//    return statusReportList;
+		//}
+		#endregion
+
+		#region " Manage Companies Code"
+		public static List<Company> GetCompanyList()
 		{
-			List<BasicPmuInfo> pmuList = new List<BasicPmuInfo>();
-            SqlCommand command = new SqlCommand("Select ID, Acronym, Name, CompanyName, CompanyAcronym, Longitude, Latitude, VendorName, ProtocolName, Reporting, Active, Validated, InProgress From MapDataActiveState Where CompanyID = 29 AND BpaAcronym NOT IN ('BFNP','SQNP','MRFB','WRTC','ALCO')");
-            DataAccess obj = new DataAccess();
-            DataTable resultTable = new DataTable();
-            resultTable = obj.GetDataTable(command, true);
-            pmuList = (from item in resultTable.AsEnumerable()
-                       orderby item.Field<string>("Acronym")
-                       select new BasicPmuInfo()
-                       {
-                          ID = item.Field<int>("ID"),
-                          Acronym = item.Field<string>("Acronym"),
-                          Name = item.Field<string>("Name"),
-                          CompanyName = item.Field<string>("CompanyName"), 
-                          CompanyAcronym = item.Field<string>("CompanyAcronym"),
-                          Longitude = item.Field<decimal>("Longitude"),
-                          Latitude = item.Field<decimal>("Latitude"),
-                          DeviceName = item.Field<string>("VendorName"),
-                          ProtocolName = item.Field<string>("ProtocolName"),
-                          Reporting = item.Field<bool>("Reporting"),
-                          Active = item.Field<bool>("Active"),
-						  Validated = item.Field<bool>("Validated"),
-						  InProgress = item.Field<bool>("InProgress")
-                      }).ToList();
-            return pmuList;
+			List<Company> companyList = new List<Company>();
+			SqlCommand command = new SqlCommand("Select ID, Acronym, MapAcronym, Name, ISNULL(URL, '') AS URL, LoadOrder From Company Order By LoadOrder");
+			DataAccess obj = new DataAccess();
+			DataTable resultTable = new DataTable();
+			resultTable = obj.GetDataTable(command, true);
+
+			companyList = (from item in resultTable.AsEnumerable()
+						   select new Company()
+						   {
+							   ID = item.Field<int>("ID"),
+							   Acronym = item.Field<string>("Acronym"),
+							   MapAcronym = item.Field<string>("MapAcronym"),
+							   Name = item.Field<string>("Name"),
+							   URL = item.Field<string>("URL"),
+							   LoadOrder = item.Field<int>("LoadOrder")
+						   }).ToList();
+			return companyList;
 		}
-        public static List<InterconnectionStatus> GetInterconnectionStatus()
-        {
-            List<InterconnectionStatus> interConnectionStatusList = new List<InterconnectionStatus>();
-
-            SqlCommand command = new SqlCommand("CompanyStatus");
-            DataAccess obj = new DataAccess();
-            DataSet resultSet = new DataSet();
-            resultSet.Tables.Add(obj.GetDataTable(command, false));
-            resultSet.Tables[0].TableName = "CurrentStatus";
-
-            command = new SqlCommand("Select * From InterconnectionPmuSummary Order By PmuCount DESC, Interconnection");
-            resultSet.Tables.Add(obj.GetDataTable(command, true));
-            resultSet.Tables[1].TableName = "InterconnectionSummary";
-
-            //resultSet.Relations.Add("InterconnectionSummary", resultSet.Tables["InterconnectionSummary"].Columns["Interconnection"],
-            //                            resultSet.Tables["CurrentStatus"].Columns["Interconnection"]);
-
-            interConnectionStatusList = (from item in resultSet.Tables["InterconnectionSummary"].AsEnumerable()
-                                         select new InterconnectionStatus()
-                                         {
-                                             InterConnection = item.Field<string>("Interconnection"),
-                                             TotalPmus = "Total " + item.Field<int>("PmuCount").ToString() + " PMUs",
-                                             DisplayName = item.Field<string>("Description"),
-                                             CompanyStatus = (from cs in resultSet.Tables["CurrentStatus"].AsEnumerable()
-                                                              where cs.Field<string>("Interconnection") == item.Field<string>("Interconnection")
-                                                              select new MemberStatus()
-                                                              {
-                                                                  Name = cs.Field<string>("CompanyName"),
-                                                                  MeasuredLines = cs.Field<int>("MeasuredLines"),
-                                                                  TotalDevices = cs.Field<int>("PmuCount"),
-                                                                  ValidatedDevices = cs.Field<int>("ValidatedPmus"),
-                                                                  ReportingDevices = cs.Field<int>("ReportingPmus"),
-                                                                  Status = cs.Field<string>("Status")
-                                                              }).ToList()
-                                         }).ToList();
-
-            return interConnectionStatusList;
-        }
-        public static List<PmuDistribution> GetPmuDistribution()
-        {
-            List<PmuDistribution> pmuDistributionList = new List<PmuDistribution>();
-
-            SqlCommand command = new SqlCommand("PmuStatistics");
-            DataAccess obj = new DataAccess();
-            DataTable resultTable = new DataTable();
-            resultTable = obj.GetDataTable(command, false);
-
-            pmuDistributionList = (from item in resultTable.AsEnumerable()
-                                   select new PmuDistribution()
-                                   {   Status = item.Field<string>("Status"),
-                                       EasternCount = item.Field<string>("Eastern"),
-                                       WesternCount = item.Field<string>("Western"),
-                                       TexasCount = item.Field<string>("Texas"),
-                                       QuebecCount = item.Field<string>("Quebec"),
-                                       AlaskanCount = item.Field<string>("Alaskan"),
-                                       HawaiiCount = item.Field<string>("Hawaii"),
-                                       Total = item.Field<int>("Total")
-                                   }).ToList();
-            return pmuDistributionList;
-        }
-        public static List<Historian> GetHistorianList()
-        {
-            List<Historian> historianList = new List<Historian>();
-            SqlCommand command = new SqlCommand("Select *, Acronym + ': ' + [Name] As HistorianLongName From Historian Order By [Name]");
-            DataAccess obj = new DataAccess();
-            DataTable resultTable = new DataTable();
-            resultTable = obj.GetDataTable(command, true);
-
-            historianList = (from item in resultTable.AsEnumerable()
-                             orderby item.Field<string>("Name")
-                             select new Historian()
-                             {
-                                 ID = item.Field<int>("ID"),
-                                 Acronym = item.Field<string>("Acronym"),
-                                 Name = item.Field<string>("Name"),
-                                 ConnectionString = item.Field<string>("ConnectionString"),
-                                 Description = item.Field<string>("Description"),
-                                 Enabled = item.Field<bool>("Enabled"),
-                                 TypeName = item.Field<string>("TypeName"),
-                                 AssemblyName = item.Field<string>("AssemblyName"),
-                                 HistorianLongName = item.Field<string>("HistorianLongName")
-                             }).ToList();
-
-            return historianList;
-        }
-        public static List<CalculatedMeasurement> GetCalculatedMeasurementList()
-        {
-            List<CalculatedMeasurement> calculatedMeasurementList = new List<CalculatedMeasurement>();
-            SqlCommand command = new SqlCommand("Select * From CalculatedMeasurement");
-            DataAccess obj = new DataAccess();
-            DataTable resultTable = new DataTable();
-            resultTable = obj.GetDataTable(command, true);
-
-            calculatedMeasurementList = (from item in resultTable.AsEnumerable()
-                                         orderby item.Field<string>("Name")
-                                         select new CalculatedMeasurement()
-                                         {
-                                             ID = item.Field<int>("ID"),
-                                             Name = item.Field<string>("Name"),
-                                             TypeName = item.Field<string>("TypeName"),
-                                             AssemblyName = item.Field<string>("AssemblyName"),
-                                             ConfigSection = item.Field<string>("ConfigSection"),
-                                             OutputMeasurementsSql = item.Field<string>("OutputMeasurementsSql"),
-                                             InputMeasurementsSql = item.Field<string>("InputMeasurementsSql"),
-                                             MinimumInputMeasurements = item.Field<int>("MinimumInputMeasurements"),
-                                             ExpectedFrameRate = item.Field<int>("ExpectedFrameRate"),
-                                             //LagTime = item.Field<decimal>("LagTime"),
-                                             //LeadTime = item.Field<decimal>("LeadTime"),
-                                             Enabled = item.Field<bool>("Enabled")
-                                         }).ToList();
-
-            return calculatedMeasurementList;
-        }
-        public static List<OutputStream> GetOutputStreamList()
-        {
-            List<OutputStream> outputStreamList = new List<OutputStream>();
-            SqlCommand command = new SqlCommand("Select ID, Name, Type, ConnectionString, IsNull(PmuFilterSql, '') AS PmuFilterSql, IDCode, FrameRate, NominalFrequency, LagTime, LeadTime, Enabled From Concentrator");
-            DataAccess obj = new DataAccess();
-            DataTable resultTable = new DataTable();
-            resultTable = obj.GetDataTable(command, true);
-
-            outputStreamList = (from item in resultTable.AsEnumerable()
-                                orderby item.Field<string>("Name")
-                                select new OutputStream()
-                                {
-                                    ID = item.Field<int>("ID"),
-                                    Name = item.Field<string>("Name"),
-                                    Type = item.Field<string>("Type"),
-                                    ConnectionString = item.Field<string>("ConnectionString"),
-                                    PmuFilterSql = item.Field<string>("PmuFilterSql"),
-                                    IDCode = item.Field<int>("IDCode"),
-                                    FrameRate = item.Field<int>("FrameRate"),
-                                    NominalFrequency = item.Field<int>("NominalFrequency"),
-									//LagTime = item.Field<decimal>("LagTime"),
-									//LeadTime = item.Field<decimal>("LeadTime"),
-                                    Enabled = item.Field<bool>("Enabled")
-                                }).ToList();
-
-            return outputStreamList;
-        }
-		public static Dictionary<int, string> GetCompanyList()
+		public static Dictionary<int, string> GetCompanies()
 		{
 			Dictionary<int, string> companyList = new Dictionary<int, string>();
+			companyList.Add(0, "Select Company");
 			SqlCommand command = new SqlCommand("Select ID, Name From Company Order By Name");
 			DataAccess obj = new DataAccess();
 			DataTable resultTable = new DataTable();
 			resultTable = obj.GetDataTable(command, true);
+
 			foreach (DataRow row in resultTable.Rows)
 			{
-				companyList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+				if (!companyList.ContainsKey(Convert.ToInt32(row["ID"])))
+					companyList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
 			}
+
 			return companyList;
 		}
-		public static Dictionary<int, string> GetVendorList()
+		public static string SaveCompany(Company company, bool isNew)
 		{
-			Dictionary<int, string> vendorList = new Dictionary<int, string>();
-			SqlCommand command = new SqlCommand("Select ID, Description From VendorDevice Order By Description");
+			string query;
+			if (isNew)
+				query = string.Format("Insert Into Company (Acronym, MapAcronym, Name, URL, LoadOrder) Values ('{0}', '{1}', '{2}', '{3}', {4})", company.Acronym, company.MapAcronym, company.Name, company.URL, company.LoadOrder);
+			else
+				query = string.Format("Update Company Set Acronym = '{0}', MapAcronym = '{1}', Name = '{2}', URL = '{3}', LoadOrder = {4} Where ID = {5}", company.Acronym, company.MapAcronym, company.Name, company.URL, company.LoadOrder, company.ID);
+
+			SqlCommand command = new SqlCommand(query);
+			DataAccess obj = new DataAccess();
+			obj.RunScalarCommand(command, true);
+			return "Done!";
+		}
+		#endregion
+
+		#region " Manage Historians Code"
+		public static List<Historian> GetHistorianList()
+		{
+			List<Historian> historianList = new List<Historian>();
+			SqlCommand command = new SqlCommand("Select H.NodeID, H.ID, H.Acronym, ISNULL(H.Name, '') AS Name, ISNULL(H.AssemblyName, '') AS AssemblyName, " +
+													"ISNULL(H.TypeName, '') AS TypeName, ISNULL(H.ConnectionString, '') AS ConnectionString, H.IsLocal, " +
+													"ISNULL(H.Description, '') AS Description, H.LoadOrder, H.Enabled, N.Name AS NodeName From Historian H, Node N " +
+													"Where H.NodeID = N.ID Order By H.LoadOrder");
 			DataAccess obj = new DataAccess();
 			DataTable resultTable = new DataTable();
 			resultTable = obj.GetDataTable(command, true);
+
+			historianList = (from item in resultTable.AsEnumerable()
+							 select new Historian()
+							 {
+								 NodeID = item.Field<Guid>("NodeID"),
+								 ID = item.Field<int>("ID"),
+								 Acronym = item.Field<string>("Acronym"),
+								 Name = item.Field<string>("Name"),
+								 ConnectionString = item.Field<string>("ConnectionString"),
+								 Description = item.Field<string>("Description"),
+								 Enabled = item.Field<bool>("Enabled"),
+								 TypeName = item.Field<string>("TypeName"),
+								 AssemblyName = item.Field<string>("AssemblyName"),
+								 NodeName = item.Field<string>("NodeName")
+							 }).ToList();
+
+			return historianList;
+		}
+		#endregion
+
+		#region " Manage Nodes Code"
+		public static List<Node> GetNodeList()
+		{
+			List<Node> nodeList = new List<Node>();
+			SqlCommand command = new SqlCommand("Select N.ID, N.Name, N.CompanyID, N.Longitude, N.Latitude, ISNULL(N.Description, '') AS Description, " +
+													"ISNULL(N.Image, '') AS Image, N.Master, N.LoadOrder, N.Enabled, ISNULL(C.Name, '') AS CompanyName " +
+													"From Node N, Company C Where N.CompanyID = C.ID Order By N.LoadOrder");
+			DataAccess obj = new DataAccess();
+			DataTable resultTable = new DataTable();
+			resultTable = obj.GetDataTable(command, true);
+
+			nodeList = (from item in resultTable.AsEnumerable()
+						select new Node()
+						{
+							ID = item.Field<Guid>("ID"),
+							Name = item.Field<string>("Name"),
+							CompanyID = item.Field<int>("CompanyID"),
+							Longitude = item.Field<decimal>("Longitude"),
+							Latitude = item.Field<decimal>("Latitude"),
+							Description = item.Field<string>("Description"),
+							Image = item.Field<string>("Image"),
+							Master = item.Field<bool>("Master"),
+							LoadOrder = item.Field<int>("LoadOrder"),
+							Enabled = item.Field<bool>("Enabled"),
+							CompanyName = item.Field<string>("CompanyName")
+						}).ToList();
+
+			return nodeList;
+		}
+		public static Dictionary<Guid, string> GetNodes(bool ActiveOnly)
+		{
+			Dictionary<Guid, string> nodeList = new Dictionary<Guid, string>();
+			string query = "Select ID, Name From Node";
+			if (ActiveOnly)
+				query += " Where Enabled = '1'";
+
+			query += " Order By LoadOrder";
+			SqlCommand command = new SqlCommand(query);
+
+			DataAccess obj = new DataAccess();
+			DataTable resultTable = new DataTable();
+			resultTable = obj.GetDataTable(command, true);
+			
 			foreach (DataRow row in resultTable.Rows)
 			{
-				vendorList.Add(Convert.ToInt32(row["ID"]), row["Description"].ToString());
+				if (!nodeList.ContainsKey(new Guid(row["ID"].ToString())))
+					nodeList.Add(new Guid(row["ID"].ToString()), row["Name"].ToString());
+			}
+
+			return nodeList;
+		}
+		public static string SaveNode(Node node, bool isNew)
+		{
+		    string query;
+			if (isNew)
+				query = string.Format("Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, Image, Master, LoadOrder, Enabled) Values ('{0}', {1}, {2}, {3}, '{4}', '{5}', '{6}', {7}, '{8}')",
+					node.Name, DBNull.Value, DBNull.Value, DBNull.Value, node.Description, node.Image, node.Master, node.LoadOrder, node.Enabled);
+			else
+			    query = string.Format("Update Node Set Name = '{0}', CompanyID = {1}, Longitude = {2}, Latitude = {3}, Description = '{4}', Image = '{5}', Master = '{6}', LoadOrder = {7}, Enabled = '{8}' Where ID = '{9}'",
+					node.Name, DBNull.Value, node.Longitude, node.Latitude, node.Description, node.Image, node.Master, node.LoadOrder, node.Enabled, node.ID);
+
+			SqlCommand command = new SqlCommand(query);
+			DataAccess obj = new DataAccess();
+			obj.RunScalarCommand(command, true);
+			return "Done!";
+		}
+		#endregion
+		
+		#region " Manage Vendors Code"
+		public static List<Vendor> GetVendorList()
+		{
+			List<Vendor> vendorList = new List<Vendor>();
+			SqlCommand command = new SqlCommand("Select ID, ISNULL(Acronym, '') AS Acronym, Name, ISNULL(PhoneNumber, '') AS PhoneNumber, " +
+												"ISNULL(ContactEmail, '') AS ContactEmail, ISNULL(URL, '') AS URL FROM Vendor Order By [Name]");
+			DataAccess obj = new DataAccess();
+			DataTable resultTable = new DataTable();
+			resultTable = obj.GetDataTable(command, true);
+
+			vendorList = (from item in resultTable.AsEnumerable()
+						  select new Vendor()
+						  {
+							  ID = item.Field<int>("ID"),
+							  Acronym = item.Field<string>("Acronym"),
+							  Name = item.Field<string>("Name"),
+							  PhoneNumber = item.Field<string>("PhoneNumber"),
+							  ContactEmail = item.Field<string>("ContactEmail"),
+							  URL = item.Field<string>("URL")
+						  }).ToList();
+
+			return vendorList;
+		}
+		public static Dictionary<int, string> GetVendors()
+		{
+			Dictionary<int, string> vendorList = new Dictionary<int, string>();
+			SqlCommand command = new SqlCommand("Select ID, Name From Vendor Order By Name");
+			DataAccess obj = new DataAccess();
+			DataTable resultTable = new DataTable();
+			resultTable = obj.GetDataTable(command, true);
+
+			foreach (DataRow row in resultTable.Rows)
+			{
+				if (!vendorList.ContainsKey(Convert.ToInt32(row["ID"])))
+					vendorList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
 			}
 			return vendorList;
 		}
-		public static Dictionary<int, string> GetProtocolList()
+		public static string SaveVendor(Vendor vendor, bool isNew)
 		{
-			Dictionary<int, string> protocolList = new Dictionary<int, string>();
-			SqlCommand command = new SqlCommand("Select ID, Name From Protocol Order By Name");
+			string query;
+			if (isNew)
+				query = string.Format("Insert Into Vendor (Acronym, Name, PhoneNumber, ContactEmail, URL) Values ('{0}', '{1}', '{2}', '{3}', '{4}')", vendor.Acronym, vendor.Name, vendor.PhoneNumber, vendor.ContactEmail, vendor.URL);
+			else
+				query = string.Format("Update Vendor Set Acronym = '{0}', Name = '{1}', PhoneNumber = '{2}', ContactEmail = '{3}', URL = '{4}' Where ID = {5}", vendor.Acronym, vendor.Name, vendor.PhoneNumber, vendor.ContactEmail, vendor.URL, vendor.ID);
+
+			SqlCommand command = new SqlCommand(query);			
+			DataAccess obj = new DataAccess();
+			obj.RunScalarCommand(command, true);
+			return "Done!";
+		}
+		#endregion
+
+		#region " Manage Vendor Devices Code"
+		public static List<VendorDevice> GetVendorDeviceList()
+		{
+			List<VendorDevice> vendorDeviceList = new List<VendorDevice>();
+			SqlCommand command = new SqlCommand("Select VD.ID, VD.VendorID, VD.Name, ISNULL(VD.Description, '') AS Description, ISNULL(VD.URL, '') AS URL, " +
+													"V.Name AS VendorName FROM VendorDevice VD, Vendor V WHERE VD.VendorID = V.ID Order By VD.Name");
 			DataAccess obj = new DataAccess();
 			DataTable resultTable = new DataTable();
 			resultTable = obj.GetDataTable(command, true);
-			foreach (DataRow row in resultTable.Rows)
-			{
-				protocolList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
-			}
-			return protocolList;
-		}
-		public static List<string> GetTransportProtocolList()
-		{
-			List<string> transportProtocolList = new List<string>();
-			transportProtocolList.Add("TCP");
-			transportProtocolList.Add("UDP");
-			transportProtocolList.Add("Serial");
-			return transportProtocolList;
-		}
-		public static List<string> GetParityList()
-		{
-			List<string> parityList = new List<string>();
-			foreach (string parity in Enum.GetNames(typeof(Parity)))
-			{
-				parityList.Add(parity);
-			}
-			return parityList;
-		}
-		public static List<string> GetStopBitList()
-		{
-			List<string> stopBitList = new List<string>();
-			foreach (string stopBit in Enum.GetNames(typeof(StopBits)))
-			{
-				stopBitList.Add(stopBit);
-			}
-			return stopBitList;
-		}
-		public static Dictionary<string, string> GetTimeZonesList()
-		{
-			Dictionary<string, string> timeZoneList = new Dictionary<string, string>();
 
-			List<TimeZoneInfo> timeZoneInfoList = System.TimeZoneInfo.GetSystemTimeZones().ToList<TimeZoneInfo>();
-			foreach (TimeZoneInfo timeZoneInfo in timeZoneInfoList)
-			{
-				timeZoneList.Add(timeZoneInfo.DisplayName, timeZoneInfo.StandardName);
-			}			
-			return timeZoneList;
-		}
-		public static List<StatusReport> GetStatusReportList()
-		{
-			List<StatusReport> statusReportList = new List<StatusReport>();
-
-			SqlCommand command = new SqlCommand("NaspiReportData");
-			DataAccess obj = new DataAccess();
-			DataSet resultSet = new DataSet();
-			obj.GetDataSet(command, ref resultSet, false);
-
-			//resultSet.Tables[0].TableName = "CompanyStatus";
-			//resultSet.Tables[0].TableName = "PmuStatus";
-
-			statusReportList = (from item in resultSet.Tables[0].AsEnumerable()
-								select new StatusReport()
+			vendorDeviceList = (from item in resultTable.AsEnumerable()
+								select new VendorDevice()
 								{
 									ID = item.Field<int>("ID"),
-									Acronym = item.Field<string>("Acronym"),
-									CompanyName = item.Field<string>("CompanyName"),
-									Status = item.Field<string>("Status"),
-									PmusStatus = (from ps in resultSet.Tables[1].AsEnumerable()
-									              where ps.Field<int>("CompanyID") == item.Field<int>("ID")
-									              select new PmuStatus()
-									              {
-									                  Acronym = ps.Field<string>("Acronym"),
-									                  Name = ps.Field<string>("Name"),
-									                  DeviceDescription = ps.Field<string>("DeviceDescription"),
-									                  ProtocolName = ps.Field<string>("ProtocolName"),
-													  StatusColor = (
-																	ps.Field<bool>("Validated") == false ? "Gray" :
-																	ps.Field<bool>("Reporting") == false ? "Red" : "Green"
-																	)
-									              }).ToList()
+									VendorID = item.Field<int>("VendorID"),
+									Name = item.Field<string>("Name"),
+									Description = item.Field<string>("Description"),
+									URL = item.Field<string>("URL"),
+									VendorName = item.Field<string>("VendorName")
 								}).ToList();
 
-			return statusReportList;
+			return vendorDeviceList;
 		}
+		public static string SaveVendorDevice(VendorDevice vendorDevice, bool isNew)
+		{
+			string query;
+			if (isNew)
+				query = string.Format("Insert Into VendorDevice (VendorID, Name, Description, URL) Values ({0}, '{1}', '{2}', '{3}')", vendorDevice.VendorID, vendorDevice.Name, vendorDevice.Description, vendorDevice.URL);
+			else
+				query = string.Format("Update VendorDevice Set VendorID = {0}, Name = '{1}', Description = '{2}', URL = '{3}' Where ID = {4}", vendorDevice.VendorID, vendorDevice.Name, vendorDevice.Description, vendorDevice.URL, vendorDevice.ID);
+			
+			SqlCommand command = new SqlCommand(query);
+			DataAccess obj = new DataAccess();
+			obj.RunScalarCommand(command, true);
+			return "Done!";
+		}
+		#endregion
+
 	}
 }

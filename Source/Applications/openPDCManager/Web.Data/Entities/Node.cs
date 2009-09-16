@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  SQLBase.cs - Gbtc
+//  Node.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,10 +8,8 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  07/05/2009 - Mehulbhi Thakkar
+//  09/16/2009 - Mehulbhi P. Thakkar
 //       Generated original version of source code.
-//  09/15/2009 - Stephen C. Wills
-//       Added new header and license agreement.
 //
 //*******************************************************************************************************
 
@@ -231,64 +229,22 @@
 */
 #endregion
 
-using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
+using System;
 
-namespace openPDCManager.Web.Data
+namespace openPDCManager.Web.Data.Entities
 {
-	/// <summary>
-	/// Base class that defines CRUD operations on SQL Server Database.
-	/// </summary>
-    public class SQLBase
-    {
-        SqlConnection _Connection;
-        public SQLBase()
-        {
-            _Connection = new SqlConnection(ConfigurationManager.ConnectionStrings["PhasorDataConnection"].ConnectionString);
-        }
-        protected void ExecuteCommand(SqlCommand command, ref DataTable table, bool isText)
-        {
-            command.Connection = _Connection;
-            if (isText)
-                command.CommandType = CommandType.Text;
-            else
-                command.CommandType = CommandType.StoredProcedure;
-            command.Connection.Open();
-            table.Load(command.ExecuteReader());
-            command.Connection.Close();
-        }
-        protected void ExecuteCommand(SqlCommand command, ref DataSet ds, bool isText)
-        {
-            command.Connection = _Connection;
-            if (isText)
-                command.CommandType = CommandType.Text;
-            else
-                command.CommandType = CommandType.StoredProcedure;
-            command.Connection.Open();
-            SqlDataAdapter adapter = new SqlDataAdapter(command);
-            adapter.Fill(ds);
-            command.Connection.Close();
-        }
-        protected object ExecuteScalarCommand(SqlCommand command, bool isText)
-        {
-            command.Connection = _Connection;
-            if (isText)
-                command.CommandType = CommandType.Text;
-            else
-                command.CommandType = CommandType.StoredProcedure;
-            command.Connection.Open();
-            return command.ExecuteScalar();
-        }
-        protected SqlDataReader ExecuteReaderCommand(SqlCommand command, bool isText)
-        {
-            command.Connection = _Connection;
-            if (isText)
-                command.CommandType = CommandType.Text;
-            else
-                command.CommandType = CommandType.StoredProcedure;
-            command.Connection.Open();
-            return command.ExecuteReader();
-        }
-    }
+	public class Node
+	{
+		public Guid ID { get; set; }
+		public string Name { get; set; }
+		public int? CompanyID { get; set; }
+		public decimal? Longitude { get; set; }
+		public decimal? Latitude { get; set; }
+		public string Description { get; set; }
+		public string Image { get; set; }
+		public bool Master { get; set; }
+		public int LoadOrder { get; set; }
+		public bool Enabled { get; set; }
+		public string CompanyName { get; set; }
+	}
 }

@@ -57,10 +57,15 @@
     <Compile Include="CommonFunctions.cs" />
     <Compile Include="DataAccess.cs" />
     <Compile Include="Entities\CalculatedMeasurement.cs" />
+    <Compile Include="Entities\Company.cs" />
+    <Compile Include="Entities\Device.cs" />
     <Compile Include="Entities\Historian.cs" />
+    <Compile Include="Entities\Node.cs" />
     <Compile Include="Entities\OutputStream.cs" />
     <Compile Include="Entities\Pdc.cs" />
     <Compile Include="Entities\Pmu.cs" />
+    <Compile Include="Entities\Vendor.cs" />
+    <Compile Include="Entities\VendorDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQLBase.cs" />
   </ItemGroup>
