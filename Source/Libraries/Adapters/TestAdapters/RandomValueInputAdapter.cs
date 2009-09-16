@@ -255,7 +255,7 @@ namespace TestAdapters
     /// <br/>
     /// </para>
     /// <para>
-    /// Example connection string using measurements defined in a <see cref="DataSource"/> table:<br/>
+    /// Example connection string using measurements defined in a <see cref="AdapterBase.DataSource"/> table:<br/>
     /// <c>outputMeasurements={FILTER ActiveMeasurements WHERE SignalType IN ('IPHA','VPHA') AND Phase='+'}</c><br/>
     /// <br/>
     /// Basic filtering syntax is as follows:<br/>

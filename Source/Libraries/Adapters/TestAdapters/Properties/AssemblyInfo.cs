@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("openPDC Test Adapters")]
-[assembly: AssemblyDescription("Test adapters.")]
+[assembly: AssemblyDescription("openPDC Test Adapters")]
 [assembly: AssemblyCompany("TVA")]
 [assembly: AssemblyProduct("openPDC")]
 [assembly: AssemblyCopyright("No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.")]
-[assembly: AssemblyTrademark("Author: J. Ritchie Carroll, Pinal C. Patel")]
+[assembly: AssemblyTrademark("Author: J. Ritchie Carroll")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug Build")]
 #else
