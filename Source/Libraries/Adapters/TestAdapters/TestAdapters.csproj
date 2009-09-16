@@ -5,12 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8A1BCFAA-19E8-408A-8C72-170B1211DC27}</ProjectGuid>
+    <ProjectGuid>{1338A569-A156-4122-8B65-8D4C147AA348}</ProjectGuid>
     <OutputType>Library</OutputType>
     <StartupObject>
     </StartupObject>
-    <RootNamespace>HistorianAdapters</RootNamespace>
-    <AssemblyName>HistorianAdapters</AssemblyName>
+    <RootNamespace>TestAdapters</RootNamespace>
+    <AssemblyName>TestAdapters</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -29,7 +29,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>..\..\..\..\Build\Output\Debug\Libraries\</OutputPath>
-    <DocumentationFile>..\..\..\..\Build\Output\Debug\Libraries\HistorianAdapters.XML</DocumentationFile>
+    <DocumentationFile>..\..\..\..\Build\Output\Debug\Libraries\TestAdapters.XML</DocumentationFile>
     <NOWARN>
     </NOWARN>
     <DefineConstants>DEBUG</DefineConstants>
@@ -40,7 +40,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>..\..\..\..\Build\Output\Release\Libraries\</OutputPath>
-    <DocumentationFile>..\..\..\..\Build\Output\Release\Libraries\HistorianAdapters.XML</DocumentationFile>
+    <DocumentationFile>..\..\..\..\Build\Output\Release\Libraries\TestAdapters.XML</DocumentationFile>
     <NOWARN>
     </NOWARN>
   </PropertyGroup>
@@ -50,6 +50,8 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.XML" />
     <Reference Include="TVA.Communication, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Historian\Current Version\Build\Output\Debug\Libraries\TVA.Communication.dll</HintPath>
@@ -58,17 +60,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Historian\Current Version\Build\Output\Debug\Libraries\TVA.Core.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Historian, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Historian\Current Version\Build\Output\Debug\Libraries\TVA.Historian.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InputAdapter.cs" />
-    <Compile Include="LocalOutputAdapter.cs" />
-    <Compile Include="RemoteOutputAdapter.cs" />
+    <Compile Include="RandomValueInputAdapter.cs" />
+    <Compile Include="VirtualOutputAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -82,7 +79,6 @@
   -->
   <Import Project="$(MSBuildBinPath)/Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>COPY "$(TargetPath)" "$(OutDir)..\Applications\openPDC\$(TargetFileName)"
-COPY "$(TargetDir)TVA.Historian.dll" ""$(OutDir)..\Applications\openPDC\TVA.Historian.dll"</PostBuildEvent>
+    <PostBuildEvent>COPY "$(TargetPath)" "$(OutDir)..\Applications\openPDC\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

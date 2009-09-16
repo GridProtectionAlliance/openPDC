@@ -1,5 +1,5 @@
 //*******************************************************************************************************
-//  VirtualOutputAdapter.cs - Gbtc
+//  RandomValueInputAdapter.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,10 +8,8 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  05/04/2009 - J. Ritchie Carroll
+//  09/16/2009 - James R. Carroll
 //       Generated original version of source code.
-//  09/15/2009 - Stephen C. Wills
-//       Added new header and license agreement.
 //
 //*******************************************************************************************************
 
@@ -231,24 +229,120 @@
 */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using TVA;
-using TVA.Measurements;
+using TVA.Collections;
+using TVA.Communication;
 using TVA.Measurements.Routing;
+using TVA.Measurements;
 
-namespace HistorianAdapters
+namespace TestAdapters
 {
     /// <summary>
-    /// Represents a virtual historian ouput adapter used for testing purposes - no data gets archived.
+    /// Represents a class used to stream in random values for input measurements.
     /// </summary>
-    public class VirtualOutputAdapter : OutputAdapterBase
-    {
+    /// <remarks>
+    /// <para>
+    /// Example connection string using manually defined measurements:<br/>
+    /// <c>outputMeasurements={P3:1345,60.0,1.0;P3:1346;P3:1347}</c><br/>
+    /// When defined manually outputMeasurements are defined as "ArchiveSource:PointID,Adder,Multiplier",
+    /// the adder and multiplier are optional defaulting to 0.0 and 1.0 respectively.
+    /// <br/>
+    /// </para>
+    /// <para>
+    /// Example connection string using measurements defined in a <see cref="DataSource"/> table:<br/>
+    /// <c>outputMeasurements={FILTER ActiveMeasurements WHERE SignalType IN ('IPHA','VPHA') AND Phase='+'}</c><br/>
+    /// <br/>
+    /// Basic filtering syntax is as follows:<br/>
+    /// <br/>
+    ///     {FILTER &lt;TableName&gt; WHERE &lt;Expression&gt; [ORDER BY &lt;SortField&gt;]}<br/>
+    /// <br/>
+    /// Source tables are expected to have at least the following fields:<br/>
+    /// <list type="table">
+    ///     <listheader>
+    ///         <term>Name</term>
+    ///         <term>Type</term>
+    ///         <description>Description.</description>
+    ///     </listheader>
+    ///     <item>
+    ///         <term>ID</term>
+    ///         <term>NVARCHAR</term>
+    ///         <description>Measurement key formatted as: ArchiveSource:PointID.</description>
+    ///     </item>
+    ///     <item>
+    ///         <term>PointTag</term>
+    ///         <term>NVARCHAR</term>
+    ///         <description>Point tag of measurement.</description>
+    ///     </item>
+    ///     <item>
+    ///         <term>Adder</term>
+    ///         <term>FLOAT</term>
+    ///         <description>Adder to apply to value, if any (default to 0.0).</description>
+    ///     </item>
+    ///     <item>
+    ///         <term>Multiplier</term>
+    ///         <term>FLOAT</term>
+    ///         <description>Multipler to apply to value, if any (default to 1.0).</description>
+    ///     </item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// Note that the random value produced for the points will be a number between 0 to 1, use the Adder and Multipler
+    /// to narrow down the range for your point. For example, to produce random frequency values between 59.95 and 60.05
+    /// you would use the following point defintion:<br/>
+    /// <c>outputMeasurements={LocalDevArchive:2,59.95,0.1}</c>
+    /// </para>
+    /// <para>
+    /// Note that expectedFramesPerSecond, lagTime and leadTime are required parameters, all other parameters are optional.
+    /// </para>
+    /// </remarks>
+    public class RandomValueInputAdapter : InputAdapterBase
+	{
+        #region [ Members ]
+
+        /// <summary>
+        /// Specifies the default value for the <see cref="DefaultPointsToSend"/> property.
+        /// </summary>
+        public const int DefaultPointsToSend = 5;
+
+        /// <summary>
+        /// Specifies the default value for the <see cref="InterpointDelay"/> property.
+        /// </summary>
+        public const int DefaultInterpointDelay = 33;
+
+        // Fields
+        private IMeasurement[] m_outputMeasurements;
+        private int m_pointsToSend;
+        private int m_interpointDelay;
+        private Thread m_publishThread;
+        private Regex m_filterExpression = new Regex("(FILTER[ ]+(?<TableName>\\w+)[ ]+WHERE[ ]+(?<Expression>.+)[ ]+ORDER[ ]+BY[ ]+(?<SortField>\\w+))|(FILTER[ ]+(?<TableName>\\w+)[ ]+WHERE[ ]+(?<Expression>.+))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        #endregion
+
+        #region [ Constructors ]
+
+        /// <summary>
+        /// Creates a new <see cref="RandomValueInputAdapter"/>.
+        /// </summary>
+        public RandomValueInputAdapter()
+        {
+            m_pointsToSend = DefaultPointsToSend;
+            m_interpointDelay = DefaultInterpointDelay;
+        }
+
+        #endregion
+
         #region [ Properties ]
 
         /// <summary>
-        /// Returns a flag that determines if measurements sent to this <see cref="VirtualOutputAdapter"/> are
-        /// destined for archival.
+        /// Gets flag that determines if the data input connects asynchronously.
         /// </summary>
-        public override bool OutputIsForArchive
+        protected override bool UseAsyncConnect
         {
             get
             {
@@ -257,13 +351,92 @@ namespace HistorianAdapters
         }
 
         /// <summary>
-        /// Gets flag that determines if this <see cref="VirtualOutputAdapter"/> uses an asynchronous connection.
+        /// Gets or sets the name of this <see cref="RandomValueInputAdapter"/>.
         /// </summary>
-        protected override bool UseAsyncConnect
+        public override string Name
         {
             get
             {
-                return false;
+                return "Random point generator defined to send " + m_pointsToSend + " points...";
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets measurements that the adapter will produce.
+        /// </summary>
+        public IMeasurement[] OutputMeasurements
+        {
+            get
+            {
+                return m_outputMeasurements;
+            }
+            set
+            {
+                m_outputMeasurements = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets number of test points to send.
+        /// </summary>
+        public int PointsToSend
+        {
+            get
+            {
+                return m_pointsToSend;
+            }
+            set
+            {
+                m_pointsToSend = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets number of milliseconds between points.
+        /// </summary>
+        public int InterpointDelay
+        {
+            get
+            {
+                return m_interpointDelay;
+            }
+            set
+            {
+                m_interpointDelay = value;
+            }
+        }
+
+        /// <summary>
+        /// Returns the detailed status of the data input source.
+        /// </summary>
+        public override string Status
+        {
+            get
+            {
+                const int MaxMeasurementsToShow = 6;
+
+                StringBuilder status = new StringBuilder();
+
+                status.Append("   Output measurement ID\'s: ");
+
+                if (OutputMeasurements.Length <= MaxMeasurementsToShow)
+                {
+                    status.Append(OutputMeasurements.ToDelimitedString(','));
+                }
+                else
+                {
+                    IMeasurement[] outputMeasurements = new IMeasurement[MaxMeasurementsToShow];
+                    Array.Copy(OutputMeasurements, 0, outputMeasurements, 0, MaxMeasurementsToShow);
+                    status.Append(outputMeasurements.ToDelimitedString(','));
+                    status.Append(",...");
+                }
+
+                status.AppendLine();
+                status.AppendFormat("  Number of points to send: {0}\r\n", PointsToSend);
+                status.AppendFormat("         Inter-point delay: {0}ms\r\n", InterpointDelay);
+                status.Append(base.Status);
+
+                return status.ToString();
             }
         }
 
@@ -272,34 +445,130 @@ namespace HistorianAdapters
         #region [ Methods ]
 
         /// <summary>
-        /// Attempts to connect to this <see cref="VirtualOutputAdapter"/>.
+        /// Intializes <see cref="RandomValueInputAdapter"/>.
+        /// </summary>
+        public override void Initialize()
+        {
+            Dictionary<string, string> settings = Settings;
+            string setting;
+
+            if (settings.TryGetValue("outputMeasurements", out setting))
+                OutputMeasurements = ParseOutputMeasurements(setting);
+
+            if (settings.TryGetValue("pointsToSend", out setting))
+                m_pointsToSend = int.Parse(setting);
+            else
+                m_pointsToSend = DefaultPointsToSend;
+
+            if (settings.TryGetValue("interpointDelay", out setting))
+                m_interpointDelay = int.Parse(setting);
+            else
+                m_interpointDelay = DefaultInterpointDelay;
+        }
+
+        /// <summary>
+        /// Gets a short one-line status of this <see cref="RandomValueInputAdapter"/>.
+        /// </summary>
+        /// <param name="maxLength">Maximum number of available characters for display.</param>
+        /// <returns>A short one-line summary of the current status of this <see cref="AdapterBase"/>.</returns>
+        public override string GetShortStatus(int maxLength)
+        {
+            return ("Total sent measurements " + ReceivedMeasurements.ToString("N0")).PadLeft(maxLength, '\xA0');
+        }
+
+        /// <summary>
+        /// Attempts to connect to data input source.
         /// </summary>
         protected override void AttemptConnection()
         {
+            m_publishThread = new Thread(PublishRandomPoints);
+            m_publishThread.Start();
         }
 
         /// <summary>
-        /// Attempts to disconnect from this <see cref="VirtualOutputAdapter"/>.
+        /// Attempts to disconnect from data input source.
         /// </summary>
         protected override void AttemptDisconnection()
         {
+            if (m_publishThread != null)
+                m_publishThread.Abort();
+
+            m_publishThread = null;
         }
 
-        /// <summary>
-        /// Serializes measurements to data output stream.
-        /// </summary>
-        protected override void ProcessMeasurements(IMeasurement[] measurements)
+        private void PublishRandomPoints()
         {
+            Random randomNumber = new Random();
+            Ticks timestamp;
+
+            for (int i = 0; i < m_pointsToSend; i++)
+            {
+                timestamp = DateTime.UtcNow.Ticks;
+
+                for (int j = 0; j < m_outputMeasurements.Length; j++)
+                {
+                    m_outputMeasurements[j].Timestamp = timestamp;
+                    m_outputMeasurements[j].Value = randomNumber.NextDouble();
+                }
+
+                // Publish next set of measurements to consumer...
+                this.OnNewMeasurements(m_outputMeasurements);
+
+                // Sleep until next desired publication...
+                Thread.Sleep(m_interpointDelay);
+            }
         }
 
-        /// <summary>
-        /// Gets a short one-line status of this <see cref="VirtualOutputAdapter"/>.
-        /// </summary>
-        public override string GetShortStatus(int maxLength)
+        // Parse output measurements from connection string
+        private IMeasurement[] ParseOutputMeasurements(string value)
         {
-            return "Virtual historian sending data to null...".CenterText(maxLength);
+            List<IMeasurement> measurements = new List<IMeasurement>();
+            MeasurementKey key;
+            Match filterMatch;
+
+            value = value.Trim();
+            filterMatch = m_filterExpression.Match(value);
+
+            if (filterMatch.Success)
+            {
+                string tableName = filterMatch.Result("${TableName}").Trim();
+                string expression = filterMatch.Result("${Expression}").Trim();
+                string sortField = filterMatch.Result("${SortField}").Trim();
+
+                foreach (DataRow row in DataSource.Tables[tableName].Select(expression, sortField))
+                {
+                    key = MeasurementKey.Parse(row["ID"].ToString());
+                    measurements.Add(new Measurement(key.ID, key.Source, row["PointTag"].ToNonNullString(), double.Parse(row["Adder"].ToString()), double.Parse(row["Multiplier"].ToString())));
+                }
+            }
+            else
+            {
+                string[] elem;
+                double adder, multipler;
+
+                foreach (string item in value.Split(';'))
+                {
+                    elem = item.Trim().Split(',');
+
+                    key = MeasurementKey.Parse(elem[0]);
+
+                    if (elem.Length > 1)
+                        adder = double.Parse(elem[1].Trim());
+                    else
+                        adder = 0.0D;
+
+                    if (elem.Length > 2)
+                        multipler = double.Parse(elem[2].Trim());
+                    else
+                        multipler = 1.0D;
+
+                    measurements.Add(new Measurement(key.ID, key.Source, string.Empty, adder, multipler));
+                }
+            }
+
+            return measurements.ToArray();
         }
 
         #endregion
-    }
+    }	
 }

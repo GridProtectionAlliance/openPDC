@@ -610,7 +610,7 @@ namespace openPDC
             DisplayStatusMessage("Loading system configuration...");
 
             // Attempt to load (or reload) system configuration
-            m_configuration = GetConfigurationDataSet(m_configurationType, m_connectionString);
+            m_configuration = GetConfigurationDataSet(m_configurationType, m_connectionString, m_dataProviderString);
 
             if (m_configuration != null)
             {
@@ -623,7 +623,7 @@ namespace openPDC
         }
 
         // Load system configuration data set
-        private DataSet GetConfigurationDataSet(ConfigurationType configType, string connectionString)
+        private DataSet GetConfigurationDataSet(ConfigurationType configType, string connectionString, string dataProviderString)
         {
             DataSet configuration = null;
             DataTable entities, entity;
@@ -640,7 +640,7 @@ namespace openPDC
 
                     try
                     {
-                        settings = m_dataProviderString.ParseKeyValuePairs();
+                        settings = dataProviderString.ParseKeyValuePairs();
                         assemblyName = settings["AssemblyName"].ToNonNullString();
                         connectionTypeName = settings["ConnectionType"].ToNonNullString();
                         adapterTypeName = settings["AdapterType"].ToNonNullString();
@@ -694,7 +694,7 @@ namespace openPDC
                     {
                         DisplayStatusMessage("WARNING: Failed to load database configuration due to exception: {0} Attempting to use last known good configuration.", ex.Message);
                         m_serviceHelper.ErrorLogger.Log(ex);
-                        configuration = GetConfigurationDataSet(ConfigurationType.XmlFile, m_cachedConfigurationFile);
+                        configuration = GetConfigurationDataSet(ConfigurationType.XmlFile, m_cachedConfigurationFile, null);
                     }
                     finally
                     {
@@ -722,7 +722,7 @@ namespace openPDC
                     {
                         DisplayStatusMessage("WARNING: Failed to load webservice configuration due to exception: {0} Attempting to use last known good configuration.", ex.Message);
                         m_serviceHelper.ErrorLogger.Log(ex);
-                        configuration = GetConfigurationDataSet(ConfigurationType.XmlFile, m_cachedConfigurationFile);
+                        configuration = GetConfigurationDataSet(ConfigurationType.XmlFile, m_cachedConfigurationFile, null);
                     }
 
                     break;
