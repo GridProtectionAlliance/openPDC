@@ -471,21 +471,25 @@ namespace openPDC
             // Create input adapters collection
             m_inputAdapters = new InputAdapterCollection();
             m_inputAdapters.NewMeasurements += NewMeasurementsHandler;
-            m_allAdapters.Add(m_inputAdapters);
             m_serviceHelper.ServiceComponents.Add(m_inputAdapters);
 
             // Create action adapters collection
             m_actionAdapters = new ActionAdapterCollection();
             m_actionAdapters.NewMeasurements += NewMeasurementsHandler;
             m_actionAdapters.UnpublishedSamples += UnpublishedSamplesHandler;
-            m_allAdapters.Add(m_actionAdapters);
             m_serviceHelper.ServiceComponents.Add(m_actionAdapters);
 
             // Create output adapters collection
             m_outputAdapters = new OutputAdapterCollection();
             m_outputAdapters.UnprocessedMeasurements += UnprocessedMeasurementsHandler;
-            m_allAdapters.Add(m_outputAdapters);
             m_serviceHelper.ServiceComponents.Add(m_outputAdapters);
+
+            // We group these adapters such that they are initialized in the following order: output, input, action. This
+            // is done so that the archival capabilities will be setup before we start receiving input and the input data
+            // will be flowing before any actions get established for the input.
+            m_allAdapters.Add(m_outputAdapters);
+            m_allAdapters.Add(m_inputAdapters);
+            m_allAdapters.Add(m_actionAdapters);
 
             // Define remote client requests (i.e., console commands)
             m_serviceHelper.ClientRequestHandlers.Add(new ClientRequestHandler("List", "Displays status for specified adapter or collection", ListRequestHandler));
