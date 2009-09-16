@@ -12,9 +12,9 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTitle("PMU Connection Tester")> 
 <Assembly: AssemblyDescription("Multi-protocol PMU Connection Tester")> 
 <Assembly: AssemblyCompany("TVA")> 
-<Assembly: AssemblyProduct("PMU Connection Tester")> 
-<Assembly: AssemblyCopyright("Copyright © TVA 2009")> 
-<Assembly: AssemblyTrademark("James Ritchie Carroll")> 
+<Assembly: AssemblyProduct("openPDC")> 
+<Assembly: AssemblyCopyright("No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.")> 
+<Assembly: AssemblyTrademark("Author: J. Ritchie Carroll")> 
 <Assembly: NeutralResourcesLanguageAttribute("en-US")> 
 <Assembly: ComVisible(False)> 
 

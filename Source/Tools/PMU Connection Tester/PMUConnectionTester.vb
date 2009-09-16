@@ -954,7 +954,6 @@ Public Class PMUConnectionTester
             Dim localNamespace As String = Me.GetType.Namespace
             .SetCompanyUrl("http://www.tva.gov/")
             .SetCompanyLogo(EntryAssembly.GetEmbeddedResource(localNamespace & ".TVAPSOLogo.png"))
-            .SetCompanyDisclaimer(EntryAssembly.GetEmbeddedResource(localNamespace & ".Disclaimer.txt"))
             .HideAssembliesTab()
             .ShowDialog(Me)
         End With

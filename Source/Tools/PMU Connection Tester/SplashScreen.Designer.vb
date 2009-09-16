@@ -13,10 +13,8 @@ Partial Class SplashScreen
         MyBase.Dispose(disposing)
     End Sub
     Friend WithEvents ApplicationTitle As System.Windows.Forms.Label
-    Friend WithEvents Version As System.Windows.Forms.Label
     Friend WithEvents Copyright As System.Windows.Forms.Label
     Friend WithEvents MainLayoutPanel As System.Windows.Forms.TableLayoutPanel
-    Friend WithEvents DetailsLayoutPanel As System.Windows.Forms.TableLayoutPanel
 
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
@@ -27,10 +25,10 @@ Partial Class SplashScreen
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.MainLayoutPanel = New System.Windows.Forms.TableLayoutPanel
-        Me.DetailsLayoutPanel = New System.Windows.Forms.TableLayoutPanel
-        Me.Version = New System.Windows.Forms.Label
         Me.Copyright = New System.Windows.Forms.Label
         Me.ApplicationTitle = New System.Windows.Forms.Label
+        Me.Version = New System.Windows.Forms.Label
+        Me.DetailsLayoutPanel = New System.Windows.Forms.TableLayoutPanel
         Me.MainLayoutPanel.SuspendLayout()
         Me.DetailsLayoutPanel.SuspendLayout()
         Me.SuspendLayout()
@@ -39,59 +37,31 @@ Partial Class SplashScreen
         '
         Me.MainLayoutPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None
         Me.MainLayoutPanel.ColumnCount = 2
-        Me.MainLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 219.0!))
-        Me.MainLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 174.0!))
+        Me.MainLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 207.0!))
+        Me.MainLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 186.0!))
         Me.MainLayoutPanel.Controls.Add(Me.DetailsLayoutPanel, 1, 1)
         Me.MainLayoutPanel.Controls.Add(Me.ApplicationTitle, 1, 0)
         Me.MainLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill
         Me.MainLayoutPanel.Location = New System.Drawing.Point(0, 0)
         Me.MainLayoutPanel.Name = "MainLayoutPanel"
         Me.MainLayoutPanel.RowCount = 2
-        Me.MainLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 206.0!))
-        Me.MainLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50.0!))
+        Me.MainLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 213.0!))
+        Me.MainLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 43.0!))
         Me.MainLayoutPanel.Size = New System.Drawing.Size(497, 296)
         Me.MainLayoutPanel.TabIndex = 0
         '
-        'DetailsLayoutPanel
-        '
-        Me.DetailsLayoutPanel.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.DetailsLayoutPanel.BackColor = System.Drawing.Color.Transparent
-        Me.DetailsLayoutPanel.ColumnCount = 1
-        Me.DetailsLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 247.0!))
-        Me.DetailsLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 142.0!))
-        Me.DetailsLayoutPanel.Controls.Add(Me.Version, 0, 0)
-        Me.DetailsLayoutPanel.Controls.Add(Me.Copyright, 0, 1)
-        Me.DetailsLayoutPanel.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.DetailsLayoutPanel.Location = New System.Drawing.Point(265, 211)
-        Me.DetailsLayoutPanel.Name = "DetailsLayoutPanel"
-        Me.DetailsLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.0!))
-        Me.DetailsLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.0!))
-        Me.DetailsLayoutPanel.Size = New System.Drawing.Size(186, 79)
-        Me.DetailsLayoutPanel.TabIndex = 1
-        '
-        'Version
-        '
-        Me.Version.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.Version.BackColor = System.Drawing.Color.Transparent
-        Me.Version.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Version.ForeColor = System.Drawing.Color.LemonChiffon
-        Me.Version.Location = New System.Drawing.Point(3, 9)
-        Me.Version.Name = "Version"
-        Me.Version.Size = New System.Drawing.Size(241, 20)
-        Me.Version.TabIndex = 1
-        Me.Version.Text = "Version"
-        '
         'Copyright
         '
-        Me.Copyright.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.Copyright.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.Copyright.BackColor = System.Drawing.Color.Transparent
         Me.Copyright.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Copyright.ForeColor = System.Drawing.Color.LemonChiffon
-        Me.Copyright.Location = New System.Drawing.Point(3, 39)
+        Me.Copyright.Location = New System.Drawing.Point(25, 24)
         Me.Copyright.Name = "Copyright"
-        Me.Copyright.Size = New System.Drawing.Size(241, 40)
+        Me.Copyright.Size = New System.Drawing.Size(249, 48)
         Me.Copyright.TabIndex = 2
         Me.Copyright.Text = "Copyright"
+        Me.Copyright.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'ApplicationTitle
         '
@@ -99,12 +69,42 @@ Partial Class SplashScreen
         Me.ApplicationTitle.BackColor = System.Drawing.Color.Transparent
         Me.ApplicationTitle.Font = New System.Drawing.Font("Tahoma", 22.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ApplicationTitle.ForeColor = System.Drawing.Color.LemonChiffon
-        Me.ApplicationTitle.Location = New System.Drawing.Point(222, 23)
+        Me.ApplicationTitle.Location = New System.Drawing.Point(211, 35)
         Me.ApplicationTitle.Name = "ApplicationTitle"
-        Me.ApplicationTitle.Size = New System.Drawing.Size(272, 160)
+        Me.ApplicationTitle.Size = New System.Drawing.Size(281, 142)
         Me.ApplicationTitle.TabIndex = 0
         Me.ApplicationTitle.Text = "ApplicationTitle"
         Me.ApplicationTitle.TextAlign = System.Drawing.ContentAlignment.BottomCenter
+        '
+        'Version
+        '
+        Me.Version.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.Version.BackColor = System.Drawing.Color.Transparent
+        Me.Version.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Version.ForeColor = System.Drawing.Color.LemonChiffon
+        Me.Version.Location = New System.Drawing.Point(22, 0)
+        Me.Version.Name = "Version"
+        Me.Version.Size = New System.Drawing.Size(232, 20)
+        Me.Version.TabIndex = 1
+        Me.Version.Text = "Version"
+        Me.Version.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'DetailsLayoutPanel
+        '
+        Me.DetailsLayoutPanel.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.DetailsLayoutPanel.BackColor = System.Drawing.Color.Transparent
+        Me.DetailsLayoutPanel.ColumnCount = 1
+        Me.DetailsLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle)
+        Me.DetailsLayoutPanel.Controls.Add(Me.Version, 0, 0)
+        Me.DetailsLayoutPanel.Controls.Add(Me.Copyright, 0, 1)
+        Me.DetailsLayoutPanel.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.DetailsLayoutPanel.Location = New System.Drawing.Point(213, 216)
+        Me.DetailsLayoutPanel.Name = "DetailsLayoutPanel"
+        Me.DetailsLayoutPanel.RowCount = 2
+        Me.DetailsLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle)
+        Me.DetailsLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle)
+        Me.DetailsLayoutPanel.Size = New System.Drawing.Size(277, 77)
+        Me.DetailsLayoutPanel.TabIndex = 1
         '
         'SplashScreen
         '
@@ -124,5 +124,7 @@ Partial Class SplashScreen
         Me.ResumeLayout(False)
 
     End Sub
+    Friend WithEvents Version As System.Windows.Forms.Label
+    Friend WithEvents DetailsLayoutPanel As System.Windows.Forms.TableLayoutPanel
 
 End Class
