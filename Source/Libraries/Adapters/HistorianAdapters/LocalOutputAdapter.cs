@@ -12,8 +12,12 @@
 //       Generated original version of source code.
 //  09/11/2009 - Pinal C. Patel
 //       Added support to refresh metadata from one or more external sources.
-//  9/15/2009 - Stephen C. Wills
+//  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
+//  09/17/2009 - Pinal C. Patel
+//       Added option to refresh metadata during connection.
+//       Modified RefreshMetadata() to perform synchronous refresh.
+//       Corrected the implementation of Dispose().
 //
 //*******************************************************************************************************
 
@@ -236,6 +240,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using TVA;
 using TVA.Historian.Files;
 using TVA.Historian.MetadataProviders;
@@ -257,6 +262,7 @@ namespace HistorianAdapters
         private ArchiveFile m_archive;
         private Services m_archiveServices;
         private MetadataProviders m_metadataProviders;
+        private bool m_refreshMetadata;
         private long m_measurementsArchived;
         private bool m_disposed;
 
@@ -270,6 +276,11 @@ namespace HistorianAdapters
         public LocalOutputAdapter()
             : base()
         {
+            m_refreshMetadata = true;
+            m_archive = new ArchiveFile();
+            m_archive.MetadataFile = new MetadataFile();
+            m_archive.StateFile = new StateFile();
+            m_archive.IntercomFile = new IntercomFile();
         }
 
         #endregion
@@ -294,7 +305,7 @@ namespace HistorianAdapters
         {
             get
             {
-                return false;
+                return true;
             }
         }
 
@@ -308,7 +319,30 @@ namespace HistorianAdapters
         [AdapterCommand("Refreshes metadata using all available and enabled providers.")]
         public void RefreshMetadata()
         {
-            m_metadataProviders.RefreshAll();
+            bool queueEnabled = InternalProcessQueue.Enabled;
+            try
+            {
+                InternalProcessQueue.Stop();
+                // Synchronously refresh the metabase.
+                lock (m_metadataProviders.Adapters)
+                {
+                    foreach (IMetadataProvider provider in m_metadataProviders.Adapters)
+                    {
+                        provider.Refresh();
+                    }
+                }
+
+                // Wait for the metabase to synchronize.
+                while (m_archive.StateFile.RecordsOnDisk != m_archive.MetadataFile.RecordsOnDisk)
+                {
+                    Thread.Sleep(100);
+                }
+            }
+            finally
+            {
+                if (queueEnabled)
+                    InternalProcessQueue.Start();
+            }
         }
 
         /// <summary>
@@ -319,53 +353,55 @@ namespace HistorianAdapters
         {
             string archivePath;
             string instanceName;
+            string refreshMetadata;
+            string errorMessage = "{0} is missing from Settings: Example: InstanceName=XX;ArchivePath=c:\\;RefreshMetadata=Yes";
             Dictionary<string, string> settings = Settings;
 
             // Validate settings.
+            if (!settings.TryGetValue("instancename", out instanceName))
+                throw new ArgumentException(string.Format(errorMessage, "InstanceName"));
+
             if (!settings.TryGetValue("archivepath", out archivePath))
                 archivePath = FilePath.GetAbsolutePath("");
 
-            if (!settings.TryGetValue("instancename", out instanceName))
-                throw new ArgumentException("InstanceName is missing. Example: ArchivePath=c:\\;InstanceName=XX");
+            if (settings.TryGetValue("refreshmetadata", out refreshMetadata))
+                m_refreshMetadata = bool.Parse(refreshMetadata);
 
-            // Initialize metadata file.
-            MetadataFile metadataFile = new MetadataFile();          
-            metadataFile.FileName = Path.Combine(archivePath, instanceName + "_dbase.dat");
-            metadataFile.PersistSettings = true;
-            metadataFile.Initialize();
+            // Initialize metadata file.           
+            m_archive.MetadataFile.FileName = Path.Combine(archivePath, instanceName + "_dbase.dat");
+            m_archive.MetadataFile.PersistSettings = true;
+            m_archive.MetadataFile.Initialize();
 
             // Initialize state file.
-            StateFile stateFile = new StateFile();
-            stateFile.FileName = Path.Combine(archivePath, instanceName + "_startup.dat");
-            stateFile.PersistSettings = true;
-            stateFile.Initialize();
+            m_archive.StateFile.FileName = Path.Combine(archivePath, instanceName + "_startup.dat");
+            m_archive.StateFile.PersistSettings = true;
+            m_archive.StateFile.Initialize();
 
             // Initialize intercom file.
-            IntercomFile intercomFile = new IntercomFile();
-            intercomFile.FileName = Path.Combine(archivePath, "scratch.dat");
-            intercomFile.PersistSettings = true;
-            intercomFile.Initialize();
+            m_archive.IntercomFile.FileName = Path.Combine(archivePath, "scratch.dat");
+            m_archive.IntercomFile.PersistSettings = true;
+            m_archive.IntercomFile.Initialize();
 
-            // Initialize data archive file.
-            m_archive = new ArchiveFile();
+            // Initialize data archive file.           
             m_archive.FileName = Path.Combine(archivePath, instanceName + "_archive.d");
+            m_archive.CompressData = false;
             m_archive.PersistSettings = true;
-            m_archive.MetadataFile = metadataFile;
-            m_archive.StateFile = stateFile;
-            m_archive.IntercomFile = intercomFile;
             m_archive.Initialize();
 
             // Provide web service support.
             m_archiveServices = new Services();
             m_archiveServices.AdapterLoaded += ArchiveServices_AdapterLoaded;
             m_archiveServices.AdapterUnloaded += ArchiveServices_AdapterUnloaded;
+            m_archiveServices.AdapterLoadException += ArchiveServices_AdapterLoadException;
             m_archiveServices.Initialize();
 
             // Provide metadata sync support.
             m_metadataProviders = new MetadataProviders();
+            m_metadataProviders.WatchForAdapters = false;
             m_metadataProviders.AdapterLoaded += MetadataProviders_AdapterLoaded;
             m_metadataProviders.AdapterUnloaded += MetadataProviders_AdapterUnloaded;
-            m_metadataProviders.Initialize();
+            m_metadataProviders.AdapterLoadException += MetadataProviders_AdapterLoadException;
+            m_metadataProviders.Initialize(new Type[] { typeof(AdoMetadataProvider) });
         }
 
         /// <summary>
@@ -397,6 +433,7 @@ namespace HistorianAdapters
                             m_archiveServices.Dispose();
                             m_archiveServices.AdapterLoaded -= ArchiveServices_AdapterLoaded;
                             m_archiveServices.AdapterUnloaded -= ArchiveServices_AdapterUnloaded;
+                            m_archiveServices.AdapterLoadException -= ArchiveServices_AdapterLoadException;
                         }
 
                         if (m_metadataProviders != null)
@@ -404,23 +441,30 @@ namespace HistorianAdapters
                             m_metadataProviders.Dispose();
                             m_metadataProviders.AdapterLoaded -= MetadataProviders_AdapterLoaded;
                             m_metadataProviders.AdapterUnloaded -= MetadataProviders_AdapterUnloaded;
+                            m_metadataProviders.AdapterLoadException -= MetadataProviders_AdapterLoadException;
                         }
 
                         if (m_archive != null)
                         {
-                            m_archive.MetadataFile = null;
-                            m_archive.StateFile = null;
-                            m_archive.IntercomFile = null;
                             m_archive.Dispose();
 
                             if (m_archive.MetadataFile != null)
+                            {
                                 m_archive.MetadataFile.Dispose();
+                                m_archive.MetadataFile = null;
+                            }
 
                             if (m_archive.StateFile != null)
+                            {
                                 m_archive.StateFile.Dispose();
+                                m_archive.StateFile = null;
+                            }
 
                             if (m_archive.IntercomFile != null)
+                            {
                                 m_archive.IntercomFile.Dispose();
+                                m_archive.IntercomFile = null;
+                            }
                         }
                     }
                 }
@@ -441,6 +485,14 @@ namespace HistorianAdapters
             m_archive.StateFile.Open();
             m_archive.IntercomFile.Open();
             m_archive.Open();
+
+            if (m_refreshMetadata)
+            {
+                RefreshMetadata();
+                m_refreshMetadata = false;
+            }
+
+            OnConnected();
         }
 
         /// <summary>
@@ -507,6 +559,11 @@ namespace HistorianAdapters
             OnStatusMessage("{0} has been unloaded.", e.Argument.GetType().Name);
         }
 
+        private void ArchiveServices_AdapterLoadException(object sender, EventArgs<Type, Exception> e)
+        {
+            OnStatusMessage("{0} could not be loaded - {1}", e.Argument1.Name, e.Argument2.Message);
+        }
+
         private void ArchiveServices_ServiceProcessError(object sender, EventArgs<Exception> e)
         {
             OnProcessException(e.Argument);
@@ -532,6 +589,11 @@ namespace HistorianAdapters
             OnStatusMessage("{0} has been unloaded.", e.Argument.GetType().Name);
         }
 
+        private void MetadataProviders_AdapterLoadException(object sender, EventArgs<Type, Exception> e)
+        {
+            OnStatusMessage("{0} could not be loaded - {1}", e.Argument1.Name, e.Argument2.Message);
+        }
+
         private void MetadataProviders_MetadataRefreshStart(object sender, EventArgs e)
         {
             OnStatusMessage("{0} has started metadata refresh...", sender.GetType().Name);
@@ -550,7 +612,6 @@ namespace HistorianAdapters
         private void MetadataProviders_MetadataRefreshException(object sender, EventArgs<Exception> e)
         {
             OnProcessException(e.Argument);
-            OnStatusMessage("{0} has encountered an exception on metadata refresh.", sender.GetType().Name);
         }
 
         #endregion
