@@ -235,6 +235,7 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using openPDCManager.Web.Data.BusinessObjects;
 using openPDCManager.Web.Data.Entities;
+using System;
 
 namespace PCS.Services.Service
 {
@@ -245,46 +246,102 @@ namespace PCS.Services.Service
     [ServiceContract]
     public interface IPhasorDataService
     {
-        [OperationContract]
-        List<Pdc> GetPdcList();
+		//[OperationContract]
+		//List<Pdc> GetPdcList();
 
-        [OperationContract]
-        List<BasicPmuInfo> GetValidatedPmuList();
+		//[OperationContract]
+		//List<BasicPmuInfo> GetValidatedPmuList();
+
+		//[OperationContract]
+		//List<BasicPmuInfo> GetAllPmuList();
+
+		//[OperationContract]
+		//List<Historian> GetHistorianList();
+
+		//[OperationContract]
+		//List<CalculatedMeasurement> GetCalculatedMeasurementList();
+
+		//[OperationContract]
+		//List<OutputStream> GetOutputStreamList();
+
+		//[OperationContract]
+		//Dictionary<int, string> GetCompanyList();
+		
+		//[OperationContract]
+		//Dictionary<int, string> GetVendorList();
+
+		//[OperationContract]
+		//Dictionary<int, string> GetProtocolList();
+
+		//[OperationContract]
+		//List<string> GetTransportProtocolList();
+
+		//[OperationContract]
+		//List<string> GetParityList();
+
+		//[OperationContract]
+		//List<string> GetStopBitList();
+
+		//[OperationContract]
+		//Dictionary<string, string> GetTimeZonesList();
+
+		//[OperationContract]
+		//List<StatusReport> GetStatusReportList();
+
+		#region " Manage Node Code"
 
 		[OperationContract]
-		List<BasicPmuInfo> GetAllPmuList();
-
-        [OperationContract]
-        List<Historian> GetHistorianList();
-
-        [OperationContract]
-        List<CalculatedMeasurement> GetCalculatedMeasurementList();
-
-        [OperationContract]
-        List<OutputStream> GetOutputStreamList();
+		List<Node> GetNodeList();
 
 		[OperationContract]
-		Dictionary<int, string> GetCompanyList();
+		Dictionary<Guid, string> GetNodes(bool ActiveOnly);
 
 		[OperationContract]
-		Dictionary<int, string> GetVendorList();
+		string SaveNode(Node node, bool isNew);
+
+		#endregion
+
+		#region " Manage Company Code"
 
 		[OperationContract]
-		Dictionary<int, string> GetProtocolList();
+		List<Company> GetCompanyList();
 
 		[OperationContract]
-		List<string> GetTransportProtocolList();
+		Dictionary<int, string> GetCompanies();
 
 		[OperationContract]
-		List<string> GetParityList();
+		string SaveCompany(Company company, bool isNew);
+
+		#endregion
+
+		#region " Manage Historian Code"
 
 		[OperationContract]
-		List<string> GetStopBitList();
+		List<Historian> GetHistorianList();
+
+		#endregion
+
+		#region " Manage Vendor Code"
 
 		[OperationContract]
-		Dictionary<string, string> GetTimeZonesList();
+		List<Vendor> GetVendorList();
 
 		[OperationContract]
-		List<StatusReport> GetStatusReportList();
-    }
+		Dictionary<int, string> GetVendors();
+
+		[OperationContract]
+		string SaveVendor(Vendor vendor, bool isNew);
+
+		#endregion
+
+		#region " Manage Vendor Device Code"
+
+		[OperationContract]
+		List<VendorDevice> GetVendorDeviceList();
+
+		[OperationContract]
+		string SaveVendorDevice(VendorDevice vendorDevice, bool isNew);
+
+		#endregion
+	}
 }

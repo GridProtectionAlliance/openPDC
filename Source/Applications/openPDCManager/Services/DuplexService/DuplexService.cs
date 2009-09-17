@@ -335,24 +335,26 @@ namespace PCS.Services.DuplexService
 
             //Any message from a client we haven't seen before causes the new client to be added to our list
             //(Basically, treated as a "Connect" message)
-            lock (syncRoot)
-            {
-                if (!clients.ContainsKey(session))
-                {
-                    clients.Add(session, ch);
-                    OperationContext.Current.Channel.Closing += new EventHandler(Channel_Closing);
-                    OperationContext.Current.Channel.Faulted += new EventHandler(Channel_Faulted);
-                    OnConnected(session);
 
-                    PushMessageToClient(session, new LivePhasorDataMessage(){
-                                                    PmuDistributionList = CommonFunctions.GetPmuDistribution(),
-                                                    DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(),
-                                                    InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus()
-                                                    }
-                    );
+			// TODO: Uncomment this in the future
+			//lock (syncRoot)
+			//{
+			//    if (!clients.ContainsKey(session))
+			//    {
+			//        clients.Add(session, ch);
+			//        OperationContext.Current.Channel.Closing += new EventHandler(Channel_Closing);
+			//        OperationContext.Current.Channel.Faulted += new EventHandler(Channel_Faulted);
+			//        OnConnected(session);
 
-                }
-            }
+			//        PushMessageToClient(session, new LivePhasorDataMessage(){
+			//                                        PmuDistributionList = CommonFunctions.GetPmuDistribution(),
+			//                                        DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(),
+			//                                        InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus()
+			//                                        }
+			//        );
+
+			//    }
+			//}
 
             //If it's a Disconnect message, treat as disconnection
             if (msg is DisconnectMessage)
