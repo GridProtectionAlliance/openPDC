@@ -27,14 +27,14 @@ namespace openPDCManager.Silverlight.Pages
 			InitializeComponent();
 			binding.MaxReceivedMessageSize = 65536 * 3;
 			client = new PhasorDataServiceClient(binding, address);
-			client.GetStatusReportListCompleted += new EventHandler<GetStatusReportListCompletedEventArgs>(client_GetStatusReportListCompleted);
-			client.GetStatusReportListAsync();
+			//client.GetStatusReportListCompleted += new EventHandler<GetStatusReportListCompletedEventArgs>(client_GetStatusReportListCompleted);
+			//client.GetStatusReportListAsync();
 		}
-		void client_GetStatusReportListCompleted(object sender, GetStatusReportListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ItemControlCompanyStatus.ItemsSource = e.Result;
-		}
+		//void client_GetStatusReportListCompleted(object sender, GetStatusReportListCompletedEventArgs e)
+		//{
+		//    if (e.Error == null)
+		//        ItemControlCompanyStatus.ItemsSource = e.Result;
+		//}
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{

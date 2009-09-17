@@ -36,14 +36,14 @@ namespace openPDCManager.Silverlight.Pages
             InitializeComponent();
 			Loaded += new RoutedEventHandler(ManagePDCs_Loaded);
             client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
-            client.GetPdcListCompleted += new EventHandler<GetPdcListCompletedEventArgs>(client_GetPdcListCompleted);
-			client.GetTransportProtocolListCompleted += new EventHandler<GetTransportProtocolListCompletedEventArgs>(client_GetTransportProtocolListCompleted);
-			client.GetCompanyListCompleted += new EventHandler<GetCompanyListCompletedEventArgs>(client_GetCompanyListCompleted);
-			client.GetVendorListCompleted += new EventHandler<GetVendorListCompletedEventArgs>(client_GetVendorListCompleted);
-			client.GetProtocolListCompleted += new EventHandler<GetProtocolListCompletedEventArgs>(client_GetProtocolListCompleted);
-			client.GetParityListCompleted += new EventHandler<GetParityListCompletedEventArgs>(client_GetParityListCompleted);
-			client.GetStopBitListCompleted += new EventHandler<GetStopBitListCompletedEventArgs>(client_GetStopBitListCompleted);
-			client.GetTimeZonesListCompleted += new EventHandler<GetTimeZonesListCompletedEventArgs>(client_GetTimeZonesListCompleted);
+			//client.GetPdcListCompleted += new EventHandler<GetPdcListCompletedEventArgs>(client_GetPdcListCompleted);
+			//client.GetTransportProtocolListCompleted += new EventHandler<GetTransportProtocolListCompletedEventArgs>(client_GetTransportProtocolListCompleted);
+			//client.GetCompanyListCompleted += new EventHandler<GetCompanyListCompletedEventArgs>(client_GetCompanyListCompleted);
+			//client.GetVendorListCompleted += new EventHandler<GetVendorListCompletedEventArgs>(client_GetVendorListCompleted);
+			//client.GetProtocolListCompleted += new EventHandler<GetProtocolListCompletedEventArgs>(client_GetProtocolListCompleted);
+			//client.GetParityListCompleted += new EventHandler<GetParityListCompletedEventArgs>(client_GetParityListCompleted);
+			//client.GetStopBitListCompleted += new EventHandler<GetStopBitListCompletedEventArgs>(client_GetStopBitListCompleted);
+			//client.GetTimeZonesListCompleted += new EventHandler<GetTimeZonesListCompletedEventArgs>(client_GetTimeZonesListCompleted);
 			ComboBoxTransportProtocol.SelectionChanged += new SelectionChangedEventHandler(ComboBoxTransportProtocol_SelectionChanged);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
@@ -56,38 +56,38 @@ namespace openPDCManager.Silverlight.Pages
 		{
 			ClearForm();
 		}
-		void client_GetTimeZonesListCompleted(object sender, GetTimeZonesListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboBoxTimeZone.ItemsSource = e.Result;
-			if (ComboBoxTimeZone.Items.Count > 0)
-				ComboBoxTimeZone.SelectedIndex = 0;
-		}
-		void client_GetStopBitListCompleted(object sender, GetStopBitListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboBoxStopBits.ItemsSource = e.Result;
-			if (ComboBoxStopBits.Items.Count > 0)
-				ComboBoxStopBits.SelectedIndex = 0;
-		}
-		void client_GetParityListCompleted(object sender, GetParityListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboBoxParity.ItemsSource = e.Result;
-			if (ComboBoxParity.Items.Count > 0)
-				ComboBoxParity.SelectedIndex = 0;
-		}
+		//void client_GetTimeZonesListCompleted(object sender, GetTimeZonesListCompletedEventArgs e)
+		//{
+		//    if (e.Error == null)
+		//        ComboBoxTimeZone.ItemsSource = e.Result;
+		//    if (ComboBoxTimeZone.Items.Count > 0)
+		//        ComboBoxTimeZone.SelectedIndex = 0;
+		//}
+		//void client_GetStopBitListCompleted(object sender, GetStopBitListCompletedEventArgs e)
+		//{
+		//    if (e.Error == null)
+		//        ComboBoxStopBits.ItemsSource = e.Result;
+		//    if (ComboBoxStopBits.Items.Count > 0)
+		//        ComboBoxStopBits.SelectedIndex = 0;
+		//}
+		//void client_GetParityListCompleted(object sender, GetParityListCompletedEventArgs e)
+		//{
+		//    if (e.Error == null)
+		//        ComboBoxParity.ItemsSource = e.Result;
+		//    if (ComboBoxParity.Items.Count > 0)
+		//        ComboBoxParity.SelectedIndex = 0;
+		//}
 		void ComboBoxTransportProtocol_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			SetTransportProtocolFields();
 		}
-		void client_GetProtocolListCompleted(object sender, GetProtocolListCompletedEventArgs e)
-		{
-			if (e.Error == null)			
-				ComboBoxProtocol.ItemsSource = e.Result;
-			if (ComboBoxProtocol.Items.Count > 0)
-				ComboBoxProtocol.SelectedIndex = 0;
-		}
+		//void client_GetProtocolListCompleted(object sender, GetProtocolListCompletedEventArgs e)
+		//{
+		//    if (e.Error == null)			
+		//        ComboBoxProtocol.ItemsSource = e.Result;
+		//    if (ComboBoxProtocol.Items.Count > 0)
+		//        ComboBoxProtocol.SelectedIndex = 0;
+		//}
 		void client_GetVendorListCompleted(object sender, GetVendorListCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -102,36 +102,36 @@ namespace openPDCManager.Silverlight.Pages
 			if (ComboBoxCompany.Items.Count > 0)
 				ComboBoxCompany.SelectedIndex = 0;
 		}
-		void client_GetTransportProtocolListCompleted(object sender, GetTransportProtocolListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboBoxTransportProtocol.ItemsSource = e.Result;
-			if (ComboBoxTransportProtocol.Items.Count > 0)
-				ComboBoxTransportProtocol.SelectedIndex = 0;			
-		}		
-        void client_GetPdcListCompleted(object sender, GetPdcListCompletedEventArgs e)
-        {
-			if (e.Error == null)
-				ListBoxPdcList.ItemsSource = e.Result;
-        }        
+		//void client_GetTransportProtocolListCompleted(object sender, GetTransportProtocolListCompletedEventArgs e)
+		//{
+		//    if (e.Error == null)
+		//        ComboBoxTransportProtocol.ItemsSource = e.Result;
+		//    if (ComboBoxTransportProtocol.Items.Count > 0)
+		//        ComboBoxTransportProtocol.SelectedIndex = 0;			
+		//}		
+		//void client_GetPdcListCompleted(object sender, GetPdcListCompletedEventArgs e)
+		//{
+		//    if (e.Error == null)
+		//        ListBoxPdcList.ItemsSource = e.Result;
+		//}        
 		void ListBoxPdcList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			Pdc selectedPdc = ListBoxPdcList.SelectedItem as Pdc;
-			GridPdcDetail.DataContext = selectedPdc;
-			ComboBoxCompany.SelectedItem = new KeyValuePair<int, string>(selectedPdc.CompanyID, selectedPdc.CompanyName);
-			ComboBoxProtocol.SelectedItem = new KeyValuePair<int, string>(selectedPdc.ProtocolID, selectedPdc.ProtocolName);
-			ComboBoxVendor.SelectedItem = new KeyValuePair<int, string>(selectedPdc.VendorDeviceID, selectedPdc.VendorDeviceDescription);
+			//Pdc selectedPdc = ListBoxPdcList.SelectedItem as Pdc;
+			//GridPdcDetail.DataContext = selectedPdc;
+			//ComboBoxCompany.SelectedItem = new KeyValuePair<int, string>(selectedPdc.CompanyID, selectedPdc.CompanyName);
+			//ComboBoxProtocol.SelectedItem = new KeyValuePair<int, string>(selectedPdc.ProtocolID, selectedPdc.ProtocolName);
+			//ComboBoxVendor.SelectedItem = new KeyValuePair<int, string>(selectedPdc.VendorDeviceID, selectedPdc.VendorDeviceDescription);
 		}
 		void ManagePDCs_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetPdcListAsync();
-			client.GetTransportProtocolListAsync();
-			client.GetCompanyListAsync();
-			client.GetVendorListAsync();
-			client.GetProtocolListAsync();
-			client.GetParityListAsync();
-			client.GetStopBitListAsync();
-			client.GetTimeZonesListAsync();
+			//client.GetPdcListAsync();
+			//client.GetTransportProtocolListAsync();
+			//client.GetCompanyListAsync();
+			//client.GetVendorListAsync();
+			//client.GetProtocolListAsync();
+			//client.GetParityListAsync();
+			//client.GetStopBitListAsync();
+			//client.GetTimeZonesListAsync();
 
 			// Load serial protocol fields.
 			ComboBoxSerialPort.Items.Clear();

@@ -1,38 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:complexType name="ArrayOfPdc">
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="ArrayOfNode">
     <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="Pdc" nillable="true" type="tns:Pdc" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Node" nillable="true" type="tns:Node" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="ArrayOfPdc" nillable="true" type="tns:ArrayOfPdc" />
-  <xs:complexType name="Pdc">
+  <xs:element name="ArrayOfNode" nillable="true" type="tns:ArrayOfNode" />
+  <xs:complexType name="Node">
     <xs:sequence>
-      <xs:element minOccurs="0" name="AccessID" type="xs:int" />
-      <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="AdditionalConnectionInfo" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="CompanyAcronym" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="CompanyID" type="xs:int" />
+      <xs:element minOccurs="0" name="CompanyID" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="CompanyName" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="ConnectionString" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="EmailList" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Enabled" type="xs:boolean" />
-      <xs:element minOccurs="0" name="FramesPerSecond" type="xs:int" />
-      <xs:element minOccurs="0" name="ID" type="xs:int" />
-      <xs:element minOccurs="0" name="Latitude" type="xs:decimal" />
-      <xs:element minOccurs="0" name="Longitude" type="xs:decimal" />
+      <xs:element minOccurs="0" name="ID" type="ser:guid" />
+      <xs:element minOccurs="0" name="Image" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Latitude" nillable="true" type="xs:decimal" />
+      <xs:element minOccurs="0" name="LoadOrder" type="xs:int" />
+      <xs:element minOccurs="0" name="Longitude" nillable="true" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Master" type="xs:boolean" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="ProtocolAcronym" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="ProtocolID" type="xs:int" />
-      <xs:element minOccurs="0" name="ProtocolName" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="TimeOffsetTicks" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="TimeZone" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="VendorDeviceDescription" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="VendorDeviceID" type="xs:int" />
-      <xs:element minOccurs="0" name="VendorDeviceName" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="Pdc" nillable="true" type="tns:Pdc" />
+  <xs:element name="Node" nillable="true" type="tns:Node" />
+  <xs:complexType name="ArrayOfCompany">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Company" nillable="true" type="tns:Company" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCompany" nillable="true" type="tns:ArrayOfCompany" />
+  <xs:complexType name="Company">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ID" type="xs:int" />
+      <xs:element minOccurs="0" name="LoadOrder" type="xs:int" />
+      <xs:element minOccurs="0" name="MapAcronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="URL" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Company" nillable="true" type="tns:Company" />
   <xs:complexType name="ArrayOfHistorian">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="Historian" nillable="true" type="tns:Historian" />
@@ -46,56 +53,48 @@
       <xs:element minOccurs="0" name="ConnectionString" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Enabled" type="xs:boolean" />
-      <xs:element minOccurs="0" name="HistorianLongName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ID" type="xs:int" />
+      <xs:element minOccurs="0" name="IsLocal" type="xs:boolean" />
+      <xs:element minOccurs="0" name="LoadOrder" type="xs:int" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NodeID" type="ser:guid" />
+      <xs:element minOccurs="0" name="NodeName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TypeName" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Historian" nillable="true" type="tns:Historian" />
-  <xs:complexType name="ArrayOfCalculatedMeasurement">
+  <xs:complexType name="ArrayOfVendor">
     <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="CalculatedMeasurement" nillable="true" type="tns:CalculatedMeasurement" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Vendor" nillable="true" type="tns:Vendor" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="ArrayOfCalculatedMeasurement" nillable="true" type="tns:ArrayOfCalculatedMeasurement" />
-  <xs:complexType name="CalculatedMeasurement">
+  <xs:element name="ArrayOfVendor" nillable="true" type="tns:ArrayOfVendor" />
+  <xs:complexType name="Vendor">
     <xs:sequence>
-      <xs:element minOccurs="0" name="AssemblyName" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="ConfigSection" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Enabled" type="xs:boolean" />
-      <xs:element minOccurs="0" name="ExpectedFrameRate" type="xs:int" />
+      <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ContactEmail" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ID" type="xs:int" />
-      <xs:element minOccurs="0" name="InputMeasurementsSql" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="LagTime" type="xs:decimal" />
-      <xs:element minOccurs="0" name="LeadTime" type="xs:decimal" />
-      <xs:element minOccurs="0" name="MinimumInputMeasurements" type="xs:int" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="OutputMeasurementsSql" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="TypeName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PhoneNumber" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="URL" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="CalculatedMeasurement" nillable="true" type="tns:CalculatedMeasurement" />
-  <xs:complexType name="ArrayOfOutputStream">
+  <xs:element name="Vendor" nillable="true" type="tns:Vendor" />
+  <xs:complexType name="ArrayOfVendorDevice">
     <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="OutputStream" nillable="true" type="tns:OutputStream" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="VendorDevice" nillable="true" type="tns:VendorDevice" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="ArrayOfOutputStream" nillable="true" type="tns:ArrayOfOutputStream" />
-  <xs:complexType name="OutputStream">
+  <xs:element name="ArrayOfVendorDevice" nillable="true" type="tns:ArrayOfVendorDevice" />
+  <xs:complexType name="VendorDevice">
     <xs:sequence>
-      <xs:element minOccurs="0" name="ConnectionString" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Enabled" type="xs:boolean" />
-      <xs:element minOccurs="0" name="FrameRate" type="xs:int" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ID" type="xs:int" />
-      <xs:element minOccurs="0" name="IDCode" type="xs:int" />
-      <xs:element minOccurs="0" name="LagTime" type="xs:decimal" />
-      <xs:element minOccurs="0" name="LeadTime" type="xs:decimal" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="NominalFrequency" type="xs:int" />
-      <xs:element minOccurs="0" name="PmuFilterSql" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="URL" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="VendorID" type="xs:int" />
+      <xs:element minOccurs="0" name="VendorName" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="OutputStream" nillable="true" type="tns:OutputStream" />
+  <xs:element name="VendorDevice" nillable="true" type="tns:VendorDevice" />
 </xs:schema>

@@ -28,7 +28,8 @@ namespace openPDCManager.Silverlight
         {
             if ((e.InitParams != null) && (e.InitParams.ContainsKey("BaseServiceUrl")))
                 Resources.Add("BaseServiceUrl", e.InitParams["BaseServiceUrl"]);
-            this.RootVisual = new LayoutContainer();
+            //this.RootVisual = new LayoutContainer();
+			this.RootVisual = new MasterLayoutControl();
         }
         private void Application_Exit(object sender, EventArgs e)
         {

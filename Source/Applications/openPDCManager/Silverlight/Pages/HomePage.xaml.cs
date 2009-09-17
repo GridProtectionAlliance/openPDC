@@ -66,9 +66,9 @@ namespace openPDCManager.Silverlight.Pages
                 interconnectionStatusList = livePhasorData.InterconnectionStatusList;
                 deviceDistributionList = livePhasorData.DeviceDistributionList;
 
-                ItemsControlPmuDistribution.ItemsSource = pmuDistributionList;
-                ChartDeviceDistribution.DataContext = deviceDistributionList;
-                ItemControlInterconnectionStatus.ItemsSource = interconnectionStatusList;                
+				ItemsControlPmuDistribution.ItemsSource = pmuDistributionList;
+				ChartDeviceDistribution.DataContext = deviceDistributionList;
+				ItemControlInterconnectionStatus.ItemsSource = interconnectionStatusList;                
             }
         }
         // Executes just before a page is no longer the active page in a frame.

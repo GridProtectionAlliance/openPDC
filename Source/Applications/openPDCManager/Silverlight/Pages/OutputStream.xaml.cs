@@ -34,7 +34,7 @@ namespace openPDCManager.Silverlight.Pages
         {
             InitializeComponent();
             client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
-            client.GetOutputStreamListCompleted += new EventHandler<GetOutputStreamListCompletedEventArgs>(client_GetOutputStreamListCompleted);
+			//client.GetOutputStreamListCompleted += new EventHandler<GetOutputStreamListCompletedEventArgs>(client_GetOutputStreamListCompleted);
 			Loaded += new RoutedEventHandler(OutputStream_Loaded);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
@@ -49,21 +49,21 @@ namespace openPDCManager.Silverlight.Pages
 		}
 		void OutputStream_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetOutputStreamListAsync();
+			//client.GetOutputStreamListAsync();
 		}
-        void client_GetOutputStreamListCompleted(object sender, GetOutputStreamListCompletedEventArgs e)
-        {
-			if (e.Error == null)
-				ListBoxOutputStream.ItemsSource = e.Result;                
-        }
+		//void client_GetOutputStreamListCompleted(object sender, GetOutputStreamListCompletedEventArgs e)
+		//{
+		//    if (e.Error == null)
+		//        ListBoxOutputStream.ItemsSource = e.Result;                
+		//}
         // Executes when the user navigates to this page.
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
         }
 		private void ListBoxOutputStream_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStream selectedStream = ListBoxOutputStream.SelectedItem as openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStream;
-			GridOutputStreamDetail.DataContext = selectedStream;
+			//openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStream selectedStream = ListBoxOutputStream.SelectedItem as openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStream;
+			//GridOutputStreamDetail.DataContext = selectedStream;
 		}
 		void ClearForm()
 		{

@@ -7,16 +7,134 @@
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            mc:Ignorable="d"
-           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"
-           d:DesignWidth="640" d:DesignHeight="480"           
+           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"               
            Title="HomePage Page">
 
     <UserControl.Resources>
         <converter:StringToSymbolConverter x:Key="ConvertStringToSymbol"/>
     </UserControl.Resources>
     
-    <Canvas x:Name="HomePageLayoutRoot">
+    <Grid x:Name="HomePageLayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.4*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Border x:Name="BorderInterconnectionStatus" Style="{StaticResource ContentBorderStyle}" CornerRadius="5" Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" VerticalAlignment="Stretch">
+            <StackPanel Orientation="Vertical" Margin="0" >
+                <TextBlock Text="Currently publishing PMU data from the following PCS members:" Style="{StaticResource LargeWhiteTextStyle}" Padding="3"/>
+                <ScrollViewer BorderThickness="0" Padding="0">
+                    <ScrollViewer.Content>
+                        
+                        <Border BorderThickness="0" Background="{StaticResource PortletBackgroundBrush}">
+                            <ItemsControl x:Name="ItemControlInterconnectionStatus" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Vertical">
+                                            <Border Style="{StaticResource HeaderRowBorderStyle}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Path=DisplayName}" Style="{StaticResource HeaderRowTextStyle}" Width="525" />
+                                                    <TextBlock Text="{Binding Path=TotalPmus}" Style="{StaticResource HeaderRowTextStyle}" Width="150" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text=" " Width="{StaticResource BlankItemSize}" Padding="1"/>
+                                                <TextBlock Text="Company Name" Width="{StaticResource XLargeItemSize}" Style="{StaticResource HeaderRowTextStyle}"/>
+                                                <TextBlock Text="Measured Lines" Width="{StaticResource SmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                                                <TextBlock Text="Total" Width="{StaticResource XSmallItemSize}"  Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                                                <TextBlock Text="Validated" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                                                <TextBlock Text="Reporting" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                                                <TextBlock Text="Status" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                                            </StackPanel>
+                                            <ItemsControl ItemsSource="{Binding Path=CompanyStatus}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                                            <TextBlock Text=" " Width="{StaticResource BlankItemSize}" Padding="1"/>
+                                                            <TextBlock Width="{StaticResource XLargeItemSize}" Text="{Binding Path=Name}" Padding="1"></TextBlock>
+                                                            <TextBlock Width="{StaticResource SmallItemSize}" Text="{Binding Path=MeasuredLines}" TextAlignment="Center" Padding="1"></TextBlock>
+                                                            <TextBlock Width="{StaticResource XSmallItemSize}" Text="{Binding Path=TotalDevices}" TextAlignment="Center" Padding="1"></TextBlock>
+                                                            <TextBlock Width="{StaticResource XSmallItemSize}" Text="{Binding Path=ValidatedDevices}" TextAlignment="Center" Padding="1"></TextBlock>
+                                                            <TextBlock Width="{StaticResource XSmallItemSize}" Text="{Binding Path=ReportingDevices}" TextAlignment="Center" Padding="1"></TextBlock>
+                                                            <Border Width="{StaticResource XSmallItemSize}" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <Ellipse Width="14" Height="14" Fill="{Binding Path=Status, Converter={StaticResource ConvertStringToSymbol}}"/>
+                                                            </Border>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border>
+                        
+                    </ScrollViewer.Content>
+                </ScrollViewer>
+            </StackPanel>
+        </Border>
 
+        <Border x:Name="BorderLiveData" Grid.Row="1" Grid.Column="1" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Stretch" Margin="5,5,0,5">
+
+        </Border>
+        
+        <Border x:Name="BorderPMUDistribution" Grid.Row="2" Grid.Column="1" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Stretch" Margin="5,5,0,5">
+            <StackPanel Orientation="Vertical" Margin="0">
+                <TextBlock Text="PMUs Distribution" HorizontalAlignment="Center" Style="{StaticResource LargeWhiteTextStyle}" Padding="3" />
+                <Border BorderThickness="0" Background="{StaticResource PortletBackgroundBrush}">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Left"/>
+                            <TextBlock Text="Eastern" Width="{StaticResource XXSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                            <TextBlock Text="Western" Width="{StaticResource XXSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                            <TextBlock Text="Texas" Width="{StaticResource XXSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                            <TextBlock Text="Quebec" Width="{StaticResource XXSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                            <TextBlock Text="Alaskan" Width="{StaticResource XXSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                            <TextBlock Text="Hawaii" Width="{StaticResource XXSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                            <TextBlock Text="Total" Width="{StaticResource XXSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                        </StackPanel>
+                        <ItemsControl x:Name="ItemsControlPmuDistribution">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Path=Status}" Width="{StaticResource XSmallItemSize}" TextAlignment="Left" Style="{StaticResource HeaderRowTextStyle}"/>
+                                        <TextBlock Text="{Binding Path=EasternCount}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" Margin="0,4,0,4"/>
+                                        <TextBlock Text="{Binding Path=WesternCount}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" Margin="0,4,0,4"/>
+                                        <TextBlock Text="{Binding Path=TexasCount}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" Margin="0,4,0,4"/>
+                                        <TextBlock Text="{Binding Path=QuebecCount}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" Margin="0,4,0,4"/>
+                                        <TextBlock Text="{Binding Path=AlaskanCount}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" Margin="0,4,0,4"/>
+                                        <TextBlock Text="{Binding Path=HawaiiCount}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" Margin="0,4,0,4"/>
+                                        <TextBlock Text="{Binding Path=Total}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" Margin="0,4,0,4"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <Border x:Name="BorderDeviceDistribution" Grid.Row="3" Grid.Column="1" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Stretch" Margin="5,5,0,5">
+            <StackPanel Orientation="Vertical" Margin="0">
+                <TextBlock Text="Vendor Device Distribution" Style="{StaticResource LargeWhiteTextStyle}" HorizontalAlignment="Center" Padding="3" />
+
+                <chartingToolkit:Chart x:Name="ChartDeviceDistribution" Style="{StaticResource PieChartStyle}" Foreground="Black" Background="{StaticResource PortletBackgroundBrush}" VerticalAlignment="Stretch">
+                    <chartingToolkit:PieSeries ItemsSource="{Binding}" DependentValuePath="Value" IndependentValuePath="Key" Title="Device Distribution" 
+                        IsSelectionEnabled="True"/>
+                </chartingToolkit:Chart>
+            </StackPanel>
+        </Border>
+
+    </Grid>
+    
+   <!--<Canvas x:Name="HomePageLayoutRoot"> 
+    
         <Border CornerRadius="5" Canvas.Top="5" Canvas.Left="5" Height="795" Width="700" Style="{StaticResource ContentBorderStyle}">
             <StackPanel Orientation="Vertical" Margin="0" >
                 <TextBlock Text="Currently publishing PMU data from the following PCS members:" Style="{StaticResource LargeWhiteTextStyle}" Padding="3"/>
@@ -122,7 +240,7 @@
         <Border Style="{StaticResource PortletBorderStyle}" Canvas.Top="95" Canvas.Left="715" Height="240" Width="465">
             
         </Border>
-
-    </Canvas>
+    
+    </Canvas>-->
     
 </navigation:Page>

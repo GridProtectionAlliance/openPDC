@@ -14,6 +14,25 @@
             <sys:Double x:Key="LargerTextSize">14</sys:Double>
             <sys:Double x:Key="XXLargeTextSize">34</sys:Double>
             
+            <sys:Double x:Key="BlankItemSize">10</sys:Double>
+            <sys:Double x:Key="XXXSmallItemSize">25</sys:Double>
+            <sys:Double x:Key="XXSmallItemSize">50</sys:Double>
+            <sys:Double x:Key="XSmallItemSize">75</sys:Double>
+            <sys:Double x:Key="SmallerItemSize">100</sys:Double>
+            <sys:Double x:Key="SmallItemSize">125</sys:Double>
+            <sys:Double x:Key="LargeItemSize">150</sys:Double>
+            <sys:Double x:Key="LargerItemSize">200</sys:Double>
+            <sys:Double x:Key="XLargeItemSize">250</sys:Double>
+            <sys:Double x:Key="XXLargeItemSize">300</sys:Double>
+            <sys:Double x:Key="XXXLargeItemSize">450</sys:Double>
+            
+            <sys:Double x:Key="LayoutColumnWidth">600</sys:Double>
+            
+            <sys:Double x:Key="ApplicationMinHeight">768</sys:Double>
+            <sys:Double x:Key="ApplicationMinWidth">1024</sys:Double>
+            <sys:Double x:Key="ApplicationStartupHeight">900</sys:Double>
+            <sys:Double x:Key="ApplicationStartupWidth">1200</sys:Double>
+            
     		<ControlTemplate x:Key="SmallImageButtonTemplate" TargetType="Button">
     			<Image Source="{TemplateBinding Content}" Width="16" Height="16" />
     		</ControlTemplate>
@@ -133,6 +152,10 @@
             <LinearGradientBrush x:Key="HeaderRowBackgroundBrush" EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="#FFB3C8D6" Offset="0"/>
                 <GradientStop Color="#FFE1E9EE" Offset="1"/>
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="PageBackgroundBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FF032236" Offset="0"/>
+                <GradientStop Color="#FF095188" Offset="1"/>
             </LinearGradientBrush>
             <RadialGradientBrush x:Key="RedRadialGradientBrush" GradientOrigin=".2,.2">
                 <GradientStop Offset="0.2" Color="#FFFF9999"/>

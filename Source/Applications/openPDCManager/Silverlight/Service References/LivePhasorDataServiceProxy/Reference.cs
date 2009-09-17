@@ -18,8 +18,8 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="DuplexMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.DisconnectMessage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.ConnectMessage))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.DisconnectMessage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.LivePhasorDataMessage))]
     public partial class DuplexMessage : object, System.ComponentModel.INotifyPropertyChanged {
         
@@ -35,14 +35,14 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="DisconnectMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
-    public partial class DisconnectMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
+    [System.Runtime.Serialization.DataContractAttribute(Name="ConnectMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
+    public partial class ConnectMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ConnectMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
-    public partial class ConnectMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
+    [System.Runtime.Serialization.DataContractAttribute(Name="DisconnectMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
+    public partial class DisconnectMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]

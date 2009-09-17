@@ -25,12 +25,36 @@ namespace openPDCManager.Silverlight
 {
     public partial class LayoutContainer : UserControl
     {
+		const double layoutRootHeight = 875;
+		const double layoutRootWidth = 1200;
         public LayoutContainer()
         {
             InitializeComponent();
+			ScaleContent(Application.Current.Host.Content.ActualHeight, Application.Current.Host.Content.ActualWidth);
+			Application.Current.Host.Content.Resized += new EventHandler(Content_Resized);
             Loaded += new RoutedEventHandler(LayoutContainer_Loaded);
             NetworkChange.NetworkAddressChanged += new NetworkAddressChangedEventHandler(NetworkChange_NetworkAddressChanged);
         }
+		void Content_Resized(object sender, EventArgs e)
+		{
+			ScaleContent(Application.Current.Host.Content.ActualHeight, Application.Current.Host.Content.ActualWidth);
+		}
+		void ScaleContent(double height, double width)
+		{			
+			if (height > 0 && width > 0)
+			{
+				if (height / layoutRootHeight < width / layoutRootWidth)
+				{
+					LayoutRootScale.ScaleX = height / layoutRootHeight;
+					LayoutRootScale.ScaleY = height / layoutRootHeight;
+				}
+				else
+				{
+					LayoutRootScale.ScaleX = width / layoutRootWidth;
+					LayoutRootScale.ScaleY = width / layoutRootWidth;
+				}
+			}
+		}
         void NetworkChange_NetworkAddressChanged(object sender, EventArgs e)
         {
             if (NetworkInterface.GetIsNetworkAvailable())

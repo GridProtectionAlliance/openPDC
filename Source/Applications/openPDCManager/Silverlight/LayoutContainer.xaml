@@ -5,14 +5,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"
     >
-    <Grid x:Name="LayoutRoot" HorizontalAlignment="Center" VerticalAlignment="Top">    	
+    <Grid x:Name="LayoutRoot" HorizontalAlignment="Center" VerticalAlignment="Top" Background="Transparent">    	
         <Grid.RowDefinitions>
             <RowDefinition Height="60" />
             <RowDefinition Height="815" />
+            <!--<RowDefinition Height="*" />
+            <RowDefinition Height="13*" />-->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1200" />
         </Grid.ColumnDefinitions>
+        
+        <Grid.RenderTransform>
+            <ScaleTransform x:Name="LayoutRootScale" ScaleX="1" ScaleY="1"/>
+        </Grid.RenderTransform>
 
         <Canvas x:Name="CanvasHeader" Grid.Row="0" Background="{StaticResource HeaderBackgroundBrush}">
 
@@ -33,7 +39,17 @@
 
             <igMenu:XamWebMenu x:Name="MenuMain" Canvas.Left="575" Canvas.Top="35" Style="{StaticResource XamWebMenuStyle}" NavigationElement="{Binding ElementName=ContentFrame}">
                 <igMenu:XamWebMenuItem Header="Home" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/HomePage.xaml"/>
-                <igMenu:XamWebMenuItem Header="PMU Locations" Style="{StaticResource XamWebMenuItemStyleMainMenu}">
+                <igMenu:XamWebMenuItem Header="Devices" Style="{StaticResource XamWebMenuItemStyleMainMenu}">
+                    <igMenu:XamWebMenuItem Header="Browse" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="">
+                        <igMenu:XamWebMenuItem.Icon>
+                            <Image Source="Images/List.png" />
+                        </igMenu:XamWebMenuItem.Icon>
+                    </igMenu:XamWebMenuItem>
+                    <igMenu:XamWebMenuItem Header="Add New" Style="{StaticResource XamWebMenuItemStyleMainMenu}">
+                        <igMenu:XamWebMenuItem.Icon>
+                            <Image Source="Images/Pmu.png" />
+                        </igMenu:XamWebMenuItem.Icon>
+                    </igMenu:XamWebMenuItem>
                     <igMenu:XamWebMenuItem Header="Active Map" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/ActiveMap.xaml">
                         <igMenu:XamWebMenuItem.Icon>
                             <Image Source="Images/Earth.png" />
@@ -44,8 +60,55 @@
                             <Image Source="Images/Earth.png" />
                         </igMenu:XamWebMenuItem.Icon>
                     </igMenu:XamWebMenuItem>
+                    <igMenu:XamWebMenuItem Header="Other Devices" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="">
+                        <igMenu:XamWebMenuItem.Icon>
+                            <Image Source="Images/List.png" />
+                        </igMenu:XamWebMenuItem.Icon>
+                    </igMenu:XamWebMenuItem>
                 </igMenu:XamWebMenuItem>
-                <igMenu:XamWebMenuItem Header="Manage Devices" Style="{StaticResource XamWebMenuItemStyleMainMenu}">
+                <igMenu:XamWebMenuItem Header="Adapters" Style="{StaticResource XamWebMenuItemStyleMainMenu}">
+                    <igMenu:XamWebMenuItem Header="Calculated Measurements" Style="{StaticResource XamWebMenuItemStyleMainMenu}"  NavigationOnClick="True" NavigationUri="/Pages/CalculatedMeasurement.xaml">
+                        <igMenu:XamWebMenuItem.Icon>
+                            <Image Source="Images/Request.png"/>
+                        </igMenu:XamWebMenuItem.Icon>
+                    </igMenu:XamWebMenuItem>
+                    <igMenu:XamWebMenuItem Header="Concentrator Output Streams" Style="{StaticResource XamWebMenuItemStyleMainMenu}"  NavigationOnClick="True" NavigationUri="/Pages/OutputStream.xaml">
+                        <igMenu:XamWebMenuItem.Icon>
+                            <Image Source="Images/Request.png"/>
+                        </igMenu:XamWebMenuItem.Icon>
+                    </igMenu:XamWebMenuItem>
+                    <igMenu:XamWebMenuItem Header="Historians" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/LocalHive.xaml">
+                        <igMenu:XamWebMenuItem.Icon>
+                            <Image Source="Images/Request.png" />
+                        </igMenu:XamWebMenuItem.Icon>
+                    </igMenu:XamWebMenuItem>
+                    <igMenu:XamWebSeparator />
+                    <igMenu:XamWebMenuItem Header="Custom Inputs" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="">
+                        <igMenu:XamWebMenuItem.Icon>
+                            <Image Source="Images/List.png" />
+                        </igMenu:XamWebMenuItem.Icon>
+                    </igMenu:XamWebMenuItem>
+                    <igMenu:XamWebMenuItem Header="Custom Actions" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="">
+                        <igMenu:XamWebMenuItem.Icon>
+                            <Image Source="Images/List.png" />
+                        </igMenu:XamWebMenuItem.Icon>
+                    </igMenu:XamWebMenuItem>
+                    <igMenu:XamWebMenuItem Header="Custom Outputs" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="">
+                        <igMenu:XamWebMenuItem.Icon>
+                            <Image Source="Images/List.png" />
+                        </igMenu:XamWebMenuItem.Icon>
+                    </igMenu:XamWebMenuItem>
+                    <igMenu:XamWebSeparator />
+                    <igMenu:XamWebMenuItem Header="View Iaon Tree" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="">
+                        <igMenu:XamWebMenuItem.Icon>
+                            <Image Source="Images/List.png" />
+                        </igMenu:XamWebMenuItem.Icon>
+                    </igMenu:XamWebMenuItem>
+                </igMenu:XamWebMenuItem>
+                
+                
+                
+                <!--<igMenu:XamWebMenuItem Header="Manage Devices" Style="{StaticResource XamWebMenuItemStyleMainMenu}">
                     <igMenu:XamWebMenuItem Header="PMU List" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/PmuList.xaml">
                         <igMenu:XamWebMenuItem.Icon>
                             <Image Source="Images/List.png" />
@@ -122,7 +185,7 @@
                             <Image Source="Images/Request.png"/>
                         </igMenu:XamWebMenuItem.Icon>
                     </igMenu:XamWebMenuItem>
-                </igMenu:XamWebMenuItem>
+                </igMenu:XamWebMenuItem>-->
             </igMenu:XamWebMenu>
 
         </Canvas>

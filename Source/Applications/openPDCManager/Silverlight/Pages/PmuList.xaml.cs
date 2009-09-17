@@ -36,14 +36,14 @@ namespace openPDCManager.Silverlight.Pages
             InitializeComponent();
 			binding.MaxReceivedMessageSize = 65536 * 3;
             client = new PhasorDataServiceClient(binding, address);
-			client.GetAllPmuListCompleted += new EventHandler<GetAllPmuListCompletedEventArgs>(client_GetAllPmuListCompleted);
-			client.GetAllPmuListAsync();            
+			//client.GetAllPmuListCompleted += new EventHandler<GetAllPmuListCompletedEventArgs>(client_GetAllPmuListCompleted);
+			//client.GetAllPmuListAsync();            
         }
-		void client_GetAllPmuListCompleted(object sender, GetAllPmuListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ItemsControlPmuList.ItemsSource = e.Result;
-		}
+		//void client_GetAllPmuListCompleted(object sender, GetAllPmuListCompletedEventArgs e)
+		//{
+		//    if (e.Error == null)
+		//        ItemsControlPmuList.ItemsSource = e.Result;
+		//}
         // Executes when the user navigates to this page.
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {

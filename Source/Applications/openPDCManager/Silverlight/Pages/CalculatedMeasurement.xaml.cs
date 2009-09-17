@@ -34,8 +34,8 @@ namespace openPDCManager.Silverlight.Pages
         {
             InitializeComponent();
             client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
-            client.GetCalculatedMeasurementListCompleted += new EventHandler<GetCalculatedMeasurementListCompletedEventArgs>(client_GetCalculatedMeasurementListCompleted);
-            client.GetCalculatedMeasurementListAsync();
+			//client.GetCalculatedMeasurementListCompleted += new EventHandler<GetCalculatedMeasurementListCompletedEventArgs>(client_GetCalculatedMeasurementListCompleted);
+			//client.GetCalculatedMeasurementListAsync();
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
         }
@@ -46,19 +46,19 @@ namespace openPDCManager.Silverlight.Pages
 		{
 			ClearForm();
 		}
-        void client_GetCalculatedMeasurementListCompleted(object sender, GetCalculatedMeasurementListCompletedEventArgs e)
-        {
-			if (e.Error == null)
-				ListBoxCalculatedMeasurements.ItemsSource = e.Result;
-        }
+		//void client_GetCalculatedMeasurementListCompleted(object sender, GetCalculatedMeasurementListCompletedEventArgs e)
+		//{
+		//    if (e.Error == null)
+		//        ListBoxCalculatedMeasurements.ItemsSource = e.Result;
+		//}
         // Executes when the user navigates to this page.
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
         }
 		private void ListBoxCalculatedMeasurements_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			openPDCManager.Silverlight.PhasorDataServiceProxy.CalculatedMeasurement selectedMeasurement = ListBoxCalculatedMeasurements.SelectedItem as openPDCManager.Silverlight.PhasorDataServiceProxy.CalculatedMeasurement;
-			GridCalculatedMeasurementsDetail.DataContext = selectedMeasurement;
+			//openPDCManager.Silverlight.PhasorDataServiceProxy.CalculatedMeasurement selectedMeasurement = ListBoxCalculatedMeasurements.SelectedItem as openPDCManager.Silverlight.PhasorDataServiceProxy.CalculatedMeasurement;
+			//GridCalculatedMeasurementsDetail.DataContext = selectedMeasurement;
 		}
 		void ClearForm()
 		{

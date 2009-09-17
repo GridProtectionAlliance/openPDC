@@ -44,6 +44,7 @@
                     <vsm:VisualState x:Name="Hidden">
                         <Storyboard>
                             <DoubleAnimation Duration="0" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" To="0"/>
+                            
                         </Storyboard>
                     </vsm:VisualState>
                 </vsm:VisualStateGroup>
