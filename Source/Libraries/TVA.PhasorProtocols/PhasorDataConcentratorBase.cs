@@ -252,6 +252,14 @@ namespace TVA.PhasorProtocols
     {
         #region [ Design Notes ]
 
+        // These design notes were written prior to the development of this class so they may not completely
+        // represent its final design; however, the comments should provide insight into to the reasoning
+        // behind the implementation of this class so they are included here for reference purposes.
+        
+        // J. Ritchie Carroll
+
+        // **************************************************************************************************
+
         // We can't assume what devices will appear in the stream - therefore a device list is needed.
         // In addition, a list of active measurements needs to be loaded - that is, the measurements that
         // will make up the data in the device list.  Idealistically one could map any given number of
@@ -627,7 +635,7 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Starts the <see cref="PhasorDataConcentratorBase"/> real-time data stream.
+        /// Stops the <see cref="PhasorDataConcentratorBase"/> real-time data stream.
         /// </summary>
         /// <remarks>
         /// This method will allow host administrator to manually stop the data channel, thus disabling
@@ -690,9 +698,9 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Update the configuration frame for this <see cref="PhasorDataConcentratorBase"/>.
+        /// Reloads the configuration for this <see cref="PhasorDataConcentratorBase"/>.
         /// </summary>
-        [AdapterCommand("Updates the phasor data concentrator configuration frame.")]
+        [AdapterCommand("Reloads the phasor data concentrator configuration.")]
         public void UpdateConfiguration()
         {
             const int labelLength = 16;
