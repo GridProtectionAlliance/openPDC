@@ -63,11 +63,12 @@
         document.getElementById("silverlightControlHost").innerHTML = PromptInstall;
         };
     </script>
+    
 </head>
 <body>
-    <form id="form1" runat="server" style="width:100%; height:875px;">
-        <div id="silverlightControlHost" align="center">
-            <object id="PcsSilverlightApp" data="data:application/x-silverlight-2," type="application/x-silverlight-2" width="1200px;" height="875px;">            
+    <form id="form1" runat="server" style="width:100%; height:100%;">
+        <div id="silverlightControlHost">
+            <object id="PcsSilverlightApp" data="data:application/x-silverlight-2," type="application/x-silverlight-2" style="width:100%; height:100%; min-height: 768px; min-width: 1024;">            
 		        <param name="source" value="ClientBin/openPDCManager.Silverlight.xap"/>
 		        <param name="onError" value="onSilverlightError" />		        
 		        <param name="onload" value="onSilverlightLoad" />
