@@ -697,196 +697,200 @@ namespace openPDCManager.Web.Data
 
 		#endregion
 
-        //#region " Manage Historians Code"
+        #region " Manage Historians Code"
+		public static List<Historian> GetHistorianList()
+		{
+			List<Historian> historianList = new List<Historian>();
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData("Select H.NodeID, H.ID, H.Acronym, ISNULL(H.Name, '') AS Name, ISNULL(H.AssemblyName, '') AS AssemblyName, " +
+													"ISNULL(H.TypeName, '') AS TypeName, ISNULL(H.ConnectionString, '') AS ConnectionString, H.IsLocal, " +
+													"ISNULL(H.Description, '') AS Description, H.LoadOrder, H.Enabled, N.Name AS NodeName From Historian H, Node N " +
+													"Where H.NodeID = N.ID Order By H.LoadOrder");
+			historianList = (from item in resultTable.AsEnumerable()
+							 select new Historian()
+							 {
+								 NodeID = item.Field<Guid>("NodeID"),
+								 ID = item.Field<int>("ID"),
+								 Acronym = item.Field<string>("Acronym"),
+								 Name = item.Field<string>("Name"),
+								 ConnectionString = item.Field<string>("ConnectionString"),
+								 Description = item.Field<string>("Description"),
+								 Enabled = item.Field<bool>("Enabled"),
+								 TypeName = item.Field<string>("TypeName"),
+								 AssemblyName = item.Field<string>("AssemblyName"),
+								 NodeName = item.Field<string>("NodeName")
+							 }).ToList();
 
-        //public static List<Historian> GetHistorianList()
-        //{
-        //    List<Historian> historianList = new List<Historian>();
-        //    SqlCommand command = new SqlCommand("Select H.NodeID, H.ID, H.Acronym, ISNULL(H.Name, '') AS Name, ISNULL(H.AssemblyName, '') AS AssemblyName, " +
-        //                                            "ISNULL(H.TypeName, '') AS TypeName, ISNULL(H.ConnectionString, '') AS ConnectionString, H.IsLocal, " +
-        //                                            "ISNULL(H.Description, '') AS Description, H.LoadOrder, H.Enabled, N.Name AS NodeName From Historian H, Node N " +
-        //                                            "Where H.NodeID = N.ID Order By H.LoadOrder");
-        //    DataAccess obj = new DataAccess();
-        //    DataTable resultTable = new DataTable();
-        //    resultTable = obj.GetDataTable(command, true);
+			connection.Dispose();
+			return historianList;
+		}
+		public static string SaveHistorian(Historian historian, bool isNew)
+		{
+			string query;
+			if (isNew)
+				query = string.Format("Insert Into Historian (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) Values ('{0}', '{1}', {2}, {3}, {4}, {5}, '{6}', {7}, {8}, '{9}'",
+					historian.NodeID, historian.Acronym, NullableQuote(historian.Name), NullableQuote(historian.AssemblyName), NullableQuote(historian.TypeName), NullableQuote(historian.ConnectionString), historian.IsLocal, 
+					NullableQuote(historian.Description), historian.LoadOrder, historian.Enabled);
+			else
+				query = string.Format("Update Historian Set NodeID = '{0}', Acronym = '{1}', Name = {2}, AssemblyName = {3}, TypeName = {4}, ConnectionString = {5}, IsLocal = '{6}', Description = {7}, LoadOrder = {8}, Enabled = '{9}' Where ID = {10}",
+					historian.NodeID, historian.Acronym, NullableQuote(historian.Name), NullableQuote(historian.AssemblyName), NullableQuote(historian.TypeName), NullableQuote(historian.ConnectionString), historian.IsLocal, 
+					NullableQuote(historian.Description), historian.LoadOrder, historian.Enabled, historian.ID);
+			DataConnection connection = new DataConnection();
+			connection.ExecuteScalar(query);
+			connection.Dispose();
+			return "Done!";
+		}
+        #endregion
 
-        //    historianList = (from item in resultTable.AsEnumerable()
-        //                     select new Historian()
-        //                     {
-        //                         NodeID = item.Field<Guid>("NodeID"),
-        //                         ID = item.Field<int>("ID"),
-        //                         Acronym = item.Field<string>("Acronym"),
-        //                         Name = item.Field<string>("Name"),
-        //                         ConnectionString = item.Field<string>("ConnectionString"),
-        //                         Description = item.Field<string>("Description"),
-        //                         Enabled = item.Field<bool>("Enabled"),
-        //                         TypeName = item.Field<string>("TypeName"),
-        //                         AssemblyName = item.Field<string>("AssemblyName"),
-        //                         NodeName = item.Field<string>("NodeName")
-        //                     }).ToList();
+        #region " Manage Nodes Code"
+		public static List<Node> GetNodeList()
+		{
+			List<Node> nodeList = new List<Node>();			
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData("Select N.ID, N.Name, N.CompanyID, N.Longitude, N.Latitude, ISNULL(N.Description, '') AS Description, " +
+													"ISNULL(N.Image, '') AS Image, N.Master, N.LoadOrder, N.Enabled, ISNULL(C.Name, '') AS CompanyName " +
+													"From Node N, Company C Where N.CompanyID = C.ID Order By N.LoadOrder");
 
-        //    return historianList;
-        //}
-        //#endregion
+			nodeList = (from item in resultTable.AsEnumerable()
+						select new Node()
+						{
+							ID = item.Field<Guid>("ID"),
+							Name = item.Field<string>("Name"),
+							CompanyID = item.Field<int>("CompanyID"),
+							Longitude = item.Field<decimal>("Longitude"),
+							Latitude = item.Field<decimal>("Latitude"),
+							Description = item.Field<string>("Description"),
+							Image = item.Field<string>("Image"),
+							Master = item.Field<bool>("Master"),
+							LoadOrder = item.Field<int>("LoadOrder"),
+							Enabled = item.Field<bool>("Enabled"),
+							CompanyName = item.Field<string>("CompanyName")
+						}).ToList();
 
-        //#region " Manage Nodes Code"
-        //public static List<Node> GetNodeList()
-        //{
-        //    List<Node> nodeList = new List<Node>();
-        //    SqlCommand command = new SqlCommand("Select N.ID, N.Name, N.CompanyID, N.Longitude, N.Latitude, ISNULL(N.Description, '') AS Description, " +
-        //                                            "ISNULL(N.Image, '') AS Image, N.Master, N.LoadOrder, N.Enabled, ISNULL(C.Name, '') AS CompanyName " +
-        //                                            "From Node N, Company C Where N.CompanyID = C.ID Order By N.LoadOrder");
-        //    DataAccess obj = new DataAccess();
-        //    DataTable resultTable = new DataTable();
-        //    resultTable = obj.GetDataTable(command, true);
+			connection.Dispose();
+			return nodeList;
+		}
+		public static Dictionary<Guid, string> GetNodes(bool ActiveOnly)
+		{
+			Dictionary<Guid, string> nodeList = new Dictionary<Guid, string>();
+			string query = "Select ID, Name From Node";
+			if (ActiveOnly)
+				query += " Where Enabled = '1'";
+			query += " Order By LoadOrder";
+						
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData(query);
+			foreach (DataRow row in resultTable.Rows)
+			{
+				if (!nodeList.ContainsKey(new Guid(row["ID"].ToString())))
+					nodeList.Add(new Guid(row["ID"].ToString()), row["Name"].ToString());
+			}
+			connection.Dispose();
+			return nodeList;
+		}
+		public static string SaveNode(Node node, bool isNew)
+		{
+			string query;
+			if (isNew)
+				query = string.Format("Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, Image, Master, LoadOrder, Enabled) Values ('{0}', {1}, {2}, {3}, {4}, {5}, '{6}', {7}, '{8}')",
+					node.Name, NullableValue(node.CompanyID), NullableValue(node.Longitude), NullableValue(node.Latitude), NullableQuote(node.Description), NullableQuote(node.Image), node.Master, node.LoadOrder, node.Enabled);
+			else
+				query = string.Format("Update Node Set Name = '{0}', CompanyID = {1}, Longitude = {2}, Latitude = {3}, Description = {4}, Image = {5}, Master = '{6}', LoadOrder = {7}, Enabled = '{8}' Where ID = '{9}'",
+					node.Name, NullableValue(node.CompanyID), NullableValue(node.Longitude), NullableValue(node.Latitude), NullableQuote(node.Description), NullableQuote(node.Image), node.Master, node.LoadOrder, node.Enabled, node.ID);
 
-        //    nodeList = (from item in resultTable.AsEnumerable()
-        //                select new Node()
-        //                {
-        //                    ID = item.Field<Guid>("ID"),
-        //                    Name = item.Field<string>("Name"),
-        //                    CompanyID = item.Field<int>("CompanyID"),
-        //                    Longitude = item.Field<decimal>("Longitude"),
-        //                    Latitude = item.Field<decimal>("Latitude"),
-        //                    Description = item.Field<string>("Description"),
-        //                    Image = item.Field<string>("Image"),
-        //                    Master = item.Field<bool>("Master"),
-        //                    LoadOrder = item.Field<int>("LoadOrder"),
-        //                    Enabled = item.Field<bool>("Enabled"),
-        //                    CompanyName = item.Field<string>("CompanyName")
-        //                }).ToList();
-
-        //    return nodeList;
-        //}
-        //public static Dictionary<Guid, string> GetNodes(bool ActiveOnly)
-        //{
-        //    Dictionary<Guid, string> nodeList = new Dictionary<Guid, string>();
-        //    string query = "Select ID, Name From Node";
-        //    if (ActiveOnly)
-        //        query += " Where Enabled = '1'";
-
-        //    query += " Order By LoadOrder";
-        //    SqlCommand command = new SqlCommand(query);
-
-        //    DataAccess obj = new DataAccess();
-        //    DataTable resultTable = new DataTable();
-        //    resultTable = obj.GetDataTable(command, true);
-			
-        //    foreach (DataRow row in resultTable.Rows)
-        //    {
-        //        if (!nodeList.ContainsKey(new Guid(row["ID"].ToString())))
-        //            nodeList.Add(new Guid(row["ID"].ToString()), row["Name"].ToString());
-        //    }
-
-        //    return nodeList;
-        //}
-        //public static string SaveNode(Node node, bool isNew)
-        //{
-        //    string query;
-        //    if (isNew)
-        //        query = string.Format("Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, Image, Master, LoadOrder, Enabled) Values ('{0}', {1}, {2}, {3}, '{4}', '{5}', '{6}', {7}, '{8}')",
-        //            node.Name, DBNull.Value, DBNull.Value, DBNull.Value, node.Description, node.Image, node.Master, node.LoadOrder, node.Enabled);
-        //    else
-        //        query = string.Format("Update Node Set Name = '{0}', CompanyID = {1}, Longitude = {2}, Latitude = {3}, Description = '{4}', Image = '{5}', Master = '{6}', LoadOrder = {7}, Enabled = '{8}' Where ID = '{9}'",
-        //            node.Name, DBNull.Value, node.Longitude, node.Latitude, node.Description, node.Image, node.Master, node.LoadOrder, node.Enabled, node.ID);
-
-        //    SqlCommand command = new SqlCommand(query);
-        //    DataAccess obj = new DataAccess();
-        //    obj.RunScalarCommand(command, true);
-        //    return "Done!";
-        //}
-        //#endregion
+			DataConnection connection = new DataConnection();
+			connection.ExecuteScalar(query);
+			connection.Dispose();
+			return "Done!";
+		}
+        #endregion
 		
-        //#region " Manage Vendors Code"
-        //public static List<Vendor> GetVendorList()
-        //{
-        //    List<Vendor> vendorList = new List<Vendor>();
-        //    SqlCommand command = new SqlCommand("Select ID, ISNULL(Acronym, '') AS Acronym, Name, ISNULL(PhoneNumber, '') AS PhoneNumber, " +
-        //                                        "ISNULL(ContactEmail, '') AS ContactEmail, ISNULL(URL, '') AS URL FROM Vendor Order By [Name]");
-        //    DataAccess obj = new DataAccess();
-        //    DataTable resultTable = new DataTable();
-        //    resultTable = obj.GetDataTable(command, true);
+        #region " Manage Vendors Code"
+		public static List<Vendor> GetVendorList()
+		{
+			List<Vendor> vendorList = new List<Vendor>();			
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData("Select ID, ISNULL(Acronym, '') AS Acronym, Name, ISNULL(PhoneNumber, '') AS PhoneNumber, " +
+												"ISNULL(ContactEmail, '') AS ContactEmail, ISNULL(URL, '') AS URL FROM Vendor Order By [Name]");
 
-        //    vendorList = (from item in resultTable.AsEnumerable()
-        //                  select new Vendor()
-        //                  {
-        //                      ID = item.Field<int>("ID"),
-        //                      Acronym = item.Field<string>("Acronym"),
-        //                      Name = item.Field<string>("Name"),
-        //                      PhoneNumber = item.Field<string>("PhoneNumber"),
-        //                      ContactEmail = item.Field<string>("ContactEmail"),
-        //                      URL = item.Field<string>("URL")
-        //                  }).ToList();
+			vendorList = (from item in resultTable.AsEnumerable()
+						  select new Vendor()
+						  {
+							  ID = item.Field<int>("ID"),
+							  Acronym = item.Field<string>("Acronym"),
+							  Name = item.Field<string>("Name"),
+							  PhoneNumber = item.Field<string>("PhoneNumber"),
+							  ContactEmail = item.Field<string>("ContactEmail"),
+							  URL = item.Field<string>("URL")
+						  }).ToList();
 
-        //    return vendorList;
-        //}
-        //public static Dictionary<int, string> GetVendors()
-        //{
-        //    Dictionary<int, string> vendorList = new Dictionary<int, string>();
-        //    SqlCommand command = new SqlCommand("Select ID, Name From Vendor Order By Name");
-        //    DataAccess obj = new DataAccess();
-        //    DataTable resultTable = new DataTable();
-        //    resultTable = obj.GetDataTable(command, true);
+			connection.Dispose();
+			return vendorList;
+		}
+		public static Dictionary<int, string> GetVendors()
+		{
+			Dictionary<int, string> vendorList = new Dictionary<int, string>();
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData("Select ID, Name From Vendor Order By Name");
 
-        //    foreach (DataRow row in resultTable.Rows)
-        //    {
-        //        if (!vendorList.ContainsKey(Convert.ToInt32(row["ID"])))
-        //            vendorList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
-        //    }
-        //    return vendorList;
-        //}
-        //public static string SaveVendor(Vendor vendor, bool isNew)
-        //{
-        //    string query;
-        //    if (isNew)
-        //        query = string.Format("Insert Into Vendor (Acronym, Name, PhoneNumber, ContactEmail, URL) Values ('{0}', '{1}', '{2}', '{3}', '{4}')", vendor.Acronym, vendor.Name, vendor.PhoneNumber, vendor.ContactEmail, vendor.URL);
-        //    else
-        //        query = string.Format("Update Vendor Set Acronym = '{0}', Name = '{1}', PhoneNumber = '{2}', ContactEmail = '{3}', URL = '{4}' Where ID = {5}", vendor.Acronym, vendor.Name, vendor.PhoneNumber, vendor.ContactEmail, vendor.URL, vendor.ID);
+			foreach (DataRow row in resultTable.Rows)
+			{
+				if (!vendorList.ContainsKey(Convert.ToInt32(row["ID"])))
+					vendorList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+			}
+			connection.Dispose();
+			return vendorList;
+		}
+		public static string SaveVendor(Vendor vendor, bool isNew)
+		{
+			string query;
+			if (isNew)
+				query = string.Format("Insert Into Vendor (Acronym, Name, PhoneNumber, ContactEmail, URL) Values ({0}, '{1}', {2}, {3}, {4})", NullableQuote(vendor.Acronym), vendor.Name, NullableQuote(vendor.PhoneNumber), NullableQuote(vendor.ContactEmail), NullableQuote(vendor.URL));
+			else
+				query = string.Format("Update Vendor Set Acronym = {0}, Name = '{1}', PhoneNumber = {2}, ContactEmail = {3}, URL = {4} Where ID = {5}", NullableQuote(vendor.Acronym), vendor.Name, NullableQuote(vendor.PhoneNumber), NullableQuote(vendor.ContactEmail), NullableQuote(vendor.URL), vendor.ID);
+						
+			DataConnection connection = new DataConnection();
+			connection.ExecuteScalar(query);
+			connection.Dispose();
+			return "Done!";
+		}
+        #endregion
 
-        //    SqlCommand command = new SqlCommand(query);			
-        //    DataAccess obj = new DataAccess();
-        //    obj.RunScalarCommand(command, true);
-        //    return "Done!";
-        //}
-        //#endregion
+        #region " Manage Vendor Devices Code"
+		public static List<VendorDevice> GetVendorDeviceList()
+		{
+			List<VendorDevice> vendorDeviceList = new List<VendorDevice>();			
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData("Select VD.ID, VD.VendorID, VD.Name, ISNULL(VD.Description, '') AS Description, ISNULL(VD.URL, '') AS URL, " +
+													"V.Name AS VendorName FROM VendorDevice VD, Vendor V WHERE VD.VendorID = V.ID Order By VD.Name");
 
-        //#region " Manage Vendor Devices Code"
-        //public static List<VendorDevice> GetVendorDeviceList()
-        //{
-        //    List<VendorDevice> vendorDeviceList = new List<VendorDevice>();
-        //    SqlCommand command = new SqlCommand("Select VD.ID, VD.VendorID, VD.Name, ISNULL(VD.Description, '') AS Description, ISNULL(VD.URL, '') AS URL, " +
-        //                                            "V.Name AS VendorName FROM VendorDevice VD, Vendor V WHERE VD.VendorID = V.ID Order By VD.Name");
-        //    DataAccess obj = new DataAccess();
-        //    DataTable resultTable = new DataTable();
-        //    resultTable = obj.GetDataTable(command, true);
+			vendorDeviceList = (from item in resultTable.AsEnumerable()
+								select new VendorDevice()
+								{
+									ID = item.Field<int>("ID"),
+									VendorID = item.Field<int>("VendorID"),
+									Name = item.Field<string>("Name"),
+									Description = item.Field<string>("Description"),
+									URL = item.Field<string>("URL"),
+									VendorName = item.Field<string>("VendorName")
+								}).ToList();
+			connection.Dispose();
+			return vendorDeviceList;
+		}
+		public static string SaveVendorDevice(VendorDevice vendorDevice, bool isNew)
+		{
+			string query;
+			if (isNew)
+				query = string.Format("Insert Into VendorDevice (VendorID, Name, Description, URL) Values ({0}, '{1}', {2}, {3})", vendorDevice.VendorID, vendorDevice.Name, NullableQuote(vendorDevice.Description), NullableQuote(vendorDevice.URL));
+			else
+				query = string.Format("Update VendorDevice Set VendorID = {0}, Name = '{1}', Description = {2}, URL = {3} Where ID = {4}", vendorDevice.VendorID, vendorDevice.Name, NullableQuote(vendorDevice.Description), NullableQuote(vendorDevice.URL), vendorDevice.ID);
 
-        //    vendorDeviceList = (from item in resultTable.AsEnumerable()
-        //                        select new VendorDevice()
-        //                        {
-        //                            ID = item.Field<int>("ID"),
-        //                            VendorID = item.Field<int>("VendorID"),
-        //                            Name = item.Field<string>("Name"),
-        //                            Description = item.Field<string>("Description"),
-        //                            URL = item.Field<string>("URL"),
-        //                            VendorName = item.Field<string>("VendorName")
-        //                        }).ToList();
-
-        //    return vendorDeviceList;
-        //}
-        //public static string SaveVendorDevice(VendorDevice vendorDevice, bool isNew)
-        //{
-        //    string query;
-        //    if (isNew)
-        //        query = string.Format("Insert Into VendorDevice (VendorID, Name, Description, URL) Values ({0}, '{1}', '{2}', '{3}')", vendorDevice.VendorID, vendorDevice.Name, vendorDevice.Description, vendorDevice.URL);
-        //    else
-        //        query = string.Format("Update VendorDevice Set VendorID = {0}, Name = '{1}', Description = '{2}', URL = '{3}' Where ID = {4}", vendorDevice.VendorID, vendorDevice.Name, vendorDevice.Description, vendorDevice.URL, vendorDevice.ID);
-			
-        //    SqlCommand command = new SqlCommand(query);
-        //    DataAccess obj = new DataAccess();
-        //    obj.RunScalarCommand(command, true);
-        //    return "Done!";
-        //}
-        //#endregion
+			DataConnection connection = new DataConnection();
+			connection.ExecuteScalar(query);
+			connection.Dispose();
+			return "Done!";
+		}
+        #endregion
 
 	}
 }

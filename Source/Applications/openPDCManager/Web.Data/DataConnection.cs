@@ -267,34 +267,40 @@ namespace openPDCManager.Web.Data
             // Only need to establish data types and load settings once
             if (m_connectionType == null || string.IsNullOrEmpty(m_connectionString))
             {
-                // Load connection settings from the system settings category
-                ConfigurationFile config = ConfigurationFile.Current;
-                CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
+				// Load connection settings from the system settings category				
+				ConfigurationFile config = new ConfigurationFile("~/web.config", ApplicationType.Web);
+				CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
 
-                string dataProviderString = configSettings["DataProviderString"].Value;
-                m_connectionString = configSettings["ConnectionString"].Value;
+				string dataProviderString = configSettings["DataProviderString"].Value;
+				m_connectionString = configSettings["ConnectionString"].Value;
 
-                if (string.IsNullOrEmpty(m_connectionString))
-                    throw new NullReferenceException("ConnectionString setting was undefined.");
+				if (string.IsNullOrEmpty(m_connectionString))
+					throw new NullReferenceException("ConnectionString setting was undefined.");
 
-                if (string.IsNullOrEmpty(dataProviderString))
-                    throw new NullReferenceException("DataProviderString setting was undefined.");
+				if (string.IsNullOrEmpty(dataProviderString))
+					throw new NullReferenceException("DataProviderString setting was undefined.");
 
-                // Attempt to load configuration from an ADO.NET database connection
-                Dictionary<string, string> settings;
-                string assemblyName, connectionTypeName, adapterTypeName;
-                Assembly assembly;
+				// Attempt to load configuration from an ADO.NET database connection
+				Dictionary<string, string> settings;
+				string assemblyName, connectionTypeName, adapterTypeName;
+				Assembly assembly;
 
-                settings = dataProviderString.ParseKeyValuePairs();
-                assemblyName = settings["AssemblyName"].ToNonNullString();
-                connectionTypeName = settings["ConnectionType"].ToNonNullString();
-                adapterTypeName = settings["AdapterType"].ToNonNullString();
+				settings = dataProviderString.ParseKeyValuePairs();
+				assemblyName = settings["AssemblyName"].ToNonNullString();
+				connectionTypeName = settings["ConnectionType"].ToNonNullString();
+				adapterTypeName = settings["AdapterType"].ToNonNullString();
 
-                if (string.IsNullOrEmpty(connectionTypeName))
-                    throw new NullReferenceException("Database connection type was undefined.");
+				if (string.IsNullOrEmpty(connectionTypeName))
+					throw new NullReferenceException("Database connection type was undefined.");
 
-                if (string.IsNullOrEmpty(adapterTypeName))
-                    throw new NullReferenceException("Database adapter type was undefined.");
+				if (string.IsNullOrEmpty(adapterTypeName))
+					throw new NullReferenceException("Database adapter type was undefined.");
+
+				//Assembly assembly;
+				//string assemblyName = "System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+				//string connectionTypeName = "System.Data.SqlClient.SqlConnection";
+				//string adapterTypeName = "System.Data.SqlClient.SqlDataAdapter";
+				//m_connectionString = "Data Source=RGOCDSQL;Initial Catalog=openPDC;User Id=openPDCManagerUser;Password=NXJCt0XD";
 
                 assembly = Assembly.Load(new AssemblyName(assemblyName));
                 m_connectionType = assembly.GetType(connectionTypeName);
