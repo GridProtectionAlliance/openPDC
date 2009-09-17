@@ -48,6 +48,10 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TVA.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessObjects\BasicPmuInfo.cs" />
@@ -55,7 +59,7 @@
     <Compile Include="BusinessObjects\PmuDistribution.cs" />
     <Compile Include="BusinessObjects\StatusReport.cs" />
     <Compile Include="CommonFunctions.cs" />
-    <Compile Include="DataAccess.cs" />
+    <Compile Include="DataConnection.cs" />
     <Compile Include="Entities\CalculatedMeasurement.cs" />
     <Compile Include="Entities\Company.cs" />
     <Compile Include="Entities\Device.cs" />
@@ -67,7 +71,6 @@
     <Compile Include="Entities\Vendor.cs" />
     <Compile Include="Entities\VendorDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SQLBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

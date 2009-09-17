@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  DataAccess.cs - Gbtc
+//  SQLBase.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -12,6 +12,8 @@
 //       Generated original version of source code.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
+//  09/17/2009 - J. Ritchie Carroll
+//      Added data layer abstraction using ADO.NET interfaces.
 //
 //*******************************************************************************************************
 
@@ -231,38 +233,211 @@
 */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
-using System.Data.SqlClient;
+using System.Reflection;
+using TVA;
+using TVA.Data;
+using TVA.Configuration;
 
 namespace openPDCManager.Web.Data
 {
 	/// <summary>
-	/// Data Access Layer class that defines basic ADO.Net operations
+	/// Creates a new <see cref="IDbConnection"/> to configured ADO.NET data source.
 	/// </summary>
-    class DataAccess : SQLBase
+    public class DataConnection : IDisposable
     {
-        public DataTable GetDataTable(SqlCommand command, bool isText)
+        #region [ Members ]
+
+        // Fields
+        IDbConnection m_connection;
+        private bool m_disposed;
+
+        #endregion
+
+        #region [ Constructors ]
+
+        /// <summary>
+        /// Creates a new <see cref="DataConnection"/>.
+        /// </summary>
+        public DataConnection()
         {
-            DataTable data = new DataTable();
-            ExecuteCommand(command, ref data, isText);
-            return data;
+            // Only need to establish data types and load settings once
+            if (m_connectionType == null || string.IsNullOrEmpty(m_connectionString))
+            {
+                // Load connection settings from the system settings category
+                ConfigurationFile config = ConfigurationFile.Current;
+                CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
+
+                string dataProviderString = configSettings["DataProviderString"].Value;
+                m_connectionString = configSettings["ConnectionString"].Value;
+
+                if (string.IsNullOrEmpty(m_connectionString))
+                    throw new NullReferenceException("ConnectionString setting was undefined.");
+
+                if (string.IsNullOrEmpty(dataProviderString))
+                    throw new NullReferenceException("DataProviderString setting was undefined.");
+
+                // Attempt to load configuration from an ADO.NET database connection
+                Dictionary<string, string> settings;
+                string assemblyName, connectionTypeName, adapterTypeName;
+                Assembly assembly;
+
+                settings = dataProviderString.ParseKeyValuePairs();
+                assemblyName = settings["AssemblyName"].ToNonNullString();
+                connectionTypeName = settings["ConnectionType"].ToNonNullString();
+                adapterTypeName = settings["AdapterType"].ToNonNullString();
+
+                if (string.IsNullOrEmpty(connectionTypeName))
+                    throw new NullReferenceException("Database connection type was undefined.");
+
+                if (string.IsNullOrEmpty(adapterTypeName))
+                    throw new NullReferenceException("Database adapter type was undefined.");
+
+                assembly = Assembly.Load(new AssemblyName(assemblyName));
+                m_connectionType = assembly.GetType(connectionTypeName);
+                m_adapterType = assembly.GetType(adapterTypeName);
+            }
+
+            // Open ADO.NET provider connection
+            m_connection = (IDbConnection)Activator.CreateInstance(m_connectionType);
+            m_connection.ConnectionString = m_connectionString;
+            m_connection.Open();
         }
-        public void GetDataSet(SqlCommand command, ref DataSet ds, bool isText)
+
+        /// <summary>
+        /// Releases the unmanaged resources before the <see cref="DataConnection"/> object is reclaimed by <see cref="GC"/>.
+        /// </summary>
+        ~DataConnection()
         {
-            ExecuteCommand(command, ref ds, isText);
+            Dispose(false);
         }
-        public DataRow GetDataRow(SqlCommand command, bool isText)
+
+        #endregion
+
+        #region [ Properties ]
+
+        /// <summary>
+        /// Gets an open <see cref="IDbConnection"/> to configured ADO.NET data source.
+        /// </summary>
+        public IDbConnection Connection
         {
-            DataTable data = new DataTable();
-            ExecuteCommand(command, ref data, isText);
-            if (data.Rows.Count > 0)
-                return data.Rows[0];
-            else
-                return null;
+            get
+            {
+                return m_connection;
+            }
         }
-        public object RunScalarCommand(SqlCommand command, bool isText)
+
+        #endregion
+
+        #region [ Methods ]
+
+        /// <summary>
+        /// Releases all the resources used by the <see cref="DataConnection"/> object.
+        /// </summary>
+        public void Dispose()
         {
-            return ExecuteScalarCommand(command, isText);
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="DataConnection"/> object and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!m_disposed)
+            {
+                try
+                {
+                    if (disposing)
+                    {
+                        if (m_connection != null)
+                            m_connection.Dispose();
+                        m_connection = null;
+                    }
+                }
+                finally
+                {
+                    m_disposed = true;  // Prevent duplicate dispose.
+                }
+            }
+        }
+        /// <summary>
+        /// Executes the SQL statement using <see cref="Connection"/>, and returns the number of rows affected.
+        /// </summary>
+        /// <param name="sql">The SQL statement to be executed.</param>
+        /// <returns>The number of rows affected.</returns>
+        public int ExecuteNonQuery(string sql)
+        {
+            return m_connection.ExecuteNonQuery(sql);
+        }
+
+        /// <summary>
+        /// Executes the SQL statement using <see cref="Connection"/>, and builds a <see cref="IDataReader"/>.
+        /// </summary>
+        /// <param name="sql">The SQL statement to be executed.</param>
+        /// <returns>A <see cref="IDataReader"/> object.</returns>
+        public IDataReader ExecuteReader(string sql)
+        {
+            return m_connection.ExecuteReader(sql);
+        }
+
+        /// <summary>
+        /// Executes the SQL statement using <see cref="Connection"/>, and returns the value in the first column 
+        /// of the first row in the resultset.
+        /// </summary>
+        /// <param name="sql">The SQL statement to be executed.</param>
+        /// <returns>Value in the first column of the first row in the resultset.</returns>
+        public object ExecuteScalar(string sql)
+        {
+            return m_connection.ExecuteScalar(sql);
+        }
+
+        /// <summary>
+        /// Executes the SQL statement using <see cref="Connection"/>, and returns the first <see cref="DataRow"/> in the resultset.
+        /// </summary>
+        /// <param name="sql">The SQL statement to be executed.</param>
+        /// <returns>The first <see cref="DataRow"/> in the resultset.</returns>
+        public DataRow RetrieveRow(string sql)
+        {
+            return m_connection.RetrieveRow(m_adapterType, sql);
+        }
+
+        /// <summary>
+        /// Executes the SQL statement using <see cref="Connection"/>, and returns the first <see cref="DataTable"/> 
+        /// of resultset, if the resultset contains multiple tables.
+        /// </summary>
+        /// <param name="sql">The SQL statement to be executed.</param>
+        /// <returns>A <see cref="DataTable"/> object.</returns>
+        public DataTable RetrieveData(string sql)
+        {
+            return m_connection.RetrieveData(m_adapterType, sql);
+        }
+
+        /// <summary>
+        /// Executes the SQL statement using <see cref="Connection"/>, and returns the <see cref="DataSet"/> that 
+        /// may contain multiple tables, depending on the SQL statement.
+        /// </summary>
+        /// <param name="sql">The SQL statement to be executed.</param>
+        /// <returns>A <see cref="DataSet"/> object.</returns>
+        public DataSet RetrieveDataSet(string sql)
+        {
+            return m_connection.RetrieveDataSet(m_adapterType, sql);
+        }
+
+        #endregion
+
+        #region [ Static ]
+
+        // Static Fields
+        static Type m_connectionType;
+        static Type m_adapterType;
+        static string m_connectionString;
+
+        #endregion        
     }
 }
