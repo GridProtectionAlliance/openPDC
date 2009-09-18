@@ -351,6 +351,8 @@ namespace HistorianAdapters
         /// <exception cref="ArgumentException"><b>ArchivePath</b> or <b>InstanceName</b> is missing from the <see cref="AdapterBase.Settings"/>.</exception>
         public override void Initialize()
         {
+            base.Initialize();
+
             string archivePath;
             string instanceName;
             string refreshMetadata;
