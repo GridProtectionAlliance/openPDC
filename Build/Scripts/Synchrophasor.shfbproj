@@ -19,14 +19,32 @@
     <FrameworkVersion>3.5</FrameworkVersion>
     <HelpTitle>openPDC Synchrophasor Help</HelpTitle>
     <PresentationStyle>Prototype</PresentationStyle>
-    <MissingTags>Summary, Parameter, Returns, AutoDocumentCtors, TypeParameter</MissingTags>
+    <MissingTags>Summary, Parameter, Returns, AutoDocumentCtors, Namespace, TypeParameter</MissingTags>
     <DocumentationSources>
       <DocumentationSource sourceFile="..\Output\Debug\Libraries\HistorianAdapters.dll" xmlns="" />
-<DocumentationSource sourceFile="..\Output\Debug\Libraries\HistorianAdapters.xml" xmlns="" />
-<DocumentationSource sourceFile="..\Output\Debug\Libraries\NASPInet.dll" xmlns="" />
-<DocumentationSource sourceFile="..\Output\Debug\Libraries\NASPInet.xml" xmlns="" />
-<DocumentationSource sourceFile="..\Output\Debug\Libraries\TVA.PhasorProtocols.dll" xmlns="" />
-<DocumentationSource sourceFile="..\Output\Debug\Libraries\TVA.PhasorProtocols.xml" xmlns="" /></DocumentationSources>
+      <DocumentationSource sourceFile="..\Output\Debug\Libraries\HistorianAdapters.xml" xmlns="" />
+      <DocumentationSource sourceFile="..\Output\Debug\Libraries\NASPInet.dll" xmlns="" />
+      <DocumentationSource sourceFile="..\Output\Debug\Libraries\NASPInet.xml" xmlns="" />
+      <DocumentationSource sourceFile="..\Output\Debug\Libraries\TVA.PhasorProtocols.dll" xmlns="" />
+      <DocumentationSource sourceFile="..\Output\Debug\Libraries\TVA.PhasorProtocols.xml" xmlns="" />
+    </DocumentationSources>
+    <HelpFileFormat>Help1xAndHelp2x</HelpFileFormat>
+    <CopyrightHref>https://naspi.tva.com/PhasorMeasurementData/Documents/TVA%2520Open%2520Source%2520Agreement.txt</CopyrightHref>
+    <CopyrightText>Tennessee Valley Authority, 2009. No copyright is claimed pursuant to 17 USC &amp;#167%3b 105.  All Other Rights Reserved.</CopyrightText>
+    <FeedbackEMailAddress>jrcarrol%40tva.gov</FeedbackEMailAddress>
+    <FeedbackEMailLinkText>J. Ritchie Carroll</FeedbackEMailLinkText>
+    <Preliminary>True</Preliminary>
+    <VisibleItems>Attributes, InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
+    <PlugInConfigurations>
+      <PlugInConfig id="Additional Reference Links" enabled="True" xmlns="">
+        <configuration>
+          <targets>
+            <target linkType="Index" helpFileProject="..\..\..\..\Framework\Current Version\Build\Scripts\Framework.shfbproj" />
+            <target linkType="Index" helpFileProject="..\..\..\..\Historian\Current Version\Build\Scripts\Historian.shfbproj" />
+          </targets>
+        </configuration>
+      </PlugInConfig>
+    </PlugInConfigurations>
   </PropertyGroup>
   <!-- There are no properties for these two groups but they need to appear in
        order for Visual Studio to perform the build. -->
