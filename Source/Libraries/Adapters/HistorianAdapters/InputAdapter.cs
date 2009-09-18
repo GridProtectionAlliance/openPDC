@@ -10,8 +10,10 @@
 //  -----------------------------------------------------------------------------------------------------
 //  06/01/2006 - J. Ritchie Carroll
 //       Generated original version of source code.
-//  9/15/2009 - Stephen C. Wills
+//  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
+//  09/17/2009 - Pinal C. Patel
+//       Re-wrote the adapter to utilize existing historian components.
 //
 //*******************************************************************************************************
 
@@ -234,26 +236,23 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TVA;
 using TVA.Communication;
-using TVA.Historian.Packets;
+using TVA.Historian;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
-using TVA;
 
 namespace HistorianAdapters
 {
     /// <summary>
-    /// Represents the class for parsing incoming measurements from a TVA historian data stream.
+    /// Represents an input adapters that listens for time-series data from TVA Historian.
     /// </summary>
     public class InputAdapter : InputAdapterBase
-	{
+    {
         #region [ Members ]
 
         // Fields
-        private string m_historianID;
-        private int m_archiverPort;
-        private UdpClient m_client;
-        private PacketParser m_parser;
+        private DataListener m_historianDataListener;
         private bool m_disposed;
 
         #endregion
@@ -261,38 +260,17 @@ namespace HistorianAdapters
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new <see cref="InputAdapter"/>.
+        /// Initializes a new instance of the <see cref="InputAdapter"/> class.
         /// </summary>
         public InputAdapter()
+            : base()
         {
-            m_archiverPort = 2001;
+            m_historianDataListener = new DataListener();
         }
 
         #endregion
 
         #region [ Properties ]
-
-        /// <summary>
-        /// Gets flag that determines if the data input connects asynchronously.
-        /// </summary>
-        protected override bool UseAsyncConnect
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the name of this <see cref="InputAdapter"/>.
-        /// </summary>
-        public override string Name
-        {
-            get
-            {
-                return "Archive Listener " + m_historianID + ":" + m_archiverPort;
-            }
-        }
 
         /// <summary>
         /// Returns the detailed status of the data input source.
@@ -302,25 +280,22 @@ namespace HistorianAdapters
             get
             {
                 StringBuilder status = new StringBuilder();
-
-                status.Append("    Historian parser state: ");
-
-                if (m_parser == null)
-                    status.Append("Inactive - not parsing");
-                else
-                    status.Append("Active");
-
-                status.AppendLine();
-
-                if (m_parser != null)
-                    status.Append(m_parser.Status);
-
-                if (m_client != null)
-                    status.Append(m_client.Status);
-
                 status.Append(base.Status);
+                status.AppendLine();
+                status.Append(m_historianDataListener.Status);
 
                 return status.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets flag that determines if this <see cref="InputAdapter"/> uses an asynchronous connection.
+        /// </summary>
+        protected override bool UseAsyncConnect
+        {
+            get 
+            {
+                return true;
             }
         }
 
@@ -329,7 +304,64 @@ namespace HistorianAdapters
         #region [ Methods ]
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="InputAdapter"/> object and optionally releases the managed resources.
+        /// Initializes this <see cref="InputAdapter"/>.
+        /// </summary>
+        /// <exception cref="ArgumentException"><b>HistorianID</b>, <b>Server</b>, <b>Port</b>, <b>Protocol</b>, or <b>InitiateConnection</b> is missing from the <see cref="AdapterBase.Settings"/>.</exception>
+        public override void Initialize()
+        {
+            string historianID;
+            string server;
+            string port;
+            string protocol;
+            string outbound;
+            string message = "{0} is missing from Settings - Example: HistorianID=P1; Protocol=UDP; Server=opdw; Port=2004; InitiateConnection=True";
+            Dictionary<string, string> settings = Settings;
+
+            // Validate settings.
+            if (!settings.TryGetValue("HistorianID", out historianID))
+                throw new ArgumentException(string.Format(message, "HistorianID"));
+
+            if (!settings.TryGetValue("Server", out server))
+                throw new ArgumentException(string.Format(message, "Server"));
+            
+            if (!settings.TryGetValue("Port", out port))
+                throw new ArgumentException(string.Format(message, "Port"));
+            
+            if (!settings.TryGetValue("Protocol", out protocol))
+                throw new ArgumentException(string.Format(message, "Protocol"));
+            
+            if (!settings.TryGetValue("InitiateConnection", out outbound))
+                throw new ArgumentException(string.Format(message, "InitiateConnection"));
+
+            m_historianDataListener.ID = historianID;
+            m_historianDataListener.InitializeData = false;
+            m_historianDataListener.CacheData = false;
+            m_historianDataListener.Server = server;
+            m_historianDataListener.Port = int.Parse(port);
+            m_historianDataListener.Protocol = (TransportProtocol)Enum.Parse(typeof(TransportProtocol), protocol, true);
+            m_historianDataListener.ConnectToServer = bool.Parse(outbound);
+            m_historianDataListener.DataExtracted += HistorianDataListener_DataExtracted;
+            m_historianDataListener.SocketConnecting += HistorianDataListener_SocketConnecting;
+            m_historianDataListener.SocketConnected += HistorianDataListener_SocketConnected;
+            m_historianDataListener.SocketDisconnected += HistorianDataListener_SocketDisconnected;
+            m_historianDataListener.Initialize();
+        }
+
+        /// <summary>
+        /// Gets a short one-line status of this <see cref="InputAdapter"/>.
+        /// </summary>
+        /// <param name="maxLength">Maximum length of the status message.</param>
+        /// <returns>Text of the status message.</returns>
+        public override string GetShortStatus(int maxLength)
+        {
+            StringBuilder status = new StringBuilder();
+            status.AppendFormat("Received {0} bytes in {1} packets.", m_historianDataListener.TotalBytesReceived, m_historianDataListener.TotalPacketsReceived);
+
+            return status.ToString().TruncateRight(maxLength).CenterText(maxLength, '\xA0');
+        }      
+
+        /// <summary>
+        /// Releases the unmanaged resources used by this <see cref="InputAdapter"/> and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
@@ -338,23 +370,18 @@ namespace HistorianAdapters
             {
                 try
                 {
+                    // This will be done regardless of whether the object is finalized or disposed.
                     if (disposing)
                     {
-                        if (m_client != null)
+                        // This will be done only when the object is disposed by calling Dispose().
+                        if (m_historianDataListener != null)
                         {
-                            m_client.ConnectionEstablished -= m_client_ConnectionEstablished;
-                            m_client.ConnectionTerminated -= m_client_ConnectionTerminated;
-                            m_client.ConnectionException -= m_client_ConnectionException;
-                            m_client.Dispose();
+                            m_historianDataListener.DataExtracted -= HistorianDataListener_DataExtracted;
+                            m_historianDataListener.SocketConnecting -= HistorianDataListener_SocketConnecting;
+                            m_historianDataListener.SocketConnected -= HistorianDataListener_SocketConnected;
+                            m_historianDataListener.SocketDisconnected -= HistorianDataListener_SocketDisconnected;
+                            m_historianDataListener.Dispose();
                         }
-                        m_client = null;
-
-                        if (m_parser != null)
-                        {
-                            m_parser.DataParsed -= m_parser_DataParsed;
-                            m_parser.Dispose();
-                        }
-                        m_parser = null;
                     }
                 }
                 finally
@@ -366,107 +393,53 @@ namespace HistorianAdapters
         }
 
         /// <summary>
-        /// Intializes <see cref="InputAdapter"/>.
-        /// </summary>
-        public override void Initialize()
-        {
-            Dictionary<string, string> settings = Settings;
-            string value;
-
-            // Example connection string:
-            // Port=1003; ServerID=P3
-            if (settings.TryGetValue("port", out value))
-                m_archiverPort = int.Parse(value);
-
-            if (settings.TryGetValue("historianid", out value))
-                m_historianID = value.Trim().ToUpper();
-
-            // Create new data parser
-            m_parser = new PacketParser();
-            m_parser.DataParsed += m_parser_DataParsed;
-
-            // Create UDP client to listen for messages
-            m_client = new UdpClient("localport=" + m_archiverPort);
-            m_client.ConnectionEstablished += m_client_ConnectionEstablished;
-            m_client.ConnectionTerminated += m_client_ConnectionTerminated;
-            m_client.ConnectionException += m_client_ConnectionException;
-            m_client.Handshake = false;
-
-            // Send data received over UDP port directly to packet parser
-            m_client.ReceiveDataHandler = (buffer, offset, count) => m_parser.Parse(Guid.Empty, buffer, offset, count);
-        }
-
-        /// <summary>
-        /// Gets a short one-line status of this <see cref="AdapterBase"/>.
-        /// </summary>
-        /// <param name="maxLength">Maximum number of available characters for display.</param>
-        /// <returns>A short one-line summary of the current status of this <see cref="AdapterBase"/>.</returns>
-        public override string GetShortStatus(int maxLength)
-        {
-            return ("Total received measurements " + ReceivedMeasurements.ToString("N0")).PadLeft(maxLength, '\xA0');
-        }
-
-        /// <summary>
-        /// Attempts to connect to data input source.
+        /// Attempts to connect to this <see cref="InputAdapter"/>.
         /// </summary>
         protected override void AttemptConnection()
         {
-            // Starts historian packet parser
-            m_parser.Start();
-
-            // Starts listening for UDP data
-            m_client.ConnectAsync();
+            m_historianDataListener.StartAsync();
         }
 
         /// <summary>
-        /// Attempts to disconnect from data input source.
+        /// Attempts to disconnect from this <see cref="InputAdapter"/>.
         /// </summary>
         protected override void AttemptDisconnection()
         {
-            // Stops listening for UDP data
-            if (m_client != null)
-                m_client.Disconnect();
-
-            // Stops historian packet parser
-            if (m_parser != null)
-                m_parser.Stop();
+            m_historianDataListener.Stop();
         }
 
-        // UDP client connection established handler
-        private void m_client_ConnectionEstablished(object sender, EventArgs e)
+        private void HistorianDataListener_DataExtracted(object sender, EventArgs<IList<IDataPoint>> e)
+        {
+            try
+            {
+                List<IMeasurement> measurements = new List<IMeasurement>();
+                foreach (IDataPoint dataPoint in e.Argument)
+                {
+                    measurements.Add(new Measurement((uint)dataPoint.HistorianID, m_historianDataListener.ID, dataPoint.Value, dataPoint.Time));
+                }
+                OnNewMeasurements(measurements);
+            }
+            catch (Exception ex)
+            {
+                OnProcessException(ex);
+            }
+        }
+
+        private void HistorianDataListener_SocketConnecting(object sender, EventArgs e)
+        {
+            OnStatusMessage("Socket connection is being attempted...");
+        }
+
+        private void HistorianDataListener_SocketConnected(object sender, EventArgs e)
         {
             OnConnected();
         }
 
-        // UDP client connection terminated handler
-        private void m_client_ConnectionTerminated(object sender, EventArgs e)
+        private void HistorianDataListener_SocketDisconnected(object sender, EventArgs e)
         {
             OnDisconnected();
         }
 
-        // UDP client connection exception handler
-        private void m_client_ConnectionException(object sender, EventArgs<Exception> e)
-        {
-            OnProcessException(e.Argument);
-        }
-
-        // Historian packet parser data parsed handler
-        private void m_parser_DataParsed(object sender, EventArgs<Guid, IList<IPacket>> e)
-        {
-            List<IMeasurement> measurements = new List<IMeasurement>();
-
-            // We have new historian packets, convert all PacketType1's to measurements
-            foreach (PacketType1 packet in e.Argument2)
-            {
-                if (packet != null)
-                    measurements.Add(new Measurement((uint)packet.HistorianID, m_historianID, packet.Value, packet.Time));
-            }
-
-            // Publish new measurements to consumer...
-            if (measurements.Count > 0)
-                this.OnNewMeasurements(measurements);
-        }
-
         #endregion
-    }	
+    }
 }

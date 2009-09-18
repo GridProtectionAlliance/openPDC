@@ -18,6 +18,8 @@
 //       Added option to refresh metadata during connection.
 //       Modified RefreshMetadata() to perform synchronous refresh.
 //       Corrected the implementation of Dispose().
+//  09/18/2009 - Pinal C. Patel
+//       Added override to Status property and added event handler to archive rollver notification.
 //
 //*******************************************************************************************************
 
@@ -240,6 +242,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading;
 using TVA;
 using TVA.Historian.Files;
@@ -286,6 +289,28 @@ namespace HistorianAdapters
         #endregion
 
         #region [ Properties ]
+
+        /// <summary>
+        /// Returns the detailed status of the data output source.
+        /// </summary>
+        public override string Status
+        {
+            get
+            {
+                StringBuilder status = new StringBuilder();
+                status.Append(base.Status);
+                status.AppendLine();
+                status.Append(m_archive.Status);
+                status.AppendLine();
+                status.Append(m_archive.MetadataFile.Status);
+                status.AppendLine();
+                status.Append(m_archive.StateFile.Status);
+                status.AppendLine();
+                status.Append(m_archive.IntercomFile.Status);
+
+                return status.ToString();
+            }
+        }
 
         /// <summary>
         /// Returns a flag that determines if measurements sent to this <see cref="LocalOutputAdapter"/> are destined for archival.
@@ -348,21 +373,21 @@ namespace HistorianAdapters
         /// <summary>
         /// Initializes this <see cref="LocalOutputAdapter"/>.
         /// </summary>
-        /// <exception cref="ArgumentException"><b>ArchivePath</b> or <b>InstanceName</b> is missing from the <see cref="AdapterBase.Settings"/>.</exception>
+        /// <exception cref="ArgumentException"><b>InstanceName</b> is missing from the <see cref="AdapterBase.Settings"/>.</exception>
         public override void Initialize()
         {
             base.Initialize();
 
-            string archivePath;
             string instanceName;
+            string archivePath;
             string refreshMetadata;
-            string errorMessage = "{0} is missing from Settings: Example: InstanceName=XX;ArchivePath=c:\\;RefreshMetadata=Yes";
+            string errorMessage = "{0} is missing from Settings - Example: InstanceName=XX;ArchivePath=c:\\;RefreshMetadata=True";
             Dictionary<string, string> settings = Settings;
 
             // Validate settings.
             if (!settings.TryGetValue("instancename", out instanceName))
                 throw new ArgumentException(string.Format(errorMessage, "InstanceName"));
-
+            
             if (!settings.TryGetValue("archivepath", out archivePath))
                 archivePath = FilePath.GetAbsolutePath("");
 
@@ -388,6 +413,7 @@ namespace HistorianAdapters
             m_archive.FileName = Path.Combine(archivePath, instanceName + "_archive.d");
             m_archive.CompressData = false;
             m_archive.PersistSettings = true;
+            m_archive.RolloverComplete += Archive_RolloverComplete;
             m_archive.Initialize();
 
             // Provide web service support.
@@ -413,7 +439,10 @@ namespace HistorianAdapters
         /// <returns>Text of the status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return string.Format("Archived {0} measurements locally...", m_measurementsArchived).CenterText(maxLength);
+            StringBuilder status = new StringBuilder();
+            status.AppendFormat("Archived {0} measurements locally.", m_measurementsArchived);
+
+            return status.ToString().TruncateRight(maxLength).CenterText(maxLength, '\xA0');
         }
 
         /// <summary>
@@ -432,22 +461,23 @@ namespace HistorianAdapters
                         // This will be done only when the object is disposed by calling Dispose().
                         if (m_archiveServices != null)
                         {
-                            m_archiveServices.Dispose();
                             m_archiveServices.AdapterLoaded -= ArchiveServices_AdapterLoaded;
                             m_archiveServices.AdapterUnloaded -= ArchiveServices_AdapterUnloaded;
                             m_archiveServices.AdapterLoadException -= ArchiveServices_AdapterLoadException;
+                            m_archiveServices.Dispose();
                         }
 
                         if (m_metadataProviders != null)
                         {
-                            m_metadataProviders.Dispose();
                             m_metadataProviders.AdapterLoaded -= MetadataProviders_AdapterLoaded;
                             m_metadataProviders.AdapterUnloaded -= MetadataProviders_AdapterUnloaded;
                             m_metadataProviders.AdapterLoadException -= MetadataProviders_AdapterLoadException;
+                            m_metadataProviders.Dispose();
                         }
 
                         if (m_archive != null)
                         {
+                            m_archive.RolloverComplete -= Archive_RolloverComplete;
                             m_archive.Dispose();
 
                             if (m_archive.MetadataFile != null)
@@ -545,6 +575,11 @@ namespace HistorianAdapters
                 m_archive.WriteData(new ArchiveData(measurement));
             }
             m_measurementsArchived += measurements.Length;
+        }
+
+        private void Archive_RolloverComplete(object sender, EventArgs e)
+        {
+            OnStatusMessage("Rollover of archive is complete.");
         }
 
         private void ArchiveServices_AdapterLoaded(object sender, EventArgs<IService> e)
