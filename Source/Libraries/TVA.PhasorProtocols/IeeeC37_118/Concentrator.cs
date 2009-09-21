@@ -318,7 +318,6 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                 newCell.PhasorCoordinateFormat = baseCell.PhasorCoordinateFormat;
                 newCell.FrequencyDataFormat = baseCell.FrequencyDataFormat;
                 newCell.AnalogDataFormat = baseCell.AnalogDataFormat;
-                newCell.Tag = baseCell.IsVirtual;
 
                 // Add phasor definitions
                 foreach (IPhasorDefinition phasorDefinition in baseCell.PhasorDefinitions)
@@ -395,10 +394,6 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             {
                 // Create a new IEEE C37.118 data cell (i.e., a PMU entry for this frame)
                 dataCell = new DataCell(dataFrame, configurationCell, true);
-
-                // Assume good status flags for virtual devices
-                if ((bool)configurationCell.Tag)
-                    dataCell.StatusFlags = 0;
 
                 // Mark cells with configuration changed flag if configuration was reloaded
                 if (configurationChanged)

@@ -1527,7 +1527,12 @@ namespace openPDC
         private void SendResponse(ClientRequestInfo requestInfo, bool success, string status, params object[] args)
         {
             string response = requestInfo.Request.Command + (success ? ":Success" : ":Failure");
-            string message = string.Format(status, args) + "\r\n\r\n";
+            string message;
+            
+            if (args.Length == 0)
+                message = status + "\r\n\r\n";
+            else
+                message = string.Format(status, args) + "\r\n\r\n";
 
             m_serviceHelper.SendResponse(requestInfo.Sender.ClientID, new ServiceResponse(response, message));
 

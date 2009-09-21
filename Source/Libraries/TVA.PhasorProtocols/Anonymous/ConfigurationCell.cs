@@ -259,7 +259,6 @@ namespace TVA.PhasorProtocols.Anonymous
         private long m_totalDataQualityErrors;
         private long m_totalTimeQualityErrors;
         private long m_totalDeviceErrors;
-        private bool m_isVirtual;
 
         #endregion
 
@@ -304,7 +303,6 @@ namespace TVA.PhasorProtocols.Anonymous
             m_frequencyDataFormat = (DataFormat)info.GetValue("frequencyDataFormat", typeof(DataFormat));
             m_phasorDataFormat = (DataFormat)info.GetValue("phasorDataFormat", typeof(DataFormat));
             m_phasorCoordinateFormat = (CoordinateFormat)info.GetValue("phasorCoordinateFormat", typeof(CoordinateFormat));
-            m_isVirtual = info.GetBoolean("isVirtual");
         }
 
         #endregion
@@ -446,21 +444,6 @@ namespace TVA.PhasorProtocols.Anonymous
             }
         }
 
-        /// <summary>
-        /// Gets or sets flag that determines if this <see cref="ConfigurationCell"/> is virtual.
-        /// </summary>
-        public bool IsVirtual
-        {
-            get
-            {
-                return m_isVirtual;
-            }
-            set
-            {
-                m_isVirtual = value;
-            }
-        }
-
         #endregion
 
         #region [ Methods ]
@@ -550,7 +533,6 @@ namespace TVA.PhasorProtocols.Anonymous
             info.AddValue("frequencyDataFormat", m_frequencyDataFormat, typeof(DataFormat));
             info.AddValue("phasorDataFormat", m_phasorDataFormat, typeof(DataFormat));
             info.AddValue("phasorCoordinateFormat", m_phasorCoordinateFormat, typeof(CoordinateFormat));
-            info.AddValue("isVirtual", m_isVirtual);
         }
 
         #endregion

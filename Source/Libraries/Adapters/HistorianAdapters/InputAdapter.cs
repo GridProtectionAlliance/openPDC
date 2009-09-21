@@ -309,6 +309,8 @@ namespace HistorianAdapters
         /// <exception cref="ArgumentException"><b>HistorianID</b>, <b>Server</b>, <b>Port</b>, <b>Protocol</b>, or <b>InitiateConnection</b> is missing from the <see cref="AdapterBase.Settings"/>.</exception>
         public override void Initialize()
         {
+            base.Initialize();
+
             string historianID;
             string server;
             string port;

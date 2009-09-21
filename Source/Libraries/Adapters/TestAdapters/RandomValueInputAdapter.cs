@@ -413,7 +413,7 @@ namespace TestAdapters
         {
             get
             {
-                const int MaxMeasurementsToShow = 6;
+                const int MaxMeasurementsToShow = 4;
 
                 StringBuilder status = new StringBuilder();
 
@@ -449,6 +449,8 @@ namespace TestAdapters
         /// </summary>
         public override void Initialize()
         {
+            base.Initialize();
+
             Dictionary<string, string> settings = Settings;
             string setting;
 

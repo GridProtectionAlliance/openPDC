@@ -241,6 +241,7 @@ using TVA.Communication;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
 using TVA.PhasorProtocols.Anonymous;
+using TVA.Units;
 
 namespace TVA.PhasorProtocols
 {
@@ -344,6 +345,19 @@ namespace TVA.PhasorProtocols
         private bool m_autoStartDataChannel;
         private ushort m_idCode;
         private bool m_disposed;
+
+        #endregion
+
+        #region [ Constructors ]        
+
+        /// <summary>
+        /// Creates a new <see cref="PhasorDataConcentratorBase"/>.
+        /// </summary>
+        protected PhasorDataConcentratorBase()
+        {
+            // Create a new signal reference dictionary indexed on measurement keys
+            m_signalReferences = new Dictionary<MeasurementKey, SignalReference[]>();
+        }
 
         #endregion
 
@@ -523,8 +537,6 @@ namespace TVA.PhasorProtocols
             {
                 StringBuilder status = new StringBuilder();
 
-                status.Append(base.Status);
-
                 if (m_baseConfigurationFrame != null && m_baseConfigurationFrame.Cells != null)
                 {
                     status.AppendFormat("  Total configured devices: {0}", m_baseConfigurationFrame.Cells.Count);
@@ -547,10 +559,20 @@ namespace TVA.PhasorProtocols
                 status.AppendLine();
 
                 if (m_dataChannel != null)
+                {
+                    status.AppendLine();
+                    status.AppendLine("       Data Channel Status:");
                     status.Append(m_dataChannel.Status);
+                }
 
                 if (m_commandChannel != null)
+                {
+                    status.AppendLine();
+                    status.AppendLine("    Command Channel Status:");
                     status.Append(m_commandChannel.Status);
+                }
+                
+                status.Append(base.Status);
 
                 return status.ToString();
             }
@@ -626,7 +648,7 @@ namespace TVA.PhasorProtocols
         /// to manually start the data channel, thus enabling the real-time data stream. If command channel
         /// is defined, it will be unaffected. 
         /// </remarks>
-        [AdapterCommand("Manually starts the real-time data stream, command channel is unaffected.")]
+        [AdapterCommand("Manually starts the real-time data stream.")]
         public virtual void StartDataChannel()
         {
             // Start data channel
@@ -641,7 +663,7 @@ namespace TVA.PhasorProtocols
         /// This method will allow host administrator to manually stop the data channel, thus disabling
         /// the real-time data stream. If command channel is defined, it will be unaffected.
         /// </remarks>
-        [AdapterCommand("Manually stops the real-time data stream, command channel is unaffected.")]
+        [AdapterCommand("Manually stops the real-time data stream.")]
         public virtual void StopDataChannel()
         {
             // Stop concentration engine - this is done before stopping data channel since frames may still be
@@ -661,10 +683,11 @@ namespace TVA.PhasorProtocols
             base.Initialize();
 
             Dictionary<string, string> settings = Settings;
-            string setting, commandChannel;
+            string setting, dataChannel, commandChannel;
 
             // Load required parameters
             m_idCode = ushort.Parse(settings["IDCode"]);
+            dataChannel = settings["dataChannel"];
 
             // Load optional parameters
             settings.TryGetValue("commandChannel", out commandChannel);
@@ -672,7 +695,7 @@ namespace TVA.PhasorProtocols
             if (settings.TryGetValue("autoPublishConfigFrame", out setting))
                 m_autoPublishConfigurationFrame = setting.ParseBoolean();
             else
-                m_autoPublishConfigurationFrame = !string.IsNullOrEmpty(commandChannel);
+                m_autoPublishConfigurationFrame = string.IsNullOrEmpty(commandChannel);
 
             if (settings.TryGetValue("autoStartDataChannel", out setting))
                 m_autoStartDataChannel = setting.ParseBoolean();
@@ -685,7 +708,7 @@ namespace TVA.PhasorProtocols
                 m_nominalFrequency = LineFrequency.Hz60;
 
             // Initialize data channel
-            this.DataChannel = new UdpServer(ConnectionString);
+            this.DataChannel = new UdpServer(dataChannel);
 
             // Initialize command channel if defined
             if (!string.IsNullOrEmpty(commandChannel))
@@ -798,8 +821,8 @@ namespace TVA.PhasorProtocols
 
             OnStatusMessage("Defined {0} output stream devices...", m_baseConfigurationFrame.Cells.Count);
 
-            // Create a new signal reference dictionary indexed on measurement keys
-            m_signalReferences = new Dictionary<MeasurementKey, SignalReference[]>();
+            // Clear any existing signal references
+            m_signalReferences.Clear();
             
             // Define measurement to signals cross reference dictionary
             foreach (DataRow measurementRow in DataSource.Tables["OutputStreamMeasurements"].Select(string.Format("AdapterID={0}", ID)))
@@ -815,7 +838,7 @@ namespace TVA.PhasorProtocols
                     {
                         // We cache these indicies locally to speed up initialization as we'll be
                         // requesting them for the same devices over and over
-                        signal.CellIndex = m_configurationFrame.Cells.IndexOfIDLabel(signal.Acronym);
+                        signal.CellIndex = m_baseConfigurationFrame.Cells.IndexOfIDLabel(signal.Acronym);
                         signalCellIndexes.Add(signal.Acronym, signal.CellIndex);
                     }
 
@@ -913,7 +936,7 @@ namespace TVA.PhasorProtocols
             SignalReferenceMeasurement signalMeasurement = measurement as SignalReferenceMeasurement;
             IDataFrame dataFrame = frame as IDataFrame;
 
-            if (signalMeasurement != null && dataFrame != null)
+            if ((object)signalMeasurement != null && dataFrame != null)
             {
                 PhasorValueCollection phasorValues;
                 DigitalValueCollection digitalValues;
@@ -929,7 +952,7 @@ namespace TVA.PhasorProtocols
                         // Assign "phase angle" measurement to data cell
                         phasorValues = dataCell.PhasorValues;
                         if (phasorValues.Count >= signalIndex)
-                            phasorValues[signalIndex - 1].Angle = signalMeasurement.AdjustedValue;
+                            phasorValues[signalIndex - 1].Angle = Angle.FromDegrees(signalMeasurement.AdjustedValue);
                         break;
                     case SignalType.Magnitude:
                         // Assign "phase magnitude" measurement to data cell
