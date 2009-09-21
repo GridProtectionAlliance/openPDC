@@ -1,13 +1,17 @@
--- =============================================
+-- =============================================================================
 -- openPDC Data Structures for MySQL 
+--
+-- Tennessee Valley Authority, 2009
+-- No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
+--
 -- James Ritchie Carroll
 -- 09/01/2009
--- =============================================
+-- =============================================================================
 
 -- Execute the following from the command prompt to create database:
--- 	mysql -uroot -p <"openPDC.sql"
+-- 	  mysql -uroot -p <"openPDC.sql"
 
-CREATE DATABASE openPDC;
+CREATE DATABASE openPDC CHARACTER SET = latin1;
 USE openPDC;
 
 CREATE TABLE Runtime(
@@ -33,7 +37,7 @@ CREATE TABLE ConfigurationEntity(
 	RuntimeName NVARCHAR(100) NOT NULL,
 	Description LONGTEXT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
-	Enabled BIT NOT NULL DEFAULT 0
+	Enabled TINYINT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE Vendor(
@@ -80,9 +84,9 @@ CREATE TABLE Node(
 	Latitude DECIMAL(9, 6) NULL,
 	Description LONGTEXT NULL,
 	Image LONGTEXT NULL,
-	Master BIT NOT NULL DEFAULT 0,
+	Master TINYINT NOT NULL DEFAULT 0,
 	LoadOrder INT NOT NULL DEFAULT 0,
-	Enabled BIT NOT NULL DEFAULT 0,
+	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_Node PRIMARY KEY (ID ASC)
 );
 
@@ -93,15 +97,15 @@ CREATE TABLE OtherDevice(
 	ID INT AUTO_INCREMENT NOT NULL,
 	Acronym NVARCHAR(16) NOT NULL,
 	Name NVARCHAR(100) NULL,
-	IsConcentrator BIT NOT NULL DEFAULT 0,
+	IsConcentrator TINYINT NOT NULL DEFAULT 0,
 	CompanyID INT NULL,
 	VendorDeviceID INT NULL,
 	Longitude DECIMAL(9, 6) NULL,
 	Latitude DECIMAL(9, 6) NULL,
 	InterconnectionID INT NULL,
-	Planned BIT NOT NULL DEFAULT 0,
-	Desired BIT NOT NULL DEFAULT 0,
-	InProgress BIT NOT NULL DEFAULT 0,
+	Planned TINYINT NOT NULL DEFAULT 0,
+	Desired TINYINT NOT NULL DEFAULT 0,
+	InProgress TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_OtherDevice PRIMARY KEY (ID ASC)
 );
 
@@ -111,7 +115,7 @@ CREATE TABLE Device(
 	ParentID INT NULL,
 	Acronym NVARCHAR(16) NOT NULL,
 	Name NVARCHAR(100) NULL,
-	IsConcentrator BIT NOT NULL DEFAULT 0,
+	IsConcentrator TINYINT NOT NULL DEFAULT 0,
 	CompanyID INT NULL,
 	HistorianID INT NULL,
 	AccessID INT NOT NULL DEFAULT 0,
@@ -127,7 +131,7 @@ CREATE TABLE Device(
 	ContactList LONGTEXT NULL,
 	MeasuredLines INT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
-	Enabled BIT NOT NULL DEFAULT 0,
+	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_Device PRIMARY KEY (ID ASC)
 );
 
@@ -183,7 +187,7 @@ CREATE TABLE Measurement(
 	Adder FLOAT NOT NULL DEFAULT 0.0,
 	Multiplier FLOAT NOT NULL DEFAULT 1.0,
 	Description LONGTEXT NULL,
-	Enabled BIT NOT NULL DEFAULT 0,
+	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_Measurement PRIMARY KEY (SignalID ASC),
 	CONSTRAINT IX_Measurement UNIQUE KEY (PointID ASC),
 	CONSTRAINT IX_Measurement_PointTag UNIQUE KEY (PointTag ASC)
@@ -210,7 +214,7 @@ CREATE TABLE OutputStreamDevice(
 	BpaAcronym NVARCHAR(4) NULL,
 	Name NVARCHAR(100) NOT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
-	Enabled BIT NOT NULL DEFAULT 0,
+	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_OutputStreamDevice PRIMARY KEY (ID ASC)
 );
 
@@ -240,10 +244,10 @@ CREATE TABLE CalculatedMeasurement(
 	FramesPerSecond INT NOT NULL DEFAULT 30,
 	LagTime FLOAT NOT NULL DEFAULT 3.0,
 	LeadTime FLOAT NOT NULL DEFAULT 1.0,
-	UseLocalClockAsRealTime BIT NOT NULL DEFAULT 0,
-	AllowSortsByArrival BIT NOT NULL DEFAULT 0,
+	UseLocalClockAsRealTime TINYINT NOT NULL DEFAULT 0,
+	AllowSortsByArrival TINYINT NOT NULL DEFAULT 0,
 	LoadOrder INT NOT NULL DEFAULT 0,
-	Enabled BIT NOT NULL DEFAULT 0,
+	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_CalculatedMeasurement PRIMARY KEY (ID ASC)
 );
 
@@ -255,7 +259,7 @@ CREATE TABLE CustomActionAdapter(
 	TypeName TEXT NOT NULL,
 	ConnectionString LONGTEXT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
-	Enabled BIT NOT NULL DEFAULT 0,
+	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_CustomActionAdapter PRIMARY KEY (ID ASC)
 );
 
@@ -267,10 +271,10 @@ CREATE TABLE Historian(
 	AssemblyName LONGTEXT NULL,
 	TypeName LONGTEXT NULL,
 	ConnectionString LONGTEXT NULL,
-	IsLocal BIT NOT NULL DEFAULT 0,
+	IsLocal TINYINT NOT NULL DEFAULT 0,
 	Description LONGTEXT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
-	Enabled BIT NOT NULL DEFAULT 0,
+	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_Historian PRIMARY KEY (ID ASC)
 );
 
@@ -282,7 +286,7 @@ CREATE TABLE CustomInputAdapter(
 	TypeName TEXT NOT NULL,
 	ConnectionString LONGTEXT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
-	Enabled BIT NOT NULL DEFAULT 0,
+	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_CustomInputAdapter PRIMARY KEY (ID ASC)
 );
 
@@ -293,18 +297,19 @@ CREATE TABLE OutputStream(
 	Name NVARCHAR(100) NULL,
 	Type INT NOT NULL DEFAULT 0,
 	ConnectionString LONGTEXT NULL,
-	IDCode INT NOT NULL DEFAULT 0,
+	DataChannel LONGTEXT NULL,
 	CommandChannel LONGTEXT NULL,
-	AutoPublishConfigFrame BIT NOT NULL DEFAULT 0,
-	AutoStartDataChannel BIT NOT NULL DEFAULT 1,
+	IDCode INT NOT NULL DEFAULT 0,
+	AutoPublishConfigFrame TINYINT NOT NULL DEFAULT 0,
+	AutoStartDataChannel TINYINT NOT NULL DEFAULT 1,
 	NominalFrequency INT NOT NULL DEFAULT 60,
 	FramesPerSecond INT NOT NULL DEFAULT 30,
 	LagTime FLOAT NOT NULL DEFAULT 3.0,
 	LeadTime FLOAT NOT NULL DEFAULT 1.0,
-	UseLocalClockAsRealTime BIT NOT NULL DEFAULT 0,
-	AllowSortsByArrival BIT NOT NULL DEFAULT 0,
+	UseLocalClockAsRealTime TINYINT NOT NULL DEFAULT 0,
+	AllowSortsByArrival TINYINT NOT NULL DEFAULT 0,
 	LoadOrder INT NOT NULL DEFAULT 0,
-	Enabled BIT NOT NULL DEFAULT 0,
+	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_OutputStream PRIMARY KEY (ID ASC)
 );
 
@@ -316,7 +321,7 @@ CREATE TABLE CustomOutputAdapter(
 	TypeName TEXT NOT NULL,
 	ConnectionString LONGTEXT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
-	Enabled BIT NOT NULL DEFAULT 0,
+	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_CustomOutputAdapter PRIMARY KEY (ID ASC)
 );
 
@@ -414,12 +419,12 @@ CREATE VIEW RuntimeDevice
 AS
 SELECT Device.NodeID, Runtime.ID, Device.Acronym AS AdapterName, N'TVA.PhasorProtocols.dll' AS AssemblyName, 
  N'TVA.PhasorProtocols.PhasorMeasurementMapper' AS TypeName,
- CONCAT_WS(';', Device.ConnectionString, CONCAT(N'isConcentrator=', Device.IsConcentrator),
- CONCAT(N'accessID=', Device.AccessID),
- IF(Device.TimeZone IS NULL,'', CONCAT(N'timeZone=', Device.TimeZone)),
- CONCAT(N'timeAdjustmentTicks=', Device.TimeAdjustmentTicks),
+ CONCAT_WS(';', Device.ConnectionString, CONCAT(N'isConcentrator=', CAST(Device.IsConcentrator AS CHAR)),
+ CONCAT(N'accessID=', CAST(Device.AccessID AS CHAR)),
+ IF(Device.TimeZone IS NULL, N'', CONCAT(N'timeZone=', Device.TimeZone)),
+ CONCAT(N'timeAdjustmentTicks=', CAST(Device.TimeAdjustmentTicks AS CHAR)),
  IF(Protocol.Acronym IS NULL, N'', CONCAT(N'phasorProtocol=', Protocol.Acronym)),
- CONCAT(N'dataLossInterval=', Device.DataLossInterval)) AS ConnectionString
+ CONCAT(N'dataLossInterval=', CAST(Device.DataLossInterval AS CHAR))) AS ConnectionString
 FROM Device LEFT OUTER JOIN
  Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
  Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device'
@@ -467,10 +472,18 @@ AS
 SELECT OutputStream.NodeID, Runtime.ID, OutputStream.Acronym AS AdapterName, 
  N'TVA.PhasorProtocols.dll' AS AssemblyName, 
  IF(Type = 1, N'TVA.PhasorProtocols.BpaPdcStream.Concentrator', N'TVA.PhasorProtocols.IeeeC37_118.Concentrator') AS TypeName,
- CONCAT_WS(';', OutputStream.ConnectionString, CONCAT(N'framesPerSecond=', OutputStream.FramesPerSecond),
- CONCAT(N'lagTime=', OutputStream.LagTime), CONCAT(N'leadTime=', OutputStream.LeadTime),
- CONCAT(N'useLocalClockAsRealTime=', OutputStream.UseLocalClockAsRealTime), 
- CONCAT(N'allowSortsByArrival=', OutputStream.AllowSortsByArrival)) AS ConnectionString
+ CONCAT_WS(';', OutputStream.ConnectionString,
+ CONCAT(N'dataChannel={', OutputStream.DataChannel, N'}'),
+ IF(OutputStream.CommandChannel IS NULL, N'', CONCAT(N'commandChannel={', OutputStream.CommandChannel, N'}')),
+ CONCAT(N'idCode=', CAST(OutputStream.IDCode AS CHAR)),
+ CONCAT(N'autoPublishConfigFrame=', CAST(OutputStream.AutoPublishConfigFrame AS CHAR)),
+ CONCAT(N'autoStartDataChannel=', CAST(OutputStream.AutoStartDataChannel AS CHAR)),
+ CONCAT(N'nominalFrequency=', CAST(OutputStream.NominalFrequency AS CHAR)),
+ CONCAT(N'lagTime=', CAST(OutputStream.LagTime AS CHAR)),
+ CONCAT(N'leadTime=', CAST(OutputStream.LeadTime AS CHAR)),
+ CONCAT(N'framesPerSecond=', CAST(OutputStream.FramesPerSecond AS CHAR)),
+ CONCAT(N'useLocalClockAsRealTime=', CAST(OutputStream.UseLocalClockAsRealTime AS CHAR)),
+ CONCAT(N'allowSortsByArrival=', CAST(OutputStream.AllowSortsByArrival AS CHAR))) AS ConnectionString
 FROM OutputStream LEFT OUTER JOIN
  Runtime ON OutputStream.ID = Runtime.SourceID AND Runtime.SourceTable = N'OutputStream'
 WHERE (OutputStream.Enabled <> 0)
@@ -512,10 +525,10 @@ AS
 SELECT CalculatedMeasurement.NodeID, Runtime.ID, CalculatedMeasurement.Acronym AS AdapterName, 
  CalculatedMeasurement.AssemblyName, CalculatedMeasurement.TypeName,
  CONCAT_WS(';', IF(ConfigSection IS NULL, N'', CONCAT(N'configurationSection=', ConfigSection)),
- CONCAT(N'minimumMeasurementsToUse=', CalculatedMeasurement.MinimumMeasurementsToUse),
- CONCAT(N'framesPerSecond=', CalculatedMeasurement.FramesPerSecond),
- CONCAT(N'lagTime=', CalculatedMeasurement.LagTime),
- CONCAT(N'leadTime=', CalculatedMeasurement.LeadTime),
+ CONCAT(N'minimumMeasurementsToUse=', CAST(CalculatedMeasurement.MinimumMeasurementsToUse AS CHAR)),
+ CONCAT(N'framesPerSecond=', CAST(CalculatedMeasurement.FramesPerSecond AS CHAR)),
+ CONCAT(N'lagTime=', CAST(CalculatedMeasurement.LagTime AS CHAR)),
+ CONCAT(N'leadTime=', CAST(CalculatedMeasurement.LeadTime AS CHAR)),
  IF(InputMeasurements IS NULL, N'', CONCAT(N'inputMeasurementKeys={', InputMeasurements, N'}')),
  IF(OutputMeasurements IS NULL, N'', CONCAT(N'outputMeasurements={', OutputMeasurements, N'}'))) AS ConnectionString
 FROM CalculatedMeasurement LEFT OUTER JOIN
@@ -525,7 +538,7 @@ ORDER BY CalculatedMeasurement.LoadOrder;
 
 CREATE VIEW ActiveMeasurement
 AS
-SELECT Device.NodeID, CONCAT_WS(':', Historian.Acronym, Measurement.PointID) AS ID, Measurement.SignalID, Measurement.PointTag, 
+SELECT Device.NodeID, CONCAT_WS(':', Historian.Acronym, CAST(Measurement.PointID AS CHAR)) AS ID, Measurement.SignalID, Measurement.PointTag, 
 	Measurement.AlternateTag, Measurement.SignalReference, Device.Acronym AS Device, Runtime.ID AS DeviceID, Protocol.Acronym AS Protocol,
 	SignalType.Acronym AS SignalType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier, Company.Acronym AS Company, 
 	Device.Longitude, Device.Latitude, Measurement.Description
@@ -637,7 +650,7 @@ CREATE FUNCTION NewGuid() RETURNS BINARY(16)
 RETURN StringToGuid(UUID());
 
 DELIMITER $$
-CREATE PROCEDURE GetFormattedMeasurements(measurementSql TEXT, includeAdjustments BIT, OUT measurements TEXT)
+CREATE PROCEDURE GetFormattedMeasurements(measurementSql TEXT, includeAdjustments TINYINT, OUT measurements TEXT)
 BEGIN
 	DECLARE done INT DEFAULT 0;
 	DECLARE measurementID INT;
@@ -689,7 +702,7 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE FUNCTION FormatMeasurements(measurementSql TEXT, includeAdjustments BIT)
+CREATE FUNCTION FormatMeasurements(measurementSql TEXT, includeAdjustments TINYINT)
 RETURNS TEXT 
 BEGIN
   DECLARE measurements TEXT; 

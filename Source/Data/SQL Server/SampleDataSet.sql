@@ -1,12 +1,12 @@
 -- Script auto-generated generated from Access database openPDC.mdb method GenerateSampleDataScript
--- 09/14/2009 3:50:33 PM
+-- 09/21/2009 11:19:07 AM
 
 USE openPDC
 GO
 
 INSERT INTO Node(Name, CompanyID, Description, Master, LoadOrder, Enabled) VALUES('Development', 29, 'Development node', 1, 0, 1)
 UPDATE Node SET ID='e7a5235d-cb6f-4864-a96e-a8686f36e599' WHERE Name='Development'
-INSERT INTO Historian(NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 'LocalDevArchive', 'Local Development Archive', 'HistorianAdapters.dll', 'HistorianAdapters.LocalOutputAdapter', '', 1, 'Local development archive', 0, 1)
+INSERT INTO Historian(NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 'DEVARCHIVE', 'Local Development Archive', 'HistorianAdapters.dll', 'HistorianAdapters.LocalOutputAdapter', '', 1, 'Local development archive', 0, 1)
 INSERT INTO Device(NodeID, Acronym, Name, IsConcentrator, CompanyID, HistorianID, AccessID, VendorDeviceID, ProtocolID, Longitude, Latitude, InterconnectionID, ConnectionString, MeasuredLines, LoadOrder, Enabled) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 'SHELBY', 'Shelby', 0, 29, 1, 2, 2, 3, -89.803823, 35.387099, 1, 'transportProtocol=File; file=Sample1344.PmuCapture', 3, 0, 1)
 INSERT INTO Phasor(DeviceID, Label, Type, Phase, SourceIndex) VALUES(1, '500 kV Bus 1', 'V', '+', 1)
 INSERT INTO Phasor(DeviceID, Label, Type, Phase, SourceIndex) VALUES(1, '500 kV Bus 2', 'V', '+', 2)
@@ -41,3 +41,25 @@ INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSou
 UPDATE Measurement SET SignalID='ed6def67-54c4-4e74-af95-c95fa6915fbc' WHERE PointTag='TVA_SHEL-LAGO:ABBI'
 INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(1, 1, 'TVA_SHEL-LAGO:ABBIH', 2, 5, 'SHELBY-PA5', 'Shelby ABB-521 Lagoon Creek Positive Sequence Current Phase Angle', 1)
 UPDATE Measurement SET SignalID='bcd7aa41-32f1-4d3c-96d5-9e1da2c9469e' WHERE PointTag='TVA_SHEL-LAGO:ABBIH'
+INSERT INTO OutputStream(NodeID, Acronym, Name, Type, ConnectionString, DataChannel, CommandChannel, IDCode, AutoPublishConfigFrame, AutoStartDataChannel, NominalFrequency, FramesPerSecond, LagTime, LeadTime, UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 'TESTSTREAM', 'Test Stream', 0, '', 'Port=0;Clients=localhost:8800', 'Port=8900', 235, 0, 1, 60, 30, 3, 1, 1, 0, 0, 1)
+INSERT INTO OutputStreamDevice(NodeID, AdapterID, Acronym, Name, LoadOrder, Enabled) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 'SHELBY', 'Shelby', 0, 1)
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 1, 'SHELBY-SF')
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 2, 'SHELBY-FQ')
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 3, 'SHELBY-DV0')
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 4, 'SHELBY-DF')
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 5, 'SHELBY-PM1')
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 6, 'SHELBY-PA1')
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 7, 'SHELBY-PM2')
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 8, 'SHELBY-PA2')
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 9, 'SHELBY-PM3')
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 10, 'SHELBY-PA3')
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 11, 'SHELBY-PM4')
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 12, 'SHELBY-PA4')
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 13, 'SHELBY-PM5')
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 14, 'SHELBY-PA5')
+INSERT INTO OutputStreamDevicePhasor(NodeID, OutputStreamDeviceID, Label, Type, Phase, LoadOrder) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, '500 kV Bus 1', 'V', '+', 0)
+INSERT INTO OutputStreamDevicePhasor(NodeID, OutputStreamDeviceID, Label, Type, Phase, LoadOrder) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, '500 kV Bus 2', 'V', '+', 1)
+INSERT INTO OutputStreamDevicePhasor(NodeID, OutputStreamDeviceID, Label, Type, Phase, LoadOrder) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 'Cordova', 'I', '+', 2)
+INSERT INTO OutputStreamDevicePhasor(NodeID, OutputStreamDeviceID, Label, Type, Phase, LoadOrder) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 'Dell', 'I', '+', 3)
+INSERT INTO OutputStreamDevicePhasor(NodeID, OutputStreamDeviceID, Label, Type, Phase, LoadOrder) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 'Lagoon Creek', 'I', '+', 4)
+INSERT INTO OutputStreamDeviceDigital(NodeID, OutputStreamDeviceID, Label, LoadOrder) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 'Digital1', 0)
