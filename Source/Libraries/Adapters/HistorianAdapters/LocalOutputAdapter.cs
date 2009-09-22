@@ -572,7 +572,7 @@ namespace HistorianAdapters
 
             foreach (IMeasurement measurement in measurements)
             {
-                m_archive.WriteData(new ArchiveData(measurement));
+                m_archive.WriteData(new ArchiveDataPoint(measurement));
             }
             m_archivedMeasurements += measurements.Length;
         }

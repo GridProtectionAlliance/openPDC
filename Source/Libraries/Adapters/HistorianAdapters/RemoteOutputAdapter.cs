@@ -547,7 +547,7 @@ namespace HistorianAdapters
             PacketType101 packet = new PacketType101();
             for (int i = startIndex; i <= endIndex; i++)
             {
-                packet.Data.Add(new PacketType101Data(measurements[i]));
+                packet.Data.Add(new PacketType101DataPoint(measurements[i]));
             }
 
             m_historianPublisher.SendAsync(packet.BinaryImage);
