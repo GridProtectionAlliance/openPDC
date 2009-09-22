@@ -293,7 +293,7 @@ namespace HistorianAdapters
         /// </summary>
         protected override bool UseAsyncConnect
         {
-            get 
+            get
             {
                 return true;
             }
@@ -325,13 +325,13 @@ namespace HistorianAdapters
 
             if (!settings.TryGetValue("Server", out server))
                 throw new ArgumentException(string.Format(message, "Server"));
-            
+
             if (!settings.TryGetValue("Port", out port))
                 throw new ArgumentException(string.Format(message, "Port"));
-            
+
             if (!settings.TryGetValue("Protocol", out protocol))
                 throw new ArgumentException(string.Format(message, "Protocol"));
-            
+
             if (!settings.TryGetValue("InitiateConnection", out outbound))
                 throw new ArgumentException(string.Format(message, "InitiateConnection"));
 
@@ -356,11 +356,8 @@ namespace HistorianAdapters
         /// <returns>Text of the status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            StringBuilder status = new StringBuilder();
-            status.AppendFormat("Received {0} bytes in {1} packets.", m_historianDataListener.TotalBytesReceived, m_historianDataListener.TotalPacketsReceived);
-
-            return status.ToString().TruncateRight(maxLength).CenterText(maxLength, '\xA0');
-        }      
+            return string.Format("Received {0} bytes in {1} packets.", m_historianDataListener.TotalBytesReceived, m_historianDataListener.TotalPacketsReceived).TruncateRight(maxLength);
+        }
 
         /// <summary>
         /// Releases the unmanaged resources used by this <see cref="InputAdapter"/> and optionally releases the managed resources.
@@ -429,7 +426,7 @@ namespace HistorianAdapters
 
         private void HistorianDataListener_SocketConnecting(object sender, EventArgs e)
         {
-            OnStatusMessage("Socket connection is being attempted...");
+            OnStatusMessage("Attempting socket connection...");
         }
 
         private void HistorianDataListener_SocketConnected(object sender, EventArgs e)

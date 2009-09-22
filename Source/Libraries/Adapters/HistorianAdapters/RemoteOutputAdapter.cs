@@ -12,6 +12,8 @@
 //       Generated original version of source code.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
+//  09/22/2009 - Pinal C. Patel
+//       Re-wrote the adapter to utilize new components.
 //
 //*******************************************************************************************************
 
@@ -231,218 +233,326 @@
 */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+using TVA;
+using TVA.Communication;
+using TVA.Historian.Packets;
+using TVA.Measurements;
+using TVA.Measurements.Routing;
+
 namespace HistorianAdapters
 {
-//    [CLSCompliant(false)]
-//    public class OutputAdapter : OuputAdapterBase
-//    {
-		
-//        private string m_archiverIP;
-//        private string m_archiverHostName;
-//        private int m_archiverPort;
-//        private int m_maximumEvents;
-//        private int m_connectionTimeout;
-//        private int m_bufferSize;
-//        private byte[] m_buffer;
-//        private Exception m_connectionException;
-//        private TcpClient m_connection;
-//        private bool m_disposed;
-		
-//        public OutputAdapter()
-//        {
-			
-			
-//            m_archiverIP = "127.0.0.1";
-//            m_archiverPort = 1003;
-//            m_maximumEvents = 100000;
-//            m_connectionTimeout = 2000;
-			
-//        }
-		
-//        public override void Initialize(string connectionString)
-//        {
-			
-//            string value;
-			
-//            // Example connection string:
-//            // IP=localhost; Port=1003; MaxEvents=100000
-//            object with_1 = ParseKeyValuePairs(connectionString);
-//            if (with_1.TryGetValue("ip", value))
-//            {
-//                m_archiverIP = value;
-//            }
-//            if (with_1.TryGetValue("port", value))
-//            {
-//                m_archiverPort = Convert.ToInt32(value);
-//            }
-//            if (with_1.TryGetValue("maxevents", value))
-//            {
-//                m_maximumEvents = Convert.ToInt32(value);
-//            }
-//            if (with_1.TryGetValue("timeout", value))
-//            {
-//                m_connectionTimeout = Convert.ToInt32(value);
-//            }
-			
-//            if (string.IsNullOrEmpty(m_archiverIP))
-//            {
-//                throw (new InvalidOperationException("Cannot start TCP stream listener connection to historian without specifing a host IP"));
-//            }
-			
-//            m_bufferSize = PacketType1.Size * m_maximumEvents;
-//            m_buffer = CreateArray<byte>(m_bufferSize);
-			
-//            // Attempt to lookup DNS host name for given IP
-//            try
-//            {
-//                m_archiverHostName = Dns.GetHostEntry(m_archiverIP).HostName;
-//                if (string.IsNullOrEmpty(m_archiverHostName))
-//                {
-//                    m_archiverHostName = m_archiverIP;
-//                }
-//            }
-//            catch
-//            {
-//                m_archiverHostName = m_archiverIP;
-//            }
-			
-//        }
-		
-//        protected override void AttemptConnection()
-//        {
-			
-//            // Connect to archiver using TCP
-//            m_connection = new TcpClient("server=" + m_archiverIP + "; port=" + m_archiverPort);
-//            m_connection.ConnectingCancelled += new System.EventHandler(this.m_connection_ConnectingCancelled);
-//            m_connection.ConnectingException += new System.EventHandler(this.m_connection_ConnectingException);
-//            m_connection.Disconnected += new System.EventHandler(this.m_connection_Disconnected);
-//            m_connection.MaximumConnectionAttempts = 1;
-//            m_connection.PayloadAware = true;
-//            m_connection.Handshake = false;
-			
-//            m_connectionException = null;
-			
-//            m_connection.Connect();
-			
-//            // Block calling thread until connection succeeds or fails
-//            if (! m_connection.WaitForConnection(m_connectionTimeout))
-//            {
-//                if (m_connectionException == null)
-//                {
-//                    // Failed to connect for unknown reason - restart connection cycle
-//                    throw (new InvalidOperationException("Failed to connect"));
-//                }
-//            }
-			
-//            // If there was a connection exception, re-throw to restart connect cycle
-//            if (m_connectionException != null)
-//            {
-//                throw (m_connectionException);
-//            }
-			
-//        }
-		
-//        protected override void AttemptDisconnection()
-//        {
-			
-//            if (m_connection != null)
-//            {
-//                m_connection.Dispose();
-//            }
-//            m_connection = null;
-//            m_connection.ConnectingCancelled += new System.EventHandler(this.m_connection_ConnectingCancelled);
-//            m_connection.ConnectingException += new System.EventHandler(this.m_connection_ConnectingException);
-//            m_connection.Disconnected += new System.EventHandler(this.m_connection_Disconnected);
-			
-//        }
-		
-//        public override string Name
-//        {
-//            get
-//            {
-//                return "Archiver " + m_archiverHostName + ":" + m_archiverPort;
-//            }
-//        }
-		
-//        public override string Status
-//        {
-//            get
-//            {
-//                System.Text.StringBuilder with_1 = new StringBuilder;
-//                if (m_connection != null)
-//                {
-//                    with_1.Append(m_connection.Status);
-//                }
-//                with_1.Append(base.Status);
-//                return with_1.ToString();
-//            }
-//        }
-		
-//        protected override void ArchiveMeasurements(DatAWareHistorianAdapter.OutputAdapter.ArchiveMeasurements[] measurements)
-//        {
-			
-//            if ((m_connection != null)&& m_connection.IsConnected)
-//            {
-//                IMeasurement measurement;
-//                int remainingPoints = measurements.Length;
-//                int pointsToArchive;
-//                int arrayIndex;
-//                int bufferIndex;
-//                int x;
-				
-//                while (remainingPoints > 0)
-//                {
-//                    pointsToArchive = Minimum(m_maximumEvents, remainingPoints);
-//                    remainingPoints -= pointsToArchive;
-					
-//                    // Load binary standard event images into local buffer
-//                    bufferIndex = 0;
-					
-//                    for (x = arrayIndex; x <= arrayIndex + pointsToArchive - 1; x++)
-//                    {
-//                        measurement = measurements[x];
-//                        if (measurement.Ticks > 0)
-//                        {
-//                            Buffer.BlockCopy((new PacketType1(measurement)).BinaryImage, 0, m_buffer, bufferIndex * PacketType1.Size, PacketType1.Size);
-//                            bufferIndex++;
-//                        }
-//                    }
-					
-//                    arrayIndex += pointsToArchive;
-					
-//                    // Post data to TCP stream
-//                    if (bufferIndex > 0)
-//                    {
-//                        m_connection.Send(m_buffer, 0, bufferIndex * PacketType1.Size);
-//                    }
-//                }
-//            }
-			
-//        }
-		
-//        private void m_connection_ConnectingCancelled(object sender, System.EventArgs e)
-//        {
-			
-//            // Signal time-out of connection attempt
-//            m_connectionException = new InvalidOperationException("Timed-out waiting for connection");
-			
-//        }
-		
-//        private void m_connection_ConnectingException(object sender, DatAWareHistorianAdapter.OutputAdapter.m_connection_ConnectingException.GenericEventArgs<Exception> e)
-//        {
-			
-//            // Take note of connection exception
-//            m_connectionException = e.Argument;
-			
-//        }
-		
-//        private void m_connection_Disconnected(object sender, System.EventArgs e)
-//        {
-			
-//            // Make sure connection cycle gets restarted when we get disconnected from archiver...
-//            Connect();
-			
-//        }
-		
-//    }	
+    /// <summary>
+    /// Represents an output adapter that publishes measurements to TVA Historian for archival.
+    /// </summary>
+    public class RemoteOutputAdapter : OutputAdapterBase
+    {
+        #region [ Members ]
+
+        // Constants
+        private const int DefaultHistorianPort = 1003;
+        private const bool DefaultPayloadAware = true;
+        private const int DefaultMaximumSamples = 100000;
+        private const bool DefaultConserveBandwidth = true;
+        private const double PubliserWaitTime = 10.0;
+
+        // Fields
+        private TcpClient m_historianPublisher;
+        private Action<IMeasurement[], int, int> m_publisherDelegate;
+        private byte[] m_publisherBuffer;
+        private bool m_publisherReady;
+        private bool m_publisherDisconnecting;
+        private long m_publishedMeasurements;
+        private int m_maximumSamples;
+        private bool m_disposed;
+
+        #endregion
+
+        #region [ Constructors ]
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteOutputAdapter"/> class.
+        /// </summary>
+        public RemoteOutputAdapter()
+            : base()
+        {
+            m_historianPublisher = new TcpClient();
+        }
+
+        #endregion
+
+        #region [ Properties ]
+
+        /// <summary>
+        /// Returns the detailed status of the data output source.
+        /// </summary>
+        public override string Status
+        {
+            get
+            {
+                StringBuilder status = new StringBuilder();
+                status.Append(base.Status);
+                status.AppendLine();
+                status.Append(m_historianPublisher.Status);
+
+                return status.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Returns a flag that determines if measurements sent to this <see cref="RemoteOutputAdapter"/> are destined for archival.
+        /// </summary>
+        public override bool OutputIsForArchive
+        {
+            get 
+            {
+                return true; 
+            }
+        }
+
+        /// <summary>
+        /// Gets flag that determines if this <see cref="RemoteOutputAdapter"/> uses an asynchronous connection.
+        /// </summary>
+        protected override bool UseAsyncConnect
+        {
+            get 
+            {
+                return true;
+            }
+        }
+
+        #endregion
+
+        #region [ Methods ]
+
+        /// <summary>
+        /// Initializes this <see cref="RemoteOutputAdapter"/>.
+        /// </summary>
+        /// <exception cref="ArgumentException"><b>Server</b> is missing from the <see cref="AdapterBase.Settings"/>.</exception>
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            string server;
+            string port;
+            string payloadAware;
+            string maximumSamples;
+            string conserveBandwidth;
+            string errorMessage = "{0} is missing from Settings - Example: Server=localhost;Port=1003;PayloadAware=True;MaximumSamples=100000;ConserveBandwidth=True";
+            Dictionary<string, string> settings = Settings;
+
+            // Validate settings.
+            if (!settings.TryGetValue("server", out server))
+                throw new ArgumentException(string.Format(errorMessage, "Server"));
+
+            if (!settings.TryGetValue("port", out port))
+                port = DefaultHistorianPort.ToString();
+
+            if (!settings.TryGetValue("payloadaware", out payloadAware))
+                payloadAware = DefaultPayloadAware.ToString();
+
+            if (!settings.TryGetValue("maximumsamples", out maximumSamples))
+                maximumSamples = DefaultMaximumSamples.ToString();
+
+            if (!settings.TryGetValue("conservebandwidth", out conserveBandwidth))
+                conserveBandwidth = DefaultConserveBandwidth.ToString();
+
+            // Initialize publisher delegates.
+            m_maximumSamples = int.Parse(maximumSamples);
+            if (bool.Parse(conserveBandwidth))
+            {
+                m_publisherDelegate = TransmitPacketType101;
+            }
+            else
+            {
+                m_publisherDelegate = TransmitPacketType1;
+                m_publisherBuffer = new byte[m_maximumSamples * PacketType1.ByteCount];
+            }
+            
+            // Initialize publiser socket.
+            m_historianPublisher.ConnectionString = string.Format("Server={0}:{1}", server, port);
+            m_historianPublisher.PayloadAware = bool.Parse(payloadAware);
+            m_historianPublisher.ConnectionAttempt += HistorianPublisher_ConnectionAttempt;
+            m_historianPublisher.ConnectionEstablished += HistorianPublisher_ConnectionEstablished;
+            m_historianPublisher.ConnectionTerminated += HistorianPublisher_ConnectionTerminated;
+            m_historianPublisher.SendDataException += HistorianPublisher_SendDataException;
+            m_historianPublisher.ReceiveDataComplete += HistorianPublisher_ReceiveDataComplete;
+            m_historianPublisher.ReceiveDataException += HistorianPublisher_ReceiveDataException;
+            m_historianPublisher.Initialize();
+        }
+
+        /// <summary>
+        /// Gets a short one-line status of this <see cref="RemoteOutputAdapter"/>.
+        /// </summary>
+        /// <param name="maxLength">Maximum length of the status message.</param>
+        /// <returns>Text of the status message.</returns>
+        public override string GetShortStatus(int maxLength)
+        {
+            return string.Format("Published {0} measurements for archival.", m_publishedMeasurements).TruncateRight(maxLength);
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by this <see cref="RemoteOutputAdapter"/> and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (!m_disposed)
+            {
+                try
+                {
+                    // This will be done regardless of whether the object is finalized or disposed.
+
+                    if (disposing)
+                    {
+                        // This will be done only when the object is disposed by calling Dispose().
+                        if (m_historianPublisher != null)
+                        {
+                            m_historianPublisher.ConnectionAttempt -= HistorianPublisher_ConnectionAttempt;
+                            m_historianPublisher.ConnectionEstablished -= HistorianPublisher_ConnectionEstablished;
+                            m_historianPublisher.ConnectionTerminated -= HistorianPublisher_ConnectionTerminated;
+                            m_historianPublisher.SendDataException -= HistorianPublisher_SendDataException;
+                            m_historianPublisher.ReceiveDataComplete -= HistorianPublisher_ReceiveDataComplete;
+                            m_historianPublisher.ReceiveDataException -= HistorianPublisher_ReceiveDataException;
+                            m_historianPublisher.Dispose();
+                        }
+                    }
+                }
+                finally
+                {
+                    base.Dispose(disposing);    // Call base class Dispose().
+                    m_disposed = true;          // Prevent duplicate dispose.
+                }
+            }
+        }
+
+        /// <summary>
+        /// Attempts to connect to this <see cref="RemoteOutputAdapter"/>.
+        /// </summary>
+        protected override void AttemptConnection()
+        {           
+            m_publisherDisconnecting = false;
+            m_historianPublisher.ConnectAsync();
+        }
+
+        /// <summary>
+        /// Attempts to disconnect from this <see cref="RemoteOutputAdapter"/>.
+        /// </summary>
+        protected override void AttemptDisconnection()
+        {
+            m_publisherDisconnecting = true;
+            m_historianPublisher.Disconnect();
+        }
+
+        /// <summary>
+        /// Publishes <paramref name="measurements"/> for archival.
+        /// </summary>
+        /// <param name="measurements">Measurements to be archived.</param>
+        /// <exception cref="OperationCanceledException">Acknowledgement is not received from historian for published data.</exception>
+        protected override void ProcessMeasurements(IMeasurement[] measurements)
+        {
+            try
+            {
+                double publishTime = Common.SystemTimer;
+                for (int i = 0; i < measurements.Length; i += m_maximumSamples)
+                {
+                    // Wait for historian acknowledgement.
+                    while (!m_publisherReady)
+                    {
+                        Thread.Sleep(100);
+                        if (Common.SystemTimer - publishTime > PubliserWaitTime)
+                            throw new OperationCanceledException("Timeout waiting for acknowledgement from historian");
+                    }
+
+                    // Publish measurements to historian.
+                    m_publisherReady = false;
+                    m_publisherDelegate(measurements, i, (measurements.Length - i < m_maximumSamples ? measurements.Length : i + m_maximumSamples) - 1);
+                    publishTime = Common.SystemTimer;
+                }
+                m_publishedMeasurements += measurements.Length;
+            }
+            catch
+            {
+                m_publisherReady = true;
+                throw;
+            }
+        }
+
+        private void HistorianPublisher_ConnectionAttempt(object sender, EventArgs e)
+        {
+            OnStatusMessage("Attempting socket connection...");
+        }
+
+        private void HistorianPublisher_ConnectionEstablished(object sender, EventArgs e)
+        {
+            OnConnected();
+            m_publisherReady = true;
+        }
+
+        private void HistorianPublisher_ConnectionTerminated(object sender, EventArgs e)
+        {
+            OnDisconnected();
+            m_publisherReady = false;
+            m_publishedMeasurements = 0;
+
+            try
+            {
+                if (!m_publisherDisconnecting)
+                    AttemptConnection();
+            }
+            catch (Exception ex)
+            {
+                OnProcessException(ex);
+                if (Enabled)
+                    Start();
+            }
+        }
+
+        private void HistorianPublisher_SendDataException(object sender, EventArgs<Exception> e)
+        {
+            m_publisherReady = true;
+            OnProcessException(e.Argument);
+        }
+
+        private void HistorianPublisher_ReceiveDataComplete(object sender, EventArgs<byte[], int> e)
+        {
+            // Check for acknowledgement from historian.
+            string reply = Encoding.ASCII.GetString(e.Argument1, 0, e.Argument2);
+            if (reply == "ACK")
+                m_publisherReady = true;
+        }
+
+        private void HistorianPublisher_ReceiveDataException(object sender, EventArgs<Exception> e)
+        {
+            m_publisherReady = true;
+            OnProcessException(e.Argument);
+        }
+
+        private void TransmitPacketType1(IMeasurement[] measurements, int startIndex, int endIndex)
+        {
+            int bufferIndex = 0;
+            for (int i = startIndex; i <= endIndex; i++)
+            {
+                Buffer.BlockCopy(new PacketType1(measurements[i]).BinaryImage, 0, m_publisherBuffer, bufferIndex, PacketType1.ByteCount);
+                bufferIndex += PacketType1.ByteCount;
+            }
+            m_historianPublisher.SendAsync(m_publisherBuffer, 0, bufferIndex);
+        }
+
+        private void TransmitPacketType101(IMeasurement[] measurements, int startIndex, int endIndex)
+        {
+            PacketType101 packet = new PacketType101();
+            for (int i = startIndex; i <= endIndex; i++)
+            {
+                packet.Data.Add(new PacketType101Data(measurements[i]));
+            }
+
+            m_historianPublisher.SendAsync(packet.BinaryImage);
+        }
+
+        #endregion
+    }
 }

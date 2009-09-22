@@ -266,7 +266,7 @@ namespace HistorianAdapters
         private Services m_archiveServices;
         private MetadataProviders m_metadataProviders;
         private bool m_refreshMetadata;
-        private long m_measurementsArchived;
+        private long m_archivedMeasurements;
         private bool m_disposed;
 
         #endregion
@@ -439,10 +439,7 @@ namespace HistorianAdapters
         /// <returns>Text of the status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            StringBuilder status = new StringBuilder();
-            status.AppendFormat("Archived {0} measurements locally.", m_measurementsArchived);
-
-            return status.ToString().TruncateRight(maxLength).CenterText(maxLength, '\xA0');
+            return string.Format("Archived {0} measurements locally.", m_archivedMeasurements).TruncateRight(maxLength);
         }
 
         /// <summary>
@@ -557,11 +554,14 @@ namespace HistorianAdapters
                     m_archive.IntercomFile.Save();
                     m_archive.IntercomFile.Close();
                 }
+
+                OnDisconnected();
+                m_archivedMeasurements = 0;
             }
         }
 
         /// <summary>
-        /// Archives <paramref name="measuremsnts"/> locally.
+        /// Archives <paramref name="measurements"/> locally.
         /// </summary>
         /// <param name="measurements">Measurements to be archived.</param>
         /// <exception cref="InvalidOperationException">Local archive is closed.</exception>
@@ -574,7 +574,7 @@ namespace HistorianAdapters
             {
                 m_archive.WriteData(new ArchiveData(measurement));
             }
-            m_measurementsArchived += measurements.Length;
+            m_archivedMeasurements += measurements.Length;
         }
 
         private void Archive_RolloverComplete(object sender, EventArgs e)
