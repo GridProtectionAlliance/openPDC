@@ -14,6 +14,8 @@
 //       Added new header and license agreement.
 //  09/22/2009 - Pinal C. Patel
 //       Re-wrote the adapter to utilize new components.
+//  09/23/2009 - Pinal C. Patel
+//       Fixed the handling of socket disconnect.
 //
 //*******************************************************************************************************
 
@@ -454,6 +456,9 @@ namespace HistorianAdapters
         /// <exception cref="OperationCanceledException">Acknowledgement is not received from historian for published data.</exception>
         protected override void ProcessMeasurements(IMeasurement[] measurements)
         {
+            if (m_historianPublisher.CurrentState != ClientState.Connected)
+                throw new InvalidOperationException("Historian publisher socket is not connected");
+
             try
             {
                 double publishTime = Common.SystemTimer;
@@ -494,21 +499,11 @@ namespace HistorianAdapters
 
         private void HistorianPublisher_ConnectionTerminated(object sender, EventArgs e)
         {
-            OnDisconnected();
             m_publisherReady = false;
             m_publishedMeasurements = 0;
 
-            try
-            {
-                if (!m_publisherDisconnecting)
-                    AttemptConnection();
-            }
-            catch (Exception ex)
-            {
-                OnProcessException(ex);
-                if (Enabled)
-                    Start();
-            }
+            if (!m_publisherDisconnecting)
+                Start();
         }
 
         private void HistorianPublisher_SendDataException(object sender, EventArgs<Exception> e)
