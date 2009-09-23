@@ -1674,6 +1674,7 @@ Public Class PMUConnectionTester
                         .ConnectionString = _
                             "server=" & TextBoxTcpHostIP.Text & _
                             "; port=" & TextBoxTcpPort.Text & _
+                            "; interface=0.0.0.0" & _
                             "; islistener=" & CheckBoxEstablishTcpServer.Checked.ToString()
                     Case TransportProtocol.Udp
                         .TransportProtocol = TransportProtocol.Udp

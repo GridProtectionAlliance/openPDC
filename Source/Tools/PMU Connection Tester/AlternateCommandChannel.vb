@@ -292,7 +292,8 @@ Public Class AlternateCommandChannel
                         Return _
                             "; commandchannel={protocol=Tcp" & _
                             "; server=" & TextBoxTcpHostIP.Text & _
-                            "; port=" & TextBoxTcpPort.Text & "}"
+                            "; port=" & TextBoxTcpPort.Text & _
+                            "; interface=0.0.0.0" & "}"
                     Case TransportProtocol.Serial - 1 ' UDP removed from tab set...
                         Return _
                             "; commandchannel={protocol=Serial" & _
