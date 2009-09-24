@@ -1318,11 +1318,11 @@ Public Class PMUConnectionTester
                     .Clear()
 
                     For Each cell As IConfigurationCell In frame.Cells
-                        .Add(cell.StationName)
+                        .Add(cell.StationName.ToNonNullString(cell.IDLabel.ToNonNullString("Device " & cell.IDCode)))
                     Next
                 End With
 
-                .SelectedIndex = 0
+                If .Items.Count > 0 Then .SelectedIndex = 0
             End With
 
             MenuItemSaveConfigFile.Enabled = True

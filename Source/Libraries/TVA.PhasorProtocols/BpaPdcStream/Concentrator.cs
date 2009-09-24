@@ -231,94 +231,170 @@
 */
 #endregion
 
-//namespace TVASPDC
-//{
-//    public class BpaPdcConcentrator : PhasorDataConcentratorBase
-//    {
+using System;
+using System.Threading;
+using TVA.IO;
+using TVA.Measurements;
+using TVA.Measurements.Routing;
+using System.IO;
+
+namespace TVA.PhasorProtocols.BpaPdcStream
+{
+    /// <summary>
+    /// Represents a BPA PDCstream phasor data concentrator.
+    /// </summary>
+    public class Concentrator : PhasorDataConcentratorBase
+    {
+        #region [ Members ]
+
+        // Fields
+        private ConfigurationFrame m_configurationFrame;
+        private string m_iniFileName;
 		
-		
-		
-//        private ConfigurationFrame m_configurationFrame;
-//        private string m_iniFileName;
-		
-//        public BpaPdcConcentrator(New communicationServer, string name, int framesPerSecond, double lagTime, double leadTime, string iniFileName, New exceptionLogger) : base(communicationServer, name, framesPerSecond, lagTime, leadTime, exceptionLogger)
-//        {
-			
-			
-//            m_iniFileName = iniFileName;
-			
-//        }
-		
-//        //Protected Overrides Function CreateNewConfigurationFrame(ByVal baseConfigurationFrame As ConfigurationFrame) As IConfigurationFrame
-		
-//        //    'Dim x, y As Integer
-		
-//        //    '' We create a new IEEE C37.118 configuration frame 2 based on input configuration
-//        //    'm_configurationFrame = New BpaPdcStream.ConfigurationFrame(IeeeC37_118.FrameType.ConfigurationFrame2, m_timeBase, baseConfiguration.IDCode, DateTime.UtcNow.Ticks, FramesPerSecond, m_version)
-		
-//        //    'For x = 0 To baseConfiguration.Cells.Count - 1
-//        //    '    Dim baseCell As ConfigurationCell = baseConfiguration.Cells(x)
-//        //    '    Dim newCell As New IeeeC37_118.ConfigurationCell(m_configurationFrame, baseCell.IDCode, baseCell.NominalFrequency)
-		
-//        //    '    ' Update other cell level attributes
-//        //    '    newCell.StationName = baseCell.StationName
-//        //    '    newCell.IDLabel = baseCell.IDLabel
-		
-//        //    '    ' Add phasor definitions
-//        //    '    For y = 0 To baseCell.PhasorDefinitions.Count - 1
-//        //    '        newCell.PhasorDefinitions.Add(New IeeeC37_118.PhasorDefinition(newCell, baseCell.PhasorDefinitions(y)))
-//        //    '    Next
-		
-//        //    '    ' Add frequency definition
-//        //    '    newCell.FrequencyDefinition = New IeeeC37_118.FrequencyDefinition(newCell, baseCell.FrequencyDefinition)
-		
-//        //    '    ' Add analog definitions
-//        //    '    For y = 0 To baseCell.AnalogDefinitions.Count - 1
-//        //    '        newCell.AnalogDefinitions.Add(New IeeeC37_118.AnalogDefinition(newCell, baseCell.AnalogDefinitions(y)))
-//        //    '    Next
-		
-//        //    '    ' Add digital definitions
-//        //    '    For y = 0 To baseCell.DigitalDefinitions.Count - 1
-//        //    '        newCell.DigitalDefinitions.Add(New IeeeC37_118.DigitalDefinition(newCell, baseCell.DigitalDefinitions(y)))
-//        //    '    Next
-		
-//        //    '    ' Add new PMU configuration (cell) to protocol specific configuration frame
-//        //    '    m_configurationFrame.Cells.Add(newCell)
-//        //    'Next
-		
-//        //    'm_configurationFrame
-		
-//        //End Function
-		
-//        protected override TVASPDC.BpaPdcConcentrator.CreateNewFrame CreateNewFrame(long ticks)
-//        {
-			
-//            // We create a new BPA PDCstream data frame based on current configuration frame
-//            BpaPdcStream.DataFrame dataFrame = new BpaPdcStream.DataFrame(); // (ticks, m_configurationFrame)
-			
-//            //For x As Integer = 0 To m_configurationFrame.Cells.Count - 1
-//            //    dataFrame.Cells.Add(New BpaPdcStream.DataCell(dataFrame, m_configurationFrame.Cells(x), x))
-//            //Next
-			
-//            return dataFrame;
-			
-//        }
-		
-//        public string IniFileName
-//        {
-//            get
-//            {
-//                if (m_configurationFrame == null)
-//                {
-//                    return m_iniFileName;
-//                }
-//                else
-//                {
-//                    return m_configurationFrame.ConfigurationFileName;
-//                }
-//            }
-//        }
-		
-//    }
-	
-//}
+        #endregion
+
+        #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets the INI based configuration file name of this <see cref="Concentrator"/>.
+        /// </summary>
+        public string IniFileName
+        {
+            get
+            {
+                return m_iniFileName;
+            }
+            set
+            {
+                m_iniFileName = value;
+            }
+        }
+
+        #endregion
+
+        #region [ Methods ]
+
+        /// <summary>
+        /// Initializes <see cref="Concentrator"/>.
+        /// </summary>
+        public override void Initialize()
+        {
+            // Load required parameters
+            m_iniFileName = FilePath.GetAbsolutePath(Settings["iniFileName"]);
+
+            // Start base class initialization
+            base.Initialize();
+
+            // BPA PDCstream always publishes config frame over data channel
+            base.AutoPublishConfigurationFrame = true;
+            base.CommandChannel = null;
+        }
+
+        /// <summary>
+        /// Creates a new BPA PDCstream specific <see cref="IConfigurationFrame"/> based on provided protocol independent <paramref name="baseConfigurationFrame"/>.
+        /// </summary>
+        /// <param name="baseConfigurationFrame">Protocol independent <paramref name="IConfigurationFrame"/>.</param>
+        /// <returns>A new BPA PDCstream specific <see cref="IConfigurationFrame"/>.</returns>
+        protected override IConfigurationFrame CreateNewConfigurationFrame(TVA.PhasorProtocols.Anonymous.ConfigurationFrame baseConfigurationFrame)
+        {
+            ConfigurationCell newCell;
+            
+            // Fix ID labels to use BPA PDCstream 4 character label
+            foreach (TVA.PhasorProtocols.Anonymous.ConfigurationCell baseCell in baseConfigurationFrame.Cells)
+            {
+                baseCell.StationName = baseCell.IDLabel.TruncateLeft(baseCell.MaximumStationNameLength);
+                baseCell.IDLabel = DataSource.Tables["OutputStreamDevices"].Select(string.Format("ID={0}", baseCell.IDCode))[0]["BpaAcronym"].ToNonNullString(baseCell.IDLabel).TruncateLeft(4);
+            }
+
+            // Create a default INI file if one doesn't exist
+            if (!File.Exists(m_iniFileName))
+            {
+                StreamWriter iniFile = File.CreateText(m_iniFileName);
+                iniFile.Write(BpaPdcStream.ConfigurationFrame.GetIniFileImage(baseConfigurationFrame));
+                iniFile.Close();
+            }
+
+            // Create a new BPA PDCstream configuration frame using base configuration
+            ConfigurationFrame configurationFrame = new ConfigurationFrame(DateTime.UtcNow.Ticks, m_iniFileName, baseConfigurationFrame.FrameRate, RevisionNumber.Revision2, StreamType.Compact);
+
+            foreach (TVA.PhasorProtocols.Anonymous.ConfigurationCell baseCell in baseConfigurationFrame.Cells)
+            {
+                // Create a new IEEE C37.118 configuration cell (i.e., a PMU configuration)
+                newCell = new ConfigurationCell(configurationFrame, baseCell.IDCode, base.NominalFrequency);
+
+                // Update other cell level attributes
+                newCell.StationName = baseCell.StationName;
+                newCell.IDLabel = baseCell.IDLabel;
+                newCell.PhasorDataFormat = DataFormat.FixedInteger;             //baseCell.PhasorDataFormat;
+                newCell.PhasorCoordinateFormat = CoordinateFormat.Rectangular;  //baseCell.PhasorCoordinateFormat;
+                newCell.FrequencyDataFormat = DataFormat.FixedInteger;          //baseCell.FrequencyDataFormat;
+                newCell.AnalogDataFormat = DataFormat.FixedInteger;             //baseCell.AnalogDataFormat;
+
+                // Add phasor definitions
+                foreach (IPhasorDefinition phasorDefinition in baseCell.PhasorDefinitions)
+                {
+                    newCell.PhasorDefinitions.Add(new PhasorDefinition(newCell, phasorDefinition.Label, phasorDefinition.ScalingValue, phasorDefinition.Offset, phasorDefinition.PhasorType, null));
+                }
+
+                // Add frequency definition
+                newCell.FrequencyDefinition = new FrequencyDefinition(newCell, baseCell.FrequencyDefinition.Label);
+
+                // Add analog definitions
+                foreach (IAnalogDefinition analogDefinition in baseCell.AnalogDefinitions)
+                {
+                    newCell.AnalogDefinitions.Add(new AnalogDefinition(newCell, analogDefinition.Label, analogDefinition.ScalingValue, analogDefinition.Offset, analogDefinition.AnalogType));
+                }
+
+                // Add digital definitions
+                foreach (IDigitalDefinition digitalDefinition in baseCell.DigitalDefinitions)
+                {
+                    newCell.DigitalDefinitions.Add(new DigitalDefinition(newCell, digitalDefinition.Label));
+                }
+
+                // Add new PMU configuration (cell) to protocol specific configuration frame
+                configurationFrame.Cells.Add(newCell);
+            }
+
+            // Setup new configuration cells with their proper INI file settings
+            configurationFrame.Refresh(true);
+
+            // Cache new IEEE C7.118 for later use
+            Interlocked.Exchange(ref m_configurationFrame, configurationFrame);
+
+            return configurationFrame;
+        }
+
+        /// <summary>
+        /// Creates a new BPA PDCstream specific <see cref="DataFrame"/> for the given <paramref name="timestamp"/>.
+        /// </summary>
+        /// <param name="timestamp">Timestamp for new <see cref="IFrame"/> in <see cref="Ticks"/>.</param>
+        /// <returns>New BPA PDCstream <see cref="DataFrame"/> at given <paramref name="timestamp"/>.</returns>
+        /// <remarks>
+        /// Note that the <see cref="ConcentratorBase"/> class (which the <see cref="ActionAdapterBase"/> is derived from)
+        /// is designed to sort <see cref="IMeasurement"/> implementations into an <see cref="IFrame"/> which represents
+        /// a collection of measurements at a given timestamp. The <c>CreateNewFrame</c> method allows consumers to create
+        /// their own <see cref="IFrame"/> implementations, in our case this will be a BPA PDCstream data frame.
+        /// </remarks>
+        protected override IFrame CreateNewFrame(Ticks timestamp)
+        {
+            // We create a new BPA PDCstream data frame based on current configuration frame
+            byte packetNumber = (byte)(((decimal)timestamp.DistanceBeyondSecond() / base.TicksPerFrame) + 1);
+
+            DataFrame dataFrame = new DataFrame(timestamp, m_configurationFrame, packetNumber, 1);
+            DataCell dataCell;
+
+            foreach (ConfigurationCell configurationCell in m_configurationFrame.Cells)
+            {
+                // Create a new BPA PDCstream data cell (i.e., a PMU entry for this frame)
+                dataCell = new DataCell(dataFrame, configurationCell, true);
+
+                // Add data cell to the frame
+                dataFrame.Cells.Add(dataCell);
+            }
+
+            return dataFrame;
+        }
+
+        #endregion
+    }
+}

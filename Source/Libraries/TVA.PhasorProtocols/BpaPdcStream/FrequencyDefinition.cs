@@ -433,8 +433,13 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         {
             FrequencyDefinition frequency = definition as FrequencyDefinition;
 
+            // type, scale, offset, dF/dt scale, dF/dt offset, dummy, label 
+            //   F,  1000,    60,      1000,         0,          0,   Frequency
+
             if (frequency != null)
                 return "F," + frequency.ScalingValue + "," + frequency.Offset + "," + frequency.DfDtScalingValue + "," + frequency.DfDtOffset + "," + frequency.m_dummy + "," + frequency.Label;
+            else if (definition != null)
+                return "F," + definition.ScalingValue + "," + definition.Offset + "," + definition.DfDtScalingValue + "," + definition.DfDtOffset + ",0," + definition.Label;
             
             return "";
         }

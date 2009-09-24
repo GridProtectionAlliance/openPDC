@@ -472,6 +472,12 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                 byte[] buffer = new byte[HeaderLength];
                 int index = 0;
 
+                // Make sure to provide proper frame length for use in the common header image
+                unchecked
+                {
+                    CommonHeader.FrameLength = (ushort)BinaryLength;
+                }
+
                 // Copy in common frame header portion of header image
                 CommonHeader.BinaryImage.CopyImage(buffer, ref index, CommonFrameHeader.FixedLength);
 
@@ -483,21 +489,27 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                 EndianOrder.BigEndian.CopyBytes(m_sampleNumber, buffer, 8);
                 EndianOrder.BigEndian.CopyBytes((ushort)Cells.Count, buffer, 10);
 
-                index += 12;
+                index += 8;
 
                 // If producing a legacy format, include additional header
                 if (ConfigurationFrame.StreamType == StreamType.Legacy)
                 {
-                    byte[] reservedBytes = new byte[2];
                     ushort offset = 0;
 
                     for (int x = 0; x < Cells.Count; x++)
                     {
                         DataCell dataCell = Cells[x];
+                        
+                        // Add label to data frame header
                         Encoding.ASCII.GetBytes(dataCell.IDLabel).CopyImage(buffer, ref index, 4);
-                        reservedBytes.CopyImage(buffer, ref index, 2);
+                        
+                        // Skip reserved bytes
+                        index += 2;
+                        
+                        // Add offset to data frame header
                         EndianOrder.BigEndian.CopyBytes(offset, buffer, index);
                         index += 2;
+
                         offset += (ushort)dataCell.BinaryLength;
                     }
                 }

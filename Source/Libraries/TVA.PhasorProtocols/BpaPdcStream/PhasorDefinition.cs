@@ -539,6 +539,13 @@ namespace TVA.PhasorProtocols.BpaPdcStream
 
             if (phasor != null)
                 return (phasor.PhasorType == PhasorType.Voltage ? "V" : "I") + "," + phasor.Ratio + "," + phasor.CalFactor + "," + phasor.Offset + "," + phasor.Shunt + "," + phasor.VoltageReferenceIndex + "," + phasor.Label;
+            else if (definition != null)
+            {
+                if (definition.PhasorType == PhasorType.Voltage)
+                    return "V,4500.0,0.0060573,0,0,500," + definition.Label.ToNonNullString("Default 500kV");
+                else
+                    return "I,600.00,0.000040382,0,1,1," + definition.Label.ToNonNullString("Default Current");
+            }
 
             return "";
         }

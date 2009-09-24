@@ -661,7 +661,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                 ConfigurationCell derivedCell;
                 IFrequencyDefinition sourceFrequency;
 
-                derivedFrame = new ConfigurationFrame(sourceFrame.Timestamp, configurationFileName, 1);
+                derivedFrame = new ConfigurationFrame(sourceFrame.Timestamp, configurationFileName, 1, RevisionNumber.Revision2, StreamType.Compact);
 
                 foreach (IConfigurationCell sourceCell in sourceFrame.Cells)
                 {

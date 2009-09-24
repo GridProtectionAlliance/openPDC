@@ -655,7 +655,6 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         {
             get
             {
-                // We align data cells on 32-bit word boundaries (accounts for phantom digital)
                 return base.BinaryLength.AlignDoubleWord();
             }
         }
@@ -690,8 +689,8 @@ namespace TVA.PhasorProtocols.BpaPdcStream
 
                 if (Parent.ConfigurationFrame.RevisionNumber >= RevisionNumber.Revision2)
                 {
-                    buffer[1] = (byte)(AnalogValues.Count | (byte)m_reservedFlags);
-                    buffer[2] = (byte)(DigitalValues.Count | (byte)FormatFlags);
+                    buffer[1] = (byte)((AnalogValues.Count & (int)ReservedFlags.AnalogWordsMask) | (int)ReservedFlags);
+                    buffer[2] = (byte)((DigitalValues.Count & (int)FormatFlags.DigitalWordsMask) | (int)FormatFlags);
                     buffer[3] = (byte)PhasorValues.Count;
                 }
                 else

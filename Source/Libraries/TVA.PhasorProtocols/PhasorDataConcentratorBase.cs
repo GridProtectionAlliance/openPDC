@@ -348,7 +348,7 @@ namespace TVA.PhasorProtocols
 
         #endregion
 
-        #region [ Constructors ]        
+        #region [ Constructors ]
 
         /// <summary>
         /// Creates a new <see cref="PhasorDataConcentratorBase"/>.

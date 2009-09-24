@@ -478,7 +478,10 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             get
             {
                 // Make sure to provide proper frame length for use in the common header image
-                CommonHeader.FrameLength = (ushort)BinaryLength;
+                unchecked
+                {
+                    CommonHeader.FrameLength = (ushort)BinaryLength;
+                }
 
                 byte[] buffer = new byte[FixedHeaderLength];
                 int index = 0;
