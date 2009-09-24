@@ -600,6 +600,53 @@ CASE SignalAcronym WHEN N'FREQ' THEN 60.05 WHEN N'VPHM' THEN 525000 WHEN N'IPHM'
 0 AS AlarmToFile, 0 AS AlarmByEmail, 0 AS AlarmByPager, 0 AS AlarmByPhone, ContactList AS AlarmEmails, N'' AS AlarmPagers, N'' AS AlarmPhones
 FROM MeasurementDetail;
 
+CREATE VIEW CalculatedMeasurementDetail
+AS
+SELECT CM.NodeID, CM.ID, CM.Acronym, COALESCE(CM.Name, '') AS Name, CM.AssemblyName, CM.TypeName, COALESCE(CM.ConnectionString, '') AS ConnectionString,
+		COALESCE(CM.ConfigSection, '') AS ConfigSection, COALESCE(CM.InputMeasurements, '') AS InputMeasurements, COALESCE(CM.OutputMeasurements, '') AS OutputMeasurements,
+		CM.MinimumMeasurementsToUse, CM.FramesPerSecond, CM.LagTime, CM.LeadTime, CM.UseLocalClockAsRealTime, CM.AllowSortsByArrival, CM.LoadOrder, CM.Enabled,
+		N.Name AS NodeName
+FROM CalculatedMeasurement CM, Node N
+WHERE CM.NodeID = N.ID;
+
+CREATE VIEW DeviceDetail
+AS
+SELECT     D.NodeID, D.ID, D.ParentID, D.Acronym, COALESCE(D.Name, '') AS Name, D.IsConcentrator, D.CompanyID, D.HistorianID, D.AccessID, D.VendorDeviceID, 
+                      D.ProtocolID, D.Longitude, D.Latitude, D.InterconnectionID, COALESCE(D.ConnectionString, '') AS ConnectionString, COALESCE(D.TimeZone, '') AS TimeZone, 
+                      D.TimeAdjustmentTicks, D.DataLossInterval, COALESCE(D.ContactList, '') AS ContactList, D.MeasuredLines, D.LoadOrder, D.Enabled, COALESCE(C.Name, '') 
+                      AS CompanyName, COALESCE(H.Acronym, '') AS HistorianAcronym, COALESCE(VD.Name, '') AS VendorDeviceName, COALESCE(P.Name, '') AS ProtocolName, 
+                      COALESCE(I.Name, '') AS InterconnectionName
+FROM         Device AS D LEFT OUTER JOIN
+                      Company AS C ON C.ID = D.CompanyID LEFT OUTER JOIN
+                      Historian AS H ON H.ID = D.HistorianID LEFT OUTER JOIN
+                      VendorDevice AS VD ON VD.ID = D.VendorDeviceID LEFT OUTER JOIN
+                      Protocol AS P ON P.ID = D.ProtocolID LEFT OUTER JOIN
+                      Interconnection AS I ON I.ID = D.InterconnectionID;
+
+CREATE VIEW HistorianDetail
+AS
+SELECT H.NodeID, H.ID, H.Acronym, COALESCE(H.Name, '') AS Name, COALESCE(H.AssemblyName, '') AS AssemblyName, COALESCE(H.TypeName, '') AS TypeName, 
+	COALESCE(H.ConnectionString, '') AS ConnectionString, H.IsLocal, COALESCE(H.Description, '') AS Description, H.LoadOrder, H.Enabled, N.Name AS NodeName 
+FROM Historian H, Node N;
+
+CREATE VIEW NodeDetail
+AS
+SELECT N.ID, N.Name, COALESCE(N.CompanyID, 0) AS CompanyID, COALESCE(N.Longitude, 0) AS Longitude, COALESCE(N.Latitude, 0) AS Latitude, 
+		COALESCE(N.Description, '') AS Description, COALESCE(N.Image, '') AS Image, N.Master, N.LoadOrder, N.Enabled, COALESCE(C.Name, '') AS CompanyName
+FROM Node N, Company C 
+WHERE N.CompanyID = C.ID;
+
+CREATE VIEW VendorDetail
+AS
+Select ID, COALESCE(Acronym, '') AS Acronym, Name, COALESCE(PhoneNumber, '') AS PhoneNumber, COALESCE(ContactEmail, '') AS ContactEmail, COALESCE(URL, '') AS URL 
+FROM Vendor;
+
+CREATE VIEW VendorDeviceDetail
+AS
+SELECT VD.ID, VD.VendorID, VD.Name, COALESCE(VD.Description, '') AS Description, COALESCE(VD.URL, '') AS URL, V.Name AS VendorName 
+FROM VendorDevice VD, Vendor V 
+WHERE VD.VendorID = V.ID;
+
 CREATE TRIGGER CustomActionAdapter_RuntimeSync_Insert AFTER INSERT ON CustomActionAdapter
 FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, N'CustomActionAdapter');
 
