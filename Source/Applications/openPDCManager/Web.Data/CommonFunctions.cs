@@ -633,6 +633,20 @@ namespace openPDCManager.Web.Data
             return "NULL";
         }
 
+		public static List<string> GetTimeZones(bool isOptional)
+		{
+			List<string> timeZonesList = new List<string>();
+			if (isOptional)
+				timeZonesList.Add("Select Timezone");
+
+			foreach (TimeZoneInfo tzi in TimeZoneInfo.GetSystemTimeZones())
+			{
+				if (!timeZonesList.Contains(tzi.StandardName))
+					timeZonesList.Add(tzi.StandardName);
+			}
+			return timeZonesList;
+		}
+
 		#region " Manage Companies Code"
 
 		public static List<Company> GetCompanyList()
@@ -657,14 +671,14 @@ namespace openPDCManager.Web.Data
 			return companyList;
 		}
 
-		public static Dictionary<int, string> GetCompanies()
+		public static Dictionary<int, string> GetCompanies(bool isOptional)
 		{
-			Dictionary<int, string> companyList = new Dictionary<int, string>();			
+			Dictionary<int, string> companyList = new Dictionary<int, string>();
+			if (isOptional)
+				companyList.Add(0, "Select Company");
             DataConnection connection = new DataConnection();
-            DataTable resultTable = connection.RetrieveData("SELECT ID, Name FROM Company ORDER BY Name");
+            DataTable resultTable = connection.RetrieveData("SELECT ID, Name FROM Company ORDER BY LoadOrder");
             int id;
-
-            companyList.Add(0, "Select Company");
 
             foreach (DataRow row in resultTable.Rows)
 			{
@@ -698,14 +712,12 @@ namespace openPDCManager.Web.Data
 		#endregion
 
         #region " Manage Historians Code"
+		
 		public static List<Historian> GetHistorianList()
 		{
 			List<Historian> historianList = new List<Historian>();
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData("Select H.NodeID, H.ID, H.Acronym, ISNULL(H.Name, '') AS Name, ISNULL(H.AssemblyName, '') AS AssemblyName, " +
-													"ISNULL(H.TypeName, '') AS TypeName, ISNULL(H.ConnectionString, '') AS ConnectionString, H.IsLocal, " +
-													"ISNULL(H.Description, '') AS Description, H.LoadOrder, H.Enabled, N.Name AS NodeName From Historian H, Node N " +
-													"Where H.NodeID = N.ID Order By H.LoadOrder");
+			DataTable resultTable = connection.RetrieveData("Select * From HistorianDetail Order By LoadOrder");
 			historianList = (from item in resultTable.AsEnumerable()
 							 select new Historian()
 							 {
@@ -724,32 +736,55 @@ namespace openPDCManager.Web.Data
 			connection.Dispose();
 			return historianList;
 		}
+
+		public static Dictionary<int, string> GetHistorians(bool enabledOnly, bool isOptional)
+		{
+			Dictionary<int, string> historianList = new Dictionary<int, string>();
+			if (isOptional)
+				historianList.Add(0, "Select Historian");
+			string query = "Select ID, Acronym From Historian";
+			if (enabledOnly)
+				query += " Where Enabled = '1'";
+			query += " Order By LoadOrder";
+
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData(query);
+			foreach (DataRow row in resultTable.Rows)
+			{
+				if (!historianList.ContainsKey(Convert.ToInt32(row["ID"])))
+					historianList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
+			}
+			connection.Dispose();
+			return historianList;
+		}
+
 		public static string SaveHistorian(Historian historian, bool isNew)
 		{
 			string query;
+			
 			if (isNew)
-				query = string.Format("Insert Into Historian (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) Values ('{0}', '{1}', {2}, {3}, {4}, {5}, '{6}', {7}, {8}, '{9}'",
-					historian.NodeID, historian.Acronym, NullableQuote(historian.Name), NullableQuote(historian.AssemblyName), NullableQuote(historian.TypeName), NullableQuote(historian.ConnectionString), historian.IsLocal, 
-					NullableQuote(historian.Description), historian.LoadOrder, historian.Enabled);
+				query = string.Format("Insert Into Historian (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) Values ('{0}', '{1}', {2}, {3}, {4}, {5}, '{6}', {7}, {8}, '{9}')",
+						historian.NodeID, historian.Acronym, NullableQuote(historian.Name), NullableQuote(historian.AssemblyName), NullableQuote(historian.TypeName), NullableQuote(historian.ConnectionString), Convert.ToInt32(historian.IsLocal),
+						NullableQuote(historian.Description), historian.LoadOrder, Convert.ToInt32(historian.Enabled));
 			else
 				query = string.Format("Update Historian Set NodeID = '{0}', Acronym = '{1}', Name = {2}, AssemblyName = {3}, TypeName = {4}, ConnectionString = {5}, IsLocal = '{6}', Description = {7}, LoadOrder = {8}, Enabled = '{9}' Where ID = {10}",
-					historian.NodeID, historian.Acronym, NullableQuote(historian.Name), NullableQuote(historian.AssemblyName), NullableQuote(historian.TypeName), NullableQuote(historian.ConnectionString), historian.IsLocal, 
-					NullableQuote(historian.Description), historian.LoadOrder, historian.Enabled, historian.ID);
+						historian.NodeID, historian.Acronym, NullableQuote(historian.Name), NullableQuote(historian.AssemblyName), NullableQuote(historian.TypeName), NullableQuote(historian.ConnectionString), Convert.ToInt32(historian.IsLocal),
+						NullableQuote(historian.Description), historian.LoadOrder, Convert.ToInt32(historian.Enabled), historian.ID);
 			DataConnection connection = new DataConnection();
 			connection.ExecuteScalar(query);
 			connection.Dispose();
 			return "Done!";
 		}
+
         #endregion
 
         #region " Manage Nodes Code"
+		
 		public static List<Node> GetNodeList()
 		{
 			List<Node> nodeList = new List<Node>();			
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData("Select N.ID, N.Name, N.CompanyID, N.Longitude, N.Latitude, ISNULL(N.Description, '') AS Description, " +
-													"ISNULL(N.Image, '') AS Image, N.Master, N.LoadOrder, N.Enabled, ISNULL(C.Name, '') AS CompanyName " +
-													"From Node N, Company C Where N.CompanyID = C.ID Order By N.LoadOrder");
+			DataTable resultTable = connection.RetrieveData("Select * From NodeDetail Order By LoadOrder");
 
 			nodeList = (from item in resultTable.AsEnumerable()
 						select new Node()
@@ -770,11 +805,14 @@ namespace openPDCManager.Web.Data
 			connection.Dispose();
 			return nodeList;
 		}
-		public static Dictionary<Guid, string> GetNodes(bool ActiveOnly)
+		
+		public static Dictionary<Guid, string> GetNodes(bool enabledOnly, bool isOptional)
 		{
 			Dictionary<Guid, string> nodeList = new Dictionary<Guid, string>();
+			if (isOptional)
+				nodeList.Add(Guid.Empty, "Select Node");
 			string query = "Select ID, Name From Node";
-			if (ActiveOnly)
+			if (enabledOnly)
 				query += " Where Enabled = '1'";
 			query += " Order By LoadOrder";
 						
@@ -788,30 +826,32 @@ namespace openPDCManager.Web.Data
 			connection.Dispose();
 			return nodeList;
 		}
+		
 		public static string SaveNode(Node node, bool isNew)
 		{
 			string query;
 			if (isNew)
 				query = string.Format("Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, Image, Master, LoadOrder, Enabled) Values ('{0}', {1}, {2}, {3}, {4}, {5}, '{6}', {7}, '{8}')",
-					node.Name, NullableValue(node.CompanyID), NullableValue(node.Longitude), NullableValue(node.Latitude), NullableQuote(node.Description), NullableQuote(node.Image), node.Master, node.LoadOrder, node.Enabled);
+					node.Name, NullableValue(node.CompanyID), NullableValue(node.Longitude), NullableValue(node.Latitude), NullableQuote(node.Description), NullableQuote(node.Image), Convert.ToInt32(node.Master), node.LoadOrder, node.Enabled);
 			else
 				query = string.Format("Update Node Set Name = '{0}', CompanyID = {1}, Longitude = {2}, Latitude = {3}, Description = {4}, Image = {5}, Master = '{6}', LoadOrder = {7}, Enabled = '{8}' Where ID = '{9}'",
-					node.Name, NullableValue(node.CompanyID), NullableValue(node.Longitude), NullableValue(node.Latitude), NullableQuote(node.Description), NullableQuote(node.Image), node.Master, node.LoadOrder, node.Enabled, node.ID);
+					node.Name, NullableValue(node.CompanyID), NullableValue(node.Longitude), NullableValue(node.Latitude), NullableQuote(node.Description), NullableQuote(node.Image), Convert.ToInt32(node.Master), node.LoadOrder, node.Enabled, node.ID);
 
 			DataConnection connection = new DataConnection();
 			connection.ExecuteScalar(query);
 			connection.Dispose();
 			return "Done!";
 		}
-        #endregion
+        
+		#endregion
 		
         #region " Manage Vendors Code"
+		
 		public static List<Vendor> GetVendorList()
 		{
 			List<Vendor> vendorList = new List<Vendor>();			
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData("Select ID, ISNULL(Acronym, '') AS Acronym, Name, ISNULL(PhoneNumber, '') AS PhoneNumber, " +
-												"ISNULL(ContactEmail, '') AS ContactEmail, ISNULL(URL, '') AS URL FROM Vendor Order By [Name]");
+			DataTable resultTable = connection.RetrieveData("Select * FROM VendorDetail Order By [Name]");
 
 			vendorList = (from item in resultTable.AsEnumerable()
 						  select new Vendor()
@@ -827,9 +867,12 @@ namespace openPDCManager.Web.Data
 			connection.Dispose();
 			return vendorList;
 		}
-		public static Dictionary<int, string> GetVendors()
+		
+		public static Dictionary<int, string> GetVendors(bool isOptional)
 		{
 			Dictionary<int, string> vendorList = new Dictionary<int, string>();
+			if (isOptional)
+				vendorList.Add(0, "Select Vendor");
 			DataConnection connection = new DataConnection();
 			DataTable resultTable = connection.RetrieveData("Select ID, Name From Vendor Order By Name");
 
@@ -841,6 +884,7 @@ namespace openPDCManager.Web.Data
 			connection.Dispose();
 			return vendorList;
 		}
+		
 		public static string SaveVendor(Vendor vendor, bool isNew)
 		{
 			string query;
@@ -854,15 +898,16 @@ namespace openPDCManager.Web.Data
 			connection.Dispose();
 			return "Done!";
 		}
-        #endregion
+        
+		#endregion
 
         #region " Manage Vendor Devices Code"
+		
 		public static List<VendorDevice> GetVendorDeviceList()
 		{
 			List<VendorDevice> vendorDeviceList = new List<VendorDevice>();			
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData("Select VD.ID, VD.VendorID, VD.Name, ISNULL(VD.Description, '') AS Description, ISNULL(VD.URL, '') AS URL, " +
-													"V.Name AS VendorName FROM VendorDevice VD, Vendor V WHERE VD.VendorID = V.ID Order By VD.Name");
+			DataTable resultTable = connection.RetrieveData("Select * From VendorDeviceDetail Order By Name");
 
 			vendorDeviceList = (from item in resultTable.AsEnumerable()
 								select new VendorDevice()
@@ -877,6 +922,7 @@ namespace openPDCManager.Web.Data
 			connection.Dispose();
 			return vendorDeviceList;
 		}
+		
 		public static string SaveVendorDevice(VendorDevice vendorDevice, bool isNew)
 		{
 			string query;
@@ -890,7 +936,264 @@ namespace openPDCManager.Web.Data
 			connection.Dispose();
 			return "Done!";
 		}
-        #endregion
 
+		public static Dictionary<int, string> GetVendorDevices(bool isOptional)
+		{
+			Dictionary<int, string> vendorDeviceList = new Dictionary<int, string>();
+			if (isOptional)
+				vendorDeviceList.Add(0, "Select Vendor Device");
+			string query = "Select ID, Name From VendorDevice Order By Name";
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData(query);
+			foreach (DataRow row in resultTable.Rows)
+			{
+				if (!vendorDeviceList.ContainsKey(Convert.ToInt32(row["ID"])))
+					vendorDeviceList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+			}
+			connection.Dispose();
+			return vendorDeviceList;
+		}
+
+		#endregion
+
+		#region " Manage Device Code"
+
+		public static List<Device> GetDeviceList()
+		{			
+			List<Device> deviceList = new List<Device>();
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData("Select * From DeviceDetail Order By LoadOrder");
+
+			deviceList = (from item in resultTable.AsEnumerable()
+						  select new Device()
+						  {
+							  NodeID = item.Field<Guid>("NodeID"),
+							  ID = item.Field<int>("ID"),
+							  ParentID = item.Field<int?>("ParentID"),
+							  Acronym = item.Field<string>("Acronym"),
+							  Name = item.Field<string>("Name"),
+							  IsConcentrator = item.Field<bool>("IsConcentrator"),
+							  CompanyID = item.Field<int?>("CompanyID"),
+							  HistorianID = item.Field<int?>("HistorianID"),
+							  AccessID = item.Field<int>("AccessID"),
+							  VendorDeviceID = item.Field<int?>("VendorDeviceID"),
+							  ProtocolID = item.Field<int?>("ProtocolID"),
+							  Longitude = item.Field<decimal?>("Longitude"),
+							  Latitude = item.Field<decimal?>("Latitude"),
+							  InterconnectionID = item.Field<int?>("InterconnectionID"),
+							  ConncetionString = item.Field<string>("ConnectionString"),
+							  TimeZone = item.Field<string>("TimeZone"),
+							  TimeAdjustmentTicks = item.Field<long>("TimeAdjustmentTicks"),
+							  DataLossInterval = item.Field<double>("DataLossInterval"),
+							  ContactList = item.Field<string>("ContactList"),
+							  MeasuredLines = item.Field<int?>("MeasuredLines"),
+							  LoadOrder = item.Field<int>("LoadOrder"),
+							  Enabled = item.Field<bool>("Enabled"),
+							  CompanyName = item.Field<string>("CompanyName"),
+							  HistorianAcronym = item.Field<string>("HistorianAcronym"),
+							  VendorDeviceName = item.Field<string>("VendorDeviceName"),
+							  ProtocolName = item.Field<string>("ProtocolName"),
+							  InterconnectionName = item.Field<string>("InterconnectionName")
+						  }).ToList();
+			connection.Dispose();
+			return deviceList;
+		}
+
+		public static string SaveDevice(Device device, bool isNew)
+		{
+			string query = string.Empty;					
+				if (isNew)
+					query = string.Format("Insert Into Device (NodeID, ParentID, Acronym, Name, IsConcentrator, CompanyID, HistorianID, AccessID, VendorDeviceID, ProtocolID, Longitude, Latitude, InterconnectionID, ConnectionString, TimeZone, TimeAdjustmentTicks, " +
+						"DataLossInterval, ContactList, MeasuredLines, LoadOrder, Enabled) Values ('{0}', {1}, '{2}', {3}, '{4}', {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, {18}, {19}, '{20}')", device.NodeID, NullableValue(device.ParentID),
+						device.Acronym, NullableQuote(device.Name), device.IsConcentrator.ToString(), NullableValue(device.CompanyID), NullableValue(device.HistorianID), device.AccessID, NullableValue(device.VendorDeviceID), NullableValue(device.ProtocolID),
+						NullableValue(device.Longitude), NullableValue(device.Latitude), NullableValue(device.InterconnectionID), NullableQuote(device.ConncetionString), NullableQuote(device.TimeZone), device.TimeAdjustmentTicks, device.DataLossInterval,
+						NullableQuote(device.ContactList), NullableValue(device.MeasuredLines), device.LoadOrder, device.Enabled);
+				else
+					query = string.Format("Update Device Set NodeID = '{0}', ParentID = {1}, Acronym = '{2}', Name = {3}, IsConcentrator = '{4}', CompanyID = {5}, HistorianID = {6}, AccessID = {7}, VendorDeviceID = {8}, ProtocolID = {9}, Longitude = {10}, " +
+						"Latitude = {11}, InterconnectionID = {12}, ConnectionString = {13}, TimeZone = {14}, TimeAdjustmentTicks = {15}, DataLossInterval = {16}, ContactList = {17}, MeasuredLines = {18}, LoadOrder = {19}, Enabled = '{20}' WHERE ID = {21}",
+						device.NodeID, NullableValue(device.ParentID), device.Acronym, NullableQuote(device.Name), device.IsConcentrator.ToString(), NullableValue(device.CompanyID), NullableValue(device.HistorianID), device.AccessID,
+						NullableValue(device.VendorDeviceID), NullableValue(device.ProtocolID), NullableValue(device.Longitude), NullableValue(device.Latitude), NullableValue(device.InterconnectionID), NullableQuote(device.ConncetionString),
+						NullableQuote(device.TimeZone), device.TimeAdjustmentTicks, device.DataLossInterval, NullableQuote(device.ContactList), NullableValue(device.MeasuredLines), device.LoadOrder, device.Enabled, device.ID);
+				DataConnection connection = new DataConnection();
+				connection.ExecuteScalar(query);
+				connection.Dispose();
+				return "Done";
+			
+		}
+
+		public static Dictionary<int, string> GetDevices(bool concentratorOnly, bool isOptional)
+		{
+			Dictionary<int, string> deviceList = new Dictionary<int, string>();
+			if (isOptional)
+				deviceList.Add(0, "Select Concentrator");
+
+			string query = "Select ID, Acronym From Device";
+			if (concentratorOnly)
+				query += " Where IsConcentrator = '1'";
+			query += " Order By LoadOrder";
+
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData(query);
+			foreach (DataRow row in resultTable.Rows)
+			{
+				if (!deviceList.ContainsKey(Convert.ToInt32(row["ID"])))
+					deviceList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
+			}
+			connection.Dispose();
+			return deviceList;
+		}
+		
+		#endregion
+
+		#region " Manage Other Devices"
+
+		public static List<OtherDevice> GetOtherDeviceList()
+		{
+			List<OtherDevice> otherDeviceList = new List<OtherDevice>();
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData("Select * From OtherDeviceDetail Order By Acronym, Name");
+
+			otherDeviceList = (from item in resultTable.AsEnumerable()
+							   select new OtherDevice()
+							   {
+									ID = item.Field<int>("ID"),
+									Acronym = item.Field<string>("Acronym"),
+									Name = item.Field<string>("Name"),
+									IsConcentrator = item.Field<bool>("IsConcentrator"),
+									CompanyID = item.Field<int?>("CompanyID"),
+									VendorDeviceID = item.Field<int?>("VendorDeviceID"),
+									Longitude = item.Field<decimal?>("Longitude"),
+									Latitude = item.Field<decimal?>("Latitude"),
+									InterconnectionID = item.Field<int?>("InterconnectionID"),
+									Planned = item.Field<bool>("Planned"),
+									Desired = item.Field<bool>("Desired"),
+									InProgress = item.Field<bool>("InProgress"),
+									CompanyName = item.Field<string>("CompanyName"),
+									VendorDeviceName = item.Field<string>("VendorDeviceName"),
+									InterconnectionName = item.Field<string>("InterconnectionName")
+							   }).ToList();
+			connection.Dispose();
+			return otherDeviceList;
+		}
+
+		public static string SaveOtherDevice(OtherDevice otherDevice, bool isNew)
+		{
+			string query;
+			if (isNew)
+				query = string.Format("Insert Into OtherDevice (Acronym, Name, IsConcentrator, CompanyID, VendorDeviceID, Longitude, Latitude, InterconnectionID, Planned, Desired, InProgress) Values ('{0}', {1}, '{2}', {3}, {4}, {5}, {6}, {7}, '{8}', '{9}', '{10}')",
+					otherDevice.Acronym, NullableQuote(otherDevice.Name), otherDevice.IsConcentrator.ToString(), NullableValue(otherDevice.CompanyID), NullableValue(otherDevice.VendorDeviceID), NullableValue(otherDevice.Longitude), NullableValue(otherDevice.Latitude),
+					NullableValue(otherDevice.InterconnectionID), otherDevice.Planned, otherDevice.Desired, otherDevice.InProgress);
+			
+
+			return "Done!";
+		}
+
+		#endregion
+
+		#region " Manage Interconnections Code"
+
+		public static Dictionary<int, string> GetInterconnections(bool isOptional)
+		{
+			Dictionary<int, string> interconnectionList = new Dictionary<int, string>();
+			if (isOptional)
+				interconnectionList.Add(0, "Select Interconnection");
+
+			string query = "Select ID, Name From Interconnection Order By LoadOrder";
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData(query);
+			foreach (DataRow row in resultTable.Rows)
+			{
+				if (!interconnectionList.ContainsKey(Convert.ToInt32(row["ID"])))
+					interconnectionList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+			}
+			connection.Dispose();
+			return interconnectionList;
+		}
+
+		#endregion
+
+		#region " Manage Protocols Code"
+
+		public static Dictionary<int, string> GetProtocols(bool isOptional)
+		{
+			Dictionary<int, string> protocolList = new Dictionary<int, string>();
+			if (isOptional)
+				protocolList.Add(0, "Select Protocol");
+			string query = "Select ID, Name From Protocol Order By Name";
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData(query);
+
+			foreach (DataRow row in resultTable.Rows)
+			{
+				if (!protocolList.ContainsKey(Convert.ToInt32(row["ID"])))
+					protocolList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+			}
+
+			connection.Dispose();
+			return protocolList;
+		}
+
+		#endregion
+
+		#region " Manage Calculated Measurements"
+
+		public static List<CalculatedMeasurement> GetCalculatedMeasurementList()
+		{
+			List<CalculatedMeasurement> calculatedMeasurementList = new List<CalculatedMeasurement>();
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData("Select * From CalculatedMeasurementDetail Order By LoadOrder");
+
+			calculatedMeasurementList = (from item in resultTable.AsEnumerable()
+										 select new CalculatedMeasurement()
+										 {
+											 NodeId = item.Field<Guid>("NodeID"),
+											 ID = item.Field<int>("ID"),
+											 Acronym = item.Field<string>("Acronym"),
+											 Name = item.Field<string>("Name"),
+											 AssemblyName = item.Field<string>("AssemblyName"),
+											 TypeName = item.Field<string>("TypeName"),
+											 ConnectionString = item.Field<string>("ConnectionString"),
+											 ConfigSection = item.Field<string>("ConfigSection"),
+											 InputMeasurements = item.Field<string>("InputMeasurements"),
+											 OutputMeasurements = item.Field<string>("OutputMeasurements"),
+											 MinimumMeasurementsToUse = item.Field<int>("MinimumMeasurementsToUse"),
+											 FramesPerSecond = item.Field<int>("FramesPerSecond"),
+											 LagTime = item.Field<double>("LagTime"),
+											 LeadTime = item.Field<double>("LeadTime"),
+											 UseLocalClockAsRealTime = item.Field<bool>("UseLocalClockAsRealTime"),
+											 AllowSortsByArrival = item.Field<bool>("AllowSortsByArrival"),
+											 LoadOrder = item.Field<int>("LoadOrder"),
+											 Enabled = item.Field<bool>("Enabled"),
+											 NodeName = item.Field<string>("NodeName")
+										 }).ToList();
+
+			connection.Dispose();
+			return calculatedMeasurementList;
+		}
+
+		public static string SaveCalculatedMeasurement(CalculatedMeasurement calculatedMeasurement, bool isNew)
+		{
+			string query = string.Empty;
+			if (isNew)
+				query = string.Format("Insert Into CalculatedMeasurement (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, ConfigSection, InputMeasurements, OutputMeasurements, MinimumMeasurementsToUse, FramesPerSecond, LagTime, LeadTime, " +
+					"UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled) Values ('{0}', '{1}', {2}, '{3}', '{4}', {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, '{13}', '{14}', {15}, '{16}')", calculatedMeasurement.NodeId, calculatedMeasurement.Acronym,
+				NullableQuote(calculatedMeasurement.Name), calculatedMeasurement.AssemblyName, calculatedMeasurement.TypeName, NullableQuote(calculatedMeasurement.ConnectionString), NullableQuote(calculatedMeasurement.ConfigSection), NullableQuote(calculatedMeasurement.InputMeasurements),
+				NullableQuote(calculatedMeasurement.OutputMeasurements), calculatedMeasurement.MinimumMeasurementsToUse, calculatedMeasurement.FramesPerSecond, calculatedMeasurement.LagTime, calculatedMeasurement.LeadTime, calculatedMeasurement.UseLocalClockAsRealTime.ToString(),
+				calculatedMeasurement.AllowSortsByArrival.ToString(), calculatedMeasurement.LoadOrder, calculatedMeasurement.Enabled.ToString());
+			else
+				query = string.Format("Update CalculatedMeasurement Set NodeID = '{0}', Acronym = '{1}', Name = {2}, AssemblyName = '{3}', TypeName = '{4}', ConnectionString = {5}, ConfigSection = {6}, InputMeasurements = {7}, OutputMeasurements = {8}, " +
+					"MinimumMeasurementsToUse = {9}, FramesPerSecond = {10}, LagTime = {11}, LeadTime = {12}, UseLocalClockAsRealTime = '{13}', AllowSortsByArrival = '{14}', LoadOrder = {15}, Enabled = '{16}' Where ID = {17}", calculatedMeasurement.NodeId,
+					calculatedMeasurement.Acronym, NullableQuote(calculatedMeasurement.Name), calculatedMeasurement.AssemblyName, calculatedMeasurement.TypeName, NullableQuote(calculatedMeasurement.ConnectionString),
+					NullableQuote(calculatedMeasurement.ConfigSection), NullableQuote(calculatedMeasurement.InputMeasurements), NullableQuote(calculatedMeasurement.OutputMeasurements), calculatedMeasurement.MinimumMeasurementsToUse,
+					calculatedMeasurement.FramesPerSecond, calculatedMeasurement.LagTime, calculatedMeasurement.LeadTime, calculatedMeasurement.UseLocalClockAsRealTime.ToString(), calculatedMeasurement.AllowSortsByArrival.ToString(),
+					calculatedMeasurement.LoadOrder, calculatedMeasurement.Enabled.ToString(), calculatedMeasurement.ID);
+
+			DataConnection connection = new DataConnection();
+			connection.ExecuteScalar(query);
+			connection.Dispose();
+			return "Done!";
+		}
+
+		#endregion
 	}
 }

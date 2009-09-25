@@ -65,6 +65,7 @@
     <Compile Include="Entities\Device.cs" />
     <Compile Include="Entities\Historian.cs" />
     <Compile Include="Entities\Node.cs" />
+    <Compile Include="Entities\OtherDevice.cs" />
     <Compile Include="Entities\OutputStream.cs" />
     <Compile Include="Entities\Pdc.cs" />
     <Compile Include="Entities\Pmu.cs" />

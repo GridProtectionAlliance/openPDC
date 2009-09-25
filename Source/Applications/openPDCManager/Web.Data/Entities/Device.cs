@@ -252,10 +252,15 @@ namespace openPDCManager.Web.Data.Entities
 		public string ConncetionString { get; set; }
 		public string TimeZone { get; set; }
 		public long TimeAdjustmentTicks { get; set; }
-		public float DataLossInterval { get; set; }
+		public double DataLossInterval { get; set; }
 		public string ContactList { get; set; }
 		public int? MeasuredLines { get; set; }
 		public int LoadOrder { get; set; }
 		public bool Enabled { get; set; }
+		public string CompanyName { get; set; }
+		public string HistorianAcronym { get; set; }
+		public string VendorDeviceName { get; set; }
+		public string ProtocolName { get; set; }
+		public string InterconnectionName { get; set; }
 	}
 }

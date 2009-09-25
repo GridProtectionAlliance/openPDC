@@ -268,7 +268,7 @@ namespace openPDCManager.Web.Data
             if (m_connectionType == null || string.IsNullOrEmpty(m_connectionString))
             {
 				// Load connection settings from the system settings category				
-				ConfigurationFile config = new ConfigurationFile("~/web.config", ApplicationType.Web);
+				ConfigurationFile config = ConfigurationFile.Current; //new ConfigurationFile("~/web.config", ApplicationType.Web);
 				CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
 
 				string dataProviderString = configSettings["DataProviderString"].Value;

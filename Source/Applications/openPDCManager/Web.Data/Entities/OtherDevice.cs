@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  CalculatedMeasurement.cs - Gbtc
+//  OtherDevice.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,10 +8,8 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  07/05/2009 - Mehulbhi Thakkar
+//  09/25/2009 - Mehulbhi P. Thakkar
 //       Generated original version of source code.
-//  09/15/2009 - Stephen C. Wills
-//       Added new header and license agreement.
 //
 //*******************************************************************************************************
 
@@ -238,26 +236,22 @@ using System.Text;
 
 namespace openPDCManager.Web.Data.Entities
 {
-    public class CalculatedMeasurement
-    {
-		public Guid NodeId { get; set; }
-        public int ID { get; set; }
+	public class OtherDevice
+	{
+		public int ID { get; set; }
 		public string Acronym { get; set; }
-        public string Name { get; set; }
-        public string TypeName { get; set; }
-        public string AssemblyName { get; set; }
-		public string ConnectionString { get; set; }
-        public string ConfigSection { get; set; }
-        public string OutputMeasurements { get; set; }
-        public string InputMeasurements { get; set; }
-        public int MinimumMeasurementsToUse { get; set; }
-        public int FramesPerSecond { get; set; }
-        public double LagTime { get; set; }
-        public double LeadTime { get; set; }
-		public bool UseLocalClockAsRealTime { get; set; }
-		public bool AllowSortsByArrival { get; set; }
-		public int LoadOrder { get; set; }
-        public bool Enabled { get; set; }
-		public string NodeName { get; set; }
-    }
+		public string Name { get; set; }
+		public bool IsConcentrator { get; set; }
+		public int? CompanyID { get; set; }
+		public int? VendorDeviceID { get; set; }
+		public decimal? Longitude { get; set; }
+		public decimal? Latitude { get; set; }
+		public int? InterconnectionID { get; set; }
+		public bool Planned { get; set; }
+		public bool Desired { get; set; }
+		public bool InProgress { get; set; }
+		public string CompanyName { get; set; }
+		public string VendorDeviceName { get; set; }
+		public string InterconnectionName { get; set; }
+	}
 }
