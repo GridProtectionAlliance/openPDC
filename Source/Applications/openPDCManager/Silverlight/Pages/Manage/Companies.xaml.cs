@@ -262,6 +262,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		{
 			if (e.Error == null)
 				MessageBox.Show(e.Result);
+			else
+				MessageBox.Show(e.Error.Message);
 			client.GetCompanyListAsync();	//refresh data to reflect changes.
 		}
 		void Companies_Loaded(object sender, RoutedEventArgs e)

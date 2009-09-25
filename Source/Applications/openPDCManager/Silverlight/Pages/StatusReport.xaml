@@ -17,16 +17,16 @@
         <Border Style="{StaticResource PortletBorderStyle}" Canvas.Top="5" Canvas.Left="75">
 
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Status Report" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="12" Padding="3" />
+                <TextBlock Text="Status Report" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="12" Padding="5" />
                 <Border Style="{StaticResource HeaderRowBorderStyle}">                    
                     <StackPanel Orientation="Horizontal">
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Status" Width="100" TextAlignment="Center" Padding="3" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <TextBlock Text="Status" Width="100" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Company ID" Width="100" TextAlignment="Center" Padding="3" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <TextBlock Text="Company ID" Width="100" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>                        
-                        <TextBlock Text="Company Name" Width="500" TextAlignment="Center" Padding="3" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        <TextBlock Text="Company Name" Width="500" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </StackPanel>
                 </Border>
                 
@@ -51,15 +51,15 @@
                                             <Border Style="{StaticResource HeaderRowBorderStyle}" Margin="100, 0, 0, 0">
                                                 <StackPanel Orientation="Horizontal">                                                                                                        
                                                     <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                                                        <TextBlock Text="PMU ID" Width="200" TextAlignment="Center" Padding="3" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                        <TextBlock Text="PMU ID" Width="200" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                                                     </Border>
                                                     <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                                                        <TextBlock Text="PMU Name" Width="250" TextAlignment="Center" Padding="3" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                        <TextBlock Text="PMU Name" Width="250" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                                                     </Border>
                                                     <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                                                        <TextBlock Text="Device Description" Width="200" TextAlignment="Center" Padding="3" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                        <TextBlock Text="Device Description" Width="200" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                                                     </Border>
-                                                    <TextBlock Text="Protocol" Width="200" TextAlignment="Center" Padding="3" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                    <TextBlock Text="Protocol" Width="200" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                                                 </StackPanel>
                                             </Border>
                                             <ItemsControl x:Name="ItemControlPmusStatus" ItemsSource="{Binding Path=PmusStatus}" Margin="100, 0, 0, 0">

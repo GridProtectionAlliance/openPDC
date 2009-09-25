@@ -10,7 +10,7 @@
     <Canvas x:Name="SystemDiagramLayoutRoot">
         <Border Style="{StaticResource PortletBorderStyle}" Canvas.Top="5" Canvas.Left="5">
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="System Diagram" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="12" Padding="3" />
+                <TextBlock Text="System Diagram" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="12" Padding="5" />
                 <Border Style="{StaticResource HeaderRowBorderStyle}" Width="1170" Height="765">
                     <Image x:Name="ImageSystemDiagram"/>
                 </Border>

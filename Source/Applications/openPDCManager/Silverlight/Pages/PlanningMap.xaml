@@ -11,7 +11,7 @@
     <Canvas x:Name="ActiveMapLayoutRoot">
         <Border Style="{StaticResource PortletBorderStyle}" Canvas.Top="5" Canvas.Left="5">
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Planning Map" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="12" Padding="3" />
+                <TextBlock Text="Planning Map" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="12" Padding="5" />
                 <Border Style="{StaticResource HeaderRowBorderStyle}" Width="1170" Height="765">
                     <VirtualEarth:Map x:Name="VirtualEarthPlanningMap" Mode="AerialWithLabels" ZoomLevel="4">
                         <VirtualEarth:Map.Children>

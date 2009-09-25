@@ -28,7 +28,7 @@
         
         <Border x:Name="BorderInterconnectionStatus" Style="{StaticResource ContentBorderStyle}" CornerRadius="5" Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" VerticalAlignment="Stretch">
             <StackPanel Orientation="Vertical" Margin="0" >
-                <TextBlock Text="Currently publishing PMU data from the following PCS members:" Style="{StaticResource LargeWhiteTextStyle}" Padding="3"/>
+                <TextBlock Text="Currently publishing PMU data from the following PCS members:" Style="{StaticResource LargeWhiteTextStyle}" Padding="5"/>
                 <ScrollViewer BorderThickness="0" Padding="0">
                     <ScrollViewer.Content>
                         
@@ -81,12 +81,14 @@
         </Border>
 
         <Border x:Name="BorderLiveData" Grid.Row="1" Grid.Column="1" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Stretch" Margin="5,5,0,5">
-
+            <StackPanel Orientation="Vertical" Margin="0">
+                <TextBlock Text="Real-Time Data" Style="{StaticResource LargeWhiteTextStyle}" HorizontalAlignment="Center" Padding="5" />
+            </StackPanel>
         </Border>
         
         <Border x:Name="BorderPMUDistribution" Grid.Row="2" Grid.Column="1" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Stretch" Margin="5,5,0,5">
             <StackPanel Orientation="Vertical" Margin="0">
-                <TextBlock Text="PMUs Distribution" HorizontalAlignment="Center" Style="{StaticResource LargeWhiteTextStyle}" Padding="3" />
+                <TextBlock Text="PMUs Distribution" HorizontalAlignment="Center" Style="{StaticResource LargeWhiteTextStyle}" Padding="5" />
                 <Border BorderThickness="0" Background="{StaticResource PortletBackgroundBrush}">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
@@ -122,7 +124,7 @@
 
         <Border x:Name="BorderDeviceDistribution" Grid.Row="3" Grid.Column="1" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Stretch" Margin="5,5,0,5">
             <StackPanel Orientation="Vertical" Margin="0">
-                <TextBlock Text="Vendor Device Distribution" Style="{StaticResource LargeWhiteTextStyle}" HorizontalAlignment="Center" Padding="3" />
+                <TextBlock Text="Vendor Device Distribution" Style="{StaticResource LargeWhiteTextStyle}" HorizontalAlignment="Center" Padding="5" />
 
                 <chartingToolkit:Chart x:Name="ChartDeviceDistribution" Style="{StaticResource PieChartStyle}" Foreground="Black" Background="{StaticResource PortletBackgroundBrush}" VerticalAlignment="Stretch">
                     <chartingToolkit:PieSeries ItemsSource="{Binding}" DependentValuePath="Value" IndependentValuePath="Key" Title="Device Distribution" 
@@ -137,7 +139,7 @@
     
         <Border CornerRadius="5" Canvas.Top="5" Canvas.Left="5" Height="795" Width="700" Style="{StaticResource ContentBorderStyle}">
             <StackPanel Orientation="Vertical" Margin="0" >
-                <TextBlock Text="Currently publishing PMU data from the following PCS members:" Style="{StaticResource LargeWhiteTextStyle}" Padding="3"/>
+                <TextBlock Text="Currently publishing PMU data from the following PCS members:" Style="{StaticResource LargeWhiteTextStyle}" Padding="5"/>
                 <ScrollViewer BorderThickness="0" Padding="0" Height="767">
                     <ScrollViewer.Content>
 
@@ -192,7 +194,7 @@
 
         <Border Style="{StaticResource PortletBorderStyle}" Canvas.Top="535" Canvas.Left="715" Width="465">
             <StackPanel Orientation="Vertical" Margin="0">
-                <TextBlock Text="Vendor Device Distribution" Style="{StaticResource LargeWhiteTextStyle}" HorizontalAlignment="Center" Padding="3" />
+                <TextBlock Text="Vendor Device Distribution" Style="{StaticResource LargeWhiteTextStyle}" HorizontalAlignment="Center" Padding="5" />
                 
                 <chartingToolkit:Chart x:Name="ChartDeviceDistribution" Style="{StaticResource PieChartStyle}" Foreground="Black" Background="{StaticResource PortletBackgroundBrush}" Height="235">
                     <chartingToolkit:PieSeries ItemsSource="{Binding}" DependentValuePath="Value" IndependentValuePath="Key" Title="Device Distribution" 
@@ -203,7 +205,7 @@
 
         <Border Style="{StaticResource PortletBorderStyle}" Canvas.Top="340" Canvas.Left="715" Height="190" Width="465">
             <StackPanel Orientation="Vertical" Margin="0">
-                <TextBlock Text="PMUs Distribution" HorizontalAlignment="Center" Style="{StaticResource LargeWhiteTextStyle}" Padding="3" />
+                <TextBlock Text="PMUs Distribution" HorizontalAlignment="Center" Style="{StaticResource LargeWhiteTextStyle}" Padding="5" />
                 <Border BorderThickness="0" Background="{StaticResource PortletBackgroundBrush}">
                     <StackPanel Orientation="Vertical" Height="175">
                         <StackPanel Orientation="Horizontal">

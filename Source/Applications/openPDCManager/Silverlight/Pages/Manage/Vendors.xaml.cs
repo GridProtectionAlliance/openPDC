@@ -35,6 +35,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		{
 			if (e.Error == null)
 				MessageBox.Show(e.Result);
+			else
+				MessageBox.Show(e.Error.Message);
 			client.GetVendorListAsync();	//Refresh data to reflect changes on the current screen.
 		}
 		void ListBoxVendorList_SelectionChanged(object sender, SelectionChangedEventArgs e)

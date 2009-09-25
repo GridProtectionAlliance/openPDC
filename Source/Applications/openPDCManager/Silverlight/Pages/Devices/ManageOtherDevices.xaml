@@ -1,0 +1,59 @@
+﻿<navigation:Page x:Class="openPDCManager.Silverlight.Pages.Devices.ManageOtherDevices" 
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           mc:Ignorable="d"
+           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"           
+           Title="Manage Other Devices">
+    <Grid x:Name="GridOtherDevices">
+        <Border Style="{StaticResource PortletBorderStyle}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Manage Other Devices" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                <Border Background="{StaticResource PortletBackgroundBrush}">
+                    <Grid x:Name="GridOtherDeviceDetail" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5">
+                        <Grid.RowDefinitions>                            
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="2*" />                            
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="3*" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Acronym" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBox x:Name="TextBoxAcronym" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Acronym}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Name" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBox x:Name="TextBoxName" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Company" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <ComboBox x:Name="ComboboxCompany" Grid.Row="1" Grid.Column="1" Margin="5" DisplayMemberPath="Value"/>                        
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Interconnection" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <ComboBox x:Name="ComboboxInterconnection" Grid.Row="1" Grid.Column="3" Margin="5" DisplayMemberPath="Value"/>                        
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Device Vendor" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <ComboBox x:Name="ComboboxVendorDevice" Grid.Row="2" Grid.Column="1" Margin="5" DisplayMemberPath="Value"/>
+                        <CheckBox x:Name="CheckboxConcentrator" Grid.Row="2" Grid.Column="3" IsChecked="{Binding Path=IsConcentrator}" Content="Concentrator" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Longitude" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBox x:Name="TextBoxLongitude" Grid.Row="3" Grid.Column="1" Text="{Binding Path=Longitude}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBlock Grid.Row="3" Grid.Column="2" Text="Latitude" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBox x:Name="TextBoxLatitude" Grid.Row="3" Grid.Column="3" Text="{Binding Path=Latitude}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <CheckBox x:Name="CheckboxPlanned" Grid.Row="4" Grid.Column="1" IsChecked="{Binding Path=Planned}" Content="Planned" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                        <CheckBox x:Name="CheckboxDesired" Grid.Row="4" Grid.Column="2" IsChecked="{Binding Path=Desired}" Content="Desired" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                        <CheckBox x:Name="CheckboxInProgress" Grid.Row="4" Grid.Column="3" IsChecked="{Binding Path=InProgress}" Content="In Progress" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>                        
+                        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"/>
+                            <TextBlock Text="     "/>
+                            <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="Save" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"/>
+                        </StackPanel>
+                        <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5"/>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </Border>
+    </Grid>
+</navigation:Page>

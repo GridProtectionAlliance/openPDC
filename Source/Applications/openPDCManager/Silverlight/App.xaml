@@ -6,12 +6,12 @@
              >
     <Application.Resources>
         <ResourceDictionary>
-            <sys:Double x:Key="XXSmallTextSize">8</sys:Double>
-			<sys:Double x:Key="XSmallTextSize">9</sys:Double>
-            <sys:Double x:Key="SmallerTextSize">10</sys:Double>
-            <sys:Double x:Key="SmallTextSize">11</sys:Double>
-            <sys:Double x:Key="LargeTextSize">12</sys:Double>
-            <sys:Double x:Key="LargerTextSize">14</sys:Double>
+            <sys:Double x:Key="XXSmallTextSize">7</sys:Double>
+			<sys:Double x:Key="XSmallTextSize">8</sys:Double>
+            <sys:Double x:Key="SmallerTextSize">9</sys:Double>
+            <sys:Double x:Key="SmallTextSize">10</sys:Double>
+            <sys:Double x:Key="LargeTextSize">11</sys:Double>
+            <sys:Double x:Key="LargerTextSize">13</sys:Double>
             <sys:Double x:Key="XXLargeTextSize">34</sys:Double>
             
             <sys:Double x:Key="BlankItemSize">10</sys:Double>
@@ -27,6 +27,9 @@
             <sys:Double x:Key="XXXLargeItemSize">450</sys:Double>
             
             <sys:Double x:Key="LayoutColumnWidth">600</sys:Double>
+            
+            <sys:Double x:Key="MarginWidth">5</sys:Double>
+            <sys:Double x:Key="SmallMarginWidth">2</sys:Double>
             
             <sys:Double x:Key="ApplicationMinHeight">768</sys:Double>
             <sys:Double x:Key="ApplicationMinWidth">1024</sys:Double>
@@ -211,11 +214,11 @@
                 <Setter Property="Effect" Value="{StaticResource TextBlockDarkShadowEffect}"/>
             </Style>            
             <Style x:Key="LargeWhiteTextStyle" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="{StaticResource LargeTextSize}"/>
+                <Setter Property="FontSize" Value="{StaticResource LargerTextSize}"/>
                 <Setter Property="Foreground" Value="#FFFFFFFF"/>
             </Style>            
             <Style x:Key="LargeWhiteTextWithEffectStyle" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="{StaticResource LargeTextSize}"/>
+                <Setter Property="FontSize" Value="{StaticResource LargerTextSize}"/>
                 <Setter Property="Foreground" Value="#FFFFFFFF"/>
                 <Setter Property="Effect" Value="{StaticResource TextBlockDarkShadowEffect}"/>
             </Style>            
@@ -246,8 +249,9 @@
                 <Setter Property="BorderThickness" Value="0"/>
             </Style>
             <Style x:Key="HeaderRowTextStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="{StaticResource SmallTextSize}"/>
                 <Setter Property="FontWeight" Value="Bold"/>
-                <Setter Property="Padding" Value="4"/>                
+                <Setter Property="Padding" Value="2"/>                
             </Style>
             <Style x:Key="HeaderRowCellBorderStyle" TargetType="Border">                
                 <Setter Property="BorderThickness" Value="0,0,1,0"/>

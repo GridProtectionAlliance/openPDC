@@ -267,6 +267,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 				MessageBox.Show(e.Result);
 			else
 				MessageBox.Show(e.Error.ToString());
+			client.GetNodeListAsync();
 		}
 		void ListBoxNodeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -275,7 +276,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 				Node selectedNode = ListBoxNodeList.SelectedItem as Node;
 				GridNodeDetail.DataContext = selectedNode;
 				if (selectedNode.CompanyID.HasValue)
-					ComboBoxCompany.SelectedItem = new KeyValuePair<int?, string>(selectedNode.CompanyID, selectedNode.CompanyName);
+					ComboBoxCompany.SelectedItem = new KeyValuePair<int, string>((int)selectedNode.CompanyID, selectedNode.CompanyName);
 				else
 					ComboBoxCompany.SelectedIndex = 0;
 				inEditMode = true;
@@ -286,12 +287,22 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		{
 			Node node = new Node();
 			node.Name = TextBoxName.Text;
-			//node.CompanyID = ((KeyValuePair<int, string>)ComboBoxCompany.SelectedItem).Key;
-			node.Master = true;
-			node.LoadOrder = 1;
-			node.Enabled = true;
-			client.SaveNodeAsync(node, true);
+			node.CompanyID = ((KeyValuePair<int, string>)ComboBoxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxCompany.SelectedItem).Key;
+			node.Longitude = string.IsNullOrEmpty(TextBoxLongitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLongitude.Text);
+			node.Latitude = string.IsNullOrEmpty(TextBoxLatitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLatitude.Text);
+			node.Description = TextBoxDescription.Text;
+			node.Image = TextBoxImage.Text;
+			node.Master = (bool)CheckboxMaster.IsChecked;
+			node.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
+			node.Enabled = (bool)CheckboxEnabled.IsChecked;
 
+			if (inEditMode == true && nodeID != Guid.Empty)
+			{
+				node.ID = nodeID;
+				client.SaveNodeAsync(node, false);
+			}
+			else
+				client.SaveNodeAsync(node, true);
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -300,7 +311,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		void Nodes_Loaded(object sender, RoutedEventArgs e)
 		{
 			client.GetNodeListAsync();
-			client.GetCompaniesAsync();
+			client.GetCompaniesAsync(true);
 		}
 		void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
 		{

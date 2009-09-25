@@ -102,11 +102,32 @@
     <Compile Include="Pages\ActiveMap.xaml.cs">
       <DependentUpon>ActiveMap.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Adapters\CalculatedMeasurements.xaml.cs">
+      <DependentUpon>CalculatedMeasurements.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Adapters\Historians.xaml.cs">
       <DependentUpon>Historians.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\CalculatedMeasurement.xaml.cs">
       <DependentUpon>CalculatedMeasurement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\ActiveMap.xaml.cs">
+      <DependentUpon>ActiveMap.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\AddNew.xaml.cs">
+      <DependentUpon>AddNew.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\Browse.xaml.cs">
+      <DependentUpon>Browse.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\ManageOtherDevices.xaml.cs">
+      <DependentUpon>ManageOtherDevices.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\OtherDevices.xaml.cs">
+      <DependentUpon>OtherDevices.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\PlanningMap.xaml.cs">
+      <DependentUpon>PlanningMap.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
@@ -176,11 +197,39 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
+    <Page Include="Pages\Adapters\CalculatedMeasurements.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
     <Page Include="Pages\Adapters\Historians.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
     <Page Include="Pages\CalculatedMeasurement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="Pages\Devices\ActiveMap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="Pages\Devices\AddNew.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="Pages\Devices\Browse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="Pages\Devices\ManageOtherDevices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="Pages\Devices\OtherDevices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="Pages\Devices\PlanningMap.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
@@ -288,6 +337,17 @@
     <Resource Include="Images\Cancel.png" />
     <Resource Include="Images\Save.png" />
     <None Include="Service References\PhasorDataServiceProxy\PhasorDataService1.disco" />
+    <Resource Include="Images\Action.png" />
+    <Resource Include="Images\Calculation.png" />
+    <Resource Include="Images\CancelSearch.png" />
+    <Resource Include="Images\Computers.png" />
+    <Resource Include="Images\Input.png" />
+    <Resource Include="Images\Output.png" />
+    <Resource Include="Images\Search.png" />
+    <Resource Include="Images\Tree.png" />
+    <Resource Include="Images\Company.png" />
+    <Resource Include="Images\Measure.png" />
+    <Resource Include="Images\Vendor.png" />
     <Content Include="ServiceReferences.ClientConfig" />
   </ItemGroup>
   <ItemGroup>
@@ -305,13 +365,22 @@
     <None Include="Service References\LivePhasorDataServiceProxy\service.wsdl" />
     <None Include="Service References\LivePhasorDataServiceProxy\service.xsd" />
     <None Include="Service References\LivePhasorDataServiceProxy\service1.xsd" />
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.CalculatedMeasurement.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Company.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Device.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Historian.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Node.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Vendor.datasource">
@@ -328,7 +397,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CustomControls\" />
-    <Folder Include="Pages\Devices\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -14,18 +14,30 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
 		PhasorDataServiceClient client;
 
+		bool inEditMode;
+		int historianID;
+
 		public Historians()
 		{
 			InitializeComponent();
 			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
 			client.GetHistorianListCompleted +=new EventHandler<GetHistorianListCompletedEventArgs>(client_GetHistorianListCompleted);
 			client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
+			client.SaveHistorianCompleted += new EventHandler<SaveHistorianCompletedEventArgs>(client_SaveHistorianCompleted);
 			Loaded += new RoutedEventHandler(Historians_Loaded);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ListBoxHistorianList.SelectionChanged += new SelectionChangedEventHandler(ListBoxHistorianList_SelectionChanged);
 		}
 
+		void client_SaveHistorianCompleted(object sender, SaveHistorianCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				MessageBox.Show(e.Result);
+			else
+				MessageBox.Show(e.Error.ToString());
+			client.GetHistorianListAsync();
+		}
 		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -35,17 +47,41 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		}
 		void ListBoxHistorianList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			Historian selectedHistorian = ListBoxHistorianList.SelectedItem as Historian;
-			GridHistorianDetail.DataContext = selectedHistorian;
-			ComboBoxNode.SelectedItem = new KeyValuePair<Guid, string>(selectedHistorian.NodeID, selectedHistorian.NodeName);
+			if (ListBoxHistorianList.SelectedIndex >= 0)
+			{
+				Historian selectedHistorian = ListBoxHistorianList.SelectedItem as Historian;
+				GridHistorianDetail.DataContext = selectedHistorian;
+				ComboBoxNode.SelectedItem = new KeyValuePair<Guid, string>(selectedHistorian.NodeID, selectedHistorian.NodeName);
+				inEditMode = true;
+				historianID = selectedHistorian.ID;
+			}
 		}
 		void Historians_Loaded(object sender, RoutedEventArgs e)
 		{
 			client.GetHistorianListAsync();
-			client.GetNodesAsync(true);
+			client.GetNodesAsync(true, false);
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
+			Historian historian = new Historian();
+			historian.NodeID = ((KeyValuePair<Guid, string>)ComboBoxNode.SelectedItem).Key;
+			historian.Acronym = TextBoxAcronym.Text;
+			historian.Name = TextBoxName.Text;
+			historian.AssemblyName = TextBoxAssemblyName.Text;
+			historian.TypeName = TextBoxTypeName.Text;
+			historian.ConnectionString = TextBoxConnectionString.Text;
+			historian.IsLocal = (bool)CheckboxIsLocal.IsChecked;
+			historian.Description = TextBoxDescription.Text;
+			historian.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
+			historian.Enabled = (bool)CheckboxEnabled.IsChecked;
+
+			if (inEditMode == true && historianID > 0)
+			{
+				historian.ID = historianID;
+				client.SaveHistorianAsync(historian, false);
+			}
+			else
+				client.SaveHistorianAsync(historian, true);
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -58,15 +94,11 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		}
 		void ClearForm()
 		{
-			TextBoxAcronym.Text = string.Empty;
-			TextBoxName.Text = string.Empty;
-			TextBoxDescription.Text = string.Empty;
-			TextBoxTypeName.Text = string.Empty;
-			TextBoxAssemblyName.Text = string.Empty;
-			TextBoxConnectionString.Text = string.Empty;
-			CheckboxEnabled.IsChecked = false;
+			GridHistorianDetail.DataContext = new Historian();	// bind an empty historian.
 			if (ComboBoxNode.Items.Count > 0)
 				ComboBoxNode.SelectedIndex = 0;
+			inEditMode = false;
+			historianID = 0;
 		}
 
 		// Executes when the user navigates to this page.

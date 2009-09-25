@@ -33,6 +33,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		{
 			if (e.Error == null)
 				MessageBox.Show(e.Result);
+			else
+				MessageBox.Show(e.Error.Message);
 			client.GetVendorDeviceListAsync(); //Refresh data to reflect changes on the current screen.
 		}
 		void ListBoxVendorDeviceList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -69,7 +71,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 		void VendorDevices_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetVendorsAsync();
+			client.GetVendorsAsync(false);
 			client.GetVendorDeviceListAsync();
 		}
 		void client_GetVendorsCompleted(object sender, GetVendorsCompletedEventArgs e)
