@@ -1,5 +1,5 @@
 -- Script auto-generated generated from Access database openPDC.mdb method GenerateSampleDataScript
--- 9/25/2009 10:39:42 AM
+-- 9/25/2009 11:17:22 AM
 
 USE openPDC
 GO
@@ -41,7 +41,7 @@ INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSou
 UPDATE Measurement SET SignalID='ed6def67-54c4-4e74-af95-c95fa6915fbc' WHERE PointTag='TVA_SHEL-LAGO:ABBI'
 INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(1, 1, 'TVA_SHEL-LAGO:ABBIH', 2, 5, 'SHELBY-PA5', 'Shelby ABB-521 Lagoon Creek Positive Sequence Current Phase Angle', 1)
 UPDATE Measurement SET SignalID='bcd7aa41-32f1-4d3c-96d5-9e1da2c9469e' WHERE PointTag='TVA_SHEL-LAGO:ABBIH'
-INSERT INTO OutputStream(NodeID, Acronym, Name, Type, ConnectionString, DataChannel, CommandChannel, IDCode, AutoPublishConfigFrame, AutoStartDataChannel, NominalFrequency, FramesPerSecond, LagTime, LeadTime, UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 'TESTSTREAM', 'Test Stream', 1, 'iniFileName=TESTSTREAM.ini', 'Port=0;Clients=localhost:8800', 'Port=8900;Interface=0.0.0.0', 235, 0, 1, 60, 30, 3, 1, 1, 0, 0, 1)
+INSERT INTO OutputStream(NodeID, Acronym, Name, Type, ConnectionString, DataChannel, CommandChannel, IDCode, AutoPublishConfigFrame, AutoStartDataChannel, NominalFrequency, FramesPerSecond, LagTime, LeadTime, UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 'TESTSTREAM', 'Test Stream', 0, '', 'Port=0;Clients=localhost:8800', 'Port=8900;Interface=0.0.0.0', 235, 0, 1, 60, 30, 3, 1, 1, 0, 0, 1)
 INSERT INTO OutputStreamDevice(NodeID, AdapterID, Acronym, BpaAcronym, Name, LoadOrder, Enabled) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 'SHELBY', 'SHEL', 'Shelby', 0, 1)
 INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 1, 'SHELBY-SF')
 INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 2, 'SHELBY-FQ')
