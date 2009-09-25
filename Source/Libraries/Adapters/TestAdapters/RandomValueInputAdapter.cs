@@ -10,6 +10,8 @@
 //  -----------------------------------------------------------------------------------------------------
 //  09/16/2009 - James R. Carroll
 //       Generated original version of source code.
+//  09/25/2009 - Pinal C. Patel
+//       Modified PublishRandomPoints() to use PrecisionTimer instead of DateTime for higher resolution.
 //
 //*******************************************************************************************************
 
@@ -505,7 +507,7 @@ namespace TestAdapters
 
             for (int i = 0; i < m_pointsToSend; i++)
             {
-                timestamp = DateTime.UtcNow.Ticks;
+                timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 for (int j = 0; j < m_outputMeasurements.Length; j++)
                 {
