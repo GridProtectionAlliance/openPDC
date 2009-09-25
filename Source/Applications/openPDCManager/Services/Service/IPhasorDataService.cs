@@ -294,7 +294,7 @@ namespace PCS.Services.Service
 		List<Node> GetNodeList();
 
 		[OperationContract]
-		Dictionary<Guid, string> GetNodes(bool ActiveOnly);
+		Dictionary<Guid, string> GetNodes(bool enabledOnly, bool isOptional);
 
 		[OperationContract]
 		string SaveNode(Node node, bool isNew);
@@ -307,7 +307,7 @@ namespace PCS.Services.Service
 		List<Company> GetCompanyList();
 
 		[OperationContract]
-		Dictionary<int, string> GetCompanies();
+		Dictionary<int, string> GetCompanies(bool isOptional);
 
 		[OperationContract]
 		string SaveCompany(Company company, bool isNew);
@@ -319,6 +319,12 @@ namespace PCS.Services.Service
 		[OperationContract]
 		List<Historian> GetHistorianList();
 
+		[OperationContract]
+		string SaveHistorian(Historian historian, bool isNew);
+
+		[OperationContract]
+		Dictionary<int, string> GetHistorians(bool enabledOnly, bool isOptional);
+
 		#endregion
 
 		#region " Manage Vendor Code"
@@ -327,7 +333,7 @@ namespace PCS.Services.Service
 		List<Vendor> GetVendorList();
 
 		[OperationContract]
-		Dictionary<int, string> GetVendors();
+		Dictionary<int, string> GetVendors(bool isOptional);
 
 		[OperationContract]
 		string SaveVendor(Vendor vendor, bool isNew);
@@ -342,6 +348,57 @@ namespace PCS.Services.Service
 		[OperationContract]
 		string SaveVendorDevice(VendorDevice vendorDevice, bool isNew);
 
+		[OperationContract]
+		Dictionary<int, string> GetVendorDevices(bool isOptional);
+
 		#endregion
+
+		#region " Manage Device Code"
+
+		[OperationContract]
+		List<Device> GetDeviceList();
+
+		[OperationContract]
+		Dictionary<int, string> GetDevices(bool concentratorOnly, bool isOptional);
+
+		[OperationContract]
+		string SaveDevice(Device device, bool isNew);
+
+		#endregion
+
+		#region " Manage Other Device Code"
+
+		[OperationContract]
+		List<OtherDevice> GetOtherDeviceList();
+
+		#endregion
+
+		#region " Manage Interconnection Code"
+
+		[OperationContract]
+		Dictionary<int, string> GetInterconnections(bool isOptional);
+
+		#endregion
+
+		#region " Manage Protocols Code"
+
+		[OperationContract]
+		Dictionary<int, string> GetProtocols(bool isOptional);
+
+		#endregion
+
+		#region " Manage Calculated Measurements Code"
+
+		[OperationContract]
+		List<CalculatedMeasurement> GetCalculatedMeasurementList();
+
+		[OperationContract]
+		string SaveCalculatedMeasurement(CalculatedMeasurement calculatedMeasurement, bool isNew);
+
+		#endregion
+
+		[OperationContract]
+		List<string> GetTimeZones(bool isOptional);
+
 	}
 }

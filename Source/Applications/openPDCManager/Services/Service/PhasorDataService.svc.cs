@@ -271,9 +271,9 @@ namespace PCS.Services.Service
 		{
 			return CommonFunctions.GetCompanyList();
 		}
-		public Dictionary<int, string> GetCompanies()
+		public Dictionary<int, string> GetCompanies(bool isOptional)
 		{
-			return CommonFunctions.GetCompanies();
+			return CommonFunctions.GetCompanies(isOptional);
 		}
 		public string SaveCompany(Company company, bool isNew)
 		{
@@ -286,6 +286,14 @@ namespace PCS.Services.Service
 		{
 			return CommonFunctions.GetHistorianList();
 		}
+		public string SaveHistorian(Historian historian, bool isNew)
+		{
+			return CommonFunctions.SaveHistorian(historian, isNew);
+		}
+		public Dictionary<int, string> GetHistorians(bool enabledOnly, bool isOptional)
+		{
+			return CommonFunctions.GetHistorians(enabledOnly, isOptional);
+		}
 		#endregion
 
 		#region " Manage Vendor Code"
@@ -293,9 +301,9 @@ namespace PCS.Services.Service
 		{
 			return CommonFunctions.GetVendorList();
 		}
-		public Dictionary<int, string> GetVendors()
+		public Dictionary<int, string> GetVendors(bool isOptional)
 		{
-			return CommonFunctions.GetVendors();
+			return CommonFunctions.GetVendors(isOptional);
 		}
 		public string SaveVendor(Vendor vendor, bool isNew)
 		{
@@ -312,6 +320,10 @@ namespace PCS.Services.Service
 		{
 			return CommonFunctions.SaveVendorDevice(vendorDevice, isNew);
 		}
+		public Dictionary<int, string> GetVendorDevices(bool isOptional)
+		{
+			return CommonFunctions.GetVendorDevices(isOptional);
+		}
 		#endregion
 
 		#region " Manage Node Code"
@@ -319,15 +331,74 @@ namespace PCS.Services.Service
 		{
 			return CommonFunctions.GetNodeList();
 		}
-		public Dictionary<Guid, string> GetNodes(bool ActiveOnly)
+		public Dictionary<Guid, string> GetNodes(bool enabledOnly, bool isOptional)
 		{
-			return CommonFunctions.GetNodes(ActiveOnly);
+			return CommonFunctions.GetNodes(enabledOnly, isOptional);
 		}
 		public string SaveNode(Node node, bool isNew)
 		{
 			return CommonFunctions.SaveNode(node, isNew);
 		}
 		#endregion
+
+		#region " Manage Device Code"
+		public List<Device> GetDeviceList()
+		{
+			return CommonFunctions.GetDeviceList();
+		}
+		public Dictionary<int, string> GetDevices(bool concentratorOnly, bool isOptional)
+		{
+			return CommonFunctions.GetDevices(concentratorOnly, isOptional);
+		}
+		public string SaveDevice(Device device, bool isNew)
+		{
+			return CommonFunctions.SaveDevice(device, isNew);
+		}
+		#endregion
+
+		#region " Manage Other Device Code"
+
+		public List<OtherDevice> GetOtherDeviceList()
+		{
+			return CommonFunctions.GetOtherDeviceList();
+		}
+
+		#endregion
+
+		#region " Manage Interconnections Code"
+		public Dictionary<int, string> GetInterconnections(bool isOptional)
+		{
+			return CommonFunctions.GetInterconnections(isOptional);
+		}
+		#endregion
+
+		#region " Manage Protocols Code"
+
+		public Dictionary<int, string> GetProtocols(bool isOptional)
+		{
+			return CommonFunctions.GetProtocols(isOptional);
+		}
+
+		#endregion
+
+		#region " Manage Calculated Measurements Code"
+
+		public List<CalculatedMeasurement> GetCalculatedMeasurementList()
+		{
+			return CommonFunctions.GetCalculatedMeasurementList();
+		}
+
+		public string SaveCalculatedMeasurement(CalculatedMeasurement calculatedMeasurement, bool isNew)
+		{
+			return CommonFunctions.SaveCalculatedMeasurement(calculatedMeasurement, isNew);
+		}
+
+		#endregion
+
+		public List<string> GetTimeZones(bool isOptional)
+		{
+			return CommonFunctions.GetTimeZones(isOptional);
+		}
 
 		//public Dictionary<int, string> GetVendorList()
 		//{
