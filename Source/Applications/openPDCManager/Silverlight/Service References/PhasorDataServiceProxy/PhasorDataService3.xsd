@@ -191,4 +191,33 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="CalculatedMeasurement" nillable="true" type="tns:CalculatedMeasurement" />
+  <xs:simpleType name="AdapterType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Action" />
+      <xs:enumeration value="Input" />
+      <xs:enumeration value="Output" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="AdapterType" nillable="true" type="tns:AdapterType" />
+  <xs:complexType name="ArrayOfAdapter">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Adapter" nillable="true" type="tns:Adapter" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfAdapter" nillable="true" type="tns:ArrayOfAdapter" />
+  <xs:complexType name="Adapter">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AdapterName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AssemblyName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ConnectionString" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Enabled" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ID" type="xs:int" />
+      <xs:element minOccurs="0" name="LoadOrder" type="xs:int" />
+      <xs:element minOccurs="0" name="NodeID" type="ser:guid" />
+      <xs:element minOccurs="0" name="NodeName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TypeName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="adapterType" type="tns:AdapterType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Adapter" nillable="true" type="tns:Adapter" />
 </xs:schema>

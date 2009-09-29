@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  09/16/2009 - Mehulbhi P. Thakkar
+//  09/16/2009 - Mehulbhai Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -229,11 +229,11 @@
 */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using openPDCManager.Web.Data;
-using openPDCManager.Web.Data.BusinessObjects;
 using openPDCManager.Web.Data.Entities;
-using System;
+using openPDCManager.Web.Data.BusinessObjects;
 
 namespace PCS.Services.Service
 {
@@ -363,6 +363,11 @@ namespace PCS.Services.Service
 			return CommonFunctions.GetOtherDeviceList();
 		}
 
+		public string SaveOtherDevice(OtherDevice otherDevice, bool isNew)
+		{
+			return CommonFunctions.SaveOtherDevice(otherDevice, isNew);
+		}
+
 		#endregion
 
 		#region " Manage Interconnections Code"
@@ -394,6 +399,25 @@ namespace PCS.Services.Service
 		}
 
 		#endregion
+
+		#region " Manage Custom Adapters Code"
+
+		public List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType)
+		{
+			return CommonFunctions.GetAdapterList(enabledOnly, adapterType);
+		}
+
+		public string SaveAdapter(Adapter adapter, bool isNew)
+		{
+			return CommonFunctions.SaveAdapter(adapter, isNew);
+		}
+
+		public List<IaonTree> GetIaonTreeData()
+		{
+			return CommonFunctions.GetIaonTreeData();
+		}
+		#endregion
+
 
 		public List<string> GetTimeZones(bool isOptional)
 		{

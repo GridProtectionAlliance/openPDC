@@ -6,6 +6,7 @@
       <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" />
       <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IPhasorDataService_GetNodeList_InputMessage">
@@ -122,6 +123,12 @@
   <wsdl:message name="IPhasorDataService_GetOtherDeviceList_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetOtherDeviceListResponse" />
   </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOtherDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOtherDevice" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOtherDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOtherDeviceResponse" />
+  </wsdl:message>
   <wsdl:message name="IPhasorDataService_GetInterconnections_InputMessage">
     <wsdl:part name="parameters" element="tns:GetInterconnections" />
   </wsdl:message>
@@ -145,6 +152,24 @@
   </wsdl:message>
   <wsdl:message name="IPhasorDataService_SaveCalculatedMeasurement_OutputMessage">
     <wsdl:part name="parameters" element="tns:SaveCalculatedMeasurementResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetAdapterList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAdapterList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetAdapterList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAdapterListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveAdapter_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveAdapter" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveAdapter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveAdapterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetIaonTreeData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetIaonTreeData" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetIaonTreeData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetIaonTreeDataResponse" />
   </wsdl:message>
   <wsdl:message name="IPhasorDataService_GetTimeZones_InputMessage">
     <wsdl:part name="parameters" element="tns:GetTimeZones" />
@@ -229,6 +254,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetOtherDeviceList" message="tns:IPhasorDataService_GetOtherDeviceList_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetOtherDeviceListResponse" message="tns:IPhasorDataService_GetOtherDeviceList_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="SaveOtherDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOtherDevice" message="tns:IPhasorDataService_SaveOtherDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOtherDeviceResponse" message="tns:IPhasorDataService_SaveOtherDevice_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="GetInterconnections">
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetInterconnections" message="tns:IPhasorDataService_GetInterconnections_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetInterconnectionsResponse" message="tns:IPhasorDataService_GetInterconnections_OutputMessage" />
@@ -244,6 +273,18 @@
     <wsdl:operation name="SaveCalculatedMeasurement">
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveCalculatedMeasurement" message="tns:IPhasorDataService_SaveCalculatedMeasurement_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveCalculatedMeasurementResponse" message="tns:IPhasorDataService_SaveCalculatedMeasurement_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAdapterList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetAdapterList" message="tns:IPhasorDataService_GetAdapterList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetAdapterListResponse" message="tns:IPhasorDataService_GetAdapterList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveAdapter">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveAdapter" message="tns:IPhasorDataService_SaveAdapter_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveAdapterResponse" message="tns:IPhasorDataService_SaveAdapter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetIaonTreeData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetIaonTreeData" message="tns:IPhasorDataService_GetIaonTreeData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetIaonTreeDataResponse" message="tns:IPhasorDataService_GetIaonTreeData_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="GetTimeZones">
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetTimeZones" message="tns:IPhasorDataService_GetTimeZones_InputMessage" />
@@ -423,6 +464,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="SaveOtherDevice">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOtherDevice" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="GetInterconnections">
       <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetInterconnections" style="document" />
       <wsdl:input>
@@ -452,6 +502,33 @@
     </wsdl:operation>
     <wsdl:operation name="SaveCalculatedMeasurement">
       <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveCalculatedMeasurement" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAdapterList">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetAdapterList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveAdapter">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveAdapter" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIaonTreeData">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetIaonTreeData" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  07/05/2009 - Mehulbhi Thakkar
+//  07/05/2009 - Mehulbhai Thakkar
 //       Generated original version of source code.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
@@ -231,11 +231,11 @@
 */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.ServiceModel;
-using openPDCManager.Web.Data.BusinessObjects;
 using openPDCManager.Web.Data.Entities;
-using System;
+using openPDCManager.Web.Data.BusinessObjects;
 
 namespace PCS.Services.Service
 {
@@ -371,6 +371,9 @@ namespace PCS.Services.Service
 		[OperationContract]
 		List<OtherDevice> GetOtherDeviceList();
 
+		[OperationContract]
+		string SaveOtherDevice(OtherDevice otherDevice, bool isNew);
+
 		#endregion
 
 		#region " Manage Interconnection Code"
@@ -394,6 +397,19 @@ namespace PCS.Services.Service
 
 		[OperationContract]
 		string SaveCalculatedMeasurement(CalculatedMeasurement calculatedMeasurement, bool isNew);
+
+		#endregion
+
+		#region " Manage Custom Adapters Code"
+
+		[OperationContract]
+		List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType);
+
+		[OperationContract]
+		string SaveAdapter(Adapter adapter, bool isNew);
+
+		[OperationContract]
+		List<IaonTree> GetIaonTreeData();
 
 		#endregion
 

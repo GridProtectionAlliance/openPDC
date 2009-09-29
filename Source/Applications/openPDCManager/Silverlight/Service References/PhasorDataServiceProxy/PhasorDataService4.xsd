@@ -2,6 +2,7 @@
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" />
   <xs:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" />
   <xs:element name="GetNodeList">
     <xs:complexType>
       <xs:sequence />
@@ -263,6 +264,21 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="SaveOtherDevice">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" minOccurs="0" name="otherDevice" nillable="true" type="q20:OtherDevice" />
+        <xs:element minOccurs="0" name="isNew" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SaveOtherDeviceResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="SaveOtherDeviceResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="GetInterconnections">
     <xs:complexType>
       <xs:sequence>
@@ -273,7 +289,7 @@
   <xs:element name="GetInterconnectionsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q20="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetInterconnectionsResult" nillable="true" type="q20:ArrayOfKeyValueOfintstring" />
+        <xs:element xmlns:q21="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetInterconnectionsResult" nillable="true" type="q21:ArrayOfKeyValueOfintstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -287,7 +303,7 @@
   <xs:element name="GetProtocolsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q21="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetProtocolsResult" nillable="true" type="q21:ArrayOfKeyValueOfintstring" />
+        <xs:element xmlns:q22="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetProtocolsResult" nillable="true" type="q22:ArrayOfKeyValueOfintstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -299,14 +315,14 @@
   <xs:element name="GetCalculatedMeasurementListResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" minOccurs="0" name="GetCalculatedMeasurementListResult" nillable="true" type="q22:ArrayOfCalculatedMeasurement" />
+        <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" minOccurs="0" name="GetCalculatedMeasurementListResult" nillable="true" type="q23:ArrayOfCalculatedMeasurement" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="SaveCalculatedMeasurement">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" minOccurs="0" name="calculatedMeasurement" nillable="true" type="q23:CalculatedMeasurement" />
+        <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" minOccurs="0" name="calculatedMeasurement" nillable="true" type="q24:CalculatedMeasurement" />
         <xs:element minOccurs="0" name="isNew" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
@@ -315,6 +331,48 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="SaveCalculatedMeasurementResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAdapterList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="enabledOnly" type="xs:boolean" />
+        <xs:element xmlns:q25="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" minOccurs="0" name="adapterType" type="q25:AdapterType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAdapterListResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" minOccurs="0" name="GetAdapterListResult" nillable="true" type="q26:ArrayOfAdapter" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SaveAdapter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" minOccurs="0" name="adapter" nillable="true" type="q27:Adapter" />
+        <xs:element minOccurs="0" name="isNew" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SaveAdapterResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="SaveAdapterResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetIaonTreeData">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetIaonTreeDataResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" minOccurs="0" name="GetIaonTreeDataResult" nillable="true" type="q28:ArrayOfIaonTree" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -328,7 +386,7 @@
   <xs:element name="GetTimeZonesResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q24="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetTimeZonesResult" nillable="true" type="q24:ArrayOfstring" />
+        <xs:element xmlns:q29="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetTimeZonesResult" nillable="true" type="q29:ArrayOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

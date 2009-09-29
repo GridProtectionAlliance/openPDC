@@ -56,10 +56,12 @@
   <ItemGroup>
     <Compile Include="BusinessObjects\BasicPmuInfo.cs" />
     <Compile Include="BusinessObjects\InterconnectionStatus.cs" />
+    <Compile Include="BusinessObjects\IaonTree.cs" />
     <Compile Include="BusinessObjects\PmuDistribution.cs" />
     <Compile Include="BusinessObjects\StatusReport.cs" />
     <Compile Include="CommonFunctions.cs" />
     <Compile Include="DataConnection.cs" />
+    <Compile Include="Entities\Adapter.cs" />
     <Compile Include="Entities\CalculatedMeasurement.cs" />
     <Compile Include="Entities\Company.cs" />
     <Compile Include="Entities\Device.cs" />

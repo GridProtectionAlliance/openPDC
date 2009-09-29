@@ -1665,6 +1665,230 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
     }
     
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="AdapterType", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities")]
+    public enum AdapterType : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Action = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Input = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Output = 2,
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Adapter", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities")]
+    public partial class Adapter : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string AdapterNameField;
+        
+        private string AssemblyNameField;
+        
+        private string ConnectionStringField;
+        
+        private bool EnabledField;
+        
+        private int IDField;
+        
+        private int LoadOrderField;
+        
+        private System.Guid NodeIDField;
+        
+        private string NodeNameField;
+        
+        private string TypeNameField;
+        
+        private openPDCManager.Silverlight.PhasorDataServiceProxy.AdapterType adapterTypeField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string AdapterName {
+            get {
+                return this.AdapterNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AdapterNameField, value) != true)) {
+                    this.AdapterNameField = value;
+                    this.RaisePropertyChanged("AdapterName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string AssemblyName {
+            get {
+                return this.AssemblyNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AssemblyNameField, value) != true)) {
+                    this.AssemblyNameField = value;
+                    this.RaisePropertyChanged("AssemblyName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ConnectionString {
+            get {
+                return this.ConnectionStringField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ConnectionStringField, value) != true)) {
+                    this.ConnectionStringField = value;
+                    this.RaisePropertyChanged("ConnectionString");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Enabled {
+            get {
+                return this.EnabledField;
+            }
+            set {
+                if ((this.EnabledField.Equals(value) != true)) {
+                    this.EnabledField = value;
+                    this.RaisePropertyChanged("Enabled");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ID {
+            get {
+                return this.IDField;
+            }
+            set {
+                if ((this.IDField.Equals(value) != true)) {
+                    this.IDField = value;
+                    this.RaisePropertyChanged("ID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int LoadOrder {
+            get {
+                return this.LoadOrderField;
+            }
+            set {
+                if ((this.LoadOrderField.Equals(value) != true)) {
+                    this.LoadOrderField = value;
+                    this.RaisePropertyChanged("LoadOrder");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid NodeID {
+            get {
+                return this.NodeIDField;
+            }
+            set {
+                if ((this.NodeIDField.Equals(value) != true)) {
+                    this.NodeIDField = value;
+                    this.RaisePropertyChanged("NodeID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string NodeName {
+            get {
+                return this.NodeNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NodeNameField, value) != true)) {
+                    this.NodeNameField = value;
+                    this.RaisePropertyChanged("NodeName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TypeName {
+            get {
+                return this.TypeNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TypeNameField, value) != true)) {
+                    this.TypeNameField = value;
+                    this.RaisePropertyChanged("TypeName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public openPDCManager.Silverlight.PhasorDataServiceProxy.AdapterType adapterType {
+            get {
+                return this.adapterTypeField;
+            }
+            set {
+                if ((this.adapterTypeField.Equals(value) != true)) {
+                    this.adapterTypeField = value;
+                    this.RaisePropertyChanged("adapterType");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="IaonTree", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+    public partial class IaonTree : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter> AdapterListField;
+        
+        private string AdapterTypeField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter> AdapterList {
+            get {
+                return this.AdapterListField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AdapterListField, value) != true)) {
+                    this.AdapterListField = value;
+                    this.RaisePropertyChanged("AdapterList");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string AdapterType {
+            get {
+                return this.AdapterTypeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AdapterTypeField, value) != true)) {
+                    this.AdapterTypeField = value;
+                    this.RaisePropertyChanged("AdapterType");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="PhasorDataServiceProxy.IPhasorDataService")]
     public interface IPhasorDataService {
@@ -1764,6 +1988,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice> EndGetOtherDeviceList(System.IAsyncResult result);
         
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/SaveOtherDevice", ReplyAction="http://tempuri.org/IPhasorDataService/SaveOtherDeviceResponse")]
+        System.IAsyncResult BeginSaveOtherDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice otherDevice, bool isNew, System.AsyncCallback callback, object asyncState);
+        
+        string EndSaveOtherDevice(System.IAsyncResult result);
+        
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetInterconnections", ReplyAction="http://tempuri.org/IPhasorDataService/GetInterconnectionsResponse")]
         System.IAsyncResult BeginGetInterconnections(bool isOptional, System.AsyncCallback callback, object asyncState);
         
@@ -1783,6 +2012,21 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         System.IAsyncResult BeginSaveCalculatedMeasurement(openPDCManager.Silverlight.PhasorDataServiceProxy.CalculatedMeasurement calculatedMeasurement, bool isNew, System.AsyncCallback callback, object asyncState);
         
         string EndSaveCalculatedMeasurement(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetAdapterList", ReplyAction="http://tempuri.org/IPhasorDataService/GetAdapterListResponse")]
+        System.IAsyncResult BeginGetAdapterList(bool enabledOnly, openPDCManager.Silverlight.PhasorDataServiceProxy.AdapterType adapterType, System.AsyncCallback callback, object asyncState);
+        
+        System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter> EndGetAdapterList(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/SaveAdapter", ReplyAction="http://tempuri.org/IPhasorDataService/SaveAdapterResponse")]
+        System.IAsyncResult BeginSaveAdapter(openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter adapter, bool isNew, System.AsyncCallback callback, object asyncState);
+        
+        string EndSaveAdapter(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetIaonTreeData", ReplyAction="http://tempuri.org/IPhasorDataService/GetIaonTreeDataResponse")]
+        System.IAsyncResult BeginGetIaonTreeData(System.AsyncCallback callback, object asyncState);
+        
+        System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.IaonTree> EndGetIaonTreeData(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetTimeZones", ReplyAction="http://tempuri.org/IPhasorDataService/GetTimeZonesResponse")]
         System.IAsyncResult BeginGetTimeZones(bool isOptional, System.AsyncCallback callback, object asyncState);
@@ -2157,6 +2401,25 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class SaveOtherDeviceCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public SaveOtherDeviceCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public string Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
     public partial class GetInterconnectionsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
@@ -2227,6 +2490,63 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             get {
                 base.RaiseExceptionIfNecessary();
                 return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class GetAdapterListCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetAdapterListCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class SaveAdapterCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public SaveAdapterCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public string Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class GetIaonTreeDataCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetIaonTreeDataCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.IaonTree> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.IaonTree>)(this.results[0]));
             }
         }
     }
@@ -2368,6 +2688,12 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.Threading.SendOrPostCallback onGetOtherDeviceListCompletedDelegate;
         
+        private BeginOperationDelegate onBeginSaveOtherDeviceDelegate;
+        
+        private EndOperationDelegate onEndSaveOtherDeviceDelegate;
+        
+        private System.Threading.SendOrPostCallback onSaveOtherDeviceCompletedDelegate;
+        
         private BeginOperationDelegate onBeginGetInterconnectionsDelegate;
         
         private EndOperationDelegate onEndGetInterconnectionsDelegate;
@@ -2391,6 +2717,24 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         private EndOperationDelegate onEndSaveCalculatedMeasurementDelegate;
         
         private System.Threading.SendOrPostCallback onSaveCalculatedMeasurementCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetAdapterListDelegate;
+        
+        private EndOperationDelegate onEndGetAdapterListDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetAdapterListCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginSaveAdapterDelegate;
+        
+        private EndOperationDelegate onEndSaveAdapterDelegate;
+        
+        private System.Threading.SendOrPostCallback onSaveAdapterCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetIaonTreeDataDelegate;
+        
+        private EndOperationDelegate onEndGetIaonTreeDataDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetIaonTreeDataCompletedDelegate;
         
         private BeginOperationDelegate onBeginGetTimeZonesDelegate;
         
@@ -2489,6 +2833,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         public event System.EventHandler<GetOtherDeviceListCompletedEventArgs> GetOtherDeviceListCompleted;
         
+        public event System.EventHandler<SaveOtherDeviceCompletedEventArgs> SaveOtherDeviceCompleted;
+        
         public event System.EventHandler<GetInterconnectionsCompletedEventArgs> GetInterconnectionsCompleted;
         
         public event System.EventHandler<GetProtocolsCompletedEventArgs> GetProtocolsCompleted;
@@ -2496,6 +2842,12 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         public event System.EventHandler<GetCalculatedMeasurementListCompletedEventArgs> GetCalculatedMeasurementListCompleted;
         
         public event System.EventHandler<SaveCalculatedMeasurementCompletedEventArgs> SaveCalculatedMeasurementCompleted;
+        
+        public event System.EventHandler<GetAdapterListCompletedEventArgs> GetAdapterListCompleted;
+        
+        public event System.EventHandler<SaveAdapterCompletedEventArgs> SaveAdapterCompleted;
+        
+        public event System.EventHandler<GetIaonTreeDataCompletedEventArgs> GetIaonTreeDataCompleted;
         
         public event System.EventHandler<GetTimeZonesCompletedEventArgs> GetTimeZonesCompleted;
         
@@ -3382,6 +3734,54 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginSaveOtherDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice otherDevice, bool isNew, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginSaveOtherDevice(otherDevice, isNew, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        string openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndSaveOtherDevice(System.IAsyncResult result) {
+            return base.Channel.EndSaveOtherDevice(result);
+        }
+        
+        private System.IAsyncResult OnBeginSaveOtherDevice(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice otherDevice = ((openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice)(inValues[0]));
+            bool isNew = ((bool)(inValues[1]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginSaveOtherDevice(otherDevice, isNew, callback, asyncState);
+        }
+        
+        private object[] OnEndSaveOtherDevice(System.IAsyncResult result) {
+            string retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndSaveOtherDevice(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnSaveOtherDeviceCompleted(object state) {
+            if ((this.SaveOtherDeviceCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.SaveOtherDeviceCompleted(this, new SaveOtherDeviceCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void SaveOtherDeviceAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice otherDevice, bool isNew) {
+            this.SaveOtherDeviceAsync(otherDevice, isNew, null);
+        }
+        
+        public void SaveOtherDeviceAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice otherDevice, bool isNew, object userState) {
+            if ((this.onBeginSaveOtherDeviceDelegate == null)) {
+                this.onBeginSaveOtherDeviceDelegate = new BeginOperationDelegate(this.OnBeginSaveOtherDevice);
+            }
+            if ((this.onEndSaveOtherDeviceDelegate == null)) {
+                this.onEndSaveOtherDeviceDelegate = new EndOperationDelegate(this.OnEndSaveOtherDevice);
+            }
+            if ((this.onSaveOtherDeviceCompletedDelegate == null)) {
+                this.onSaveOtherDeviceCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnSaveOtherDeviceCompleted);
+            }
+            base.InvokeAsync(this.onBeginSaveOtherDeviceDelegate, new object[] {
+                        otherDevice,
+                        isNew}, this.onEndSaveOtherDeviceDelegate, this.onSaveOtherDeviceCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetInterconnections(bool isOptional, System.AsyncCallback callback, object asyncState) {
             return base.Channel.BeginGetInterconnections(isOptional, callback, asyncState);
         }
@@ -3563,6 +3963,146 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             base.InvokeAsync(this.onBeginSaveCalculatedMeasurementDelegate, new object[] {
                         calculatedMeasurement,
                         isNew}, this.onEndSaveCalculatedMeasurementDelegate, this.onSaveCalculatedMeasurementCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetAdapterList(bool enabledOnly, openPDCManager.Silverlight.PhasorDataServiceProxy.AdapterType adapterType, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetAdapterList(enabledOnly, adapterType, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter> openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndGetAdapterList(System.IAsyncResult result) {
+            return base.Channel.EndGetAdapterList(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetAdapterList(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            bool enabledOnly = ((bool)(inValues[0]));
+            openPDCManager.Silverlight.PhasorDataServiceProxy.AdapterType adapterType = ((openPDCManager.Silverlight.PhasorDataServiceProxy.AdapterType)(inValues[1]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetAdapterList(enabledOnly, adapterType, callback, asyncState);
+        }
+        
+        private object[] OnEndGetAdapterList(System.IAsyncResult result) {
+            System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter> retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndGetAdapterList(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetAdapterListCompleted(object state) {
+            if ((this.GetAdapterListCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetAdapterListCompleted(this, new GetAdapterListCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetAdapterListAsync(bool enabledOnly, openPDCManager.Silverlight.PhasorDataServiceProxy.AdapterType adapterType) {
+            this.GetAdapterListAsync(enabledOnly, adapterType, null);
+        }
+        
+        public void GetAdapterListAsync(bool enabledOnly, openPDCManager.Silverlight.PhasorDataServiceProxy.AdapterType adapterType, object userState) {
+            if ((this.onBeginGetAdapterListDelegate == null)) {
+                this.onBeginGetAdapterListDelegate = new BeginOperationDelegate(this.OnBeginGetAdapterList);
+            }
+            if ((this.onEndGetAdapterListDelegate == null)) {
+                this.onEndGetAdapterListDelegate = new EndOperationDelegate(this.OnEndGetAdapterList);
+            }
+            if ((this.onGetAdapterListCompletedDelegate == null)) {
+                this.onGetAdapterListCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetAdapterListCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetAdapterListDelegate, new object[] {
+                        enabledOnly,
+                        adapterType}, this.onEndGetAdapterListDelegate, this.onGetAdapterListCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginSaveAdapter(openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter adapter, bool isNew, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginSaveAdapter(adapter, isNew, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        string openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndSaveAdapter(System.IAsyncResult result) {
+            return base.Channel.EndSaveAdapter(result);
+        }
+        
+        private System.IAsyncResult OnBeginSaveAdapter(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter adapter = ((openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter)(inValues[0]));
+            bool isNew = ((bool)(inValues[1]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginSaveAdapter(adapter, isNew, callback, asyncState);
+        }
+        
+        private object[] OnEndSaveAdapter(System.IAsyncResult result) {
+            string retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndSaveAdapter(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnSaveAdapterCompleted(object state) {
+            if ((this.SaveAdapterCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.SaveAdapterCompleted(this, new SaveAdapterCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void SaveAdapterAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter adapter, bool isNew) {
+            this.SaveAdapterAsync(adapter, isNew, null);
+        }
+        
+        public void SaveAdapterAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter adapter, bool isNew, object userState) {
+            if ((this.onBeginSaveAdapterDelegate == null)) {
+                this.onBeginSaveAdapterDelegate = new BeginOperationDelegate(this.OnBeginSaveAdapter);
+            }
+            if ((this.onEndSaveAdapterDelegate == null)) {
+                this.onEndSaveAdapterDelegate = new EndOperationDelegate(this.OnEndSaveAdapter);
+            }
+            if ((this.onSaveAdapterCompletedDelegate == null)) {
+                this.onSaveAdapterCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnSaveAdapterCompleted);
+            }
+            base.InvokeAsync(this.onBeginSaveAdapterDelegate, new object[] {
+                        adapter,
+                        isNew}, this.onEndSaveAdapterDelegate, this.onSaveAdapterCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetIaonTreeData(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetIaonTreeData(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.IaonTree> openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndGetIaonTreeData(System.IAsyncResult result) {
+            return base.Channel.EndGetIaonTreeData(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetIaonTreeData(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetIaonTreeData(callback, asyncState);
+        }
+        
+        private object[] OnEndGetIaonTreeData(System.IAsyncResult result) {
+            System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.IaonTree> retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndGetIaonTreeData(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetIaonTreeDataCompleted(object state) {
+            if ((this.GetIaonTreeDataCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetIaonTreeDataCompleted(this, new GetIaonTreeDataCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetIaonTreeDataAsync() {
+            this.GetIaonTreeDataAsync(null);
+        }
+        
+        public void GetIaonTreeDataAsync(object userState) {
+            if ((this.onBeginGetIaonTreeDataDelegate == null)) {
+                this.onBeginGetIaonTreeDataDelegate = new BeginOperationDelegate(this.OnBeginGetIaonTreeData);
+            }
+            if ((this.onEndGetIaonTreeDataDelegate == null)) {
+                this.onEndGetIaonTreeDataDelegate = new EndOperationDelegate(this.OnEndGetIaonTreeData);
+            }
+            if ((this.onGetIaonTreeDataCompletedDelegate == null)) {
+                this.onGetIaonTreeDataCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetIaonTreeDataCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetIaonTreeDataDelegate, null, this.onEndGetIaonTreeDataDelegate, this.onGetIaonTreeDataCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -3936,6 +4476,20 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 return _result;
             }
             
+            public System.IAsyncResult BeginSaveOtherDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice otherDevice, bool isNew, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[2];
+                _args[0] = otherDevice;
+                _args[1] = isNew;
+                System.IAsyncResult _result = base.BeginInvoke("SaveOtherDevice", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public string EndSaveOtherDevice(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                string _result = ((string)(base.EndInvoke("SaveOtherDevice", _args, result)));
+                return _result;
+            }
+            
             public System.IAsyncResult BeginGetInterconnections(bool isOptional, System.AsyncCallback callback, object asyncState) {
                 object[] _args = new object[1];
                 _args[0] = isOptional;
@@ -3985,6 +4539,46 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             public string EndSaveCalculatedMeasurement(System.IAsyncResult result) {
                 object[] _args = new object[0];
                 string _result = ((string)(base.EndInvoke("SaveCalculatedMeasurement", _args, result)));
+                return _result;
+            }
+            
+            public System.IAsyncResult BeginGetAdapterList(bool enabledOnly, openPDCManager.Silverlight.PhasorDataServiceProxy.AdapterType adapterType, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[2];
+                _args[0] = enabledOnly;
+                _args[1] = adapterType;
+                System.IAsyncResult _result = base.BeginInvoke("GetAdapterList", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter> EndGetAdapterList(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter> _result = ((System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter>)(base.EndInvoke("GetAdapterList", _args, result)));
+                return _result;
+            }
+            
+            public System.IAsyncResult BeginSaveAdapter(openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter adapter, bool isNew, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[2];
+                _args[0] = adapter;
+                _args[1] = isNew;
+                System.IAsyncResult _result = base.BeginInvoke("SaveAdapter", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public string EndSaveAdapter(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                string _result = ((string)(base.EndInvoke("SaveAdapter", _args, result)));
+                return _result;
+            }
+            
+            public System.IAsyncResult BeginGetIaonTreeData(System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[0];
+                System.IAsyncResult _result = base.BeginInvoke("GetIaonTreeData", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.IaonTree> EndGetIaonTreeData(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.IaonTree> _result = ((System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.IaonTree>)(base.EndInvoke("GetIaonTreeData", _args, result)));
                 return _result;
             }
             

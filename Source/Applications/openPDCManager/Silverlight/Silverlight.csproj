@@ -102,11 +102,20 @@
     <Compile Include="Pages\ActiveMap.xaml.cs">
       <DependentUpon>ActiveMap.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Adapters\ActionAdapters.xaml.cs">
+      <DependentUpon>ActionAdapters.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Adapters\CalculatedMeasurements.xaml.cs">
       <DependentUpon>CalculatedMeasurements.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Adapters\Historians.xaml.cs">
       <DependentUpon>Historians.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\InputAdapters.xaml.cs">
+      <DependentUpon>InputAdapters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\OutputAdapters.xaml.cs">
+      <DependentUpon>OutputAdapters.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\CalculatedMeasurement.xaml.cs">
       <DependentUpon>CalculatedMeasurement.xaml</DependentUpon>
@@ -179,6 +188,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\AdapterUserControl.xaml.cs">
+      <DependentUpon>AdapterUserControl.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -197,11 +209,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
+    <Page Include="Pages\Adapters\ActionAdapters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
     <Page Include="Pages\Adapters\CalculatedMeasurements.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
     <Page Include="Pages\Adapters\Historians.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="Pages\Adapters\InputAdapters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="Pages\Adapters\OutputAdapters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
@@ -297,6 +321,10 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UserControls\AdapterUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AppManifest.xml" />
@@ -365,6 +393,9 @@
     <None Include="Service References\LivePhasorDataServiceProxy\service.wsdl" />
     <None Include="Service References\LivePhasorDataServiceProxy\service.xsd" />
     <None Include="Service References\LivePhasorDataServiceProxy\service1.xsd" />
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.CalculatedMeasurement.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -375,6 +406,9 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Historian.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.IaonTree.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Node.datasource">
@@ -392,6 +426,7 @@
     <None Include="Service References\PhasorDataServiceProxy\PhasorDataService.xsd" />
     <None Include="Service References\PhasorDataServiceProxy\PhasorDataService1.wsdl" />
     <None Include="Service References\PhasorDataServiceProxy\PhasorDataService1.xsd" />
+    <None Include="Service References\PhasorDataServiceProxy\PhasorDataService2.xsd" />
     <None Include="Service References\PhasorDataServiceProxy\PhasorDataService3.xsd" />
     <None Include="Service References\PhasorDataServiceProxy\PhasorDataService4.xsd" />
   </ItemGroup>

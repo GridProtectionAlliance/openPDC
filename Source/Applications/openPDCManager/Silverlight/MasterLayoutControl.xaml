@@ -97,17 +97,17 @@
                                         </igMenu:XamWebMenuItem.Icon>
                                     </igMenu:XamWebMenuItem>
                                     <igMenu:XamWebSeparator />
-                                    <igMenu:XamWebMenuItem Header="Custom Inputs" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="">
+                                    <igMenu:XamWebMenuItem Header="Custom Inputs" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Adapters/InputAdapters.xaml">
                                         <igMenu:XamWebMenuItem.Icon>
                                             <Image Source="Images/Input.png" />
                                         </igMenu:XamWebMenuItem.Icon>
                                     </igMenu:XamWebMenuItem>
-                                    <igMenu:XamWebMenuItem Header="Custom Actions" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="">
+                                    <igMenu:XamWebMenuItem Header="Custom Actions" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Adapters/ActionAdapters.xaml">
                                         <igMenu:XamWebMenuItem.Icon>
                                             <Image Source="Images/Action.png" />
                                         </igMenu:XamWebMenuItem.Icon>
                                     </igMenu:XamWebMenuItem>
-                                    <igMenu:XamWebMenuItem Header="Custom Outputs" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="">
+                                    <igMenu:XamWebMenuItem Header="Custom Outputs" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Adapters/OutputAdapters.xaml">
                                         <igMenu:XamWebMenuItem.Icon>
                                             <Image Source="Images/Output.png" />
                                         </igMenu:XamWebMenuItem.Icon>

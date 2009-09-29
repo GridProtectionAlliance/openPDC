@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  ManageOtherDevices.xaml.cs - Gbtc
+//  ActionAdapters.xaml.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -229,100 +229,23 @@
 */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.ServiceModel;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 
-namespace openPDCManager.Silverlight.Pages.Devices
+namespace openPDCManager.Silverlight.Pages.Adapters
 {
-	public partial class ManageOtherDevices : Page
+	public partial class ActionAdapters : Page
 	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
-		PhasorDataServiceClient client;
-
-		public ManageOtherDevices()
+		public ActionAdapters()
 		{
 			InitializeComponent();
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
-			Loaded += new RoutedEventHandler(ManageOtherDevices_Loaded);
-			client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);
-			client.GetVendorDevicesCompleted += new EventHandler<GetVendorDevicesCompletedEventArgs>(client_GetVendorDevicesCompleted);
-			client.GetInterconnectionsCompleted += new EventHandler<GetInterconnectionsCompletedEventArgs>(client_GetInterconnectionsCompleted);
-			client.SaveOtherDeviceCompleted += new EventHandler<SaveOtherDeviceCompletedEventArgs>(client_SaveOtherDeviceCompleted);
-			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
-			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 		}
 
-		void client_SaveOtherDeviceCompleted(object sender, SaveOtherDeviceCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				MessageBox.Show("Done!");
-			else
-				MessageBox.Show(e.Error.Message);
-		}
-		void ButtonClear_Click(object sender, RoutedEventArgs e)
-		{
-			ClearForm();
-		}
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			OtherDevice otherDevice = new OtherDevice();
-			otherDevice.Acronym = TextBoxAcronym.Text;
-			otherDevice.Name = TextBoxName.Text;
-			otherDevice.IsConcentrator = (bool)CheckboxConcentrator.IsChecked;
-			otherDevice.CompanyID = ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key;
-			otherDevice.VendorDeviceID = ((KeyValuePair<int, string>)ComboboxVendorDevice.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxVendorDevice.SelectedItem).Key;
-			otherDevice.Longitude = string.IsNullOrEmpty(TextBoxLongitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLongitude.Text);
-			otherDevice.Latitude = string.IsNullOrEmpty(TextBoxLatitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLatitude.Text);
-			otherDevice.InterconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
-			otherDevice.Planned = (bool)CheckboxPlanned.IsChecked;
-			otherDevice.Desired = (bool)CheckboxDesired.IsChecked;
-			otherDevice.InProgress = (bool)CheckboxInProgress.IsChecked;
-			client.SaveOtherDeviceAsync(otherDevice, true);
-		}
-		void client_GetInterconnectionsCompleted(object sender, GetInterconnectionsCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboboxInterconnection.ItemsSource = e.Result;
-			if (ComboboxInterconnection.Items.Count > 0)
-				ComboboxInterconnection.SelectedIndex = 0;
-		}
-		void client_GetVendorDevicesCompleted(object sender, GetVendorDevicesCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboboxVendorDevice.ItemsSource = e.Result;
-			if (ComboboxVendorDevice.Items.Count > 0)
-				ComboboxVendorDevice.SelectedIndex = 0;
-		}
-		void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboboxCompany.ItemsSource = e.Result;
-			if (ComboboxCompany.Items.Count > 0)
-				ComboboxCompany.SelectedIndex = 0;
-		}
-		void ManageOtherDevices_Loaded(object sender, RoutedEventArgs e)
-		{
-			client.GetCompaniesAsync(true);
-			client.GetVendorDevicesAsync(true);
-			client.GetInterconnectionsAsync(true);
-		}
-
-		void ClearForm()
-		{
-			GridOtherDeviceDetail.DataContext = new OtherDevice();
-			ComboboxCompany.SelectedIndex = 0;
-			ComboboxInterconnection.SelectedIndex = 0;
-			ComboboxVendorDevice.SelectedIndex = 0;
-		}
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			ActionAdapterControl.SetAdapterType(AdapterType.Action);
 		}
 
 	}

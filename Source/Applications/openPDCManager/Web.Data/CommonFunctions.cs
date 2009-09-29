@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  07/05/2009 - Mehulbhi Thakkar
+//  07/05/2009 - Mehulbhai Thakkar
 //       Generated original version of source code.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
@@ -234,11 +234,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-using System.IO.Ports;
 using System.Linq;
-using openPDCManager.Web.Data.BusinessObjects;
 using openPDCManager.Web.Data.Entities;
+using openPDCManager.Web.Data.BusinessObjects;
 
 namespace openPDCManager.Web.Data
 {
@@ -417,7 +415,7 @@ namespace openPDCManager.Web.Data
 		////public static List<Historian> GetHistorianList()
 		////{
 		////    List<Historian> historianList = new List<Historian>();
-		////    SqlCommand command = new SqlCommand("Select *, Acronym + ': ' + [Name] As HistorianLongName From Historian Order By [Name]");
+		////    SqlCommand command = new SqlCommand("Select *, Acronym + ': ' + Name As HistorianLongName From Historian Order By Name");
 		////    DataAccess obj = new DataAccess();
 		////    DataTable resultTable = new DataTable();
 		////    resultTable = obj.GetDataTable(command, true);
@@ -851,7 +849,7 @@ namespace openPDCManager.Web.Data
 		{
 			List<Vendor> vendorList = new List<Vendor>();			
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData("Select * FROM VendorDetail Order By [Name]");
+			DataTable resultTable = connection.RetrieveData("Select * FROM VendorDetail Order By Name");
 
 			vendorList = (from item in resultTable.AsEnumerable()
 						  select new Vendor()
@@ -1083,7 +1081,14 @@ namespace openPDCManager.Web.Data
 				query = string.Format("Insert Into OtherDevice (Acronym, Name, IsConcentrator, CompanyID, VendorDeviceID, Longitude, Latitude, InterconnectionID, Planned, Desired, InProgress) Values ('{0}', {1}, '{2}', {3}, {4}, {5}, {6}, {7}, '{8}', '{9}', '{10}')",
 					otherDevice.Acronym, NullableQuote(otherDevice.Name), otherDevice.IsConcentrator.ToString(), NullableValue(otherDevice.CompanyID), NullableValue(otherDevice.VendorDeviceID), NullableValue(otherDevice.Longitude), NullableValue(otherDevice.Latitude),
 					NullableValue(otherDevice.InterconnectionID), otherDevice.Planned, otherDevice.Desired, otherDevice.InProgress);
-			
+			else
+				query = string.Format("Update OtherDevice Set Acronym = '{0}', Name = {1}, IsConcentrator = '{2}', CompanyID = {3}, VendorDeviceID = {4}, Longitude = {5}, Latitude = {6}, InterconnectionID = {7}, Planned = '{8}', Desired = '{9}', InProgress = '{10}' " +
+					"Where ID = {11}", otherDevice.Acronym, NullableQuote(otherDevice.Name), otherDevice.IsConcentrator.ToString(), NullableValue(otherDevice.CompanyID), NullableValue(otherDevice.VendorDeviceID), NullableValue(otherDevice.Longitude),
+					NullableValue(otherDevice.Latitude), NullableValue(otherDevice.InterconnectionID), otherDevice.Planned, otherDevice.Desired, otherDevice.InProgress, otherDevice.ID);
+
+			DataConnection connection = new DataConnection();
+			connection.ExecuteScalar(query);
+			connection.Dispose();
 
 			return "Done!";
 		}
@@ -1192,6 +1197,114 @@ namespace openPDCManager.Web.Data
 			connection.ExecuteScalar(query);
 			connection.Dispose();
 			return "Done!";
+		}
+
+		#endregion
+
+		#region " Manage Custom Adapters Code"
+
+		public static List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType)
+		{
+			List<Adapter> adapterList = new List<Adapter>();
+			string viewName;
+			if (adapterType == AdapterType.Action)
+				viewName = "CustomActionAdapterDetail";
+			else if (adapterType == AdapterType.Input)
+				viewName = "CustomInputAdapterDetail";
+			else
+				viewName = "CustomOutputAdapterDetail";
+
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData("Select * From " + viewName + " Order By LoadOrder");
+			adapterList = (from item in resultTable.AsEnumerable()
+						   select new Adapter()
+						   {
+							   NodeID = item.Field<Guid>("NodeID"),
+							   ID = item.Field<int>("ID"),
+							   AdapterName = item.Field<string>("AdapterName"),
+							   AssemblyName = item.Field<string>("AssemblyName"),
+							   TypeName = item.Field<string>("TypeName"),
+							   ConnectionString = item.Field<string>("ConnectionString"),
+							   LoadOrder = item.Field<int>("LoadOrder"),
+							   Enabled = item.Field<bool>("Enabled"),
+							   NodeName = item.Field<string>("NodeName"),
+							   adapterType = adapterType
+						   }).ToList();
+			connection.Dispose();
+			return adapterList;
+		}
+
+		public static string SaveAdapter(Adapter adapter, bool isNew)
+		{
+			string query, tableName;
+			AdapterType adapterType = adapter.adapterType;
+
+			if (adapterType == AdapterType.Input)
+				tableName = "CustomInputAdapter";
+			else if (adapterType == AdapterType.Action)
+				tableName = "CustomActionAdapter";
+			else
+				tableName = "CustomOutputAdapter";
+
+			if (isNew)
+				query = string.Format("Insert Into " + tableName + " (NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, LoadOrder, Enabled) Values ('{0}', '{1}', '{2}', '{3}', {4}, {5}, '{6}')",
+					adapter.NodeID, adapter.AdapterName, adapter.AssemblyName, adapter.TypeName, NullableQuote(adapter.ConnectionString), adapter.LoadOrder, adapter.Enabled.ToString());
+			else
+				query = string.Format("Update " + tableName + " Set NodeID = '{0}', AdapterName = '{1}', AssemblyName = '{2}', TypeName = '{3}', ConnectionString = {4}, LoadOrder = {5}, Enabled = '{6}' Where ID = {7}",
+					adapter.NodeID, adapter.AdapterName, adapter.AssemblyName, adapter.TypeName, NullableQuote(adapter.ConnectionString), adapter.LoadOrder, adapter.Enabled.ToString(), adapter.ID);
+
+			DataConnection connection = new DataConnection();
+			connection.ExecuteScalar(query);
+			connection.Dispose();
+			return "Done!";
+		}
+
+		public static List<IaonTree> GetIaonTreeData()
+		{
+			List<IaonTree> iaonTreeList = new List<IaonTree>();
+			DataTable rootNodesTable = new DataTable();			
+			rootNodesTable.Columns.Add(new DataColumn("AdapterType", Type.GetType("System.String")));
+
+			DataRow row;			
+			row = rootNodesTable.NewRow();
+			row["AdapterType"] = "Input Adapters";
+			rootNodesTable.Rows.Add(row);
+
+			row = rootNodesTable.NewRow();
+			row["AdapterType"] = "Action Adapters";
+			rootNodesTable.Rows.Add(row);
+
+			row = rootNodesTable.NewRow();
+			row["AdapterType"] = "Output Adapters";
+			rootNodesTable.Rows.Add(row);
+
+			DataSet resultSet = new DataSet();
+			resultSet.Tables.Add(rootNodesTable);
+
+			DataConnection connection = new DataConnection();
+			resultSet.Tables.Add(connection.RetrieveData("Select * From IaonTreeView"));
+			resultSet.Tables[0].TableName = "RootNodesTable";
+			resultSet.Tables[1].TableName = "AdapterData";
+					
+			iaonTreeList = (from item in resultSet.Tables["RootNodesTable"].AsEnumerable()
+							select new IaonTree()
+							{
+								AdapterType = item.Field<string>("AdapterType"),
+								AdapterList = (from obj in resultSet.Tables["AdapterData"].AsEnumerable()
+											   where obj.Field<string>("AdapterType") == item.Field<string>("AdapterType")
+											   select new Adapter()
+											   {
+												   NodeID = obj.Field<Guid>("NodeID"),
+												   ID = obj.Field<int>("ID"),
+												   AdapterName = obj.Field<string>("AdapterName"),
+												   AssemblyName = obj.Field<string>("AssemblyName"),
+												   TypeName = obj.Field<string>("TypeName"),
+												   ConnectionString = obj.Field<string>("ConnectionString")
+											   }).ToList()
+							}).ToList();
+			
+			connection.Dispose();
+			return iaonTreeList;
 		}
 
 		#endregion

@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  07/05/2009 - Mehulbhi Thakkar
+//  07/05/2009 - Mehulbhai Thakkar
 //       Generated original version of source code.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
@@ -232,9 +232,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace openPDCManager.Web.Data.Entities
 {
