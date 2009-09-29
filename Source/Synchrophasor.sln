@@ -123,9 +123,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebDataAccess", "WebDataAcc
 		Tools\WebDataAccess\WebDataAccess.html = Tools\WebDataAccess\WebDataAccess.html
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventDetection", "Libraries\Adapters\EventDetection\EventDetection.csproj", "{B74CF4DA-2972-489B-AF08-419560EE57EF}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 12
+		SccNumberOfProjects = 13
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs07.codeplex.com/
 		SccLocalPath0 = .
@@ -173,6 +175,10 @@ Global
 		SccProjectTopLevelParentUniqueName11 = Synchrophasor.sln
 		SccProjectName11 = Libraries/Adapters/TestAdapters
 		SccLocalPath11 = Libraries\\Adapters\\TestAdapters
+		SccProjectUniqueName12 = Libraries\\Adapters\\EventDetection\\EventDetection.csproj
+		SccProjectTopLevelParentUniqueName12 = Synchrophasor.sln
+		SccProjectName12 = Libraries/Adapters/EventDetection
+		SccLocalPath12 = Libraries\\Adapters\\EventDetection
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -223,6 +229,10 @@ Global
 		{1338A569-A156-4122-8B65-8D4C147AA348}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1338A569-A156-4122-8B65-8D4C147AA348}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1338A569-A156-4122-8B65-8D4C147AA348}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -242,6 +252,7 @@ Global
 		{F8902AA2-1A9A-451B-89D1-7FEA30C34C48} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{8A1BCFAA-19E8-408A-8C72-170B1211DC27} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{1338A569-A156-4122-8B65-8D4C147AA348} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
+		{B74CF4DA-2972-489B-AF08-419560EE57EF} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{5314055B-EA03-4E15-8653-83F011D7A00E} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{D96C8A3A-7E03-43C6-B401-41778D81FF70} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{3D0DC382-3C00-48A7-B9FF-D3154F8BEDF1} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
