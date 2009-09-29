@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  MasterLayoutControl.xaml.cs - Gbtc
+//  IaonTree.xaml.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  09/28/2009 - Mehulbhai P. Thakkar
+//  09/29/2009 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -230,96 +230,50 @@
 #endregion
 
 using System;
-using System.Net.NetworkInformation;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Shapes;
+using System.Windows.Navigation;
+using System.ServiceModel;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
 
-namespace openPDCManager.Silverlight
+namespace openPDCManager.Silverlight.Pages.Adapters
 {
-	public partial class MasterLayoutControl : UserControl
+	public partial class IaonTree : Page
 	{
-		const double layoutRootHeight = 768;
-		const double layoutRootWidth = 1024;
+		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
+		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
+		PhasorDataServiceClient client;
 
-		public MasterLayoutControl()
+		public IaonTree()
 		{
-			InitializeComponent();			
-			
-			App.Current.Host.Content.Resized += new EventHandler(Content_Resized);
-			GridLayoutRoot.SizeChanged += new SizeChangedEventHandler(GridLayoutRoot_SizeChanged);
-
-			Loaded += new RoutedEventHandler(MasterLayoutControl_Loaded);
-			NetworkChange.NetworkAddressChanged += new NetworkAddressChangedEventHandler(NetworkChange_NetworkAddressChanged);
-			ButtonChangeMode.Click += new RoutedEventHandler(ButtonChangeMode_Click);
+			InitializeComponent();
+			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client.GetIaonTreeDataCompleted += new EventHandler<GetIaonTreeDataCompletedEventArgs>(client_GetIaonTreeDataCompleted);
+			Loaded += new RoutedEventHandler(IaonTree_Loaded);			
 		}
 
-		void GridLayoutRoot_SizeChanged(object sender, SizeChangedEventArgs e)
+		void IaonTree_Loaded(object sender, RoutedEventArgs e)
 		{
-			
+			client.GetIaonTreeDataAsync();	
 		}
-		void ButtonChangeMode_Click(object sender, RoutedEventArgs e)
-		{		
-            if (!App.Current.IsRunningOutOfBrowser && App.Current.InstallState == InstallState.NotInstalled)
-                App.Current.Install();        
-		}
-		void MasterLayoutControl_Loaded(object sender, RoutedEventArgs e)
+		void client_GetIaonTreeDataCompleted(object sender, GetIaonTreeDataCompletedEventArgs e)
 		{
-			if (App.Current.IsRunningOutOfBrowser)
-			{
-				TextBlockExecutionMode.Text = "Out of Browser";
-			}
-			else
-			{
-				TextBlockExecutionMode.Text = "In Browser";
-			}
-			if (NetworkInterface.GetIsNetworkAvailable())
-			{
-				TextBlockConnectivity.Text = "Connected (online)";
-				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Cyan);
-			}
-			else
-			{
-				TextBlockConnectivity.Text = "Disconnected (offline)";
-				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Red);
-			}			
+			if (e.Error == null)
+			    TreeViewIaon.ItemsSource = e.Result;			
 		}
-		void Content_Resized(object sender, EventArgs e)
-		{			
-			//ScaleContent(Application.Current.Host.Content.ActualHeight, Application.Current.Host.Content.ActualWidth);
-		}
-		void ScaleContent(double height, double width)
-		{			
-			if (height > 0 && width > 0)
-			{
-				//LayoutRootScale.ScaleX = width / layoutRootWidth;
-				//LayoutRootScale.ScaleY = height / layoutRootHeight;
-				if (height / layoutRootHeight < width / layoutRootWidth)
-				{
-					LayoutRootScale.ScaleX = height / layoutRootHeight;
-					LayoutRootScale.ScaleY = height / layoutRootHeight;
-				}
-				else
-				{
-					LayoutRootScale.ScaleX = width / layoutRootWidth;
-					LayoutRootScale.ScaleY = width / layoutRootWidth;
-				}
-			}
-			//System.Diagnostics.Debug.WriteLine("SL: " + GridLayoutRoot.Height.ToString() + " - " + GridLayoutRoot.Width.ToString());
-			//System.Diagnostics.Debug.WriteLine("Browser: " + height.ToString() + " - " + width.ToString());
-		}
-		void NetworkChange_NetworkAddressChanged(object sender, EventArgs e)
+
+		// Executes when the user navigates to this page.
+		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			if (NetworkInterface.GetIsNetworkAvailable())
-			{
-				TextBlockConnectivity.Text = "Connected (online)";
-				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Green);
-			}
-			else
-			{
-				TextBlockConnectivity.Text = "Disconnected (offline)";
-				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Red);
-			}
 		}
+
 	}
 }

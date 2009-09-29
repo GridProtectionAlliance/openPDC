@@ -71,6 +71,7 @@
     <Reference Include="system" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Controls, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System.Windows.Controls.DataVisualization.Toolkit, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\Microsoft\Silverlight\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
@@ -110,6 +111,9 @@
     </Compile>
     <Compile Include="Pages\Adapters\Historians.xaml.cs">
       <DependentUpon>Historians.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\IaonTree.xaml.cs">
+      <DependentUpon>IaonTree.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Adapters\InputAdapters.xaml.cs">
       <DependentUpon>InputAdapters.xaml</DependentUpon>
@@ -218,6 +222,10 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
     <Page Include="Pages\Adapters\Historians.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="Pages\Adapters\IaonTree.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>

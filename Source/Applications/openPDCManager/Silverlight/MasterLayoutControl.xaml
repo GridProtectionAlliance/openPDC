@@ -111,9 +111,9 @@
                                         <igMenu:XamWebMenuItem.Icon>
                                             <Image Source="Images/Output.png" />
                                         </igMenu:XamWebMenuItem.Icon>
-                                    </igMenu:XamWebMenuItem>
+                                    </igMenu:XamWebMenuItem>                                    
                                     <igMenu:XamWebSeparator />
-                                    <igMenu:XamWebMenuItem Header="View Iaon Tree" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="">
+                                    <igMenu:XamWebMenuItem Header="View Iaon Tree" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Adapters/IaonTree.xaml">
                                         <igMenu:XamWebMenuItem.Icon>
                                             <Image Source="Images/Tree.png" />
                                         </igMenu:XamWebMenuItem.Icon>

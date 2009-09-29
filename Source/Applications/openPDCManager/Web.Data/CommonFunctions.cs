@@ -1282,7 +1282,7 @@ namespace openPDCManager.Web.Data
 			resultSet.Tables.Add(rootNodesTable);
 
 			DataConnection connection = new DataConnection();
-			resultSet.Tables.Add(connection.RetrieveData("Select * From IaonTreeView"));
+			resultSet.Tables.Add(connection.RetrieveData("Select * From IaonTreeView").Copy());
 			resultSet.Tables[0].TableName = "RootNodesTable";
 			resultSet.Tables[1].TableName = "AdapterData";
 					
