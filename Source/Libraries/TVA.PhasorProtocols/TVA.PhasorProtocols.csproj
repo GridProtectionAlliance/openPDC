@@ -88,8 +88,10 @@
     <Compile Include="Anonymous\ConfigurationFrame.cs" />
     <Compile Include="Anonymous\DigitalDefinition.cs" />
     <Compile Include="Anonymous\FrequencyDefinition.cs" />
+    <Compile Include="Anonymous\NamespaceDoc.cs" />
     <Compile Include="Anonymous\PhasorDefinition.cs" />
     <Compile Include="BpaPdcStream\Concentrator.cs" />
+    <Compile Include="BpaPdcStream\NamespaceDoc.cs" />
     <Compile Include="ChannelBase.cs" />
     <Compile Include="ChannelCellBase.cs" />
     <Compile Include="ChannelCellCollectionBase.cs" />
@@ -126,6 +128,7 @@
     <Compile Include="DigitalDefinitionCollection.cs" />
     <Compile Include="DigitalValueBase.cs" />
     <Compile Include="DigitalValueCollection.cs" />
+    <Compile Include="FNet\NamespaceDoc.cs" />
     <Compile Include="FrameParserBase.cs" />
     <Compile Include="FrequencyDefinitionBase.cs" />
     <Compile Include="FrequencyDefinitionCollection.cs" />
@@ -161,7 +164,9 @@
     <Compile Include="IDataFrameParsingState.cs" />
     <Compile Include="IDigitalDefinition.cs" />
     <Compile Include="IDigitalValue.cs" />
+    <Compile Include="Ieee1344\NamespaceDoc.cs" />
     <Compile Include="IeeeC37_118\Concentrator.cs" />
+    <Compile Include="IeeeC37_118\NamespaceDoc.cs" />
     <Compile Include="IFrameParser.cs" />
     <Compile Include="IFrequencyDefinition.cs" />
     <Compile Include="IFrequencyValue.cs" />
@@ -170,7 +175,9 @@
     <Compile Include="IHeaderFrameParsingState.cs" />
     <Compile Include="IPhasorDefinition.cs" />
     <Compile Include="IPhasorValue.cs" />
+    <Compile Include="Macrodyne\NamespaceDoc.cs" />
     <Compile Include="MultiProtocolFrameParser.cs" />
+    <Compile Include="NamespaceDoc.cs" />
     <Compile Include="PhasorDataConcentratorBase.cs" />
     <Compile Include="PhasorDefinitionBase.cs" />
     <Compile Include="PhasorDefinitionCollection.cs" />
@@ -281,6 +288,7 @@
     <Compile Include="SelFastMessage\FrameParser.cs" />
     <Compile Include="SelFastMessage\FrequencyDefinition.cs" />
     <Compile Include="SelFastMessage\FrequencyValue.cs" />
+    <Compile Include="SelFastMessage\NamespaceDoc.cs" />
     <Compile Include="SelFastMessage\PhasorDefinition.cs" />
     <Compile Include="SelFastMessage\PhasorValue.cs" />
     <Compile Include="SignalReference.cs" />
