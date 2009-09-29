@@ -1,42 +1,28 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Permissions;
 
-// General Information about an assembly is controlled through the following
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("Phasor Protocol Implementations")]
-[assembly: AssemblyDescription("Standard Phasor Protocol Implementations")]
+// Assembly identity attributes.
+[assembly: AssemblyVersion("1.0.0.0")]
+
+// Informational attributes.
 [assembly: AssemblyCompany("TVA")]
-[assembly: AssemblyProduct("Synchrophasor Projects")]
 [assembly: AssemblyCopyright("No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.")]
-[assembly: AssemblyTrademark("Author: James R. Carroll, Gbtc")]
+[assembly: AssemblyProduct("openPDC")]
+
+// Assembly manifest attributes.
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug Build")]
 #else
 [assembly: AssemblyConfiguration("Release Build")]
 #endif
+[assembly: AssemblyDefaultAlias("TVA.PhasorProtocols")]
+[assembly: AssemblyDescription("Standard phasor protocol implementations.")]
+[assembly: AssemblyTitle("TVA.PhasorProtocols")]
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
-
-// Most all classes in phasor protocols use an unsigned type, instead of marking
-// each individual class as non-CLS compliant, we just mark the entire assembly.
+// Other configuration attributes.
 [assembly: CLSCompliant(false)]
-
-//The following GUID is for the ID of the typelib if this project is exposed to COM
+[assembly: ComVisible(false)]
 [assembly: Guid("6d59b0ed-1991-4f12-a739-2cf8543dd9b2")]
-
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers 
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: SecurityPermission(SecurityAction.RequestMinimum, Execution = true)]
