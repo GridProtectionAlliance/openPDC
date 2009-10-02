@@ -267,12 +267,14 @@ namespace openPDC
             this.m_clientHelper = new TVA.Services.ClientHelper(this.components);
             this.m_remotingClient = new TVA.Communication.TcpClient(this.components);
             this.m_errorLogger = new TVA.ErrorManagement.ErrorLogger(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.m_clientHelper)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_remotingClient)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_errorLogger)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_errorLogger.ErrorLog)).BeginInit();
             // 
             // m_clientHelper
             // 
+            this.m_clientHelper.PersistSettings = true;
             this.m_clientHelper.RemotingClient = this.m_remotingClient;
             // 
             // m_remotingClient
@@ -293,6 +295,8 @@ namespace openPDC
             this.m_errorLogger.ErrorLog.FileName = "RemoteConsole.ErrorLog.txt";
             this.m_errorLogger.LogToEventLog = false;
             this.m_errorLogger.LogToUI = true;
+            this.m_errorLogger.PersistSettings = true;
+            ((System.ComponentModel.ISupportInitialize)(this.m_clientHelper)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_remotingClient)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_errorLogger.ErrorLog)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_errorLogger)).EndInit();
