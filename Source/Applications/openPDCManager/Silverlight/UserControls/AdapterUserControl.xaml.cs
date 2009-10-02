@@ -271,7 +271,10 @@ namespace openPDCManager.Silverlight.UserControls
 		void client_SaveAdapterCompleted(object sender, SaveAdapterCompletedEventArgs e)
 		{
 			if (e.Error == null)
+			{
+				ClearForm();
 				MessageBox.Show(e.Result);
+			}
 			else
 				MessageBox.Show(e.Error.Message);
 			client.GetAdapterListAsync(false, adapterType);

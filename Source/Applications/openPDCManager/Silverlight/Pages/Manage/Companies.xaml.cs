@@ -261,7 +261,10 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		void client_SaveCompanyCompleted(object sender, SaveCompanyCompletedEventArgs e)
 		{
 			if (e.Error == null)
+			{
+				ClearForm();
 				MessageBox.Show(e.Result);
+			}
 			else
 				MessageBox.Show(e.Error.Message);
 			client.GetCompanyListAsync();	//refresh data to reflect changes.

@@ -750,6 +750,10 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.Guid NodeIDField;
         
+        private string NodeNameField;
+        
+        private string ParentAcronymField;
+        
         private System.Nullable<int> ParentIDField;
         
         private System.Nullable<int> ProtocolIDField;
@@ -1020,6 +1024,32 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((this.NodeIDField.Equals(value) != true)) {
                     this.NodeIDField = value;
                     this.RaisePropertyChanged("NodeID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string NodeName {
+            get {
+                return this.NodeNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NodeNameField, value) != true)) {
+                    this.NodeNameField = value;
+                    this.RaisePropertyChanged("NodeName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ParentAcronym {
+            get {
+                return this.ParentAcronymField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ParentAcronymField, value) != true)) {
+                    this.ParentAcronymField = value;
+                    this.RaisePropertyChanged("ParentAcronym");
                 }
             }
         }
@@ -1983,6 +2013,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         string EndSaveDevice(System.IAsyncResult result);
         
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetDeviceByDeviceID", ReplyAction="http://tempuri.org/IPhasorDataService/GetDeviceByDeviceIDResponse")]
+        System.IAsyncResult BeginGetDeviceByDeviceID(int deviceID, System.AsyncCallback callback, object asyncState);
+        
+        openPDCManager.Silverlight.PhasorDataServiceProxy.Device EndGetDeviceByDeviceID(System.IAsyncResult result);
+        
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetOtherDeviceList", ReplyAction="http://tempuri.org/IPhasorDataService/GetOtherDeviceListResponse")]
         System.IAsyncResult BeginGetOtherDeviceList(System.AsyncCallback callback, object asyncState);
         
@@ -1992,6 +2027,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         System.IAsyncResult BeginSaveOtherDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice otherDevice, bool isNew, System.AsyncCallback callback, object asyncState);
         
         string EndSaveOtherDevice(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetOtherDeviceByDeviceID", ReplyAction="http://tempuri.org/IPhasorDataService/GetOtherDeviceByDeviceIDResponse")]
+        System.IAsyncResult BeginGetOtherDeviceByDeviceID(int deviceID, System.AsyncCallback callback, object asyncState);
+        
+        openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice EndGetOtherDeviceByDeviceID(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetInterconnections", ReplyAction="http://tempuri.org/IPhasorDataService/GetInterconnectionsResponse")]
         System.IAsyncResult BeginGetInterconnections(bool isOptional, System.AsyncCallback callback, object asyncState);
@@ -2382,6 +2422,25 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class GetDeviceByDeviceIDCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetDeviceByDeviceIDCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public openPDCManager.Silverlight.PhasorDataServiceProxy.Device Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((openPDCManager.Silverlight.PhasorDataServiceProxy.Device)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
     public partial class GetOtherDeviceListCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
@@ -2414,6 +2473,25 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             get {
                 base.RaiseExceptionIfNecessary();
                 return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class GetOtherDeviceByDeviceIDCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetOtherDeviceByDeviceIDCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice)(this.results[0]));
             }
         }
     }
@@ -2682,6 +2760,12 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.Threading.SendOrPostCallback onSaveDeviceCompletedDelegate;
         
+        private BeginOperationDelegate onBeginGetDeviceByDeviceIDDelegate;
+        
+        private EndOperationDelegate onEndGetDeviceByDeviceIDDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetDeviceByDeviceIDCompletedDelegate;
+        
         private BeginOperationDelegate onBeginGetOtherDeviceListDelegate;
         
         private EndOperationDelegate onEndGetOtherDeviceListDelegate;
@@ -2693,6 +2777,12 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         private EndOperationDelegate onEndSaveOtherDeviceDelegate;
         
         private System.Threading.SendOrPostCallback onSaveOtherDeviceCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetOtherDeviceByDeviceIDDelegate;
+        
+        private EndOperationDelegate onEndGetOtherDeviceByDeviceIDDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetOtherDeviceByDeviceIDCompletedDelegate;
         
         private BeginOperationDelegate onBeginGetInterconnectionsDelegate;
         
@@ -2831,9 +2921,13 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         public event System.EventHandler<SaveDeviceCompletedEventArgs> SaveDeviceCompleted;
         
+        public event System.EventHandler<GetDeviceByDeviceIDCompletedEventArgs> GetDeviceByDeviceIDCompleted;
+        
         public event System.EventHandler<GetOtherDeviceListCompletedEventArgs> GetOtherDeviceListCompleted;
         
         public event System.EventHandler<SaveOtherDeviceCompletedEventArgs> SaveOtherDeviceCompleted;
+        
+        public event System.EventHandler<GetOtherDeviceByDeviceIDCompletedEventArgs> GetOtherDeviceByDeviceIDCompleted;
         
         public event System.EventHandler<GetInterconnectionsCompletedEventArgs> GetInterconnectionsCompleted;
         
@@ -3690,6 +3784,52 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetDeviceByDeviceID(int deviceID, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetDeviceByDeviceID(deviceID, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        openPDCManager.Silverlight.PhasorDataServiceProxy.Device openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndGetDeviceByDeviceID(System.IAsyncResult result) {
+            return base.Channel.EndGetDeviceByDeviceID(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetDeviceByDeviceID(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            int deviceID = ((int)(inValues[0]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetDeviceByDeviceID(deviceID, callback, asyncState);
+        }
+        
+        private object[] OnEndGetDeviceByDeviceID(System.IAsyncResult result) {
+            openPDCManager.Silverlight.PhasorDataServiceProxy.Device retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndGetDeviceByDeviceID(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetDeviceByDeviceIDCompleted(object state) {
+            if ((this.GetDeviceByDeviceIDCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetDeviceByDeviceIDCompleted(this, new GetDeviceByDeviceIDCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetDeviceByDeviceIDAsync(int deviceID) {
+            this.GetDeviceByDeviceIDAsync(deviceID, null);
+        }
+        
+        public void GetDeviceByDeviceIDAsync(int deviceID, object userState) {
+            if ((this.onBeginGetDeviceByDeviceIDDelegate == null)) {
+                this.onBeginGetDeviceByDeviceIDDelegate = new BeginOperationDelegate(this.OnBeginGetDeviceByDeviceID);
+            }
+            if ((this.onEndGetDeviceByDeviceIDDelegate == null)) {
+                this.onEndGetDeviceByDeviceIDDelegate = new EndOperationDelegate(this.OnEndGetDeviceByDeviceID);
+            }
+            if ((this.onGetDeviceByDeviceIDCompletedDelegate == null)) {
+                this.onGetDeviceByDeviceIDCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetDeviceByDeviceIDCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetDeviceByDeviceIDDelegate, new object[] {
+                        deviceID}, this.onEndGetDeviceByDeviceIDDelegate, this.onGetDeviceByDeviceIDCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetOtherDeviceList(System.AsyncCallback callback, object asyncState) {
             return base.Channel.BeginGetOtherDeviceList(callback, asyncState);
         }
@@ -3779,6 +3919,52 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             base.InvokeAsync(this.onBeginSaveOtherDeviceDelegate, new object[] {
                         otherDevice,
                         isNew}, this.onEndSaveOtherDeviceDelegate, this.onSaveOtherDeviceCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetOtherDeviceByDeviceID(int deviceID, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetOtherDeviceByDeviceID(deviceID, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndGetOtherDeviceByDeviceID(System.IAsyncResult result) {
+            return base.Channel.EndGetOtherDeviceByDeviceID(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetOtherDeviceByDeviceID(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            int deviceID = ((int)(inValues[0]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetOtherDeviceByDeviceID(deviceID, callback, asyncState);
+        }
+        
+        private object[] OnEndGetOtherDeviceByDeviceID(System.IAsyncResult result) {
+            openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndGetOtherDeviceByDeviceID(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetOtherDeviceByDeviceIDCompleted(object state) {
+            if ((this.GetOtherDeviceByDeviceIDCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetOtherDeviceByDeviceIDCompleted(this, new GetOtherDeviceByDeviceIDCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetOtherDeviceByDeviceIDAsync(int deviceID) {
+            this.GetOtherDeviceByDeviceIDAsync(deviceID, null);
+        }
+        
+        public void GetOtherDeviceByDeviceIDAsync(int deviceID, object userState) {
+            if ((this.onBeginGetOtherDeviceByDeviceIDDelegate == null)) {
+                this.onBeginGetOtherDeviceByDeviceIDDelegate = new BeginOperationDelegate(this.OnBeginGetOtherDeviceByDeviceID);
+            }
+            if ((this.onEndGetOtherDeviceByDeviceIDDelegate == null)) {
+                this.onEndGetOtherDeviceByDeviceIDDelegate = new EndOperationDelegate(this.OnEndGetOtherDeviceByDeviceID);
+            }
+            if ((this.onGetOtherDeviceByDeviceIDCompletedDelegate == null)) {
+                this.onGetOtherDeviceByDeviceIDCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetOtherDeviceByDeviceIDCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetOtherDeviceByDeviceIDDelegate, new object[] {
+                        deviceID}, this.onEndGetOtherDeviceByDeviceIDDelegate, this.onGetOtherDeviceByDeviceIDCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -4464,6 +4650,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 return _result;
             }
             
+            public System.IAsyncResult BeginGetDeviceByDeviceID(int deviceID, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[1];
+                _args[0] = deviceID;
+                System.IAsyncResult _result = base.BeginInvoke("GetDeviceByDeviceID", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public openPDCManager.Silverlight.PhasorDataServiceProxy.Device EndGetDeviceByDeviceID(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                openPDCManager.Silverlight.PhasorDataServiceProxy.Device _result = ((openPDCManager.Silverlight.PhasorDataServiceProxy.Device)(base.EndInvoke("GetDeviceByDeviceID", _args, result)));
+                return _result;
+            }
+            
             public System.IAsyncResult BeginGetOtherDeviceList(System.AsyncCallback callback, object asyncState) {
                 object[] _args = new object[0];
                 System.IAsyncResult _result = base.BeginInvoke("GetOtherDeviceList", _args, callback, asyncState);
@@ -4487,6 +4686,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             public string EndSaveOtherDevice(System.IAsyncResult result) {
                 object[] _args = new object[0];
                 string _result = ((string)(base.EndInvoke("SaveOtherDevice", _args, result)));
+                return _result;
+            }
+            
+            public System.IAsyncResult BeginGetOtherDeviceByDeviceID(int deviceID, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[1];
+                _args[0] = deviceID;
+                System.IAsyncResult _result = base.BeginInvoke("GetOtherDeviceByDeviceID", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice EndGetOtherDeviceByDeviceID(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice _result = ((openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice)(base.EndInvoke("GetOtherDeviceByDeviceID", _args, result)));
                 return _result;
             }
             

@@ -991,7 +991,9 @@ namespace openPDCManager.Web.Data
 							  HistorianAcronym = item.Field<string>("HistorianAcronym"),
 							  VendorDeviceName = item.Field<string>("VendorDeviceName"),
 							  ProtocolName = item.Field<string>("ProtocolName"),
-							  InterconnectionName = item.Field<string>("InterconnectionName")
+							  InterconnectionName = item.Field<string>("InterconnectionName"),
+							  NodeName = item.Field<string>("NodeName"),
+							  ParentAcronym = item.Field<string>("ParentAcronym")
 						  }).ToList();
 			connection.Dispose();
 			return deviceList;
@@ -1040,7 +1042,54 @@ namespace openPDCManager.Web.Data
 			connection.Dispose();
 			return deviceList;
 		}
-		
+
+		public static Device GetDeviceByDeviceID(int deviceID)
+		{
+			Device device = new Device();
+
+			device = (from item in GetDeviceList()
+					  where item.ID == deviceID
+					  select item).ToList()[0];
+
+			//DataConnection connection = new DataConnection();			
+			//DataRow row = connection.RetrieveRow("Select * From DeviceDetail Where ID = " + deviceID.ToString());
+
+
+
+			//if (row != null)
+			//{
+			//    device.NodeID = (Guid)row["NodeID"];
+			//    device.ID = Convert.ToInt32(row["ID"]);
+			//    device.ParentID = row["ParentID"] == null ? (int?)null : (int?)row["ParentID"];
+			//    device.Acronym = row["Acronym"].ToString();
+			//    device.Name = row["Name"].ToString();
+			//    device.IsConcentrator = Convert.ToBoolean(row["IsConcentrator"]);
+			//    device.CompanyID = (int?)row["CompanyID"];
+			//    device.HistorianID = (int?)row["HistorianID"];
+			//    device.AccessID = (int)row["AccessID"];
+			//    device.VendorDeviceID = (int?)row["VendorDeviceID"];
+			//    device.ProtocolID = (int?)row["ProtocolID"];
+			//    device.Longitude = (decimal?)row["Longitude"];
+			//    device.Latitude = (decimal?)row["Latitude"];
+			//    device.InterconnectionID = (int?)row["InterconnectionID"];
+			//    device.ConncetionString = row["ConnectionString"].ToString();
+			//    device.TimeZone = row["TimeZone"].ToString();
+			//    device.TimeAdjustmentTicks = (long)row["TimeAdjustmentTicks"];
+			//    device.DataLossInterval = (double)row["DataLossInterval"];
+			//    device.ContactList = row["ContactList"].ToString();
+			//    device.MeasuredLines = (int?)row["MeasuredLines"];
+			//    device.LoadOrder = (int)row["LoadOrder"];
+			//    device.Enabled = (bool)row["Enabled"];
+			//    device.CompanyName = row["CompanyName"].ToString();
+			//    device.HistorianAcronym = row["HistorianAcronym"].ToString();
+			//    device.VendorDeviceName = row["VendorDeviceName"].ToString();
+			//    device.ProtocolName = row["ProtocolName"].ToString();
+			//    device.InterconnectionName = row["InterconnectionName"].ToString();
+			//    device.NodeName = row["NodeName"].ToString();
+			//}
+			return device;
+		}
+
 		#endregion
 
 		#region " Manage Other Devices"
@@ -1091,6 +1140,15 @@ namespace openPDCManager.Web.Data
 			connection.Dispose();
 
 			return "Done!";
+		}
+
+		public static OtherDevice GetOtherDeviceByDeviceID(int deviceID)
+		{
+			OtherDevice otherDevice = new OtherDevice();
+			otherDevice = (from item in GetOtherDeviceList()
+						   where item.ID == deviceID
+						   select item).ToList()[0];
+			return otherDevice;
 		}
 
 		#endregion

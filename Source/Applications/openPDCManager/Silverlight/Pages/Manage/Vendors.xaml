@@ -66,7 +66,8 @@
                                         <TextBlock Text="{Binding Path=Name}" Width="{StaticResource LargerItemSize}" TextAlignment="Left" Padding="1"/>
                                     </Border>
                                     <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                        <TextBlock Text="{Binding Path=URL}" Width="{StaticResource XXXLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                        <HyperlinkButton Content="{Binding Path=URL}" TargetName="_blank" NavigateUri="{Binding Path=URL}" Foreground="#FF095188" Width="{StaticResource XXXLargeItemSize}" />
+                                        <!--<TextBlock Text="{Binding Path=URL}" Width="{StaticResource XXXLargeItemSize}" TextAlignment="Left" Padding="1"/>-->
                                     </Border>                                    
                                 </StackPanel>
                             </DataTemplate>

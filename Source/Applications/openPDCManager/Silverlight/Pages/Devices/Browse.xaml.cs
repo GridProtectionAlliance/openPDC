@@ -247,7 +247,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		PhasorDataServiceClient client;
 
 		ObservableCollection<Device> deviceList = new ObservableCollection<Device>();
-
+		
 		public Browse()
 		{
 			InitializeComponent();
@@ -255,11 +255,13 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			client.GetDeviceListCompleted += new EventHandler<GetDeviceListCompletedEventArgs>(client_GetDeviceListCompleted);
 			Loaded += new RoutedEventHandler(Browse_Loaded);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
-			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
-		}
+			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);					
+		}		
 		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
 		{
 			ListBoxDeviceList.ItemsSource = deviceList;
+			//AddNew addNewPage = new AddNew();
+			//addNewPage.SetDeviceToEndit(
 		}
 		void ButtonSearch_Click(object sender, RoutedEventArgs e)
 		{
@@ -286,6 +288,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
 		}
+
+		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+		{
+			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
+			NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?did=" + deviceId, UriKind.Relative));
+		}				
 
 	}
 }

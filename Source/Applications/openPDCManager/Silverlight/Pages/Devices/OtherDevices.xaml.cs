@@ -287,5 +287,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 		}
 
+		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+		{
+			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
+			NavigationService.Navigate(new Uri("/Pages/Devices/ManageOtherDevices.xaml?did=" + deviceId, UriKind.Relative));
+		}
+
 	}
 }

@@ -264,7 +264,10 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		void client_SaveNodeCompleted(object sender, SaveNodeCompletedEventArgs e)
 		{
 			if (e.Error == null)
+			{
+				ClearForm();
 				MessageBox.Show(e.Result);
+			}
 			else
 				MessageBox.Show(e.Error.ToString());
 			client.GetNodeListAsync();

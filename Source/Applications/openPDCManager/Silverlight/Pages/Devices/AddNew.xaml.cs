@@ -245,6 +245,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
 		PhasorDataServiceClient client;
 
+		bool inEditMode = false;
+		int deviceID = 0;
+
 		public AddNew()
 		{
 			InitializeComponent();
@@ -259,14 +262,56 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			client.GetProtocolsCompleted += new EventHandler<GetProtocolsCompletedEventArgs>(client_GetProtocolsCompleted);
 			client.GetTimeZonesCompleted += new EventHandler<GetTimeZonesCompletedEventArgs>(client_GetTimeZonesCompleted);
 			client.SaveDeviceCompleted += new EventHandler<SaveDeviceCompletedEventArgs>(client_SaveDeviceCompleted);
+			client.GetDeviceByDeviceIDCompleted += new EventHandler<GetDeviceByDeviceIDCompletedEventArgs>(client_GetDeviceByDeviceIDCompleted);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 		}
 
+		void client_GetDeviceByDeviceIDCompleted(object sender, GetDeviceByDeviceIDCompletedEventArgs e)
+		{
+			Device deviceToEdit = new Device();
+			if (e.Error == null)
+			{
+				deviceToEdit = e.Result;
+				GridDeviceDetail.DataContext = deviceToEdit;
+				ComboboxNode.SelectedItem = new KeyValuePair<Guid, string>(deviceToEdit.NodeID, deviceToEdit.NodeName);
+				if (deviceToEdit.CompanyID.HasValue)
+					ComboboxCompany.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.CompanyID, deviceToEdit.CompanyName);
+				else
+					ComboboxCompany.SelectedIndex = 0;
+				if (deviceToEdit.HistorianID.HasValue)
+					ComboboxHistorian.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.HistorianID, deviceToEdit.HistorianAcronym);
+				else
+					ComboboxHistorian.SelectedIndex = 0;
+				if (deviceToEdit.InterconnectionID.HasValue)
+					ComboboxInterconnection.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.InterconnectionID, deviceToEdit.InterconnectionName);
+				else
+					ComboboxInterconnection.SelectedIndex = 0;
+				if (deviceToEdit.ParentID.HasValue)
+					ComboboxParent.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.ParentID, deviceToEdit.ParentAcronym);
+				else
+					ComboboxParent.SelectedIndex = 0;
+				if (deviceToEdit.ProtocolID.HasValue)
+					ComboboxProtocol.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.ProtocolID, deviceToEdit.ProtocolName);
+				else
+					ComboboxProtocol.SelectedIndex = 0;
+				if (string.IsNullOrEmpty(deviceToEdit.TimeZone))
+					ComboboxTimeZone.SelectedIndex = 0;
+				else
+					ComboboxTimeZone.SelectedItem = deviceToEdit.TimeZone;
+				if (deviceToEdit.VendorDeviceID.HasValue)
+					ComboboxVendorDevice.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.VendorDeviceID, deviceToEdit.VendorDeviceName);
+				else
+					ComboboxVendorDevice.SelectedIndex = 0;
+			}
+		}
 		void client_SaveDeviceCompleted(object sender, SaveDeviceCompletedEventArgs e)
 		{
 			if (e.Error == null)
+			{
+				ClearForm();
 				MessageBox.Show("Done!");
+			}
 			else
 				MessageBox.Show(e.Error.Message);
 		}
@@ -298,7 +343,13 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			device.MeasuredLines = string.IsNullOrEmpty(TextBoxMeasuredLines.Text) ? (int?)null : Convert.ToInt32(TextBoxMeasuredLines.Text);
 			device.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
 			device.Enabled = (bool)CheckboxEnabled.IsChecked;
-			client.SaveDeviceAsync(device, true);
+			if (inEditMode = false && deviceID == 0)
+				client.SaveDeviceAsync(device, true);
+			else
+			{
+				device.ID = deviceID;
+				client.SaveDeviceAsync(device, false);
+			}
 		}
 		void client_GetTimeZonesCompleted(object sender, GetTimeZonesCompletedEventArgs e)
 		{
@@ -382,6 +433,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			client.GetVendorDevicesAsync(true);
 			client.GetProtocolsAsync(true);
 			client.GetTimeZonesAsync(true);
+			if (this.NavigationContext.QueryString.ContainsKey("did"))
+			{
+				deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
+				inEditMode = true;
+				client.GetDeviceByDeviceIDAsync(deviceID);
+			}
 		}
 		void ClearForm()
 		{
@@ -394,6 +451,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			ComboboxProtocol.SelectedIndex = 0;
 			ComboboxTimeZone.SelectedIndex = 0;
 			ComboboxVendorDevice.SelectedIndex = 0;
+			inEditMode = false;
+			deviceID = 0;
 		}
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)

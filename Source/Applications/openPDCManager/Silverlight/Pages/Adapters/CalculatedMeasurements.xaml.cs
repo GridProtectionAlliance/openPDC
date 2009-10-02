@@ -263,7 +263,10 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		void client_SaveCalculatedMeasurementCompleted(object sender, SaveCalculatedMeasurementCompletedEventArgs e)
 		{
 			if (e.Error == null)
+			{
+				ClearForm();
 				MessageBox.Show(e.Result);
+			}
 			else
 				MessageBox.Show(e.Error.Message);
 			client.GetCalculatedMeasurementListAsync();

@@ -354,6 +354,10 @@ namespace PCS.Services.Service
 		{
 			return CommonFunctions.SaveDevice(device, isNew);
 		}
+		public Device GetDeviceByDeviceID(int deviceID)
+		{
+			return CommonFunctions.GetDeviceByDeviceID(deviceID);
+		}
 		#endregion
 
 		#region " Manage Other Device Code"
@@ -368,6 +372,10 @@ namespace PCS.Services.Service
 			return CommonFunctions.SaveOtherDevice(otherDevice, isNew);
 		}
 
+		public OtherDevice GetOtherDeviceByDeviceID(int deviceID)
+		{
+			return CommonFunctions.GetOtherDeviceByDeviceID(deviceID);
+		}
 		#endregion
 
 		#region " Manage Interconnections Code"

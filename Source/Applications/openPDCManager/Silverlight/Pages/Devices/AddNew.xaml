@@ -9,7 +9,7 @@
     <Grid x:Name="GridAddNew">
         <Border Style="{StaticResource PortletBorderStyle}">
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Add New Devices" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                <TextBlock Text="Manage Devices" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
                 <Border Background="{StaticResource PortletBackgroundBrush}">
                     <Grid x:Name="GridDeviceDetail" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5">
                         <Grid.RowDefinitions>

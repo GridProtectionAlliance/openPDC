@@ -245,6 +245,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
 		PhasorDataServiceClient client;
 
+		bool inEditMode = false;
+		int deviceID = 0;
+
 		public ManageOtherDevices()
 		{
 			InitializeComponent();
@@ -254,14 +257,39 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			client.GetVendorDevicesCompleted += new EventHandler<GetVendorDevicesCompletedEventArgs>(client_GetVendorDevicesCompleted);
 			client.GetInterconnectionsCompleted += new EventHandler<GetInterconnectionsCompletedEventArgs>(client_GetInterconnectionsCompleted);
 			client.SaveOtherDeviceCompleted += new EventHandler<SaveOtherDeviceCompletedEventArgs>(client_SaveOtherDeviceCompleted);
+			client.GetOtherDeviceByDeviceIDCompleted += new EventHandler<GetOtherDeviceByDeviceIDCompletedEventArgs>(client_GetOtherDeviceByDeviceIDCompleted);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 		}
 
+		void client_GetOtherDeviceByDeviceIDCompleted(object sender, GetOtherDeviceByDeviceIDCompletedEventArgs e)
+		{
+			OtherDevice deviceToEdit = new OtherDevice();
+			if (e.Error == null)
+			{
+				deviceToEdit = e.Result;
+				GridOtherDeviceDetail.DataContext = deviceToEdit;
+				if (deviceToEdit.CompanyID.HasValue)
+					ComboboxCompany.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.CompanyID, deviceToEdit.CompanyName);
+				else
+					ComboboxCompany.SelectedIndex = 0;
+				if (deviceToEdit.InterconnectionID.HasValue)
+					ComboboxInterconnection.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.InterconnectionID, deviceToEdit.InterconnectionName);
+				else
+					ComboboxInterconnection.SelectedIndex = 0;
+				if (deviceToEdit.VendorDeviceID.HasValue)
+					ComboboxVendorDevice.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.VendorDeviceID, deviceToEdit.VendorDeviceName);
+				else
+					ComboboxVendorDevice.SelectedIndex = 0;
+			}
+		}
 		void client_SaveOtherDeviceCompleted(object sender, SaveOtherDeviceCompletedEventArgs e)
 		{
 			if (e.Error == null)
+			{
+				ClearForm();
 				MessageBox.Show("Done!");
+			}
 			else
 				MessageBox.Show(e.Error.Message);
 		}
@@ -283,7 +311,13 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			otherDevice.Planned = (bool)CheckboxPlanned.IsChecked;
 			otherDevice.Desired = (bool)CheckboxDesired.IsChecked;
 			otherDevice.InProgress = (bool)CheckboxInProgress.IsChecked;
-			client.SaveOtherDeviceAsync(otherDevice, true);
+			if (inEditMode == false && deviceID == 0)
+				client.SaveOtherDeviceAsync(otherDevice, true);
+			else
+			{
+				otherDevice.ID = deviceID;
+				client.SaveOtherDeviceAsync(otherDevice, false);
+			}
 		}
 		void client_GetInterconnectionsCompleted(object sender, GetInterconnectionsCompletedEventArgs e)
 		{
@@ -311,6 +345,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			client.GetCompaniesAsync(true);
 			client.GetVendorDevicesAsync(true);
 			client.GetInterconnectionsAsync(true);
+			if (this.NavigationContext.QueryString.ContainsKey("did"))
+			{
+				deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
+				inEditMode = true;
+				client.GetOtherDeviceByDeviceIDAsync(deviceID);
+			}
 		}
 
 		void ClearForm()
@@ -319,6 +359,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			ComboboxCompany.SelectedIndex = 0;
 			ComboboxInterconnection.SelectedIndex = 0;
 			ComboboxVendorDevice.SelectedIndex = 0;
+			inEditMode = false;
+			deviceID = 0;
 		}
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)

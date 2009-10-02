@@ -125,6 +125,8 @@
       <xs:element minOccurs="0" name="MeasuredLines" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NodeID" type="ser:guid" />
+      <xs:element minOccurs="0" name="NodeName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ParentAcronym" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ParentID" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="ProtocolID" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="ProtocolName" nillable="true" type="xs:string" />

@@ -263,7 +263,10 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		void client_SaveVendorDeviceCompleted(object sender, SaveVendorDeviceCompletedEventArgs e)
 		{
 			if (e.Error == null)
+			{
+				ClearForm();
 				MessageBox.Show(e.Result);
+			}
 			else
 				MessageBox.Show(e.Error.Message);
 			client.GetVendorDeviceListAsync(); //Refresh data to reflect changes on the current screen.

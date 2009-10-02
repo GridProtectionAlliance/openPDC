@@ -44,10 +44,8 @@
                             <TextBlock Text="     "/>
                             <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="Save" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"/>
                         </StackPanel>
-                        <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3"/>
-                        
+                        <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3"/>                        
                     </Grid>
-
                 </Border>
 
                 <Border Style="{StaticResource HeaderRowBorderStyle}">
@@ -73,7 +71,8 @@
                                         <TextBlock Text="{Binding Path=Description}" Width="{StaticResource XXXLargeItemSize}" TextAlignment="Left" Padding="1"/>
                                     </Border>
                                     <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                        <TextBlock Text="{Binding Path=URL}" Width="{StaticResource XXXLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                        <HyperlinkButton Content="{Binding Path=URL}" TargetName="_blank" NavigateUri="{Binding Path=URL}" Foreground="#FF095188" Width="{StaticResource XXXLargeItemSize}" />
+                                        <!--<TextBlock Text="{Binding Path=URL}" Width="{StaticResource XXXLargeItemSize}" TextAlignment="Left" Padding="1"/>-->
                                     </Border>
                                 </StackPanel>
                             </DataTemplate>

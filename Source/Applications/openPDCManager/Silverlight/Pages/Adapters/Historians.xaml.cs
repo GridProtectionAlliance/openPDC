@@ -264,7 +264,10 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		void client_SaveHistorianCompleted(object sender, SaveHistorianCompletedEventArgs e)
 		{
 			if (e.Error == null)
+			{
+				ClearForm();
 				MessageBox.Show(e.Result);
+			}
 			else
 				MessageBox.Show(e.Error.ToString());
 			client.GetHistorianListAsync();

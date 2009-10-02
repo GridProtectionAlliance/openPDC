@@ -364,6 +364,9 @@ namespace PCS.Services.Service
 		[OperationContract]
 		string SaveDevice(Device device, bool isNew);
 
+		[OperationContract]
+		Device GetDeviceByDeviceID(int deviceID);
+
 		#endregion
 
 		#region " Manage Other Device Code"
@@ -373,6 +376,9 @@ namespace PCS.Services.Service
 
 		[OperationContract]
 		string SaveOtherDevice(OtherDevice otherDevice, bool isNew);
+
+		[OperationContract]
+		OtherDevice GetOtherDeviceByDeviceID(int deviceID);
 
 		#endregion
 
