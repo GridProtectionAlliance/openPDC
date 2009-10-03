@@ -553,11 +553,17 @@ namespace TVA.PhasorProtocols
             MeasurementKey pointID;
             string setting, signalReference;
 
-            // Load required mapper specific connection parameters
-            m_isConcentrator = settings["isConcentrator"].ParseBoolean();
-            m_accessID = ushort.Parse(settings["accessID"].ToString());
-            
             // Load optional mapper specific connection parameters
+            if (settings.TryGetValue("isConcentrator", out setting))
+                m_isConcentrator = setting.ParseBoolean();
+            else
+                m_isConcentrator = false;
+
+            if (settings.TryGetValue("accessID", out setting))
+                m_accessID = ushort.Parse(setting);
+            else
+                m_accessID = 1;
+
             if (settings.TryGetValue("timeZone", out setting))
                 m_timezone = TimeZoneInfo.FindSystemTimeZoneById(setting);
             else
