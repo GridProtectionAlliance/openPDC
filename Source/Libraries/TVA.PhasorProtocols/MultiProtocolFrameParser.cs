@@ -1098,6 +1098,8 @@ namespace TVA.PhasorProtocols
                 status.AppendLine();
                 status.AppendFormat("           Phasor protocol: {0}", m_phasorProtocol.GetFormattedProtocolName());
                 status.AppendLine();
+                status.AppendFormat("           Connection type: {0}", ConnectionType);
+                status.AppendLine();
                 status.AppendFormat("               Buffer size: {0}", m_bufferSize);
                 status.AppendLine();
                 status.AppendFormat("     Total frames received: {0}", m_totalFramesReceived);
@@ -1120,6 +1122,29 @@ namespace TVA.PhasorProtocols
                     status.Append(m_commandChannel.Status);
 
                 return status.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets the connection type (Active, Passive or Hybrid) based on defined channels and transport selections.
+        /// </summary>
+        public string ConnectionType
+        {
+            get
+            {
+                switch (m_transportProtocol)
+                {
+                    case TransportProtocol.Tcp:
+                    case TransportProtocol.Serial:
+                        return "Active";
+                    case TransportProtocol.Udp:
+                    case TransportProtocol.File:
+                        if (m_commandChannel != null)
+                            return "Hybrid";
+                        return "Passive";
+                    default:
+                        return "Undetermined";
+                }
             }
         }
 
