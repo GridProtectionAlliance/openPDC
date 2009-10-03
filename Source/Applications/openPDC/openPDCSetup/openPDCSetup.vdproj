@@ -21,18 +21,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_1D79FF9BA98754BBC6E2ED53F996AE5E"
-        "OwnerKey" = "8:_47E39753A64F4436AE84CC3D0A590D84"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_1D79FF9BA98754BBC6E2ED53F996AE5E"
-        "OwnerKey" = "8:_800B7CA0991A46A384640F0EE3509A7E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_417C8473E8CE5086FDF6961CC7B44723"
         "OwnerKey" = "8:_1C2551016D3B4561B4AD38040E79BBD3"
         "MsmSig" = "8:_UNDEFINED"
@@ -53,24 +41,6 @@
         {
         "MsmKey" = "8:_417C8473E8CE5086FDF6961CC7B44723"
         "OwnerKey" = "8:_54C9398AA24749E6AD4A657E1D600CF2"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_417C8473E8CE5086FDF6961CC7B44723"
-        "OwnerKey" = "8:_800B7CA0991A46A384640F0EE3509A7E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_417C8473E8CE5086FDF6961CC7B44723"
-        "OwnerKey" = "8:_1D79FF9BA98754BBC6E2ED53F996AE5E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_417C8473E8CE5086FDF6961CC7B44723"
-        "OwnerKey" = "8:_47E39753A64F4436AE84CC3D0A590D84"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -130,24 +100,6 @@
         "Entry"
         {
         "MsmKey" = "8:_8469AE4A9FB4D0F6BF2B2F6D8E6FE58C"
-        "OwnerKey" = "8:_800B7CA0991A46A384640F0EE3509A7E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8469AE4A9FB4D0F6BF2B2F6D8E6FE58C"
-        "OwnerKey" = "8:_1D79FF9BA98754BBC6E2ED53F996AE5E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8469AE4A9FB4D0F6BF2B2F6D8E6FE58C"
-        "OwnerKey" = "8:_47E39753A64F4436AE84CC3D0A590D84"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8469AE4A9FB4D0F6BF2B2F6D8E6FE58C"
         "OwnerKey" = "8:_1C2551016D3B4561B4AD38040E79BBD3"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -161,24 +113,6 @@
         {
         "MsmKey" = "8:_B91E164300C54B1587666D7B153DFF2F"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BBD55A1CBCAC0BE4B12F0684B21FD898"
-        "OwnerKey" = "8:_47E39753A64F4436AE84CC3D0A590D84"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BBD55A1CBCAC0BE4B12F0684B21FD898"
-        "OwnerKey" = "8:_800B7CA0991A46A384640F0EE3509A7E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BBD55A1CBCAC0BE4B12F0684B21FD898"
-        "OwnerKey" = "8:_1D79FF9BA98754BBC6E2ED53F996AE5E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -214,18 +148,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_1D79FF9BA98754BBC6E2ED53F996AE5E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BBD55A1CBCAC0BE4B12F0684B21FD898"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_1C2551016D3B4561B4AD38040E79BBD3"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -249,7 +171,7 @@
         "DisplayName" = "8:Debug"
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:..\\..\\..\\Build\\Output\\Debug\\Applications\\openPDC\\openPDCSetup.msi"
+        "OutputFilename" = "8:..\\..\\..\\..\\Build\\Output\\Debug\\Applications\\openPDC\\openPDCSetup.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -286,7 +208,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:..\\..\\..\\Build\\Output\\Release\\Applications\\openPDC\\openPDCSetup.msi"
+        "OutputFilename" = "8:..\\..\\..\\..\\Build\\Output\\Release\\Applications\\openPDC\\openPDCSetup.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -303,6 +225,19 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5.SP1"
+                    {
+                    "Name" = "8:.NET Framework 3.5 SP1"
+                    "ProductCode" = "8:Microsoft.Net.Framework.3.5.SP1"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
             }
         }
     }
@@ -389,37 +324,6 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1D79FF9BA98754BBC6E2ED53F996AE5E"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TVA.Services, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_1D79FF9BA98754BBC6E2ED53F996AE5E"
-                    {
-                    "Name" = "8:TVA.Services.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:TVA.Services.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_417C8473E8CE5086FDF6961CC7B44723"
             {
             "AssemblyRegister" = "3:1"
@@ -551,37 +455,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BBD55A1CBCAC0BE4B12F0684B21FD898"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.Web.Services3, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_BBD55A1CBCAC0BE4B12F0684B21FD898"
-                    {
-                    "Name" = "8:Microsoft.Web.Services3.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Microsoft.Web.Services3.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
         }
@@ -1235,7 +1108,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1C2551016D3B4561B4AD38040E79BBD3"
             {
-            "SourcePath" = "8:..\\..\\Libraries\\TVA.PhasorProtocols\\obj\\Debug\\TVA.PhasorProtocols.dll"
+            "SourcePath" = "8:..\\..\\..\\Libraries\\TVA.PhasorProtocols\\obj\\Debug\\TVA.PhasorProtocols.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
@@ -1291,7 +1164,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_54C9398AA24749E6AD4A657E1D600CF2"
             {
-            "SourcePath" = "8:..\\..\\Libraries\\Adapters\\TestingAdapters\\obj\\Debug\\TestingAdapters.dll"
+            "SourcePath" = "8:..\\..\\..\\Libraries\\Adapters\\TestingAdapters\\obj\\Debug\\TestingAdapters.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
@@ -1375,7 +1248,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B91E164300C54B1587666D7B153DFF2F"
             {
-            "SourcePath" = "8:..\\..\\Libraries\\Adapters\\HistorianAdapters\\obj\\Debug\\HistorianAdapters.dll"
+            "SourcePath" = "8:..\\..\\..\\Libraries\\Adapters\\HistorianAdapters\\obj\\Debug\\HistorianAdapters.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"

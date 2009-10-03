@@ -5,14 +5,14 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{0BF2447E-252D-4712-B154-E350AF463081}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>openPDC</RootNamespace>
-    <AssemblyName>openPDCConsole</AssemblyName>
+    <AssemblyName>openPDC</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ApplicationIcon>TVAServiceConsole.ico</ApplicationIcon>
+    <ApplicationIcon>TVAService.ico</ApplicationIcon>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -22,15 +22,16 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Build\Output\Debug\Applications\openPDC\</OutputPath>
+    <OutputPath>..\..\..\..\Build\Output\Debug\Applications\openPDC\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\Build\Output\Release\Applications\openPDC\</OutputPath>
+    <OutputPath>..\..\..\..\Build\Output\Release\Applications\openPDC\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -38,9 +39,22 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Xml" />
     <Reference Include="TVA.Communication, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Communication.dll</HintPath>
@@ -55,22 +69,44 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceClient.cs">
+    <Compile Include="DebugHost.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DebugHost.Designer.cs">
+      <DependentUpon>DebugHost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceInstall.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ServiceClient.Designer.cs">
-      <DependentUpon>ServiceClient.cs</DependentUpon>
+    <Compile Include="ServiceInstall.Designer.cs">
+      <DependentUpon>ServiceInstall.cs</DependentUpon>
     </Compile>
+    <Compile Include="ServiceHost.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ServiceHost.Designer.cs">
+      <DependentUpon>ServiceHost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ServiceClient.resx">
-      <DependentUpon>ServiceClient.cs</DependentUpon>
+    <EmbeddedResource Include="DebugHost.resx">
+      <DependentUpon>DebugHost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ServiceHost.resx">
+      <DependentUpon>ServiceHost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ServiceInstall.resx">
+      <DependentUpon>ServiceInstall.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="TVAServiceConsole.ico" />
+    <None Include="TVAService.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -80,8 +116,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
 </Project>
