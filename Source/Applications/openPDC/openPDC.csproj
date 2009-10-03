@@ -102,7 +102,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TVAService.ico" />
+    <None Include="TVAService.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

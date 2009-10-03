@@ -113,7 +113,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySQL", "MySQL", "{41F2680B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HistorianAdapters", "Libraries\Adapters\HistorianAdapters\HistorianAdapters.csproj", "{8A1BCFAA-19E8-408A-8C72-170B1211DC27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAdapters", "Libraries\Adapters\TestAdapters\TestAdapters.csproj", "{1338A569-A156-4122-8B65-8D4C147AA348}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingAdapters", "Libraries\Adapters\TestingAdapters\TestingAdapters.csproj", "{1338A569-A156-4122-8B65-8D4C147AA348}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebDataAccess", "WebDataAccess", "{DDCC02C0-E3BE-4989-996E-DFB0402F47A5}"
 	ProjectSection(SolutionItems) = preProject
@@ -125,9 +125,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebDataAccess", "WebDataAcc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventDetection", "Libraries\Adapters\EventDetection\EventDetection.csproj", "{B74CF4DA-2972-489B-AF08-419560EE57EF}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "openPDCSetup", "Applications\openPDCSetup\openPDCSetup.vdproj", "{27A26713-8779-41AB-AFF1-BAB6BB0228E8}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 13
+		SccNumberOfProjects = 14
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs07.codeplex.com/
 		SccLocalPath0 = .
@@ -171,14 +173,18 @@ Global
 		SccProjectTopLevelParentUniqueName10 = Synchrophasor.sln
 		SccProjectName10 = Libraries/Adapters/HistorianAdapters
 		SccLocalPath10 = Libraries\\Adapters\\HistorianAdapters
-		SccProjectUniqueName11 = Libraries\\Adapters\\TestAdapters\\TestAdapters.csproj
+		SccProjectUniqueName11 = Libraries\\Adapters\\EventDetection\\EventDetection.csproj
 		SccProjectTopLevelParentUniqueName11 = Synchrophasor.sln
-		SccProjectName11 = Libraries/Adapters/TestAdapters
-		SccLocalPath11 = Libraries\\Adapters\\TestAdapters
-		SccProjectUniqueName12 = Libraries\\Adapters\\EventDetection\\EventDetection.csproj
+		SccProjectName11 = Libraries/Adapters/EventDetection
+		SccLocalPath11 = Libraries\\Adapters\\EventDetection
+		SccProjectUniqueName12 = Applications\\openPDCSetup\\openPDCSetup.vdproj
 		SccProjectTopLevelParentUniqueName12 = Synchrophasor.sln
-		SccProjectName12 = Libraries/Adapters/EventDetection
-		SccLocalPath12 = Libraries\\Adapters\\EventDetection
+		SccProjectName12 = Applications/openPDCSetup
+		SccLocalPath12 = Applications\\openPDCSetup
+		SccProjectUniqueName13 = Libraries\\Adapters\\TestAdapters\\TestingAdapters.csproj
+		SccProjectTopLevelParentUniqueName13 = Synchrophasor.sln
+		SccProjectName13 = Libraries/Adapters/TestAdapters
+		SccLocalPath13 = Libraries\\Adapters\\TestAdapters
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -233,6 +239,8 @@ Global
 		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27A26713-8779-41AB-AFF1-BAB6BB0228E8}.Debug|Any CPU.ActiveCfg = Debug
+		{27A26713-8779-41AB-AFF1-BAB6BB0228E8}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -241,6 +249,7 @@ Global
 		{0BF2447E-252D-4712-B154-E350AF463081} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
 		{94B7694B-F813-47FF-8C50-33DCA32D183D} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
+		{27A26713-8779-41AB-AFF1-BAB6BB0228E8} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
 		{3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{89F8C302-E1C2-4C61-9CFB-CB4879B04B38} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{F92C9476-E7E7-458C-B6C4-2E4707052345} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}

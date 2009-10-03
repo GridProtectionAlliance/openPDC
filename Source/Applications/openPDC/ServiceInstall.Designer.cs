@@ -272,7 +272,7 @@ namespace openPDC
             // 
             // serviceInstaller
             // 
-            this.serviceInstaller.DisplayName = "Iaon Host Service";
+            this.serviceInstaller.DisplayName = "openPDC";
             this.serviceInstaller.ServiceName = "IaonHost";
             this.serviceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
