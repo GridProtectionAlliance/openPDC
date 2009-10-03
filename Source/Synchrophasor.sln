@@ -46,7 +46,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TVA.PhasorProtocols", "Libr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NASPInet", "Libraries\Adapters\NASPInet\NASPInet.csproj", "{F8902AA2-1A9A-451B-89D1-7FEA30C34C48}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PMU Connection Tester", "Tools\PMU Connection Tester\PMU Connection Tester.vbproj", "{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PMUConnectionTester", "Tools\PMUConnectionTester\PMUConnectionTester\PMUConnectionTester.vbproj", "{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openPDCManager", "openPDCManager", "{94B7694B-F813-47FF-8C50-33DCA32D183D}"
 	ProjectSection(SolutionItems) = preProject
@@ -129,9 +129,13 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "openPDCSetup", "Application
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openPDC", "openPDC", "{CE260396-797B-45DF-AC53-E4FC553B57C0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PMUConnectionTester", "PMUConnectionTester", "{9049F37F-1DE9-4F22-8F62-24D0814A80C6}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PMUConnectionTesterSetup", "Tools\PMUConnectionTester\PMUConnectionTesterSetup\PMUConnectionTesterSetup.vdproj", "{A519E312-66F5-4725-A88E-9B62242CBCB7}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 14
+		SccNumberOfProjects = 15
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs07.codeplex.com/
 		SccLocalPath0 = .
@@ -143,50 +147,54 @@ Global
 		SccProjectTopLevelParentUniqueName2 = Synchrophasor.sln
 		SccProjectName2 = Libraries/TVA.PhasorProtocols
 		SccLocalPath2 = Libraries\\TVA.PhasorProtocols
-		SccProjectUniqueName3 = Tools\\PMU\u0020Connection\u0020Tester\\PMU\u0020Connection\u0020Tester.vbproj
+		SccProjectUniqueName3 = Applications\\openPDCManager\\Web.Data\\Web.Data.csproj
 		SccProjectTopLevelParentUniqueName3 = Synchrophasor.sln
-		SccProjectName3 = Tools/PMU\u0020Connection\u0020Tester
-		SccLocalPath3 = Tools\\PMU\u0020Connection\u0020Tester
-		SccProjectUniqueName4 = Applications\\openPDCManager\\Web.Data\\Web.Data.csproj
+		SccProjectName3 = Applications/openPDCManager/Web.Data
+		SccLocalPath3 = Applications\\openPDCManager\\Web.Data
+		SccProjectUniqueName4 = Applications\\openPDCManager\\Services\\Services.csproj
 		SccProjectTopLevelParentUniqueName4 = Synchrophasor.sln
-		SccProjectName4 = Applications/openPDCManager/Web.Data
-		SccLocalPath4 = Applications\\openPDCManager\\Web.Data
-		SccProjectUniqueName5 = Applications\\openPDCManager\\Services\\Services.csproj
+		SccProjectName4 = Applications/openPDCManager/Services
+		SccLocalPath4 = Applications\\openPDCManager\\Services
+		SccProjectUniqueName5 = Applications\\openPDCManager\\Silverlight\\Silverlight.csproj
 		SccProjectTopLevelParentUniqueName5 = Synchrophasor.sln
-		SccProjectName5 = Applications/openPDCManager/Services
-		SccLocalPath5 = Applications\\openPDCManager\\Services
-		SccProjectUniqueName6 = Applications\\openPDCManager\\Silverlight\\Silverlight.csproj
+		SccProjectName5 = Applications/openPDCManager/Silverlight
+		SccLocalPath5 = Applications\\openPDCManager\\Silverlight
+		SccProjectUniqueName6 = Applications\\openPDCManager\\Web\\Web.csproj
 		SccProjectTopLevelParentUniqueName6 = Synchrophasor.sln
-		SccProjectName6 = Applications/openPDCManager/Silverlight
-		SccLocalPath6 = Applications\\openPDCManager\\Silverlight
-		SccProjectUniqueName7 = Applications\\openPDCManager\\Web\\Web.csproj
+		SccProjectName6 = Applications/openPDCManager/Web
+		SccLocalPath6 = Applications\\openPDCManager\\Web
+		SccProjectUniqueName7 = Libraries\\Adapters\\HistorianAdapters\\HistorianAdapters.csproj
 		SccProjectTopLevelParentUniqueName7 = Synchrophasor.sln
-		SccProjectName7 = Applications/openPDCManager/Web
-		SccLocalPath7 = Applications\\openPDCManager\\Web
-		SccProjectUniqueName8 = Libraries\\Adapters\\HistorianAdapters\\HistorianAdapters.csproj
+		SccProjectName7 = Libraries/Adapters/HistorianAdapters
+		SccLocalPath7 = Libraries\\Adapters\\HistorianAdapters
+		SccProjectUniqueName8 = Libraries\\Adapters\\EventDetection\\EventDetection.csproj
 		SccProjectTopLevelParentUniqueName8 = Synchrophasor.sln
-		SccProjectName8 = Libraries/Adapters/HistorianAdapters
-		SccLocalPath8 = Libraries\\Adapters\\HistorianAdapters
-		SccProjectUniqueName9 = Libraries\\Adapters\\EventDetection\\EventDetection.csproj
+		SccProjectName8 = Libraries/Adapters/EventDetection
+		SccLocalPath8 = Libraries\\Adapters\\EventDetection
+		SccProjectUniqueName9 = Libraries\\Adapters\\TestingAdapters\\TestingAdapters.csproj
 		SccProjectTopLevelParentUniqueName9 = Synchrophasor.sln
-		SccProjectName9 = Libraries/Adapters/EventDetection
-		SccLocalPath9 = Libraries\\Adapters\\EventDetection
-		SccProjectUniqueName10 = Libraries\\Adapters\\TestingAdapters\\TestingAdapters.csproj
+		SccProjectName9 = Libraries/Adapters/TestingAdapters
+		SccLocalPath9 = Libraries\\Adapters\\TestingAdapters
+		SccProjectUniqueName10 = Applications\\openPDC\\openPDC\\openPDC.csproj
 		SccProjectTopLevelParentUniqueName10 = Synchrophasor.sln
-		SccProjectName10 = Libraries/Adapters/TestingAdapters
-		SccLocalPath10 = Libraries\\Adapters\\TestingAdapters
-		SccProjectUniqueName11 = Applications\\openPDC\\openPDC\\openPDC.csproj
+		SccProjectName10 = Applications/openPDC/openPDC
+		SccLocalPath10 = Applications\\openPDC\\openPDC
+		SccProjectUniqueName11 = Applications\\openPDC\\openPDCConsole\\openPDCConsole.csproj
 		SccProjectTopLevelParentUniqueName11 = Synchrophasor.sln
-		SccProjectName11 = Applications/openPDC/openPDC
-		SccLocalPath11 = Applications\\openPDC\\openPDC
-		SccProjectUniqueName12 = Applications\\openPDC\\openPDCConsole\\openPDCConsole.csproj
+		SccProjectName11 = Applications/openPDC/openPDCConsole
+		SccLocalPath11 = Applications\\openPDC\\openPDCConsole
+		SccProjectUniqueName12 = Applications\\openPDC\\openPDCSetup\\openPDCSetup.vdproj
 		SccProjectTopLevelParentUniqueName12 = Synchrophasor.sln
-		SccProjectName12 = Applications/openPDC/openPDCConsole
-		SccLocalPath12 = Applications\\openPDC\\openPDCConsole
-		SccProjectUniqueName13 = Applications\\openPDC\\openPDCSetup\\openPDCSetup.vdproj
+		SccProjectName12 = Applications/openPDC/openPDCSetup
+		SccLocalPath12 = Applications\\openPDC\\openPDCSetup
+		SccProjectUniqueName13 = Tools\\PMUConnectionTester\\PMUConnectionTester\\PMUConnectionTester.vbproj
 		SccProjectTopLevelParentUniqueName13 = Synchrophasor.sln
-		SccProjectName13 = Applications/openPDC/openPDCSetup
-		SccLocalPath13 = Applications\\openPDC\\openPDCSetup
+		SccProjectName13 = Tools/PMUConnectionTester/PMUConnectionTester
+		SccLocalPath13 = Tools\\PMUConnectionTester\\PMUConnectionTester
+		SccProjectUniqueName14 = Tools\\PMUConnectionTester\\PMUConnectionTesterSetup\\PMUConnectionTesterSetup.vdproj
+		SccProjectTopLevelParentUniqueName14 = Synchrophasor.sln
+		SccProjectName14 = Tools/PMUConnectionTester/PMUConnectionTesterSetup
+		SccLocalPath14 = Tools\\PMUConnectionTester\\PMUConnectionTesterSetup
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -243,25 +251,32 @@ Global
 		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{27A26713-8779-41AB-AFF1-BAB6BB0228E8}.Debug|Any CPU.ActiveCfg = Debug
 		{27A26713-8779-41AB-AFF1-BAB6BB0228E8}.Release|Any CPU.ActiveCfg = Release
+		{A519E312-66F5-4725-A88E-9B62242CBCB7}.Debug|Any CPU.ActiveCfg = Debug
+		{A519E312-66F5-4725-A88E-9B62242CBCB7}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{94B7694B-F813-47FF-8C50-33DCA32D183D} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
 		{CE260396-797B-45DF-AC53-E4FC553B57C0} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
+		{94B7694B-F813-47FF-8C50-33DCA32D183D} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
 		{3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{89F8C302-E1C2-4C61-9CFB-CB4879B04B38} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{F92C9476-E7E7-458C-B6C4-2E4707052345} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
-		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
+		{9049F37F-1DE9-4F22-8F62-24D0814A80C6} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{DDCC02C0-E3BE-4989-996E-DFB0402F47A5} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
+		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
+		{27A26713-8779-41AB-AFF1-BAB6BB0228E8} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
+		{0BF2447E-252D-4712-B154-E350AF463081} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{20A58D77-CB7C-444E-A084-C61B40639B60} = {3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}
 		{F8902AA2-1A9A-451B-89D1-7FEA30C34C48} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{8A1BCFAA-19E8-408A-8C72-170B1211DC27} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{1338A569-A156-4122-8B65-8D4C147AA348} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{B74CF4DA-2972-489B-AF08-419560EE57EF} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
+		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
+		{A519E312-66F5-4725-A88E-9B62242CBCB7} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
 		{5314055B-EA03-4E15-8653-83F011D7A00E} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{D96C8A3A-7E03-43C6-B401-41778D81FF70} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{3D0DC382-3C00-48A7-B9FF-D3154F8BEDF1} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
@@ -270,8 +285,5 @@ Global
 		{9A59B9E0-A36F-4C52-8568-CB004B20885B} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{F0072CE5-12A6-4713-BBD0-B57966ED2339} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{41F2680B-D656-47F5-9A0D-3605BF886774} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
-		{0BF2447E-252D-4712-B154-E350AF463081} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
-		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
-		{27A26713-8779-41AB-AFF1-BAB6BB0228E8} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 	EndGlobalSection
 EndGlobal

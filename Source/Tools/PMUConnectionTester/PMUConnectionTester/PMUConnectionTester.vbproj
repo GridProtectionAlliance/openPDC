@@ -47,7 +47,7 @@
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>..\..\..\Build\Output\Debug\Tools\PMUConnectionTester\</OutputPath>
+    <OutputPath>..\..\..\..\Build\Output\Debug\Tools\PMUConnectionTester\</OutputPath>
     <DocumentationFile>PMUConnectionTester.xml</DocumentationFile>
     <NoWarn>42030,42104,42108,42109</NoWarn>
     <UseVSHostingProcess>true</UseVSHostingProcess>
@@ -58,7 +58,7 @@
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\Build\Output\Release\Tools\PMUConnectionTester\</OutputPath>
+    <OutputPath>..\..\..\..\Build\Output\Release\Tools\PMUConnectionTester\</OutputPath>
     <DocumentationFile>PMUConnectionTester.xml</DocumentationFile>
     <NoWarn>42030,42104,42108,42109</NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
@@ -66,39 +66,39 @@
   <ItemGroup>
     <Reference Include="Infragistics2.Shared.v7.2, Version=7.2.20072.61, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Infragistics\Infragistics2.Shared.v7.2.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\Infragistics\Infragistics2.Shared.v7.2.dll</HintPath>
     </Reference>
     <Reference Include="Infragistics2.Win.Misc.v7.2, Version=7.2.20072.61, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Infragistics\Infragistics2.Win.Misc.v7.2.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\Infragistics\Infragistics2.Win.Misc.v7.2.dll</HintPath>
     </Reference>
     <Reference Include="Infragistics2.Win.UltraWinChart.v7.2, Version=7.2.20072.61, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Infragistics\Infragistics2.Win.UltraWinChart.v7.2.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\Infragistics\Infragistics2.Win.UltraWinChart.v7.2.dll</HintPath>
     </Reference>
     <Reference Include="Infragistics2.Win.UltraWinEditors.v7.2, Version=7.2.20072.61, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Infragistics\Infragistics2.Win.UltraWinEditors.v7.2.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\Infragistics\Infragistics2.Win.UltraWinEditors.v7.2.dll</HintPath>
     </Reference>
     <Reference Include="Infragistics2.Win.UltraWinMaskedEdit.v7.2, Version=7.2.20072.61, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Infragistics\Infragistics2.Win.UltraWinMaskedEdit.v7.2.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\Infragistics\Infragistics2.Win.UltraWinMaskedEdit.v7.2.dll</HintPath>
     </Reference>
     <Reference Include="Infragistics2.Win.UltraWinStatusBar.v7.2, Version=7.2.20072.61, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Infragistics\Infragistics2.Win.UltraWinStatusBar.v7.2.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\Infragistics\Infragistics2.Win.UltraWinStatusBar.v7.2.dll</HintPath>
     </Reference>
     <Reference Include="Infragistics2.Win.UltraWinTabControl.v7.2, Version=7.2.20072.61, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Infragistics\Infragistics2.Win.UltraWinTabControl.v7.2.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\Infragistics\Infragistics2.Win.UltraWinTabControl.v7.2.dll</HintPath>
     </Reference>
     <Reference Include="Infragistics2.Win.UltraWinTree.v7.2, Version=7.2.20072.61, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Infragistics\Infragistics2.Win.UltraWinTree.v7.2.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\Infragistics\Infragistics2.Win.UltraWinTree.v7.2.dll</HintPath>
     </Reference>
     <Reference Include="Infragistics2.Win.v7.2, Version=7.2.20072.61, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Infragistics\Infragistics2.Win.v7.2.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\Infragistics\Infragistics2.Win.v7.2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -112,15 +112,15 @@
     <Reference Include="System.Xml" />
     <Reference Include="TVA.Communication, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Communication.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Communication.dll</HintPath>
     </Reference>
     <Reference Include="TVA.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Core.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Core.dll</HintPath>
     </Reference>
     <Reference Include="TVA.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Windows.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Windows.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -224,7 +224,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj">
+    <ProjectReference Include="..\..\..\Libraries\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj">
       <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>
       <Name>TVA.PhasorProtocols</Name>
     </ProjectReference>
@@ -240,6 +240,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>COPY "..\..\$(OutDir)Sample1344.PmuCapture" "..\..\$(OutDir)..\..\Applications\openPDC\Sample1344.PmuCapture"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
