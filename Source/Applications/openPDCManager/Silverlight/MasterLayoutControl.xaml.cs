@@ -234,11 +234,17 @@ using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.ServiceModel;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
 
 namespace openPDCManager.Silverlight
 {
 	public partial class MasterLayoutControl : UserControl
 	{
+		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
+		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
+		PhasorDataServiceClient client;
+
 		const double layoutRootHeight = 768;
 		const double layoutRootWidth = 1024;
 
@@ -252,8 +258,20 @@ namespace openPDCManager.Silverlight
 			Loaded += new RoutedEventHandler(MasterLayoutControl_Loaded);
 			NetworkChange.NetworkAddressChanged += new NetworkAddressChangedEventHandler(NetworkChange_NetworkAddressChanged);
 			ButtonChangeMode.Click += new RoutedEventHandler(ButtonChangeMode_Click);
+
+			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
 		}
 
+		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboboxNode.ItemsSource = e.Result;
+			else
+				MessageBox.Show(e.Error.Message);
+			if (ComboboxNode.Items.Count > 0)
+				ComboboxNode.SelectedIndex = 0;
+		}
 		void GridLayoutRoot_SizeChanged(object sender, SizeChangedEventArgs e)
 		{
 			
@@ -282,7 +300,8 @@ namespace openPDCManager.Silverlight
 			{
 				TextBlockConnectivity.Text = "Disconnected (offline)";
 				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Red);
-			}			
+			}
+			client.GetNodesAsync(true, false);
 		}
 		void Content_Resized(object sender, EventArgs e)
 		{			
