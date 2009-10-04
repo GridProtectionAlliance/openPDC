@@ -569,9 +569,9 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             index += 6;
 
             if (configurationFrame.RevisionNumber == RevisionNumber.Revision0)
-                Timestamp = (new NtpTimeTag(secondOfCentury, 0)).ToDateTime().Ticks + (long)(m_sampleNumber * configurationFrame.TicksPerFrame);
+                Timestamp = (new NtpTimeTag(secondOfCentury, 0)).ToDateTime().Ticks + (long)((m_sampleNumber - 1) * configurationFrame.TicksPerFrame);
             else
-                Timestamp = (new UnixTimeTag(secondOfCentury)).ToDateTime().Ticks + (long)(m_sampleNumber * configurationFrame.TicksPerFrame);
+                Timestamp = (new UnixTimeTag(secondOfCentury)).ToDateTime().Ticks + (long)((m_sampleNumber - 1) * configurationFrame.TicksPerFrame);
 
             // Because in cases where PDCxchng is being used the data cell count will be smaller than the
             // configuration cell count - we save this count to calculate the offsets later

@@ -1885,7 +1885,7 @@ namespace TVA.PhasorProtocols
             try
             {
                 if (m_injectSimulatedTimestamp)
-                    e.Argument.Timestamp = DateTime.UtcNow.Ticks;
+                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedCommandFrame != null)
                     ReceivedCommandFrame(this, e);
@@ -1913,7 +1913,7 @@ namespace TVA.PhasorProtocols
             try
             {
                 if (m_injectSimulatedTimestamp)
-                    e.Argument.Timestamp = DateTime.UtcNow.Ticks;
+                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedConfigurationFrame != null)
                     ReceivedConfigurationFrame(this, e);
@@ -1935,7 +1935,7 @@ namespace TVA.PhasorProtocols
             try
             {
                 if (m_injectSimulatedTimestamp)
-                    e.Argument.Timestamp = DateTime.UtcNow.Ticks;
+                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedDataFrame != null)
                     ReceivedDataFrame(this, e);
@@ -1957,7 +1957,7 @@ namespace TVA.PhasorProtocols
             try
             {
                 if (m_injectSimulatedTimestamp)
-                    e.Argument.Timestamp = DateTime.UtcNow.Ticks;
+                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedHeaderFrame != null)
                     ReceivedHeaderFrame(this, e);
@@ -1979,7 +1979,7 @@ namespace TVA.PhasorProtocols
             try
             {
                 if (m_injectSimulatedTimestamp)
-                    e.Argument.Timestamp = DateTime.UtcNow.Ticks;
+                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedUndeterminedFrame != null)
                     ReceivedUndeterminedFrame(this, e);

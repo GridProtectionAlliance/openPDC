@@ -279,6 +279,9 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         public DataFrame(Ticks timestamp, ConfigurationFrame1 configurationFrame)
             : base(new DataCellCollection(), timestamp, configurationFrame)
         {
+            // Pass timebase along to DataFrame's common header
+            if (configurationFrame != null)
+                CommonHeader.Timebase = configurationFrame.Timebase;
         }
 
         /// <summary>

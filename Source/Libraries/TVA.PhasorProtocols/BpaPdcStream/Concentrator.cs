@@ -377,10 +377,12 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// </remarks>
         protected override IFrame CreateNewFrame(Ticks timestamp)
         {
-            // We create a new BPA PDCstream data frame based on current configuration frame
-            byte packetNumber = (byte)(((decimal)timestamp.DistanceBeyondSecond() / base.TicksPerFrame) + 1);
+            const decimal ticksPerHalfMillisecond = Ticks.PerMillisecond / 2;
 
-            DataFrame dataFrame = new DataFrame(timestamp, m_configurationFrame, packetNumber, 1);
+            // We create a new BPA PDCstream data frame based on current configuration frame
+            ushort sampleNumber = (ushort)((timestamp.DistanceBeyondSecond() + ticksPerHalfMillisecond) / base.TicksPerFrame + 1);
+
+            DataFrame dataFrame = new DataFrame(timestamp, m_configurationFrame, 1, sampleNumber);
             DataCell dataCell;
 
             foreach (ConfigurationCell configurationCell in m_configurationFrame.Cells)
