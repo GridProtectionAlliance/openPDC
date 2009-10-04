@@ -240,7 +240,6 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>COPY "$(TargetDir)Sample1344.PmuCapture" "$(TargetDir)..\..\Applications\openPDC\Sample1344.PmuCapture"</PostBuildEvent>
   </PropertyGroup>
 </Project>
