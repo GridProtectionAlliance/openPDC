@@ -299,9 +299,6 @@ namespace TestingAdapters
     /// you would use the following point defintion:<br/>
     /// <c>outputMeasurements={LocalDevArchive:2,59.95,0.1}</c>
     /// </para>
-    /// <para>
-    /// Note that expectedFramesPerSecond, lagTime and leadTime are required parameters, all other parameters are optional.
-    /// </para>
     /// </remarks>
     public class RandomValueInputAdapter : InputAdapterBase
 	{
