@@ -422,5 +422,7 @@ namespace PCS.Services.Service
 		[OperationContract]
 		List<string> GetTimeZones(bool isOptional);
 
+		[OperationContract]
+		List<MapData> GetMapData(MapType mapType);
 	}
 }

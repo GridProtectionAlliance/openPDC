@@ -21,5 +21,23 @@
                 </Border>
             </StackPanel>
         </Border>
+        <Border Height="75" Width="95" Background="Black" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10">
+            <Border Margin="2" BorderBrush="#FFFFFFFF" BorderThickness="2" CornerRadius="10">
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <StackPanel Orientation="Horizontal" Height="19">
+                        <Ellipse Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Width="16" Fill="{StaticResource YellowRadialGradientBrush}" />
+                        <TextBlock Text=" Proposed" Foreground="#FFFFF7F7"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Height="19">
+                        <Ellipse Height="16" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="16" Fill="{StaticResource WhiteRadialGradientBrush}"/>
+                        <TextBlock Text=" Pending" Foreground="#FFFFF7F7"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse  Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Width="16" Fill="{StaticResource BlueRadialGradientBrush}"/>
+                        <TextBlock Text=" Installed" Foreground="#FFFFF7F7"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
     </Grid>
 </navigation:Page>

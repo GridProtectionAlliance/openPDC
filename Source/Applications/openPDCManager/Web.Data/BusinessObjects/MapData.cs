@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  Browse.xaml.cs - Gbtc
+//  MapData.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  09/28/2009 - Mehulbhai P. Thakkar
+//  10/04/2009 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -230,72 +230,33 @@
 #endregion
 
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
-using System.ServiceModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using System.Text;
 
-namespace openPDCManager.Silverlight.Pages.Devices
+namespace openPDCManager.Web.Data.BusinessObjects
 {
-	public partial class Browse : Page
+	public class MapData
 	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
-		BasicHttpBinding binding = new BasicHttpBinding();
-		PhasorDataServiceClient client;
+		public string DeviceType { get; set; }
+		public Guid? NodeID { get; set; }
+		public int ID { get; set; }
+		public string Acronym { get; set; }
+		public string Name { get; set; }
+		public string CompanyMapAcronym { get; set; }
+		public string CompanyName { get; set; }
+		public string VendorDeviceName { get; set; }
+		public decimal? Longitude { get; set; }
+		public decimal? Latitude { get; set; }
+		public bool Reporting { get; set; }
+		public bool InProgress { get; set; }
+		public bool Planned { get; set; }
+		public bool Desired { get; set; }
+	}
 
-		ObservableCollection<Device> deviceList = new ObservableCollection<Device>();
-		
-		public Browse()
-		{
-			InitializeComponent();
-			binding.MaxReceivedMessageSize = 65536 * 2;
-			client = new PhasorDataServiceClient(binding, address);
-			client.GetDeviceListCompleted += new EventHandler<GetDeviceListCompletedEventArgs>(client_GetDeviceListCompleted);
-			Loaded += new RoutedEventHandler(Browse_Loaded);
-			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
-			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);					
-		}		
-		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
-		{
-			ListBoxDeviceList.ItemsSource = deviceList;
-			//AddNew addNewPage = new AddNew();
-			//addNewPage.SetDeviceToEndit(
-		}
-		void ButtonSearch_Click(object sender, RoutedEventArgs e)
-		{
-			string searchText = TextBoxSearch.Text.ToUpper();			
-			ListBoxDeviceList.ItemsSource = (from item in deviceList
-											 where item.Acronym.ToUpper().Contains(searchText) || item.Name.ToUpper().Contains(searchText) || item.ProtocolName.ToUpper().Contains(searchText)
-												|| item.InterconnectionName.ToUpper().Contains(searchText) || item.CompanyName.ToUpper().Contains(searchText) || item.VendorDeviceName.ToUpper().Contains(searchText)
-											 select item).ToList();
-		}
-		void Browse_Loaded(object sender, RoutedEventArgs e)
-		{
-			client.GetDeviceListAsync();	
-		}
-		void client_GetDeviceListCompleted(object sender, GetDeviceListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-			{
-				deviceList = e.Result;
-				ListBoxDeviceList.ItemsSource = deviceList;
-			}
-		}
-
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-		}
-
-		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
-		{
-			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
-			NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?did=" + deviceId, UriKind.Relative));
-		}				
-
+	public enum MapType
+	{
+		Active,
+		Planning
 	}
 }

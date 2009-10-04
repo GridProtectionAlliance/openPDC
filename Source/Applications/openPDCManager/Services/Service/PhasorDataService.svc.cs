@@ -432,6 +432,11 @@ namespace PCS.Services.Service
 			return CommonFunctions.GetTimeZones(isOptional);
 		}
 
+		public List<MapData> GetMapData(MapType mapType)
+		{
+			return CommonFunctions.GetMapData(mapType);
+		}
+
 		//public Dictionary<int, string> GetVendorList()
 		//{
 		//    return CommonFunctions.GetVendorList();

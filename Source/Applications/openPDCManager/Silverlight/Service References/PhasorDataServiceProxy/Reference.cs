@@ -1919,6 +1919,242 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
     }
     
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="MapType", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+    public enum MapType : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Active = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Planning = 1,
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="MapData", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+    public partial class MapData : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string AcronymField;
+        
+        private string CompanyMapAcronymField;
+        
+        private string CompanyNameField;
+        
+        private bool DesiredField;
+        
+        private string DeviceTypeField;
+        
+        private int IDField;
+        
+        private bool InProgressField;
+        
+        private System.Nullable<decimal> LatitudeField;
+        
+        private System.Nullable<decimal> LongitudeField;
+        
+        private string NameField;
+        
+        private System.Nullable<System.Guid> NodeIDField;
+        
+        private bool PlannedField;
+        
+        private bool ReportingField;
+        
+        private string VendorDeviceNameField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Acronym {
+            get {
+                return this.AcronymField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AcronymField, value) != true)) {
+                    this.AcronymField = value;
+                    this.RaisePropertyChanged("Acronym");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CompanyMapAcronym {
+            get {
+                return this.CompanyMapAcronymField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CompanyMapAcronymField, value) != true)) {
+                    this.CompanyMapAcronymField = value;
+                    this.RaisePropertyChanged("CompanyMapAcronym");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CompanyName {
+            get {
+                return this.CompanyNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CompanyNameField, value) != true)) {
+                    this.CompanyNameField = value;
+                    this.RaisePropertyChanged("CompanyName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Desired {
+            get {
+                return this.DesiredField;
+            }
+            set {
+                if ((this.DesiredField.Equals(value) != true)) {
+                    this.DesiredField = value;
+                    this.RaisePropertyChanged("Desired");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string DeviceType {
+            get {
+                return this.DeviceTypeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DeviceTypeField, value) != true)) {
+                    this.DeviceTypeField = value;
+                    this.RaisePropertyChanged("DeviceType");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ID {
+            get {
+                return this.IDField;
+            }
+            set {
+                if ((this.IDField.Equals(value) != true)) {
+                    this.IDField = value;
+                    this.RaisePropertyChanged("ID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool InProgress {
+            get {
+                return this.InProgressField;
+            }
+            set {
+                if ((this.InProgressField.Equals(value) != true)) {
+                    this.InProgressField = value;
+                    this.RaisePropertyChanged("InProgress");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<decimal> Latitude {
+            get {
+                return this.LatitudeField;
+            }
+            set {
+                if ((this.LatitudeField.Equals(value) != true)) {
+                    this.LatitudeField = value;
+                    this.RaisePropertyChanged("Latitude");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<decimal> Longitude {
+            get {
+                return this.LongitudeField;
+            }
+            set {
+                if ((this.LongitudeField.Equals(value) != true)) {
+                    this.LongitudeField = value;
+                    this.RaisePropertyChanged("Longitude");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.Guid> NodeID {
+            get {
+                return this.NodeIDField;
+            }
+            set {
+                if ((this.NodeIDField.Equals(value) != true)) {
+                    this.NodeIDField = value;
+                    this.RaisePropertyChanged("NodeID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Planned {
+            get {
+                return this.PlannedField;
+            }
+            set {
+                if ((this.PlannedField.Equals(value) != true)) {
+                    this.PlannedField = value;
+                    this.RaisePropertyChanged("Planned");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Reporting {
+            get {
+                return this.ReportingField;
+            }
+            set {
+                if ((this.ReportingField.Equals(value) != true)) {
+                    this.ReportingField = value;
+                    this.RaisePropertyChanged("Reporting");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string VendorDeviceName {
+            get {
+                return this.VendorDeviceNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.VendorDeviceNameField, value) != true)) {
+                    this.VendorDeviceNameField = value;
+                    this.RaisePropertyChanged("VendorDeviceName");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="PhasorDataServiceProxy.IPhasorDataService")]
     public interface IPhasorDataService {
@@ -2072,6 +2308,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         System.IAsyncResult BeginGetTimeZones(bool isOptional, System.AsyncCallback callback, object asyncState);
         
         System.Collections.ObjectModel.ObservableCollection<string> EndGetTimeZones(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetMapData", ReplyAction="http://tempuri.org/IPhasorDataService/GetMapDataResponse")]
+        System.IAsyncResult BeginGetMapData(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType, System.AsyncCallback callback, object asyncState);
+        
+        System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.MapData> EndGetMapData(System.IAsyncResult result);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
@@ -2650,6 +2891,25 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class GetMapDataCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetMapDataCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.MapData> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.MapData>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
     public partial class PhasorDataServiceClient : System.ServiceModel.ClientBase<openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService>, openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService {
         
         private BeginOperationDelegate onBeginGetNodeListDelegate;
@@ -2832,6 +3092,12 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.Threading.SendOrPostCallback onGetTimeZonesCompletedDelegate;
         
+        private BeginOperationDelegate onBeginGetMapDataDelegate;
+        
+        private EndOperationDelegate onEndGetMapDataDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetMapDataCompletedDelegate;
+        
         private BeginOperationDelegate onBeginOpenDelegate;
         
         private EndOperationDelegate onEndOpenDelegate;
@@ -2944,6 +3210,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         public event System.EventHandler<GetIaonTreeDataCompletedEventArgs> GetIaonTreeDataCompleted;
         
         public event System.EventHandler<GetTimeZonesCompletedEventArgs> GetTimeZonesCompleted;
+        
+        public event System.EventHandler<GetMapDataCompletedEventArgs> GetMapDataCompleted;
         
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> OpenCompleted;
         
@@ -4337,6 +4605,52 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                         isOptional}, this.onEndGetTimeZonesDelegate, this.onGetTimeZonesCompletedDelegate, userState);
         }
         
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetMapData(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetMapData(mapType, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.MapData> openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndGetMapData(System.IAsyncResult result) {
+            return base.Channel.EndGetMapData(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetMapData(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType = ((openPDCManager.Silverlight.PhasorDataServiceProxy.MapType)(inValues[0]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetMapData(mapType, callback, asyncState);
+        }
+        
+        private object[] OnEndGetMapData(System.IAsyncResult result) {
+            System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.MapData> retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndGetMapData(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetMapDataCompleted(object state) {
+            if ((this.GetMapDataCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetMapDataCompleted(this, new GetMapDataCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetMapDataAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType) {
+            this.GetMapDataAsync(mapType, null);
+        }
+        
+        public void GetMapDataAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType, object userState) {
+            if ((this.onBeginGetMapDataDelegate == null)) {
+                this.onBeginGetMapDataDelegate = new BeginOperationDelegate(this.OnBeginGetMapData);
+            }
+            if ((this.onEndGetMapDataDelegate == null)) {
+                this.onEndGetMapDataDelegate = new EndOperationDelegate(this.OnEndGetMapData);
+            }
+            if ((this.onGetMapDataCompletedDelegate == null)) {
+                this.onGetMapDataCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetMapDataCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetMapDataDelegate, new object[] {
+                        mapType}, this.onEndGetMapDataDelegate, this.onGetMapDataCompletedDelegate, userState);
+        }
+        
         private System.IAsyncResult OnBeginOpen(object[] inValues, System.AsyncCallback callback, object asyncState) {
             return ((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(callback, asyncState);
         }
@@ -4804,6 +5118,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             public System.Collections.ObjectModel.ObservableCollection<string> EndGetTimeZones(System.IAsyncResult result) {
                 object[] _args = new object[0];
                 System.Collections.ObjectModel.ObservableCollection<string> _result = ((System.Collections.ObjectModel.ObservableCollection<string>)(base.EndInvoke("GetTimeZones", _args, result)));
+                return _result;
+            }
+            
+            public System.IAsyncResult BeginGetMapData(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[1];
+                _args[0] = mapType;
+                System.IAsyncResult _result = base.BeginInvoke("GetMapData", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.MapData> EndGetMapData(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.MapData> _result = ((System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.MapData>)(base.EndInvoke("GetMapData", _args, result)));
                 return _result;
             }
         }

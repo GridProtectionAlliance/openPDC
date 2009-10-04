@@ -418,4 +418,18 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="GetMapData">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q32="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" minOccurs="0" name="mapType" type="q32:MapType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMapDataResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q33="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" minOccurs="0" name="GetMapDataResult" nillable="true" type="q33:ArrayOfMapData" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

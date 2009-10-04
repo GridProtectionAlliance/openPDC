@@ -244,6 +244,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 	{
 		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
 		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
+		BasicHttpBinding binding = new BasicHttpBinding();
 		PhasorDataServiceClient client;
 
 		ObservableCollection<OtherDevice> otherDeviceList = new ObservableCollection<OtherDevice>();
@@ -251,7 +252,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		public OtherDevices()
 		{
 			InitializeComponent();
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			binding.MaxReceivedMessageSize = 65536 * 2;
+			client = new PhasorDataServiceClient(binding, address);
 			client.GetOtherDeviceListCompleted += new EventHandler<GetOtherDeviceListCompletedEventArgs>(client_GetOtherDeviceListCompleted);
 			Loaded += new RoutedEventHandler(OtherDevices_Loaded);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);

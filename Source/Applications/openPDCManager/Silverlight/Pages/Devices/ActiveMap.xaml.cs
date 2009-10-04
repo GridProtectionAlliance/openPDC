@@ -231,16 +231,65 @@
 
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using System.ServiceModel;
+using System.Windows;
+using System.Collections.ObjectModel;
+using System;
+using System.Linq;
+using Microsoft.VirtualEarth.MapControl;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class ActiveMap : Page
 	{
+		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
+		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
+		BasicHttpBinding binding = new BasicHttpBinding();
+		PhasorDataServiceClient client;
+		Button pushPinButton;		
+		ToolTip toolTip;		
+		ObservableCollection<MapData> mapDataList;
+
 		public ActiveMap()
 		{
 			InitializeComponent();
+			binding.MaxReceivedMessageSize = 65536 * 2;
+			client = new PhasorDataServiceClient(binding, address);
+			Loaded += new RoutedEventHandler(ActiveMap_Loaded);
+			client.GetMapDataCompleted += new EventHandler<GetMapDataCompletedEventArgs>(client_GetMapDataCompleted);		
 		}
-
+		void client_GetMapDataCompleted(object sender, GetMapDataCompletedEventArgs e)
+		{
+			if (e.Error == null)
+			{
+				mapDataList = new ObservableCollection<MapData>();
+				mapDataList = e.Result;
+				double avgLongitude = Convert.ToDouble(mapDataList.Average(m => m.Longitude));
+				double avgLatitude = Convert.ToDouble(mapDataList.Average(m => m.Latitude));
+				foreach (MapData mapData in mapDataList)
+				{
+					pushPinButton = new Button();
+					toolTip = new ToolTip();
+					toolTip.DataContext = mapData;
+					toolTip.Template = Application.Current.Resources["MapToolTipTemplate"] as ControlTemplate;
+					ToolTipService.SetToolTip(pushPinButton, toolTip);
+					pushPinButton.Content = mapData.CompanyMapAcronym;
+					if (mapData.Reporting)
+						pushPinButton.Template = Application.Current.Resources["GreenPushPinButtonTemplate"] as ControlTemplate;
+					else
+						pushPinButton.Template = Application.Current.Resources["RedPushPinButtonTemplate"] as ControlTemplate;
+					pushPinButton.SetValue(MapLayer.MapPositionProperty, new Location(Convert.ToDouble(mapData.Latitude), Convert.ToDouble(mapData.Longitude)));
+					pushPinButton.SetValue(MapLayer.MapPositionMethodProperty, PositionMethod.Center);
+					(VirtualEarthActiveMap.FindName("PushpinLayer") as MapLayer).AddChild(pushPinButton);
+				}
+				VirtualEarthActiveMap.Center = new Location(avgLatitude, avgLongitude);
+			}
+		}		
+		void ActiveMap_Loaded(object sender, RoutedEventArgs e)
+		{
+			client.GetMapDataAsync(MapType.Active);
+		}
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{

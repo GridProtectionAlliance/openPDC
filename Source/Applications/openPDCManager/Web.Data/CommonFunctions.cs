@@ -1366,5 +1366,56 @@ namespace openPDCManager.Web.Data
 		}
 
 		#endregion
+
+		#region " Manage Map Data"
+
+		public static List<MapData> GetMapData(MapType mapType)
+		{
+			List<MapData> mapDataList = new List<MapData>();
+			string query = "Select * From MapData";
+			if (mapType == MapType.Active)
+				query += " Where DeviceType = 'Device'";			
+
+			DataConnection connection = new DataConnection();
+			DataTable resultTable = connection.RetrieveData(query);
+
+			if (mapType == MapType.Active)
+				mapDataList = (from item in resultTable.AsEnumerable()
+							   select new MapData()
+							   {
+								   NodeID = item.Field<Guid>("NodeID"),
+								   ID = item.Field<int>("ID"),
+								   Acronym = item.Field<string>("Acronym"),
+								   Name = item.Field<string>("Name"),
+								   CompanyMapAcronym = item.Field<string>("CompanyMapAcronym"),
+								   CompanyName = item.Field<string>("CompanyName"),
+								   VendorDeviceName = item.Field<string>("VendorDeviceName"),
+								   Longitude = item.Field<decimal?>("Longitude"),
+								   Latitude = item.Field<decimal?>("Latitude"),
+								   Reporting = item.Field<bool>("Reporting")
+							   }).ToList();
+			else
+				mapDataList = (from item in resultTable.AsEnumerable()
+							   select new MapData()
+							   {
+								   ID = item.Field<int>("ID"),
+								   Acronym = item.Field<string>("Acronym"),
+								   Name = item.Field<string>("Name"),
+								   CompanyMapAcronym = item.Field<string>("CompanyMapAcronym"),
+								   CompanyName = item.Field<string>("CompanyName"),
+								   VendorDeviceName = item.Field<string>("VendorDeviceName"),
+								   Longitude = item.Field<decimal?>("Longitude"),
+								   Latitude = item.Field<decimal?>("Latitude"),
+								   Reporting = item.Field<bool>("Reporting"),
+								   InProgress = item.Field<bool>("InProgress"),
+								   Planned = item.Field<bool>("Planned"),
+								   Desired = item.Field<bool>("Desired")								   
+							   }).ToList();
+
+			connection.Dispose();
+			return mapDataList;
+		}
+
+		#endregion
 	}
 }
