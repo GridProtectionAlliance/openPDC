@@ -7,7 +7,7 @@ Imports System.Runtime.InteropServices
 ' Informational attributes.
 <Assembly: AssemblyCompany("TVA")> 
 <Assembly: AssemblyCopyright("No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.")> 
-<Assembly: AssemblyProduct("PMU Connection Tester")> 
+<Assembly: AssemblyProduct("openPDC")> 
 
 ' Assembly manifest attributes.
 #If DEBUG Then
@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyConfiguration("Release Build")>
 #End If
 <Assembly: AssemblyDescription("Multi-protocol PMU connection tester.")> 
-<Assembly: AssemblyTitle("PMU Connection Tester")> 
+<Assembly: AssemblyTitle("openPDC PMU Connection Tester")> 
 
 ' Other configuration attributes.
 <Assembly: ComVisible(False)> 

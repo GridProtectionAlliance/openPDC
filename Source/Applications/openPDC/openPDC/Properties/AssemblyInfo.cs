@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("Release Build")]
 #endif
 [assembly: AssemblyDescription("Windows service that hosts input, action and output adapters.")]
-[assembly: AssemblyTitle("openPDC")]
+[assembly: AssemblyTitle("openPDC Iaon Host")]
 
 // Other configuration attributes.
 [assembly: ComVisible(false)]

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // Informational attributes.
 [assembly: AssemblyCompany("TVA")]
 [assembly: AssemblyCopyright("No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.")]
-[assembly: AssemblyProduct("openPDCConsole")]
+[assembly: AssemblyProduct("openPDC")]
 
 // Assembly manifest attributes.
 #if DEBUG
@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("Release Build")]
 #endif
 [assembly: AssemblyDescription("Remote console application for windows service that hosts input, action and output adapters.")]
-[assembly: AssemblyTitle("openPDCConsole")]
+[assembly: AssemblyTitle("openPDC Remote Console")]
 
 // Other configuration attributes.
 [assembly: ComVisible(false)]
