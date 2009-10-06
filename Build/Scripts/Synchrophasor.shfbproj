@@ -15,7 +15,7 @@
     <Name>Documentation</Name>
     <!-- SHFB properties -->
     <OutputPath>..\Output\$(Configuration)\Libraries\Help\</OutputPath>
-    <HtmlHelpName>Synchrophasor</HtmlHelpName>
+    <HtmlHelpName>openPDC.Synchrophasor</HtmlHelpName>
     <FrameworkVersion>3.5</FrameworkVersion>
     <HelpTitle>openPDC Synchrophasor Help</HelpTitle>
     <PresentationStyle>Prototype</PresentationStyle>
