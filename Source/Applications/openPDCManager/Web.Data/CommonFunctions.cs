@@ -666,6 +666,24 @@ namespace openPDCManager.Web.Data
 			return timeZonesList;
 		}
 
+		public static Dictionary<string, int> GetVendorDeviceDistribution()
+		{
+			Dictionary<string, int> deviceDistribution = new Dictionary<string, int>();			
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select * From VendorDeviceDistribution Order By VendorName";
+			
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
+			foreach (DataRow row in resultTable.Rows)
+			{
+				deviceDistribution.Add(row["VendorName"].ToString(), Convert.ToInt32(row["DeviceCount"]));
+			}
+			return deviceDistribution;
+		}
+
 		#region " Manage Companies Code"
 
 		public static List<Company> GetCompanyList()

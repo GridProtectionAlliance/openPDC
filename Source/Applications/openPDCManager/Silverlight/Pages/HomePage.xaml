@@ -125,8 +125,7 @@
         <Border x:Name="BorderDeviceDistribution" Grid.Row="3" Grid.Column="1" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Stretch" Margin="5,5,0,5">
             <StackPanel Orientation="Vertical" Margin="0">
                 <TextBlock Text="Vendor Device Distribution" Style="{StaticResource LargeWhiteTextStyle}" HorizontalAlignment="Center" Padding="5" />
-
-                <chartingToolkit:Chart x:Name="ChartDeviceDistribution" Style="{StaticResource PieChartStyle}" Foreground="Black" Background="{StaticResource PortletBackgroundBrush}" VerticalAlignment="Stretch">
+                <chartingToolkit:Chart x:Name="ChartDeviceDistribution" Style="{StaticResource PieChartStyle}" Foreground="Black" Background="{StaticResource PortletBackgroundBrush}" VerticalAlignment="Stretch" Height="{StaticResource XLargeItemSize}">
                     <chartingToolkit:PieSeries ItemsSource="{Binding}" DependentValuePath="Value" IndependentValuePath="Key" Title="Device Distribution" 
                         IsSelectionEnabled="True"/>
                 </chartingToolkit:Chart>

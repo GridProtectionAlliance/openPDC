@@ -243,13 +243,13 @@ namespace PCS.Services.DuplexService
     [DataContract]
     public class LivePhasorDataMessage : DuplexMessage
     {
-        [DataMember]
-        public List<PmuDistribution> PmuDistributionList { get; set; }
+		//[DataMember]
+		//public List<PmuDistribution> PmuDistributionList { get; set; }
 
         [DataMember]
         public Dictionary<string, int> DeviceDistributionList { get; set; }
 
-        [DataMember]
-        public List<InterconnectionStatus> InterconnectionStatusList { get; set; }
+		//[DataMember]
+		//public List<InterconnectionStatus> InterconnectionStatusList { get; set; }
     }
 }

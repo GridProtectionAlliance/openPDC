@@ -1,15 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/PCS.Services.DuplexService" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/PCS.Services.DuplexService" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:import namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" />
   <xs:import namespace="http://samples.microsoft.com/silverlight2/duplex" />
   <xs:complexType name="LivePhasorDataMessage">
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q1="http://samples.microsoft.com/silverlight2/duplex" base="q1:DuplexMessage">
         <xs:sequence>
           <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="DeviceDistributionList" nillable="true" type="q2:ArrayOfKeyValueOfstringint" />
-          <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" minOccurs="0" name="InterconnectionStatusList" nillable="true" type="q3:ArrayOfInterconnectionStatus" />
-          <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" minOccurs="0" name="PmuDistributionList" nillable="true" type="q4:ArrayOfPmuDistribution" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

@@ -242,8 +242,8 @@ namespace PCS.Services.DuplexService
     [ServiceContract]
     public interface IUniversalDuplexCallbackContract
     {
-        //[OperationContract(IsOneWay = true)]
-        //void SendToClient(DuplexMessage msg);
+        [OperationContract(IsOneWay = true)]
+        void SendToClient(DuplexMessage msg);
 
         [OperationContract(IsOneWay = true, AsyncPattern = true)]
         IAsyncResult BeginSendToClient(DuplexMessage msg, AsyncCallback acb, object state);

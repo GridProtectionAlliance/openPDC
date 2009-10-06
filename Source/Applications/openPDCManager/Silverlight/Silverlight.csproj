@@ -410,7 +410,6 @@
   <ItemGroup>
     <None Include="Service References\LivePhasorDataServiceProxy\Arrays.xsd" />
     <None Include="Service References\LivePhasorDataServiceProxy\duplex.xsd" />
-    <None Include="Service References\LivePhasorDataServiceProxy\openPDCManager.Web.Data.BusinessObjects1.xsd" />
     <None Include="Service References\LivePhasorDataServiceProxy\PCS.Services.DuplexService.xsd" />
     <None Include="Service References\LivePhasorDataServiceProxy\service.wsdl" />
     <None Include="Service References\LivePhasorDataServiceProxy\service.xsd" />

@@ -28,7 +28,6 @@
     <MetadataFile FileName="duplex.xsd" MetadataType="Schema" ID="b43dd0f2-4976-4db4-8d15-d6d1558a9c15" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
     <MetadataFile FileName="PCS.Services.DuplexService.xsd" MetadataType="Schema" ID="574d3f13-0c52-4f1e-82a2-5444d7e47c03" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
     <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="c6f270b4-6d2a-4019-83cf-bb78b4663bbc" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
-    <MetadataFile FileName="openPDCManager.Web.Data.BusinessObjects1.xsd" MetadataType="Schema" ID="df752fd0-d6f5-453e-8849-d91b0e6cc0cd" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

@@ -242,25 +242,24 @@ namespace PCS.Services.DuplexService
     public class LivePhasorDataService : DuplexService
     {
         // This timer will be used to retrieve fresh data from the database and then push to all clients.
-        //Timer liveDataTimer;
+        Timer liveDataTimer;
+				
+		public LivePhasorDataService()
+		{
+		    liveDataTimer = new Timer(new TimerCallback(LivePhasorDataUpdate), null, 0, 10000);            
+		}
 
-		// TODO: Uncomment this in the future.
-		//public LivePhasorDataService()
-		//{
-		//    liveDataTimer = new Timer(new TimerCallback(LivePhasorDataUpdate), null, 0, 10000);            
-		//}
+		void LivePhasorDataUpdate(object obj)
+		{
+			LivePhasorDataMessage pList = new LivePhasorDataMessage()
+			{
+				//PmuDistributionList = CommonFunctions.GetPmuDistribution(),
+				DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(),
+				//InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus()
+			};
 
-		//void LivePhasorDataUpdate(object obj)
-		//{
-		//    LivePhasorDataMessage pList = new LivePhasorDataMessage()
-		//    {
-		//        PmuDistributionList = CommonFunctions.GetPmuDistribution(),
-		//        DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(),
-		//        InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus()
-		//    };
-
-		//    // push refreshed data to all the connected clients.
-		//    PushToAllClients(pList);                      
-		//}
+			// push refreshed data to all the connected clients.
+			PushToAllClients(pList);
+		}
     }
 }

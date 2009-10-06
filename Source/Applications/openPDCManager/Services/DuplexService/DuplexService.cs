@@ -329,32 +329,32 @@ namespace PCS.Services.DuplexService
         void IUniversalDuplexContract.SendToService(DuplexMessage msg)
         {
             //We get here when we receive a message from a client
-
             IUniversalDuplexCallbackContract ch = OperationContext.Current.GetCallbackChannel<IUniversalDuplexCallbackContract>();
             string session = OperationContext.Current.Channel.SessionId;
 
             //Any message from a client we haven't seen before causes the new client to be added to our list
             //(Basically, treated as a "Connect" message)
 
-			// TODO: Uncomment this in the future
-			//lock (syncRoot)
-			//{
-			//    if (!clients.ContainsKey(session))
-			//    {
-			//        clients.Add(session, ch);
-			//        OperationContext.Current.Channel.Closing += new EventHandler(Channel_Closing);
-			//        OperationContext.Current.Channel.Faulted += new EventHandler(Channel_Faulted);
-			//        OnConnected(session);
 
-			//        PushMessageToClient(session, new LivePhasorDataMessage(){
-			//                                        PmuDistributionList = CommonFunctions.GetPmuDistribution(),
-			//                                        DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(),
-			//                                        InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus()
-			//                                        }
-			//        );
+			lock (syncRoot)
+			{
+				if (!clients.ContainsKey(session))
+				{
+					clients.Add(session, ch);
+					OperationContext.Current.Channel.Closing += new EventHandler(Channel_Closing);
+					OperationContext.Current.Channel.Faulted += new EventHandler(Channel_Faulted);
+					OnConnected(session);
 
-			//    }
-			//}
+					PushMessageToClient(session, new LivePhasorDataMessage()
+					{
+						//PmuDistributionList = CommonFunctions.GetPmuDistribution(),
+						DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution()
+						//InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus()
+					}
+					);
+
+				}
+			}
 
             //If it's a Disconnect message, treat as disconnection
             if (msg is DisconnectMessage)
