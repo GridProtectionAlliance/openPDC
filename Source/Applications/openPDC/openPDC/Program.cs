@@ -12,6 +12,8 @@
 //       Generated original version of source code.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
+//  10/06/2009 - Pinal C. Patel
+//       Modified to run the service as application by default in Debug mode.
 //
 //*******************************************************************************************************
 
@@ -231,7 +233,9 @@
 */
 #endregion
 
-//#define RunAsService
+#if !DEBUG
+    #define RunAsService
+#endif 
 
 #if RunAsService
     using System.ServiceProcess;
