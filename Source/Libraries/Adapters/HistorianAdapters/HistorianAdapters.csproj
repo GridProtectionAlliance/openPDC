@@ -52,17 +52,17 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="TVA.Communication, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Communication, Version=1.0.13.31178, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Historian\Current Version\Build\Output\Debug\Libraries\TVA.Communication.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Core, Version=1.0.13.31178, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Historian\Current Version\Build\Output\Debug\Libraries\TVA.Core.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Historian, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Historian, Version=1.0.3.31186, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Historian\Current Version\Build\Output\Debug\Libraries\TVA.Historian.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\TVA\TVA.Historian.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
