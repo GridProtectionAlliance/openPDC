@@ -37,6 +37,7 @@
     <VisibleItems>Attributes, InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
     <PlugInConfigurations>
     </PlugInConfigurations>
+    <KeepLogFile>False</KeepLogFile>
   </PropertyGroup>
   <!-- There are no properties for these two groups but they need to appear in
        order for Visual Studio to perform the build. -->
