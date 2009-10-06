@@ -281,6 +281,12 @@ namespace NASPInet.Packets
 
         #region [ Methods ]
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sourceID"></param>
+        /// <param name="cryptoProperties"></param>
+        /// <returns></returns>
         public bool TryGetCryptoProperties(Guid sourceID, out CryptoProperties cryptoProperties)
         {
             lock (m_cryptoProperties)

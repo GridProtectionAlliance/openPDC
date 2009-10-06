@@ -280,8 +280,11 @@ namespace openPDC
             // m_remotingClient
             // 
             this.m_remotingClient.ConnectionString = "Server=localhost:8500";
+            this.m_remotingClient.Encryption = TVA.Security.Cryptography.CipherStrength.Aes256;
             this.m_remotingClient.Handshake = true;
+            this.m_remotingClient.PayloadAware = true;
             this.m_remotingClient.PersistSettings = true;
+            this.m_remotingClient.SecureSession = true;
             this.m_remotingClient.SettingsCategory = "RemotingClient";
             this.m_remotingClient.SharedSecret = "openPDC";
             // 

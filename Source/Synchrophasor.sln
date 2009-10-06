@@ -137,6 +137,21 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "WebSetup", "Applications\op
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ServicesSetup", "Applications\openPDCManager\ServicesSetup\ServicesSetup.vdproj", "{30297342-C66C-4715-A495-B6DFCF8E3A78}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVA", "TVA", "{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\TVA\Microsoft.Web.Services3.dll = Dependencies\TVA\Microsoft.Web.Services3.dll
+		Dependencies\TVA\TVA.Communication.dll = Dependencies\TVA\TVA.Communication.dll
+		Dependencies\TVA\TVA.Communication.xml = Dependencies\TVA\TVA.Communication.xml
+		Dependencies\TVA\TVA.Core.dll = Dependencies\TVA\TVA.Core.dll
+		Dependencies\TVA\TVA.Core.xml = Dependencies\TVA\TVA.Core.xml
+		Dependencies\TVA\TVA.Historian.dll = Dependencies\TVA\TVA.Historian.dll
+		Dependencies\TVA\TVA.Historian.XML = Dependencies\TVA\TVA.Historian.XML
+		Dependencies\TVA\TVA.Services.dll = Dependencies\TVA\TVA.Services.dll
+		Dependencies\TVA\TVA.Services.XML = Dependencies\TVA\TVA.Services.XML
+		Dependencies\TVA\TVA.Windows.dll = Dependencies\TVA\TVA.Windows.dll
+		Dependencies\TVA\TVA.Windows.XML = Dependencies\TVA\TVA.Windows.XML
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 17
@@ -282,6 +297,7 @@ Global
 		{94B7694B-F813-47FF-8C50-33DCA32D183D} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
 		{3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{89F8C302-E1C2-4C61-9CFB-CB4879B04B38} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
+		{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{F92C9476-E7E7-458C-B6C4-2E4707052345} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}

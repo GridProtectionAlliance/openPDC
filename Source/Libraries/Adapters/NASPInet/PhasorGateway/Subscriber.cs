@@ -261,6 +261,9 @@ namespace NASPInet.PhasorGateway
 
         #region [ Properties ]
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected override bool UseAsyncConnect
         {
             get { throw new NotImplementedException(); }
@@ -270,21 +273,35 @@ namespace NASPInet.PhasorGateway
 
         #region [ Methods ]
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected override void AttemptConnection()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected override void AttemptDisconnection()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Initialize()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="maxLength"></param>
+        /// <returns></returns>
         public override string GetShortStatus(int maxLength)
         {
             throw new NotImplementedException();
