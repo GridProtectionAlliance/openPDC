@@ -36,14 +36,6 @@
     <Preliminary>False</Preliminary>
     <VisibleItems>Attributes, InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
     <PlugInConfigurations>
-      <PlugInConfig id="Additional Reference Links" enabled="True" xmlns="">
-        <configuration>
-          <targets>
-            <target linkType="Index" helpFileProject="..\..\..\..\Framework\Current Version\Build\Scripts\Framework.shfbproj" />
-            <target linkType="Index" helpFileProject="..\..\..\..\Historian\Current Version\Build\Scripts\Historian.shfbproj" />
-          </targets>
-        </configuration>
-      </PlugInConfig>
     </PlugInConfigurations>
   </PropertyGroup>
   <!-- There are no properties for these two groups but they need to appear in
