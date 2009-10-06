@@ -247,6 +247,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 		bool inEditMode = false;
 		int calculatedMeasurementID = 0;
+		Guid nodeID;
 
 		public CalculatedMeasurements()
 		{
@@ -269,7 +270,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			}
 			else
 				MessageBox.Show(e.Error.Message);
-			client.GetCalculatedMeasurementListAsync();
+			client.GetCalculatedMeasurementListAsync(nodeID);
 		}
 		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
 		{
@@ -325,7 +326,9 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		}
 		void CalculatedMeasurements_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetCalculatedMeasurementListAsync();
+			App app = (App)Application.Current;
+			nodeID = app.NodeValue;
+			client.GetCalculatedMeasurementListAsync(nodeID);
 			client.GetNodesAsync(true, false);
 		}
 		void client_GetCalculatedMeasurementListCompleted(object sender, GetCalculatedMeasurementListCompletedEventArgs e)

@@ -275,7 +275,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void Browse_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetDeviceListAsync();	
+			App app = (App)Application.Current;
+			Guid nodeID = app.NodeValue;
+			client.GetDeviceListAsync(nodeID);	
 		}
 		void client_GetDeviceListCompleted(object sender, GetDeviceListCompletedEventArgs e)
 		{

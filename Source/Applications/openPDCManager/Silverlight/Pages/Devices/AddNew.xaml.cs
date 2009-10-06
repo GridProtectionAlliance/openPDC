@@ -335,7 +335,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			device.Longitude = string.IsNullOrEmpty(TextBoxLongitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLongitude.Text);
 			device.Latitude = string.IsNullOrEmpty(TextBoxLatitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLatitude.Text);
 			device.InterconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
-			device.ConncetionString = TextBoxConnectionString.Text;
+			device.ConnectionString = TextBoxConnectionString.Text;
 			device.TimeZone = ComboboxTimeZone.SelectedIndex == 0 ? string.Empty : ComboboxTimeZone.SelectedItem.ToString();
 			device.TimeAdjustmentTicks = Convert.ToInt64(TextBoxTimeAdjustmentTicks.Text);
 			device.DataLossInterval = Convert.ToDouble(TextBoxDataLossInterval.Text);

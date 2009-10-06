@@ -282,9 +282,9 @@ namespace PCS.Services.Service
 		#endregion
 
 		#region " Manage Historian Code"
-		public List<Historian> GetHistorianList()
+		public List<Historian> GetHistorianList(Guid nodeID)
 		{
-			return CommonFunctions.GetHistorianList();
+			return CommonFunctions.GetHistorianList(nodeID);
 		}
 		public string SaveHistorian(Historian historian, bool isNew)
 		{
@@ -342,9 +342,13 @@ namespace PCS.Services.Service
 		#endregion
 
 		#region " Manage Device Code"
-		public List<Device> GetDeviceList()
+		//public List<Device> GetDeviceList()
+		//{
+		//    return CommonFunctions.GetDeviceList();
+		//}
+		public List<Device> GetDeviceList(Guid nodeID)
 		{
-			return CommonFunctions.GetDeviceList();
+			return CommonFunctions.GetDeviceList(nodeID);
 		}
 		public Dictionary<int, string> GetDevices(bool concentratorOnly, bool isOptional)
 		{
@@ -396,9 +400,9 @@ namespace PCS.Services.Service
 
 		#region " Manage Calculated Measurements Code"
 
-		public List<CalculatedMeasurement> GetCalculatedMeasurementList()
+		public List<CalculatedMeasurement> GetCalculatedMeasurementList(Guid nodeID)
 		{
-			return CommonFunctions.GetCalculatedMeasurementList();
+			return CommonFunctions.GetCalculatedMeasurementList(nodeID);
 		}
 
 		public string SaveCalculatedMeasurement(CalculatedMeasurement calculatedMeasurement, bool isNew)
@@ -410,9 +414,9 @@ namespace PCS.Services.Service
 
 		#region " Manage Custom Adapters Code"
 
-		public List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType)
+		public List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType, Guid nodeID)
 		{
-			return CommonFunctions.GetAdapterList(enabledOnly, adapterType);
+			return CommonFunctions.GetAdapterList(enabledOnly, adapterType, nodeID);
 		}
 
 		public string SaveAdapter(Adapter adapter, bool isNew)

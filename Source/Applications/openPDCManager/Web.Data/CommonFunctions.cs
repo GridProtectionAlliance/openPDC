@@ -237,6 +237,7 @@ using System.Data;
 using System.Linq;
 using openPDCManager.Web.Data.Entities;
 using openPDCManager.Web.Data.BusinessObjects;
+using TVA;
 
 namespace openPDCManager.Web.Data
 {
@@ -605,8 +606,8 @@ namespace openPDCManager.Web.Data
 		//    return statusReportList;
 		//}
 		#endregion
-
-        /// <summary>
+			
+		/// <summary>
         /// Adds quotes or returns NULL for strings for proper database insertion.
         /// </summary>
         /// <param name="value">Value to quote or make NULL.</param>
@@ -631,6 +632,26 @@ namespace openPDCManager.Web.Data
             return "NULL";
         }
 
+		public static string FormatedNodeID(Guid nodeID)
+		{
+			string nodeString = "'" + nodeID.ToString() + "'";
+			DataConnection connection = new DataConnection();
+			Dictionary<string, string> settings = connection.Connection.ConnectionString.ParseKeyValuePairs();
+			string setting;
+			if (settings.TryGetValue("Provider", out setting))
+				if (setting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.CurrentCultureIgnoreCase))
+					nodeString = "{" + nodeID.ToString() + "}";
+
+			return nodeString;
+		}
+
+		public static bool MasterNode(Guid nodeID)
+		{
+			bool isMaster = false;
+
+			return isMaster;
+		}
+
 		public static List<string> GetTimeZones(bool isOptional)
 		{
 			List<string> timeZonesList = new List<string>();
@@ -651,7 +672,12 @@ namespace openPDCManager.Web.Data
 		{
 			List<Company> companyList = new List<Company>();
             DataConnection connection = new DataConnection();
-            DataTable resultTable = connection.RetrieveData("SELECT ID, Acronym, MapAcronym, Name, URL, LoadOrder FROM Company ORDER BY LoadOrder");
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "SELECT ID, Acronym, MapAcronym, Name, URL, LoadOrder FROM Company ORDER BY LoadOrder";
+			
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
 
 			companyList = (from item in resultTable.AsEnumerable()
 						   select new Company()
@@ -675,9 +701,14 @@ namespace openPDCManager.Web.Data
 			if (isOptional)
 				companyList.Add(0, "Select Company");
             DataConnection connection = new DataConnection();
-            DataTable resultTable = connection.RetrieveData("SELECT ID, Name FROM Company ORDER BY LoadOrder");
-            int id;
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "SELECT ID, Name FROM Company ORDER BY LoadOrder";
 
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
+            int id;
             foreach (DataRow row in resultTable.Rows)
 			{
                 id = int.Parse(row["ID"].ToString());
@@ -687,23 +718,55 @@ namespace openPDCManager.Web.Data
 			}
 
             connection.Dispose();
-
 			return companyList;
 		}
 
 		public static string SaveCompany(Company company, bool isNew)
 		{
-            string query;
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
 
 			if (isNew)
-				query = string.Format("INSERT INTO Company (Acronym, MapAcronym, Name, URL, LoadOrder) VALUES ('{0}', '{1}', '{2}', {3}, {4})", company.Acronym, company.MapAcronym, company.Name, NullableQuote(company.URL), company.LoadOrder);
+				command.CommandText = "INSERT INTO Company (Acronym, MapAcronym, Name, URL, LoadOrder) VALUES (@acronym, @mapAcronym, @name, @url, @loadOrder)";
 			else
-				query = string.Format("UPDATE Company SET Acronym = '{0}', MapAcronym = '{1}', Name = '{2}', URL = {3}, LoadOrder = {4} WHERE ID = {5}", company.Acronym, company.MapAcronym, company.Name, NullableQuote(company.URL), company.LoadOrder, company.ID);
+				command.CommandText = "UPDATE Company SET Acronym = @acronym, MapAcronym = @mapAcronym, Name = @name, URL = @url, LoadOrder = @loadOrder WHERE ID = @id";
 
-            DataConnection connection = new DataConnection();
-            connection.ExecuteNonQuery(query);
+			IDbDataParameter param = command.CreateParameter();
+			param.ParameterName = "@acronym";
+			param.Value = company.Acronym;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@mapAcronym";
+			param.Value = company.MapAcronym;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@name";
+			param.Value = company.Name;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@url";
+			param.Value = company.URL;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@loadOrder";
+			param.Value = company.LoadOrder;
+			command.Parameters.Add(param);
+
+			if (!isNew)
+			{
+				param = command.CreateParameter();
+				param.ParameterName = "@id";
+				param.Value = company.ID;
+				command.Parameters.Add(param);
+			}
+
+			command.ExecuteNonQuery();
             connection.Dispose();
-
             return "Done!";
 		}
 
@@ -711,11 +774,25 @@ namespace openPDCManager.Web.Data
 
         #region " Manage Historians Code"
 		
-		public static List<Historian> GetHistorianList()
+		public static List<Historian> GetHistorianList(Guid nodeID)
 		{
 			List<Historian> historianList = new List<Historian>();
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData("Select * From HistorianDetail Order By LoadOrder");
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			if (MasterNode(nodeID) || nodeID == Guid.Empty)			
+				command.CommandText = "Select * From HistorianDetail Order By LoadOrder";			
+			else
+			{
+				command.CommandText = "Select * From HistorianDetail Where NodeID = @nodeID Order By LoadOrder";
+				IDbDataParameter param = command.CreateParameter();
+				param.ParameterName = "@nodeID";
+				param.Value = nodeID;
+				command.Parameters.Add(param);
+			}
+
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());		
 			historianList = (from item in resultTable.AsEnumerable()
 							 select new Historian()
 							 {
@@ -746,7 +823,12 @@ namespace openPDCManager.Web.Data
 			query += " Order By LoadOrder";
 
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData(query);
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = query;
+			
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
 			foreach (DataRow row in resultTable.Rows)
 			{
 				if (!historianList.ContainsKey(Convert.ToInt32(row["ID"])))
@@ -758,18 +840,75 @@ namespace openPDCManager.Web.Data
 
 		public static string SaveHistorian(Historian historian, bool isNew)
 		{
-			string query;
-			
-			if (isNew)
-				query = string.Format("Insert Into Historian (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) Values ('{0}', '{1}', {2}, {3}, {4}, {5}, '{6}', {7}, {8}, '{9}')",
-						historian.NodeID, historian.Acronym, NullableQuote(historian.Name), NullableQuote(historian.AssemblyName), NullableQuote(historian.TypeName), NullableQuote(historian.ConnectionString), Convert.ToInt32(historian.IsLocal),
-						NullableQuote(historian.Description), historian.LoadOrder, Convert.ToInt32(historian.Enabled));
-			else
-				query = string.Format("Update Historian Set NodeID = '{0}', Acronym = '{1}', Name = {2}, AssemblyName = {3}, TypeName = {4}, ConnectionString = {5}, IsLocal = '{6}', Description = {7}, LoadOrder = {8}, Enabled = '{9}' Where ID = {10}",
-						historian.NodeID, historian.Acronym, NullableQuote(historian.Name), NullableQuote(historian.AssemblyName), NullableQuote(historian.TypeName), NullableQuote(historian.ConnectionString), Convert.ToInt32(historian.IsLocal),
-						NullableQuote(historian.Description), historian.LoadOrder, Convert.ToInt32(historian.Enabled), historian.ID);
 			DataConnection connection = new DataConnection();
-			connection.ExecuteScalar(query);
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			if (isNew)
+				command.CommandText = "Insert Into Historian (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) Values " +
+					"(@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @isLocal, @description, @loadOrder, @enabled)";
+			else
+				command.CommandText = "Update Historian Set NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, TypeName = @typeName, " +
+					"ConnectionString = @connectionString, IsLocal = @isLocal, Description = @description, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+
+			IDbDataParameter param = command.CreateParameter();
+			param.ParameterName = "@nodeID";
+			param.Value = historian.NodeID;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@acronym";
+			param.Value = historian.Acronym;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@name";
+			param.Value = historian.Name;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@assemblyName";
+			param.Value = historian.AssemblyName;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@typeName";
+			param.Value = historian.TypeName;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@connectionString";
+			param.Value = historian.ConnectionString;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@isLocal";
+			param.Value = historian.IsLocal;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@description";
+			param.Value = historian.Description;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@loadOrder";
+			param.Value = historian.LoadOrder;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@enabled";
+			param.Value = historian.Enabled;
+			command.Parameters.Add(param);
+
+			if (!isNew)
+			{
+				param = command.CreateParameter();
+				param.ParameterName = "@id";
+				param.Value = historian.ID;
+				command.Parameters.Add(param);
+			}
+
+			command.ExecuteNonQuery();
 			connection.Dispose();
 			return "Done!";
 		}
@@ -782,8 +921,12 @@ namespace openPDCManager.Web.Data
 		{
 			List<Node> nodeList = new List<Node>();			
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData("Select * From NodeDetail Order By LoadOrder");
-
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select * From NodeDetail Order By LoadOrder";
+			
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
 			nodeList = (from item in resultTable.AsEnumerable()
 						select new Node()
 						{
@@ -815,7 +958,13 @@ namespace openPDCManager.Web.Data
 			query += " Order By LoadOrder";
 						
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData(query);
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = query;
+
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
 			foreach (DataRow row in resultTable.Rows)
 			{
 				if (!nodeList.ContainsKey(new Guid(row["ID"].ToString())))
@@ -827,16 +976,69 @@ namespace openPDCManager.Web.Data
 		
 		public static string SaveNode(Node node, bool isNew)
 		{
-			string query;
-			if (isNew)
-				query = string.Format("Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, Image, Master, LoadOrder, Enabled) Values ('{0}', {1}, {2}, {3}, {4}, {5}, '{6}', {7}, '{8}')",
-					node.Name, NullableValue(node.CompanyID), NullableValue(node.Longitude), NullableValue(node.Latitude), NullableQuote(node.Description), NullableQuote(node.Image), Convert.ToInt32(node.Master), node.LoadOrder, node.Enabled);
-			else
-				query = string.Format("Update Node Set Name = '{0}', CompanyID = {1}, Longitude = {2}, Latitude = {3}, Description = {4}, Image = {5}, Master = '{6}', LoadOrder = {7}, Enabled = '{8}' Where ID = '{9}'",
-					node.Name, NullableValue(node.CompanyID), NullableValue(node.Longitude), NullableValue(node.Latitude), NullableQuote(node.Description), NullableQuote(node.Image), Convert.ToInt32(node.Master), node.LoadOrder, node.Enabled, node.ID);
-
 			DataConnection connection = new DataConnection();
-			connection.ExecuteScalar(query);
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+
+			if (isNew)
+				command.CommandText = "Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, Image, Master, LoadOrder, Enabled) Values (@name, @companyID, @longitude, @latitude, @description, @image, @master, @loadOrder, @enabled)";
+			else
+				command.CommandText = "Update Node Set Name = @name, CompanyID = @companyID, Longitude = @longitude, Latitude = @latitude, Description = @description, Image = @image, Master = @master, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+
+			IDbDataParameter param = command.CreateParameter();
+			param.ParameterName = "@name";
+			param.Value = node.Name;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@companyID";
+			param.Value = node.CompanyID ?? (object)DBNull.Value;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@longitude";
+			param.Value = node.Longitude ?? (object)DBNull.Value;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@latitude";
+			param.Value = node.Latitude ?? (object)DBNull.Value;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@description";
+			param.Value = node.Description;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@image";
+			param.Value = node.Image;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@master";
+			param.Value = node.Master;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@loadOrder";
+			param.Value = node.LoadOrder;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@enabled";
+			param.Value = node.Enabled;
+			command.Parameters.Add(param);
+
+			if (!isNew)
+			{
+				param = command.CreateParameter();
+				param.ParameterName = "@id";
+				param.Value = node.ID;
+				command.Parameters.Add(param);
+			}
+
+			command.ExecuteNonQuery();		
 			connection.Dispose();
 			return "Done!";
 		}
@@ -849,8 +1051,12 @@ namespace openPDCManager.Web.Data
 		{
 			List<Vendor> vendorList = new List<Vendor>();			
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData("Select * FROM VendorDetail Order By Name");
-
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select * FROM VendorDetail Order By Name";
+			
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
 			vendorList = (from item in resultTable.AsEnumerable()
 						  select new Vendor()
 						  {
@@ -872,7 +1078,12 @@ namespace openPDCManager.Web.Data
 			if (isOptional)
 				vendorList.Add(0, "Select Vendor");
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData("Select ID, Name From Vendor Order By Name");
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select ID, Name From Vendor Order By Name";
+
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
 
 			foreach (DataRow row in resultTable.Rows)
 			{
@@ -885,14 +1096,40 @@ namespace openPDCManager.Web.Data
 		
 		public static string SaveVendor(Vendor vendor, bool isNew)
 		{
-			string query;
-			if (isNew)
-				query = string.Format("Insert Into Vendor (Acronym, Name, PhoneNumber, ContactEmail, URL) Values ({0}, '{1}', {2}, {3}, {4})", NullableQuote(vendor.Acronym), vendor.Name, NullableQuote(vendor.PhoneNumber), NullableQuote(vendor.ContactEmail), NullableQuote(vendor.URL));
-			else
-				query = string.Format("Update Vendor Set Acronym = {0}, Name = '{1}', PhoneNumber = {2}, ContactEmail = {3}, URL = {4} Where ID = {5}", NullableQuote(vendor.Acronym), vendor.Name, NullableQuote(vendor.PhoneNumber), NullableQuote(vendor.ContactEmail), NullableQuote(vendor.URL), vendor.ID);
-						
 			DataConnection connection = new DataConnection();
-			connection.ExecuteScalar(query);
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			if (isNew)
+				command.CommandText = "Insert Into Vendor (Acronym, Name, PhoneNumber, ContactEmail, URL) Values (@acronym, @name, @phoneNumber, @contactEmail, @url)";
+			else
+				command.CommandText = "Update Vendor Set Acronym = @acronym, Name = @name, PhoneNumber = @phoneNumber, ContactEmail = @contactEmail, URL = @url Where ID = @id";
+
+			IDbDataParameter param = command.CreateParameter();
+			param.ParameterName = "@acronym";
+			param.Value = vendor.Acronym;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@name";
+			param.Value = vendor.Name;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@phoneNumber";
+			param.Value = vendor.PhoneNumber;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@contactEmail";
+			param.Value = vendor.ContactEmail;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@url";
+			param.Value = vendor.URL;
+			command.Parameters.Add(param);
+
+			command.ExecuteNonQuery();
 			connection.Dispose();
 			return "Done!";
 		}
@@ -905,8 +1142,12 @@ namespace openPDCManager.Web.Data
 		{
 			List<VendorDevice> vendorDeviceList = new List<VendorDevice>();			
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData("Select * From VendorDeviceDetail Order By Name");
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select * From VendorDeviceDetail Order By Name";
 
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
 			vendorDeviceList = (from item in resultTable.AsEnumerable()
 								select new VendorDevice()
 								{
@@ -923,14 +1164,43 @@ namespace openPDCManager.Web.Data
 		
 		public static string SaveVendorDevice(VendorDevice vendorDevice, bool isNew)
 		{
-			string query;
-			if (isNew)
-				query = string.Format("Insert Into VendorDevice (VendorID, Name, Description, URL) Values ({0}, '{1}', {2}, {3})", vendorDevice.VendorID, vendorDevice.Name, NullableQuote(vendorDevice.Description), NullableQuote(vendorDevice.URL));
-			else
-				query = string.Format("Update VendorDevice Set VendorID = {0}, Name = '{1}', Description = {2}, URL = {3} Where ID = {4}", vendorDevice.VendorID, vendorDevice.Name, NullableQuote(vendorDevice.Description), NullableQuote(vendorDevice.URL), vendorDevice.ID);
-
 			DataConnection connection = new DataConnection();
-			connection.ExecuteScalar(query);
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			if (isNew)
+				command.CommandText = "Insert Into VendorDevice (VendorID, Name, Description, URL) Values (@vendorID, @name, @description, @url)";
+			else
+				command.CommandText = "Update VendorDevice Set VendorID = @vendorID, Name = @name, Description = @description, URL = @url Where ID = @id";
+
+			IDbDataParameter param = command.CreateParameter();
+			param.ParameterName = "@vendorID";
+			param.Value = vendorDevice.VendorID;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@name";
+			param.Value = vendorDevice.Name;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@description";
+			param.Value = vendorDevice.Description;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@url";
+			param.Value = vendorDevice.URL;
+			command.Parameters.Add(param);
+
+			if (!isNew)
+			{
+				param = command.CreateParameter();
+				param.ParameterName = "@id";
+				param.Value = vendorDevice.ID;
+				command.Parameters.Add(param);
+			}
+
+			command.ExecuteNonQuery();
 			connection.Dispose();
 			return "Done!";
 		}
@@ -940,9 +1210,15 @@ namespace openPDCManager.Web.Data
 			Dictionary<int, string> vendorDeviceList = new Dictionary<int, string>();
 			if (isOptional)
 				vendorDeviceList.Add(0, "Select Vendor Device");
-			string query = "Select ID, Name From VendorDevice Order By Name";
+			
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData(query);
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select ID, Name From VendorDevice Order By Name";
+
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
 			foreach (DataRow row in resultTable.Rows)
 			{
 				if (!vendorDeviceList.ContainsKey(Convert.ToInt32(row["ID"])))
@@ -955,13 +1231,26 @@ namespace openPDCManager.Web.Data
 		#endregion
 
 		#region " Manage Device Code"
-
-		public static List<Device> GetDeviceList()
-		{			
+				
+		public static List<Device> GetDeviceList(Guid nodeID)
+		{
 			List<Device> deviceList = new List<Device>();
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData("Select * From DeviceDetail Order By LoadOrder");
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;	
+			if (MasterNode(nodeID) || nodeID == Guid.Empty)
+				command.CommandText = "Select * From DeviceDetail Order By LoadOrder";										
+			else
+			{
+				command.CommandText = "Select * From DeviceDetail Where NodeID = @nodeID Order By LoadOrder";				
+				IDbDataParameter param = command.CreateParameter();
+				param.ParameterName = "@nodeID";				
+				param.Value = nodeID;
+				command.Parameters.Add(param);
+			}
 
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());			
 			deviceList = (from item in resultTable.AsEnumerable()
 						  select new Device()
 						  {
@@ -979,7 +1268,7 @@ namespace openPDCManager.Web.Data
 							  Longitude = item.Field<decimal?>("Longitude"),
 							  Latitude = item.Field<decimal?>("Latitude"),
 							  InterconnectionID = item.Field<int?>("InterconnectionID"),
-							  ConncetionString = item.Field<string>("ConnectionString"),
+							  ConnectionString = item.Field<string>("ConnectionString"),
 							  TimeZone = item.Field<string>("TimeZone"),
 							  TimeAdjustmentTicks = item.Field<long>("TimeAdjustmentTicks"),
 							  DataLossInterval = item.Field<double>("DataLossInterval"),
@@ -1001,24 +1290,136 @@ namespace openPDCManager.Web.Data
 
 		public static string SaveDevice(Device device, bool isNew)
 		{
-			string query = string.Empty;					
-				if (isNew)
-					query = string.Format("Insert Into Device (NodeID, ParentID, Acronym, Name, IsConcentrator, CompanyID, HistorianID, AccessID, VendorDeviceID, ProtocolID, Longitude, Latitude, InterconnectionID, ConnectionString, TimeZone, TimeAdjustmentTicks, " +
-						"DataLossInterval, ContactList, MeasuredLines, LoadOrder, Enabled) Values ('{0}', {1}, '{2}', {3}, '{4}', {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, {18}, {19}, '{20}')", device.NodeID, NullableValue(device.ParentID),
-						device.Acronym, NullableQuote(device.Name), device.IsConcentrator.ToString(), NullableValue(device.CompanyID), NullableValue(device.HistorianID), device.AccessID, NullableValue(device.VendorDeviceID), NullableValue(device.ProtocolID),
-						NullableValue(device.Longitude), NullableValue(device.Latitude), NullableValue(device.InterconnectionID), NullableQuote(device.ConncetionString), NullableQuote(device.TimeZone), device.TimeAdjustmentTicks, device.DataLossInterval,
-						NullableQuote(device.ContactList), NullableValue(device.MeasuredLines), device.LoadOrder, device.Enabled);
-				else
-					query = string.Format("Update Device Set NodeID = '{0}', ParentID = {1}, Acronym = '{2}', Name = {3}, IsConcentrator = '{4}', CompanyID = {5}, HistorianID = {6}, AccessID = {7}, VendorDeviceID = {8}, ProtocolID = {9}, Longitude = {10}, " +
-						"Latitude = {11}, InterconnectionID = {12}, ConnectionString = {13}, TimeZone = {14}, TimeAdjustmentTicks = {15}, DataLossInterval = {16}, ContactList = {17}, MeasuredLines = {18}, LoadOrder = {19}, Enabled = '{20}' WHERE ID = {21}",
-						device.NodeID, NullableValue(device.ParentID), device.Acronym, NullableQuote(device.Name), device.IsConcentrator.ToString(), NullableValue(device.CompanyID), NullableValue(device.HistorianID), device.AccessID,
-						NullableValue(device.VendorDeviceID), NullableValue(device.ProtocolID), NullableValue(device.Longitude), NullableValue(device.Latitude), NullableValue(device.InterconnectionID), NullableQuote(device.ConncetionString),
-						NullableQuote(device.TimeZone), device.TimeAdjustmentTicks, device.DataLossInterval, NullableQuote(device.ContactList), NullableValue(device.MeasuredLines), device.LoadOrder, device.Enabled, device.ID);
-				DataConnection connection = new DataConnection();
-				connection.ExecuteScalar(query);
-				connection.Dispose();
-				return "Done";
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+
+			if (isNew)
+				command.CommandText = "Insert Into Device (NodeID, ParentID, Acronym, Name, IsConcentrator, CompanyID, HistorianID, AccessID, VendorDeviceID, ProtocolID, Longitude, Latitude, InterconnectionID, ConnectionString, TimeZone, TimeAdjustmentTicks, " +
+					"DataLossInterval, ContactList, MeasuredLines, LoadOrder, Enabled) Values (@nodeID, @parentID, @acronym, @name, @isConcentrator, @companyID, @historianID, @accessID, @vendorDeviceID, @protocolID, @longitude, @latitude, @interconnectionID, " +
+					"@connectionString, @timezone, @timeAdjustmentTicks, @dataLossInterval, @contactList, @measuredLines, @loadOrder, @enabled)";
+			else
+				command.CommandText = "Update Device Set NodeID = @nodeID, ParentID = @parentID, Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, CompanyID = @companyID, HistorianID = @historianID, AccessID = @accessID, VendorDeviceID = @vendorDeviceID, " +
+					"ProtocolID = @protocolID, Longitude = @longitude, Latitude = @latitude, InterconnectionID = @interconnectionID, ConnectionString = @connectionString, TimeZone = @timezone, TimeAdjustmentTicks = @timeAdjustmentTicks, DataLossInterval = @dataLossInterval, " +
+					"ContactList = @contactList, MeasuredLines = @measuredLines, LoadOrder = @loadOrder, Enabled = @enabled WHERE ID = @id";
+
+			command.CommandType = CommandType.Text;
 			
+			IDbDataParameter param = command.CreateParameter();
+			param.ParameterName = "@nodeID";			
+			param.Value = device.NodeID;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@parentID";			
+			param.Value = device.ParentID ?? (object)DBNull.Value;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@acronym";
+			param.Value = device.Acronym;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@name";
+			param.Value = device.Name;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@isConcentrator";
+			param.Value = device.IsConcentrator;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@companyID";
+			param.Value = device.CompanyID;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@historianID";
+			param.Value = device.HistorianID ?? (object)DBNull.Value;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@accessID";
+			param.Value = device.AccessID;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@vendorDeviceID";
+			param.Value = device.VendorDeviceID;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@protocolID";
+			param.Value = device.ProtocolID;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@longitude";
+			param.Value = device.Longitude ?? (object)DBNull.Value;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@latitude";
+			param.Value = device.Latitude ?? (object)DBNull.Value;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@interconnectionID";
+			param.Value = device.InterconnectionID ?? (object)DBNull.Value;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@connectionString";
+			param.Value = device.ConnectionString;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@timezone";
+			param.Value = device.TimeZone;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@timeAdjustmentTicks";
+			param.Value = device.TimeAdjustmentTicks;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@dataLossInterval";
+			param.Value = device.DataLossInterval;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@contactList";
+			param.Value = device.ContactList;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@measuredLines";
+			param.Value = device.MeasuredLines ?? (object)DBNull.Value;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@loadOrder";
+			param.Value = device.LoadOrder;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@enabled";
+			param.Value = device.Enabled;
+			command.Parameters.Add(param);
+
+			if (!isNew)
+			{
+				param = command.CreateParameter();
+				param.ParameterName = "@id";
+				param.Value = device.ID;
+				command.Parameters.Add(param);
+			}
+
+			command.ExecuteNonQuery();			
+			connection.Dispose();
+			return "Done";			
 		}
 
 		public static Dictionary<int, string> GetDevices(bool concentratorOnly, bool isOptional)
@@ -1033,7 +1434,13 @@ namespace openPDCManager.Web.Data
 			query += " Order By LoadOrder";
 
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData(query);
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = query;
+			
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
 			foreach (DataRow row in resultTable.Rows)
 			{
 				if (!deviceList.ContainsKey(Convert.ToInt32(row["ID"])))
@@ -1046,47 +1453,9 @@ namespace openPDCManager.Web.Data
 		public static Device GetDeviceByDeviceID(int deviceID)
 		{
 			Device device = new Device();
-
-			device = (from item in GetDeviceList()
+			device = (from item in GetDeviceList(Guid.Empty)
 					  where item.ID == deviceID
-					  select item).ToList()[0];
-
-			//DataConnection connection = new DataConnection();			
-			//DataRow row = connection.RetrieveRow("Select * From DeviceDetail Where ID = " + deviceID.ToString());
-
-
-
-			//if (row != null)
-			//{
-			//    device.NodeID = (Guid)row["NodeID"];
-			//    device.ID = Convert.ToInt32(row["ID"]);
-			//    device.ParentID = row["ParentID"] == null ? (int?)null : (int?)row["ParentID"];
-			//    device.Acronym = row["Acronym"].ToString();
-			//    device.Name = row["Name"].ToString();
-			//    device.IsConcentrator = Convert.ToBoolean(row["IsConcentrator"]);
-			//    device.CompanyID = (int?)row["CompanyID"];
-			//    device.HistorianID = (int?)row["HistorianID"];
-			//    device.AccessID = (int)row["AccessID"];
-			//    device.VendorDeviceID = (int?)row["VendorDeviceID"];
-			//    device.ProtocolID = (int?)row["ProtocolID"];
-			//    device.Longitude = (decimal?)row["Longitude"];
-			//    device.Latitude = (decimal?)row["Latitude"];
-			//    device.InterconnectionID = (int?)row["InterconnectionID"];
-			//    device.ConncetionString = row["ConnectionString"].ToString();
-			//    device.TimeZone = row["TimeZone"].ToString();
-			//    device.TimeAdjustmentTicks = (long)row["TimeAdjustmentTicks"];
-			//    device.DataLossInterval = (double)row["DataLossInterval"];
-			//    device.ContactList = row["ContactList"].ToString();
-			//    device.MeasuredLines = (int?)row["MeasuredLines"];
-			//    device.LoadOrder = (int)row["LoadOrder"];
-			//    device.Enabled = (bool)row["Enabled"];
-			//    device.CompanyName = row["CompanyName"].ToString();
-			//    device.HistorianAcronym = row["HistorianAcronym"].ToString();
-			//    device.VendorDeviceName = row["VendorDeviceName"].ToString();
-			//    device.ProtocolName = row["ProtocolName"].ToString();
-			//    device.InterconnectionName = row["InterconnectionName"].ToString();
-			//    device.NodeName = row["NodeName"].ToString();
-			//}
+					  select item).ToList()[0];			
 			return device;
 		}
 
@@ -1098,8 +1467,12 @@ namespace openPDCManager.Web.Data
 		{
 			List<OtherDevice> otherDeviceList = new List<OtherDevice>();
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData("Select * From OtherDeviceDetail Order By Acronym, Name");
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select * From OtherDeviceDetail Order By Acronym, Name";
 
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
 			otherDeviceList = (from item in resultTable.AsEnumerable()
 							   select new OtherDevice()
 							   {
@@ -1125,20 +1498,81 @@ namespace openPDCManager.Web.Data
 
 		public static string SaveOtherDevice(OtherDevice otherDevice, bool isNew)
 		{
-			string query;
-			if (isNew)
-				query = string.Format("Insert Into OtherDevice (Acronym, Name, IsConcentrator, CompanyID, VendorDeviceID, Longitude, Latitude, InterconnectionID, Planned, Desired, InProgress) Values ('{0}', {1}, '{2}', {3}, {4}, {5}, {6}, {7}, '{8}', '{9}', '{10}')",
-					otherDevice.Acronym, NullableQuote(otherDevice.Name), otherDevice.IsConcentrator.ToString(), NullableValue(otherDevice.CompanyID), NullableValue(otherDevice.VendorDeviceID), NullableValue(otherDevice.Longitude), NullableValue(otherDevice.Latitude),
-					NullableValue(otherDevice.InterconnectionID), otherDevice.Planned, otherDevice.Desired, otherDevice.InProgress);
-			else
-				query = string.Format("Update OtherDevice Set Acronym = '{0}', Name = {1}, IsConcentrator = '{2}', CompanyID = {3}, VendorDeviceID = {4}, Longitude = {5}, Latitude = {6}, InterconnectionID = {7}, Planned = '{8}', Desired = '{9}', InProgress = '{10}' " +
-					"Where ID = {11}", otherDevice.Acronym, NullableQuote(otherDevice.Name), otherDevice.IsConcentrator.ToString(), NullableValue(otherDevice.CompanyID), NullableValue(otherDevice.VendorDeviceID), NullableValue(otherDevice.Longitude),
-					NullableValue(otherDevice.Latitude), NullableValue(otherDevice.InterconnectionID), otherDevice.Planned, otherDevice.Desired, otherDevice.InProgress, otherDevice.ID);
-
 			DataConnection connection = new DataConnection();
-			connection.ExecuteScalar(query);
-			connection.Dispose();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			if (isNew)
+				command.CommandText = "Insert Into OtherDevice (Acronym, Name, IsConcentrator, CompanyID, VendorDeviceID, Longitude, Latitude, InterconnectionID, Planned, Desired, InProgress) Values " +
+					"(@acronym, @name, @isConcentrator, @companyID, @vendorDeviceID, @longitude, @latitude, @interconnectionID, @planned, @desired, @inProgress)";
+			else
+				command.CommandText = "Update OtherDevice Set Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, CompanyID = @companyID, VendorDeviceID = @vendorDeviceID, Longitude = @longitude, " +
+					"Latitude = @latitude, InterconnectionID = @interconnectionID, Planned = @planned, Desired = @desired, InProgress = @inProgress Where ID = @id";
 
+			IDbDataParameter param = command.CreateParameter();
+			param.ParameterName = "@acronym";
+			param.Value = otherDevice.Acronym;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@name";
+			param.Value = otherDevice.Name;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@isConcentrator";
+			param.Value = otherDevice.IsConcentrator;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@companyID";
+			param.Value = otherDevice.CompanyID ?? (object)DBNull.Value;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@vendorDeviceID";
+			param.Value = otherDevice.VendorDeviceID ?? (object)DBNull.Value;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@longitude";
+			param.Value = otherDevice.Longitude ?? (object)DBNull.Value;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@latitude";
+			param.Value = otherDevice.Latitude ?? (object)DBNull.Value;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@interconnectionID";
+			param.Value = otherDevice.InterconnectionID ?? (object)DBNull.Value;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@planned";
+			param.Value = otherDevice.Planned;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@desired";
+			param.Value = otherDevice.Desired;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@inProgress";
+			param.Value = otherDevice.InProgress;
+			command.Parameters.Add(param);
+
+			if (!isNew)
+			{
+				param = command.CreateParameter();
+				param.ParameterName = "@id";
+				param.Value = otherDevice.ID;
+				command.Parameters.Add(param);
+			}
+
+			command.ExecuteScalar();
+			connection.Dispose();
 			return "Done!";
 		}
 
@@ -1160,10 +1594,15 @@ namespace openPDCManager.Web.Data
 			Dictionary<int, string> interconnectionList = new Dictionary<int, string>();
 			if (isOptional)
 				interconnectionList.Add(0, "Select Interconnection");
-
-			string query = "Select ID, Name From Interconnection Order By LoadOrder";
+						
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData(query);
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select ID, Name From Interconnection Order By LoadOrder";
+			
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
 			foreach (DataRow row in resultTable.Rows)
 			{
 				if (!interconnectionList.ContainsKey(Convert.ToInt32(row["ID"])))
@@ -1182,9 +1621,13 @@ namespace openPDCManager.Web.Data
 			Dictionary<int, string> protocolList = new Dictionary<int, string>();
 			if (isOptional)
 				protocolList.Add(0, "Select Protocol");
-			string query = "Select ID, Name From Protocol Order By Name";
+			
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData(query);
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select ID, Name From Protocol Order By Name";
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
 
 			foreach (DataRow row in resultTable.Rows)
 			{
@@ -1200,12 +1643,25 @@ namespace openPDCManager.Web.Data
 
 		#region " Manage Calculated Measurements"
 
-		public static List<CalculatedMeasurement> GetCalculatedMeasurementList()
+		public static List<CalculatedMeasurement> GetCalculatedMeasurementList(Guid nodeID)
 		{
 			List<CalculatedMeasurement> calculatedMeasurementList = new List<CalculatedMeasurement>();
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData("Select * From CalculatedMeasurementDetail Order By LoadOrder");
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			if (MasterNode(nodeID) || nodeID == Guid.Empty)
+				command.CommandText = "Select * From CalculatedMeasurementDetail Order By LoadOrder";
+			else
+			{
+				command.CommandText = "Select * From CalculatedMeasurementDetail Where NodeID = @nodeID Order By LoadOrder";
+				IDbDataParameter param = command.CreateParameter();
+				param.ParameterName = "@nodeID";
+				param.Value = nodeID;
+				command.Parameters.Add(param);
+			}
 
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
 			calculatedMeasurementList = (from item in resultTable.AsEnumerable()
 										 select new CalculatedMeasurement()
 										 {
@@ -1236,23 +1692,112 @@ namespace openPDCManager.Web.Data
 
 		public static string SaveCalculatedMeasurement(CalculatedMeasurement calculatedMeasurement, bool isNew)
 		{
-			string query = string.Empty;
-			if (isNew)
-				query = string.Format("Insert Into CalculatedMeasurement (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, ConfigSection, InputMeasurements, OutputMeasurements, MinimumMeasurementsToUse, FramesPerSecond, LagTime, LeadTime, " +
-					"UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled) Values ('{0}', '{1}', {2}, '{3}', '{4}', {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, '{13}', '{14}', {15}, '{16}')", calculatedMeasurement.NodeId, calculatedMeasurement.Acronym,
-				NullableQuote(calculatedMeasurement.Name), calculatedMeasurement.AssemblyName, calculatedMeasurement.TypeName, NullableQuote(calculatedMeasurement.ConnectionString), NullableQuote(calculatedMeasurement.ConfigSection), NullableQuote(calculatedMeasurement.InputMeasurements),
-				NullableQuote(calculatedMeasurement.OutputMeasurements), calculatedMeasurement.MinimumMeasurementsToUse, calculatedMeasurement.FramesPerSecond, calculatedMeasurement.LagTime, calculatedMeasurement.LeadTime, calculatedMeasurement.UseLocalClockAsRealTime.ToString(),
-				calculatedMeasurement.AllowSortsByArrival.ToString(), calculatedMeasurement.LoadOrder, calculatedMeasurement.Enabled.ToString());
-			else
-				query = string.Format("Update CalculatedMeasurement Set NodeID = '{0}', Acronym = '{1}', Name = {2}, AssemblyName = '{3}', TypeName = '{4}', ConnectionString = {5}, ConfigSection = {6}, InputMeasurements = {7}, OutputMeasurements = {8}, " +
-					"MinimumMeasurementsToUse = {9}, FramesPerSecond = {10}, LagTime = {11}, LeadTime = {12}, UseLocalClockAsRealTime = '{13}', AllowSortsByArrival = '{14}', LoadOrder = {15}, Enabled = '{16}' Where ID = {17}", calculatedMeasurement.NodeId,
-					calculatedMeasurement.Acronym, NullableQuote(calculatedMeasurement.Name), calculatedMeasurement.AssemblyName, calculatedMeasurement.TypeName, NullableQuote(calculatedMeasurement.ConnectionString),
-					NullableQuote(calculatedMeasurement.ConfigSection), NullableQuote(calculatedMeasurement.InputMeasurements), NullableQuote(calculatedMeasurement.OutputMeasurements), calculatedMeasurement.MinimumMeasurementsToUse,
-					calculatedMeasurement.FramesPerSecond, calculatedMeasurement.LagTime, calculatedMeasurement.LeadTime, calculatedMeasurement.UseLocalClockAsRealTime.ToString(), calculatedMeasurement.AllowSortsByArrival.ToString(),
-					calculatedMeasurement.LoadOrder, calculatedMeasurement.Enabled.ToString(), calculatedMeasurement.ID);
-
 			DataConnection connection = new DataConnection();
-			connection.ExecuteScalar(query);
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+
+			if (isNew)
+				command.CommandText = "Insert Into CalculatedMeasurement (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, ConfigSection, InputMeasurements, OutputMeasurements, MinimumMeasurementsToUse, FramesPerSecond, LagTime, LeadTime, " +
+					"UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled) Values (@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @configSection, @inputMeasurements, @outputMeasurements, @minimumMeasurementsToUse, " +
+					"@framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled)";
+			else
+				command.CommandText = "Update CalculatedMeasurement Set NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, TypeName = @typeName, ConnectionString = @connectionString, ConfigSection = @configSection, " +
+					"InputMeasurements = @inputMeasurements, OutputMeasurements = @outputMeasurements, MinimumMeasurementsToUse = @minimumMeasurementsToUse, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, " +
+					"UseLocalClockAsRealTime = @useLocalClockAsRealTime, AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+
+			IDbDataParameter param = command.CreateParameter();
+			param.ParameterName = "@nodeID";
+			param.Value = calculatedMeasurement.NodeId;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@acronym";
+			param.Value = calculatedMeasurement.Acronym;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@name";
+			param.Value = calculatedMeasurement.Name;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@assemblyName";
+			param.Value = calculatedMeasurement.AssemblyName;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@typeName";
+			param.Value = calculatedMeasurement.TypeName;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@connectionString";
+			param.Value = calculatedMeasurement.ConnectionString;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@configSection";
+			param.Value = calculatedMeasurement.ConfigSection;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@inputMeasurements";
+			param.Value = calculatedMeasurement.InputMeasurements;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@outputMeasurements";
+			param.Value = calculatedMeasurement.OutputMeasurements;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@minimumMeasurementsToUse";
+			param.Value = calculatedMeasurement.MinimumMeasurementsToUse;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@framesPerSecond";
+			param.Value = calculatedMeasurement.FramesPerSecond;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@lagTime";
+			param.Value = calculatedMeasurement.LagTime;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@leadTime";
+			param.Value = calculatedMeasurement.LeadTime;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@useLocalClockAsRealTime";
+			param.Value = calculatedMeasurement.UseLocalClockAsRealTime;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@allowSortsByArrival";
+			param.Value = calculatedMeasurement.AllowSortsByArrival;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@loadOrder";
+			param.Value = calculatedMeasurement.LoadOrder;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@enabled";
+			param.Value = calculatedMeasurement.Enabled;
+			command.Parameters.Add(param);
+
+			if (!isNew)
+			{
+				param = command.CreateParameter();
+				param.ParameterName = "@id";
+				param.Value = calculatedMeasurement.ID;
+				command.Parameters.Add(param);
+			}
+			command.ExecuteNonQuery();			
 			connection.Dispose();
 			return "Done!";
 		}
@@ -1261,7 +1806,7 @@ namespace openPDCManager.Web.Data
 
 		#region " Manage Custom Adapters Code"
 
-		public static List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType)
+		public static List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType, Guid nodeID)
 		{
 			List<Adapter> adapterList = new List<Adapter>();
 			string viewName;
@@ -1273,7 +1818,21 @@ namespace openPDCManager.Web.Data
 				viewName = "CustomOutputAdapterDetail";
 
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData("Select * From " + viewName + " Order By LoadOrder");
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			if (MasterNode(nodeID) || nodeID == Guid.Empty)
+				command.CommandText = "Select * From " + viewName + " Order By LoadOrder";
+			else
+			{
+				command.CommandText = "Select * From " + viewName + " Where NodeID = @nodeID Order By LoadOrder";
+				IDbDataParameter param = command.CreateParameter();
+				param.ParameterName = "@nodeID";
+				param.Value = nodeID;
+				command.Parameters.Add(param);
+			}
+
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
 			adapterList = (from item in resultTable.AsEnumerable()
 						   select new Adapter()
 						   {
@@ -1294,7 +1853,7 @@ namespace openPDCManager.Web.Data
 
 		public static string SaveAdapter(Adapter adapter, bool isNew)
 		{
-			string query, tableName;
+			string tableName;
 			AdapterType adapterType = adapter.adapterType;
 
 			if (adapterType == AdapterType.Input)
@@ -1304,15 +1863,61 @@ namespace openPDCManager.Web.Data
 			else
 				tableName = "CustomOutputAdapter";
 
-			if (isNew)
-				query = string.Format("Insert Into " + tableName + " (NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, LoadOrder, Enabled) Values ('{0}', '{1}', '{2}', '{3}', {4}, {5}, '{6}')",
-					adapter.NodeID, adapter.AdapterName, adapter.AssemblyName, adapter.TypeName, NullableQuote(adapter.ConnectionString), adapter.LoadOrder, adapter.Enabled.ToString());
-			else
-				query = string.Format("Update " + tableName + " Set NodeID = '{0}', AdapterName = '{1}', AssemblyName = '{2}', TypeName = '{3}', ConnectionString = {4}, LoadOrder = {5}, Enabled = '{6}' Where ID = {7}",
-					adapter.NodeID, adapter.AdapterName, adapter.AssemblyName, adapter.TypeName, NullableQuote(adapter.ConnectionString), adapter.LoadOrder, adapter.Enabled.ToString(), adapter.ID);
-
 			DataConnection connection = new DataConnection();
-			connection.ExecuteScalar(query);
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+
+			if (isNew)
+				command.CommandText = "Insert Into " + tableName + " (NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, LoadOrder, Enabled) Values " +
+					"(@nodeID, @adapterName, @assemblyName, @typeName, @connectionString, @loadOrder, @enabled)";
+			else
+				command.CommandText = "Update " + tableName + " Set NodeID = @nodeID, AdapterName = @adapterName, AssemblyName = @assemblyName, TypeName = @typeName, " +
+					"ConnectionString = @connectionString, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+
+			IDbDataParameter param = command.CreateParameter();
+			param.ParameterName = "@nodeID";
+			param.Value = adapter.NodeID;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@adapterName";
+			param.Value = adapter.AdapterName;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@assemblyName";
+			param.Value = adapter.AssemblyName;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@typeName";
+			param.Value = adapter.TypeName;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@connectionString";
+			param.Value = adapter.ConnectionString;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@loadOrder";
+			param.Value = adapter.LoadOrder;
+			command.Parameters.Add(param);
+
+			param = command.CreateParameter();
+			param.ParameterName = "@enabled";
+			param.Value = adapter.Enabled;
+			command.Parameters.Add(param);
+
+			if (!isNew)
+			{
+				param = command.CreateParameter();
+				param.ParameterName = "@id";
+				param.Value = adapter.ID;
+				command.Parameters.Add(param);
+			}
+
+			command.ExecuteNonQuery();						
 			connection.Dispose();
 			return "Done!";
 		}
@@ -1340,7 +1945,12 @@ namespace openPDCManager.Web.Data
 			resultSet.Tables.Add(rootNodesTable);
 
 			DataConnection connection = new DataConnection();
-			resultSet.Tables.Add(connection.RetrieveData("Select * From IaonTreeView").Copy());
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select * From IaonTreeView";
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+			resultSet.Tables.Add(resultTable.Copy());
 			resultSet.Tables[0].TableName = "RootNodesTable";
 			resultSet.Tables[1].TableName = "AdapterData";
 					
@@ -1371,13 +1981,17 @@ namespace openPDCManager.Web.Data
 
 		public static List<MapData> GetMapData(MapType mapType)
 		{
-			List<MapData> mapDataList = new List<MapData>();
-			string query = "Select * From MapData";
-			if (mapType == MapType.Active)
-				query += " Where DeviceType = 'Device'";			
-
+			List<MapData> mapDataList = new List<MapData>();			
 			DataConnection connection = new DataConnection();
-			DataTable resultTable = connection.RetrieveData(query);
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select * From MapData";
+
+			if (mapType == MapType.Active)
+				command.CommandText = "Select * From MapData Where DeviceType = 'Device'";
+			
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
 
 			if (mapType == MapType.Active)
 				mapDataList = (from item in resultTable.AsEnumerable()

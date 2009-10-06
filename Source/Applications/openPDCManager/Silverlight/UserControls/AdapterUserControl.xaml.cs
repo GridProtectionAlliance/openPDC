@@ -247,6 +247,7 @@ namespace openPDCManager.Silverlight.UserControls
 		bool inEditMode = false;
 		int adapterID = 0;
 		AdapterType adapterType;
+		Guid nodeID;
 
 		public AdapterUserControl()
 		{
@@ -277,7 +278,7 @@ namespace openPDCManager.Silverlight.UserControls
 			}
 			else
 				MessageBox.Show(e.Error.Message);
-			client.GetAdapterListAsync(false, adapterType);
+			client.GetAdapterListAsync(false, adapterType, nodeID);
 		}
 		void ListBoxAdapterList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -323,8 +324,10 @@ namespace openPDCManager.Silverlight.UserControls
 		}
 		void AdaptersUserControl_Loaded(object sender, RoutedEventArgs e)
 		{
+			App app = (App)Application.Current;
+			nodeID = app.NodeValue;
 			client.GetNodesAsync(true, false);
-			client.GetAdapterListAsync(false, adapterType);
+			client.GetAdapterListAsync(false, adapterType, nodeID);
 		}
 		void ClearForm()
 		{

@@ -58,7 +58,7 @@ namespace openPDCManager.Silverlight.Pages
 		}
         void LocalHive_Loaded(object sender, RoutedEventArgs e)
         {
-			client.GetHistorianListAsync();
+			//client.GetHistorianListAsync();
         }
 		void ClearForm()
 		{

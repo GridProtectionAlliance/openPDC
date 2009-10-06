@@ -249,7 +249,7 @@ namespace openPDCManager.Web.Data.Entities
 		public decimal? Longitude { get; set; }
 		public decimal? Latitude { get; set; }
 		public int? InterconnectionID { get; set; }
-		public string ConncetionString { get; set; }
+		public string ConnectionString { get; set; }
 		public string TimeZone { get; set; }
 		public long TimeAdjustmentTicks { get; set; }
 		public double DataLossInterval { get; set; }

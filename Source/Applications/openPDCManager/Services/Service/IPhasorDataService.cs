@@ -317,7 +317,7 @@ namespace PCS.Services.Service
 		#region " Manage Historian Code"
 
 		[OperationContract]
-		List<Historian> GetHistorianList();
+		List<Historian> GetHistorianList(Guid nodeID);
 
 		[OperationContract]
 		string SaveHistorian(Historian historian, bool isNew);
@@ -355,8 +355,11 @@ namespace PCS.Services.Service
 
 		#region " Manage Device Code"
 
+		//[OperationContract]
+		//List<Device> GetDeviceList();
+
 		[OperationContract]
-		List<Device> GetDeviceList();
+		List<Device> GetDeviceList(Guid nodeID);
 
 		[OperationContract]
 		Dictionary<int, string> GetDevices(bool concentratorOnly, bool isOptional);
@@ -399,7 +402,7 @@ namespace PCS.Services.Service
 		#region " Manage Calculated Measurements Code"
 
 		[OperationContract]
-		List<CalculatedMeasurement> GetCalculatedMeasurementList();
+		List<CalculatedMeasurement> GetCalculatedMeasurementList(Guid nodeID);
 
 		[OperationContract]
 		string SaveCalculatedMeasurement(CalculatedMeasurement calculatedMeasurement, bool isNew);
@@ -409,7 +412,7 @@ namespace PCS.Services.Service
 		#region " Manage Custom Adapters Code"
 
 		[OperationContract]
-		List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType);
+		List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType, Guid nodeID);
 
 		[OperationContract]
 		string SaveAdapter(Adapter adapter, bool isNew);

@@ -236,6 +236,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.ServiceModel;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using System.Collections.Generic;
 
 namespace openPDCManager.Silverlight
 {
@@ -261,16 +262,29 @@ namespace openPDCManager.Silverlight
 
 			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
 			client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
+			ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
 		}
 
+		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			App app = (App)Application.Current;
+			app.NodeValue = ((KeyValuePair<Guid, string>)(ComboboxNode.SelectedItem)).Key;
+		}
 		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
 		{
 			if (e.Error == null)
 				ComboboxNode.ItemsSource = e.Result;
 			else
 				MessageBox.Show(e.Error.Message);
+
+			App app = (App)Application.Current;
 			if (ComboboxNode.Items.Count > 0)
+			{
 				ComboboxNode.SelectedIndex = 0;
+				app.NodeValue = ((KeyValuePair<Guid, string>)(ComboboxNode.SelectedItem)).Key;
+			}
+			else
+				app.NodeValue = Guid.Empty;
 		}
 		void GridLayoutRoot_SizeChanged(object sender, SizeChangedEventArgs e)
 		{

@@ -247,6 +247,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 		bool inEditMode;
 		int historianID;
+		Guid nodeID;
 
 		public Historians()
 		{
@@ -270,7 +271,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			}
 			else
 				MessageBox.Show(e.Error.ToString());
-			client.GetHistorianListAsync();
+			client.GetHistorianListAsync(nodeID);
 		}
 		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
 		{
@@ -292,7 +293,9 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		}
 		void Historians_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetHistorianListAsync();
+			App app = (App)Application.Current;
+			nodeID = app.NodeValue;
+			client.GetHistorianListAsync(nodeID);
 			client.GetNodesAsync(true, false);
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
