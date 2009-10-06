@@ -413,8 +413,19 @@ namespace openPDC
             string setting;
 
             if (settings.TryGetValue("Provider", out setting))
+            {
                 if (setting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.CurrentCultureIgnoreCase))
+                {
                     m_nodeIDQueryString = "{" + m_nodeID + "}";
+
+                    // Make sure path to Access database is fully qualified
+                    if (settings.TryGetValue("Data Source", out setting))
+                    {
+                        settings["Data Source"] = FilePath.GetAbsolutePath(setting);
+                        m_connectionString = settings.JoinKeyValuePairs();
+                    }
+                }
+            }
 
             if (string.IsNullOrEmpty(m_nodeIDQueryString))
                 m_nodeIDQueryString = "'" + m_nodeID + "'";
