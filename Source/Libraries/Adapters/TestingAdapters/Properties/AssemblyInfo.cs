@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 
 // Assembly identity attributes.
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.1.31176")]
 
 // Informational attributes.
 [assembly: AssemblyCompany("TVA")]
