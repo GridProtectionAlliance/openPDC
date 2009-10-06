@@ -86,7 +86,7 @@
                                             <Image Source="Images/Calculation.png"/>
                                         </igMenu:XamWebMenuItem.Icon>
                                     </igMenu:XamWebMenuItem>
-                                    <igMenu:XamWebMenuItem Header="Concentrator Output Streams" Style="{StaticResource XamWebMenuItemStyleMainMenu}"  NavigationOnClick="True" NavigationUri="">
+                                    <igMenu:XamWebMenuItem Header="Concentrator Output Streams" Style="{StaticResource XamWebMenuItemStyleMainMenu}"  NavigationOnClick="True" NavigationUri="/Pages/Adapters/OutputStreams.xaml">
                                         <igMenu:XamWebMenuItem.Icon>
                                             <Image Source="Images/Output.png"/>
                                         </igMenu:XamWebMenuItem.Icon>
@@ -125,7 +125,7 @@
                                             <Image Source="Images/Computers.png" />
                                         </igMenu:XamWebMenuItem.Icon>
                                     </igMenu:XamWebMenuItem>
-                                    <igMenu:XamWebMenuItem Header="Measurements" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="">
+                                    <igMenu:XamWebMenuItem Header="Measurements" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Manage/Measurements.xaml">
                                         <igMenu:XamWebMenuItem.Icon>
                                             <Image Source="Images/Measure.png" />
                                         </igMenu:XamWebMenuItem.Icon>

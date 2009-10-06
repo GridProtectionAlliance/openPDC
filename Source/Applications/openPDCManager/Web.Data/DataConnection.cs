@@ -239,7 +239,6 @@ using System.Data;
 using System.Reflection;
 using TVA;
 using TVA.Configuration;
-using TVA.Data;
 
 namespace openPDCManager.Web.Data
 {
@@ -371,69 +370,7 @@ namespace openPDCManager.Web.Data
                 }
             }
         }
-        /// <summary>
-        /// Executes the SQL statement using <see cref="Connection"/>, and returns the number of rows affected.
-        /// </summary>
-        /// <param name="sql">The SQL statement to be executed.</param>
-        /// <returns>The number of rows affected.</returns>
-        public int ExecuteNonQuery(string sql)
-        {
-            return m_connection.ExecuteNonQuery(sql);
-        }
-
-        /// <summary>
-        /// Executes the SQL statement using <see cref="Connection"/>, and builds a <see cref="IDataReader"/>.
-        /// </summary>
-        /// <param name="sql">The SQL statement to be executed.</param>
-        /// <returns>A <see cref="IDataReader"/> object.</returns>
-        public IDataReader ExecuteReader(string sql)
-        {
-            return m_connection.ExecuteReader(sql);
-        }
-
-        /// <summary>
-        /// Executes the SQL statement using <see cref="Connection"/>, and returns the value in the first column 
-        /// of the first row in the resultset.
-        /// </summary>
-        /// <param name="sql">The SQL statement to be executed.</param>
-        /// <returns>Value in the first column of the first row in the resultset.</returns>
-        public object ExecuteScalar(string sql)
-        {
-            return m_connection.ExecuteScalar(sql);
-        }
-
-        /// <summary>
-        /// Executes the SQL statement using <see cref="Connection"/>, and returns the first <see cref="DataRow"/> in the resultset.
-        /// </summary>
-        /// <param name="sql">The SQL statement to be executed.</param>
-        /// <returns>The first <see cref="DataRow"/> in the resultset.</returns>
-        public DataRow RetrieveRow(string sql)
-        {
-            return m_connection.RetrieveRow(m_adapterType, sql);
-        }
-
-        /// <summary>
-        /// Executes the SQL statement using <see cref="Connection"/>, and returns the first <see cref="DataTable"/> 
-        /// of resultset, if the resultset contains multiple tables.
-        /// </summary>
-        /// <param name="sql">The SQL statement to be executed.</param>
-        /// <returns>A <see cref="DataTable"/> object.</returns>
-        public DataTable RetrieveData(string sql)
-        {
-            return m_connection.RetrieveData(m_adapterType, sql);
-        }
-
-        /// <summary>
-        /// Executes the SQL statement using <see cref="Connection"/>, and returns the <see cref="DataSet"/> that 
-        /// may contain multiple tables, depending on the SQL statement.
-        /// </summary>
-        /// <param name="sql">The SQL statement to be executed.</param>
-        /// <returns>A <see cref="DataSet"/> object.</returns>
-        public DataSet RetrieveDataSet(string sql)
-        {
-            return m_connection.RetrieveDataSet(m_adapterType, sql);
-        }
-
+        
         #endregion
 
         #region [ Static ]

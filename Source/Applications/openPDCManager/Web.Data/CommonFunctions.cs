@@ -612,38 +612,38 @@ namespace openPDCManager.Web.Data
         /// </summary>
         /// <param name="value">Value to quote or make NULL.</param>
         /// <returns>Quoted string if string is not null or empty; otherwise NULL.</returns>
-        public static string NullableQuote(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-                return "NULL";
+		//public static string NullableQuote(string value)
+		//{
+		//    if (string.IsNullOrEmpty(value))
+		//        return "NULL";
 
-            return string.Concat("'", value, "'");
-        }
+		//    return string.Concat("'", value, "'");
+		//}
 
         /// <summary>
         /// Returns NULL for values that are null.
         /// </summary>
         /// <param name="value">Value to return or make NULL.</param>
-        public static string NullableValue<T>(T? value) where T : struct
-        {
-            if (value.HasValue)
-                return value.ToString();
+		//public static string NullableValue<T>(T? value) where T : struct
+		//{
+		//    if (value.HasValue)
+		//        return value.ToString();
 
-            return "NULL";
-        }
+		//    return "NULL";
+		//}
 
-		public static string FormatedNodeID(Guid nodeID)
-		{
-			string nodeString = "'" + nodeID.ToString() + "'";
-			DataConnection connection = new DataConnection();
-			Dictionary<string, string> settings = connection.Connection.ConnectionString.ParseKeyValuePairs();
-			string setting;
-			if (settings.TryGetValue("Provider", out setting))
-				if (setting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.CurrentCultureIgnoreCase))
-					nodeString = "{" + nodeID.ToString() + "}";
+		//public static string FormatedNodeID(Guid nodeID)
+		//{
+		//    string nodeString = "'" + nodeID.ToString() + "'";
+		//    DataConnection connection = new DataConnection();
+		//    Dictionary<string, string> settings = connection.Connection.ConnectionString.ParseKeyValuePairs();
+		//    string setting;
+		//    if (settings.TryGetValue("Provider", out setting))
+		//        if (setting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.CurrentCultureIgnoreCase))
+		//            nodeString = "{" + nodeID.ToString() + "}";
 
-			return nodeString;
-		}
+		//    return nodeString;
+		//}
 
 		public static bool MasterNode(Guid nodeID)
 		{

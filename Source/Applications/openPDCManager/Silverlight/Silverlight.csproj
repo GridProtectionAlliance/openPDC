@@ -121,6 +121,9 @@
     <Compile Include="Pages\Adapters\OutputAdapters.xaml.cs">
       <DependentUpon>OutputAdapters.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Adapters\OutputStreams.xaml.cs">
+      <DependentUpon>OutputStreams.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\CalculatedMeasurement.xaml.cs">
       <DependentUpon>CalculatedMeasurement.xaml</DependentUpon>
     </Compile>
@@ -153,6 +156,9 @@
     </Compile>
     <Compile Include="Pages\Manage\Companies.xaml.cs">
       <DependentUpon>Companies.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Manage\Measurements.xaml.cs">
+      <DependentUpon>Measurements.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Manage\Nodes.xaml.cs">
       <DependentUpon>Nodes.xaml</DependentUpon>
@@ -237,6 +243,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
+    <Page Include="Pages\Adapters\OutputStreams.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
     <Page Include="Pages\CalculatedMeasurement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
@@ -278,6 +288,10 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
     <Page Include="Pages\Manage\Companies.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="Pages\Manage\Measurements.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
