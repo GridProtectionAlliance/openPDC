@@ -14,8 +14,11 @@
 CREATE DATABASE openPDC CHARACTER SET = latin1;
 USE openPDC;
 
-CREATE USER openPDCUser IDENTIFIED BY 'NXJCt0XD';
-GRANT SELECT, UPDATE ON openPDC.* TO openPDCUser;
+-- The following statements are used to create
+-- a user with access to the database.
+-- Be sure to change the username and password.
+-- CREATE USER NewUser IDENTIFIED BY 'MyPassword';
+-- GRANT SELECT, UPDATE, INSERT ON openPDC.* TO NewUser;
 
 CREATE TABLE Runtime(
 	ID INT AUTO_INCREMENT NOT NULL,
