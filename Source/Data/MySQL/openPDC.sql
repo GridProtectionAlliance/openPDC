@@ -650,6 +650,76 @@ SELECT VD.ID, VD.VendorID, VD.Name, COALESCE(VD.Description, '') AS Description,
 FROM VendorDevice VD, Vendor V 
 WHERE VD.VendorID = V.ID;
 
+CREATE VIEW CustomActionAdapterDetail AS
+SELECT     CA.NodeID, CA.ID, CA.AdapterName, CA.AssemblyName, CA.TypeName, COALESCE(CA.ConnectionString, '') AS ConnectionString, CA.LoadOrder, 
+                      CA.Enabled, N.Name AS NodeName
+FROM         CustomActionAdapter AS CA INNER JOIN
+                      Node AS N ON CA.NodeID = N.ID;
+ 
+CREATE VIEW CustomInputAdapterDetail AS
+SELECT     CA.NodeID, CA.ID, CA.AdapterName, CA.AssemblyName, CA.TypeName, COALESCE(CA.ConnectionString, '') AS ConnectionString, CA.LoadOrder, 
+                      CA.Enabled, N.Name AS NodeName
+FROM         CustomInputAdapter AS CA INNER JOIN
+                      Node AS N ON CA.NodeID = N.ID;
+ 
+CREATE VIEW CustomOutputAdapterDetail AS
+SELECT     CA.NodeID, CA.ID, CA.AdapterName, CA.AssemblyName, CA.TypeName, COALESCE(CA.ConnectionString, '') AS ConnectionString, CA.LoadOrder, 
+                      CA.Enabled, N.Name AS NodeName
+FROM         CustomOutputAdapter AS CA INNER JOIN
+                      Node AS N ON CA.NodeID = N.ID;
+ 
+CREATE VIEW IaonTreeView AS
+SELECT     'Action Adapters' AS AdapterType, NodeID, ID, AdapterName, AssemblyName, TypeName, COALESCE(ConnectionString, '') AS ConnectionString
+FROM         IaonActionAdapter
+UNION ALL
+SELECT     'Input Adapters' AS AdapterType, NodeID, ID, AdapterName, AssemblyName, TypeName, COALESCE(ConnectionString, '') AS ConnectionString
+FROM         IaonInputAdapter
+UNION ALL
+SELECT     'Output Adapters' AS AdapterType, NodeID, ID, AdapterName, AssemblyName, TypeName, COALESCE(ConnectionString, '') AS ConnectionString
+FROM         IaonOutputAdapter;
+ 
+CREATE VIEW OtherDeviceDetail AS
+SELECT     OD.ID, OD.Acronym, COALESCE(OD.Name, '') AS Name, OD.IsConcentrator, OD.CompanyID, OD.VendorDeviceID, OD.Longitude, OD.Latitude, 
+                      OD.InterconnectionID, OD.Planned, OD.Desired, OD.InProgress, COALESCE(C.Name, '') AS CompanyName, COALESCE(C.Acronym, '') AS CompanyAcronym, 
+                      COALESCE(C.MapAcronym, '') AS CompanyMapAcronym, COALESCE(VD.Name, '') AS VendorDeviceName, COALESCE(I.Name, '') AS InterconnectionName
+FROM         OtherDevice AS OD LEFT OUTER JOIN
+                      Company AS C ON OD.CompanyID = C.ID LEFT OUTER JOIN
+                      VendorDevice AS VD ON OD.VendorDeviceID = VD.ID LEFT OUTER JOIN
+                      Interconnection AS I ON OD.InterconnectionID = I.ID;
+ 
+CREATE VIEW VendorDeviceDistribution AS
+SELECT Vendor.Name AS VendorName, COUNT(*) AS DeviceCount 
+FROM Device 
+      LEFT OUTER JOIN VendorDevice ON Device.VendorDeviceID = VendorDevice.ID
+      INNER JOIN Vendor ON VendorDevice.VendorID = Vendor.ID
+      GROUP BY Vendor.Name;
+ 
+ALTER VIEW DeviceDetail AS
+SELECT     D.NodeID, D.ID, D.ParentID, D.Acronym, COALESCE(D.Name, '') AS Name, D.IsConcentrator, D.CompanyID, D.HistorianID, D.AccessID, D.VendorDeviceID, 
+                      D.ProtocolID, D.Longitude, D.Latitude, D.InterconnectionID, COALESCE(D.ConnectionString, '') AS ConnectionString, COALESCE(D.TimeZone, '') AS TimeZone, 
+                      D.TimeAdjustmentTicks, D.DataLossInterval, COALESCE(D.ContactList, '') AS ContactList, D.MeasuredLines, D.LoadOrder, D.Enabled, COALESCE(C.Name, '') 
+                      AS CompanyName, COALESCE(C.Acronym, '') AS CompanyAcronym, COALESCE(C.MapAcronym, '') AS CompanyMapAcronym, COALESCE(H.Acronym, '') 
+                      AS HistorianAcronym, COALESCE(VD.Name, '') AS VendorDeviceName, COALESCE(P.Name, '') AS ProtocolName, COALESCE(I.Name, '') AS InterconnectionName, 
+                      N.Name AS NodeName, COALESCE(PD.Acronym, '') AS ParentAcronym
+FROM         Device AS D LEFT OUTER JOIN
+                      Company AS C ON C.ID = D.CompanyID LEFT OUTER JOIN
+                      Historian AS H ON H.ID = D.HistorianID LEFT OUTER JOIN
+                      VendorDevice AS VD ON VD.ID = D.VendorDeviceID LEFT OUTER JOIN
+                      Protocol AS P ON P.ID = D.ProtocolID LEFT OUTER JOIN
+                      Interconnection AS I ON I.ID = D.InterconnectionID LEFT OUTER JOIN
+                      Node AS N ON N.ID = D.NodeID LEFT OUTER JOIN
+                      Device AS PD ON PD.ID = D.ParentID;
+ 
+CREATE VIEW MapData AS
+SELECT     'Device' AS DeviceType, NodeID, ID, Acronym, COALESCE(Name, '') AS Name, CompanyMapAcronym, CompanyName, VendorDeviceName, Longitude, 
+                      Latitude, true AS Reporting, false AS Inprogress, false AS Planned, false AS Desired
+FROM         DeviceDetail AS D
+UNION ALL
+SELECT     'OtherDevice' AS DeviceType, NULL AS NodeID, ID, Acronym, COALESCE(Name, '') AS Name, CompanyMapAcronym, CompanyName, VendorDeviceName, 
+                      Longitude, Latitude, false AS Reporting, true AS Inprogress, true AS Planned, true 
+                      AS Desired
+FROM         OtherDeviceDetail AS OD;
+
 CREATE TRIGGER CustomActionAdapter_RuntimeSync_Insert AFTER INSERT ON CustomActionAdapter
 FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, N'CustomActionAdapter');
 
