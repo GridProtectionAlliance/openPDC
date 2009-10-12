@@ -364,7 +364,7 @@ namespace HistorianAdapters
 
             // Initialize publisher delegates.
             m_maximumSamples = int.Parse(maximumSamples);
-            if (bool.Parse(conserveBandwidth))
+            if (conserveBandwidth.ParseBoolean())
             {
                 m_publisherDelegate = TransmitPacketType101;
             }
@@ -376,7 +376,7 @@ namespace HistorianAdapters
             
             // Initialize publiser socket.
             m_historianPublisher.ConnectionString = string.Format("Server={0}:{1}", server, port);
-            m_historianPublisher.PayloadAware = bool.Parse(payloadAware);
+            m_historianPublisher.PayloadAware = payloadAware.ParseBoolean();
             m_historianPublisher.ConnectionAttempt += HistorianPublisher_ConnectionAttempt;
             m_historianPublisher.ConnectionEstablished += HistorianPublisher_ConnectionEstablished;
             m_historianPublisher.ConnectionTerminated += HistorianPublisher_ConnectionTerminated;

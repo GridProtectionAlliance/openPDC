@@ -392,7 +392,7 @@ namespace HistorianAdapters
                 archivePath = FilePath.GetAbsolutePath("");
 
             if (settings.TryGetValue("refreshmetadata", out refreshMetadata))
-                m_refreshMetadata = bool.Parse(refreshMetadata);
+                m_refreshMetadata = refreshMetadata.ParseBoolean();
 
             // Initialize metadata file.           
             m_archive.MetadataFile.FileName = Path.Combine(archivePath, instanceName + "_dbase.dat");

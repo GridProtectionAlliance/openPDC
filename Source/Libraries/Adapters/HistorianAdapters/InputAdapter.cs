@@ -341,7 +341,7 @@ namespace HistorianAdapters
             m_historianDataListener.Server = server;
             m_historianDataListener.Port = int.Parse(port);
             m_historianDataListener.Protocol = (TransportProtocol)Enum.Parse(typeof(TransportProtocol), protocol, true);
-            m_historianDataListener.ConnectToServer = bool.Parse(outbound);
+            m_historianDataListener.ConnectToServer = outbound.ParseBoolean();
             m_historianDataListener.DataExtracted += HistorianDataListener_DataExtracted;
             m_historianDataListener.SocketConnecting += HistorianDataListener_SocketConnecting;
             m_historianDataListener.SocketConnected += HistorianDataListener_SocketConnected;
