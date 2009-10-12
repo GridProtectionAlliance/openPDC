@@ -684,6 +684,43 @@ namespace openPDCManager.Web.Data
 			return deviceDistribution;
 		}
 
+		public static List<InterconnectionStatus> GetInterconnectionStatus()
+		{
+		    List<InterconnectionStatus> interConnectionStatusList = new List<InterconnectionStatus>();
+			
+			DataConnection connection = new DataConnection();
+			DataSet resultSet = new DataSet();
+			resultSet.Tables.Add(new DataTable("InterconnectionSummary"));
+			resultSet.Tables.Add(new DataTable("MemberSummary"));
+			
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select InterconnectionName, Count(*) AS DeviceCount From DeviceDetail Group By InterconnectionName";
+			resultSet.Tables["InterconnectionSummary"].Load(command.ExecuteReader());
+
+			command.CommandText = "Select CompanyAcronym, CompanyName, InterconnectionName, Count(*) AS DeviceCount, Count(MeasuredLines) AS MeasuredLines " +
+									"From DeviceDetail Group By CompanyAcronym, CompanyName, InterconnectionName";
+			resultSet.Tables["MemberSummary"].Load(command.ExecuteReader());		
+
+			interConnectionStatusList = (from item in resultSet.Tables["InterconnectionSummary"].AsEnumerable()
+										 select new InterconnectionStatus()
+										 {
+											 InterConnection = item.Field<string>("InterconnectionName"),
+											 TotalDevices = "Total " + item.Field<int>("DeviceCount").ToString() + " Devices",
+											 MemberStatusList = (from cs in resultSet.Tables["MemberSummary"].AsEnumerable()
+															  where cs.Field<string>("InterconnectionName") == item.Field<string>("InterconnectionName")
+															  select new MemberStatus()
+															  {
+																  CompanyAcronym = cs.Field<string>("CompanyAcronym"),
+																  CompanyName = cs.Field<string>("CompanyName"),
+																  MeasuredLines = cs.Field<int>("MeasuredLines"),
+																  TotalDevices = cs.Field<int>("DeviceCount")																  
+															  }).ToList()
+										 }).ToList();
+
+		    return interConnectionStatusList;
+		}
+
 		#region " Manage Companies Code"
 
 		public static List<Company> GetCompanyList()
@@ -2049,5 +2086,7 @@ namespace openPDCManager.Web.Data
 		}
 
 		#endregion
+
+		
 	}
 }

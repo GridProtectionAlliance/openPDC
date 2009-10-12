@@ -255,7 +255,7 @@ namespace PCS.Services.DuplexService
 			{
 				//PmuDistributionList = CommonFunctions.GetPmuDistribution(),
 				DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(),
-				//InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus()
+				InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus()
 			};
 
 			// push refreshed data to all the connected clients.

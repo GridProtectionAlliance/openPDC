@@ -249,7 +249,7 @@ namespace PCS.Services.DuplexService
         [DataMember]
         public Dictionary<string, int> DeviceDistributionList { get; set; }
 
-		//[DataMember]
-		//public List<InterconnectionStatus> InterconnectionStatusList { get; set; }
+		[DataMember]
+		public List<InterconnectionStatus> InterconnectionStatusList { get; set; }
     }
 }

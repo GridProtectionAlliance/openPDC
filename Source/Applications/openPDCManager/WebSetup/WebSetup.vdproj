@@ -13,6 +13,18 @@
 "SccProvider" = "8:SAK"
     "Hierarchy"
     {
+        "Entry"
+        {
+        "MsmKey" = "8:_CFA632EEEF42498DA35EFF4C389D274D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_CFA632EEEF42498DA35EFF4C389D274D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
@@ -106,6 +118,14 @@
         {
             "LaunchCondition"
             {
+                "{A06ECF26-33A3-4562-8140-9B0E340D4F24}:_265E59C0FFB84D1DB0B79DF549037A28"
+                {
+                "Name" = "8:.NET Framework"
+                "Message" = "8:[VSDNETMSG]"
+                "Version" = "8:3.5.30729"
+                "AllowLaterVersions" = "11:FALSE"
+                "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=76617"
+                }
             }
         }
         "File"
@@ -118,7 +138,7 @@
         {
             "{80453C8E-1031-40EC-8E7A-9762B297303A}:_5CEB7ECEC1A5438EA37E99598A96A67C"
             {
-            "VirtualDirectory" = "8:WebSetup"
+            "VirtualDirectory" = "8:openPDCManager"
             "Port" = "3:80"
             "IsApplication" = "11:TRUE"
             "AllowScriptSourceAccess" = "11:FALSE"
@@ -128,7 +148,7 @@
             "LogVisits" = "11:TRUE"
             "Index" = "11:TRUE"
             "ExecutePermissions" = "3:2"
-            "DefaultDocument" = "8:default.aspx"
+            "DefaultDocument" = "8:Default.aspx"
             "ApplicationProtection" = "3:2"
                 "ApplicationMappings"
                 {
@@ -190,9 +210,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:openPDCManagerWebSetup"
+        "ProductName" = "8:openPDC Manager"
         "ProductCode" = "8:{E4C4BE1C-0EC5-4266-841B-F62F99E8E03E}"
-        "PackageCode" = "8:{EEE7D2EA-F80E-4F37-9DDF-3A61515C876A}"
+        "PackageCode" = "8:{3FDAC0E9-8DD1-425D-86C9-AB70C8DCF248}"
         "UpgradeCode" = "8:{91EBCCD7-3161-4214-B76F-3993F481597D}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
@@ -202,7 +222,7 @@
         "Manufacturer" = "8:TVA"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:openPDCManagerWebSetup"
+        "Title" = "8:openPDCManager"
         "Subject" = "8:"
         "ARPCONTACT" = "8:TVA"
         "Keywords" = "8:"
@@ -663,6 +683,34 @@
             "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:ContentFiles"
+            "OutputProjectGuid" = "8:{0B8D74B6-5556-4118-8A97-2F182F32DE50}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CFA632EEEF42498DA35EFF4C389D274D"
+            {
+            "SourcePath" = "8:..\\Web\\obj\\Debug\\openPDCManager.Web.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_5CEB7ECEC1A5438EA37E99598A96A67C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{0B8D74B6-5556-4118-8A97-2F182F32DE50}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"

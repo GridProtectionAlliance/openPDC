@@ -238,18 +238,18 @@ namespace openPDCManager.Web.Data.BusinessObjects
     public class InterconnectionStatus
     {
         public string InterConnection { get; set; }
-        public string TotalPmus { get; set; }
-        public string DisplayName { get; set; }
-        public List<MemberStatus> CompanyStatus { get; set; }
+        public string TotalDevices { get; set; }        
+        public List<MemberStatus> MemberStatusList { get; set; }
     }
 
     public class MemberStatus
     {
-        public string Name { get; set; }
+		public string CompanyAcronym { get; set; }
+        public string CompanyName { get; set; }
         public int MeasuredLines { get; set; }
         public int TotalDevices { get; set; }
-        public int ValidatedDevices { get; set; }
-        public int ReportingDevices { get; set; }
-        public string Status { get; set; }
+		//public int ValidatedDevices { get; set; }
+		//public int ReportingDevices { get; set; }
+		//public string Status { get; set; }
     }
 }

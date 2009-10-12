@@ -13,6 +13,60 @@
 "SccProvider" = "8:SAK"
     "Hierarchy"
     {
+        "Entry"
+        {
+        "MsmKey" = "8:_00C19202AAE86CCED82E80A18F61F2BE"
+        "OwnerKey" = "8:_534EAD8FE43B31C3BE8566484A03F6D8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_00C19202AAE86CCED82E80A18F61F2BE"
+        "OwnerKey" = "8:_FAEEF56F1A864785937B456A007E3B11"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_534EAD8FE43B31C3BE8566484A03F6D8"
+        "OwnerKey" = "8:_FAEEF56F1A864785937B456A007E3B11"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FAEEF56F1A864785937B456A007E3B11"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FD495C98572C8EB331AE3A47B27EC9EF"
+        "OwnerKey" = "8:_FAEEF56F1A864785937B456A007E3B11"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_00C19202AAE86CCED82E80A18F61F2BE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_FAEEF56F1A864785937B456A007E3B11"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_FD495C98572C8EB331AE3A47B27EC9EF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_534EAD8FE43B31C3BE8566484A03F6D8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
@@ -106,10 +160,111 @@
         {
             "LaunchCondition"
             {
+                "{A06ECF26-33A3-4562-8140-9B0E340D4F24}:_30AF98483F604C469CCBC053DA8350C0"
+                {
+                "Name" = "8:.NET Framework"
+                "Message" = "8:[VSDNETMSG]"
+                "Version" = "8:3.5.30729"
+                "AllowLaterVersions" = "11:FALSE"
+                "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=76617"
+                }
             }
         }
         "File"
         {
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_00C19202AAE86CCED82E80A18F61F2BE"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:TVA.Core, Version=1.0.1.31196, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_00C19202AAE86CCED82E80A18F61F2BE"
+                    {
+                    "Name" = "8:TVA.Core.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:TVA.Core.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B77D075D164D4C588D2D46F0EC323E01"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_534EAD8FE43B31C3BE8566484A03F6D8"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:openPDCManager.Web.Data, Version=1.0.8.31503, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_534EAD8FE43B31C3BE8566484A03F6D8"
+                    {
+                    "Name" = "8:openPDCManager.Web.Data.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:openPDCManager.Web.Data.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B77D075D164D4C588D2D46F0EC323E01"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FD495C98572C8EB331AE3A47B27EC9EF"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:System.ServiceModel.PollingDuplex, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_FD495C98572C8EB331AE3A47B27EC9EF"
+                    {
+                    "Name" = "8:System.ServiceModel.PollingDuplex.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:System.ServiceModel.PollingDuplex.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B77D075D164D4C588D2D46F0EC323E01"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -118,7 +273,7 @@
         {
             "{80453C8E-1031-40EC-8E7A-9762B297303A}:_E5D80ABA84654272AD66B4CE7E9B916D"
             {
-            "VirtualDirectory" = "8:ServicesSetup"
+            "VirtualDirectory" = "8:openPDCManagerServices"
             "Port" = "3:80"
             "IsApplication" = "11:TRUE"
             "AllowScriptSourceAccess" = "11:FALSE"
@@ -190,9 +345,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:openPDCManagerServicesSetup"
+        "ProductName" = "8:openPDC Manager Services"
         "ProductCode" = "8:{824AD778-3256-4003-A1A0-34942A1C4E9B}"
-        "PackageCode" = "8:{BC793EE4-871C-477C-B845-845C4306EF5D}"
+        "PackageCode" = "8:{F4590818-0771-457F-B9E9-F6EC60766425}"
         "UpgradeCode" = "8:{ED070BC2-9377-487F-9175-4F8044BBC508}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
@@ -202,7 +357,7 @@
         "Manufacturer" = "8:TVA"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:openPDCManagerServicesSetup"
+        "Title" = "8:openPDCManagerServices"
         "Subject" = "8:"
         "ARPCONTACT" = "8:TVA"
         "Keywords" = "8:"
@@ -663,6 +818,34 @@
             "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:ContentFiles"
+            "OutputProjectGuid" = "8:{D96C8A3A-7E03-43C6-B401-41778D81FF70}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FAEEF56F1A864785937B456A007E3B11"
+            {
+            "SourcePath" = "8:..\\Services\\obj\\Debug\\openPDCManager.Services.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_E5D80ABA84654272AD66B4CE7E9B916D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{D96C8A3A-7E03-43C6-B401-41778D81FF70}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"

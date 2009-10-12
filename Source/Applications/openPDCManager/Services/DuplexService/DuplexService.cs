@@ -348,8 +348,8 @@ namespace PCS.Services.DuplexService
 					PushMessageToClient(session, new LivePhasorDataMessage()
 					{
 						//PmuDistributionList = CommonFunctions.GetPmuDistribution(),
-						DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution()
-						//InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus()
+						DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(),
+						InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus()
 					}
 					);
 
