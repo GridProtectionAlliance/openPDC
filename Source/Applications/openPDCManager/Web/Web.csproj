@@ -58,8 +58,6 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bin\openPDCManager.Web.dll" />
-    <Content Include="bin\openPDCManager.Web.pdb" />
     <Content Include="ClientBin\openPDCManager.Silverlight.xap" />
     <Content Include="Default.aspx" />
     <Content Include="Images\Background.png" />

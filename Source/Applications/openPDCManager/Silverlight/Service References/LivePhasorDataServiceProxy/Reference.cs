@@ -18,8 +18,8 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="DuplexMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.ConnectMessage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.DisconnectMessage))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.ConnectMessage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.LivePhasorDataMessage))]
     public partial class DuplexMessage : object, System.ComponentModel.INotifyPropertyChanged {
         
@@ -35,14 +35,14 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ConnectMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
-    public partial class ConnectMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
+    [System.Runtime.Serialization.DataContractAttribute(Name="DisconnectMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
+    public partial class DisconnectMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="DisconnectMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
-    public partial class DisconnectMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
+    [System.Runtime.Serialization.DataContractAttribute(Name="ConnectMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
+    public partial class ConnectMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -51,6 +51,8 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     public partial class LivePhasorDataMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
         
         private System.Collections.Generic.Dictionary<string, int> DeviceDistributionListField;
+        
+        private System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.LivePhasorDataServiceProxy.InterconnectionStatus> InterconnectionStatusListField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Collections.Generic.Dictionary<string, int> DeviceDistributionList {
@@ -62,6 +64,154 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
                     this.DeviceDistributionListField = value;
                     this.RaisePropertyChanged("DeviceDistributionList");
                 }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.LivePhasorDataServiceProxy.InterconnectionStatus> InterconnectionStatusList {
+            get {
+                return this.InterconnectionStatusListField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.InterconnectionStatusListField, value) != true)) {
+                    this.InterconnectionStatusListField = value;
+                    this.RaisePropertyChanged("InterconnectionStatusList");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="InterconnectionStatus", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+    public partial class InterconnectionStatus : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string InterConnectionField;
+        
+        private System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.LivePhasorDataServiceProxy.MemberStatus> MemberStatusListField;
+        
+        private string TotalDevicesField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string InterConnection {
+            get {
+                return this.InterConnectionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.InterConnectionField, value) != true)) {
+                    this.InterConnectionField = value;
+                    this.RaisePropertyChanged("InterConnection");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.LivePhasorDataServiceProxy.MemberStatus> MemberStatusList {
+            get {
+                return this.MemberStatusListField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MemberStatusListField, value) != true)) {
+                    this.MemberStatusListField = value;
+                    this.RaisePropertyChanged("MemberStatusList");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TotalDevices {
+            get {
+                return this.TotalDevicesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TotalDevicesField, value) != true)) {
+                    this.TotalDevicesField = value;
+                    this.RaisePropertyChanged("TotalDevices");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="MemberStatus", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+    public partial class MemberStatus : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string CompanyAcronymField;
+        
+        private string CompanyNameField;
+        
+        private int MeasuredLinesField;
+        
+        private int TotalDevicesField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CompanyAcronym {
+            get {
+                return this.CompanyAcronymField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CompanyAcronymField, value) != true)) {
+                    this.CompanyAcronymField = value;
+                    this.RaisePropertyChanged("CompanyAcronym");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CompanyName {
+            get {
+                return this.CompanyNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CompanyNameField, value) != true)) {
+                    this.CompanyNameField = value;
+                    this.RaisePropertyChanged("CompanyName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int MeasuredLines {
+            get {
+                return this.MeasuredLinesField;
+            }
+            set {
+                if ((this.MeasuredLinesField.Equals(value) != true)) {
+                    this.MeasuredLinesField = value;
+                    this.RaisePropertyChanged("MeasuredLines");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int TotalDevices {
+            get {
+                return this.TotalDevicesField;
+            }
+            set {
+                if ((this.TotalDevicesField.Equals(value) != true)) {
+                    this.TotalDevicesField = value;
+                    this.RaisePropertyChanged("TotalDevices");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }

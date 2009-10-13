@@ -39,8 +39,8 @@
                                         <StackPanel Orientation="Vertical">
                                             <Border Style="{StaticResource HeaderRowBorderStyle}">
                                                 <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding Path=DisplayName}" Style="{StaticResource HeaderRowTextStyle}" Width="525" />
-                                                    <TextBlock Text="{Binding Path=TotalPmus}" Style="{StaticResource HeaderRowTextStyle}" Width="150" TextAlignment="Center"/>
+                                                    <TextBlock Text="{Binding Path=Interconnection}" Style="{StaticResource HeaderRowTextStyle}" Width="525" />
+                                                    <TextBlock Text="{Binding Path=TotalDevices}" Style="{StaticResource HeaderRowTextStyle}" Width="150" TextAlignment="Center"/>
                                                 </StackPanel>
                                             </Border>
                                             <StackPanel Orientation="Horizontal">
@@ -48,23 +48,23 @@
                                                 <TextBlock Text="Company Name" Width="{StaticResource XLargeItemSize}" Style="{StaticResource HeaderRowTextStyle}"/>
                                                 <TextBlock Text="Measured Lines" Width="{StaticResource SmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
                                                 <TextBlock Text="Total" Width="{StaticResource XSmallItemSize}"  Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
-                                                <TextBlock Text="Validated" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                                                <!--<TextBlock Text="Validated" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
                                                 <TextBlock Text="Reporting" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
-                                                <TextBlock Text="Status" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                                                <TextBlock Text="Status" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>-->
                                             </StackPanel>
                                             <ItemsControl ItemsSource="{Binding Path=CompanyStatus}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Horizontal" Margin="0">
                                                             <TextBlock Text=" " Width="{StaticResource BlankItemSize}" Padding="1"/>
-                                                            <TextBlock Width="{StaticResource XLargeItemSize}" Text="{Binding Path=Name}" Padding="1"></TextBlock>
+                                                            <TextBlock Width="{StaticResource XLargeItemSize}" Text="{Binding Path=CompanyName}" Padding="1"></TextBlock>
                                                             <TextBlock Width="{StaticResource SmallItemSize}" Text="{Binding Path=MeasuredLines}" TextAlignment="Center" Padding="1"></TextBlock>
                                                             <TextBlock Width="{StaticResource XSmallItemSize}" Text="{Binding Path=TotalDevices}" TextAlignment="Center" Padding="1"></TextBlock>
-                                                            <TextBlock Width="{StaticResource XSmallItemSize}" Text="{Binding Path=ValidatedDevices}" TextAlignment="Center" Padding="1"></TextBlock>
+                                                            <!--<TextBlock Width="{StaticResource XSmallItemSize}" Text="{Binding Path=ValidatedDevices}" TextAlignment="Center" Padding="1"></TextBlock>
                                                             <TextBlock Width="{StaticResource XSmallItemSize}" Text="{Binding Path=ReportingDevices}" TextAlignment="Center" Padding="1"></TextBlock>
                                                             <Border Width="{StaticResource XSmallItemSize}" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                 <Ellipse Width="14" Height="14" Fill="{Binding Path=Status, Converter={StaticResource ConvertStringToSymbol}}"/>
-                                                            </Border>
+                                                            </Border>-->
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>

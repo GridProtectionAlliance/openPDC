@@ -255,7 +255,7 @@ namespace openPDCManager.Silverlight.Pages
 		bool connected = false;
 
 		//ObservableCollection<PmuDistribution> pmuDistributionList = new ObservableCollection<PmuDistribution>();
-		//ObservableCollection<InterconnectionStatus> interconnectionStatusList = new ObservableCollection<InterconnectionStatus>();
+		ObservableCollection<InterconnectionStatus> interconnectionStatusList = new ObservableCollection<InterconnectionStatus>();
 		Dictionary<string, int> deviceDistributionList = new Dictionary<string, int>();
 
         public HomePage()
@@ -278,12 +278,12 @@ namespace openPDCManager.Silverlight.Pages
 		    {
 		        LivePhasorDataMessage livePhasorData = (LivePhasorDataMessage)e.msg;
 		//        pmuDistributionList = livePhasorData.PmuDistributionList;
-		//        interconnectionStatusList = livePhasorData.InterconnectionStatusList;
+		        interconnectionStatusList = livePhasorData.InterconnectionStatusList;
 		        deviceDistributionList = livePhasorData.DeviceDistributionList;
 
 		//        ItemsControlPmuDistribution.ItemsSource = pmuDistributionList;
 		        ChartDeviceDistribution.DataContext = deviceDistributionList;
-		//        ItemControlInterconnectionStatus.ItemsSource = interconnectionStatusList;                
+		        ItemControlInterconnectionStatus.ItemsSource = interconnectionStatusList;                
 		    }
 		}
 		//// Executes just before a page is no longer the active page in a frame.
