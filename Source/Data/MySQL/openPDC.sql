@@ -720,6 +720,14 @@ SELECT     'OtherDevice' AS DeviceType, NULL AS NodeID, ID, Acronym, COALESCE(Na
                       AS Desired
 FROM         OtherDeviceDetail AS OD;
 
+CREATE VIEW OutputStreamDetail AS
+SELECT OS.NodeID, OS.ID, OS.Acronym, COALESCE(OS.Name, '') AS Name, OS.Type, COALESCE(OS.ConnectionString, '') AS ConnectionString,
+      OS.IDCode, COALESCE(OS.CommandChannel, '') AS CommandChannel, OS.AutoPublishConfigFrame, OS.AutoStartDataChannel,
+      OS.NominalFrequency, OS.FramesPerSecond, OS.LagTime, OS.LeadTime, OS.UseLocalClockAsRealTime, OS.AllowSortsByArrival,
+      OS.LoadOrder, OS.Enabled, N.Name AS NodeName
+FROM OutputStream OS, Node N
+WHERE OS.NodeID = N.ID;
+
 CREATE TRIGGER CustomActionAdapter_RuntimeSync_Insert AFTER INSERT ON CustomActionAdapter
 FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, N'CustomActionAdapter');
 

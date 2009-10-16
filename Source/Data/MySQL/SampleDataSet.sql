@@ -1,5 +1,5 @@
 -- Script auto-generated generated from Access database openPDC.mdb method GenerateSampleDataScript
--- 9/25/2009 11:18:07 AM
+-- 10/16/2009 8:28:57 AM
 
 USE openPDC
 
@@ -16,8 +16,8 @@ INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSou
 UPDATE Measurement SET SignalID='7aaf0a8f-3a4f-4c43-ab43-ed9d1e64a255' WHERE PointTag='TVA_SHEL:ABBS';
 INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(1, 1, 'TVA_SHEL:ABBF', 5, NULL, 'SHELBY-FQ', 'Shelby ABB-521 Frequency', 1);
 UPDATE Measurement SET SignalID='93673c68-d59d-4926-b7e9-e7678f9f66b4' WHERE PointTag='TVA_SHEL:ABBF';
-INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(1, 1, 'TVA_SHEL:ABBD0', 9, NULL, 'SHELBY-DV0', 'Shelby ABB-521 Digital Value 0', 1);
-UPDATE Measurement SET SignalID='65ac9cf6-ae33-4ece-91b6-bb79343855d5' WHERE PointTag='TVA_SHEL:ABBD0';
+INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(1, 1, 'TVA_SHEL:ABBD1', 9, NULL, 'SHELBY-DV1', 'Shelby ABB-521 Digital Value 1', 1);
+UPDATE Measurement SET SignalID='65ac9cf6-ae33-4ece-91b6-bb79343855d5' WHERE PointTag='TVA_SHEL:ABBD1';
 INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(1, 1, 'TVA_SHEL:ABBDF', 5, NULL, 'SHELBY-DF', 'Shelby ABB-521 Frequency Delta (dF/dt)', 1);
 UPDATE Measurement SET SignalID='3647f729-d0ed-4f79-85ad-dae2149cd432' WHERE PointTag='TVA_SHEL:ABBDF';
 INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(1, 1, 'TVA_SHEL-BUS1:ABBV', 3, 1, 'SHELBY-PM1', 'Shelby ABB-521 500 kV Bus 1 Positive Sequence Voltage Magnitude', 1);
@@ -44,7 +44,7 @@ INSERT INTO OutputStream(NodeID, Acronym, Name, Type, ConnectionString, DataChan
 INSERT INTO OutputStreamDevice(NodeID, AdapterID, Acronym, BpaAcronym, Name, LoadOrder, Enabled) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 'SHELBY', 'SHEL', 'Shelby', 0, 1);
 INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 1, 'SHELBY-SF');
 INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 2, 'SHELBY-FQ');
-INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 3, 'SHELBY-DV0');
+INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 3, 'SHELBY-DV1');
 INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 4, 'SHELBY-DF');
 INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 5, 'SHELBY-PM1');
 INSERT INTO OutputStreamMeasurement(NodeID, AdapterID, HistorianID, PointID, SignalReference) VALUES('e7a5235d-cb6f-4864-a96e-a8686f36e599', 1, 1, 6, 'SHELBY-PA1');
