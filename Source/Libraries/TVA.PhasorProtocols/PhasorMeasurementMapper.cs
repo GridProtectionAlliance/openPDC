@@ -627,7 +627,7 @@ namespace TVA.PhasorProtocols
                 deviceStatus.AppendLine();
 
                 // Making a connection to a concentrator that can support multiple devices
-                foreach (DataRow row in DataSource.Tables["InputStreamConcentratorDevices"].Select(string.Format("ParentID={0}", ID)))
+                foreach (DataRow row in DataSource.Tables["InputStreamDevices"].Select(string.Format("ParentID={0}", ID)))
                 {
                     definedDevice = new ConfigurationCell(ushort.Parse(row["AccessID"].ToString()));
                     definedDevice.IDLabel = row["Acronym"].ToString();
