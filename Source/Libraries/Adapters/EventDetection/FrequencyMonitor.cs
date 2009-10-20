@@ -10,6 +10,8 @@
 //  -----------------------------------------------------------------------------------------------------
 //  09/29/2009 - Jian (Ryan) Zuo
 //       Generated original version of source code.
+//  10/19/2009 - J. Ritchie Carroll
+//       Migrated code to openPDC action adapter type.
 //
 //*******************************************************************************************************
 
@@ -233,22 +235,261 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TVA;
+using TVA.Collections;
 using TVA.Measurements;
-using TVA.Measurements.Routing;
+using TVA.PhasorProtocols;
 
 namespace EventDetection
 {
     /// <summary>
     /// Represents an action adapter that monitors system frequency for events.
     /// </summary>
-    public class FrequencyMonitor : ActionAdapterBase
+    public class FrequencyMonitor : CalculatedMeasurementBase
     {
+        #region [ Members ]
+
+        // Fields
+        private ProcessQueue<IFrame> m_processQueue;
+        //private List<ChannelType> m_channelType;                                    //Channel type
+        private double m_estimateTriggerThreshold;                                  //Threshold for detecting abnormal excursion in frequency
+        private int m_analysisWindowSize;                                           //Analysis Window Size
+        private int m_analysisInterval;                                             //Analysis Interval
+        private int m_consistantEstimate;                                           //Consistant estimation to determine if the alarm is true or false
+        private double m_estiamteRatio;                                             //To calculate the total MW change from frequency 
+        //private string m_connString;                                                //Connection string for database connection
+        private List<double> m_freqMeasurements;                                    //Measurements for frequency
+        private List<DateTime> m_timeStamps;                                        //Timestamps
+        private int m_alarmProhibitPeriod;                                          //Period to prevent duplicated alarms;
+        private long m_count;                                                       //Frame count for debug purpose
+        private int m_numDetectedExcursion;                                         //Number of detected excursions;
+        private int m_totalChannelCount;
+        private int m_minimumValidChannel;
+        private int m_maximumPoints;
+        private bool m_disposed;
+
+        #endregion
+
+        #region [ Constructors ]
+
+        #endregion
+
+        #region [ Properties ]
+
+        /// <summary>
+        /// Returns the detailed status of the frequency monitor event detector.
+        /// </summary>
+        public override string Status
+        {
+            get
+            {
+                StringBuilder status = new StringBuilder();
+
+                //status.AppendFormat("                Adpater ID: {0}", ID);
+                //status.AppendLine();
+                status.Append(base.Status);
+
+                return status.ToString();
+            }
+        }
+
+        #endregion
+
+        #region [ Methods ]
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="FrequencyMonitor"/> object and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (!m_disposed)
+            {
+                try
+                {
+                    if (disposing)
+                    {
+                        if (m_processQueue != null)
+                            m_processQueue.Dispose();
+                        
+                        m_processQueue = null;
+                    }
+                }
+                finally
+                {
+                    base.Dispose(disposing);    // Call base class Dispose().
+                    m_disposed = true;          // Prevent duplicate dispose.
+                }
+            }
+        }
+
+        /// <summary>
+        /// Initializes <see cref="FrequencyMonitor"/>.
+        /// </summary>
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            Dictionary<string, string> settings = Settings;
+            //string setting;
+
+            // Load required parameters
+            m_estimateTriggerThreshold = double.Parse(settings["EstimateTriggerThreshold"]);
+            m_analysisWindowSize = int.Parse(settings["AnalysisWindowSize"]);
+            m_analysisInterval = int.Parse(settings["AnalysisInterval"]);
+            m_consistantEstimate = int.Parse(settings["ConsistantEstimate"]);
+            m_minimumValidChannel = int.Parse(settings["MinimumValidChannel"]);
+            m_maximumPoints = int.Parse(settings["MaximumPoints"]);
+            m_estiamteRatio = double.Parse(settings["EstimateRatio"]);
+            //        m_connString = Convert.ToString(settings["sqlConnectString"].Value);
+
+            m_totalChannelCount = InputMeasurementKeys.Length;
+            m_freqMeasurements = new List<double>();
+            m_timeStamps = new List<DateTime>();
+            m_processQueue = ProcessQueue<IFrame>.CreateRealTimeQueue(ProcessFrames);
+        }
+
+        /// <summary>
+        /// Starts the <see cref="FrequencyMonitor"/>, if it is not already running.
+        /// </summary>
+        public override void Start()
+        {
+            base.Start();
+            m_processQueue.Start();
+        }
+
+        /// <summary>
+        /// Stops the <see cref="FrequencyMonitor"/>.
+        /// </summary>
+        public override void Stop()
+        {
+            m_processQueue.Stop();
+            base.Stop();
+        }
+
+        /// <summary>
+        /// Publishes the <see cref="IFrame"/> of time-aligned collection of <see cref="IMeasurement"/> values that arrived within the
+        /// adapter's defined <see cref="ConcentratorBase.LagTime"/>.
+        /// </summary>
+        /// <param name="frame"><see cref="IFrame"/> of measurements with the same timestamp that arrived within <see cref="ConcentratorBase.LagTime"/> that are ready for processing.</param>
+        /// <param name="index">Index of <see cref="IFrame"/> within a second ranging from zero to <c><see cref="ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
+        /// <remarks>
+        /// If user implemented publication function consistently exceeds available publishing time (i.e., <c>1 / <see cref="ConcentratorBase.FramesPerSecond"/></c> seconds),
+        /// concentration will fall behind. A small amount of this time is required by the <see cref="ConcentratorBase"/> for processing overhead, so actual total time
+        /// available for user function process will always be slightly less than <c>1 / <see cref="ConcentratorBase.FramesPerSecond"/></c> seconds.
+        /// </remarks>
         protected override void PublishFrame(IFrame frame, int index)
         {
-            throw new NotImplementedException();
-        }
-    }
+            m_processQueue.Add(frame);
 
+            #if DEBUG
+                m_count++;
+
+                if (m_count % 60 == 0)
+                    OnStatusMessage("{0} events handled...", m_count);
+            #endif
+        }
+
+        /// <summary>
+        /// Process queued frames
+        /// </summary>
+        /// <param name="frames"></param>
+        protected void ProcessFrames(IFrame[] frames)
+        {
+            IMeasurement measurement;
+            MeasurementKey measurementKey;
+            MeasurementKey[] inputMeasurements = InputMeasurementKeys;
+            IMeasurement[] measurements = new IMeasurement[m_totalChannelCount];
+            int i;
+            int count;
+            int validChannel;
+            double freqMeasurement;
+            //ExcursionType typeofExcursion;
+            double totalAmount;
+            //bool res;
+
+            foreach (IFrame frame in frames)
+            {
+                //m_count++;
+                try
+                {
+                    //CategorizedSettingsElementCollection settings = TVA.Configuration.Common.get_CategorizedSettings(ConfigurationSection);
+                    if (m_alarmProhibitPeriod > 0)
+                        m_alarmProhibitPeriod--;
+
+                    //if (m_count % 30 == 0)
+                    //{
+                    //    UpdateStatus(frame.Timestamp.ToString());
+                    //    UpdateStatus(string.Format("*** Event Detection:{0} events handled...", m_count));
+                    //}
+
+                    //Loop through all input measurements to see if they exist in this frame
+                    validChannel = 0;
+                    freqMeasurement = 0.0;
+
+                    for (i = 0; i < m_totalChannelCount; i++)
+                    {
+                        measurementKey = inputMeasurements[i];
+
+                        if (InputMeasurementKeyTypes[i] == SignalType.FREQ)
+                        {
+                            if (frame.Measurements.TryGetValue(measurementKey, out measurement))
+                            {
+                                freqMeasurement = freqMeasurement + measurement.AdjustedValue;
+                                validChannel++;
+                            }
+                        }
+                    }
+
+                    if (validChannel > 0 && validChannel >= m_minimumValidChannel)
+                        freqMeasurement = freqMeasurement / validChannel;
+                    else
+                        freqMeasurement = Double.NaN;
+
+                    m_freqMeasurements.Add(freqMeasurement);
+                    m_timeStamps.Add(frame.Timestamp);
+                    count = m_freqMeasurements.Count;
+                    if (count > m_maximumPoints)
+                    {
+                        m_freqMeasurements.RemoveAt(0);
+                        m_timeStamps.RemoveAt(0);
+                    }
+
+                    if ((m_count % m_analysisInterval == 0) && (m_alarmProhibitPeriod == 0) && (m_freqMeasurements.Count > m_analysisWindowSize))
+                    {
+                        double freq1 = m_freqMeasurements[0];
+                        double freq2 = m_freqMeasurements[m_analysisWindowSize];
+                        double freqDelta;
+                        if (!Double.IsNaN(freq1) && !Double.IsNaN(freq2))
+                        {
+                            freqDelta = freq1 - freq2;
+                            if (Math.Abs(freqDelta) > m_estimateTriggerThreshold)
+                                m_numDetectedExcursion++;
+                            if (m_numDetectedExcursion >= m_consistantEstimate)
+                            {
+                                //typeofExcursion = (freq1 > freq2 ? ExcursionType.GenTrip : ExcursionType.LoadTrip);
+
+                                totalAmount = Math.Abs(freqDelta) * m_estiamteRatio;
+                                
+                                //res = OutputResult(m_connString, m_timeStamps[0], freqDelta, typeofExcursion, totalAmount);
+                                //if (!res)
+                                //    UpdateStatus("***EventDetection: ProcessFrames, fail to output result!***");
+
+                                m_numDetectedExcursion = 0;
+                                m_alarmProhibitPeriod = 600;
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    //UpdateStatus(string.Format("***EventDetection:{0} ***", ex.ToString()));
+                }
+            }   
+        }
+
+        #endregion
+    }
+}
     //public class EventDetection : CalculatedMeasurementAdapterBase
     //{
     //    #region "Private Member Declaraton"
@@ -487,8 +728,6 @@ namespace EventDetection
 
     //    #endregion
     //}
-}
-
 
 //namespace EventDetection
 //{
