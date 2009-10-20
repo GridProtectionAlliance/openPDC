@@ -727,6 +727,12 @@ SELECT     OS.NodeID, OS.ID, OS.Acronym, COALESCE(OS.Name, '') AS Name, OS.Type,
                       OS.AllowSortsByArrival, OS.LoadOrder, OS.Enabled, N.Name AS NodeName
 FROM         OutputStream AS OS INNER JOIN
                       Node AS N ON OS.NodeID = N.ID;
+                      
+CREATE VIEW OutputStreamMeasurementDetail AS
+SELECT OSM.NodeID, OSM.AdapterID, OSM.ID, OSM.HistorianID, OSM.PointID, OSM.SignalReference,
+      COALESCE(H.Acronym, '') AS HistorianAcronym
+FROM OutputStreamMeasurement OSM
+      LEFT OUTER JOIN Historian H ON (H.ID = OSM.HistorianID);
 
 
 CREATE TRIGGER CustomActionAdapter_RuntimeSync_Insert AFTER INSERT ON CustomActionAdapter
