@@ -398,13 +398,13 @@ namespace TVA.PhasorProtocols
                 // is an indexed signal type (e.g., CORDOVA-PA2)
                 if (signalType.Length > 2)
                 {
-                    Type = SignalReference.GetSignalType(signalType.Substring(0, 2));
+                    Type = SignalReference.GetTypeFromAcronym(signalType.Substring(0, 2));
                     
                     if (Type != SignalReferenceType.Unknown)
                         Index = int.Parse(signalType.Substring(2));
                 }
                 else
-                    Type = SignalReference.GetSignalType(signalType);
+                    Type = SignalReference.GetTypeFromAcronym(signalType);
             }
             else
             {
@@ -577,7 +577,7 @@ namespace TVA.PhasorProtocols
         /// </summary>
         /// <param name="acronym">Acronym of the desired <see cref="SignalReferenceType"/>.</param>
         /// <returns>The <see cref="SignalReferenceType"/> for the specified <paramref name="acronym"/>.</returns>
-        public static SignalReferenceType GetSignalType(string acronym)
+        public static SignalReferenceType GetTypeFromAcronym(string acronym)
         {
             switch (acronym)
             {
@@ -607,7 +607,7 @@ namespace TVA.PhasorProtocols
         /// </summary>
         /// <param name="signal"><see cref="SignalReferenceType"/> to convert to an acronym.</param>
         /// <returns>The acronym for the specified <see cref="SignalReferenceType"/>.</returns>
-        public static string GetSignalTypeAcronym(SignalReferenceType signal)
+        public static string GetAcronymFromType(SignalReferenceType signal)
         {
             switch (signal)
             {
@@ -653,9 +653,9 @@ namespace TVA.PhasorProtocols
         public static string ToString(string acronym, SignalReferenceType type, int index)
         {
             if (index > 0)
-                return string.Format("{0}-{1}{2}", acronym, GetSignalTypeAcronym(type), index);
+                return string.Format("{0}-{1}{2}", acronym, GetAcronymFromType(type), index);
             else
-                return string.Format("{0}-{1}", acronym, GetSignalTypeAcronym(type));
+                return string.Format("{0}-{1}", acronym, GetAcronymFromType(type));
         }
 
         #endregion
