@@ -240,8 +240,68 @@ namespace TVA.PhasorProtocols
     /// <summary>
     /// Signal type enumeration.
     /// </summary>
+    /// <remarks>
+    /// The signal type represents the explicit fundamental type of a signal that a value represents.
+    /// </remarks>
     [Serializable()]
     public enum SignalType
+    {
+        /// <summary>
+        /// Current magnitude.
+        /// </summary>
+        IPHM = 1,
+        /// <summary>
+        /// Current phase angle.
+        /// </summary>
+        IPHA = 2,
+        /// <summary>
+        /// Voltage magnitude.
+        /// </summary>
+        VPHM = 3,
+        /// <summary>
+        /// Voltage phase angle.
+        /// </summary>
+        VPHA = 4,
+        /// <summary>
+        /// Frequency.
+        /// </summary>
+        FREQ = 5,
+        /// <summary>
+        /// Frequency delta (dF/dt).
+        /// </summary>
+        DFDT = 6,
+        /// <summary>
+        /// Analog value.
+        /// </summary>
+        ALOG = 7,
+        /// <summary>
+        /// Status flags.
+        /// </summary>
+        STAT = 8,
+        /// <summary>
+        /// Digital value.
+        /// </summary>
+        DIGI = 9,
+        /// <summary>
+        /// Calculated value.
+        /// </summary>
+        CALC = 10,
+        /// <summary>
+        /// Undefined signal.
+        /// </summary>
+        NONE = -1
+    }
+
+    /// <summary>
+    /// Signal reference type enumeration.
+    /// </summary>
+    /// <remarks>
+    /// The signal reference type represents the basic type of a signal used to suffix a formatted signal reference.
+    /// When used in context along with an optional index the signal reference will identify a signal's location
+    /// within a frame of data (see <see cref="SignalReference"/>).
+    /// </remarks>
+    [Serializable()]
+    public enum SignalReferenceType
     {
         /// <summary>
         /// Phase angle.
@@ -303,9 +363,9 @@ namespace TVA.PhasorProtocols
         public int Index;
         
         /// <summary>
-        /// Gets or sets the <see cref="SignalType"/> of this <see cref="SignalReference"/>.
+        /// Gets or sets the <see cref="SignalReferenceType"/> of this <see cref="SignalReference"/>.
         /// </summary>
-        public SignalType Type;
+        public SignalReferenceType Type;
 
         /// <summary>
         /// Gets or sets the cell index of this <see cref="SignalReference"/>.
@@ -340,7 +400,7 @@ namespace TVA.PhasorProtocols
                 {
                     Type = SignalReference.GetSignalType(signalType.Substring(0, 2));
                     
-                    if (Type != SignalType.Unknown)
+                    if (Type != SignalReferenceType.Unknown)
                         Index = int.Parse(signalType.Substring(2));
                 }
                 else
@@ -350,7 +410,7 @@ namespace TVA.PhasorProtocols
             {
                 // This represents an error - best we can do is assume entire string is the acronym
                 Acronym = signal.Trim().ToUpper();
-                Type = SignalType.Unknown;
+                Type = SignalReferenceType.Unknown;
             }
         }
 
@@ -513,59 +573,59 @@ namespace TVA.PhasorProtocols
         // Static Methods
 
         /// <summary>
-        /// Gets the <see cref="SignalType"/> for the specified <paramref name="acronym"/>.
+        /// Gets the <see cref="SignalReferenceType"/> for the specified <paramref name="acronym"/>.
         /// </summary>
-        /// <param name="acronym">Acronym of the desired <see cref="SignalType"/>.</param>
-        /// <returns>The <see cref="SignalType"/> for the specified <paramref name="acronym"/>.</returns>
-        public static SignalType GetSignalType(string acronym)
+        /// <param name="acronym">Acronym of the desired <see cref="SignalReferenceType"/>.</param>
+        /// <returns>The <see cref="SignalReferenceType"/> for the specified <paramref name="acronym"/>.</returns>
+        public static SignalReferenceType GetSignalType(string acronym)
         {
             switch (acronym)
             {
                 case "PA": // Phase Angle
-                    return SignalType.Angle;
+                    return SignalReferenceType.Angle;
                 case "PM": // Phase Magnitude
-                    return SignalType.Magnitude;
+                    return SignalReferenceType.Magnitude;
                 case "FQ": // Frequency
-                    return SignalType.Frequency;
+                    return SignalReferenceType.Frequency;
                 case "DF": // dF/dt
-                    return SignalType.DfDt;
+                    return SignalReferenceType.DfDt;
                 case "SF": // Status Flags
-                    return SignalType.Status;
+                    return SignalReferenceType.Status;
                 case "DV": // Digital Value
-                    return SignalType.Digital;
+                    return SignalReferenceType.Digital;
                 case "AV": // Analog Value
-                    return SignalType.Analog;
+                    return SignalReferenceType.Analog;
                 case "CV": // Calculated Value
-                    return SignalType.Calculation;
+                    return SignalReferenceType.Calculation;
                 default:
-                    return SignalType.Unknown;
+                    return SignalReferenceType.Unknown;
             }
         }
 
         /// <summary>
-        /// Gets the acronym for the specified <see cref="SignalType"/>.
+        /// Gets the acronym for the specified <see cref="SignalReferenceType"/>.
         /// </summary>
-        /// <param name="signal"><see cref="SignalType"/> to convert to an acronym.</param>
-        /// <returns>The acronym for the specified <see cref="SignalType"/>.</returns>
-        public static string GetSignalTypeAcronym(SignalType signal)
+        /// <param name="signal"><see cref="SignalReferenceType"/> to convert to an acronym.</param>
+        /// <returns>The acronym for the specified <see cref="SignalReferenceType"/>.</returns>
+        public static string GetSignalTypeAcronym(SignalReferenceType signal)
         {
             switch (signal)
             {
-                case SignalType.Angle:
+                case SignalReferenceType.Angle:
                     return "PA"; // Phase Angle
-                case SignalType.Magnitude:
+                case SignalReferenceType.Magnitude:
                     return "PM"; // Phase Magnitude
-                case SignalType.Frequency:
+                case SignalReferenceType.Frequency:
                     return "FQ"; // Frequency
-                case SignalType.DfDt:
+                case SignalReferenceType.DfDt:
                     return "DF"; // dF/dt
-                case SignalType.Status:
+                case SignalReferenceType.Status:
                     return "SF"; // Status Flags
-                case SignalType.Digital:
+                case SignalReferenceType.Digital:
                     return "DV"; // Digital Value
-                case SignalType.Analog:
+                case SignalReferenceType.Analog:
                     return "AV"; // Analog Value
-                case SignalType.Calculation:
+                case SignalReferenceType.Calculation:
                     return "CV"; // Calculated Value
                 default:
                     return "?";
@@ -573,24 +633,24 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Returns a <see cref="string"/> that represents the specified <paramref name="acronym"/> and <see cref="SignalType"/>.
+        /// Returns a <see cref="string"/> that represents the specified <paramref name="acronym"/> and <see cref="SignalReferenceType"/>.
         /// </summary>
         /// <param name="acronym">Acronym portion of the desired <see cref="string"/> representation.</param>
-        /// <param name="type"><see cref="SignalType"/> portion of the desired <see cref="string"/> representation.</param>
-        /// <returns>A <see cref="string"/> that represents the specified <paramref name="acronym"/> and <see cref="SignalType"/>.</returns>
-        public static string ToString(string acronym, SignalType type)
+        /// <param name="type"><see cref="SignalReferenceType"/> portion of the desired <see cref="string"/> representation.</param>
+        /// <returns>A <see cref="string"/> that represents the specified <paramref name="acronym"/> and <see cref="SignalReferenceType"/>.</returns>
+        public static string ToString(string acronym, SignalReferenceType type)
         {
             return ToString(acronym, type, 0);
         }
 
         /// <summary>
-        /// Returns a <see cref="string"/> that represents the specified <paramref name="acronym"/>, <see cref="SignalType"/> and <paramref name="signalIndex"/>.
+        /// Returns a <see cref="string"/> that represents the specified <paramref name="acronym"/>, <see cref="SignalReferenceType"/> and <paramref name="signalIndex"/>.
         /// </summary>
         /// <param name="acronym">Acronym portion of the desired <see cref="string"/> representation.</param>
-        /// <param name="type"><see cref="SignalType"/> portion of the desired <see cref="string"/> representation.</param>
-        /// <param name="index">Index of <see cref="SignalType"/> portion of the desired <see cref="string"/> representation.</param>
-        /// <returns>A <see cref="string"/> that represents the specified <paramref name="acronym"/>, <see cref="SignalType"/> and <paramref name="signalIndex"/>.</returns>
-        public static string ToString(string acronym, SignalType type, int index)
+        /// <param name="type"><see cref="SignalReferenceType"/> portion of the desired <see cref="string"/> representation.</param>
+        /// <param name="index">Index of <see cref="SignalReferenceType"/> portion of the desired <see cref="string"/> representation.</param>
+        /// <returns>A <see cref="string"/> that represents the specified <paramref name="acronym"/>, <see cref="SignalReferenceType"/> and <paramref name="signalIndex"/>.</returns>
+        public static string ToString(string acronym, SignalReferenceType type, int index)
         {
             if (index > 0)
                 return string.Format("{0}-{1}{2}", acronym, GetSignalTypeAcronym(type), index);

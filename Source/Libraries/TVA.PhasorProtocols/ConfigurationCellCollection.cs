@@ -307,13 +307,23 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Attempts to find the index of the <see cref="IConfigurationCell"/> with the specified label.
+        /// Attempts to find the index of the <see cref="IConfigurationCell"/> with the specified ID label.
         /// </summary>
         /// <param name="label">The <see cref="IConfigurationCell.IDLabel"/> to find.</param>
         /// <returns>Index of the <see cref="ConfigurationCellCollection"/> that contains the specified <paramref name="label"/>; otherwise, <c>-1</c>.</returns>
         public virtual int IndexOfIDLabel(string label)
         {
             return this.IndexOf(cell => string.Compare(cell.IDLabel, label, true) == 0);
+        }
+
+        /// <summary>
+        /// Attempts to find the index of the <see cref="IConfigurationCell"/> with the specified station name.
+        /// </summary>
+        /// <param name="stationName">The <see cref="IConfigurationCell.StationName"/> to find.</param>
+        /// <returns>Index of the <see cref="ConfigurationCellCollection"/> that contains the specified <paramref name="stationName"/>; otherwise, <c>-1</c>.</returns>
+        public virtual int IndexOfStationName(string stationName)
+        {
+            return this.IndexOf(cell => string.Compare(cell.StationName, stationName, true) == 0);
         }
 
         /// <summary>

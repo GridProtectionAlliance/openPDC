@@ -838,7 +838,7 @@ namespace TVA.PhasorProtocols
                     {
                         // We cache these indicies locally to speed up initialization as we'll be
                         // requesting them for the same devices over and over
-                        signal.CellIndex = m_baseConfigurationFrame.Cells.IndexOfIDLabel(signal.Acronym);
+                        signal.CellIndex = m_baseConfigurationFrame.Cells.IndexOfStationName(signal.Acronym);
                         signalCellIndexes.Add(signal.Acronym, signal.CellIndex);
                     }
 
@@ -948,37 +948,37 @@ namespace TVA.PhasorProtocols
                 // Assign measurement to its destination field in the data cell based on signal type
                 switch (signal.Type)
                 {
-                    case SignalType.Angle:
+                    case SignalReferenceType.Angle:
                         // Assign "phase angle" measurement to data cell
                         phasorValues = dataCell.PhasorValues;
                         if (phasorValues.Count >= signalIndex)
                             phasorValues[signalIndex - 1].Angle = Angle.FromDegrees(signalMeasurement.AdjustedValue);
                         break;
-                    case SignalType.Magnitude:
+                    case SignalReferenceType.Magnitude:
                         // Assign "phase magnitude" measurement to data cell
                         phasorValues = dataCell.PhasorValues;
                         if (phasorValues.Count >= signalIndex)
                             phasorValues[signalIndex - 1].Magnitude = signalMeasurement.AdjustedValue;
                         break;
-                    case SignalType.Frequency:
+                    case SignalReferenceType.Frequency:
                         // Assign "frequency" measurement to data cell
                         dataCell.FrequencyValue.Frequency = signalMeasurement.AdjustedValue;
                         break;
-                    case SignalType.DfDt:
+                    case SignalReferenceType.DfDt:
                         // Assign "dF/dt" measurement to data cell
                         dataCell.FrequencyValue.DfDt = signalMeasurement.AdjustedValue;
                         break;
-                    case SignalType.Status:
+                    case SignalReferenceType.Status:
                         // Assign "common status flags" measurement to data cell
                         dataCell.CommonStatusFlags = unchecked((uint)signalMeasurement.AdjustedValue);
                         break;
-                    case SignalType.Digital:
+                    case SignalReferenceType.Digital:
                         // Assign "digital" measurement to data cell
                         digitalValues = dataCell.DigitalValues;
                         if (digitalValues.Count >= signalIndex)
                                 digitalValues[signalIndex - 1].Value = unchecked((ushort)signalMeasurement.AdjustedValue);
                         break;
-                    case SignalType.Analog:
+                    case SignalReferenceType.Analog:
                         // Assign "analog" measurement to data cell
                         analogValues = dataCell.AnalogValues;
                         if (analogValues.Count >= signalIndex)

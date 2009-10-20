@@ -253,7 +253,7 @@ namespace TVA.PhasorProtocols.Anonymous
         private CoordinateFormat m_phasorCoordinateFormat;
 
         // We add cached signal type and statistical tracking information to our protocol independent configuration cell
-        private Dictionary<SignalType, string[]> m_signalReferences;
+        private Dictionary<SignalReferenceType, string[]> m_signalReferences;
         private Ticks m_lastReportTime;
         private long m_totalFrames;
         private long m_totalDataQualityErrors;
@@ -281,7 +281,7 @@ namespace TVA.PhasorProtocols.Anonymous
         public ConfigurationCell(ConfigurationFrame parent, ushort idCode)
             : base(parent, idCode, int.MaxValue, int.MaxValue, int.MaxValue)
 		{			
-			m_signalReferences = new Dictionary<SignalType, string[]>();
+			m_signalReferences = new Dictionary<SignalReferenceType, string[]>();
 			m_analogDataFormat = DataFormat.FloatingPoint;
 			m_frequencyDataFormat = DataFormat.FloatingPoint;
 			m_phasorDataFormat = DataFormat.FloatingPoint;
@@ -298,7 +298,7 @@ namespace TVA.PhasorProtocols.Anonymous
         {
             // Deserialize configuration cell
             m_lastReportTime = info.GetInt64("lastReportTime");
-            m_signalReferences = (Dictionary<SignalType, string[]>)info.GetValue("signalReferences", typeof(Dictionary<SignalType, string[]>));
+            m_signalReferences = (Dictionary<SignalReferenceType, string[]>)info.GetValue("signalReferences", typeof(Dictionary<SignalReferenceType, string[]>));
             m_analogDataFormat = (DataFormat)info.GetValue("analogDataFormat", typeof(DataFormat));
             m_frequencyDataFormat = (DataFormat)info.GetValue("frequencyDataFormat", typeof(DataFormat));
             m_phasorDataFormat = (DataFormat)info.GetValue("phasorDataFormat", typeof(DataFormat));
@@ -449,11 +449,11 @@ namespace TVA.PhasorProtocols.Anonymous
         #region [ Methods ]
 
         /// <summary>
-        /// Get signal reference for specified <see cref="SignalType"/>.
+        /// Get signal reference for specified <see cref="SignalReferenceType"/>.
         /// </summary>
-        /// <param name="type"><see cref="SignalType"/> to request signal reference for.</param>
-        /// <returns>Signal reference of given <see cref="SignalType"/>.</returns>
-        public string GetSignalReference(SignalType type)
+        /// <param name="type"><see cref="SignalReferenceType"/> to request signal reference for.</param>
+        /// <returns>Signal reference of given <see cref="SignalReferenceType"/>.</returns>
+        public string GetSignalReference(SignalReferenceType type)
         {
             // We cache non-indexed signal reference strings so they don't need to be generated at each mapping call.
             // This helps with performance since the mappings for each signal occur 30 times per second.
@@ -476,13 +476,13 @@ namespace TVA.PhasorProtocols.Anonymous
         }
 
         /// <summary>
-        /// Get signal reference for specified <see cref="SignalType"/> and <paramref name="signalIndex"/>.
+        /// Get signal reference for specified <see cref="SignalReferenceType"/> and <paramref name="signalIndex"/>.
         /// </summary>
-        /// <param name="type"><see cref="SignalType"/> to request signal reference for.</param>
-        /// <param name="index">Index <see cref="SignalType"/> to request signal reference for.</param>
-        /// <param name="count">Number of signals defined for this <see cref="SignalType"/>.</param>
-        /// <returns>Signal reference of given <see cref="SignalType"/> and <paramref name="signalIndex"/>.</returns>
-        public string GetSignalReference(SignalType type, int index, int count)
+        /// <param name="type"><see cref="SignalReferenceType"/> to request signal reference for.</param>
+        /// <param name="index">Index <see cref="SignalReferenceType"/> to request signal reference for.</param>
+        /// <param name="count">Number of signals defined for this <see cref="SignalReferenceType"/>.</param>
+        /// <returns>Signal reference of given <see cref="SignalReferenceType"/> and <paramref name="signalIndex"/>.</returns>
+        public string GetSignalReference(SignalReferenceType type, int index, int count)
         {
             // We cache indexed signal reference strings so they don't need to be generated at each mapping call.
             // This helps with performance since the mappings for each signal occur 30 times per second.
@@ -528,7 +528,7 @@ namespace TVA.PhasorProtocols.Anonymous
 
             // Serialize configuration cell
             info.AddValue("lastReportTime", (long)m_lastReportTime);
-            info.AddValue("signalReferences", m_signalReferences, typeof(Dictionary<SignalType, string[]>));
+            info.AddValue("signalReferences", m_signalReferences, typeof(Dictionary<SignalReferenceType, string[]>));
             info.AddValue("analogDataFormat", m_analogDataFormat, typeof(DataFormat));
             info.AddValue("frequencyDataFormat", m_frequencyDataFormat, typeof(DataFormat));
             info.AddValue("phasorDataFormat", m_phasorDataFormat, typeof(DataFormat));
