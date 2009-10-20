@@ -92,6 +92,7 @@
     <Compile Include="Anonymous\PhasorDefinition.cs" />
     <Compile Include="BpaPdcStream\Concentrator.cs" />
     <Compile Include="BpaPdcStream\NamespaceDoc.cs" />
+    <Compile Include="CalculatedMeasurementBase.cs" />
     <Compile Include="ChannelBase.cs" />
     <Compile Include="ChannelCellBase.cs" />
     <Compile Include="ChannelCellCollectionBase.cs" />
