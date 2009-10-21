@@ -268,7 +268,7 @@ namespace openPDCManager.Silverlight
 		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			App app = (App)Application.Current;
-			app.NodeValue = ((KeyValuePair<Guid, string>)(ComboboxNode.SelectedItem)).Key;
+			app.NodeValue = ((KeyValuePair<Guid, string>)(ComboboxNode.SelectedItem)).Key;			
 		}
 		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
 		{

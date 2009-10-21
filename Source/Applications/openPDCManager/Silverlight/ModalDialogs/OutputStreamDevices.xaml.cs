@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  HomePage.xaml.cs - Gbtc
+//  OutputStreamDevices.xaml.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  09/28/2009 - Mehulbhai P. Thakkar
+//  10/20/2009 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -229,74 +229,129 @@
 */
 #endregion
 
-
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ServiceModel;
-using System.ServiceModel.Channels;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Navigation;
-using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
 
-namespace openPDCManager.Silverlight.Pages
+namespace openPDCManager.Silverlight.ModalDialogs
 {
-    public partial class HomePage : Page
-    {
+	public partial class OutputStreamDevices : ChildWindow
+	{
+		int sourceOutputStreamID;
+		string sourceOutputStreamAcronym;
 		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "DuplexService/PhasorDataDuplexService.svc");
-		CustomBinding binding = new CustomBinding(
-									new PollingDuplexBindingElement(),
-									new BinaryMessageEncodingBindingElement(),
-									new HttpTransportBindingElement());
+		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
+		PhasorDataServiceClient client;
 
-		DuplexServiceClient duplexClient;
-		bool connected = false;
+		bool inEditMode = false;
+		int outputStreamDeviceID = 0;
 
-		//ObservableCollection<PmuDistribution> pmuDistributionList = new ObservableCollection<PmuDistribution>();
-		ObservableCollection<InterconnectionStatus> interconnectionStatusList = new ObservableCollection<InterconnectionStatus>();
-		Dictionary<string, int> deviceDistributionList  = new Dictionary<string, int>();
-
-        public HomePage()
-        {
-			duplexClient = new DuplexServiceClient(binding, address);
-			duplexClient.SendToServiceCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(duplexClient_SendToServiceCompleted);
-			duplexClient.SendToClientReceived += new EventHandler<SendToClientReceivedEventArgs>(duplexClient_SendToClientReceived);
-			duplexClient.SendToServiceAsync(new ConnectMessage());
-            
-            InitializeComponent();            
-        }
-		void duplexClient_SendToServiceCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
-		{            
-		    if (e.Error == null)
-		        connected = true;
-		}
-		void duplexClient_SendToClientReceived(object sender, SendToClientReceivedEventArgs e)
+		public OutputStreamDevices(int outputStreamID, string outputStreamAcronym)
 		{
-		    if (e.msg is LivePhasorDataMessage)
-		    {
-		        LivePhasorDataMessage livePhasorData = (LivePhasorDataMessage)e.msg;
-		//        pmuDistributionList = livePhasorData.PmuDistributionList;
-		        interconnectionStatusList = livePhasorData.InterconnectionStatusList;
-		        deviceDistributionList = livePhasorData.DeviceDistributionList;
-
-		//        ItemsControlPmuDistribution.ItemsSource = pmuDistributionList;
-		        ChartDeviceDistribution.DataContext = deviceDistributionList;
-		        ItemControlInterconnectionStatus.ItemsSource = interconnectionStatusList;                
-		    }
+			InitializeComponent();
+			sourceOutputStreamID = outputStreamID;
+			sourceOutputStreamAcronym = outputStreamAcronym;
+			this.Title = "Manage Devices For Output Stream: " + sourceOutputStreamAcronym;
+			Loaded += new RoutedEventHandler(OutputStreamDevices_Loaded);
+			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client.GetOutputStreamDeviceListCompleted += new EventHandler<GetOutputStreamDeviceListCompletedEventArgs>(client_GetOutputStreamDeviceListCompleted);
+			client.SaveOutputStreamDeviceCompleted += new EventHandler<SaveOutputStreamDeviceCompletedEventArgs>(client_SaveOutputStreamDeviceCompleted);
+			ListBoxOutputStreamDeviceList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDeviceList_SelectionChanged);
+			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
+			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 		}
-		//// Executes just before a page is no longer the active page in a frame.
-		protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+
+		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
-		    if (connected) 
-		        duplexClient.SendToServiceAsync(new DisconnectMessage());
-		    base.OnNavigatingFrom(e);
-		}
-        // Executes when the user navigates to this page.
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-        }
+			OutputStreamDevice outputStreamDevice = new OutputStreamDevice();
+			App app = (App)Application.Current;
 
-    }
+			outputStreamDevice.NodeID = app.NodeValue;
+			outputStreamDevice.AdapterID = sourceOutputStreamID;
+			outputStreamDevice.Acronym = TextBoxAcronym.Text;
+			outputStreamDevice.BpaAcronym = TextBoxBPAAcronym.Text;
+			outputStreamDevice.Name = TextBoxName.Text;
+			outputStreamDevice.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
+			outputStreamDevice.Enabled = (bool)CheckBoxEnabled.IsChecked;
+
+			if (inEditMode == true && outputStreamDeviceID > 0)
+			{
+				outputStreamDevice.ID = outputStreamDeviceID;
+				client.SaveOutputStreamDeviceAsync(outputStreamDevice, false);
+			}
+			else
+				client.SaveOutputStreamDeviceAsync(outputStreamDevice, true);
+		}
+		void ButtonClear_Click(object sender, RoutedEventArgs e)
+		{
+			ClearForm();
+		}
+		void ListBoxOutputStreamDeviceList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (ListBoxOutputStreamDeviceList.SelectedIndex >= 0)
+			{
+				OutputStreamDevice selectedOutputStreamDevice = ListBoxOutputStreamDeviceList.SelectedItem as OutputStreamDevice;
+				GridOutputStreamDeviceDetail.DataContext = selectedOutputStreamDevice;
+				CheckBoxEnabled.IsChecked = selectedOutputStreamDevice.Enabled;
+				inEditMode = true;
+				outputStreamDeviceID = selectedOutputStreamDevice.ID;
+			}
+		}
+		void OutputStreamDevices_Loaded(object sender, RoutedEventArgs e)
+		{
+			client.GetOutputStreamDeviceListAsync(sourceOutputStreamID, false);
+		}
+		void client_SaveOutputStreamDeviceCompleted(object sender, SaveOutputStreamDeviceCompletedEventArgs e)
+		{
+			if (e.Error == null)
+			{
+				ClearForm();
+				MessageBox.Show(e.Result);
+			}
+			else
+				MessageBox.Show(e.Error.Message);
+			client.GetOutputStreamDeviceListAsync(sourceOutputStreamID, false);
+		}
+		void client_GetOutputStreamDeviceListCompleted(object sender, GetOutputStreamDeviceListCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ListBoxOutputStreamDeviceList.ItemsSource = e.Result;
+			else
+				MessageBox.Show(e.Error.Message);
+		}
+		void ClearForm()
+		{
+			GridOutputStreamDeviceDetail.DataContext = new OutputStreamDevice();
+			CheckBoxEnabled.IsChecked = false;
+			inEditMode = false;
+			outputStreamDeviceID = 0;
+			ListBoxOutputStreamDeviceList.SelectedIndex = -1;
+		}
+
+		private void HyperlinkButtonPhasors_Click(object sender, RoutedEventArgs e)
+		{
+			int outputStreamDeviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ((HyperlinkButton)sender).Name;
+			OutputStreamDevicePhasors osdp = new OutputStreamDevicePhasors(outputStreamDeviceId, acronym);
+			osdp.Show();
+		}
+		private void HyperlinkButtonAnalogs_Click(object sender, RoutedEventArgs e)
+		{
+			int outputStreamDeviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ((HyperlinkButton)sender).Name;
+			OutputStreamDeviceAnalogs osda = new OutputStreamDeviceAnalogs(outputStreamDeviceId, acronym);
+			osda.Show();
+		}
+		private void HyperlinkButtonDigitals_Click(object sender, RoutedEventArgs e)
+		{
+			int outputStreamDeviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ((HyperlinkButton)sender).Name;
+			OutputStreamDeviceDigitals osdd = new OutputStreamDeviceDigitals(outputStreamDeviceId, acronym);
+			osdd.Show();
+		}
+		
+	}
 }
+

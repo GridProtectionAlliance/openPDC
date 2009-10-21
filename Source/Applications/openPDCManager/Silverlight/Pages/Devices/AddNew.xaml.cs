@@ -310,7 +310,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 			{
 				ClearForm();
-				MessageBox.Show("Done!");
+				MessageBox.Show(e.Result);
 			}
 			else
 				MessageBox.Show(e.Error.Message);

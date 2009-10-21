@@ -430,6 +430,89 @@ namespace PCS.Services.Service
 		}
 		#endregion
 
+		#region "Manage Output Stream Code"
+
+		public List<OutputStream> GetOutputStreamList(bool enabledOnly)
+		{
+			return CommonFunctions.GetOutputStreamList(enabledOnly);
+		}
+
+		public string SaveOutputStream(OutputStream outputStream, bool isNew)
+		{
+			return CommonFunctions.SaveOutputStream(outputStream, isNew);
+		}
+
+		#endregion
+		
+		#region " Manage Output Stream Device Code"
+
+		public List<OutputStreamDevice> GetOutputStreamDeviceList(int outputStreamID, bool enabledOnly)
+		{
+			return CommonFunctions.GetOutputStreamDeviceList(outputStreamID, enabledOnly);
+		}
+
+		public string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew)
+		{
+			return CommonFunctions.SaveOutputStreamDevice(outputStreamDevice, isNew);
+		}
+
+		#endregion
+
+		#region " Manage Output Stream Measurements Code"
+
+		public List<OutputStreamMeasurement> GetOutputStreamMeasurementList(int outputStreamID)
+		{
+			return CommonFunctions.GetOutputStreamMeasurementList(outputStreamID);
+		}
+
+		public string SaveOutputStreamMeasurement(OutputStreamMeasurement outputStreamMeasurement, bool isNew)
+		{
+			return CommonFunctions.SaveOutputStreamMeasurement(outputStreamMeasurement, isNew);
+		}
+
+		#endregion
+
+		#region " Manage Output Stream Device Phasor Code"
+
+		public List<OutputStreamDevicePhasor> GetOutputStreamDevicePhasorList(int outputStreamDeviceID)
+		{
+			return CommonFunctions.GetOutputStreamDevicePhasorList(outputStreamDeviceID);
+		}
+
+		public string SaveOutputStreamDevicePhasor(OutputStreamDevicePhasor outputStreamDevicePhasor, bool isNew)
+		{
+			return CommonFunctions.SaveOutputStreamDevicePhasor(outputStreamDevicePhasor, isNew);
+		}
+
+		#endregion
+
+		#region " Manage Output Stream Device Analog Code"
+
+		public List<OutputStreamDeviceAnalog> GetOutputStreamDeviceAnalogList(int outputStreamDeviceID)
+		{
+			return CommonFunctions.GetOutputStreamDeviceAnalogList(outputStreamDeviceID);
+		}
+
+		public string SaveOutputStreamDeviceAnalog(OutputStreamDeviceAnalog outputStreamDeviceAnalog, bool isNew)
+		{
+			return CommonFunctions.SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, isNew);
+		}
+
+		#endregion
+
+		#region " Manage Output Stream Device Digital Code"
+
+		public List<OutputStreamDeviceDigital> GetOutputStreamDeviceDigitalList(int outputStreamDeviceID)
+		{
+			return CommonFunctions.GetOutputStreamDeviceDigitalList(outputStreamDeviceID);
+		}
+
+		public string SaveOutputStreamDeviceDigital(OutputStreamDeviceDigital outputStreamDeviceDigital, bool isNew)
+		{
+			return CommonFunctions.SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, isNew);
+		}
+
+		#endregion
 
 		public List<string> GetTimeZones(bool isOptional)
 		{

@@ -100,8 +100,20 @@
     <Compile Include="MasterLayoutControl.xaml.cs">
       <DependentUpon>MasterLayoutControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ActiveMap.xaml.cs">
-      <DependentUpon>ActiveMap.xaml</DependentUpon>
+    <Compile Include="ModalDialogs\OutputStreamDeviceAnalogs.xaml.cs">
+      <DependentUpon>OutputStreamDeviceAnalogs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamDeviceDigitals.xaml.cs">
+      <DependentUpon>OutputStreamDeviceDigitals.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamDevicePhasors.xaml.cs">
+      <DependentUpon>OutputStreamDevicePhasors.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamDevices.xaml.cs">
+      <DependentUpon>OutputStreamDevices.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamMeasurements.xaml.cs">
+      <DependentUpon>OutputStreamMeasurements.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Adapters\ActionAdapters.xaml.cs">
       <DependentUpon>ActionAdapters.xaml</DependentUpon>
@@ -124,9 +136,6 @@
     <Compile Include="Pages\Adapters\OutputStreams.xaml.cs">
       <DependentUpon>OutputStreams.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\CalculatedMeasurement.xaml.cs">
-      <DependentUpon>CalculatedMeasurement.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\Devices\ActiveMap.xaml.cs">
       <DependentUpon>ActiveMap.xaml</DependentUpon>
     </Compile>
@@ -148,12 +157,6 @@
     <Compile Include="Pages\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\LocalHive.xaml.cs">
-      <DependentUpon>LocalHive.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\ManagePDCs.xaml.cs">
-      <DependentUpon>ManagePDCs.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\Manage\Companies.xaml.cs">
       <DependentUpon>Companies.xaml</DependentUpon>
     </Compile>
@@ -168,24 +171,6 @@
     </Compile>
     <Compile Include="Pages\Manage\Vendors.xaml.cs">
       <DependentUpon>Vendors.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\OutputStream.xaml.cs">
-      <DependentUpon>OutputStream.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Overview.xaml.cs">
-      <DependentUpon>Overview.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\PlanningMap.xaml.cs">
-      <DependentUpon>PlanningMap.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\PmuList.xaml.cs">
-      <DependentUpon>PmuList.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\StatusReport.xaml.cs">
-      <DependentUpon>StatusReport.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\SystemDiagram.xaml.cs">
-      <DependentUpon>SystemDiagram.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\LivePhasorDataServiceProxy\Reference.cs">
@@ -215,7 +200,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
-    <Page Include="Pages\ActiveMap.xaml">
+    <Page Include="ModalDialogs\OutputStreamDeviceAnalogs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamDeviceDigitals.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamDevicePhasors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamDevices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamMeasurements.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
@@ -247,10 +248,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
-    <Page Include="Pages\CalculatedMeasurement.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:MarkupCompilePass1</Generator>
-    </Page>
     <Page Include="Pages\Devices\ActiveMap.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
@@ -279,14 +276,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
-    <Page Include="Pages\LocalHive.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:MarkupCompilePass1</Generator>
-    </Page>
-    <Page Include="Pages\ManagePDCs.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:MarkupCompilePass1</Generator>
-    </Page>
     <Page Include="Pages\Manage\Companies.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
@@ -304,30 +293,6 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
     <Page Include="Pages\Manage\Vendors.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:MarkupCompilePass1</Generator>
-    </Page>
-    <Page Include="Pages\OutputStream.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:MarkupCompilePass1</Generator>
-    </Page>
-    <Page Include="Pages\Overview.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:MarkupCompilePass1</Generator>
-    </Page>
-    <Page Include="Pages\PlanningMap.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:MarkupCompilePass1</Generator>
-    </Page>
-    <Page Include="Pages\PmuList.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:MarkupCompilePass1</Generator>
-    </Page>
-    <Page Include="Pages\StatusReport.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:MarkupCompilePass1</Generator>
-    </Page>
-    <Page Include="Pages\SystemDiagram.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
@@ -440,6 +405,24 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStream.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevice.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDeviceAnalog.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDeviceDigital.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevicePhasor.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamMeasurement.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Vendor.datasource">

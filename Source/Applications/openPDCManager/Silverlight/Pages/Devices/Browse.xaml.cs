@@ -257,7 +257,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			client.GetDeviceListCompleted += new EventHandler<GetDeviceListCompletedEventArgs>(client_GetDeviceListCompleted);
 			Loaded += new RoutedEventHandler(Browse_Loaded);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
-			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);					
+			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);	
 		}		
 		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
 		{

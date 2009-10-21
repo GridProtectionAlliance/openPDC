@@ -422,6 +422,66 @@ namespace PCS.Services.Service
 
 		#endregion
 
+		#region " Manage Output Stream Code"
+
+		[OperationContract]
+		List<OutputStream> GetOutputStreamList(bool enabledOnly);
+
+		[OperationContract]
+		string SaveOutputStream(OutputStream outputStream, bool isNew);
+
+		#endregion
+
+		#region " Manage Output Stream Device Code"
+
+		[OperationContract]
+		List<OutputStreamDevice> GetOutputStreamDeviceList(int outputStreamID, bool enabledOnly);
+
+		[OperationContract]
+		string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew);
+
+		#endregion
+
+		#region " Manage Output Stream Measurements Code"
+
+		[OperationContract]
+		List<OutputStreamMeasurement> GetOutputStreamMeasurementList(int outputStreamID);
+
+		[OperationContract]
+		string SaveOutputStreamMeasurement(OutputStreamMeasurement outputStreamMeasurement, bool isNew);
+
+		#endregion
+
+		#region " Manage Output Stream Device Phasor Code"
+
+		[OperationContract]
+		List<OutputStreamDevicePhasor> GetOutputStreamDevicePhasorList(int outputStreamDeviceID);
+
+		[OperationContract]
+		string SaveOutputStreamDevicePhasor(OutputStreamDevicePhasor outputStreamDevicePhasor, bool isNew);
+
+		#endregion
+
+		#region " Manage Output Stream Device Analog Code"
+
+		[OperationContract]
+		List<OutputStreamDeviceAnalog> GetOutputStreamDeviceAnalogList(int outputStreamDeviceID);
+
+		[OperationContract]
+		string SaveOutputStreamDeviceAnalog(OutputStreamDeviceAnalog outputStreamDeviceAnalog, bool isNew);
+
+		#endregion
+
+		#region " Manage Output Stream Device Digital Code"
+
+		[OperationContract]
+		List<OutputStreamDeviceDigital> GetOutputStreamDeviceDigitalList(int outputStreamDeviceID);
+
+		[OperationContract]
+		string SaveOutputStreamDeviceDigital(OutputStreamDeviceDigital outputStreamDeviceDigital, bool isNew);
+
+		#endregion
+
 		[OperationContract]
 		List<string> GetTimeZones(bool isOptional);
 

@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  HomePage.xaml.cs - Gbtc
+//  OutputStreamDeviceDigitals.xaml.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  09/28/2009 - Mehulbhai P. Thakkar
+//  10/21/2009 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -229,74 +229,99 @@
 */
 #endregion
 
-
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ServiceModel;
-using System.ServiceModel.Channels;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Navigation;
-using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
 
-namespace openPDCManager.Silverlight.Pages
+namespace openPDCManager.Silverlight.ModalDialogs
 {
-    public partial class HomePage : Page
-    {
+	public partial class OutputStreamDeviceDigitals : ChildWindow
+	{
+		int sourceOutputStreamDeviceID;
+		string sourceOutputStreamDeviceAcronym;
 		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "DuplexService/PhasorDataDuplexService.svc");
-		CustomBinding binding = new CustomBinding(
-									new PollingDuplexBindingElement(),
-									new BinaryMessageEncodingBindingElement(),
-									new HttpTransportBindingElement());
+		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
+		PhasorDataServiceClient client;
 
-		DuplexServiceClient duplexClient;
-		bool connected = false;
+		bool inEditMode = false;
+		int outputStreamDeviceDigitalID = 0;
 
-		//ObservableCollection<PmuDistribution> pmuDistributionList = new ObservableCollection<PmuDistribution>();
-		ObservableCollection<InterconnectionStatus> interconnectionStatusList = new ObservableCollection<InterconnectionStatus>();
-		Dictionary<string, int> deviceDistributionList  = new Dictionary<string, int>();
-
-        public HomePage()
-        {
-			duplexClient = new DuplexServiceClient(binding, address);
-			duplexClient.SendToServiceCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(duplexClient_SendToServiceCompleted);
-			duplexClient.SendToClientReceived += new EventHandler<SendToClientReceivedEventArgs>(duplexClient_SendToClientReceived);
-			duplexClient.SendToServiceAsync(new ConnectMessage());
-            
-            InitializeComponent();            
-        }
-		void duplexClient_SendToServiceCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
-		{            
-		    if (e.Error == null)
-		        connected = true;
-		}
-		void duplexClient_SendToClientReceived(object sender, SendToClientReceivedEventArgs e)
+		public OutputStreamDeviceDigitals(int outputStreamDeviceID, string outputStreamDeviceAcronym)
 		{
-		    if (e.msg is LivePhasorDataMessage)
-		    {
-		        LivePhasorDataMessage livePhasorData = (LivePhasorDataMessage)e.msg;
-		//        pmuDistributionList = livePhasorData.PmuDistributionList;
-		        interconnectionStatusList = livePhasorData.InterconnectionStatusList;
-		        deviceDistributionList = livePhasorData.DeviceDistributionList;
-
-		//        ItemsControlPmuDistribution.ItemsSource = pmuDistributionList;
-		        ChartDeviceDistribution.DataContext = deviceDistributionList;
-		        ItemControlInterconnectionStatus.ItemsSource = interconnectionStatusList;                
-		    }
+			InitializeComponent();
+			sourceOutputStreamDeviceID = outputStreamDeviceID;
+			sourceOutputStreamDeviceAcronym = outputStreamDeviceAcronym;
+			this.Title = "Manage Digitals For Output Stream Device: " + sourceOutputStreamDeviceAcronym;
+			Loaded += new RoutedEventHandler(OutputStreamDeviceDigitals_Loaded);
+			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
+			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
+			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client.GetOutputStreamDeviceDigitalListCompleted += new EventHandler<GetOutputStreamDeviceDigitalListCompletedEventArgs>(client_GetOutputStreamDeviceDigitalListCompleted);
+			client.SaveOutputStreamDeviceDigitalCompleted += new EventHandler<SaveOutputStreamDeviceDigitalCompletedEventArgs>(client_SaveOutputStreamDeviceDigitalCompleted);
+			ListBoxOutputStreamDeviceDigitalList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDeviceDigitalList_SelectionChanged);
 		}
-		//// Executes just before a page is no longer the active page in a frame.
-		protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+		void ListBoxOutputStreamDeviceDigitalList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-		    if (connected) 
-		        duplexClient.SendToServiceAsync(new DisconnectMessage());
-		    base.OnNavigatingFrom(e);
+			if (ListBoxOutputStreamDeviceDigitalList.SelectedIndex >= 0)
+			{
+				OutputStreamDeviceDigital selectedOutputStreamDeviceDigital = ListBoxOutputStreamDeviceDigitalList.SelectedItem as OutputStreamDeviceDigital;
+				GridOutputStreamDeviceDigitalDetail.DataContext = selectedOutputStreamDeviceDigital;
+				inEditMode = true;
+				outputStreamDeviceDigitalID = selectedOutputStreamDeviceDigital.ID;
+			}
 		}
-        // Executes when the user navigates to this page.
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-        }
+		void client_SaveOutputStreamDeviceDigitalCompleted(object sender, SaveOutputStreamDeviceDigitalCompletedEventArgs e)
+		{
+			if (e.Error == null)
+			{
+				ClearForm();
+				MessageBox.Show(e.Result);
+			}
+			else
+				MessageBox.Show(e.Error.Message);
+			client.GetOutputStreamDeviceDigitalListAsync(sourceOutputStreamDeviceID);	
+		}
+		void client_GetOutputStreamDeviceDigitalListCompleted(object sender, GetOutputStreamDeviceDigitalListCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ListBoxOutputStreamDeviceDigitalList.ItemsSource = e.Result;
+			else
+				MessageBox.Show(e.Error.Message);
+		}
+		void ButtonSave_Click(object sender, RoutedEventArgs e)
+		{
+			OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
+			App app = (App)Application.Current;
 
-    }
+			outputStreamDeviceDigital.NodeID = app.NodeValue;
+			outputStreamDeviceDigital.OutputStreamDeviceID = sourceOutputStreamDeviceID;
+			outputStreamDeviceDigital.Label = TextBoxLabel.Text;
+			outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
+			if (inEditMode == true && outputStreamDeviceDigitalID > 0)
+			{
+				outputStreamDeviceDigital.ID = outputStreamDeviceDigitalID;
+				client.SaveOutputStreamDeviceDigitalAsync(outputStreamDeviceDigital, false);
+			}
+			else
+				client.SaveOutputStreamDeviceDigitalAsync(outputStreamDeviceDigital, true);
+		}
+		void ButtonClear_Click(object sender, RoutedEventArgs e)
+		{
+			ClearForm();
+		}
+		void OutputStreamDeviceDigitals_Loaded(object sender, RoutedEventArgs e)
+		{
+			client.GetOutputStreamDeviceDigitalListAsync(sourceOutputStreamDeviceID);	
+		}
+		void ClearForm()
+		{
+			GridOutputStreamDeviceDigitalDetail.DataContext = new OutputStreamDeviceDigital();
+			inEditMode = false;
+			outputStreamDeviceDigitalID = 0;
+			ListBoxOutputStreamDeviceDigitalList.SelectedIndex = -1;
+		}
+	}
 }
+

@@ -39,7 +39,7 @@
                                         <StackPanel Orientation="Vertical">
                                             <Border Style="{StaticResource HeaderRowBorderStyle}">
                                                 <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding Path=Interconnection}" Style="{StaticResource HeaderRowTextStyle}" Width="525" />
+                                                    <TextBlock Text="{Binding Path=InterConnection}" Style="{StaticResource HeaderRowTextStyle}" Width="525" />
                                                     <TextBlock Text="{Binding Path=TotalDevices}" Style="{StaticResource HeaderRowTextStyle}" Width="150" TextAlignment="Center"/>
                                                 </StackPanel>
                                             </Border>
@@ -52,7 +52,7 @@
                                                 <TextBlock Text="Reporting" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
                                                 <TextBlock Text="Status" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>-->
                                             </StackPanel>
-                                            <ItemsControl ItemsSource="{Binding Path=CompanyStatus}">
+                                            <ItemsControl ItemsSource="{Binding Path=MemberStatusList}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Horizontal" Margin="0">

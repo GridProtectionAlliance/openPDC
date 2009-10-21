@@ -232,20 +232,31 @@
 #endregion
 
 
+using System;
 namespace openPDCManager.Web.Data.Entities
 {
     public class OutputStream
     {
+		public Guid NodeID { get; set; }
         public int ID { get; set; }
+		public string Acronym { get; set; }
         public string Name { get; set; }
-        public string Type { get; set; }
+        public int Type { get; set; }
         public string ConnectionString { get; set; }
-        public string PmuFilterSql { get; set; }
-        public int IDCode { get; set; }
-        public int FrameRate { get; set; }
-        public int NominalFrequency { get; set; }
-        public decimal LagTime { get; set; }
-        public decimal LeadTime { get; set; }
+		public int IDCode { get; set; }
+		public string CommandChannel { get; set; }
+		public string DataChannel { get; set; }
+		public bool AutoPublishConfigFrame { get; set; }
+		public bool AutoStartDataChannel { get; set; }
+		public int NominalFrequency { get; set; }
+		public int FramesPerSecond { get; set; }
+		public double LagTime { get; set; }
+		public double LeadTime { get; set; }
+		public bool UseLocalClockAsRealTime { get; set; }
+		public bool AllowSortsByArrival { get; set; }
+		public int LoadOrder { get; set; }
         public bool Enabled { get; set; }
+		public string NodeName { get; set; }
+		public string TypeName { get; set; }
     }
 }

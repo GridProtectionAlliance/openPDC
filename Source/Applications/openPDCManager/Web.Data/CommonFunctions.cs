@@ -645,10 +645,34 @@ namespace openPDCManager.Web.Data
 		//    return nodeString;
 		//}
 
+		public static IDbDataParameter AddWithValue(IDbCommand command, string name, object value)
+		{
+			return AddWithValue(command, name, value, ParameterDirection.Input);
+		}
+		public static IDbDataParameter AddWithValue(IDbCommand command, string name, object value, ParameterDirection direction)
+		{
+			IDbDataParameter param = command.CreateParameter();
+			param.ParameterName = name;
+			param.Value = value;
+			param.Direction = direction;			
+			return param;
+		}
+
 		public static bool MasterNode(Guid nodeID)
 		{
 			bool isMaster = false;
 
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select Master From Node Where ID = @id";
+
+			//IDbDataParameter param = command.CreateParameter();
+			//param.ParameterName = "@id";
+			//param.Value = nodeID;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@id", nodeID));
+			isMaster = (bool)command.ExecuteScalar();
 			return isMaster;
 		}
 
@@ -786,38 +810,44 @@ namespace openPDCManager.Web.Data
 				command.CommandText = "INSERT INTO Company (Acronym, MapAcronym, Name, URL, LoadOrder) VALUES (@acronym, @mapAcronym, @name, @url, @loadOrder)";
 			else
 				command.CommandText = "UPDATE Company SET Acronym = @acronym, MapAcronym = @mapAcronym, Name = @name, URL = @url, LoadOrder = @loadOrder WHERE ID = @id";
+			
+			//IDbDataParameter param = command.CreateParameter();
+			//param.ParameterName = "@acronym";
+			//param.Value = company.Acronym;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@acronym", company.Acronym));
 
-			IDbDataParameter param = command.CreateParameter();
-			param.ParameterName = "@acronym";
-			param.Value = company.Acronym;
-			command.Parameters.Add(param);
+			//param = command.CreateParameter();
+			//param.ParameterName = "@mapAcronym";
+			//param.Value = company.MapAcronym;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@mapAcronym", company.MapAcronym));
 
-			param = command.CreateParameter();
-			param.ParameterName = "@mapAcronym";
-			param.Value = company.MapAcronym;
-			command.Parameters.Add(param);
+			//param = command.CreateParameter();
+			//param.ParameterName = "@name";
+			//param.Value = company.Name;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@name", company.Name));
 
-			param = command.CreateParameter();
-			param.ParameterName = "@name";
-			param.Value = company.Name;
-			command.Parameters.Add(param);
+			//param = command.CreateParameter();
+			//param.ParameterName = "@url";
+			//param.Value = company.URL;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@url", company.URL));
 
-			param = command.CreateParameter();
-			param.ParameterName = "@url";
-			param.Value = company.URL;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@loadOrder";
-			param.Value = company.LoadOrder;
-			command.Parameters.Add(param);
+			//param = command.CreateParameter();
+			//param.ParameterName = "@loadOrder";
+			//param.Value = company.LoadOrder;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@loadOrder", company.LoadOrder));
 
 			if (!isNew)
 			{
-				param = command.CreateParameter();
-				param.ParameterName = "@id";
-				param.Value = company.ID;
-				command.Parameters.Add(param);
+				//param = command.CreateParameter();
+				//param.ParameterName = "@id";
+				//param.Value = company.ID;
+				//command.Parameters.Add(param);
+				command.Parameters.Add(AddWithValue(command, "@id", company.ID));
 			}
 
 			command.ExecuteNonQuery();
@@ -827,8 +857,526 @@ namespace openPDCManager.Web.Data
 
 		#endregion
 
-        #region " Manage Historians Code"
-		
+		#region " Manage Output Streams Code"
+
+		public static List<OutputStream> GetOutputStreamList(bool enabledOnly)
+		{
+			List<OutputStream> outputStreamList = new List<OutputStream>();
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			if (enabledOnly)
+			{
+				command.CommandText = "SELECT * FROM OutputStreamDetail Where Enabled = @enabled ORDER BY LoadOrder";
+				//IDbDataParameter param = command.CreateParameter();
+				//param.ParameterName = "@enabled";
+				//param.Value = true;
+				//command.Parameters.Add(param);
+				command.Parameters.Add(AddWithValue(command, "@enabled", true));
+			}
+			else
+				command.CommandText = "SELECT * FROM OutputStreamDetail ORDER BY LoadOrder";
+
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
+			outputStreamList = (from item in resultTable.AsEnumerable()
+								select new OutputStream()
+								{
+									NodeID = item.Field<Guid>("NodeID"),
+									ID = item.Field<int>("ID"),
+									Acronym = item.Field<string>("Acronym"),
+									Name = item.Field<string>("Name"),
+									Type = item.Field<int>("Type"),
+									ConnectionString = item.Field<string>("ConnectionString"),
+									IDCode = item.Field<int>("IDCode"),
+									CommandChannel = item.Field<string>("CommandChannel"),
+									DataChannel = item.Field<string>("DataChannel"),
+									AutoPublishConfigFrame = item.Field<bool>("AutoPublishConfigFrame"),
+									AutoStartDataChannel = item.Field<bool>("AutoStartDataChannel"),
+									NominalFrequency = item.Field<int>("NominalFrequency"),
+									FramesPerSecond = item.Field<int>("FramesPerSecond"),
+									LagTime = item.Field<double>("LagTime"),
+									LeadTime = item.Field<double>("LeadTime"),
+									UseLocalClockAsRealTime = item.Field<bool>("UseLocalClockAsRealTime"),
+									AllowSortsByArrival = item.Field<bool>("AllowSortsByArrival"),
+									LoadOrder = item.Field<int>("LoadOrder"),
+									Enabled = item.Field<bool>("Enabled"),
+									NodeName = item.Field<string>("NodeName"),
+									TypeName = item.Field<int>("Type") == 0 ? "IEEE C37.118" : "BPA"
+								}).ToList();
+			connection.Dispose();
+			return outputStreamList;
+		}
+
+		public static string SaveOutputStream(OutputStream outputStream, bool isNew)
+		{
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+
+			if (isNew)
+				command.CommandText = "INSERT INTO OutputStream (NodeID, Acronym, Name, Type, ConnectionString, IDCode, CommandChannel, DataChannel, AutoPublishConfigFrame, AutoStartDataChannel, NominalFrequency, FramesPerSecond, LagTime, LeadTime, " +
+									"UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled) VALUES (@nodeID, @acronym, @name, @type, @connectionString, @idCode, @commandChannel, @dataChannel, @autoPublishConfigFrame, @autoStartDataChannel, " +
+									"@nominalFrequency, @framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled)";
+			else
+				command.CommandText = "UPDATE OutputStream SET NodeID = @nodeID, Acronym = @acronym, Name = @name, Type = @type, ConnectionString = @connectionString, IDCode = @idCode, CommandChannel = @commandChannel, DataChannel = @dataChannel, AutoPublishConfigFrame = @autoPublishConfigFrame, " +
+									"AutoStartDataChannel = @autoStartDataChannel, NominalFrequency = @nominalFrequency, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, UseLocalClockAsRealTime = @useLocalClockAsRealTime, " +
+									"AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled WHERE ID = @id";
+
+			//IDbDataParameter param = command.CreateParameter();
+			//param.ParameterName = "@nodeID";
+			//param.Value = outputStream.NodeID;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@nodeID", outputStream.NodeID));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@acronym";
+			//param.Value = outputStream.Acronym;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@acronym", outputStream.Acronym));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@name";
+			//param.Value = outputStream.Name;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@name", outputStream.Name));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@type";
+			//param.Value = outputStream.Type;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@type", outputStream.Type));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@connectionString";
+			//param.Value = outputStream.ConnectionString;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@connectionString", outputStream.ConnectionString));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@idCode";
+			//param.Value = outputStream.IDCode;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@idCode", outputStream.IDCode));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@commandChannel";
+			//param.Value = outputStream.CommandChannel;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@commandChannel", outputStream.CommandChannel));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@dataChannel";
+			//param.Value = outputStream.DataChannel;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@dataChannel", outputStream.DataChannel));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@autoPublishConfigFrame";
+			//param.Value = outputStream.AutoPublishConfigFrame;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@autoPublishConfigFrame", outputStream.AutoPublishConfigFrame));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@autoStartDataChannel";
+			//param.Value = outputStream.AutoStartDataChannel;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@autoStartDataChannel", outputStream.AutoStartDataChannel));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@nominalFrequency";
+			//param.Value = outputStream.NominalFrequency;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@nominalFrequency", outputStream.NominalFrequency));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@framesPerSecond";
+			//param.Value = outputStream.FramesPerSecond;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@framesPerSecond", outputStream.FramesPerSecond));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@lagTime";
+			//param.Value = outputStream.LagTime;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@lagTime", outputStream.LagTime));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@leadTime";
+			//param.Value = outputStream.LeadTime;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@leadTime", outputStream.LeadTime));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@useLocalClockAsRealTime";
+			//param.Value = outputStream.UseLocalClockAsRealTime;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@useLocalClockAsRealTime", outputStream.UseLocalClockAsRealTime));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@allowSortsByArrival";
+			//param.Value = outputStream.AllowSortsByArrival;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@allowSortsByArrival", outputStream.AllowSortsByArrival));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@loadOrder";
+			//param.Value = outputStream.LoadOrder;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStream.LoadOrder));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@enabled";
+			//param.Value = outputStream.Enabled;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@enabled", outputStream.Enabled));
+
+			if (!isNew)
+			{
+				//param = command.CreateParameter();
+				//param.ParameterName = "@id";
+				//param.Value = outputStream.ID;
+				//command.Parameters.Add(param);
+				command.Parameters.Add(AddWithValue(command, "@id", outputStream.ID));
+			}
+
+			command.ExecuteNonQuery();
+			connection.Dispose();			
+			return "Done!";
+		}
+
+		#endregion
+
+		#region " Manage Output Stream Measurements Code"
+
+		public static List<OutputStreamMeasurement> GetOutputStreamMeasurementList(int outputStreamID)
+		{
+			List<OutputStreamMeasurement> outputStreamMeasurementList = new List<OutputStreamMeasurement>();
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select * From OutputStreamMeasurementDetail Where AdapterID = @adapterID";
+			//IDbDataParameter param = command.CreateParameter();
+			//param.ParameterName = "@adapterID";
+			//param.Value = outputStreamID;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
+
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
+			outputStreamMeasurementList = (from item in resultTable.AsEnumerable()
+										   select new OutputStreamMeasurement()
+										   {
+											   NodeID = item.Field<Guid>("NodeID"),
+											   AdapterID = item.Field<int>("AdapterID"),
+											   ID = item.Field<int>("ID"),
+											   PointID = item.Field<int>("PointID"),
+											   HistorianID = item.Field<int?>("HistorianID"),
+											   SignalReference = item.Field<string>("SignalReference"),
+											   HistorianAcronym = item.Field<string>("HistorianAcronym")
+										   }).ToList();
+			connection.Dispose();
+			return outputStreamMeasurementList;
+		}
+
+		public static string SaveOutputStreamMeasurement(OutputStreamMeasurement outputStreamMeasurement, bool isNew)
+		{
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+
+			if (isNew)
+				command.CommandText = "Insert Into OutputStreamMeasurement (NodeID, AdapterID, HistorianID, PointID, SignalReference) " +
+					"Values (@nodeID, @adapterID, @historianID, @pointID, @signalReference)";
+			else
+				command.CommandText = "Update OutputStreamMeasurement Set NodeID = @nodeID, AdapterID = @adapterID, HistorianID = @historianID, " +
+					"PointID = @pointID, SignalReference = @signalReference WHERE ID = @id";
+
+			//IDbDataParameter param = command.CreateParameter();
+			//param.ParameterName = "@nodeID";
+			//param.Value = outputStreamMeasurement.NodeID;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamMeasurement.NodeID));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@adapterID";
+			//param.Value = outputStreamMeasurement.AdapterID;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamMeasurement.AdapterID));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@historianID";
+			//param.Value = outputStreamMeasurement.HistorianID ?? (object)DBNull.Value;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@historianID", outputStreamMeasurement.HistorianID ?? (object)DBNull.Value));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@pointID";
+			//param.Value = outputStreamMeasurement.PointID;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@pointID", outputStreamMeasurement.PointID));
+
+			//param = command.CreateParameter();
+			//param.ParameterName = "@signalReference";
+			//param.Value = outputStreamMeasurement.SignalReference;
+			//command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@signalReference", outputStreamMeasurement.SignalReference));
+
+			if (!isNew)
+				command.Parameters.Add(AddWithValue(command, "@id", outputStreamMeasurement.ID));
+
+			command.ExecuteNonQuery();
+			connection.Dispose();
+			return "Done!";
+		}
+
+		#endregion
+
+		#region " Manage Output Stream Devices Code"
+
+		public static List<OutputStreamDevice> GetOutputStreamDeviceList(int outputStreamID, bool enabledOnly)
+		{
+			List<OutputStreamDevice> outputStreamDeviceList = new List<OutputStreamDevice>();
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			if (!enabledOnly)
+				command.CommandText = "Select * From OutputStreamDevice Where AdapterID = @adapterID";
+			else
+				command.CommandText = "Select * From OutputStreamDevice Where AdapterID = @adapterID AND Enabled = @enabled";
+	
+			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
+			if (enabledOnly)			
+				command.Parameters.Add(AddWithValue(command, "@enabled", true));
+
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
+			outputStreamDeviceList = (from item in resultTable.AsEnumerable()
+									  select new OutputStreamDevice()
+									  {
+										  NodeID = item.Field<Guid>("NodeID"),
+										  AdapterID = item.Field<int>("AdapterID"),
+										  ID = item.Field<int>("ID"),
+										  Acronym = item.Field<string>("Acronym"),
+										  Name = item.Field<string>("Name"),
+										  BpaAcronym = item.Field<string>("BpaAcronym") ?? string.Empty,
+										  LoadOrder = item.Field<int>("LoadOrder"),
+										  Enabled = item.Field<bool>("Enabled")
+									  }).ToList();
+			connection.Dispose();
+			return outputStreamDeviceList;
+		}
+
+		public static string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew)
+		{
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+
+			if (isNew)
+				command.CommandText = "Insert Into OutputStreamDevice (NodeID, AdapterID, Acronym, BpaAcronym, Name, LoadOrder, Enabled) " +
+					"Values (@nodeID, @adapterID, @acronym, @bpaAcronym, @name, @loadOrder, @enabled)";
+			else
+				command.CommandText = "Update OutputStreamDevice Set NodeID = @nodeID, AdapterID = @adapterID, Acronym = @acronym, " +
+					"BpaAcronym = @bpaAcronym, Name = @name, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+
+			command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDevice.NodeID));
+			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamDevice.AdapterID));
+			command.Parameters.Add(AddWithValue(command, "@acronym", outputStreamDevice.Acronym));
+			command.Parameters.Add(AddWithValue(command, "@bpaAcronym", outputStreamDevice.BpaAcronym));
+			command.Parameters.Add(AddWithValue(command, "@name", outputStreamDevice.Name));
+			command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDevice.LoadOrder));
+			command.Parameters.Add(AddWithValue(command, "@enabled", outputStreamDevice.Enabled));
+			if (!isNew)
+				command.Parameters.Add(AddWithValue(command, "@id", outputStreamDevice.ID));
+
+			command.ExecuteNonQuery();
+			connection.Dispose();
+
+			return "Done!";
+		}
+
+		#endregion
+
+		#region " Manage Output Stream Device Phasor Code"
+
+		public static List<OutputStreamDevicePhasor> GetOutputStreamDevicePhasorList(int outputStreamDeviceID)
+		{
+			List<OutputStreamDevicePhasor> outputStreamDevicePhasorList = new List<OutputStreamDevicePhasor>();
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select * From OutputStreamDevicePhasor Where OutputStreamDeviceID = @outputStreamDeviceID Order By LoadOrder";
+			command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceID));
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
+			outputStreamDevicePhasorList = (from item in resultTable.AsEnumerable()
+											select new OutputStreamDevicePhasor()
+											{
+												NodeID = item.Field<Guid>("NodeID"),
+												OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
+												ID = item.Field<int>("ID"),
+												Label = item.Field<string>("Label"),
+												Type = item.Field<string>("Type"),
+												Phase = item.Field<string>("Phase"),
+												LoadOrder = item.Field<int>("LoadOrder"),
+												PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
+												PhaseType = item.Field<string>("Phase") == "+" ? "Positive" : item.Field<string>("Phase") == "-" ? "Negative" :
+															item.Field<string>("Phase") == "A" ? "Phase A" : item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
+											}).ToList();
+			connection.Dispose();
+			return outputStreamDevicePhasorList;
+		}
+
+		public static string SaveOutputStreamDevicePhasor(OutputStreamDevicePhasor outputStreamDevicePhasor, bool isNew)
+		{
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+
+			if (isNew)
+				command.CommandText = "Insert Into OutputStreamDevicePhasor (NodeID, OutputStreamDeviceID, Label, Type, Phase, LoadOrder) " +
+					"Values (@nodeID, @outputStreamDeviceID, @label, @type, @phase, @loadOrder)";
+			else
+				command.CommandText = "Update OutputStreamDevicePhasor Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
+					"Type = @type, Phase = @phase, LoadOrder = @loadOrder Where ID = @id";
+
+			command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDevicePhasor.NodeID));
+			command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDevicePhasor.OutputStreamDeviceID));
+			command.Parameters.Add(AddWithValue(command, "@label", outputStreamDevicePhasor.Label));
+			command.Parameters.Add(AddWithValue(command, "@type", outputStreamDevicePhasor.Type));
+			command.Parameters.Add(AddWithValue(command, "@phase", outputStreamDevicePhasor.Phase));
+			command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDevicePhasor.LoadOrder));
+			if (!isNew)
+				command.Parameters.Add(AddWithValue(command, "@id", outputStreamDevicePhasor.ID));
+
+			command.ExecuteNonQuery();
+			connection.Dispose();
+			return "Done!";
+		}
+
+		#endregion
+
+		#region " Manage Output Stream Device Analogs Code"
+
+		public static List<OutputStreamDeviceAnalog> GetOutputStreamDeviceAnalogList(int outputStreamDeviceID)
+		{
+			List<OutputStreamDeviceAnalog> outputStreamDeviceAnalogList = new List<OutputStreamDeviceAnalog>();
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select * From OutputStreamDeviceAnalog Where OutputStreamDeviceID = @outputStreamDeviceID Order By LoadOrder";
+			command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceID));
+
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
+			outputStreamDeviceAnalogList = (from item in resultTable.AsEnumerable()
+											select new OutputStreamDeviceAnalog()
+											{
+												NodeID = item.Field<Guid>("NodeID"),
+												OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
+												ID = item.Field<int>("ID"),
+												Label = item.Field<string>("Label"),
+												Type = item.Field<int>("Type"),
+												LoadOrder = item.Field<int>("LoadOrder"),
+												TypeName = item.Field<int>("Type") == 0 ? "Single point-on-wave" : item.Field<int>("Type") == 1 ? "RMS of analog input" : "Peak of analog input"
+											}).ToList();
+			connection.Dispose();
+			return outputStreamDeviceAnalogList;
+		}
+
+		public static string SaveOutputStreamDeviceAnalog(OutputStreamDeviceAnalog outputStreamDeviceAnalog, bool isNew)
+		{
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+
+			if (isNew)
+				command.CommandText = "Insert Into OutputStreamDeviceAnalog (NodeID, OutputStreamDeviceID, Label, Type, LoadOrder) " +
+					"Values (@nodeID, @outputStreamDeviceID, @label, @type, @loadOrder)";
+			else
+				command.CommandText = "Update OutputStreamDeviceAnalog Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
+					"Type = @type, LoadOrder = @loadOrder Where ID = @id";
+
+			command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDeviceAnalog.NodeID));
+			command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceAnalog.OutputStreamDeviceID));
+			command.Parameters.Add(AddWithValue(command, "@label", outputStreamDeviceAnalog.Label));
+			command.Parameters.Add(AddWithValue(command, "@type", outputStreamDeviceAnalog.Type));
+			command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDeviceAnalog.LoadOrder));
+			if (!isNew)
+				command.Parameters.Add(AddWithValue(command, "@id", outputStreamDeviceAnalog.ID));
+
+			command.ExecuteNonQuery();
+			connection.Dispose();
+
+			return "Done!";
+		}
+
+		#endregion
+
+		#region " Manage Output Stream Device Digitals Code"
+
+		public static List<OutputStreamDeviceDigital> GetOutputStreamDeviceDigitalList(int outputStreamDeviceID)
+		{
+			List<OutputStreamDeviceDigital> outputStreamDeviceDigitalList = new List<OutputStreamDeviceDigital>();
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select * From OutputStreamDeviceDigital Where OutputStreamDeviceID = @outputStreamDeviceID Order By LoadOrder";
+			command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceID));
+
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
+			outputStreamDeviceDigitalList = (from item in resultTable.AsEnumerable()
+											select new OutputStreamDeviceDigital()
+											{
+												NodeID = item.Field<Guid>("NodeID"),
+												OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
+												ID = item.Field<int>("ID"),
+												Label = item.Field<string>("Label"),												
+												LoadOrder = item.Field<int>("LoadOrder")
+											}).ToList();
+			connection.Dispose();
+
+			return outputStreamDeviceDigitalList;
+		}
+
+		public static string SaveOutputStreamDeviceDigital(OutputStreamDeviceDigital outputStreamDeviceDigital, bool isNew)
+		{
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+
+			if (isNew)
+				command.CommandText = "Insert Into OutputStreamDeviceDigital (NodeID, OutputStreamDeviceID, Label, LoadOrder) " +
+					"Values (@nodeID, @outputStreamDeviceID, @label, @loadOrder)";
+			else
+				command.CommandText = "Update OutputStreamDeviceDigital Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
+					"LoadOrder = @loadOrder Where ID = @id";
+
+			command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDeviceDigital.NodeID));
+			command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceDigital.OutputStreamDeviceID));
+			command.Parameters.Add(AddWithValue(command, "@label", outputStreamDeviceDigital.Label));			
+			command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDeviceDigital.LoadOrder));
+			if (!isNew)
+				command.Parameters.Add(AddWithValue(command, "@id", outputStreamDeviceDigital.ID));
+
+			command.ExecuteNonQuery();
+			connection.Dispose();
+
+			return "Done!";
+		}
+
+		#endregion
+
+		#region " Manage Historians Code"
+
 		public static List<Historian> GetHistorianList(Guid nodeID)
 		{
 			List<Historian> historianList = new List<Historian>();
@@ -839,11 +1387,8 @@ namespace openPDCManager.Web.Data
 				command.CommandText = "Select * From HistorianDetail Order By LoadOrder";			
 			else
 			{
-				command.CommandText = "Select * From HistorianDetail Where NodeID = @nodeID Order By LoadOrder";
-				IDbDataParameter param = command.CreateParameter();
-				param.ParameterName = "@nodeID";
-				param.Value = nodeID;
-				command.Parameters.Add(param);
+				command.CommandText = "Select * From HistorianDetail Where NodeID = @nodeID Order By LoadOrder";				
+				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 			}
 
 			DataTable resultTable = new DataTable();
@@ -872,15 +1417,17 @@ namespace openPDCManager.Web.Data
 			Dictionary<int, string> historianList = new Dictionary<int, string>();
 			if (isOptional)
 				historianList.Add(0, "Select Historian");
-			string query = "Select ID, Acronym From Historian";
-			if (enabledOnly)
-				query += " Where Enabled = '1'";
-			query += " Order By LoadOrder";
-
+			
 			DataConnection connection = new DataConnection();
 			IDbCommand command = connection.Connection.CreateCommand();
 			command.CommandType = CommandType.Text;
-			command.CommandText = query;
+			if (enabledOnly)
+			{
+				command.CommandText = "Select ID, Acronym From Historian Where Enabled = @enabled Order By LoadOrder";
+				command.Parameters.Add(AddWithValue(command, "@enabled", true));
+			}
+			else
+				command.CommandText = "Select ID, Acronym From Historian Order By LoadOrder";
 			
 			DataTable resultTable = new DataTable();
 			resultTable.Load(command.ExecuteReader());
@@ -905,63 +1452,19 @@ namespace openPDCManager.Web.Data
 				command.CommandText = "Update Historian Set NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, TypeName = @typeName, " +
 					"ConnectionString = @connectionString, IsLocal = @isLocal, Description = @description, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
 
-			IDbDataParameter param = command.CreateParameter();
-			param.ParameterName = "@nodeID";
-			param.Value = historian.NodeID;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@acronym";
-			param.Value = historian.Acronym;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@name";
-			param.Value = historian.Name;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@assemblyName";
-			param.Value = historian.AssemblyName;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@typeName";
-			param.Value = historian.TypeName;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@connectionString";
-			param.Value = historian.ConnectionString;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@isLocal";
-			param.Value = historian.IsLocal;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@description";
-			param.Value = historian.Description;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@loadOrder";
-			param.Value = historian.LoadOrder;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@enabled";
-			param.Value = historian.Enabled;
-			command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@nodeID", historian.NodeID));
+			command.Parameters.Add(AddWithValue(command, "@acronym", historian.Acronym));
+			command.Parameters.Add(AddWithValue(command, "@name", historian.Name));
+			command.Parameters.Add(AddWithValue(command, "@assemblyName", historian.AssemblyName));
+			command.Parameters.Add(AddWithValue(command, "@typeName", historian.TypeName));
+			command.Parameters.Add(AddWithValue(command, "@connectionString", historian.ConnectionString));
+			command.Parameters.Add(AddWithValue(command, "@isLocal", historian.IsLocal));
+			command.Parameters.Add(AddWithValue(command, "@description", historian.Description));
+			command.Parameters.Add(AddWithValue(command, "@loadOrder", historian.LoadOrder));
+			command.Parameters.Add(AddWithValue(command, "@enabled", historian.Enabled));
 
 			if (!isNew)
-			{
-				param = command.CreateParameter();
-				param.ParameterName = "@id";
-				param.Value = historian.ID;
-				command.Parameters.Add(param);
-			}
+				command.Parameters.Add(AddWithValue(command, "@id", historian.ID));
 
 			command.ExecuteNonQuery();
 			connection.Dispose();
@@ -1007,16 +1510,18 @@ namespace openPDCManager.Web.Data
 			Dictionary<Guid, string> nodeList = new Dictionary<Guid, string>();
 			if (isOptional)
 				nodeList.Add(Guid.Empty, "Select Node");
-			string query = "Select ID, Name From Node";
-			if (enabledOnly)
-				query += " Where Enabled = '1'";
-			query += " Order By LoadOrder";
-						
+								
 			DataConnection connection = new DataConnection();
 			IDbCommand command = connection.Connection.CreateCommand();
 			command.CommandType = CommandType.Text;
-			command.CommandText = query;
-
+			if (enabledOnly)
+			{
+				command.CommandText = "Select ID, Name From Node Where Enabled = @enabled Order By LoadOrder";
+				command.Parameters.Add(AddWithValue(command, "@enabled", true));
+			}
+			else
+				command.CommandText = "Select ID, Name From Node Order By LoadOrder";
+			
 			DataTable resultTable = new DataTable();
 			resultTable.Load(command.ExecuteReader());
 
@@ -1040,58 +1545,18 @@ namespace openPDCManager.Web.Data
 			else
 				command.CommandText = "Update Node Set Name = @name, CompanyID = @companyID, Longitude = @longitude, Latitude = @latitude, Description = @description, Image = @image, Master = @master, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
 
-			IDbDataParameter param = command.CreateParameter();
-			param.ParameterName = "@name";
-			param.Value = node.Name;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@companyID";
-			param.Value = node.CompanyID ?? (object)DBNull.Value;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@longitude";
-			param.Value = node.Longitude ?? (object)DBNull.Value;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@latitude";
-			param.Value = node.Latitude ?? (object)DBNull.Value;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@description";
-			param.Value = node.Description;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@image";
-			param.Value = node.Image;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@master";
-			param.Value = node.Master;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@loadOrder";
-			param.Value = node.LoadOrder;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@enabled";
-			param.Value = node.Enabled;
-			command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@name", node.Name));
+			command.Parameters.Add(AddWithValue(command, "@companyID", node.CompanyID ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@longitude", node.Longitude ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@latitude", node.Latitude ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@description", node.Description));
+			command.Parameters.Add(AddWithValue(command, "@image", node.Image));
+			command.Parameters.Add(AddWithValue(command, "@master", node.Master));
+			command.Parameters.Add(AddWithValue(command, "@loadOrder", node.LoadOrder));
+			command.Parameters.Add(AddWithValue(command, "@enabled", node.Enabled));
 
 			if (!isNew)
-			{
-				param = command.CreateParameter();
-				param.ParameterName = "@id";
-				param.Value = node.ID;
-				command.Parameters.Add(param);
-			}
+				command.Parameters.Add(AddWithValue(command, "@id", node.ID));
 
 			command.ExecuteNonQuery();		
 			connection.Dispose();
@@ -1159,30 +1624,14 @@ namespace openPDCManager.Web.Data
 			else
 				command.CommandText = "Update Vendor Set Acronym = @acronym, Name = @name, PhoneNumber = @phoneNumber, ContactEmail = @contactEmail, URL = @url Where ID = @id";
 
-			IDbDataParameter param = command.CreateParameter();
-			param.ParameterName = "@acronym";
-			param.Value = vendor.Acronym;
-			command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@acronym", vendor.Acronym));
+			command.Parameters.Add(AddWithValue(command, "@name", vendor.Name));
+			command.Parameters.Add(AddWithValue(command, "@phoneNumber", vendor.PhoneNumber));
+			command.Parameters.Add(AddWithValue(command, "@contactEmail", vendor.ContactEmail));
+			command.Parameters.Add(AddWithValue(command, "@url", vendor.URL));
 
-			param = command.CreateParameter();
-			param.ParameterName = "@name";
-			param.Value = vendor.Name;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@phoneNumber";
-			param.Value = vendor.PhoneNumber;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@contactEmail";
-			param.Value = vendor.ContactEmail;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@url";
-			param.Value = vendor.URL;
-			command.Parameters.Add(param);
+			if (!isNew)
+				command.Parameters.Add(AddWithValue(command, "@id", vendor.ID));
 
 			command.ExecuteNonQuery();
 			connection.Dispose();
@@ -1227,34 +1676,14 @@ namespace openPDCManager.Web.Data
 			else
 				command.CommandText = "Update VendorDevice Set VendorID = @vendorID, Name = @name, Description = @description, URL = @url Where ID = @id";
 
-			IDbDataParameter param = command.CreateParameter();
-			param.ParameterName = "@vendorID";
-			param.Value = vendorDevice.VendorID;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@name";
-			param.Value = vendorDevice.Name;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@description";
-			param.Value = vendorDevice.Description;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@url";
-			param.Value = vendorDevice.URL;
-			command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@vendorID", vendorDevice.VendorID));
+			command.Parameters.Add(AddWithValue(command, "@name", vendorDevice.Name));
+			command.Parameters.Add(AddWithValue(command, "@description", vendorDevice.Description));
+			command.Parameters.Add(AddWithValue(command, "@url", vendorDevice.URL));
 
 			if (!isNew)
-			{
-				param = command.CreateParameter();
-				param.ParameterName = "@id";
-				param.Value = vendorDevice.ID;
-				command.Parameters.Add(param);
-			}
-
+				command.Parameters.Add(AddWithValue(command, "@id", vendorDevice.ID));
+			
 			command.ExecuteNonQuery();
 			connection.Dispose();
 			return "Done!";
@@ -1298,12 +1727,8 @@ namespace openPDCManager.Web.Data
 			else
 			{
 				command.CommandText = "Select * From DeviceDetail Where NodeID = @nodeID Order By LoadOrder";				
-				IDbDataParameter param = command.CreateParameter();
-				param.ParameterName = "@nodeID";				
-				param.Value = nodeID;
-				command.Parameters.Add(param);
+				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 			}
-
 			DataTable resultTable = new DataTable();
 			resultTable.Load(command.ExecuteReader());			
 			deviceList = (from item in resultTable.AsEnumerable()
@@ -1357,120 +1782,31 @@ namespace openPDCManager.Web.Data
 					"ProtocolID = @protocolID, Longitude = @longitude, Latitude = @latitude, InterconnectionID = @interconnectionID, ConnectionString = @connectionString, TimeZone = @timezone, TimeAdjustmentTicks = @timeAdjustmentTicks, DataLossInterval = @dataLossInterval, " +
 					"ContactList = @contactList, MeasuredLines = @measuredLines, LoadOrder = @loadOrder, Enabled = @enabled WHERE ID = @id";
 
-			command.CommandType = CommandType.Text;
-			
-			IDbDataParameter param = command.CreateParameter();
-			param.ParameterName = "@nodeID";			
-			param.Value = device.NodeID;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@parentID";			
-			param.Value = device.ParentID ?? (object)DBNull.Value;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@acronym";
-			param.Value = device.Acronym;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@name";
-			param.Value = device.Name;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@isConcentrator";
-			param.Value = device.IsConcentrator;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@companyID";
-			param.Value = device.CompanyID;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@historianID";
-			param.Value = device.HistorianID ?? (object)DBNull.Value;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@accessID";
-			param.Value = device.AccessID;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@vendorDeviceID";
-			param.Value = device.VendorDeviceID;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@protocolID";
-			param.Value = device.ProtocolID;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@longitude";
-			param.Value = device.Longitude ?? (object)DBNull.Value;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@latitude";
-			param.Value = device.Latitude ?? (object)DBNull.Value;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@interconnectionID";
-			param.Value = device.InterconnectionID ?? (object)DBNull.Value;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@connectionString";
-			param.Value = device.ConnectionString;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@timezone";
-			param.Value = device.TimeZone;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@timeAdjustmentTicks";
-			param.Value = device.TimeAdjustmentTicks;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@dataLossInterval";
-			param.Value = device.DataLossInterval;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@contactList";
-			param.Value = device.ContactList;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@measuredLines";
-			param.Value = device.MeasuredLines ?? (object)DBNull.Value;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@loadOrder";
-			param.Value = device.LoadOrder;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@enabled";
-			param.Value = device.Enabled;
-			command.Parameters.Add(param);
+			command.CommandType = CommandType.Text;			
+			command.Parameters.Add(AddWithValue(command, "@nodeID", device.NodeID));
+			command.Parameters.Add(AddWithValue(command, "@parentID", device.ParentID ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@acronym", device.Acronym));
+			command.Parameters.Add(AddWithValue(command, "@name", device.Name));
+			command.Parameters.Add(AddWithValue(command, "@isConcentrator", device.IsConcentrator));
+			command.Parameters.Add(AddWithValue(command, "@companyID", device.CompanyID));
+			command.Parameters.Add(AddWithValue(command, "@historianID", device.HistorianID ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@accessID", device.AccessID));
+			command.Parameters.Add(AddWithValue(command, "@vendorDeviceID", device.VendorDeviceID));
+			command.Parameters.Add(AddWithValue(command, "@protocolID", device.ProtocolID));
+			command.Parameters.Add(AddWithValue(command, "@longitude", device.Longitude ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@latitude", device.Latitude ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@interconnectionID", device.InterconnectionID ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@connectionString", device.ConnectionString));
+			command.Parameters.Add(AddWithValue(command, "@timezone", device.TimeZone));
+			command.Parameters.Add(AddWithValue(command, "@timeAdjustmentTicks", device.TimeAdjustmentTicks));
+			command.Parameters.Add(AddWithValue(command, "@dataLossInterval", device.DataLossInterval));
+			command.Parameters.Add(AddWithValue(command, "@contactList", device.ContactList));
+			command.Parameters.Add(AddWithValue(command, "@measuredLines", device.MeasuredLines ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@loadOrder", device.LoadOrder));
+			command.Parameters.Add(AddWithValue(command, "@enabled", device.Enabled));
 
 			if (!isNew)
-			{
-				param = command.CreateParameter();
-				param.ParameterName = "@id";
-				param.Value = device.ID;
-				command.Parameters.Add(param);
-			}
+				command.Parameters.Add(AddWithValue(command, "@id", device.ID));
 
 			command.ExecuteNonQuery();			
 			connection.Dispose();
@@ -1483,16 +1819,17 @@ namespace openPDCManager.Web.Data
 			if (isOptional)
 				deviceList.Add(0, "Select Concentrator");
 
-			string query = "Select ID, Acronym From Device";
-			if (concentratorOnly)
-				query += " Where IsConcentrator = '1'";
-			query += " Order By LoadOrder";
-
 			DataConnection connection = new DataConnection();
 			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = query;
-			
+			command.CommandType = CommandType.Text;			
+			if (concentratorOnly)
+			{
+				command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator Order By LoadOrder";
+				command.Parameters.Add(AddWithValue(command, "@isConcentrator", true));
+			}
+			else
+				command.CommandText = "Select ID, Acronym From Device Order By LoadOrder";
+
 			DataTable resultTable = new DataTable();
 			resultTable.Load(command.ExecuteReader());
 
@@ -1563,69 +1900,21 @@ namespace openPDCManager.Web.Data
 				command.CommandText = "Update OtherDevice Set Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, CompanyID = @companyID, VendorDeviceID = @vendorDeviceID, Longitude = @longitude, " +
 					"Latitude = @latitude, InterconnectionID = @interconnectionID, Planned = @planned, Desired = @desired, InProgress = @inProgress Where ID = @id";
 
-			IDbDataParameter param = command.CreateParameter();
-			param.ParameterName = "@acronym";
-			param.Value = otherDevice.Acronym;
-			command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@acronym", otherDevice.Acronym));
+			command.Parameters.Add(AddWithValue(command, "@name", otherDevice.Name));
+			command.Parameters.Add(AddWithValue(command, "@isConcentrator", otherDevice.IsConcentrator));
+			command.Parameters.Add(AddWithValue(command, "@companyID", otherDevice.CompanyID ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@vendorDeviceID", otherDevice.VendorDeviceID ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@longitude", otherDevice.Longitude ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@latitude", otherDevice.Latitude ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@interconnectionID", otherDevice.InterconnectionID ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@planned", otherDevice.Planned));
+			command.Parameters.Add(AddWithValue(command, "@desired", otherDevice.Desired));
+			command.Parameters.Add(AddWithValue(command, "@inProgress", otherDevice.InProgress));
 
-			param = command.CreateParameter();
-			param.ParameterName = "@name";
-			param.Value = otherDevice.Name;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@isConcentrator";
-			param.Value = otherDevice.IsConcentrator;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@companyID";
-			param.Value = otherDevice.CompanyID ?? (object)DBNull.Value;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@vendorDeviceID";
-			param.Value = otherDevice.VendorDeviceID ?? (object)DBNull.Value;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@longitude";
-			param.Value = otherDevice.Longitude ?? (object)DBNull.Value;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@latitude";
-			param.Value = otherDevice.Latitude ?? (object)DBNull.Value;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@interconnectionID";
-			param.Value = otherDevice.InterconnectionID ?? (object)DBNull.Value;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@planned";
-			param.Value = otherDevice.Planned;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@desired";
-			param.Value = otherDevice.Desired;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@inProgress";
-			param.Value = otherDevice.InProgress;
-			command.Parameters.Add(param);
-
-			if (!isNew)
-			{
-				param = command.CreateParameter();
-				param.ParameterName = "@id";
-				param.Value = otherDevice.ID;
-				command.Parameters.Add(param);
-			}
-
+			if (!isNew)			
+				command.Parameters.Add(AddWithValue(command, "@id", otherDevice.ID));
+		
 			command.ExecuteScalar();
 			connection.Dispose();
 			return "Done!";
@@ -1708,11 +1997,8 @@ namespace openPDCManager.Web.Data
 				command.CommandText = "Select * From CalculatedMeasurementDetail Order By LoadOrder";
 			else
 			{
-				command.CommandText = "Select * From CalculatedMeasurementDetail Where NodeID = @nodeID Order By LoadOrder";
-				IDbDataParameter param = command.CreateParameter();
-				param.ParameterName = "@nodeID";
-				param.Value = nodeID;
-				command.Parameters.Add(param);
+				command.CommandText = "Select * From CalculatedMeasurementDetail Where NodeID = @nodeID Order By LoadOrder";				
+				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 			}
 
 			DataTable resultTable = new DataTable();
@@ -1760,98 +2046,27 @@ namespace openPDCManager.Web.Data
 					"InputMeasurements = @inputMeasurements, OutputMeasurements = @outputMeasurements, MinimumMeasurementsToUse = @minimumMeasurementsToUse, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, " +
 					"UseLocalClockAsRealTime = @useLocalClockAsRealTime, AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
 
-			IDbDataParameter param = command.CreateParameter();
-			param.ParameterName = "@nodeID";
-			param.Value = calculatedMeasurement.NodeId;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@acronym";
-			param.Value = calculatedMeasurement.Acronym;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@name";
-			param.Value = calculatedMeasurement.Name;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@assemblyName";
-			param.Value = calculatedMeasurement.AssemblyName;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@typeName";
-			param.Value = calculatedMeasurement.TypeName;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@connectionString";
-			param.Value = calculatedMeasurement.ConnectionString;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@configSection";
-			param.Value = calculatedMeasurement.ConfigSection;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@inputMeasurements";
-			param.Value = calculatedMeasurement.InputMeasurements;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@outputMeasurements";
-			param.Value = calculatedMeasurement.OutputMeasurements;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@minimumMeasurementsToUse";
-			param.Value = calculatedMeasurement.MinimumMeasurementsToUse;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@framesPerSecond";
-			param.Value = calculatedMeasurement.FramesPerSecond;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@lagTime";
-			param.Value = calculatedMeasurement.LagTime;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@leadTime";
-			param.Value = calculatedMeasurement.LeadTime;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@useLocalClockAsRealTime";
-			param.Value = calculatedMeasurement.UseLocalClockAsRealTime;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@allowSortsByArrival";
-			param.Value = calculatedMeasurement.AllowSortsByArrival;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@loadOrder";
-			param.Value = calculatedMeasurement.LoadOrder;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@enabled";
-			param.Value = calculatedMeasurement.Enabled;
-			command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@nodeID", calculatedMeasurement.NodeId));
+			command.Parameters.Add(AddWithValue(command, "@acronym", calculatedMeasurement.Acronym));
+			command.Parameters.Add(AddWithValue(command, "@name", calculatedMeasurement.Name));
+			command.Parameters.Add(AddWithValue(command, "@assemblyName", calculatedMeasurement.AssemblyName));
+			command.Parameters.Add(AddWithValue(command, "@typeName", calculatedMeasurement.TypeName));
+			command.Parameters.Add(AddWithValue(command, "@connectionString", calculatedMeasurement.ConnectionString));
+			command.Parameters.Add(AddWithValue(command, "@configSection", calculatedMeasurement.ConfigSection));
+			command.Parameters.Add(AddWithValue(command, "@inputMeasurements", calculatedMeasurement.InputMeasurements));
+			command.Parameters.Add(AddWithValue(command, "@outputMeasurements", calculatedMeasurement.OutputMeasurements));
+			command.Parameters.Add(AddWithValue(command, "@minimumMeasurementsToUse", calculatedMeasurement.MinimumMeasurementsToUse));
+			command.Parameters.Add(AddWithValue(command, "@framesPerSecond", calculatedMeasurement.FramesPerSecond));
+			command.Parameters.Add(AddWithValue(command, "@lagTime", calculatedMeasurement.LagTime));
+			command.Parameters.Add(AddWithValue(command, "@leadTime", calculatedMeasurement.LeadTime));
+			command.Parameters.Add(AddWithValue(command, "@useLocalClockAsRealTime", calculatedMeasurement.UseLocalClockAsRealTime));
+			command.Parameters.Add(AddWithValue(command, "@allowSortsByArrival", calculatedMeasurement.AllowSortsByArrival));
+			command.Parameters.Add(AddWithValue(command, "@loadOrder", calculatedMeasurement.LoadOrder));
+			command.Parameters.Add(AddWithValue(command, "@enabled", calculatedMeasurement.Enabled));
 
 			if (!isNew)
-			{
-				param = command.CreateParameter();
-				param.ParameterName = "@id";
-				param.Value = calculatedMeasurement.ID;
-				command.Parameters.Add(param);
-			}
+				command.Parameters.Add(AddWithValue(command, "@id", calculatedMeasurement.ID));
+			
 			command.ExecuteNonQuery();			
 			connection.Dispose();
 			return "Done!";
@@ -1879,11 +2094,8 @@ namespace openPDCManager.Web.Data
 				command.CommandText = "Select * From " + viewName + " Order By LoadOrder";
 			else
 			{
-				command.CommandText = "Select * From " + viewName + " Where NodeID = @nodeID Order By LoadOrder";
-				IDbDataParameter param = command.CreateParameter();
-				param.ParameterName = "@nodeID";
-				param.Value = nodeID;
-				command.Parameters.Add(param);
+				command.CommandText = "Select * From " + viewName + " Where NodeID = @nodeID Order By LoadOrder";				
+				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 			}
 
 			DataTable resultTable = new DataTable();
@@ -1929,48 +2141,16 @@ namespace openPDCManager.Web.Data
 				command.CommandText = "Update " + tableName + " Set NodeID = @nodeID, AdapterName = @adapterName, AssemblyName = @assemblyName, TypeName = @typeName, " +
 					"ConnectionString = @connectionString, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
 
-			IDbDataParameter param = command.CreateParameter();
-			param.ParameterName = "@nodeID";
-			param.Value = adapter.NodeID;
-			command.Parameters.Add(param);
+			command.Parameters.Add(AddWithValue(command, "@nodeID", adapter.NodeID));
+			command.Parameters.Add(AddWithValue(command, "@adapterName", adapter.AdapterName));
+			command.Parameters.Add(AddWithValue(command, "@assemblyName", adapter.AssemblyName));
+			command.Parameters.Add(AddWithValue(command, "@typeName", adapter.TypeName));
+			command.Parameters.Add(AddWithValue(command, "@connectionString", adapter.ConnectionString));
+			command.Parameters.Add(AddWithValue(command, "@loadOrder", adapter.LoadOrder));
+			command.Parameters.Add(AddWithValue(command, "@enabled", adapter.Enabled));
 
-			param = command.CreateParameter();
-			param.ParameterName = "@adapterName";
-			param.Value = adapter.AdapterName;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@assemblyName";
-			param.Value = adapter.AssemblyName;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@typeName";
-			param.Value = adapter.TypeName;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@connectionString";
-			param.Value = adapter.ConnectionString;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@loadOrder";
-			param.Value = adapter.LoadOrder;
-			command.Parameters.Add(param);
-
-			param = command.CreateParameter();
-			param.ParameterName = "@enabled";
-			param.Value = adapter.Enabled;
-			command.Parameters.Add(param);
-
-			if (!isNew)
-			{
-				param = command.CreateParameter();
-				param.ParameterName = "@id";
-				param.Value = adapter.ID;
-				command.Parameters.Add(param);
-			}
+			if (!isNew)			
+				command.Parameters.Add(AddWithValue(command, "@id", adapter.ID));
 
 			command.ExecuteNonQuery();						
 			connection.Dispose();
@@ -2085,8 +2265,6 @@ namespace openPDCManager.Web.Data
 			return mapDataList;
 		}
 
-		#endregion
-
-		
+		#endregion			
 	}
 }

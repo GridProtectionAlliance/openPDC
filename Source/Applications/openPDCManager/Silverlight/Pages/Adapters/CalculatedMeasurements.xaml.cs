@@ -283,13 +283,12 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		{
 			if (ListBoxCalculatedMeasurementList.SelectedIndex >= 0)
 			{
-				openPDCManager.Silverlight.PhasorDataServiceProxy.CalculatedMeasurement selectedCalculatedMeasurement = ListBoxCalculatedMeasurementList.SelectedItem as openPDCManager.Silverlight.PhasorDataServiceProxy.CalculatedMeasurement;
+				CalculatedMeasurement selectedCalculatedMeasurement = ListBoxCalculatedMeasurementList.SelectedItem as CalculatedMeasurement;
 				GridCalculatedMeasurementDetail.DataContext = selectedCalculatedMeasurement;
 				ComboBoxNode.SelectedItem = new KeyValuePair<Guid, string>(selectedCalculatedMeasurement.NodeId, selectedCalculatedMeasurement.NodeName);
 				calculatedMeasurementID = selectedCalculatedMeasurement.ID;
 				inEditMode = true;
 			}
-
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -297,7 +296,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
-			openPDCManager.Silverlight.PhasorDataServiceProxy.CalculatedMeasurement calculatedMeasurement = new openPDCManager.Silverlight.PhasorDataServiceProxy.CalculatedMeasurement();
+			CalculatedMeasurement calculatedMeasurement = new CalculatedMeasurement();
 			calculatedMeasurement.NodeId = ((KeyValuePair<Guid, string>)ComboBoxNode.SelectedItem).Key;
 			calculatedMeasurement.Acronym = TextBoxAcronym.Text;
 			calculatedMeasurement.Name = TextBoxName.Text;
@@ -335,6 +334,8 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		{
 			if (e.Error == null)
 				ListBoxCalculatedMeasurementList.ItemsSource = e.Result;
+			else
+				MessageBox.Show(e.Error.Message);
 		}
 		void ClearForm()
 		{

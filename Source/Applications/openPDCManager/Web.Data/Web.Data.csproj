@@ -54,12 +54,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessObjects\BasicPmuInfo.cs" />
     <Compile Include="BusinessObjects\InterconnectionStatus.cs" />
     <Compile Include="BusinessObjects\IaonTree.cs" />
     <Compile Include="BusinessObjects\MapData.cs" />
     <Compile Include="BusinessObjects\PmuDistribution.cs" />
-    <Compile Include="BusinessObjects\StatusReport.cs" />
     <Compile Include="CommonFunctions.cs" />
     <Compile Include="DataConnection.cs" />
     <Compile Include="Entities\Adapter.cs" />
@@ -70,8 +68,11 @@
     <Compile Include="Entities\Node.cs" />
     <Compile Include="Entities\OtherDevice.cs" />
     <Compile Include="Entities\OutputStream.cs" />
-    <Compile Include="Entities\Pdc.cs" />
-    <Compile Include="Entities\Pmu.cs" />
+    <Compile Include="Entities\OutputStreamDevice.cs" />
+    <Compile Include="Entities\OutputStreamDeviceAnalog.cs" />
+    <Compile Include="Entities\OutputStreamDeviceDigital.cs" />
+    <Compile Include="Entities\OutputStreamDevicePhasor.cs" />
+    <Compile Include="Entities\OutputStreamMeasurement.cs" />
     <Compile Include="Entities\Vendor.cs" />
     <Compile Include="Entities\VendorDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
