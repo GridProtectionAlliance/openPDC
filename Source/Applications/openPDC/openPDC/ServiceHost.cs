@@ -12,6 +12,9 @@
 //       Generated original version of source code.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
+//  10/23/2009 - Pinal C. Patel
+//       Modified to ensure that the connection string used by AdoMetadataProvider uses a fully 
+//       qualified path for file-based connections like Access database.
 //
 //*******************************************************************************************************
 
@@ -316,7 +319,7 @@ namespace openPDC
         private MultipleDestinationExporter m_statusExporter;
 
         #endregion
-        
+
         #region [ Constructors ]
 
         /// <summary>
@@ -392,7 +395,7 @@ namespace openPDC
             thresholdSettings.Add("MeasurementWarningThreshold", "100000", "Number of unarchived measurements allowed in any output adapter queue before displaying a warning message");
             thresholdSettings.Add("MeasurementDumpingThreshold", "500000", "Number of unarchived measurements allowed in any output adapter queue before taking evasive action and dumping data");
             thresholdSettings.Add("DefaultSampleSizeWarningThreshold", "10", "Default number of unpublished samples (in seconds) allowed in any action adapter queue before displaying a warning message");
-            
+
             // Define configuration cache sub-directory
             string cachePath = string.Format("{0}\\ConfigurationCache\\", FilePath.GetAbsolutePath(""));
 
@@ -423,6 +426,9 @@ namespace openPDC
                     {
                         settings["Data Source"] = FilePath.GetAbsolutePath(setting);
                         m_connectionString = settings.JoinKeyValuePairs();
+
+                        // Update the connection string used by metadata provider also.
+                        configFile.Settings["AdoMetadataProvider"]["ConnectionString", true].Value = m_connectionString;
                     }
                 }
             }
@@ -463,7 +469,7 @@ namespace openPDC
             m_healthExporter.Initialize(new ExportDestination[] { new ExportDestination(FilePath.GetAbsolutePath("Health.txt"), false, "", "", "") });
             m_healthExporter.StatusMessage += StatusMessageHandler;
             m_serviceHelper.ServiceComponents.Add(m_healthExporter);
-            
+
             // Create status exporter
             m_statusExporter = new MultipleDestinationExporter("StatusExporter", Timeout.Infinite);
             m_statusExporter.Initialize(new ExportDestination[] { new ExportDestination(FilePath.GetAbsolutePath("Status.txt"), false, "", "", "") });
@@ -665,7 +671,7 @@ namespace openPDC
                         assembly = Assembly.Load(new AssemblyName(assemblyName));
                         connectionType = assembly.GetType(connectionTypeName);
                         adapterType = assembly.GetType(adapterTypeName);
-                        
+
                         connection = (IDbConnection)Activator.CreateInstance(connectionType);
                         connection.ConnectionString = m_connectionString;
                         connection.Open();
@@ -677,7 +683,7 @@ namespace openPDC
                         // Load configuration entities defined in database
                         entities = connection.RetrieveData(adapterType, "SELECT * FROM ConfigurationEntity WHERE Enabled <> 0 ORDER BY LoadOrder");
                         entities.TableName = "ConfigurationEntity";
-                        
+
                         // Add configuration entities table to system configuration for reference
                         configuration.Tables.Add(entities.Copy());
 
@@ -692,7 +698,7 @@ namespace openPDC
 
                             // Remove redundant node ID column
                             entity.Columns.Remove("NodeID");
-                            
+
                             // Add entity configuration data to system configuration
                             configuration.Tables.Add(entity.Copy());
                         }
@@ -742,10 +748,10 @@ namespace openPDC
                     try
                     {
                         DisplayStatusMessage("Loading XML based configuration from \"{0}\".", connectionString);
-                        
+
                         configuration = new DataSet();
                         configuration.ReadXml(connectionString);
-                        
+
                         DisplayStatusMessage("XML based configuration successfully loaded.");
                     }
                     catch (Exception ex)
@@ -927,7 +933,7 @@ namespace openPDC
             IAdapterCollection collection;
             return GetRequestedAdapter(requestInfo, out collection);
         }
-        
+
         // Get requested adapter and its parent collection
         private IAdapter GetRequestedAdapter(ClientRequestInfo requestInfo, out IAdapterCollection collection)
         {
@@ -963,7 +969,7 @@ namespace openPDC
 
         // List specified adapters
         private void ListRequestHandler(ClientRequestInfo requestInfo)
-        {			
+        {
             if (requestInfo.Request.Arguments.ContainsHelpRequest)
             {
                 StringBuilder helpMessage = new StringBuilder();
@@ -1059,7 +1065,7 @@ namespace openPDC
                     SendResponse(requestInfo, true, adapterList.ToString());
                 else
                     SendResponse(requestInfo, false, "No items were available enumerate.");
-            }			
+            }
         }
 
         // Start specified adapter
@@ -1335,7 +1341,7 @@ namespace openPDC
                                         methodList.Append("        ");
                                         methodList.Append(commandAttribute.Description);
                                     }
-                                    
+
                                     methodList.AppendLine();
                                 }
                             }
@@ -1539,7 +1545,7 @@ namespace openPDC
         {
             string response = requestInfo.Request.Command + (success ? ":Success" : ":Failure");
             string message;
-            
+
             if (args.Length == 0)
                 message = status + "\r\n\r\n";
             else
