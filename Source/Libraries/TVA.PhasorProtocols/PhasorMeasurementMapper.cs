@@ -827,6 +827,7 @@ namespace TVA.PhasorProtocols
                 // Assign ID and other relevant attributes to the parsed measurement value
                 parsedMeasurement.ID = definedMeasurement.ID;
                 parsedMeasurement.Source = definedMeasurement.Source;
+                parsedMeasurement.SignalID = definedMeasurement.SignalID;
                 parsedMeasurement.Adder = definedMeasurement.Adder;              // Allows for run-time additive measurement value adjustments
                 parsedMeasurement.Multiplier = definedMeasurement.Multiplier;    // Allows for run-time mulplicative measurement value adjustments
 
