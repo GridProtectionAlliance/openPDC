@@ -550,6 +550,7 @@ namespace TVA.PhasorProtocols
         {
             Dictionary<string, string> settings = Settings;
             ConfigurationCell definedDevice;
+            Measurement definedMeasurement;
             MeasurementKey pointID;
             string setting, signalReference;
 
@@ -670,13 +671,19 @@ namespace TVA.PhasorProtocols
                         // Get measurement's point ID formatted as a measurement key
                         pointID = MeasurementKey.Parse(row["ID"].ToString());
 
-                        // Create a reference to this measurement associated with this adapter
-                        m_definedMeasurements.Add(signalReference, new Measurement(
+                        // Create a measurement with a reference associated with this adapter
+                        definedMeasurement = new Measurement(
                             pointID.ID,
                             pointID.Source,
                             signalReference,
                             double.Parse(row["Adder"].ToNonNullString("0.0")),
-                            double.Parse(row["Multiplier"].ToNonNullString("1.0"))));
+                            double.Parse(row["Multiplier"].ToNonNullString("1.0")));
+
+                        // Assign signal ID to defined measurement
+                        definedMeasurement.SignalID = new Guid(row["SignalID"].ToNonNullString(Guid.NewGuid().ToString()));
+
+                        // Add measurement to definition list keyed by signal reference
+                        m_definedMeasurements.Add(signalReference, definedMeasurement);
                     }
                     catch (Exception ex)
                     {
