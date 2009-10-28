@@ -230,11 +230,9 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using MySql.Data;
 using MySql.Data.MySqlClient;
 
 using TVA;
@@ -248,7 +246,6 @@ namespace MySqlAdapters
     /// </summary>
     public class MySqlOutputAdapter : OutputAdapterBase
     {
-
         #region [ Members ]
 
         // Fields
@@ -266,7 +263,6 @@ namespace MySqlAdapters
         public MySqlOutputAdapter()
         {
             m_mySqlConnectionString = null;
-            m_connection = new MySqlConnection();
             m_measurementCount = 0;
         }
 
@@ -278,13 +274,10 @@ namespace MySqlAdapters
         /// Returns a connection string containing only the key-value pairs
         /// that are used to connect to MySQL.
         /// </summary>
-        protected string MySqlConnectionString
+        public string MySqlConnectionString
         {
             get
             {
-                if (m_mySqlConnectionString == null)
-                    CreateMySqlConnectionString();
-
                 return m_mySqlConnectionString;
             }
         }
@@ -309,7 +302,7 @@ namespace MySqlAdapters
         {
             get
             {
-                return true;
+                return false;
             }
         }
 
@@ -318,13 +311,40 @@ namespace MySqlAdapters
         #region [ Methods ]
 
         /// <summary>
+        /// Initializes this <see cref="MySqlOutputAdapter"/>.
+        /// </summary>
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            // Create the MySQL connection string using only the portions of the
+            // original connection string that are used by MySQL.
+            StringBuilder builder = new StringBuilder();
+            string[] pairs = ConnectionString.Split(';');
+
+            foreach (string pair in pairs)
+            {
+                string key = pair.ToLower().Split('=')[0].Trim();
+
+                if (m_validKeys.Contains<string>(key))
+                {
+                    builder.Append(pair);
+                    builder.Append(';');
+                }
+            }
+
+            m_mySqlConnectionString = builder.ToString();
+
+            // Create a new MySQL connection object
+            m_connection = new MySqlConnection(m_mySqlConnectionString);
+        }
+
+        /// <summary>
         /// Attempts to connect to this <see cref="MySqlOutputAdapter"/>.
         /// </summary>
         protected override void AttemptConnection()
         {
-            m_connection.ConnectionString = MySqlConnectionString;
             m_connection.Open();
-            OnConnected();
         }
 
         /// <summary>
@@ -333,40 +353,13 @@ namespace MySqlAdapters
         protected override void AttemptDisconnection()
         {
             m_connection.Close();
-            OnDisconnected();
             m_measurementCount = 0;
         }
 
         /// <summary>
-        /// Creates the MySQL connection string using only the portions of the
-        /// original connection string that are used by MySQL.
         /// </summary>
         private void CreateMySqlConnectionString()
         {
-            // Collection of keys that can be used in a MySQL connection string.
-            string[] validKeys = 
-            {
-                "server", "port", "protocol",
-                "database", "uid", "user", "pwd", "password",
-                "encryption", "encrypt", "charset",
-                "default command timeout", "connection timeout",
-                "ignore prepare", "shared memory name"
-            };
-
-            StringBuilder builder = new StringBuilder();
-            string[] pairs = ConnectionString.Split(';');
-
-            foreach (string pair in pairs)
-            {
-                string key = pair.ToLower().Split('=')[0].Trim();
-                if (validKeys.Contains<string>(key))
-                {
-                    builder.Append(pair);
-                    builder.Append(';');
-                }
-            }
-
-            m_mySqlConnectionString = builder.ToString();
         }
 
         /// <summary>
@@ -407,5 +400,22 @@ namespace MySqlAdapters
         }
 
         #endregion
+
+        #region [ Static ]
+
+        // Static Fields
+
+        // Collection of keys that can be used in a MySQL connection string.
+        private static string[] m_validKeys = 
+        {
+            "server", "port", "protocol",
+            "database", "uid", "user", "pwd", "password",
+            "encryption", "encrypt", "charset",
+            "default command timeout", "connection timeout",
+            "ignore prepare", "shared memory name"
+        };
+
+        #endregion
+        
     }
 }
