@@ -434,7 +434,7 @@ SELECT Device.NodeID, Runtime.ID, Device.Acronym AS AdapterName, N'TVA.PhasorPro
 FROM Device LEFT OUTER JOIN
  Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
  Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device'
-WHERE (Device.Enabled <> 0)
+WHERE (Device.Enabled <> 0 AND Device.ParentID IS NULL)
 ORDER BY Device.LoadOrder;
 
 CREATE VIEW RuntimeCustomOutputAdapter
@@ -733,6 +733,14 @@ SELECT OSM.NodeID, OSM.AdapterID, OSM.ID, OSM.HistorianID, OSM.PointID, OSM.Sign
       COALESCE(H.Acronym, '') AS HistorianAcronym
 FROM OutputStreamMeasurement OSM
       LEFT OUTER JOIN Historian H ON (H.ID = OSM.HistorianID);
+      
+CREATE VIEW OutputStreamDeviceDetail AS
+SELECT OSD.NodeID, OSD.AdapterID, OSD.ID, OSD.Acronym, COALESCE(OSD.BpaAcronym, '') AS BpaAcronym, OSD.Name, OSD.LoadOrder, OSD.Enabled, 
+                    CASE 
+                        WHEN EXISTS (Select Acronym From Device Where Acronym = OSD.Acronym) THEN FALSE 
+                        ELSE TRUE 
+                    END AS Virtual
+FROM OutputStreamDevice OSD;
 
 
 CREATE TRIGGER CustomActionAdapter_RuntimeSync_Insert AFTER INSERT ON CustomActionAdapter
