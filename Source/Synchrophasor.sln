@@ -150,9 +150,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVA", "TVA", "{4CA4A21E-97E
 		Dependencies\TVA\TVA.Windows.XML = Dependencies\TVA\TVA.Windows.XML
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySqlAdapters", "Libraries\Adapters\MySqlAdapters\MySqlAdapters.csproj", "{B7963AA1-4A9F-4D2D-B6A2-DD792EA77AFD}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 17
+		SccNumberOfProjects = 18
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs07.codeplex.com/
 		SccLocalPath0 = .
@@ -220,6 +222,10 @@ Global
 		SccProjectTopLevelParentUniqueName16 = Synchrophasor.sln
 		SccProjectName16 = Applications/openPDCManager/ServicesSetup
 		SccLocalPath16 = Applications\\openPDCManager\\ServicesSetup
+		SccProjectUniqueName17 = Libraries\\Adapters\\MySqlAdapters\\MySqlAdapters.csproj
+		SccProjectTopLevelParentUniqueName17 = Synchrophasor.sln
+		SccProjectName17 = Libraries/Adapters/MySqlAdapters
+		SccLocalPath17 = Libraries\\Adapters\\MySqlAdapters
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -282,6 +288,10 @@ Global
 		{955C76BA-E809-4732-A15C-CD3607F66EC8}.Release|Any CPU.ActiveCfg = Release
 		{30297342-C66C-4715-A495-B6DFCF8E3A78}.Debug|Any CPU.ActiveCfg = Debug
 		{30297342-C66C-4715-A495-B6DFCF8E3A78}.Release|Any CPU.ActiveCfg = Release
+		{B7963AA1-4A9F-4D2D-B6A2-DD792EA77AFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7963AA1-4A9F-4D2D-B6A2-DD792EA77AFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7963AA1-4A9F-4D2D-B6A2-DD792EA77AFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7963AA1-4A9F-4D2D-B6A2-DD792EA77AFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -305,6 +315,7 @@ Global
 		{8A1BCFAA-19E8-408A-8C72-170B1211DC27} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{1338A569-A156-4122-8B65-8D4C147AA348} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{B74CF4DA-2972-489B-AF08-419560EE57EF} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
+		{B7963AA1-4A9F-4D2D-B6A2-DD792EA77AFD} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
 		{A519E312-66F5-4725-A88E-9B62242CBCB7} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
 		{5314055B-EA03-4E15-8653-83F011D7A00E} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
