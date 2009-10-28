@@ -20,6 +20,9 @@
 //       Corrected the implementation of Dispose().
 //  09/18/2009 - Pinal C. Patel
 //       Added override to Status property and added event handler to archive rollver notification.
+//  10/28/2009 - Pinal C. Patel
+//       Modified to allow for multiple instances of the adapter to be loaded and configured with 
+//       different settings by persisting the settings in the config file under unique categories.
 //
 //*******************************************************************************************************
 
@@ -397,22 +400,26 @@ namespace HistorianAdapters
             // Initialize metadata file.           
             m_archive.MetadataFile.FileName = Path.Combine(archivePath, instanceName + "_dbase.dat");
             m_archive.MetadataFile.PersistSettings = true;
+            m_archive.MetadataFile.SettingsCategory = Name + m_archive.MetadataFile.SettingsCategory;
             m_archive.MetadataFile.Initialize();
 
             // Initialize state file.
             m_archive.StateFile.FileName = Path.Combine(archivePath, instanceName + "_startup.dat");
             m_archive.StateFile.PersistSettings = true;
+            m_archive.StateFile.SettingsCategory = Name + m_archive.StateFile.SettingsCategory;
             m_archive.StateFile.Initialize();
 
             // Initialize intercom file.
             m_archive.IntercomFile.FileName = Path.Combine(archivePath, "scratch.dat");
             m_archive.IntercomFile.PersistSettings = true;
+            m_archive.IntercomFile.SettingsCategory = Name + m_archive.IntercomFile.SettingsCategory;
             m_archive.IntercomFile.Initialize();
 
             // Initialize data archive file.           
             m_archive.FileName = Path.Combine(archivePath, instanceName + "_archive.d");
             m_archive.CompressData = false;
             m_archive.PersistSettings = true;
+            m_archive.SettingsCategory = Name + m_archive.SettingsCategory;
             m_archive.RolloverComplete += Archive_RolloverComplete;
             m_archive.Initialize();
 
