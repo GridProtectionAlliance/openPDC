@@ -232,9 +232,7 @@
 using System;
 using System.Linq;
 using System.Text;
-
 using MySql.Data.MySqlClient;
-
 using TVA;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
@@ -357,12 +355,6 @@ namespace MySqlAdapters
         }
 
         /// <summary>
-        /// </summary>
-        private void CreateMySqlConnectionString()
-        {
-        }
-
-        /// <summary>
         /// Gets a short one-line status of this <see cref="MySqlOutputAdapter"/>.
         /// </summary>
         /// <param name="maxLength">Maximum length of the status message.</param>
@@ -384,6 +376,7 @@ namespace MySqlAdapters
 
                 // Create the command string to insert the measurement as a record in the table.
                 StringBuilder commandString = new StringBuilder("INSERT INTO Measurement VALUES ('");
+
                 commandString.Append(measurement.SignalID.ToString());
                 commandString.Append("','");
                 commandString.Append(stamp.ToString("yyyy-MM-dd hh:mm:ss"));
@@ -396,7 +389,6 @@ namespace MySqlAdapters
 
             }
             m_measurementCount += measurements.Length;
-
         }
 
         #endregion
@@ -415,7 +407,6 @@ namespace MySqlAdapters
             "ignore prepare", "shared memory name"
         };
 
-        #endregion
-        
+        #endregion        
     }
 }
