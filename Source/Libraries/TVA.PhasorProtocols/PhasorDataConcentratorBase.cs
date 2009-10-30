@@ -337,6 +337,7 @@ namespace TVA.PhasorProtocols
         // Fields
         private UdpServer m_dataChannel;
         private TcpServer m_commandChannel;
+        private IServer m_publishChannel;
         private IConfigurationFrame m_configurationFrame;
         private ConfigurationFrame m_baseConfigurationFrame;
         private Dictionary<MeasurementKey, SignalReference[]> m_signalReferences;
@@ -613,15 +614,18 @@ namespace TVA.PhasorProtocols
         public override void Start()
         {
             // Start communications servers
-            if (m_dataChannel != null && m_autoStartDataChannel)
+            if (m_autoStartDataChannel && m_dataChannel != null && m_dataChannel.CurrentState == ServerState.NotRunning)
                 m_dataChannel.Start();
 
-            if (m_commandChannel != null)
+            if (m_commandChannel != null && m_commandChannel.CurrentState == ServerState.NotRunning)
                 m_commandChannel.Start();
 
             // Base action adapter gets started once data channel has been started (see m_dataChannel_ServerStarted)
             // so that the system doesn't attempt to start frame publication without an operational output data channel
-            // when m_autoStartDataChannel is set to false.
+            // when m_autoStartDataChannel is set to false. Otherwise if data is being published on command channel,
+            // we go ahead and start concentration engine...
+            if (m_publishChannel == m_commandChannel)
+                base.Start();
         }
 
         /// <summary>
@@ -687,11 +691,14 @@ namespace TVA.PhasorProtocols
 
             // Load required parameters
             m_idCode = ushort.Parse(settings["IDCode"]);
-            dataChannel = settings["dataChannel"];
-
-            // Load optional parameters
+            settings.TryGetValue("dataChannel", out dataChannel);
             settings.TryGetValue("commandChannel", out commandChannel);
 
+            // Data channel and/or command channel must be defined
+            if (string.IsNullOrEmpty(dataChannel) && string.IsNullOrEmpty(commandChannel))
+                throw new InvalidOperationException("A data channel or command channel must be defined for a concentrator.");
+
+            // Load optional parameters
             if (settings.TryGetValue("autoPublishConfigFrame", out setting))
                 m_autoPublishConfigurationFrame = setting.ParseBoolean();
             else
@@ -707,14 +714,24 @@ namespace TVA.PhasorProtocols
             else
                 m_nominalFrequency = LineFrequency.Hz60;
 
-            // Initialize data channel
-            this.DataChannel = new UdpServer(dataChannel);
+            // Initialize data channel if defined
+            if (!string.IsNullOrEmpty(dataChannel))
+                this.DataChannel = new UdpServer(dataChannel);
+            else
+                this.DataChannel = null;
 
             // Initialize command channel if defined
             if (!string.IsNullOrEmpty(commandChannel))
                 this.CommandChannel = new TcpServer(commandChannel);
             else
                 this.CommandChannel = null;
+
+            // If data channel is not defined and command channel is defined system assumes you
+            // want to make data available over TCP connection
+            if (m_dataChannel == null && m_commandChannel != null)
+                m_publishChannel = m_commandChannel;
+            else
+                m_publishChannel = m_dataChannel;
 
             // Create the configuration frame
             UpdateConfiguration();
@@ -801,9 +818,11 @@ namespace TVA.PhasorProtocols
                         foreach (DataRow digitalRow in DataSource.Tables["OutputStreamDeviceDigitals"].Select(string.Format("OutputStreamDeviceID={0}", cell.IDCode), "LoadOrder"))
                         {
                             order = int.Parse(digitalRow["LoadOrder"].ToNonNullString("0"));
-                            label = digitalRow["Label"].ToNonNullString("Digital " + order).Trim().RemoveDuplicateWhiteSpace().TruncateRight(labelLength);
+                            
+                            // IEEE C37.118 digital labels are defined with all 16-labels (one for each bit) in one large formatted
+                            // string - so we don't remove duplicate white space in this string
+                            label = digitalRow["Label"].ToNonNullString("Digital " + order).Trim().TruncateRight(labelLength);
 
-                            // TODO: Management web site needs to define all 16-labels per digital as "formatted" string
                             cell.DigitalDefinitions.Add(
                                 new DigitalDefinition(
                                     cell,
@@ -1010,17 +1029,21 @@ namespace TVA.PhasorProtocols
 
             if (dataFrame != null)
             {
+                byte[] image;
+
                 // Send the configuration frame at the top of each minute if the class has been configured
                 // to automatically publish the configuration frame over the data channel
                 if (m_autoPublishConfigurationFrame && index == 0 && ((DateTime)dataFrame.Timestamp).Second == 0)
                 {
-                    // Publish binary image over data channel
+                    // Publish configuration frame binary image
                     m_configurationFrame.Timestamp = dataFrame.Timestamp;
-                    m_dataChannel.MulticastAsync(m_configurationFrame.BinaryImage);
+                    image = m_configurationFrame.BinaryImage;
+                    m_publishChannel.MulticastAsync(image, 0, image.Length);
                 }
 
-                // Publish data frame binary image over data channel
-                m_dataChannel.MulticastAsync(dataFrame.BinaryImage);
+                // Publish data frame binary image
+                image = dataFrame.BinaryImage;
+                m_publishChannel.MulticastAsync(image, 0, image.Length);
             }
         }
 
