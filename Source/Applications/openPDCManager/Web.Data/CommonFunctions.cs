@@ -235,9 +235,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using openPDCManager.Web.Data.Entities;
 using openPDCManager.Web.Data.BusinessObjects;
-using TVA;
+using openPDCManager.Web.Data.Entities;
 
 namespace openPDCManager.Web.Data
 {
@@ -666,11 +665,6 @@ namespace openPDCManager.Web.Data
 			IDbCommand command = connection.Connection.CreateCommand();
 			command.CommandType = CommandType.Text;
 			command.CommandText = "Select Master From Node Where ID = @id";
-
-			//IDbDataParameter param = command.CreateParameter();
-			//param.ParameterName = "@id";
-			//param.Value = nodeID;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@id", nodeID));
 			isMaster = (bool)command.ExecuteScalar();
 			return isMaster;
@@ -744,7 +738,7 @@ namespace openPDCManager.Web.Data
 
 		    return interConnectionStatusList;
 		}
-
+			
 		#region " Manage Companies Code"
 
 		public static List<Company> GetCompanyList()
@@ -811,42 +805,14 @@ namespace openPDCManager.Web.Data
 			else
 				command.CommandText = "UPDATE Company SET Acronym = @acronym, MapAcronym = @mapAcronym, Name = @name, URL = @url, LoadOrder = @loadOrder WHERE ID = @id";
 			
-			//IDbDataParameter param = command.CreateParameter();
-			//param.ParameterName = "@acronym";
-			//param.Value = company.Acronym;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@acronym", company.Acronym));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@mapAcronym";
-			//param.Value = company.MapAcronym;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@mapAcronym", company.MapAcronym));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@name";
-			//param.Value = company.Name;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@name", company.Name));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@url";
-			//param.Value = company.URL;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@url", company.URL));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@loadOrder";
-			//param.Value = company.LoadOrder;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@loadOrder", company.LoadOrder));
 
 			if (!isNew)
 			{
-				//param = command.CreateParameter();
-				//param.ParameterName = "@id";
-				//param.Value = company.ID;
-				//command.Parameters.Add(param);
 				command.Parameters.Add(AddWithValue(command, "@id", company.ID));
 			}
 
@@ -867,11 +833,7 @@ namespace openPDCManager.Web.Data
 			command.CommandType = CommandType.Text;
 			if (enabledOnly)
 			{
-				command.CommandText = "SELECT * FROM OutputStreamDetail Where Enabled = @enabled ORDER BY LoadOrder";
-				//IDbDataParameter param = command.CreateParameter();
-				//param.ParameterName = "@enabled";
-				//param.Value = true;
-				//command.Parameters.Add(param);
+				command.CommandText = "SELECT * FROM OutputStreamDetail Where Enabled = @enabled ORDER BY LoadOrder";				
 				command.Parameters.Add(AddWithValue(command, "@enabled", true));
 			}
 			else
@@ -923,121 +885,28 @@ namespace openPDCManager.Web.Data
 				command.CommandText = "UPDATE OutputStream SET NodeID = @nodeID, Acronym = @acronym, Name = @name, Type = @type, ConnectionString = @connectionString, IDCode = @idCode, CommandChannel = @commandChannel, DataChannel = @dataChannel, AutoPublishConfigFrame = @autoPublishConfigFrame, " +
 									"AutoStartDataChannel = @autoStartDataChannel, NominalFrequency = @nominalFrequency, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, UseLocalClockAsRealTime = @useLocalClockAsRealTime, " +
 									"AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled WHERE ID = @id";
-
-			//IDbDataParameter param = command.CreateParameter();
-			//param.ParameterName = "@nodeID";
-			//param.Value = outputStream.NodeID;
-			//command.Parameters.Add(param);
+						
 			command.Parameters.Add(AddWithValue(command, "@nodeID", outputStream.NodeID));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@acronym";
-			//param.Value = outputStream.Acronym;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@acronym", outputStream.Acronym));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@name";
-			//param.Value = outputStream.Name;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@name", outputStream.Name));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@type";
-			//param.Value = outputStream.Type;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@type", outputStream.Type));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@connectionString";
-			//param.Value = outputStream.ConnectionString;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@connectionString", outputStream.ConnectionString));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@idCode";
-			//param.Value = outputStream.IDCode;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@idCode", outputStream.IDCode));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@commandChannel";
-			//param.Value = outputStream.CommandChannel;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@commandChannel", outputStream.CommandChannel));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@dataChannel";
-			//param.Value = outputStream.DataChannel;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@dataChannel", outputStream.DataChannel));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@autoPublishConfigFrame";
-			//param.Value = outputStream.AutoPublishConfigFrame;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@autoPublishConfigFrame", outputStream.AutoPublishConfigFrame));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@autoStartDataChannel";
-			//param.Value = outputStream.AutoStartDataChannel;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@autoStartDataChannel", outputStream.AutoStartDataChannel));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@nominalFrequency";
-			//param.Value = outputStream.NominalFrequency;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@nominalFrequency", outputStream.NominalFrequency));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@framesPerSecond";
-			//param.Value = outputStream.FramesPerSecond;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@framesPerSecond", outputStream.FramesPerSecond));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@lagTime";
-			//param.Value = outputStream.LagTime;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@lagTime", outputStream.LagTime));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@leadTime";
-			//param.Value = outputStream.LeadTime;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@leadTime", outputStream.LeadTime));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@useLocalClockAsRealTime";
-			//param.Value = outputStream.UseLocalClockAsRealTime;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@useLocalClockAsRealTime", outputStream.UseLocalClockAsRealTime));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@allowSortsByArrival";
-			//param.Value = outputStream.AllowSortsByArrival;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@allowSortsByArrival", outputStream.AllowSortsByArrival));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@loadOrder";
-			//param.Value = outputStream.LoadOrder;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStream.LoadOrder));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@enabled";
-			//param.Value = outputStream.Enabled;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@enabled", outputStream.Enabled));
 
 			if (!isNew)
 			{
-				//param = command.CreateParameter();
-				//param.ParameterName = "@id";
-				//param.Value = outputStream.ID;
-				//command.Parameters.Add(param);
 				command.Parameters.Add(AddWithValue(command, "@id", outputStream.ID));
 			}
 
@@ -1094,34 +963,10 @@ namespace openPDCManager.Web.Data
 				command.CommandText = "Update OutputStreamMeasurement Set NodeID = @nodeID, AdapterID = @adapterID, HistorianID = @historianID, " +
 					"PointID = @pointID, SignalReference = @signalReference WHERE ID = @id";
 
-			//IDbDataParameter param = command.CreateParameter();
-			//param.ParameterName = "@nodeID";
-			//param.Value = outputStreamMeasurement.NodeID;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamMeasurement.NodeID));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@adapterID";
-			//param.Value = outputStreamMeasurement.AdapterID;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamMeasurement.AdapterID));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@historianID";
-			//param.Value = outputStreamMeasurement.HistorianID ?? (object)DBNull.Value;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@historianID", outputStreamMeasurement.HistorianID ?? (object)DBNull.Value));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@pointID";
-			//param.Value = outputStreamMeasurement.PointID;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@pointID", outputStreamMeasurement.PointID));
-
-			//param = command.CreateParameter();
-			//param.ParameterName = "@signalReference";
-			//param.Value = outputStreamMeasurement.SignalReference;
-			//command.Parameters.Add(param);
 			command.Parameters.Add(AddWithValue(command, "@signalReference", outputStreamMeasurement.SignalReference));
 
 			if (!isNew)
@@ -1143,9 +988,9 @@ namespace openPDCManager.Web.Data
 			IDbCommand command = connection.Connection.CreateCommand();
 			command.CommandType = CommandType.Text;
 			if (!enabledOnly)
-				command.CommandText = "Select * From OutputStreamDevice Where AdapterID = @adapterID";
+				command.CommandText = "Select * From OutputStreamDeviceDetail Where AdapterID = @adapterID";
 			else
-				command.CommandText = "Select * From OutputStreamDevice Where AdapterID = @adapterID AND Enabled = @enabled";
+				command.CommandText = "Select * From OutputStreamDeviceDetail Where AdapterID = @adapterID AND Enabled = @enabled";
 	
 			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
 			if (enabledOnly)			
@@ -1162,12 +1007,22 @@ namespace openPDCManager.Web.Data
 										  ID = item.Field<int>("ID"),
 										  Acronym = item.Field<string>("Acronym"),
 										  Name = item.Field<string>("Name"),
-										  BpaAcronym = item.Field<string>("BpaAcronym") ?? string.Empty,
+										  BpaAcronym = item.Field<string>("BpaAcronym"),
 										  LoadOrder = item.Field<int>("LoadOrder"),
-										  Enabled = item.Field<bool>("Enabled")
+										  Enabled = item.Field<bool>("Enabled"),
+										  Virtual = item.Field<bool>("Virtual")
 									  }).ToList();
 			connection.Dispose();
 			return outputStreamDeviceList;
+		}
+
+		public static OutputStreamDevice GetOutputStreamDevice(int outputStreamID, string acronym)
+		{
+			OutputStreamDevice outputStreamDevice = new OutputStreamDevice();
+			outputStreamDevice = (from item in GetOutputStreamDeviceList(outputStreamID, false)
+								  where item.Acronym == acronym
+								  select item).ToList()[0];
+			return outputStreamDevice;
 		}
 
 		public static string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew)
@@ -1195,6 +1050,107 @@ namespace openPDCManager.Web.Data
 
 			command.ExecuteNonQuery();
 			connection.Dispose();
+
+			return "Done!";
+		}
+
+		public static string DeleteOutputStreamDevice(int outputStreamID, List<string> devicesToBeDeleted)
+		{
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+
+			foreach (string acronym in devicesToBeDeleted)
+			{
+				command.CommandText = "Delete From OutputStreamDevice Where Acronym = @acronym And AdapterID = @adapterID";
+				command.Parameters.Add(AddWithValue(command, "@acronym", acronym));
+				command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
+				command.ExecuteNonQuery();
+
+				command.CommandText = "Delete From OutputStreamMeasurement Where AdapterID = @outputStreamID And SignalReference LIKE @signalReference";
+				command.Parameters.Add(AddWithValue(command, "@outputStreamID", outputStreamID));
+				command.Parameters.Add(AddWithValue(command, "@signalReference", acronym + "%"));
+				command.ExecuteNonQuery();
+			}
+
+			connection.Dispose();
+			return "Done!";
+		}
+
+		public static string AddDevices(int outputStreamID, Dictionary<int, string> devicesToBeAdded, bool addDigitals, bool addAnalogs)
+		{
+			foreach (KeyValuePair<int, string> deviceInfo in devicesToBeAdded)	//loop through all the devices that needs to be added.
+			{
+				Device device = new Device();
+				device = GetDeviceByDeviceID(deviceInfo.Key);	//Get alll the information about the device to be added.
+				OutputStreamDevice outputStreamDevice = new OutputStreamDevice();
+				outputStreamDevice.NodeID = device.NodeID;
+				outputStreamDevice.AdapterID = outputStreamID;
+				outputStreamDevice.Acronym = device.Acronym;
+				outputStreamDevice.BpaAcronym = string.Empty;
+				outputStreamDevice.Name = device.Name;
+				outputStreamDevice.LoadOrder = device.LoadOrder;
+				outputStreamDevice.Enabled = true;
+				SaveOutputStreamDevice(outputStreamDevice, true);	//save in to OutputStreamDevice Table.
+
+				int savedOutputStreamDeviceID = GetOutputStreamDevice(outputStreamID, device.Acronym).ID;
+
+
+				//********************************************
+				List<Phasor> phasorList = new List<Phasor>();
+				phasorList = GetPhasorList(deviceInfo.Key);			//Get all the phasor information for the device to be added.
+
+				foreach (Phasor phasor in phasorList)
+				{
+					OutputStreamDevicePhasor outputStreamDevicePhasor = new OutputStreamDevicePhasor(); //Add all phasors one by one into OutputStreamDevicePhasor table.
+					outputStreamDevicePhasor.NodeID = device.NodeID;
+					outputStreamDevicePhasor.OutputStreamDeviceID = savedOutputStreamDeviceID;
+					outputStreamDevicePhasor.Label = phasor.Label;
+					outputStreamDevicePhasor.Type = phasor.Type;
+					outputStreamDevicePhasor.Phase = phasor.Phase;
+					outputStreamDevicePhasor.LoadOrder = phasor.SourceIndex;
+					SaveOutputStreamDevicePhasor(outputStreamDevicePhasor, true);
+				}
+				//********************************************
+
+				//********************************************
+				List<Measurement> measurementList = new List<Measurement>();
+				measurementList = GetMeasurementsByDevice(deviceInfo.Key);
+
+				foreach (Measurement measurement in measurementList)
+				{
+					OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
+					outputStreamMeasurement.NodeID = device.NodeID;
+					outputStreamMeasurement.AdapterID = outputStreamID;
+					outputStreamMeasurement.HistorianID = measurement.HistorianID;
+					outputStreamMeasurement.PointID = measurement.PointID;
+					outputStreamMeasurement.SignalReference = measurement.SignalReference;
+					SaveOutputStreamMeasurement(outputStreamMeasurement, true);
+
+					if (addAnalogs && measurement.SignalSuffix == "AV") //if add analogs checked and measurement is analog value then add it to OutputStreamDeviceAnalog Table.
+					{
+						OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
+						outputStreamDeviceAnalog.NodeID = device.NodeID;
+						outputStreamDeviceAnalog.OutputStreamDeviceID = savedOutputStreamDeviceID;
+						outputStreamDeviceAnalog.Label = measurement.PointTag;
+						outputStreamDeviceAnalog.Type = 0;	//default
+						outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 2)));
+						SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, true);
+					}
+
+					if (addDigitals && measurement.SignalSuffix == "DV") //if add digitals checked and measurement is digital value then add it to OutputStreamDeviceDigital Table.
+					{
+						OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
+						outputStreamDeviceDigital.NodeID = device.NodeID;
+						outputStreamDeviceDigital.OutputStreamDeviceID = savedOutputStreamDeviceID;
+						outputStreamDeviceDigital.Label = measurement.PointTag;
+						outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 2)));
+						SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, true);
+					}
+				}
+				//********************************************
+
+			}
 
 			return "Done!";
 		}
@@ -1711,7 +1667,7 @@ namespace openPDCManager.Web.Data
 			connection.Dispose();
 			return vendorDeviceList;
 		}
-
+		
 		#endregion
 
 		#region " Manage Device Code"
@@ -1722,7 +1678,7 @@ namespace openPDCManager.Web.Data
 			DataConnection connection = new DataConnection();
 			IDbCommand command = connection.Connection.CreateCommand();
 			command.CommandType = CommandType.Text;	
-			if (MasterNode(nodeID) || nodeID == Guid.Empty)
+			if (nodeID == Guid.Empty || MasterNode(nodeID))
 				command.CommandText = "Select * From DeviceDetail Order By LoadOrder";										
 			else
 			{
@@ -1757,8 +1713,10 @@ namespace openPDCManager.Web.Data
 							  LoadOrder = item.Field<int>("LoadOrder"),
 							  Enabled = item.Field<bool>("Enabled"),
 							  CompanyName = item.Field<string>("CompanyName"),
+							  CompanyAcronym = item.Field<string>("CompanyAcronym"),
 							  HistorianAcronym = item.Field<string>("HistorianAcronym"),
 							  VendorDeviceName = item.Field<string>("VendorDeviceName"),
+							  VendorAcronym = item.Field<string>("VendorAcronym"),
 							  ProtocolName = item.Field<string>("ProtocolName"),
 							  InterconnectionName = item.Field<string>("InterconnectionName"),
 							  NodeName = item.Field<string>("NodeName"),
@@ -1808,24 +1766,58 @@ namespace openPDCManager.Web.Data
 			if (!isNew)
 				command.Parameters.Add(AddWithValue(command, "@id", device.ID));
 
-			command.ExecuteNonQuery();			
+			command.ExecuteNonQuery();
+
+			if (isNew)
+			{
+				Measurement measurement;
+				Device addedDevice = new Device();
+				addedDevice = GetDeviceByAcronym(device.Acronym);
+
+				DataTable pmuSignalTypes = new DataTable();
+				pmuSignalTypes = GetPmuSignalTypes();
+
+				foreach (DataRow row in pmuSignalTypes.Rows)
+				{
+					measurement = new Measurement();
+					measurement.HistorianID = addedDevice.HistorianID;
+					measurement.DeviceID = addedDevice.ID;
+					measurement.PointTag = addedDevice.CompanyAcronym + "_" + addedDevice.Acronym + ":" + addedDevice.VendorAcronym + row["Abbreviation"].ToString();
+					measurement.AlternateTag = string.Empty;
+					measurement.SignalTypeID = Convert.ToInt32(row["ID"]);
+					measurement.PhasorSourceIndex = (int?)null;
+					measurement.SignalReference = addedDevice.Acronym + "-" + row["Suffix"].ToString();
+					measurement.Adder = 0.0d;
+					measurement.Multiplier = 1.0d;
+					measurement.Description = addedDevice.Name + " " + addedDevice.VendorDeviceName + " " + row["Name"].ToString();
+					measurement.Enabled = true;
+					SaveMeasurement(measurement, true);
+				}
+
+			}
+
 			connection.Dispose();
 			return "Done";			
 		}
 
-		public static Dictionary<int, string> GetDevices(bool concentratorOnly, bool isOptional)
+		public static Dictionary<int, string> GetDevices(DeviceType deviceType, bool isOptional)
 		{
 			Dictionary<int, string> deviceList = new Dictionary<int, string>();
 			if (isOptional)
-				deviceList.Add(0, "Select Concentrator");
+				deviceList.Add(0, "Select Device");
 
 			DataConnection connection = new DataConnection();
 			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;			
-			if (concentratorOnly)
+			command.CommandType = CommandType.Text;
+			if (deviceType == DeviceType.Concentrator)
 			{
 				command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator Order By LoadOrder";
 				command.Parameters.Add(AddWithValue(command, "@isConcentrator", true));
+			}
+			else if (deviceType == DeviceType.NonConcentrator)
+			{
+				command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator Order By LoadOrder";
+				command.Parameters.Add(AddWithValue(command, "@isConcentrator", false));
 			}
 			else
 				command.CommandText = "Select ID, Acronym From Device Order By LoadOrder";
@@ -1849,6 +1841,339 @@ namespace openPDCManager.Web.Data
 					  where item.ID == deviceID
 					  select item).ToList()[0];			
 			return device;
+		}
+
+		public static Device GetDeviceByAcronym(string acronym)
+		{
+			Device device = new Device();
+			device = (from item in GetDeviceList(Guid.Empty)
+					  where item.Acronym == acronym
+					  select item).ToList()[0];
+			return device;
+		}
+
+		public static Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID)
+		{
+			Dictionary<int, string> deviceList = new Dictionary<int, string>();
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator AND Acronym NOT IN (Select Acronym From OutputStreamDevice Where AdapterID = @adapterID)";
+			command.Parameters.Add(AddWithValue(command, "@isConcentrator", false));
+			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
+			foreach (DataRow row in resultTable.Rows)
+			{
+				if (!deviceList.ContainsKey(Convert.ToInt32(row["ID"])))
+					deviceList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
+			}
+			connection.Dispose();
+			return deviceList;
+		}
+
+		#endregion
+
+		#region " Manage Phasor Code"
+
+		public static List<Phasor> GetPhasorList(int deviceID)
+		{
+			List<Phasor> phasorList = new List<Phasor>();
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select * From PhasorDetail Where DeviceID = @deviceID Order By SourceIndex";
+			command.Parameters.Add(AddWithValue(command, "@deviceID", deviceID));
+
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
+			phasorList = (from item in resultTable.AsEnumerable()
+						  select new Phasor()
+						  {
+							  ID = item.Field<int>("ID"),
+							  DeviceID = item.Field<int>("DeviceID"),
+							  Label = item.Field<string>("Label"),
+							  Type = item.Field<string>("Type"),
+							  Phase = item.Field<string>("Phase"),
+							  DestinationPhasorID = item.Field<int?>("DestinationPhasorID"),
+							  SourceIndex = item.Field<int>("SourceIndex"),
+							  DestinationPhasorLabel = item.Field<string>("DestinationPhasorLabel"),
+							  DeviceAcronym = item.Field<string>("DeviceAcronym"),
+							  PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
+							  PhaseType = item.Field<string>("Phase") == "+" ? "Positive" : item.Field<string>("Phase") == "-" ? "Negative" :
+										  item.Field<string>("Phase") == "A" ? "Phase A" : item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
+						  }).ToList();
+
+			connection.Dispose();
+			return phasorList;
+		}
+
+		public static Dictionary<int, string> GetPhasors(int deviceID, bool isOptional)
+		{
+			Dictionary<int, string> phasorList = new Dictionary<int, string>();
+			if (isOptional)
+				phasorList.Add(0, "Select Phasor");
+
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select ID, Label From Phasor Where DeviceID = @deviceID Order By SourceIndex";
+			command.Parameters.Add(AddWithValue(command, "@deviceID", deviceID));
+
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
+			foreach (DataRow row in resultTable.Rows)
+			{
+				if (!phasorList.ContainsKey(Convert.ToInt32(row["ID"])))
+					phasorList.Add(Convert.ToInt32(row["ID"]), row["Label"].ToString());
+			}
+
+			connection.Dispose();
+			return phasorList;
+		}
+
+		public static string SavePhasor(Phasor phasor, bool isNew)
+		{
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+
+			if (isNew)
+				command.CommandText = "Insert Into Phasor (DeviceID, Label, Type, Phase, DestinationPhasorID, SourceIndex) Values (@deviceID, @label, @type, @phase, " +
+					"@destinationPhasorID, @sourceIndex)";
+			else
+				command.CommandText = "Update Phasor Set DeviceID =@deviceID, Label = @label, Type = @type, Phase = @phase, DestinationPhasorID = @destinationPhasorID, " +
+					"SourceIndex = @sourceIndex Where ID = @id";
+
+			command.Parameters.Add(AddWithValue(command, "@deviceID", phasor.DeviceID));
+			command.Parameters.Add(AddWithValue(command, "@label", phasor.Label));
+			command.Parameters.Add(AddWithValue(command, "@type", phasor.Type));
+			command.Parameters.Add(AddWithValue(command, "@phase", phasor.Phase));
+			command.Parameters.Add(AddWithValue(command, "@destinationPhasorID", phasor.DestinationPhasorID ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@sourceIndex", phasor.SourceIndex));
+
+			if (!isNew)
+				command.Parameters.Add(AddWithValue(command, "@id", phasor.ID));
+
+			command.ExecuteNonQuery();
+			connection.Dispose();
+
+			Phasor addedPhasor = new Phasor();
+			addedPhasor = GetPhasorByLabel(phasor.DeviceID, phasor.Label);
+
+			Device device = new Device();
+			device = GetDeviceByDeviceID(phasor.DeviceID);
+
+			Measurement measurement;
+
+			DataTable phasorSignalTypes = new DataTable();
+			phasorSignalTypes = GetPhasorSignalTypes(phasor.Type);
+
+			foreach (DataRow row in phasorSignalTypes.Rows)
+			{
+				measurement = new Measurement();
+				measurement.HistorianID = device.HistorianID;
+				measurement.DeviceID = device.ID;
+				if (addedPhasor.DestinationPhasorID.HasValue)
+					measurement.PointTag = device.CompanyAcronym + "_" + device.Acronym + "-" + GetPhasorByID(addedPhasor.DeviceID, (int)addedPhasor.DestinationPhasorID).Label + ":" + device.VendorAcronym + row["Abbreviation"].ToString();
+				else
+					measurement.PointTag = device.CompanyAcronym + "_" + device.Acronym + "-" + row["Suffix"].ToString() + addedPhasor.SourceIndex.ToString() +":" + device.VendorAcronym + row["Abbreviation"].ToString();
+				measurement.AlternateTag = string.Empty;
+				measurement.SignalTypeID = Convert.ToInt32(row["ID"]);
+				measurement.PhasorSourceIndex = addedPhasor.SourceIndex;
+				measurement.SignalReference = device.Acronym + "-" + row["Suffix"].ToString() + addedPhasor.SourceIndex.ToString();
+				measurement.Adder = 0.0d;
+				measurement.Multiplier = 1.0d;
+				measurement.Description = device.Name + " " + addedPhasor.Label + " " + device.VendorDeviceName + " " + addedPhasor.PhaseType + " " + row["Name"].ToString();
+				measurement.Enabled = true;
+				SaveMeasurement(measurement, true);
+			}
+
+			return "Done!";
+		}
+
+		static Phasor GetPhasorByLabel(int deviceID, string label)
+		{
+			Phasor phasor = new Phasor();
+			phasor = (from item in GetPhasorList(deviceID)
+					  where item.Label == label
+					  select item).ToList()[0];
+			return phasor;
+		}
+
+		static Phasor GetPhasorByID(int deviceID, int phasorID)
+		{
+			Phasor phasor = new Phasor();
+			phasor = (from item in GetPhasorList(deviceID)
+					  where item.ID == phasorID
+					  select item).ToList()[0];
+			return phasor;
+		}
+
+		#endregion
+
+		#region " Manage Measurements Code"
+
+		public static List<Measurement> GetMeasurementList(Guid nodeID)
+		{
+			List<Measurement> measurementList = new List<Measurement>();
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			if (nodeID == Guid.Empty || MasterNode(nodeID))
+				command.CommandText = "Select * From MeasurementDetail Order By PointTag";
+			else
+			{
+				command.CommandText = "Select * From MeasurementDetail Where NodeID = @nodeID Order By PointTag";
+				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+			}
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
+			measurementList = (from item in resultTable.AsEnumerable()
+							   select new Measurement()
+							   {
+								   SignalID = item.Field<Guid>("SignalID"),
+								   HistorianID = item.Field<int?>("HistorianID"),
+								   PointID = item.Field<int>("PointID"),
+								   DeviceID = item.Field<int>("DeviceID"),
+								   PointTag = item.Field<string>("PointTag"),
+								   AlternateTag = item.Field<string>("AlternateTag"),
+								   SignalTypeID = item.Field<int>("SignalTypeID"),
+								   PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+								   SignalReference = item.Field<string>("SignalReference"),
+								   Adder = item.Field<double>("Adder"),
+								   Multiplier = item.Field<double>("Multiplier"),
+								   Description = item.Field<string>("Description"),
+								   Enabled = item.Field<bool>("Enabled"),
+								   HistorianAcronym = item.Field<string>("HistorianAcronym"),
+								   DeviceAcronym = item.Field<string>("DeviceAcronym"),
+								   SignalName = item.Field<string>("SignalName"),
+								   SignalAcronym = item.Field<string>("SignalAcronym"),
+								   SignalSuffix = item.Field<string>("SignalTypeSuffix"),
+								   PhasorLabel = item.Field<string>("PhasorLabel")
+							   }).ToList();
+
+			connection.Dispose();
+			return measurementList;
+		}
+
+		public static List<Measurement> GetMeasurementsByDevice(int deviceID)
+		{
+			List<Measurement> measurementList = new List<Measurement>();
+			DataConnection connection = new DataConnection();
+			IDbCommand commnad = connection.Connection.CreateCommand();
+			commnad.CommandType = CommandType.Text;
+			commnad.CommandText = "Select * From MeasurementDetail Where DeviceID = @deviceID Order By PointTag";
+			commnad.Parameters.Add(AddWithValue(commnad, "@deviceID", deviceID));
+			DataTable resultTable = new DataTable();
+			resultTable.Load(commnad.ExecuteReader());
+
+			measurementList = (from item in resultTable.AsEnumerable()
+							   select new Measurement()
+							   {
+								   SignalID = item.Field<Guid>("SignalID"),
+								   HistorianID = item.Field<int?>("HistorianID"),
+								   PointID = item.Field<int>("PointID"),
+								   DeviceID = item.Field<int>("DeviceID"),
+								   PointTag = item.Field<string>("PointTag"),
+								   AlternateTag = item.Field<string>("AlternateTag"),
+								   SignalTypeID = item.Field<int>("SignalTypeID"),
+								   PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+								   SignalReference = item.Field<string>("SignalReference"),
+								   Adder = item.Field<double>("Adder"),
+								   Multiplier = item.Field<double>("Multiplier"),
+								   Description = item.Field<string>("Description"),
+								   Enabled = item.Field<bool>("Enabled"),
+								   HistorianAcronym = item.Field<string>("HistorianAcronym"),
+								   DeviceAcronym = item.Field<string>("DeviceAcronym"),
+								   SignalName = item.Field<string>("SignalName"),
+								   SignalAcronym = item.Field<string>("SignalAcronym"),
+								   SignalSuffix = item.Field<string>("SignalTypeSuffix"),
+								   PhasorLabel = item.Field<string>("PhasorLabel")
+							   }).ToList();
+
+			connection.Dispose();
+			return measurementList;
+		}
+
+		public static string SaveMeasurement(Measurement measurement, bool isNew)
+		{
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+
+			if (isNew)
+				command.CommandText = "Insert Into Measurement (HistorianID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, Adder, Multiplier, Description, Enabled) " +
+					"Values (@historianID, @deviceID, @pointTag, @alternateTag, @signalTypeID, @phasorSourceIndex, @signalReference, @adder, @multiplier, @description, @enabled)";
+			else
+				command.CommandText = "Update Measurement Set HistorianID = @historianID, DeviceID = @deviceID, PointTag = @pointTag, AlternateTag = @alternateTag, SignalTypeID = @signalTypeID, " +
+					"PhasorSourceIndex = @phasorSourceIndex, SignalReference = @signalReference, Adder = @adder, Multiplier = @multiplier, Description = @description, Enabled = @enabled Where SignalID = @signalID";
+
+			command.Parameters.Add(AddWithValue(command, "@historianID", measurement.HistorianID ?? (object)DBNull.Value));
+			//command.Parameters.Add(AddWithValue(command, "@pointID", measurement.PointID));
+			command.Parameters.Add(AddWithValue(command, "@deviceID", measurement.DeviceID ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@pointTag", measurement.PointTag));
+			command.Parameters.Add(AddWithValue(command, "@alternateTag", measurement.AlternateTag));
+			command.Parameters.Add(AddWithValue(command, "@signalTypeID", measurement.SignalTypeID));
+			command.Parameters.Add(AddWithValue(command, "@phasorSourceIndex", measurement.PhasorSourceIndex ?? (object)DBNull.Value));
+			command.Parameters.Add(AddWithValue(command, "@signalReference", measurement.SignalReference));
+			command.Parameters.Add(AddWithValue(command, "@adder", measurement.Adder));
+			command.Parameters.Add(AddWithValue(command, "@multiplier", measurement.Multiplier));
+			command.Parameters.Add(AddWithValue(command, "@description", measurement.Description));
+			command.Parameters.Add(AddWithValue(command, "@enabled", measurement.Enabled));
+
+			if (!isNew)
+				command.Parameters.Add(AddWithValue(command, "@signalID", measurement.SignalID));
+
+			command.ExecuteNonQuery();
+			connection.Dispose();
+			return "Done!";
+		}
+
+		public static List<Measurement> GetMeasurementsForOutputStream(Guid nodeID, int outputStreamID)
+		{
+			List<Measurement> measurementList = new List<Measurement>();
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			if (nodeID == Guid.Empty || MasterNode(nodeID))
+				command.CommandText = "Select * From MeasurementDetail Where PointID Not In (Select PointID From OutputStreamMeasurement Where AdapterID = @outputStreamID)";
+			else
+			{
+				command.CommandText = "Select * From MeasurementDetail Where NodeID = @nodeID AND PointID Not In (Select PointID From OutputStreamMeasurement Where AdapterID = @outputStreamID)";
+				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+			}
+			command.Parameters.Add(AddWithValue(command, "@outputStreamID", outputStreamID));
+
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+			measurementList = (from item in resultTable.AsEnumerable()
+							   select new Measurement()
+							   {
+								   SignalID = item.Field<Guid>("SignalID"),
+								   HistorianID = item.Field<int?>("HistorianID"),
+								   PointID = item.Field<int>("PointID"),
+								   DeviceID = item.Field<int>("DeviceID"),
+								   PointTag = item.Field<string>("PointTag"),
+								   AlternateTag = item.Field<string>("AlternateTag"),
+								   SignalTypeID = item.Field<int>("SignalTypeID"),
+								   PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+								   SignalReference = item.Field<string>("SignalReference"),
+								   Adder = item.Field<double>("Adder"),
+								   Multiplier = item.Field<double>("Multiplier"),
+								   Description = item.Field<string>("Description"),
+								   Enabled = item.Field<bool>("Enabled"),
+								   HistorianAcronym = item.Field<string>("HistorianAcronym"),
+								   DeviceAcronym = item.Field<string>("DeviceAcronym"),
+								   SignalName = item.Field<string>("SignalName"),
+								   SignalAcronym = item.Field<string>("SignalAcronym"),
+								   SignalSuffix = item.Field<string>("SignalTypeSuffix"),
+								   PhasorLabel = item.Field<string>("PhasorLabel")
+							   }).ToList();
+			connection.Dispose();
+			return measurementList;
 		}
 
 		#endregion
@@ -1981,6 +2306,58 @@ namespace openPDCManager.Web.Data
 
 			connection.Dispose();
 			return protocolList;
+		}
+
+		#endregion
+
+		#region " Manage Signal Types Code"
+
+		public static Dictionary<int, string> GetSignalTypes(bool isOptional)
+		{
+			Dictionary<int, string> signalTypeList = new Dictionary<int, string>();
+			if (isOptional)
+				signalTypeList.Add(0, "Select Signal Type");
+
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select ID, Name From SignalType Order By Name";
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+
+			foreach (DataRow row in resultTable.Rows)
+			{
+				if (!signalTypeList.ContainsKey(Convert.ToInt32(row["ID"])))
+					signalTypeList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+			}
+
+			connection.Dispose();
+			return signalTypeList;
+		}
+
+		static DataTable GetPmuSignalTypes()	//Do not use this method in WCF call or silverlight. It is for internal use only.
+		{
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select * From SignalType Where Source = 'PMU' AND Suffix IN ('FQ', 'DF', 'SF')";
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+			return resultTable;
+		}
+
+		static DataTable GetPhasorSignalTypes(string phasorType)
+		{
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			if (phasorType == "V")
+				command.CommandText = "Select * From SignalType Where Source = 'Phasor' AND Acronym LIKE 'V%'";
+			else
+				command.CommandText = "Select * From SignalType Where Source = 'Phasor' AND Acronym LIKE 'I%'";
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+			return resultTable;
 		}
 
 		#endregion

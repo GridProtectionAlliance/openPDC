@@ -350,9 +350,9 @@ namespace PCS.Services.Service
 		{
 			return CommonFunctions.GetDeviceList(nodeID);
 		}
-		public Dictionary<int, string> GetDevices(bool concentratorOnly, bool isOptional)
+		public Dictionary<int, string> GetDevices(DeviceType deviceType, bool isOptional)
 		{
-			return CommonFunctions.GetDevices(concentratorOnly, isOptional);
+			return CommonFunctions.GetDevices(deviceType, isOptional);
 		}
 		public string SaveDevice(Device device, bool isNew)
 		{
@@ -361,6 +361,51 @@ namespace PCS.Services.Service
 		public Device GetDeviceByDeviceID(int deviceID)
 		{
 			return CommonFunctions.GetDeviceByDeviceID(deviceID);
+		}
+		public Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID)
+		{
+			return CommonFunctions.GetDevicesForOutputStream(outputStreamID);
+		}
+		#endregion
+
+		#region " Manage Phasor Code"
+
+		public List<Phasor> GetPhasorList(int deviceID)
+		{
+			return CommonFunctions.GetPhasorList(deviceID);
+		}
+
+		public Dictionary<int, string> GetPhasors(int deviceID, bool isOptional)
+		{
+			return CommonFunctions.GetPhasors(deviceID, isOptional);
+		}
+
+		public string SavePhasor(Phasor phasor, bool isNew)
+		{
+			return CommonFunctions.SavePhasor(phasor, isNew);
+		}
+
+		#endregion
+
+		#region " Manage Measurement Code"
+
+		public List<Measurement> GetMeasurementList(Guid nodeID)
+		{
+			return CommonFunctions.GetMeasurementList(nodeID);
+		}
+
+		public string SaveMeasurement(Measurement measurement, bool isNew)
+		{
+			return CommonFunctions.SaveMeasurement(measurement, isNew);
+		}
+
+		public List<Measurement> GetMeasurementsByDevice(int deviceID)
+		{
+			return CommonFunctions.GetMeasurementsByDevice(deviceID);
+		}
+		public List<Measurement> GetMeasurementsForOutputStream(Guid nodeID, int outputStreamID)
+		{
+			return CommonFunctions.GetMeasurementsForOutputStream(nodeID, outputStreamID);
 		}
 		#endregion
 
@@ -394,6 +439,15 @@ namespace PCS.Services.Service
 		public Dictionary<int, string> GetProtocols(bool isOptional)
 		{
 			return CommonFunctions.GetProtocols(isOptional);
+		}
+
+		#endregion
+
+		#region " Manage Signal Types Code"
+
+		public Dictionary<int, string> GetSignalTypes(bool isOptional)
+		{
+			return CommonFunctions.GetSignalTypes(isOptional);
 		}
 
 		#endregion
@@ -456,6 +510,15 @@ namespace PCS.Services.Service
 			return CommonFunctions.SaveOutputStreamDevice(outputStreamDevice, isNew);
 		}
 
+		public string DeleteOutputStreamDevice(int outputStreamID, List<string> devicesToBeDeleted)
+		{
+			return CommonFunctions.DeleteOutputStreamDevice(outputStreamID, devicesToBeDeleted);
+		}
+
+		public string AddDevices(int outputStreamID, Dictionary<int, string> devicesToBeAdded, bool addDigitals, bool addAnalogs)
+		{
+			return CommonFunctions.AddDevices(outputStreamID, devicesToBeAdded, addDigitals, addAnalogs);
+		}
 		#endregion
 
 		#region " Manage Output Stream Measurements Code"

@@ -93,10 +93,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BooleanToColorConverter.cs" />
+    <Compile Include="Converters\InvertBooleanConverter.cs" />
     <Compile Include="Converters\StringToSymbolConverter.cs" />
-    <Compile Include="LayoutContainer.xaml.cs">
-      <DependentUpon>LayoutContainer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MasterLayoutControl.xaml.cs">
       <DependentUpon>MasterLayoutControl.xaml</DependentUpon>
     </Compile>
@@ -114,6 +112,18 @@
     </Compile>
     <Compile Include="ModalDialogs\OutputStreamMeasurements.xaml.cs">
       <DependentUpon>OutputStreamMeasurements.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamWizard\AddDevices.xaml.cs">
+      <DependentUpon>AddDevices.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamWizard\CurrentDevices.xaml.cs">
+      <DependentUpon>CurrentDevices.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\Phasors.xaml.cs">
+      <DependentUpon>Phasors.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\SelectMeasurement.xaml.cs">
+      <DependentUpon>SelectMeasurement.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Adapters\ActionAdapters.xaml.cs">
       <DependentUpon>ActionAdapters.xaml</DependentUpon>
@@ -192,10 +202,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </ApplicationDefinition>
-    <Page Include="LayoutContainer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:MarkupCompilePass1</Generator>
-    </Page>
     <Page Include="MasterLayoutControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
@@ -217,6 +223,22 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
     <Page Include="ModalDialogs\OutputStreamMeasurements.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamWizard\AddDevices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamWizard\CurrentDevices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="ModalDialogs\Phasors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="ModalDialogs\SelectMeasurement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
@@ -401,6 +423,9 @@
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.MapData.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Measurement.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Node.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -423,6 +448,9 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamMeasurement.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Phasor.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Vendor.datasource">

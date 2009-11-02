@@ -258,11 +258,20 @@ namespace openPDCManager.Web.Data.Entities
 		public int LoadOrder { get; set; }
 		public bool Enabled { get; set; }
 		public string CompanyName { get; set; }
+		public string CompanyAcronym { get; set; }
 		public string HistorianAcronym { get; set; }
 		public string VendorDeviceName { get; set; }
+		public string VendorAcronym { get; set; }
 		public string ProtocolName { get; set; }
 		public string InterconnectionName { get; set; }
 		public string NodeName { get; set; }
 		public string ParentAcronym { get; set; }
+	}
+
+	public enum DeviceType
+	{
+		Concentrator,
+		NonConcentrator,
+		All
 	}
 }

@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  OutputStreamDevice.cs - Gbtc
+//  CurrentDevices.xaml.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  10/16/2009 - Mehulbhai P. Thakkar
+//  10/27/2009 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -230,19 +230,85 @@
 #endregion
 
 using System;
+using System.Collections.ObjectModel;
+using System.ServiceModel;
+using System.Windows;
+using System.Windows.Controls;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
 
-namespace openPDCManager.Web.Data.Entities
+namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 {
-	public class OutputStreamDevice
+	public partial class CurrentDevices : ChildWindow
 	{
-		public Guid NodeID { get; set; }
-		public int AdapterID { get; set; }
-		public int ID { get; set; }
-		public string Acronym { get; set; }
-		public string BpaAcronym { get; set; }
-		public string Name { get; set; }
-		public int LoadOrder { get; set; }
-		public bool Enabled { get; set; }
-		public bool Virtual { get; set; }
+		int sourceOutputStreamID;
+		string sourceOutputStreamAcronym;		
+		ObservableCollection<string> devicesToBeDeleted;
+
+		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
+		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
+		PhasorDataServiceClient client;
+
+		public CurrentDevices(int outputStreamID, string outputStreamAcronym)
+		{
+			InitializeComponent();
+			sourceOutputStreamAcronym = outputStreamAcronym;
+			sourceOutputStreamID = outputStreamID;
+			this.Title = "Current Devices For Output Stream: " + sourceOutputStreamAcronym;
+			Loaded += new RoutedEventHandler(CurrentDevices_Loaded);
+			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client.GetOutputStreamDeviceListCompleted += new EventHandler<GetOutputStreamDeviceListCompletedEventArgs>(client_GetOutputStreamDeviceListCompleted);
+			client.DeleteOutputStreamDeviceCompleted += new EventHandler<DeleteOutputStreamDeviceCompletedEventArgs>(client_DeleteOutputStreamDeviceCompleted);
+			ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);
+			ButtonDelete.Click += new RoutedEventHandler(ButtonDelete_Click);
+		}
+
+		void client_DeleteOutputStreamDeviceCompleted(object sender, DeleteOutputStreamDeviceCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				MessageBox.Show(e.Result);
+			else
+				MessageBox.Show(e.Error.Message);
+			client.GetOutputStreamDeviceListAsync(sourceOutputStreamID, true);
+		}
+		void ButtonDelete_Click(object sender, RoutedEventArgs e)
+		{
+			client.DeleteOutputStreamDeviceAsync(sourceOutputStreamID, devicesToBeDeleted);
+		}
+		void ButtonAdd_Click(object sender, RoutedEventArgs e)
+		{
+			AddDevices addDevices = new AddDevices(sourceOutputStreamID, sourceOutputStreamAcronym);
+			addDevices.Closed += new EventHandler(addDevices_Closed);
+			addDevices.Show();
+		}
+		void addDevices_Closed(object sender, EventArgs e)
+		{
+			client.GetOutputStreamDeviceListAsync(sourceOutputStreamID, true);
+		}
+		void client_GetOutputStreamDeviceListCompleted(object sender, GetOutputStreamDeviceListCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ListBoxOutputStreamDeviceList.ItemsSource = e.Result;
+			else
+				MessageBox.Show(e.Error.Message);
+		}
+		void CurrentDevices_Loaded(object sender, RoutedEventArgs e)
+		{
+			devicesToBeDeleted = new ObservableCollection<string>();
+			client.GetOutputStreamDeviceListAsync(sourceOutputStreamID, true);
+		}
+		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+		{
+			string deviceAcronym = ((CheckBox)sender).Content.ToString();
+			if (devicesToBeDeleted.Contains(deviceAcronym))
+				devicesToBeDeleted.Remove(deviceAcronym);
+		}
+		private void CheckBox_Checked(object sender, RoutedEventArgs e)
+		{
+			string deviceAcronym = ((CheckBox)sender).Content.ToString();
+			if (!devicesToBeDeleted.Contains(deviceAcronym))
+				devicesToBeDeleted.Add(deviceAcronym);
+		}		
+		
 	}
 }
+

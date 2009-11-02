@@ -230,14 +230,14 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.ServiceModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using System.Windows;
-using System.Collections.Generic;
-using System.Windows.Controls.Primitives;
 using openPDCManager.Silverlight.ModalDialogs;
+using openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
 
 namespace openPDCManager.Silverlight.Pages.Adapters
 {
@@ -249,8 +249,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		PhasorDataServiceClient client;
 
 		bool inEditMode = false;
-		int outputStreamID = 0;
-		Guid nodeID;
+		int outputStreamID = 0;		
 
 		public OutputStreams()
 		{
@@ -386,6 +385,13 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			string acronym = ((HyperlinkButton)sender).Name;
 			OutputStreamMeasurements osm = new OutputStreamMeasurements(outputStreamId, acronym);
 			osm.Show();
+		}
+		private void HyperlinkButtonWizard_Click(object sender, RoutedEventArgs e)
+		{
+			int outputStreamId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ((HyperlinkButton)sender).Name;
+			CurrentDevices currentDevices = new CurrentDevices(outputStreamId, acronym);
+			currentDevices.Show();
 		}
 
 	}

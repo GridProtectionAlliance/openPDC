@@ -237,6 +237,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.ModalDialogs;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
@@ -261,9 +262,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}		
 		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
 		{
-			ListBoxDeviceList.ItemsSource = deviceList;
-			//AddNew addNewPage = new AddNew();
-			//addNewPage.SetDeviceToEndit(
+			ListBoxDeviceList.ItemsSource = deviceList;			
 		}
 		void ButtonSearch_Click(object sender, RoutedEventArgs e)
 		{
@@ -297,6 +296,20 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
 			NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?did=" + deviceId, UriKind.Relative));
+		}
+
+		private void HyperlinkButtonPhasors_Click(object sender, RoutedEventArgs e)
+		{
+			int deviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ((HyperlinkButton)sender).Name;
+			Phasors phasors = new Phasors(deviceId, acronym);
+			phasors.Show();
+		}
+
+		private void HyperlinkButtonMeasurements_Click(object sender, RoutedEventArgs e)
+		{
+			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
+			NavigationService.Navigate(new Uri("/Pages/Manage/Measurements.xaml?did=" + deviceId, UriKind.Relative));
 		}				
 
 	}

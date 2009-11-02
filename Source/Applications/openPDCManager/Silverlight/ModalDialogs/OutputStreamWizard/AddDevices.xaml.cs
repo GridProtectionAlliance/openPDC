@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  OutputStreamDevice.cs - Gbtc
+//  AddDevices.xaml.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  10/16/2009 - Mehulbhai P. Thakkar
+//  10/27/2009 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -230,19 +230,99 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.ServiceModel;
+using System.Windows;
+using System.Windows.Controls;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
 
-namespace openPDCManager.Web.Data.Entities
+namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 {
-	public class OutputStreamDevice
+	public partial class AddDevices : ChildWindow
 	{
-		public Guid NodeID { get; set; }
-		public int AdapterID { get; set; }
-		public int ID { get; set; }
-		public string Acronym { get; set; }
-		public string BpaAcronym { get; set; }
-		public string Name { get; set; }
-		public int LoadOrder { get; set; }
-		public bool Enabled { get; set; }
-		public bool Virtual { get; set; }
+		int sourceOutputStreamID;
+		string sourceOutputStreamAcronym;
+		Dictionary<int, string> devicesToBeAdded;
+
+		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
+		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
+		PhasorDataServiceClient client;
+
+		Dictionary<int, string> deviceList;
+
+		public AddDevices(int outputStreamID, string outputStreamAcronym)
+		{
+			InitializeComponent();
+			sourceOutputStreamID = outputStreamID;
+			sourceOutputStreamAcronym = outputStreamAcronym;
+			this.Title = "Add New Devices For Output Stream: " + sourceOutputStreamAcronym;
+			Loaded += new RoutedEventHandler(AddDevices_Loaded);
+			ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);
+			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
+			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
+			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client.GetDevicesForOutputStreamCompleted += new EventHandler<GetDevicesForOutputStreamCompletedEventArgs>(client_GetDevicesForOutputStreamCompleted);
+			client.AddDevicesCompleted += new EventHandler<AddDevicesCompletedEventArgs>(client_AddDevicesCompleted);
+		}
+
+		void client_AddDevicesCompleted(object sender, AddDevicesCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				MessageBox.Show(e.Result);
+			else
+				MessageBox.Show(e.Error.Message);
+			client.GetDevicesForOutputStreamAsync(sourceOutputStreamID);
+		}
+		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
+		{
+			ListBoxDeviceList.ItemsSource = deviceList;
+		}
+		void ButtonSearch_Click(object sender, RoutedEventArgs e)
+		{
+			string searchText = TextBoxSearch.Text.ToUpper();
+			ListBoxDeviceList.ItemsSource = (from item in deviceList.AsEnumerable()
+											 where item.Value.ToUpper().Contains(searchText)
+											 select item).ToList();
+		}
+		void client_GetDevicesForOutputStreamCompleted(object sender, GetDevicesForOutputStreamCompletedEventArgs e)
+		{
+			if (e.Error == null)
+			{
+				ListBoxDeviceList.ItemsSource = e.Result;
+				deviceList = e.Result;
+			}
+			else
+				MessageBox.Show(e.Error.Message);
+		}
+		void ButtonAdd_Click(object sender, RoutedEventArgs e)
+		{
+			if (devicesToBeAdded.Count > 0)
+				client.AddDevicesAsync(sourceOutputStreamID, devicesToBeAdded, (bool)CheckAddDigitals.IsChecked, (bool)CheckAddAnalog.IsChecked);
+			else
+				MessageBox.Show("Select atleast one device to add.");
+		}
+		void AddDevices_Loaded(object sender, RoutedEventArgs e)
+		{
+			devicesToBeAdded = new Dictionary<int, string>();
+			deviceList = new Dictionary<int, string>();
+			client.GetDevicesForOutputStreamAsync(sourceOutputStreamID);
+		}
+		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+		{
+			string deviceAcronym = ((CheckBox)sender).Content.ToString();
+			int deviceID = Convert.ToInt32(((CheckBox)sender).Tag.ToString());
+			if (devicesToBeAdded.ContainsKey(deviceID))
+			    devicesToBeAdded.Remove(deviceID);
+		}
+		private void CheckBox_Checked(object sender, RoutedEventArgs e)
+		{
+			string deviceAcronym = ((CheckBox)sender).Content.ToString();
+			int deviceID = Convert.ToInt32(((CheckBox)sender).Tag.ToString());
+			if (!devicesToBeAdded.ContainsKey(deviceID))
+				devicesToBeAdded.Add(deviceID, deviceAcronym);
+		}	
+		
 	}
 }
+

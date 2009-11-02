@@ -7,10 +7,11 @@
     <Grid x:Name="GridManageOutputStreamDevices">
         <Border Style="{StaticResource PortletBorderStyle}">
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Manage Output Stream Devices" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                <TextBlock Text="Manage Output Stream Devices" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />                
                 <Border Background="{StaticResource PortletBackgroundBrush}">
                     <Grid x:Name="GridOutputStreamDeviceDetail" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
@@ -22,16 +23,16 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
-                        
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Acronym" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                        <TextBox x:Name="TextBoxAcronym" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Acronym}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Name" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                        <TextBox x:Name="TextBoxName" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="BPA Acronym" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                        <TextBox x:Name="TextBoxBPAAcronym" Grid.Row="1" Grid.Column="1" Text="{Binding Path=BpaAcronym}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Load Order" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                        <TextBox x:Name="TextBoxLoadOrder" Grid.Row="1" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <CheckBox x:Name="CheckBoxEnabled" Grid.Row="2" Grid.Column="3" Content="Enabled" IsChecked="{Binding Path=Enabled}" FontWeight="Bold" VerticalAlignment="Center"/>
+                                                
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Acronym" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBox x:Name="TextBoxAcronym" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Acronym}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Name" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="3" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="BPA Acronym" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBox x:Name="TextBoxBPAAcronym" Grid.Row="2" Grid.Column="1" Text="{Binding Path=BpaAcronym}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="Load Order" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBox x:Name="TextBoxLoadOrder" Grid.Row="2" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <CheckBox x:Name="CheckBoxEnabled" Grid.Row="3" Grid.Column="3" Content="Enabled" IsChecked="{Binding Path=Enabled}" FontWeight="Bold" VerticalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"/>
                             <TextBlock Text="     "/>
@@ -62,32 +63,36 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ListBox x:Name="ListBoxOutputStreamDeviceList" Margin="0" Padding="0">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                        <TextBlock Text="{Binding Path=Acronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
-                                    </Border>
-                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                        <TextBlock Text="{Binding Path=Name}" Width="{StaticResource XXLargeItemSize}" TextAlignment="Left" Padding="1"/>
-                                    </Border>
-                                    <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallItemSize}">
-                                        <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Enabled}" IsEnabled="False" />
-                                    </Border>
-                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                        <HyperlinkButton Content="Phasors" HorizontalContentAlignment="Center" Name="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" Click="HyperlinkButtonPhasors_Click" />
-                                    </Border>
-                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                        <HyperlinkButton Content="Analogs" HorizontalContentAlignment="Center" Name="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" Click="HyperlinkButtonAnalogs_Click" />
-                                    </Border>
-                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                        <HyperlinkButton Content="Digitals" HorizontalContentAlignment="Center" Name="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" Click="HyperlinkButtonDigitals_Click" />
-                                    </Border>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <ScrollViewer BorderThickness="0" Padding="0" Height="Auto">
+                        <ScrollViewer.Content>
+                            <ListBox x:Name="ListBoxOutputStreamDeviceList" Margin="0" Padding="0">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <TextBlock Text="{Binding Path=Acronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <TextBlock Text="{Binding Path=Name}" Width="{StaticResource XXLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallItemSize}">
+                                                <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Enabled}" IsEnabled="False" />
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <HyperlinkButton Content="Phasors" HorizontalContentAlignment="Center" Name="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" Click="HyperlinkButtonPhasors_Click" />
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <HyperlinkButton Content="Analogs" HorizontalContentAlignment="Center" Name="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" Click="HyperlinkButtonAnalogs_Click" />
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <HyperlinkButton Content="Digitals" HorizontalContentAlignment="Center" Name="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" Click="HyperlinkButtonDigitals_Click" />
+                                            </Border>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </ScrollViewer.Content>
+                    </ScrollViewer>
                 </Border>
 
             </StackPanel>

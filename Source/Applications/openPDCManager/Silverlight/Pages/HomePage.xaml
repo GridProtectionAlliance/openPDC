@@ -29,9 +29,8 @@
         <Border x:Name="BorderInterconnectionStatus" Style="{StaticResource ContentBorderStyle}" CornerRadius="5" Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" VerticalAlignment="Stretch">
             <StackPanel Orientation="Vertical" Margin="0" >
                 <TextBlock Text="Currently publishing PMU data from the following PCS members:" Style="{StaticResource LargeWhiteTextStyle}" Padding="5"/>
-                <ScrollViewer BorderThickness="0" Padding="0">
-                    <ScrollViewer.Content>
-                        
+                <ScrollViewer BorderThickness="0" Padding="0" Height="Auto">
+                    <ScrollViewer.Content>                        
                         <Border BorderThickness="0" Background="{StaticResource PortletBackgroundBrush}">
                             <ItemsControl x:Name="ItemControlInterconnectionStatus" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <ItemsControl.ItemTemplate>

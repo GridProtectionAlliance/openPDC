@@ -354,15 +354,12 @@ namespace PCS.Services.Service
 		#endregion
 
 		#region " Manage Device Code"
-
-		//[OperationContract]
-		//List<Device> GetDeviceList();
-
+			
 		[OperationContract]
 		List<Device> GetDeviceList(Guid nodeID);
 
 		[OperationContract]
-		Dictionary<int, string> GetDevices(bool concentratorOnly, bool isOptional);
+		Dictionary<int, string> GetDevices(DeviceType deviceType, bool isOptional);
 
 		[OperationContract]
 		string SaveDevice(Device device, bool isNew);
@@ -370,8 +367,40 @@ namespace PCS.Services.Service
 		[OperationContract]
 		Device GetDeviceByDeviceID(int deviceID);
 
+		[OperationContract]
+		Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID);
+
 		#endregion
 
+		#region " Manage Phasors Code"
+
+		[OperationContract]
+		List<Phasor> GetPhasorList(int deviceID);
+
+		[OperationContract]
+		Dictionary<int, string> GetPhasors(int deviceID, bool isOptional);
+
+		[OperationContract]
+		string SavePhasor(Phasor phasor, bool isNew);
+
+		#endregion
+
+		#region " Manage Measurements Code"
+
+		[OperationContract]
+		List<Measurement> GetMeasurementList(Guid nodeID);
+
+		[OperationContract]
+		string SaveMeasurement(Measurement measurement, bool isNew);
+
+		[OperationContract]
+		List<Measurement> GetMeasurementsByDevice(int deviceID);
+
+		[OperationContract]
+		List<Measurement> GetMeasurementsForOutputStream(Guid nodeID, int outputStreamID);
+
+		#endregion
+								
 		#region " Manage Other Device Code"
 
 		[OperationContract]
@@ -396,6 +425,13 @@ namespace PCS.Services.Service
 
 		[OperationContract]
 		Dictionary<int, string> GetProtocols(bool isOptional);
+
+		#endregion
+
+		#region " Manage Signal Types Code"
+
+		[OperationContract]
+		Dictionary<int, string> GetSignalTypes(bool isOptional);
 
 		#endregion
 
@@ -439,6 +475,12 @@ namespace PCS.Services.Service
 
 		[OperationContract]
 		string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew);
+
+		[OperationContract]
+		string DeleteOutputStreamDevice(int outputStreamID, List<string> devicesToBeDeleted);
+
+		[OperationContract]
+		string AddDevices(int outputStreamID, Dictionary<int, string> devicesToBeAdded, bool addDigitals, bool addAnalogs);
 
 		#endregion
 

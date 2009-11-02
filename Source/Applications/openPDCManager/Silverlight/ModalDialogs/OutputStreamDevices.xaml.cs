@@ -351,6 +351,10 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			OutputStreamDeviceDigitals osdd = new OutputStreamDeviceDigitals(outputStreamDeviceId, acronym);
 			osdd.Show();
 		}
+		private void HyperlinkButtonWizard_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
 		
 	}
 }

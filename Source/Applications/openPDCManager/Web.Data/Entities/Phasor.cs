@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  OutputStreamDevice.cs - Gbtc
+//  Phasor.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  10/16/2009 - Mehulbhai P. Thakkar
+//  10/23/2009 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -229,20 +229,20 @@
 */
 #endregion
 
-using System;
-
 namespace openPDCManager.Web.Data.Entities
 {
-	public class OutputStreamDevice
+	public class Phasor
 	{
-		public Guid NodeID { get; set; }
-		public int AdapterID { get; set; }
 		public int ID { get; set; }
-		public string Acronym { get; set; }
-		public string BpaAcronym { get; set; }
-		public string Name { get; set; }
-		public int LoadOrder { get; set; }
-		public bool Enabled { get; set; }
-		public bool Virtual { get; set; }
+		public int DeviceID { get; set; }
+		public string Label { get; set; }
+		public string Type { get; set; }
+		public string Phase { get; set; }
+		public int? DestinationPhasorID { get; set; }
+		public int SourceIndex { get; set; }
+		public string DestinationPhasorLabel { get; set; }
+		public string DeviceAcronym { get; set; }
+		public string PhasorType { get; set; }
+		public string PhaseType { get; set; }
 	}
 }

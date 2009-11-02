@@ -343,7 +343,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			device.MeasuredLines = string.IsNullOrEmpty(TextBoxMeasuredLines.Text) ? (int?)null : Convert.ToInt32(TextBoxMeasuredLines.Text);
 			device.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
 			device.Enabled = (bool)CheckboxEnabled.IsChecked;
-			if (inEditMode = false && deviceID == 0)
+			if (inEditMode == false && deviceID == 0)
 				client.SaveDeviceAsync(device, true);
 			else
 			{
@@ -425,7 +425,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void AddNew_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetDevicesAsync(true, true);
+			client.GetDevicesAsync(DeviceType.Concentrator, true);
 			client.GetCompaniesAsync(true);
 			client.GetNodesAsync(true, false);
 			client.GetHistoriansAsync(true, true);

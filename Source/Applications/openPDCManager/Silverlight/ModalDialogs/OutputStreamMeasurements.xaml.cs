@@ -258,23 +258,23 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			Loaded += new RoutedEventHandler(OutputStreamMeasurements_Loaded);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
+			ButtonSourceMeasurement.Click += new RoutedEventHandler(ButtonSourceMeasurement_Click);
 			ListBoxOutputStreamMeasurementList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamMeasurementList_SelectionChanged);
 			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
 			client.GetOutputStreamMeasurementListCompleted += new EventHandler<GetOutputStreamMeasurementListCompletedEventArgs>(client_GetOutputStreamMeasurementListCompleted);
-			client.SaveOutputStreamMeasurementCompleted += new EventHandler<SaveOutputStreamMeasurementCompletedEventArgs>(client_SaveOutputStreamMeasurementCompleted);
-			client.GetHistoriansCompleted += new EventHandler<GetHistoriansCompletedEventArgs>(client_GetHistoriansCompleted);
+			client.SaveOutputStreamMeasurementCompleted += new EventHandler<SaveOutputStreamMeasurementCompletedEventArgs>(client_SaveOutputStreamMeasurementCompleted);		
 		}
-
-		void client_GetHistoriansCompleted(object sender, GetHistoriansCompletedEventArgs e)
+				
+		void ButtonSourceMeasurement_Click(object sender, RoutedEventArgs e)
 		{
-			if (e.Error == null)
-			{
-				ComboBoxHistorian.ItemsSource = e.Result;
-				ComboBoxHistorian.SelectedIndex = 0;
-			}
-			else
-				MessageBox.Show(e.Error.Message);
+			SelectMeasurement selectMeasurement = new SelectMeasurement(sourceOutputStreamID, sourceOutputStreamAcronym);
+			selectMeasurement.Closed += new EventHandler(selectMeasurement_Closed);
+			selectMeasurement.Show();
 		}
+		void selectMeasurement_Closed(object sender, EventArgs e)
+		{
+			client.GetOutputStreamMeasurementListAsync(sourceOutputStreamID);
+		}		
 		void client_SaveOutputStreamMeasurementCompleted(object sender, SaveOutputStreamMeasurementCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -298,10 +298,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			if (ListBoxOutputStreamMeasurementList.SelectedIndex >= 0)
 			{
 				OutputStreamMeasurement selectedOutputStreamMeasurement = ListBoxOutputStreamMeasurementList.SelectedItem as OutputStreamMeasurement;
-				if (selectedOutputStreamMeasurement.HistorianID.HasValue)
-					ComboBoxHistorian.SelectedItem = new KeyValuePair<int, string>((int)selectedOutputStreamMeasurement.HistorianID, selectedOutputStreamMeasurement.HistorianAcronym);
-				else
-					ComboBoxHistorian.SelectedIndex = 0;
+				GridOutputStreamMeasurementDetail.DataContext = selectedOutputStreamMeasurement;
 				inEditMode = true;
 				outputStreamMeasurementID = selectedOutputStreamMeasurement.ID;
 			}
@@ -317,8 +314,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 			outputStreamMeasurement.NodeID = app.NodeValue;
 			outputStreamMeasurement.AdapterID = sourceOutputStreamID;
-			outputStreamMeasurement.HistorianID = ((KeyValuePair<int, string>)ComboBoxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxHistorian.SelectedItem).Key;
-			outputStreamMeasurement.PointID = Convert.ToInt32(TextBoxPointID.Text);
+			outputStreamMeasurement.HistorianID = string.IsNullOrEmpty(TextBlockHistorian.Text) ? (int?)null : Convert.ToInt32(TextBlockHistorian.Text);
+			outputStreamMeasurement.PointID = Convert.ToInt32(TextBlockPointID.Text);
 			outputStreamMeasurement.SignalReference = TextBoxSignalReference.Text;
 
 			if (inEditMode == true && outputStreamMeasurementID > 0)
@@ -331,8 +328,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		}
 		void OutputStreamMeasurements_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetOutputStreamMeasurementListAsync(sourceOutputStreamID);
-			client.GetHistoriansAsync(true, true);
+			client.GetOutputStreamMeasurementListAsync(sourceOutputStreamID);			
 		}
 		void ClearForm()
 		{

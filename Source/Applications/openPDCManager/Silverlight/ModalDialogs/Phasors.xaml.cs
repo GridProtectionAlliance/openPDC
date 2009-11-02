@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  OutputStreamDevice.cs - Gbtc
+//  Phasors.xaml.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  10/16/2009 - Mehulbhai P. Thakkar
+//  10/26/2009 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -230,19 +230,133 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.ServiceModel;
+using System.Windows;
+using System.Windows.Controls;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
 
-namespace openPDCManager.Web.Data.Entities
+namespace openPDCManager.Silverlight.ModalDialogs
 {
-	public class OutputStreamDevice
+	public partial class Phasors : ChildWindow
 	{
-		public Guid NodeID { get; set; }
-		public int AdapterID { get; set; }
-		public int ID { get; set; }
-		public string Acronym { get; set; }
-		public string BpaAcronym { get; set; }
-		public string Name { get; set; }
-		public int LoadOrder { get; set; }
-		public bool Enabled { get; set; }
-		public bool Virtual { get; set; }
+		int sourceDeviceID;
+		string sourceDeviceAcronym;
+		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
+		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
+		PhasorDataServiceClient client;
+
+		bool inEditMode = false;
+		int phasorID = 0;
+
+		public Phasors(int deviceID, string deviceAcronym)
+		{
+			InitializeComponent();
+			sourceDeviceID = deviceID;
+			sourceDeviceAcronym = deviceAcronym;
+			this.Title = "Manage Phasors For Device: " + sourceDeviceAcronym;
+			Loaded += new RoutedEventHandler(Phasors_Loaded);
+			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
+			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
+			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client.GetPhasorListCompleted += new EventHandler<GetPhasorListCompletedEventArgs>(client_GetPhasorListCompleted);
+			client.GetPhasorsCompleted += new EventHandler<GetPhasorsCompletedEventArgs>(client_GetPhasorsCompleted);
+			client.SavePhasorCompleted += new EventHandler<SavePhasorCompletedEventArgs>(client_SavePhasorCompleted);
+			ListBoxPhasorList.SelectionChanged += new SelectionChangedEventHandler(ListBoxPhasorList_SelectionChanged);
+		}
+
+		void client_SavePhasorCompleted(object sender, SavePhasorCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				MessageBox.Show(e.Result);
+			else
+				MessageBox.Show(e.Error.Message);
+			client.GetPhasorListAsync(sourceDeviceID);
+			client.GetPhasorsAsync(sourceDeviceID, true);
+		}
+		void client_GetPhasorsCompleted(object sender, GetPhasorsCompletedEventArgs e)
+		{
+			if (e.Error == null)
+			{
+				ComboboxDestinationPhasor.ItemsSource = e.Result;
+				if (ComboboxDestinationPhasor.Items.Count > 0)
+					ComboboxDestinationPhasor.SelectedIndex = 0;
+			}
+			else
+				MessageBox.Show(e.Error.Message);				
+		}
+		void ListBoxPhasorList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (ListBoxPhasorList.SelectedIndex >= 0)
+			{
+				Phasor selectedPhasor = ListBoxPhasorList.SelectedItem as Phasor;
+				GridPhasorDetail.DataContext = selectedPhasor;
+				if (selectedPhasor.DestinationPhasorID.HasValue)
+					ComboboxDestinationPhasor.SelectedItem = new KeyValuePair<int, string>((int)selectedPhasor.DestinationPhasorID, selectedPhasor.DestinationPhasorLabel);
+				else
+					ComboboxDestinationPhasor.SelectedIndex = 0;
+				ComboboxPhase.SelectedItem = new KeyValuePair<string, string>(selectedPhasor.Phase, selectedPhasor.PhaseType);
+				ComboboxType.SelectedItem = new KeyValuePair<string, string>(selectedPhasor.Type, selectedPhasor.PhasorType);
+
+				inEditMode = true;
+				phasorID = selectedPhasor.ID;
+			}
+		}
+		void client_GetPhasorListCompleted(object sender, GetPhasorListCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ListBoxPhasorList.ItemsSource = e.Result;
+			else
+				MessageBox.Show(e.Error.Message);
+		}
+		void ButtonClear_Click(object sender, RoutedEventArgs e)
+		{
+			ClearForm();
+		}
+		void ButtonSave_Click(object sender, RoutedEventArgs e)
+		{
+			Phasor phasor = new Phasor();
+			phasor.DeviceID = sourceDeviceID;
+			phasor.Label = TextBoxLabel.Text;
+			phasor.Type = ((KeyValuePair<string, string>)ComboboxType.SelectedItem).Key;
+			phasor.Phase = ((KeyValuePair<string, string>)ComboboxPhase.SelectedItem).Key;
+			phasor.DestinationPhasorID = ((KeyValuePair<int, string>)ComboboxDestinationPhasor.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxDestinationPhasor.SelectedItem).Key;
+			phasor.SourceIndex = Convert.ToInt32(TextBoxSourceIndex.Text);
+
+			if (inEditMode == true && phasorID > 0)
+			{
+				phasor.ID = phasorID;
+				client.SavePhasorAsync(phasor, false);
+			}
+			else
+				client.SavePhasorAsync(phasor, true);
+		}
+		void Phasors_Loaded(object sender, RoutedEventArgs e)
+		{
+			client.GetPhasorListAsync(sourceDeviceID);
+			client.GetPhasorsAsync(sourceDeviceID, true);
+			ComboboxPhase.Items.Add(new KeyValuePair<string, string>("+", "Positive"));
+			ComboboxPhase.Items.Add(new KeyValuePair<string, string>("-", "Negative"));
+			ComboboxPhase.Items.Add(new KeyValuePair<string, string>("A", "Phase A"));
+			ComboboxPhase.Items.Add(new KeyValuePair<string, string>("B", "Phase B"));
+			ComboboxPhase.Items.Add(new KeyValuePair<string, string>("C", "Phase C"));
+			ComboboxPhase.SelectedIndex = 0;
+
+			ComboboxType.Items.Add(new KeyValuePair<string, string>("V", "Voltage"));
+			ComboboxType.Items.Add(new KeyValuePair<string, string>("I", "Current"));
+			ComboboxType.SelectedIndex = 0;
+		}
+		void ClearForm()
+		{
+			GridPhasorDetail.DataContext = new Phasor();
+			ComboboxPhase.SelectedIndex = 0;
+			ComboboxType.SelectedIndex = 0;
+			ComboboxDestinationPhasor.SelectedIndex = 0;
+			ListBoxPhasorList.SelectedIndex = -1;
+			inEditMode = false;
+			phasorID = 0;
+		}
+		
 	}
 }
+

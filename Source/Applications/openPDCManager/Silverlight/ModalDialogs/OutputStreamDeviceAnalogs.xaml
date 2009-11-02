@@ -48,23 +48,27 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ListBox x:Name="ListBoxOutputStreamDeviceAnalogList" Margin="0" Padding="0">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                        <TextBlock Text="{Binding Path=Label}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
-                                    </Border>
-                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                        <TextBlock Text="{Binding Path=TypeName}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
-                                    </Border>
-                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                        <TextBlock Text="{Binding Path=LoadOrder}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
-                                    </Border>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <ScrollViewer BorderThickness="0" Padding="0" Height="{StaticResource LargerItemSize}">
+                        <ScrollViewer.Content>
+                            <ListBox x:Name="ListBoxOutputStreamDeviceAnalogList" Margin="0" Padding="0">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <TextBlock Text="{Binding Path=Label}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <TextBlock Text="{Binding Path=TypeName}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <TextBlock Text="{Binding Path=LoadOrder}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </ScrollViewer.Content>
+                    </ScrollViewer>
                 </Border>
 
             </StackPanel>

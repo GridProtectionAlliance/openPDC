@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  OutputStreamDevice.cs - Gbtc
+//  SelectMeasurement.xaml.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  10/16/2009 - Mehulbhai P. Thakkar
+//  10/30/2009 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -230,19 +230,107 @@
 #endregion
 
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.ServiceModel;
+using System.Windows;
+using System.Windows.Controls;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using System.Collections.Generic;
 
-namespace openPDCManager.Web.Data.Entities
+namespace openPDCManager.Silverlight.ModalDialogs
 {
-	public class OutputStreamDevice
+	public partial class SelectMeasurement : ChildWindow
 	{
-		public Guid NodeID { get; set; }
-		public int AdapterID { get; set; }
-		public int ID { get; set; }
-		public string Acronym { get; set; }
-		public string BpaAcronym { get; set; }
-		public string Name { get; set; }
-		public int LoadOrder { get; set; }
-		public bool Enabled { get; set; }
-		public bool Virtual { get; set; }
+		int sourceOutputStreamID;
+		string sourceOutputStreamAcronym;
+		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
+		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
+		PhasorDataServiceClient client;
+
+		ObservableCollection<Measurement> measurementList;		
+		List<string[]> measurementsToBeAdded;
+
+		public SelectMeasurement(int outputStreamID, string outputStreamAcronym)
+		{
+			InitializeComponent();
+			sourceOutputStreamID = outputStreamID;
+			sourceOutputStreamAcronym = outputStreamAcronym;
+			this.Title = "Add Measurements For Output Stream: " + sourceOutputStreamAcronym;
+			Loaded += new RoutedEventHandler(SelectMeasurement_Loaded);
+			ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);
+			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
+			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
+			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);			
+			client.GetMeasurementsForOutputStreamCompleted += new EventHandler<GetMeasurementsForOutputStreamCompletedEventArgs>(client_GetMeasurementsForOutputStreamCompleted);
+		}
+
+		void client_GetMeasurementsForOutputStreamCompleted(object sender, GetMeasurementsForOutputStreamCompletedEventArgs e)
+		{
+			if (e.Error == null)
+			{
+				measurementList = e.Result;
+				ListBoxMeasurementList.ItemsSource = measurementList;
+			}
+			else
+				MessageBox.Show(e.Error.Message);
+		}		
+		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
+		{
+			ListBoxMeasurementList.ItemsSource = measurementList;
+		}
+		void ButtonSearch_Click(object sender, RoutedEventArgs e)
+		{
+			string searchText = TextBoxSearch.Text.ToUpper();
+			ListBoxMeasurementList.ItemsSource = (from item in measurementList
+												  where item.PointTag.ToUpper().Contains(searchText) || item.SignalReference.ToUpper().Contains(searchText)
+												  select item).ToList();			
+		}
+		void ButtonAdd_Click(object sender, RoutedEventArgs e)
+		{
+			if (measurementsToBeAdded.Count > 0)
+			{
+				App app = (App)Application.Current;
+				//string[] format is {Name=PointID, Tooltip=SignalReference, Tag=HistorianID}
+				foreach (string[] measurement in measurementsToBeAdded)
+				{
+					OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
+					outputStreamMeasurement.NodeID = app.NodeValue;
+					outputStreamMeasurement.AdapterID = sourceOutputStreamID;
+					outputStreamMeasurement.HistorianID = string.IsNullOrEmpty(measurement[2]) ? (int?)null : Convert.ToInt32(measurement[2]);
+					outputStreamMeasurement.PointID = Convert.ToInt32(measurement[0]);
+					outputStreamMeasurement.SignalReference = measurement[1];
+					client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, true);
+				}
+				MessageBox.Show("Done!");
+				client.GetMeasurementsForOutputStreamAsync(app.NodeValue, sourceOutputStreamID);
+			}
+			else
+				MessageBox.Show("Please select at least one measurement.");
+		}
+		void SelectMeasurement_Loaded(object sender, RoutedEventArgs e)
+		{
+			measurementList = new ObservableCollection<Measurement>();			
+			measurementsToBeAdded = new List<string[]>();
+			App app = (App)Application.Current;			
+			client.GetMeasurementsForOutputStreamAsync(app.NodeValue, sourceOutputStreamID);
+		}						
+		private void CheckBox_Checked(object sender, RoutedEventArgs e)
+		{
+			CheckBox checkedBox = (CheckBox)sender;
+			ToolTip tooltip = new ToolTip();
+			tooltip = ToolTipService.GetToolTip(checkedBox) as ToolTip;
+			//string[] format is {Name=PointID, Tooltip=SignalReference, Tag=HistorianID}
+			measurementsToBeAdded.Add(new string[] { checkedBox.Name, ToolTipService.GetToolTip(checkedBox).ToString(), checkedBox.Tag == null ? string.Empty : checkedBox.Tag.ToString() });			
+		}
+		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+		{
+			CheckBox checkedBox = (CheckBox)sender;
+			ToolTip tooltip = new ToolTip();
+			tooltip = ToolTipService.GetToolTip(checkedBox) as ToolTip;
+			//string[] format is {Name=PointID, Tooltip=SignalReference, Tag=HistorianID}
+			measurementsToBeAdded.Remove(new string[] { checkedBox.Name, ToolTipService.GetToolTip(checkedBox).ToString(), checkedBox.Tag.ToString() });			
+		}
 	}
 }
+

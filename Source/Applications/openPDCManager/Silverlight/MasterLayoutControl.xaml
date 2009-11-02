@@ -30,8 +30,8 @@
                 
                 <!--<StackPanel x:Name="StackPanelHeaderLayout" Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Background="{StaticResource HeaderBackgroundBrush}">-->
                     <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" Background="{StaticResource HeaderBackgroundBrush}" HorizontalAlignment="Stretch">
-                        <TextBlock Text="North American Electric Reliability Corporation" Style="{StaticResource LargeWhiteTextWithEffectStyle}" />
-                        <TextBlock Text="Phasor Concentration System" Style="{StaticResource MainTitleStyle}" />
+                        <TextBlock Text="Tennessee Valley Authority" Style="{StaticResource LargeWhiteTextWithEffectStyle}" />
+                        <TextBlock Text="openPDC Manager" Style="{StaticResource MainTitleStyle}" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" Background="{StaticResource HeaderBackgroundBrush}" HorizontalAlignment="Stretch">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -149,7 +149,7 @@
                     </igMenu:XamWebMenu>
                             <TextBlock Text="" Width="{StaticResource XXXSmallItemSize}" />
                             <TextBlock Text="Node: " FontWeight="Bold" Margin="5" Foreground="#FFFFFFFF" />
-                            <ComboBox x:Name="ComboboxNode" Margin="5" DisplayMemberPath="Value" />
+                            <ComboBox x:Name="ComboboxNode" Margin="5" DisplayMemberPath="Value" Width="{StaticResource XLargeItemSize}" />
                 </StackPanel>
                     </StackPanel>
                 <!--</StackPanel>-->
