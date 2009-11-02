@@ -457,6 +457,7 @@ namespace openPDC
         {
             // Log startup information
             m_serviceHelper.UpdateStatus(
+                UpdateType.Information,
                 "\r\n\r\n{0}\r\n\r\nNode {{{1}}} Initializing\r\n\r\nUTC System Timestamp: {2}\r\n\r\nCurrent system file path:\r\n\r\n{3}\r\n\r\n{4}\r\n",
                 new string('*', 80),
                 m_nodeID,
@@ -1560,7 +1561,7 @@ namespace openPDC
         // Display response message (send to request sender)
         private void DisplayResponseMessage(ClientRequestInfo requestInfo, string status, params object[] args)
         {
-            m_serviceHelper.UpdateStatus(requestInfo.Sender.ClientID, string.Format("{0}\r\n\r\n", status), args);
+            m_serviceHelper.UpdateStatus(requestInfo.Sender.ClientID, UpdateType.Information, string.Format("{0}\r\n\r\n", status), args);
         }
 
         // Display status messages (broadcast to all clients)
@@ -1594,7 +1595,7 @@ namespace openPDC
                 else
                 {
                     if (m_displayedMessageCount > m_maximumMessagesToDisplay)
-                        m_serviceHelper.UpdateStatus("WARNING: {0:N0} status messages discarded to avoid flooding message queue, check log for full detail.", m_displayedMessageCount - m_maximumMessagesToDisplay);
+                        m_serviceHelper.UpdateStatus(UpdateType.Warning, "WARNING: {0:N0} status messages discarded to avoid flooding message queue, check log for full detail.", m_displayedMessageCount - m_maximumMessagesToDisplay);
 
                     displayMessage = true;
                     m_displayedMessageCount = 0;
@@ -1603,7 +1604,7 @@ namespace openPDC
 
                 if (displayMessage)
                 {
-                    m_serviceHelper.UpdateStatus(messages[x]);
+                    m_serviceHelper.UpdateStatus(UpdateType.Information, messages[x]);
                 }
                 else if (m_serviceHelper.LogStatusUpdates && m_serviceHelper.StatusLog.IsOpen)
                 {

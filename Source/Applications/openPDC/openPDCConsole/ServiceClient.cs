@@ -260,10 +260,14 @@ namespace openPDC
         {
             InitializeComponent();
 
+            // Save the color scheme.
+            m_originalBgColor = Console.BackgroundColor;
+            m_originalFgColor = Console.ForegroundColor;
+
             // Register event handlers.
             m_clientHelper.AuthenticationFailure += ClientHelper_AuthenticationFailure;
             m_clientHelper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;
-            m_clientHelper.ReceivedServiceResponse += ClientHelper_ReceivedServiceResponse; 
+            m_clientHelper.ReceivedServiceResponse += ClientHelper_ReceivedServiceResponse;
             m_clientHelper.TelnetSessionEstablished += ClientHelper_TelnetSessionEstablished;
             m_clientHelper.TelnetSessionTerminated += ClientHelper_TelnetSessionTerminated;
         }
@@ -413,10 +417,23 @@ namespace openPDC
             Console.WriteLine();
         }
 
-        private void ClientHelper_ReceivedServiceUpdate(object sender, EventArgs<string> e)
+        private void ClientHelper_ReceivedServiceUpdate(object sender, EventArgs<UpdateType, string> e)
         {
             // Output status updates from the service to the console window.
-            Console.Write(e.Argument);
+            switch (e.Argument1)
+            {
+                case UpdateType.Alarm:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case UpdateType.Information:
+                    Console.ForegroundColor = m_originalFgColor;
+                    break;
+                case UpdateType.Warning:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+            }
+            Console.Write(e.Argument2);
+            Console.ForegroundColor = m_originalFgColor;
         }
 
         private void ClientHelper_ReceivedServiceResponse(object sender, EventArgs<ServiceResponse> e)
@@ -461,12 +478,8 @@ namespace openPDC
 
         private void ClientHelper_TelnetSessionEstablished(object sender, EventArgs e)
         {
-            // Save the current state.
-            m_telnetActive = true;
-            m_originalBgColor = Console.BackgroundColor;
-            m_originalFgColor = Console.ForegroundColor;
-
             // Change the console color scheme to indicate active telnet session.
+            m_telnetActive = true;
             Console.BackgroundColor = ConsoleColor.Blue;
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Clear();
@@ -474,7 +487,7 @@ namespace openPDC
 
         private void ClientHelper_TelnetSessionTerminated(object sender, EventArgs e)
         {
-            // Revert to saved state.
+            // Revert to original color scheme to indicate end of telnet session.
             m_telnetActive = false;
             Console.BackgroundColor = m_originalBgColor;
             Console.ForegroundColor = m_originalFgColor;
