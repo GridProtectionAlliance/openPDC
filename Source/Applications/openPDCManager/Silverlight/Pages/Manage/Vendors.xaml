@@ -55,7 +55,7 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ScrollViewer BorderThickness="0" Padding="0" Height="Auto">
+                    <ScrollViewer BorderThickness="0" Padding="0" Height="605">
                         <ScrollViewer.Content>
                             <ListBox x:Name="ListBoxVendorList" Margin="0" Padding="0">
                                 <ListBox.ItemTemplate>

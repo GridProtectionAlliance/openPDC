@@ -77,7 +77,7 @@
                             <TextBlock Text="Acronym" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Name" Width="{StaticResource XXXLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <TextBlock Text="Name" Width="{StaticResource XXLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Type" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
@@ -95,7 +95,7 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ScrollViewer BorderThickness="0" Padding="0" Height="Auto">
+                    <ScrollViewer BorderThickness="0" Padding="0" Height="425">
                         <ScrollViewer.Content>
                             <ListBox x:Name="ListBoxOutputStreamList" Margin="0" Padding="0">
                                 <ListBox.ItemTemplate>
@@ -105,7 +105,7 @@
                                                 <TextBlock Text="{Binding Path=Acronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=Name}" Width="{StaticResource XXXLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                                <TextBlock Text="{Binding Path=Name}" Width="{StaticResource XXLargeItemSize}" TextAlignment="Left" Padding="1"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <TextBlock Text="{Binding Path=TypeName}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="1"/>

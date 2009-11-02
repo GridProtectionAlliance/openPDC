@@ -272,7 +272,10 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 		}
 		void ButtonDelete_Click(object sender, RoutedEventArgs e)
 		{
-			client.DeleteOutputStreamDeviceAsync(sourceOutputStreamID, devicesToBeDeleted);
+			if (devicesToBeDeleted.Count > 0)
+				client.DeleteOutputStreamDeviceAsync(sourceOutputStreamID, devicesToBeDeleted);
+			else
+				MessageBox.Show("Select atleast one device.");
 		}
 		void ButtonAdd_Click(object sender, RoutedEventArgs e)
 		{

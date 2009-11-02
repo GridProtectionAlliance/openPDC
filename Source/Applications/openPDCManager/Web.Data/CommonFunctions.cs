@@ -1134,7 +1134,7 @@ namespace openPDCManager.Web.Data
 						outputStreamDeviceAnalog.OutputStreamDeviceID = savedOutputStreamDeviceID;
 						outputStreamDeviceAnalog.Label = measurement.PointTag;
 						outputStreamDeviceAnalog.Type = 0;	//default
-						outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 2)));
+						outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
 						SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, true);
 					}
 
@@ -1144,7 +1144,7 @@ namespace openPDCManager.Web.Data
 						outputStreamDeviceDigital.NodeID = device.NodeID;
 						outputStreamDeviceDigital.OutputStreamDeviceID = savedOutputStreamDeviceID;
 						outputStreamDeviceDigital.Label = measurement.PointTag;
-						outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 2)));
+						outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
 						SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, true);
 					}
 				}

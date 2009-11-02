@@ -334,6 +334,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			GridHistorianDetail.DataContext = new Historian();	// bind an empty historian.
 			if (ComboBoxNode.Items.Count > 0)
 				ComboBoxNode.SelectedIndex = 0;
+			CheckboxEnabled.IsChecked = false;
 			inEditMode = false;
 			historianID = 0;
 		}

@@ -63,7 +63,7 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ScrollViewer BorderThickness="0" Padding="0" Height="Auto">
+                    <ScrollViewer BorderThickness="0" Padding="0" Height="{StaticResource XXLargeItemSize}">
                         <ScrollViewer.Content>
                             <ListBox x:Name="ListBoxOutputStreamDeviceList" Margin="0" Padding="0">
                                 <ListBox.ItemTemplate>
