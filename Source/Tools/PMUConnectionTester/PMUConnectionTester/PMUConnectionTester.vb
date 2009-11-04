@@ -1682,7 +1682,8 @@ Public Class PMUConnectionTester
                             .ConnectionString = _
                                 "localport=" & TextBoxUdpLocalPort.Text & _
                                 "; server=" & TextBoxUdpHostIP.Text & _
-                                "; remoteport=" & TextBoxUdpRemotePort.Text
+                                "; remoteport=" & TextBoxUdpRemotePort.Text & _
+                                "; interface=0.0.0.0"
                         Else
                             .ConnectionString = "localport=" & TextBoxUdpLocalPort.Text
                         End If
