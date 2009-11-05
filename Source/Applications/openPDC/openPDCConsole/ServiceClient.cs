@@ -468,10 +468,14 @@ namespace openPDC
                 }
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
+
                     if (string.IsNullOrEmpty(message))
                         Console.Write(string.Format("{0} failure.\r\n\r\n", action));
                     else
                         Console.Write(string.Format("{0} failure: {1}\r\n\r\n", action, message));
+
+                    Console.ForegroundColor = m_originalFgColor;
                 }
             }            
         }

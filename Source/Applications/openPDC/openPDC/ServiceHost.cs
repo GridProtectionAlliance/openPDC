@@ -303,7 +303,7 @@ namespace openPDC
         private bool m_uniqueAdapterIDs;
 
         // Broadcast message settings
-        private ProcessQueue<string> m_statusMessageQueue;
+        private ProcessQueue<EventArgs<string, UpdateType>> m_statusMessageQueue;
         private Ticks m_lastDisplayedMessageTime;
         private long m_displayedMessageCount;
         private int m_messageDisplayTimepan;
@@ -447,7 +447,7 @@ namespace openPDC
             m_defaultSampleSizeWarningThreshold = thresholdSettings["DefaultSampleSizeWarningThreshold"].ValueAsInt32();
 
             // Create status message queue
-            m_statusMessageQueue = ProcessQueue<string>.CreateSynchronousQueue(StatusMessageQueueHandler);
+            m_statusMessageQueue = ProcessQueue<EventArgs<string, UpdateType>>.CreateSynchronousQueue(StatusMessageQueueHandler);
             m_statusMessageQueue.ProcessException += StatusMessageQueueExceptionHandler;
             m_statusMessageQueue.Start();
         }
@@ -616,16 +616,16 @@ namespace openPDC
                 // Start all adapters
                 m_allAdapters.Start();
 
-                DisplayStatusMessage("System initialization complete.");
+                DisplayStatusMessage("System initialization complete.", UpdateType.Information);
             }
             else
-                DisplayStatusMessage("System initialization failed due to unavailable configuration.");
+                DisplayStatusMessage("System initialization failed due to unavailable configuration.", UpdateType.Alarm);
         }
 
         // Load the the system configuration data set
         private bool LoadSystemConfiguration()
         {
-            DisplayStatusMessage("Loading system configuration...");
+            DisplayStatusMessage("Loading system configuration...", UpdateType.Information);
 
             // Attempt to load (or reload) system configuration
             m_configuration = GetConfigurationDataSet(m_configurationType, m_connectionString, m_dataProviderString);
@@ -677,7 +677,7 @@ namespace openPDC
                         connection.ConnectionString = m_connectionString;
                         connection.Open();
 
-                        DisplayStatusMessage("Database configuration connection opened.");
+                        DisplayStatusMessage("Database configuration connection opened.", UpdateType.Information);
 
                         configuration = new DataSet("Iaon");
 
@@ -695,7 +695,7 @@ namespace openPDC
                             entity = connection.RetrieveData(adapterType, string.Format("SELECT * FROM {0} WHERE NodeID={1}", row["SourceName"].ToString(), m_nodeIDQueryString));
                             entity.TableName = row["RuntimeName"].ToString();
 
-                            DisplayStatusMessage("Loaded configuration entity {0} with {1} rows of data...", entity.TableName, entity.Rows.Count);
+                            DisplayStatusMessage("Loaded configuration entity {0} with {1} rows of data...", UpdateType.Information, entity.TableName, entity.Rows.Count);
 
                             // Remove redundant node ID column
                             entity.Columns.Remove("NodeID");
@@ -704,13 +704,13 @@ namespace openPDC
                             configuration.Tables.Add(entity.Copy());
                         }
 
-                        DisplayStatusMessage("Database configuration successfully loaded.");
+                        DisplayStatusMessage("Database configuration successfully loaded.", UpdateType.Information);
 
                         CacheCurrentConfiguration(configuration);
                     }
                     catch (Exception ex)
                     {
-                        DisplayStatusMessage("WARNING: Failed to load database configuration due to exception: {0} Attempting to use last known good configuration.", ex.Message);
+                        DisplayStatusMessage("WARNING: Failed to load database configuration due to exception: {0} Attempting to use last known good configuration.", UpdateType.Warning, ex.Message);
                         m_serviceHelper.ErrorLogger.Log(ex);
                         configuration = GetConfigurationDataSet(ConfigurationType.XmlFile, m_cachedConfigurationFile, null);
                     }
@@ -719,7 +719,7 @@ namespace openPDC
                         if (connection != null)
                             connection.Dispose();
 
-                        DisplayStatusMessage("Database configuration connection closed.");
+                        DisplayStatusMessage("Database configuration connection closed.", UpdateType.Information);
                     }
 
                     break;
@@ -738,7 +738,7 @@ namespace openPDC
                     }
                     catch (Exception ex)
                     {
-                        DisplayStatusMessage("WARNING: Failed to load webservice configuration due to exception: {0} Attempting to use last known good configuration.", ex.Message);
+                        DisplayStatusMessage("Failed to load webservice configuration due to exception: {0} Attempting to use last known good configuration.", UpdateType.Warning, ex.Message);
                         m_serviceHelper.ErrorLogger.Log(ex);
                         configuration = GetConfigurationDataSet(ConfigurationType.XmlFile, m_cachedConfigurationFile, null);
                     }
@@ -748,16 +748,16 @@ namespace openPDC
                     // Attempt to load cached configuration file
                     try
                     {
-                        DisplayStatusMessage("Loading XML based configuration from \"{0}\".", connectionString);
+                        DisplayStatusMessage("Loading XML based configuration from \"{0}\".", UpdateType.Information, connectionString);
 
                         configuration = new DataSet();
                         configuration.ReadXml(connectionString);
 
-                        DisplayStatusMessage("XML based configuration successfully loaded.");
+                        DisplayStatusMessage("XML based configuration successfully loaded.", UpdateType.Information);
                     }
                     catch (Exception ex)
                     {
-                        DisplayStatusMessage("ERROR: Failed to load XML based configuration due to exception: {0}.", ex.Message);
+                        DisplayStatusMessage("Failed to load XML based configuration due to exception: {0}.", UpdateType.Alarm, ex.Message);
                         m_serviceHelper.ErrorLogger.Log(ex);
                         configuration = null;
                     }
@@ -786,7 +786,7 @@ namespace openPDC
             }
             catch (Exception ex)
             {
-                DisplayStatusMessage("WARNING: Failed to backup last known cached configuration due to exception: {0}", ex.Message);
+                DisplayStatusMessage("Failed to backup last known cached configuration due to exception: {0}", UpdateType.Warning, ex.Message);
                 m_serviceHelper.ErrorLogger.Log(ex);
             }
 
@@ -794,11 +794,11 @@ namespace openPDC
             {
                 // Write current data set to a file
                 configuration.WriteXml(m_cachedConfigurationFile, XmlWriteMode.WriteSchema);
-                DisplayStatusMessage("Successfully cached current configuration.");
+                DisplayStatusMessage("Successfully cached current configuration.", UpdateType.Information);
             }
             catch (Exception ex)
             {
-                DisplayStatusMessage("ERROR: Failed to cache last known configuration due to exception: {0}", ex.Message);
+                DisplayStatusMessage("Failed to cache last known configuration due to exception: {0}", UpdateType.Alarm, ex.Message);
                 m_serviceHelper.ErrorLogger.Log(ex);
             }
         }
@@ -830,7 +830,7 @@ namespace openPDC
                 threshold = (int)(2 * Math.Ceiling(concentrator.LagTime));
 
             if (secondsOfData > threshold)
-                DisplayStatusMessage("[{0}] WARNING: There are {1} seconds of unpublished data in the action adapter concentration queue.", GetDerivedName(sender), secondsOfData);
+                DisplayStatusMessage("[{0}] There are {1} seconds of unpublished data in the action adapter concentration queue.", UpdateType.Warning, GetDerivedName(sender), secondsOfData);
         }
 
         // Monitor number of unprocesses measurements in output adapters - this typically occurs once per second
@@ -847,27 +847,27 @@ namespace openPDC
                     // If an output adapter queue size exceeds the defined measurement dumping threshold,
                     // then the queue will be truncated before system runs out of memory
                     outputAdpater.RemoveMeasurements(m_measurementDumpingThreshold);
-                    DisplayStatusMessage("[{0}] ERROR: System exercised evasive action to convserve memory and dumped {1} unprocessed measurements from the output queue :(", outputAdpater.Name, m_measurementDumpingThreshold);
-                    DisplayStatusMessage("[{0}] NOTICE: Please adjust measurement threshold settings and/or increase amount of available system memory.", outputAdpater.Name);
+                    DisplayStatusMessage("[{0}] System exercised evasive action to convserve memory and dumped {1} unprocessed measurements from the output queue :(", UpdateType.Alarm, outputAdpater.Name, m_measurementDumpingThreshold);
+                    DisplayStatusMessage("[{0}] NOTICE: Please adjust measurement threshold settings and/or increase amount of available system memory.", UpdateType.Warning, outputAdpater.Name);
                 }
                 else
                     // It is only expected that output adapters will be mapped to this handler, but in case
                     // another adapter type uses this handler we will still display a message
-                    DisplayStatusMessage("[{0}] CRITICAL: There are {1} unprocessed measurements in the adapter queue - but sender \"{2}\" is not an IOutputAdapter, so no evasive action can be exercised.", GetDerivedName(sender), unprocessedMeasurements, sender.GetType().Name);
+                    DisplayStatusMessage("[{0}] CRITICAL! There are {1} unprocessed measurements in the adapter queue - but sender \"{2}\" is not an IOutputAdapter, so no evasive action can be exercised.", UpdateType.Warning, GetDerivedName(sender), unprocessedMeasurements, sender.GetType().Name);
             }
             else if (unprocessedMeasurements > m_measurementWarningThreshold)
             {
                 if (unprocessedMeasurements >= m_measurementDumpingThreshold - m_measurementWarningThreshold)
-                    DisplayStatusMessage("[{0}] CRITICAL: There are {1} unprocessed measurements in the output queue.", GetDerivedName(sender), unprocessedMeasurements);
+                    DisplayStatusMessage("[{0}] CRITICAL! There are {1} unprocessed measurements in the output queue.", UpdateType.Warning, GetDerivedName(sender), unprocessedMeasurements);
                 else
-                    DisplayStatusMessage("[{0}] WARNING: There are {1} unprocessed measurements in the output queue.", GetDerivedName(sender), unprocessedMeasurements);
+                    DisplayStatusMessage("[{0}] There are {1} unprocessed measurements in the output queue.", UpdateType.Warning, GetDerivedName(sender), unprocessedMeasurements);
             }
         }
 
         // Handle status message events
         private void StatusMessageHandler(object sender, EventArgs<string> e)
         {
-            DisplayStatusMessage("[{0}] {1}", GetDerivedName(sender), e.Argument);
+            DisplayStatusMessage("[{0}] {1}", UpdateType.Information, GetDerivedName(sender), e.Argument);
         }
 
         // Handle process exceptions from all adapters
@@ -875,7 +875,7 @@ namespace openPDC
         {
             Exception ex = e.Argument;
 
-            DisplayStatusMessage("[{0}] ERROR: {1}", GetDerivedName(sender), ex.Message);
+            DisplayStatusMessage("[{0}] {1}", UpdateType.Alarm, GetDerivedName(sender), ex.Message);
             m_serviceHelper.ErrorLogger.Log(ex, false);
         }
 
@@ -954,7 +954,10 @@ namespace openPDC
                 else if (m_uniqueAdapterIDs && m_allAdapters.TryGetAnyAdapterByID(id, out adapter, out collection))
                     return adapter;
                 else
+                {
+                    collection = GetRequestedCollection(requestInfo);
                     SendResponse(requestInfo, false, "Failed to find adapter with ID \"{0}\" in {1}.", id, collection.Name);
+                }
             }
             else
             {
@@ -1405,7 +1408,7 @@ namespace openPDC
             {
                 if (requestInfo.Request.Arguments.Exists("System"))
                 {
-                    DisplayStatusMessage("Starting manual full system initialization...");
+                    DisplayStatusMessage("Starting manual full system initialization...", UpdateType.Information);
                     InitializeSystem(null);
                     SendResponse(requestInfo, true);
                 }
@@ -1440,9 +1443,9 @@ namespace openPDC
 
                             if (collection != null)
                             {
-                                DisplayStatusMessage("Initializing all adapters in {0}...", collection.Name);
+                                DisplayStatusMessage("Initializing all adapters in {0}...", UpdateType.Information, collection.Name);
                                 collection.Initialize();
-                                DisplayStatusMessage("{0} initialization complete.", collection.Name);
+                                DisplayStatusMessage("{0} initialization complete.", UpdateType.Information, collection.Name);
                                 SendResponse(requestInfo, true);
                             }
                             else
@@ -1510,7 +1513,7 @@ namespace openPDC
             }
             else
             {
-                DisplayStatusMessage("Attempting to reauthenticate network shares for health and status exports...");
+                DisplayStatusMessage("Attempting to reauthenticate network shares for health and status exports...", UpdateType.Information);
 
                 try
                 {
@@ -1565,21 +1568,36 @@ namespace openPDC
         }
 
         // Display status messages (broadcast to all clients)
-        private void DisplayStatusMessage(string status)
+        private void DisplayStatusMessage(string status, UpdateType type)
         {
+            string messagePrefix;
+
+            switch (type)
+            {
+                case UpdateType.Alarm:
+                    messagePrefix = "ERROR: ";
+                    break;
+                case UpdateType.Warning:
+                    messagePrefix = "WARNING: ";
+                    break;
+                default:
+                    messagePrefix = "";
+                    break;
+            }
+
             // We queue up status messages for display on a separate thread so we don't slow any important activity
-            m_statusMessageQueue.Add(string.Format("{0}\r\n\r\n", status));
+            m_statusMessageQueue.Add(new EventArgs<string, UpdateType>(string.Format("{0}{1}\r\n\r\n", messagePrefix, status), type));
         }
 
-        // Display formatted status messages (broadcast to all clients)
-        private void DisplayStatusMessage(string status, params object[] args)
+        private void DisplayStatusMessage(string status, UpdateType type, params object[] args)
         {
-            DisplayStatusMessage(string.Format(status, args));
+            DisplayStatusMessage(string.Format(status, args), type);
         }
 
         // Handles processing of queued status messages
-        private void StatusMessageQueueHandler(string[] messages)
+        private void StatusMessageQueueHandler(EventArgs<string, UpdateType>[] messages)
         {
+            EventArgs<string, UpdateType> message;
             bool displayMessage;
 
             for (int x = 0; x < messages.Length; x++)
@@ -1604,12 +1622,13 @@ namespace openPDC
 
                 if (displayMessage)
                 {
-                    m_serviceHelper.UpdateStatus(UpdateType.Information, messages[x]);
+                    message = messages[x];
+                    m_serviceHelper.UpdateStatus(message.Argument2, message.Argument1);
                 }
                 else if (m_serviceHelper.LogStatusUpdates && m_serviceHelper.StatusLog.IsOpen)
                 {
                     // We always at least log messages
-                    m_serviceHelper.StatusLog.WriteTimestampedLine(messages[x]);
+                    m_serviceHelper.StatusLog.WriteTimestampedLine(messages[x].Argument1);
                 }
             }
         }
