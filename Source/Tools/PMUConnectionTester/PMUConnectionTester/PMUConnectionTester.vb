@@ -1685,7 +1685,9 @@ Public Class PMUConnectionTester
                                 "; remoteport=" & TextBoxUdpRemotePort.Text & _
                                 "; interface=0.0.0.0"
                         Else
-                            .ConnectionString = "localport=" & TextBoxUdpLocalPort.Text
+                            .ConnectionString = _
+                                "localport=" & TextBoxUdpLocalPort.Text & _
+                                "; interface=0.0.0.0"
                         End If
                     Case TransportProtocol.Serial
                         .TransportProtocol = TransportProtocol.Serial
