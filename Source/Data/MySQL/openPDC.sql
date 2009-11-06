@@ -139,7 +139,8 @@ CREATE TABLE Device(
 	MeasuredLines INT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled TINYINT NOT NULL DEFAULT 0,
-	CONSTRAINT PK_Device PRIMARY KEY (ID ASC)
+	CONSTRAINT PK_Device PRIMARY KEY (ID ASC),
+	CONSTRAINT IX_Device_Acronym UNIQUE KEY (Acronym ASC)
 );
 
 CREATE TABLE VendorDevice(
@@ -190,14 +191,15 @@ CREATE TABLE Measurement(
 	AlternateTag NVARCHAR(50) NULL,
 	SignalTypeID INT NOT NULL,
 	PhasorSourceIndex INT NULL,
-	SignalReference TEXT NOT NULL,
+	SignalReference NVARCHAR(24) NOT NULL,
 	Adder FLOAT NOT NULL DEFAULT 0.0,
 	Multiplier FLOAT NOT NULL DEFAULT 1.0,
 	Description LONGTEXT NULL,
 	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_Measurement PRIMARY KEY (SignalID ASC),
 	CONSTRAINT IX_Measurement UNIQUE KEY (PointID ASC),
-	CONSTRAINT IX_Measurement_PointTag UNIQUE KEY (PointTag ASC)
+	CONSTRAINT IX_Measurement_PointTag UNIQUE KEY (PointTag ASC),
+	CONSTRAINT IX_Measurement_SignalReference UNIQUE KEY (SignalReference ASC)
 );
 
 CREATE TRIGGER UpdateMeasurementGuid BEFORE INSERT ON Measurement FOR EACH ROW
