@@ -505,28 +505,6 @@ FROM CustomActionAdapter LEFT OUTER JOIN
 WHERE (CustomActionAdapter.Enabled <> 0)
 ORDER BY CustomActionAdapter.LoadOrder;
 
-CREATE VIEW MeasurementDetail
-AS
-SELECT Device.CompanyID, Company.Acronym AS CompanyAcronym, Company.Name AS CompanyName, Measurement.HistorianID, 
- Historian.Acronym AS HistorianAcronym, Historian.ConnectionString AS HistorianConnectionString, Measurement.PointID, 
- Measurement.PointTag, Measurement.AlternateTag, Measurement.DeviceID, Device.Acronym AS DeviceAcronym, 
- Device.Name AS DeviceName, Device.Enabled AS DeviceEnabled, Device.ContactList, Device.VendorDeviceID, 
- VendorDevice.Name AS VendorDeviceName, VendorDevice.Description AS VendorDeviceDescription, Device.ProtocolID, 
- Protocol.Acronym AS ProtocolAcronym, Protocol.Name AS ProtocolName, Measurement.SignalTypeID, 
- Measurement.PhasorSourceIndex, Phasor.Label AS PhasorLabel, Phasor.Type AS PhasorType, Phasor.Phase, 
- Measurement.SignalReference, Measurement.Adder, Measurement.Multiplier, Measurement.Description, Measurement.Enabled, 
- COALESCE(SignalType.EngineeringUnits, N'') AS EngineeringUnits, SignalType.Source, SignalType.Acronym AS SignalAcronym, 
- SignalType.Name AS SignalName, SignalType.Suffix AS SignalTypeSuffix, Device.Longitude, Device.Latitude
-FROM Company RIGHT OUTER JOIN
- Device ON Company.ID = Device.CompanyID RIGHT OUTER JOIN
- Measurement LEFT OUTER JOIN
- SignalType ON Measurement.SignalTypeID = SignalType.ID ON Device.ID = Measurement.DeviceID LEFT OUTER JOIN
- Phasor ON Measurement.DeviceID = Phasor.DeviceID AND 
- Measurement.PhasorSourceIndex = Phasor.SourceIndex LEFT OUTER JOIN
- VendorDevice ON Device.VendorDeviceID = VendorDevice.ID LEFT OUTER JOIN
- Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
- Historian ON Measurement.HistorianID = Historian.ID;
-
 CREATE VIEW RuntimeCalculatedMeasurement
 AS
 SELECT CalculatedMeasurement.NodeID, Runtime.ID, CalculatedMeasurement.Acronym AS AdapterName, 
@@ -586,6 +564,28 @@ FROM RuntimeCalculatedMeasurement
 UNION
 SELECT NodeID, ID, AdapterName, AssemblyName, TypeName, ConnectionString
 FROM RuntimeCustomActionAdapter;
+      
+CREATE VIEW MeasurementDetail
+AS
+SELECT     Device.CompanyID, Company.Acronym AS CompanyAcronym, Company.Name AS CompanyName, Measurement.SignalID, 
+                      Measurement.HistorianID, Historian.Acronym AS HistorianAcronym, Historian.ConnectionString AS HistorianConnectionString, 
+                      Measurement.PointID, Measurement.PointTag, Measurement.AlternateTag, Measurement.DeviceID, Device.NodeID, 
+                      Device.Acronym AS DeviceAcronym, Device.Name AS DeviceName, Device.Enabled AS DeviceEnabled, Device.ContactList, 
+                      Device.VendorDeviceID, VendorDevice.Name AS VendorDeviceName, VendorDevice.Description AS VendorDeviceDescription, 
+                      Device.ProtocolID, Protocol.Acronym AS ProtocolAcronym, Protocol.Name AS ProtocolName, Measurement.SignalTypeID, 
+                      Measurement.PhasorSourceIndex, Phasor.Label AS PhasorLabel, Phasor.Type AS PhasorType, Phasor.Phase, 
+                      Measurement.SignalReference, Measurement.Adder, Measurement.Multiplier, Measurement.Description, Measurement.Enabled, 
+                      COALESCE (SignalType.EngineeringUnits, N'') AS EngineeringUnits, SignalType.Source, SignalType.Acronym AS SignalAcronym, 
+                      SignalType.Name AS SignalName, SignalType.Suffix AS SignalTypeSuffix, Device.Longitude, Device.Latitude
+FROM         Company RIGHT OUTER JOIN
+                      Device ON Company.ID = Device.CompanyID RIGHT OUTER JOIN
+                      Measurement LEFT OUTER JOIN
+                      SignalType ON Measurement.SignalTypeID = SignalType.ID ON Device.ID = Measurement.DeviceID LEFT OUTER JOIN
+                      Phasor ON Measurement.DeviceID = Phasor.DeviceID AND 
+                      Measurement.PhasorSourceIndex = Phasor.SourceIndex LEFT OUTER JOIN
+                      VendorDevice ON Device.VendorDeviceID = VendorDevice.ID LEFT OUTER JOIN
+                      Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
+                      Historian ON Measurement.HistorianID = Historian.ID;
 
 CREATE VIEW HistorianMetadata
 AS
@@ -613,20 +613,6 @@ SELECT CM.NodeID, CM.ID, CM.Acronym, COALESCE(CM.Name, '') AS Name, CM.AssemblyN
 FROM CalculatedMeasurement CM, Node N
 WHERE CM.NodeID = N.ID;
 
-CREATE VIEW DeviceDetail
-AS
-SELECT     D.NodeID, D.ID, D.ParentID, D.Acronym, COALESCE(D.Name, '') AS Name, D.IsConcentrator, D.CompanyID, D.HistorianID, D.AccessID, D.VendorDeviceID, 
-                      D.ProtocolID, D.Longitude, D.Latitude, D.InterconnectionID, COALESCE(D.ConnectionString, '') AS ConnectionString, COALESCE(D.TimeZone, '') AS TimeZone, 
-                      D.TimeAdjustmentTicks, D.DataLossInterval, COALESCE(D.ContactList, '') AS ContactList, D.MeasuredLines, D.LoadOrder, D.Enabled, COALESCE(C.Name, '') 
-                      AS CompanyName, COALESCE(H.Acronym, '') AS HistorianAcronym, COALESCE(VD.Name, '') AS VendorDeviceName, COALESCE(P.Name, '') AS ProtocolName, 
-                      COALESCE(I.Name, '') AS InterconnectionName
-FROM         Device AS D LEFT OUTER JOIN
-                      Company AS C ON C.ID = D.CompanyID LEFT OUTER JOIN
-                      Historian AS H ON H.ID = D.HistorianID LEFT OUTER JOIN
-                      VendorDevice AS VD ON VD.ID = D.VendorDeviceID LEFT OUTER JOIN
-                      Protocol AS P ON P.ID = D.ProtocolID LEFT OUTER JOIN
-                      Interconnection AS I ON I.ID = D.InterconnectionID;
-
 CREATE VIEW HistorianDetail
 AS
 SELECT H.NodeID, H.ID, H.Acronym, COALESCE(H.Name, '') AS Name, COALESCE(H.AssemblyName, '') AS AssemblyName, COALESCE(H.TypeName, '') AS TypeName, 
@@ -645,12 +631,6 @@ CREATE VIEW VendorDetail
 AS
 Select ID, COALESCE(Acronym, '') AS Acronym, Name, COALESCE(PhoneNumber, '') AS PhoneNumber, COALESCE(ContactEmail, '') AS ContactEmail, COALESCE(URL, '') AS URL 
 FROM Vendor;
-
-CREATE VIEW VendorDeviceDetail
-AS
-SELECT VD.ID, VD.VendorID, VD.Name, COALESCE(VD.Description, '') AS Description, COALESCE(VD.URL, '') AS URL, V.Name AS VendorName 
-FROM VendorDevice VD, Vendor V 
-WHERE VD.VendorID = V.ID;
 
 CREATE VIEW CustomActionAdapterDetail AS
 SELECT     CA.NodeID, CA.ID, CA.AdapterName, CA.AssemblyName, CA.TypeName, COALESCE(CA.ConnectionString, '') AS ConnectionString, CA.LoadOrder, 
@@ -695,18 +675,26 @@ FROM Device
       LEFT OUTER JOIN VendorDevice ON Device.VendorDeviceID = VendorDevice.ID
       INNER JOIN Vendor ON VendorDevice.VendorID = Vendor.ID
       GROUP BY Vendor.Name;
- 
-ALTER VIEW DeviceDetail AS
+
+CREATE VIEW VendorDeviceDetail
+AS
+SELECT     VD.ID, VD.VendorID, VD.Name, COALESCE(VD.Description, '') AS Description, COALESCE(VD.URL, '') AS URL, V.Name AS VendorName, 
+                      V.Acronym AS VendorAcronym
+FROM         VendorDevice AS VD INNER JOIN
+                      Vendor AS V ON VD.VendorID = V.ID;
+                      
+CREATE VIEW DeviceDetail
+AS
 SELECT     D.NodeID, D.ID, D.ParentID, D.Acronym, COALESCE(D.Name, '') AS Name, D.IsConcentrator, D.CompanyID, D.HistorianID, D.AccessID, D.VendorDeviceID, 
                       D.ProtocolID, D.Longitude, D.Latitude, D.InterconnectionID, COALESCE(D.ConnectionString, '') AS ConnectionString, COALESCE(D.TimeZone, '') AS TimeZone, 
                       D.TimeAdjustmentTicks, D.DataLossInterval, COALESCE(D.ContactList, '') AS ContactList, D.MeasuredLines, D.LoadOrder, D.Enabled, COALESCE(C.Name, '') 
                       AS CompanyName, COALESCE(C.Acronym, '') AS CompanyAcronym, COALESCE(C.MapAcronym, '') AS CompanyMapAcronym, COALESCE(H.Acronym, '') 
-                      AS HistorianAcronym, COALESCE(VD.Name, '') AS VendorDeviceName, COALESCE(P.Name, '') AS ProtocolName, COALESCE(I.Name, '') AS InterconnectionName, 
-                      N.Name AS NodeName, COALESCE(PD.Acronym, '') AS ParentAcronym
+                      AS HistorianAcronym, COALESCE(VD.VendorAcronym, '') AS VendorAcronym, COALESCE(VD.Name, '') AS VendorDeviceName, COALESCE(P.Name, '') 
+                      AS ProtocolName, COALESCE(I.Name, '') AS InterconnectionName, N.Name AS NodeName, COALESCE(PD.Acronym, '') AS ParentAcronym
 FROM         Device AS D LEFT OUTER JOIN
                       Company AS C ON C.ID = D.CompanyID LEFT OUTER JOIN
                       Historian AS H ON H.ID = D.HistorianID LEFT OUTER JOIN
-                      VendorDevice AS VD ON VD.ID = D.VendorDeviceID LEFT OUTER JOIN
+                      VendorDeviceDetail AS VD ON VD.ID = D.VendorDeviceID LEFT OUTER JOIN
                       Protocol AS P ON P.ID = D.ProtocolID LEFT OUTER JOIN
                       Interconnection AS I ON I.ID = D.InterconnectionID LEFT OUTER JOIN
                       Node AS N ON N.ID = D.NodeID LEFT OUTER JOIN
@@ -743,57 +731,11 @@ SELECT OSD.NodeID, OSD.AdapterID, OSD.ID, OSD.Acronym, COALESCE(OSD.BpaAcronym, 
                         ELSE TRUE 
                     END AS Virtual
 FROM OutputStreamDevice OSD;
-
-ALTER VIEW VendorDeviceDetail
-AS
-SELECT     VD.ID, VD.VendorID, VD.Name, COALESCE(VD.Description, '') AS Description, COALESCE(VD.URL, '') AS URL, V.Name AS VendorName, 
-                      V.Acronym AS VendorAcronym
-FROM         VendorDevice AS VD INNER JOIN
-                      Vendor AS V ON VD.VendorID = V.ID;
-                      
-ALTER VIEW DeviceDetail
-AS
-SELECT     D.NodeID, D.ID, D.ParentID, D.Acronym, COALESCE(D.Name, '') AS Name, D.IsConcentrator, D.CompanyID, D.HistorianID, D.AccessID, D.VendorDeviceID, 
-                      D.ProtocolID, D.Longitude, D.Latitude, D.InterconnectionID, COALESCE(D.ConnectionString, '') AS ConnectionString, COALESCE(D.TimeZone, '') AS TimeZone, 
-                      D.TimeAdjustmentTicks, D.DataLossInterval, COALESCE(D.ContactList, '') AS ContactList, D.MeasuredLines, D.LoadOrder, D.Enabled, COALESCE(C.Name, '') 
-                      AS CompanyName, COALESCE(C.Acronym, '') AS CompanyAcronym, COALESCE(C.MapAcronym, '') AS CompanyMapAcronym, COALESCE(H.Acronym, '') 
-                      AS HistorianAcronym, COALESCE(VD.VendorAcronym, '') AS VendorAcronym, COALESCE(VD.Name, '') AS VendorDeviceName, COALESCE(P.Name, '') 
-                      AS ProtocolName, COALESCE(I.Name, '') AS InterconnectionName, N.Name AS NodeName, COALESCE(PD.Acronym, '') AS ParentAcronym
-FROM         Device AS D LEFT OUTER JOIN
-                      Company AS C ON C.ID = D.CompanyID LEFT OUTER JOIN
-                      Historian AS H ON H.ID = D.HistorianID LEFT OUTER JOIN
-                      VendorDeviceDetail AS VD ON VD.ID = D.VendorDeviceID LEFT OUTER JOIN
-                      Protocol AS P ON P.ID = D.ProtocolID LEFT OUTER JOIN
-                      Interconnection AS I ON I.ID = D.InterconnectionID LEFT OUTER JOIN
-                      Node AS N ON N.ID = D.NodeID LEFT OUTER JOIN
-                      Device AS PD ON PD.ID = D.ParentID;
                       
 CREATE VIEW PhasorDetail AS
 SELECT P.*, COALESCE(DP.Label, '') AS DestinationPhasorLabel, D.Acronym AS DeviceAcronym
 FROM Phasor P LEFT OUTER JOIN Phasor DP ON P.DestinationPhasorID = DP.ID
       LEFT OUTER JOIN Device D ON P.DeviceID = D.ID;
-      
-ALTER VIEW MeasurementDetail
-AS
-SELECT     Device.CompanyID, Company.Acronym AS CompanyAcronym, Company.Name AS CompanyName, Measurement.SignalID, 
-                      Measurement.HistorianID, Historian.Acronym AS HistorianAcronym, Historian.ConnectionString AS HistorianConnectionString, 
-                      Measurement.PointID, Measurement.PointTag, Measurement.AlternateTag, Measurement.DeviceID, Device.NodeID, 
-                      Device.Acronym AS DeviceAcronym, Device.Name AS DeviceName, Device.Enabled AS DeviceEnabled, Device.ContactList, 
-                      Device.VendorDeviceID, VendorDevice.Name AS VendorDeviceName, VendorDevice.Description AS VendorDeviceDescription, 
-                      Device.ProtocolID, Protocol.Acronym AS ProtocolAcronym, Protocol.Name AS ProtocolName, Measurement.SignalTypeID, 
-                      Measurement.PhasorSourceIndex, Phasor.Label AS PhasorLabel, Phasor.Type AS PhasorType, Phasor.Phase, 
-                      Measurement.SignalReference, Measurement.Adder, Measurement.Multiplier, Measurement.Description, Measurement.Enabled, 
-                      COALESCE (SignalType.EngineeringUnits, N'') AS EngineeringUnits, SignalType.Source, SignalType.Acronym AS SignalAcronym, 
-                      SignalType.Name AS SignalName, SignalType.Suffix AS SignalTypeSuffix, Device.Longitude, Device.Latitude
-FROM         Company RIGHT OUTER JOIN
-                      Device ON Company.ID = Device.CompanyID RIGHT OUTER JOIN
-                      Measurement LEFT OUTER JOIN
-                      SignalType ON Measurement.SignalTypeID = SignalType.ID ON Device.ID = Measurement.DeviceID LEFT OUTER JOIN
-                      Phasor ON Measurement.DeviceID = Phasor.DeviceID AND 
-                      Measurement.PhasorSourceIndex = Phasor.SourceIndex LEFT OUTER JOIN
-                      VendorDevice ON Device.VendorDeviceID = VendorDevice.ID LEFT OUTER JOIN
-                      Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
-                      Historian ON Measurement.HistorianID = Historian.ID;
 
 
 CREATE TRIGGER CustomActionAdapter_RuntimeSync_Insert AFTER INSERT ON CustomActionAdapter
