@@ -440,7 +440,7 @@
         </member>
         <member name="T:TVA.Historian.Exporters.ExporterBase">
             <summary>
-            A base class for an exporter of real-time time-series data.
+            Base class for an exporter of real-time time-series data.
             </summary>
             <seealso cref="T:TVA.Historian.Exporters.Export"/>
             <seealso cref="T:TVA.Historian.DataListener"/>
@@ -2193,19 +2193,19 @@
             Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.RolloverPreparationThreshold"/> property.
             </summary>
         </member>
-        <member name="F:TVA.Historian.Files.ArchiveFile.DefaultFileOffloadLocation">
+        <member name="F:TVA.Historian.Files.ArchiveFile.DefaultArchiveOffloadCount">
             <summary>
-            Gets or sets the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.FileOffloadLocation"/> property.
+            Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.ArchiveOffloadCount"/> property.
             </summary>
         </member>
-        <member name="F:TVA.Historian.Files.ArchiveFile.DefaultFileOffloadCount">
+        <member name="F:TVA.Historian.Files.ArchiveFile.DefaultArchiveOffloadLocation">
             <summary>
-            Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.FileOffloadCount"/> property.
+            Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.ArchiveOffloadLocation"/> property.
             </summary>
         </member>
-        <member name="F:TVA.Historian.Files.ArchiveFile.DefaultFileOffloadThreshold">
+        <member name="F:TVA.Historian.Files.ArchiveFile.DefaultArchiveOffloadThreshold">
             <summary>
-            Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.FileOffloadThreshold"/> property.
+            Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.ArchiveOffloadThreshold"/> property.
             </summary>
         </member>
         <member name="F:TVA.Historian.Files.ArchiveFile.DefaultLeadTimeTolerance">
@@ -2575,21 +2575,6 @@
             Occurs when the active <see cref="T:TVA.Historian.Files.ArchiveFile"/> if full.
             </summary>
         </member>
-        <member name="E:TVA.Historian.Files.ArchiveFile.RolloverStart">
-            <summary>
-            Occurs when <see cref="M:TVA.Historian.Files.ArchiveFile.Rollover"/> to a new <see cref="T:TVA.Historian.Files.ArchiveFile"/> is started.
-            </summary>
-        </member>
-        <member name="E:TVA.Historian.Files.ArchiveFile.RolloverComplete">
-            <summary>
-            Occurs when <see cref="M:TVA.Historian.Files.ArchiveFile.Rollover"/> to a new <see cref="T:TVA.Historian.Files.ArchiveFile"/> is complete.
-            </summary>
-        </member>
-        <member name="E:TVA.Historian.Files.ArchiveFile.RolloverException">
-            <summary>
-            Occurs when an <see cref="T:System.Exception"/> is encountered during the <see cref="M:TVA.Historian.Files.ArchiveFile.Rollover"/> process.
-            </summary>
-        </member>
         <member name="E:TVA.Historian.Files.ArchiveFile.OffloadStart">
             <summary>
             Occurs when the process of offloading historic <see cref="T:TVA.Historian.Files.ArchiveFile"/>s is started.
@@ -2607,7 +2592,22 @@
         </member>
         <member name="E:TVA.Historian.Files.ArchiveFile.OffloadProgress">
             <summary>
-            Occurs when historic <see cref="T:TVA.Historian.Files.ArchiveFile"/>s are being offloaded.
+            Occurs when an historic <see cref="T:TVA.Historian.Files.ArchiveFile"/> is being offloaded.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Files.ArchiveFile.RolloverStart">
+            <summary>
+            Occurs when <see cref="M:TVA.Historian.Files.ArchiveFile.Rollover"/> to a new <see cref="T:TVA.Historian.Files.ArchiveFile"/> is started.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Files.ArchiveFile.RolloverComplete">
+            <summary>
+            Occurs when <see cref="M:TVA.Historian.Files.ArchiveFile.Rollover"/> to a new <see cref="T:TVA.Historian.Files.ArchiveFile"/> is complete.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Files.ArchiveFile.RolloverException">
+            <summary>
+            Occurs when an <see cref="T:System.Exception"/> is encountered during the <see cref="M:TVA.Historian.Files.ArchiveFile.Rollover"/> process.
             </summary>
         </member>
         <member name="E:TVA.Historian.Files.ArchiveFile.RolloverPreparationStart">
@@ -2715,18 +2715,18 @@
             </summary>
             <exception cref="T:System.ArgumentException">The value being assigned is not between 1 and 95.</exception>
         </member>
-        <member name="P:TVA.Historian.Files.ArchiveFile.FileOffloadLocation">
+        <member name="P:TVA.Historian.Files.ArchiveFile.ArchiveOffloadCount">
+            <summary>
+            Gets or sets the number of historic <see cref="T:TVA.Historian.Files.ArchiveFile"/>s to be offloaded to the <see cref="P:TVA.Historian.Files.ArchiveFile.ArchiveOffloadLocation"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException">The value being assigned is not positive.</exception>
+        </member>
+        <member name="P:TVA.Historian.Files.ArchiveFile.ArchiveOffloadLocation">
             <summary>
             Gets or sets the path to the directory where historic <see cref="T:TVA.Historian.Files.ArchiveFile"/>s are to be offloaded to make space in the primary archive location.
             </summary>
         </member>
-        <member name="P:TVA.Historian.Files.ArchiveFile.FileOffloadCount">
-            <summary>
-            Gets or sets the number of historic <see cref="T:TVA.Historian.Files.ArchiveFile"/>s to be offloaded to the <see cref="P:TVA.Historian.Files.ArchiveFile.FileOffloadLocation"/>.
-            </summary>
-            <exception cref="T:System.ArgumentException">The value being assigned is not positive.</exception>
-        </member>
-        <member name="P:TVA.Historian.Files.ArchiveFile.FileOffloadThreshold">
+        <member name="P:TVA.Historian.Files.ArchiveFile.ArchiveOffloadThreshold">
             <summary>
             Gets or sets the free disk space (in %) of the primary archive location that triggers the offload of historic <see cref="T:TVA.Historian.Files.ArchiveFile"/>s.
             </summary>
@@ -4625,7 +4625,7 @@
         </member>
         <member name="T:TVA.Historian.MetadataProviders.MetadataProviderBase">
             <summary>
-            A base class for a provider of updates to the data in a <see cref="T:TVA.Historian.Files.MetadataFile"/>.
+            Base class for a provider of updates to the data in a <see cref="T:TVA.Historian.Files.MetadataFile"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.MetadataProviders.IMetadataProvider">
@@ -4777,7 +4777,7 @@
         </member>
         <member name="P:TVA.Historian.MetadataProviders.MetadataProviderBase.RefreshInterval">
             <summary>
-            Gets or sets the number of minutes at which the <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.Metadata"/> if to be refreshed automatically.
+            Gets or sets the interval in minutes at which the <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.Metadata"/> if to be refreshed automatically.
             </summary>
             <remarks>
             Set <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.RefreshInterval"/> to -1 to disable auto <see cref="M:TVA.Historian.MetadataProviders.MetadataProviderBase.Refresh"/>.
@@ -5026,6 +5026,188 @@
         <member name="T:TVA.Historian.Packets.NamespaceDoc">
             <summary>
             Contains classes that define packet definitions used for transmission of data points and metadata.
+            </summary>
+        </member>
+        <member name="T:TVA.Historian.Replication.IReplicationProvider">
+            <summary>
+            Defines a provider of replication mechanism for the <see cref="T:TVA.Historian.IArchive"/>.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Replication.IReplicationProvider.Replicate">
+            <summary>
+            Replicates the <see cref="T:TVA.Historian.IArchive"/>.
+            </summary>
+            <returns>true if the replication is successful; otherwise false.</returns>
+        </member>
+        <member name="E:TVA.Historian.Replication.IReplicationProvider.ReplicationStart">
+            <summary>
+            Occurs when the process of replicating the <see cref="T:TVA.Historian.IArchive"/> is started.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Replication.IReplicationProvider.ReplicationComplete">
+            <summary>
+            Occurs when the process of replicating the <see cref="T:TVA.Historian.IArchive"/> is complete.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Replication.IReplicationProvider.ReplicationException">
+            <summary>
+            Occurs when an <see cref="T:System.Exception"/> is encountered during the replication process of <see cref="T:TVA.Historian.IArchive"/>.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Replication.IReplicationProvider.ReplicationProgress">
+            <summary>
+            Occurs when the <see cref="T:TVA.Historian.IArchive"/> is being replicated.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.Replication.IReplicationProvider.ArchiveLocation">
+            <summary>
+            Gets or sets the primary location of the <see cref="T:TVA.Historian.IArchive"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.Replication.IReplicationProvider.ReplicaLocation">
+            <summary>
+            Gets or sets the mirrored location of the <see cref="T:TVA.Historian.IArchive"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.Replication.IReplicationProvider.ReplicationInterval">
+            <summary>
+            Gets or sets the interval in milliseconds at which the <see cref="T:TVA.Historian.IArchive"/> is to be replicated.
+            </summary>
+        </member>
+        <member name="T:TVA.Historian.Replication.NamespaceDoc">
+            <summary>
+            Contains classes and interfaces that allow for the replication of the time-series data archive.
+            </summary>
+        </member>
+        <member name="T:TVA.Historian.Replication.ReplicationProviderBase">
+            <summary>
+            Base class for a provider of replication mechanism for the <see cref="T:TVA.Historian.IArchive"/>.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.#ctor">
+            <summary>
+            Initializes a new instance of the replication provider.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.Finalize">
+            <summary>
+            Releases the unmanaged resources before the replication provider is reclaimed by <see cref="T:System.GC"/>.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.ReplicateArchive">
+            <summary>
+            When overridden in a derived class, replicates the <see cref="T:TVA.Historian.IArchive"/>.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.Dispose">
+            <summary>
+            Releases all the resources used by the replication provider.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.Initialize">
+            <summary>
+            Initializes the replication provider.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.SaveSettings">
+            <summary>
+            Saves replication provider settings to the config file if the <see cref="P:TVA.Historian.Replication.ReplicationProviderBase.PersistSettings"/> property is set to true.
+            </summary>        
+        </member>
+        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.LoadSettings">
+            <summary>
+            Loads saved replication provider settings from the config file if the <see cref="P:TVA.Historian.Replication.ReplicationProviderBase.PersistSettings"/> property is set to true.
+            </summary>        
+        </member>
+        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.Replicate">
+            <summary>
+            Replicates the <see cref="T:TVA.Historian.IArchive"/>.
+            </summary>
+            <returns>true if the replication is successful; otherwise false.</returns>
+            <exception cref="T:System.ArgumentNullException"><see cref="P:TVA.Historian.Replication.ReplicationProviderBase.ArchiveLocation"/> or <see cref="P:TVA.Historian.Replication.ReplicationProviderBase.ReplicaLocation"/> is null or empty string.</exception>
+        </member>
+        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the replication provider and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.OnReplicationStart">
+            <summary>
+            Raises the <see cref="E:TVA.Historian.Replication.ReplicationProviderBase.ReplicationStart"/> event.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.OnReplicationComplete">
+            <summary>
+            Raises the <see cref="E:TVA.Historian.Replication.ReplicationProviderBase.ReplicationComplete"/> event.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.OnReplicationException(System.Exception)">
+            <summary>
+            Raises the <see cref="E:TVA.Historian.Replication.ReplicationProviderBase.ReplicationException"/> event.
+            </summary>
+            <param name="ex"><see cref="T:System.Exception"/> to send to <see cref="E:TVA.Historian.Replication.ReplicationProviderBase.ReplicationException"/> event.</param>
+        </member>
+        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.OnReplicationProgress(TVA.ProcessProgress{System.Int32})">
+            <summary>
+            Raises the <see cref="E:TVA.Historian.Replication.ReplicationProviderBase.ReplicationProgress"/> event.
+            </summary>
+            <param name="replicationProgress"><see cref="T:TVA.ProcessProgress`1"/> to send to <see cref="E:TVA.Historian.Replication.ReplicationProviderBase.ReplicationProgress"/> event.</param>
+        </member>
+        <member name="E:TVA.Historian.Replication.ReplicationProviderBase.ReplicationStart">
+            <summary>
+            Occurs when the process of replicating the <see cref="T:TVA.Historian.IArchive"/> is started.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Replication.ReplicationProviderBase.ReplicationComplete">
+            <summary>
+            Occurs when the process of replicating the <see cref="T:TVA.Historian.IArchive"/> is complete.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Replication.ReplicationProviderBase.ReplicationException">
+            <summary>
+            Occurs when an <see cref="T:System.Exception"/> is encountered during the replication process of <see cref="T:TVA.Historian.IArchive"/>.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Replication.ReplicationProviderBase.ReplicationProgress">
+            <summary>
+            Occurs when the <see cref="T:TVA.Historian.IArchive"/> is being replicated.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.Replication.ReplicationProviderBase.ArchiveLocation">
+            <summary>
+            Gets or sets the primary location of the <see cref="T:TVA.Historian.IArchive"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.Replication.ReplicationProviderBase.ReplicaLocation">
+            <summary>
+            Gets or sets the mirrored location of the <see cref="T:TVA.Historian.IArchive"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.Replication.ReplicationProviderBase.ReplicationInterval">
+            <summary>
+            Gets or sets the interval in minutes at which the <see cref="T:TVA.Historian.IArchive"/> is to be replicated.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.Replication.ReplicationProviderBase.PersistSettings">
+            <summary>
+            Gets or sets a boolean value that indicates whether the replication provider settings are to be saved to the config file.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.Replication.ReplicationProviderBase.SettingsCategory">
+            <summary>
+            Gets or sets the category under which the replication provider settings are to be saved to the config file if the <see cref="P:TVA.Historian.Replication.ReplicationProviderBase.PersistSettings"/> property is set to true.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">The value being assigned is a null or empty string.</exception>
+        </member>
+        <member name="P:TVA.Historian.Replication.ReplicationProviderBase.Enabled">
+            <summary>
+            Gets or sets a boolean value that indicates whether the replication provider is currently enabled.
+            </summary>
+        </member>
+        <member name="T:TVA.Historian.Replication.ReplicationProviders">
+            <summary>
+            A class that loads all of the <see cref="T:TVA.Historian.Replication.IReplicationProvider">replication providers</see>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Services.IMetadataService">
@@ -5959,7 +6141,7 @@
         </member>
         <member name="T:TVA.Historian.Notifiers.NotifierBase">
             <summary>
-            A base class for a notifier that can process notification messages.
+            Base class for a notifier that can process notification messages.
             </summary>
             <see cref="T:TVA.Historian.Notifiers.NotificationTypes"/>
         </member>
@@ -6323,7 +6505,7 @@
         </member>
         <member name="T:TVA.Historian.Packets.PacketBase">
             <summary>
-            A base class for a binary packet received by a historian.
+            Base class for a binary packet received by a historian.
             </summary>
             <seealso cref="T:TVA.Historian.Packets.IPacket"/>
         </member>
@@ -6666,7 +6848,7 @@
         </member>
         <member name="T:TVA.Historian.Packets.QueryPacketBase">
             <summary>
-            A base class for a packet to be used for requesting information from a historian.
+            Base class for a packet to be used for requesting information from a historian.
             </summary>
         </member>
         <member name="M:TVA.Historian.Packets.QueryPacketBase.#ctor(System.Int16)">
