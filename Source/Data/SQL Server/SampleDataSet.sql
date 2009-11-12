@@ -1,5 +1,5 @@
 -- Script auto-generated generated from Access database openPDC.mdb method GenerateSampleDataScript
--- 10/16/2009 8:31:30 AM
+-- 11/12/2009 3:37:10 PM
 
 USE openPDC
 GO
@@ -19,7 +19,7 @@ INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSou
 UPDATE Measurement SET SignalID='93673c68-d59d-4926-b7e9-e7678f9f66b4' WHERE PointTag='TVA_SHEL:ABBF'
 INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(1, 1, 'TVA_SHEL:ABBD1', 9, NULL, 'SHELBY-DV1', 'Shelby ABB-521 Digital Value 1', 1)
 UPDATE Measurement SET SignalID='65ac9cf6-ae33-4ece-91b6-bb79343855d5' WHERE PointTag='TVA_SHEL:ABBD1'
-INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(1, 1, 'TVA_SHEL:ABBDF', 5, NULL, 'SHELBY-DF', 'Shelby ABB-521 Frequency Delta (dF/dt)', 1)
+INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(1, 1, 'TVA_SHEL:ABBDF', 6, NULL, 'SHELBY-DF', 'Shelby ABB-521 Frequency Delta (dF/dt)', 1)
 UPDATE Measurement SET SignalID='3647f729-d0ed-4f79-85ad-dae2149cd432' WHERE PointTag='TVA_SHEL:ABBDF'
 INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(1, 1, 'TVA_SHEL-BUS1:ABBV', 3, 1, 'SHELBY-PM1', 'Shelby ABB-521 500 kV Bus 1 Positive Sequence Voltage Magnitude', 1)
 UPDATE Measurement SET SignalID='069c5e29-f78a-46f6-9dff-c92cb4f69371' WHERE PointTag='TVA_SHEL-BUS1:ABBV'
