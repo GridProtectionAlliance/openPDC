@@ -376,22 +376,15 @@ namespace MySqlAdapters
 
         private void m_timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            int startRow = m_startingMeasurement;
-            int endRow = m_startingMeasurement + m_measurementsPerInput;
-            string commandString = "SELECT SignalID,Value FROM Measurement LIMIT " + startRow + "," + endRow;
+            string commandString = "SELECT SignalID,Timestamp,Value FROM Measurement LIMIT " + m_startingMeasurement + "," + m_measurementsPerInput;
             MySqlCommand command = new MySqlCommand(commandString, m_connection);
             MySqlDataReader reader = command.ExecuteReader();
             List<IMeasurement> measurements = new List<IMeasurement>();
 
-            uint id = 1;
             while (reader.Read())
-            {
-                IMeasurement measurement = new Measurement(id, Settings["Database"], reader.GetDouble("Value"), new Ticks(DateTime.UtcNow));
-                measurement.SignalID = reader.GetGuid("SignalID");
-                measurements.Add(measurement);
-                id++;
-            }
+                measurements.Add(new Measurement(reader.GetGuid("SignalID"), reader.GetDouble("Value"), new Ticks(reader.GetInt64("Timestamp"))));
 
+            reader.Close();
             OnNewMeasurements(measurements);
             m_startingMeasurement += m_measurementsPerInput;
         }

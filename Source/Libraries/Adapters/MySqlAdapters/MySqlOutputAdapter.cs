@@ -372,16 +372,14 @@ namespace MySqlAdapters
         {
             foreach (IMeasurement measurement in measurements)
             {
-                DateTime stamp = new DateTime(measurement.Timestamp);
-
                 // Create the command string to insert the measurement as a record in the table.
                 StringBuilder commandString = new StringBuilder("INSERT INTO Measurement VALUES ('");
 
-                commandString.Append(measurement.SignalID.ToString());
+                commandString.Append(measurement.SignalID);
                 commandString.Append("','");
-                commandString.Append(stamp.ToString("yyyy-MM-dd hh:mm:ss"));
+                commandString.Append((long)measurement.Timestamp);
                 commandString.Append("',");
-                commandString.Append(measurement.AdjustedValue.ToString());
+                commandString.Append(measurement.AdjustedValue);
                 commandString.Append(')');
 
                 MySqlCommand command = new MySqlCommand(commandString.ToString(), m_connection);

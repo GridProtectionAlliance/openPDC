@@ -321,7 +321,7 @@ namespace DataQualityMonitoring
                 {
                     Ticks diff = m_latestTimestamp - measurement.Timestamp;
                     if (diff > m_minFlatline && diff % m_warnInterval <= m_ticksPerFrame)
-                        OnStatusMessage(key + " unchanged for " + new DateTime(diff).Second + " seconds.");
+                        OnStatusMessage(measurement.ToString() + " unchanged for " + new DateTime(diff).Second.ToString() + " seconds.");
                 }
             }
         }

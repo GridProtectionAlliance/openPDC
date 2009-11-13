@@ -10,6 +10,6 @@ USE OutputAdapter;
 
 CREATE TABLE Measurement (
 	SignalID NCHAR(36) NULL,
-	Timestamp TIMESTAMP NOT NULL,
+	Timestamp BIGINT NOT NULL,
 	Value DOUBLE NOT NULL
 );
