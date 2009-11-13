@@ -342,6 +342,8 @@ namespace TVA.PhasorProtocols
         private ConfigurationFrame m_baseConfigurationFrame;
         private Dictionary<MeasurementKey, SignalReference[]> m_signalReferences;
         private LineFrequency m_nominalFrequency;
+        private DataFormat m_dataFormat;
+        private CoordinateFormat m_coordinateFormat;
         private bool m_autoPublishConfigurationFrame;
         private bool m_autoStartDataChannel;
         private ushort m_idCode;
@@ -358,6 +360,9 @@ namespace TVA.PhasorProtocols
         {
             // Create a new signal reference dictionary indexed on measurement keys
             m_signalReferences = new Dictionary<MeasurementKey, SignalReference[]>();
+
+            // Synchrophasor protocols should default to millisecond resolution
+            base.TimeResolution = Ticks.PerMillisecond;
         }
 
         #endregion
@@ -417,13 +422,47 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets the nominal <see cref="LineFrequency"/> defined for this <see cref="PhasorDataConcentratorBase"/> parsed from the <see cref="ActionAdapterBase.ConnectionString"/>.
+        /// Gets or sets the nominal <see cref="LineFrequency"/> defined for this <see cref="PhasorDataConcentratorBase"/>.
         /// </summary>
         public LineFrequency NominalFrequency
         {
             get
             {
                 return m_nominalFrequency;
+            }
+            set
+            {
+                m_nominalFrequency = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="PhasorProtocols.DataFormat"/> defined for this <see cref="PhasorDataConcentratorBase"/>.
+        /// </summary>
+        public DataFormat DataFormat
+        {
+            get
+            {
+                return m_dataFormat;
+            }
+            set
+            {
+                m_dataFormat = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="PhasorProtocols.CoordinateFormat"/> defined for this <see cref="PhasorDataConcentratorBase"/>.
+        /// </summary>
+        public CoordinateFormat CoordinateFormat
+        {
+            get
+            {
+                return m_coordinateFormat;
+            }
+            set
+            {
+                m_coordinateFormat = value;
             }
         }
 
@@ -557,6 +596,10 @@ namespace TVA.PhasorProtocols
                 status.AppendFormat("       Data stream ID code: {0}", m_idCode);
                 status.AppendLine();
                 status.AppendFormat("         Nomimal frequency: {0}Hz", (int)m_nominalFrequency);
+                status.AppendLine();
+                status.AppendFormat("               Data format: {0}", m_dataFormat);
+                status.AppendLine();
+                status.AppendFormat("         Coordinate format: {0}", m_coordinateFormat);
                 status.AppendLine();
 
                 if (m_dataChannel != null)
@@ -714,6 +757,16 @@ namespace TVA.PhasorProtocols
             else
                 m_nominalFrequency = LineFrequency.Hz60;
 
+            if (settings.TryGetValue("dataFormat", out setting))
+                m_dataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), setting);
+            else
+                m_dataFormat = DataFormat.FloatingPoint;
+
+            if (settings.TryGetValue("coordinateFormat", out setting))
+                m_coordinateFormat = (CoordinateFormat)Enum.Parse(typeof(CoordinateFormat), setting);
+            else
+                m_coordinateFormat = CoordinateFormat.Polar;
+
             // Initialize data channel if defined
             if (!string.IsNullOrEmpty(dataChannel))
                 this.DataChannel = new UdpServer(dataChannel);
@@ -766,11 +819,11 @@ namespace TVA.PhasorProtocols
                     // Create a new configuration cell
                     cell = new ConfigurationCell(m_baseConfigurationFrame, ushort.Parse(deviceRow["ID"].ToString()));
 
-                    // The base class defaults to floating-point, polar values, derived classes can change
-                    cell.PhasorDataFormat = DataFormat.FloatingPoint;
-                    cell.PhasorCoordinateFormat = CoordinateFormat.Polar;
-                    cell.FrequencyDataFormat = DataFormat.FloatingPoint;
-                    cell.AnalogDataFormat = DataFormat.FloatingPoint;
+                    // Assign user selected data and coordinate formats, derived classes can change
+                    cell.PhasorDataFormat = m_dataFormat;
+                    cell.PhasorCoordinateFormat = m_coordinateFormat;
+                    cell.FrequencyDataFormat = m_dataFormat;
+                    cell.AnalogDataFormat = m_dataFormat;
 
                     cell.IDLabel = deviceRow["Name"].ToString().Trim();
                     cell.StationName = deviceRow["Acronym"].ToString().TruncateRight(cell.MaximumStationNameLength).Trim();

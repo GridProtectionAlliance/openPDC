@@ -315,11 +315,9 @@ namespace TestingAdapters
         public const int DefaultInterpointDelay = 33;
 
         // Fields
-        private IMeasurement[] m_outputMeasurements;
         private int m_pointsToSend;
         private int m_interpointDelay;
         private Thread m_publishThread;
-        private Regex m_filterExpression = new Regex("(FILTER[ ]+(?<TableName>\\w+)[ ]+WHERE[ ]+(?<Expression>.+)[ ]+ORDER[ ]+BY[ ]+(?<SortField>\\w+))|(FILTER[ ]+(?<TableName>\\w+)[ ]+WHERE[ ]+(?<Expression>.+))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         #endregion
 
@@ -361,21 +359,6 @@ namespace TestingAdapters
         }
 
         /// <summary>
-        /// Gets or sets measurements that the adapter will produce.
-        /// </summary>
-        public IMeasurement[] OutputMeasurements
-        {
-            get
-            {
-                return m_outputMeasurements;
-            }
-            set
-            {
-                m_outputMeasurements = value;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets number of test points to send.
         /// </summary>
         public int PointsToSend
@@ -412,25 +395,8 @@ namespace TestingAdapters
         {
             get
             {
-                const int MaxMeasurementsToShow = 4;
-
                 StringBuilder status = new StringBuilder();
 
-                status.Append("   Output measurement ID\'s: ");
-
-                if (OutputMeasurements.Length <= MaxMeasurementsToShow)
-                {
-                    status.Append(OutputMeasurements.ToDelimitedString(','));
-                }
-                else
-                {
-                    IMeasurement[] outputMeasurements = new IMeasurement[MaxMeasurementsToShow];
-                    Array.Copy(OutputMeasurements, 0, outputMeasurements, 0, MaxMeasurementsToShow);
-                    status.Append(outputMeasurements.ToDelimitedString(','));
-                    status.Append(",...");
-                }
-
-                status.AppendLine();
                 status.AppendFormat("  Number of points to send: {0}\r\n", PointsToSend);
                 status.AppendFormat("         Inter-point delay: {0}ms\r\n", InterpointDelay);
                 status.Append(base.Status);
@@ -452,9 +418,6 @@ namespace TestingAdapters
 
             Dictionary<string, string> settings = Settings;
             string setting;
-
-            if (settings.TryGetValue("outputMeasurements", out setting))
-                OutputMeasurements = ParseOutputMeasurements(setting);
 
             if (settings.TryGetValue("pointsToSend", out setting))
                 m_pointsToSend = int.Parse(setting);
@@ -506,68 +469,18 @@ namespace TestingAdapters
             {
                 timestamp = PrecisionTimer.UtcNow.Ticks;
 
-                for (int j = 0; j < m_outputMeasurements.Length; j++)
+                for (int j = 0; j < OutputMeasurements.Length; j++)
                 {
-                    m_outputMeasurements[j].Timestamp = timestamp;
-                    m_outputMeasurements[j].Value = randomNumber.NextDouble();
+                    OutputMeasurements[j].Timestamp = timestamp;
+                    OutputMeasurements[j].Value = randomNumber.NextDouble();
                 }
 
                 // Publish next set of measurements to consumer...
-                this.OnNewMeasurements(m_outputMeasurements);
+                this.OnNewMeasurements(OutputMeasurements);
 
                 // Sleep until next desired publication...
                 Thread.Sleep(m_interpointDelay);
             }
-        }
-
-        // Parse output measurements from connection string
-        private IMeasurement[] ParseOutputMeasurements(string value)
-        {
-            List<IMeasurement> measurements = new List<IMeasurement>();
-            MeasurementKey key;
-            Match filterMatch;
-
-            value = value.Trim();
-            filterMatch = m_filterExpression.Match(value);
-
-            if (filterMatch.Success)
-            {
-                string tableName = filterMatch.Result("${TableName}").Trim();
-                string expression = filterMatch.Result("${Expression}").Trim();
-                string sortField = filterMatch.Result("${SortField}").Trim();
-
-                foreach (DataRow row in DataSource.Tables[tableName].Select(expression, sortField))
-                {
-                    key = MeasurementKey.Parse(row["ID"].ToString());
-                    measurements.Add(new Measurement(key.ID, key.Source, row["PointTag"].ToNonNullString(), double.Parse(row["Adder"].ToString()), double.Parse(row["Multiplier"].ToString())));
-                }
-            }
-            else
-            {
-                string[] elem;
-                double adder, multipler;
-
-                foreach (string item in value.Split(';'))
-                {
-                    elem = item.Trim().Split(',');
-
-                    key = MeasurementKey.Parse(elem[0]);
-
-                    if (elem.Length > 1)
-                        adder = double.Parse(elem[1].Trim());
-                    else
-                        adder = 0.0D;
-
-                    if (elem.Length > 2)
-                        multipler = double.Parse(elem[2].Trim());
-                    else
-                        multipler = 1.0D;
-
-                    measurements.Add(new Measurement(key.ID, key.Source, string.Empty, adder, multipler));
-                }
-            }
-
-            return measurements.ToArray();
         }
 
         #endregion

@@ -288,6 +288,10 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             // BPA PDCstream always publishes config frame over data channel
             base.AutoPublishConfigurationFrame = true;
             base.CommandChannel = null;
+
+            // Coordinate format and data format are fixed for BPA PDCstream outgoing streams for now
+            base.CoordinateFormat = CoordinateFormat.Rectangular;
+            base.DataFormat = DataFormat.FixedInteger;
         }
 
         /// <summary>
