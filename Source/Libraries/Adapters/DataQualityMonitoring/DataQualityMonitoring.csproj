@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B7963AA1-4A9F-4D2D-B6A2-DD792EA77AFD}</ProjectGuid>
+    <ProjectGuid>{A6875AF1-9183-4FED-8628-9067E0324208}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MySqlAdapters</RootNamespace>
-    <AssemblyName>MySqlAdapters</AssemblyName>
+    <RootNamespace>DataQualityMonitoring</RootNamespace>
+    <AssemblyName>DataQualityMonitoring</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -25,7 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\..\Build\Output\Debug\Libraries\MySqlAdapters.XML</DocumentationFile>
+    <DocumentationFile>..\..\..\..\Build\Output\Debug\Libraries\DataQualityMonitoring.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,14 +34,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\..\Build\Output\Release\Libraries\MySqlAdapters.XML</DocumentationFile>
+    <DocumentationFile>..\..\..\..\Build\Output\Release\Libraries\DataQualityMonitoring.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data, Version=5.2.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Dependencies\MySQL\MySql.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -54,21 +49,14 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TVA.Core, Version=1.0.16.32007, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL">
+    <Reference Include="TVA.Core, Version=1.0.28.35794, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MySqlInputAdapter.cs" />
-    <Compile Include="MySqlOutputAdapter.cs" />
+    <Compile Include="FlatlineTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="MySqlOutputAdapter.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -79,7 +67,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>COPY "$(TargetPath)" "$(OutDir)..\Applications\openPDC\$(TargetFileName)"
-COPY "$(TargetDir)MySql.Data.dll" ""$(OutDir)..\Applications\openPDC\MySql.Data.dll"</PostBuildEvent>
+    <PostBuildEvent>COPY "$(TargetPath)" "$(OutDir)..\Applications\openPDC\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

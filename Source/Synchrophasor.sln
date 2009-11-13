@@ -100,7 +100,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Access", "Access", "{F0072CE5-12A6-4713-BBD0-B57966ED2339}"
 	ProjectSection(SolutionItems) = preProject
-		Data\Access\openPDC-InitialDataSet.mdb = Data\Access\openPDC-InitialDataSet.mdb
 		Data\Access\openPDC-SampleDataSet.mdb = Data\Access\openPDC-SampleDataSet.mdb
 	EndProjectSection
 EndProject
@@ -158,9 +157,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{392338BF
 		Dependencies\MySQL\MySql.Data.dll = Dependencies\MySQL\MySql.Data.dll
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataQualityMonitoring", "Libraries\Adapters\DataQualityMonitoring\DataQualityMonitoring.csproj", "{A6875AF1-9183-4FED-8628-9067E0324208}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 18
+		SccNumberOfProjects = 19
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs07.codeplex.com/
 		SccLocalPath0 = .
@@ -232,6 +233,10 @@ Global
 		SccProjectTopLevelParentUniqueName17 = Synchrophasor.sln
 		SccProjectName17 = Libraries/Adapters/MySqlAdapters
 		SccLocalPath17 = Libraries\\Adapters\\MySqlAdapters
+		SccProjectUniqueName18 = Libraries\\Adapters\\DataQualityMonitoring\\DataQualityMonitoring.csproj
+		SccProjectTopLevelParentUniqueName18 = Synchrophasor.sln
+		SccProjectName18 = Libraries/Adapters/DataQualityMonitoring
+		SccLocalPath18 = Libraries\\Adapters\\DataQualityMonitoring
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -298,6 +303,10 @@ Global
 		{B7963AA1-4A9F-4D2D-B6A2-DD792EA77AFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7963AA1-4A9F-4D2D-B6A2-DD792EA77AFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7963AA1-4A9F-4D2D-B6A2-DD792EA77AFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6875AF1-9183-4FED-8628-9067E0324208}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6875AF1-9183-4FED-8628-9067E0324208}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6875AF1-9183-4FED-8628-9067E0324208}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6875AF1-9183-4FED-8628-9067E0324208}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -323,6 +332,7 @@ Global
 		{1338A569-A156-4122-8B65-8D4C147AA348} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{B74CF4DA-2972-489B-AF08-419560EE57EF} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{B7963AA1-4A9F-4D2D-B6A2-DD792EA77AFD} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
+		{A6875AF1-9183-4FED-8628-9067E0324208} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
 		{A519E312-66F5-4725-A88E-9B62242CBCB7} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
 		{5314055B-EA03-4E15-8653-83F011D7A00E} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
