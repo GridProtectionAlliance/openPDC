@@ -233,6 +233,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Timers;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
 using TVA;
@@ -248,11 +249,11 @@ namespace DataQualityMonitoring
         #region [ Members ]
 
         // Fields
-        private Ticks m_ticksPerFrame;
         private Ticks m_minFlatline;
         private Ticks m_warnInterval;
         private Ticks m_latestTimestamp;
         private Dictionary<MeasurementKey, IMeasurement> m_lastChange;
+        private Timer m_warningTimer;
 
         #endregion
 
@@ -263,11 +264,11 @@ namespace DataQualityMonitoring
         /// </summary>
         public FlatlineTest()
         {
-            m_ticksPerFrame = 0L;
             m_minFlatline = Ticks.FromSeconds(4);
             m_warnInterval = Ticks.FromSeconds(4);
             m_latestTimestamp = 0L;
             m_lastChange = new Dictionary<MeasurementKey, IMeasurement>();
+            m_warningTimer = new Timer();
         }
 
         #endregion
@@ -281,8 +282,6 @@ namespace DataQualityMonitoring
         {
             base.Initialize();
 
-            m_ticksPerFrame = Ticks.FromSeconds(1.0 / FramesPerSecond);
-
             Dictionary<string, string> settings = Settings;
             string setting;
 
@@ -291,6 +290,27 @@ namespace DataQualityMonitoring
 
             if (settings.TryGetValue("warnInterval", out setting))
                 m_warnInterval = Ticks.FromSeconds(double.Parse(setting));
+
+            m_warningTimer.Interval = m_warnInterval.ToMilliseconds();
+            m_warningTimer.Elapsed += m_warningTimer_Elapsed;
+        }
+
+        /// <summary>
+        /// Starts the <see cref="FlatlineTest"/>, if it is not already running.
+        /// </summary>
+        public override void Start()
+        {
+            base.Start();
+            m_warningTimer.Start();
+        }
+
+        /// <summary>
+        /// Stops the <see cref="FlatlineTest"/>.
+        /// </summary>
+        public override void Stop()
+        {
+            m_warningTimer.Stop();
+            base.Stop();
         }
 
         /// <summary>
@@ -315,13 +335,21 @@ namespace DataQualityMonitoring
                     else if (m_lastChange[key].Value != measurement.Value)
                         m_lastChange[key] = measurement;
                 }
+            }
+        }
 
+        private void m_warningTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            IMeasurement measurement;
+
+            foreach (MeasurementKey key in InputMeasurementKeys)
+            {
                 // check for how long the measurement has remained unchanged
                 if (m_lastChange.TryGetValue(key, out measurement))
                 {
                     Ticks diff = m_latestTimestamp - measurement.Timestamp;
-                    if (diff > m_minFlatline && diff % m_warnInterval <= m_ticksPerFrame)
-                        OnStatusMessage(measurement.ToString() + " unchanged for " + new DateTime(diff).Second.ToString() + " seconds.");
+                    if (diff >= m_minFlatline)
+                        OnStatusMessage(measurement.ToString() + " flatlined for " + ((int)diff.ToSeconds()).ToString() + " seconds.");
                 }
             }
         }
