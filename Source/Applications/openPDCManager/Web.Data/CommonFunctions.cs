@@ -242,6 +242,7 @@ using System.Runtime.Serialization.Formatters.Soap;
 using openPDCManager.Web.Data.BusinessObjects;
 using openPDCManager.Web.Data.Entities;
 using TVA.PhasorProtocols;
+using System.Xml.Serialization;
 
 namespace openPDCManager.Web.Data
 {
@@ -252,7 +253,8 @@ namespace openPDCManager.Web.Data
     {   		
 		//public static string GetReturnMessage(Message message)
 		//{
-			
+		//    XmlSerializer xs = new XmlSerializer(typeof(Message));
+		//    xs.Serialize(
 		//}
 
 		public static string GetExecutingAssemblyPath()
@@ -628,7 +630,7 @@ namespace openPDCManager.Web.Data
 			outputStreamList = (from item in resultTable.AsEnumerable()
 								select new OutputStream()
 								{
-									NodeID = item.Field<Guid>("NodeID").ToString(),
+									NodeID = item.Field<object>("NodeID").ToString(),
 									ID = item.Field<int>("ID"),
 									Acronym = item.Field<string>("Acronym"),
 									Name = item.Field<string>("Name"),
@@ -721,7 +723,7 @@ namespace openPDCManager.Web.Data
 			outputStreamMeasurementList = (from item in resultTable.AsEnumerable()
 										   select new OutputStreamMeasurement()
 										   {
-											   NodeID = item.Field<Guid>("NodeID").ToString(),
+											   NodeID = item.Field<object>("NodeID").ToString(),
 											   AdapterID = item.Field<int>("AdapterID"),
 											   ID = item.Field<int>("ID"),
 											   PointID = item.Field<int>("PointID"),
@@ -785,7 +787,7 @@ namespace openPDCManager.Web.Data
 			outputStreamDeviceList = (from item in resultTable.AsEnumerable()
 									  select new OutputStreamDevice()
 									  {
-										  NodeID = item.Field<Guid>("NodeID").ToString(),
+										  NodeID = item.Field<object>("NodeID").ToString(),
 										  AdapterID = item.Field<int>("AdapterID"),
 										  ID = item.Field<int>("ID"),
 										  Acronym = item.Field<string>("Acronym"),
@@ -959,7 +961,7 @@ namespace openPDCManager.Web.Data
 			outputStreamDevicePhasorList = (from item in resultTable.AsEnumerable()
 											select new OutputStreamDevicePhasor()
 											{
-												NodeID = item.Field<Guid>("NodeID").ToString(),
+												NodeID = item.Field<object>("NodeID").ToString(),
 												OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
 												ID = item.Field<int>("ID"),
 												Label = item.Field<string>("Label"),
@@ -1020,7 +1022,7 @@ namespace openPDCManager.Web.Data
 			outputStreamDeviceAnalogList = (from item in resultTable.AsEnumerable()
 											select new OutputStreamDeviceAnalog()
 											{
-												NodeID = item.Field<Guid>("NodeID").ToString(),
+												NodeID = item.Field<object>("NodeID").ToString(),
 												OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
 												ID = item.Field<int>("ID"),
 												Label = item.Field<string>("Label"),
@@ -1078,7 +1080,7 @@ namespace openPDCManager.Web.Data
 			outputStreamDeviceDigitalList = (from item in resultTable.AsEnumerable()
 											select new OutputStreamDeviceDigital()
 											{
-												NodeID = item.Field<Guid>("NodeID").ToString(),
+												NodeID = item.Field<object>("NodeID").ToString(),
 												OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
 												ID = item.Field<int>("ID"),
 												Label = item.Field<string>("Label"),												
@@ -1138,7 +1140,7 @@ namespace openPDCManager.Web.Data
 			historianList = (from item in resultTable.AsEnumerable()
 							 select new Historian()
 							 {
-								 NodeID = item.Field<Guid>("NodeID").ToString(),
+								 NodeID = item.Field<object>("NodeID").ToString(),
 								 ID = item.Field<int>("ID"),
 								 Acronym = item.Field<string>("Acronym"),
 								 Name = item.Field<string>("Name"),
@@ -1230,7 +1232,7 @@ namespace openPDCManager.Web.Data
 			nodeList = (from item in resultTable.AsEnumerable()
 						select new Node()
 						{
-							ID = item.Field<Guid>("ID").ToString(),
+							ID = item.Field<object>("ID").ToString(),
 							Name = item.Field<string>("Name"),
 							CompanyID = item.Field<int?>("CompanyID"),
 							Longitude = item.Field<decimal?>("Longitude"),
@@ -1476,7 +1478,7 @@ namespace openPDCManager.Web.Data
 			deviceList = (from item in resultTable.AsEnumerable()
 						  select new Device()
 						  {
-							  NodeID =	item.Field<Guid>("NodeID").ToString(),
+							  NodeID =	item.Field<object>("NodeID").ToString(),
 							  ID = item.Field<int>("ID"),
 							  ParentID = item.Field<int?>("ParentID"),
 							  Acronym = item.Field<string>("Acronym"),
@@ -1891,7 +1893,7 @@ namespace openPDCManager.Web.Data
 			measurementList = (from item in resultTable.AsEnumerable()
 							   select new Measurement()
 							   {
-								   SignalID = item.Field<Guid>("SignalID").ToString(),
+								   SignalID = item.Field<object>("SignalID").ToString(),
 								   HistorianID = item.Field<int?>("HistorianID"),
 								   PointID = item.Field<int>("PointID"),
 								   DeviceID = item.Field<int>("DeviceID"),
@@ -1930,7 +1932,7 @@ namespace openPDCManager.Web.Data
 			measurementList = (from item in resultTable.AsEnumerable()
 							   select new Measurement()
 							   {
-								   SignalID = item.Field<Guid>("SignalID").ToString(),
+								   SignalID = item.Field<object>("SignalID").ToString(),
 								   HistorianID = item.Field<int?>("HistorianID"),
 								   PointID = item.Field<int>("PointID"),
 								   DeviceID = item.Field<int>("DeviceID"),
@@ -2008,7 +2010,7 @@ namespace openPDCManager.Web.Data
 			measurementList = (from item in resultTable.AsEnumerable()
 							   select new Measurement()
 							   {
-								   SignalID = item.Field<Guid>("SignalID").ToString(),
+								   SignalID = item.Field<object>("SignalID").ToString(),
 								   HistorianID = item.Field<int?>("HistorianID"),
 								   PointID = item.Field<int>("PointID"),
 								   DeviceID = item.Field<int>("DeviceID"),
@@ -2254,7 +2256,7 @@ namespace openPDCManager.Web.Data
 			calculatedMeasurementList = (from item in resultTable.AsEnumerable()
 										 select new CalculatedMeasurement()
 										 {
-											 NodeId = item.Field<Guid>("NodeID").ToString(),
+											 NodeId = item.Field<object>("NodeID").ToString(),
 											 ID = item.Field<int>("ID"),
 											 Acronym = item.Field<string>("Acronym"),
 											 Name = item.Field<string>("Name"),
@@ -2351,7 +2353,7 @@ namespace openPDCManager.Web.Data
 			adapterList = (from item in resultTable.AsEnumerable()
 						   select new Adapter()
 						   {
-							   NodeID = item.Field<Guid>("NodeID").ToString(),
+							   NodeID = item.Field<object>("NodeID").ToString(),
 							   ID = item.Field<int>("ID"),
 							   AdapterName = item.Field<string>("AdapterName"),
 							   AssemblyName = item.Field<string>("AssemblyName"),
@@ -2445,7 +2447,7 @@ namespace openPDCManager.Web.Data
 											   where obj.Field<string>("AdapterType") == item.Field<string>("AdapterType")
 											   select new Adapter()
 											   {
-												   NodeID = obj.Field<Guid>("NodeID").ToString(),
+												   NodeID = obj.Field<object>("NodeID").ToString(),
 												   ID = obj.Field<int>("ID"),
 												   AdapterName = obj.Field<string>("AdapterName"),
 												   AssemblyName = obj.Field<string>("AssemblyName"),
@@ -2480,7 +2482,7 @@ namespace openPDCManager.Web.Data
 				mapDataList = (from item in resultTable.AsEnumerable()
 							   select new MapData()
 							   {
-								   NodeID = item.Field<Guid>("NodeID").ToString(),
+								   NodeID = item.Field<object>("NodeID").ToString(),
 								   ID = item.Field<int>("ID"),
 								   Acronym = item.Field<string>("Acronym"),
 								   Name = item.Field<string>("Name"),
