@@ -5112,7 +5112,7 @@
         <member name="M:TVA.Historian.Replication.ReplicationProviderBase.SaveSettings">
             <summary>
             Saves replication provider settings to the config file if the <see cref="P:TVA.Historian.Replication.ReplicationProviderBase.PersistSettings"/> property is set to true.
-            </summary>        
+            </summary>
         </member>
         <member name="M:TVA.Historian.Replication.ReplicationProviderBase.LoadSettings">
             <summary>
