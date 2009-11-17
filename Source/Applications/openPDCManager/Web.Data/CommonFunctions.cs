@@ -1639,9 +1639,9 @@ namespace openPDCManager.Web.Data
 			command.CommandType = CommandType.Text;
 
 			if (isNew)
-				command.CommandText = "Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, Image, Master, LoadOrder, Enabled) Values (@name, @companyID, @longitude, @latitude, @description, @image, @master, @loadOrder, @enabled)";
+				command.CommandText = "Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, [Image], Master, LoadOrder, Enabled) Values (@name, @companyID, @longitude, @latitude, @description, @image, @master, @loadOrder, @enabled)";
 			else
-				command.CommandText = "Update Node Set Name = @name, CompanyID = @companyID, Longitude = @longitude, Latitude = @latitude, Description = @description, Image = @image, Master = @master, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+				command.CommandText = "Update Node Set Name = @name, CompanyID = @companyID, Longitude = @longitude, Latitude = @latitude, Description = @description, [Image] = @image, Master = @master, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
 
 			command.Parameters.Add(AddWithValue(command, "@name", node.Name));
 			command.Parameters.Add(AddWithValue(command, "@companyID", node.CompanyID ?? (object)DBNull.Value));
