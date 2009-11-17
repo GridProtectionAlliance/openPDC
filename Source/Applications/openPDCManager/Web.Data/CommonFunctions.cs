@@ -863,15 +863,15 @@ namespace openPDCManager.Web.Data
 										 select new InterconnectionStatus()
 										 {
 											 InterConnection = item.Field<string>("InterconnectionName"),
-											 TotalDevices = "Total " + item.Field<int>("DeviceCount").ToString() + " Devices",
+											 TotalDevices = "Total " + item.Field<object>("DeviceCount").ToString() + " Devices",
 											 MemberStatusList = (from cs in resultSet.Tables["MemberSummary"].AsEnumerable()
 															  where cs.Field<string>("InterconnectionName") == item.Field<string>("InterconnectionName")
 															  select new MemberStatus()
 															  {
 																  CompanyAcronym = cs.Field<string>("CompanyAcronym"),
 																  CompanyName = cs.Field<string>("CompanyName"),
-																  MeasuredLines = cs.Field<int>("MeasuredLines"),
-																  TotalDevices = cs.Field<int>("DeviceCount")																  
+																  MeasuredLines = Convert.ToInt32(cs.Field<object>("MeasuredLines")),
+																  TotalDevices = Convert.ToInt32(cs.Field<object>("DeviceCount"))
 															  }).ToList()
 										 }).ToList();
 
