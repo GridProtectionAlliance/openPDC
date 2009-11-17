@@ -253,7 +253,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		public Browse()
 		{
 			InitializeComponent();
-			binding.MaxReceivedMessageSize = 65536 * 2;
+			binding.MaxReceivedMessageSize = 65536 * 10;
 			client = new PhasorDataServiceClient(binding, address);
 			client.GetDeviceListCompleted += new EventHandler<GetDeviceListCompletedEventArgs>(client_GetDeviceListCompleted);
 			Loaded += new RoutedEventHandler(Browse_Loaded);
@@ -275,7 +275,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		void Browse_Loaded(object sender, RoutedEventArgs e)
 		{
 			App app = (App)Application.Current;
-			Guid nodeID = app.NodeValue;
+			string nodeID = app.NodeValue;
 			client.GetDeviceListAsync(nodeID);	
 		}
 		void client_GetDeviceListCompleted(object sender, GetDeviceListCompletedEventArgs e)

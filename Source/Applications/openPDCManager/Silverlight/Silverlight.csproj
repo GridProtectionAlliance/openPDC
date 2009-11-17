@@ -94,6 +94,9 @@
     </Compile>
     <Compile Include="Converters\BooleanToColorConverter.cs" />
     <Compile Include="Converters\InvertBooleanConverter.cs" />
+    <Compile Include="Converters\StringToDictionaryConverter.cs" />
+    <Compile Include="Converters\StringToPhaseConverter.cs" />
+    <Compile Include="Converters\StringToPhasorTypeConverter.cs" />
     <Compile Include="Converters\StringToSymbolConverter.cs" />
     <Compile Include="MasterLayoutControl.xaml.cs">
       <DependentUpon>MasterLayoutControl.xaml</DependentUpon>
@@ -125,6 +128,9 @@
     <Compile Include="ModalDialogs\SelectMeasurement.xaml.cs">
       <DependentUpon>SelectMeasurement.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ModalDialogs\SystemMessages.xaml.cs">
+      <DependentUpon>SystemMessages.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Adapters\ActionAdapters.xaml.cs">
       <DependentUpon>ActionAdapters.xaml</DependentUpon>
     </Compile>
@@ -154,6 +160,9 @@
     </Compile>
     <Compile Include="Pages\Devices\Browse.xaml.cs">
       <DependentUpon>Browse.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\InputWizard.xaml.cs">
+      <DependentUpon>InputWizard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Devices\ManageOtherDevices.xaml.cs">
       <DependentUpon>ManageOtherDevices.xaml</DependentUpon>
@@ -242,6 +251,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
+    <Page Include="ModalDialogs\SystemMessages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
     <Page Include="Pages\Adapters\ActionAdapters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
@@ -279,6 +292,10 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
     <Page Include="Pages\Devices\Browse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="Pages\Devices\InputWizard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
@@ -339,23 +356,12 @@
     <None Include="Properties\AppManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\ActivityReport.png" />
     <Resource Include="Images\Add.png" />
-    <Resource Include="Images\CompanyLogo.png" />
     <Resource Include="Images\Configuration.png" />
-    <Resource Include="Images\Contacts.png" />
-    <Resource Include="Images\ContactUs.png" />
     <Resource Include="Images\Earth.png" />
-    <Resource Include="Images\Home.png" />
     <Resource Include="Images\List.png" />
     <Resource Include="Images\Mode.png" />
-    <Resource Include="Images\News.png" />
-    <Resource Include="Images\Overview.png" />
     <Resource Include="Images\Pmu.png" />
-    <Resource Include="Images\Request.png" />
-    <Resource Include="Images\RequestData.png" />
-    <Resource Include="Images\StatusReport.png" />
-    <Resource Include="Images\UptimeReport.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\OutOfBrowserSettings.xml" />
@@ -385,6 +391,14 @@
     <Resource Include="Images\Company.png" />
     <Resource Include="Images\Measure.png" />
     <Resource Include="Images\Vendor.png" />
+    <Resource Include="Images\Browse.png" />
+    <Resource Include="Images\Next.png" />
+    <Resource Include="Images\Previous.png" />
+    <Resource Include="Images\Error.png" />
+    <Resource Include="Images\Information.png" />
+    <Resource Include="Images\Ok.png" />
+    <Resource Include="Images\Success.png" />
+    <Resource Include="Images\Warning.png" />
     <Content Include="ServiceReferences.ClientConfig" />
   </ItemGroup>
   <ItemGroup>
@@ -409,6 +423,9 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Company.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.ConnectionSettings.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Device.datasource">
@@ -453,10 +470,16 @@
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Phasor.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Vendor.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.VendorDevice.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\PhasorDataService.xsd" />
@@ -465,9 +488,9 @@
     <None Include="Service References\PhasorDataServiceProxy\PhasorDataService2.xsd" />
     <None Include="Service References\PhasorDataServiceProxy\PhasorDataService3.xsd" />
     <None Include="Service References\PhasorDataServiceProxy\PhasorDataService4.xsd" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CustomControls\" />
+    <None Include="Service References\PhasorDataServiceProxy\PhasorDataService5.xsd" />
+    <None Include="Service References\PhasorDataServiceProxy\PhasorDataService51.xsd" />
+    <None Include="Service References\PhasorDataServiceProxy\PhasorDataService52.xsd" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

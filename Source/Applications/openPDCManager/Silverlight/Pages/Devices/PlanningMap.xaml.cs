@@ -255,7 +255,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		public PlanningMap()
 		{
 			InitializeComponent();
-			binding.MaxReceivedMessageSize = 65536 * 3;
+			binding.MaxReceivedMessageSize = 65536 * 10;
 			client = new PhasorDataServiceClient(binding, address);
 			client.GetOtherDeviceListCompleted += new System.EventHandler<GetOtherDeviceListCompletedEventArgs>(client_GetOtherDeviceListCompleted);
 			client.GetMapDataCompleted += new EventHandler<GetMapDataCompletedEventArgs>(client_GetMapDataCompleted);

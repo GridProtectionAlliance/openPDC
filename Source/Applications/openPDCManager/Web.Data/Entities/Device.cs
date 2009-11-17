@@ -235,7 +235,8 @@ namespace openPDCManager.Web.Data.Entities
 {
 	public class Device
 	{
-		public Guid NodeID { get; set; }
+		//public Guid NodeID { get; set; }
+		public string NodeID { get; set; }
 		public int ID { get; set; }
 		public int? ParentID { get; set; }
 		public string Acronym { get; set; }

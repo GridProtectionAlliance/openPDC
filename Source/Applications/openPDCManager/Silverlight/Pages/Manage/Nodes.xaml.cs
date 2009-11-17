@@ -246,7 +246,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		PhasorDataServiceClient client;
 
 		bool inEditMode = false;
-		Guid nodeID = Guid.Empty;
+		string nodeID = string.Empty;
 
 		public Nodes()
 		{
@@ -299,7 +299,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			node.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
 			node.Enabled = (bool)CheckboxEnabled.IsChecked;
 
-			if (inEditMode == true && nodeID != Guid.Empty)
+			if (inEditMode == true && !string.IsNullOrEmpty(nodeID))
 			{
 				node.ID = nodeID;
 				client.SaveNodeAsync(node, false);
@@ -332,7 +332,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			GridNodeDetail.DataContext = new Node();
 			ComboBoxCompany.SelectedIndex = 0;
 			inEditMode = false;
-			nodeID = Guid.Empty;
+			nodeID = string.Empty;
 			ListBoxNodeList.SelectedIndex = -1;
 		}
 

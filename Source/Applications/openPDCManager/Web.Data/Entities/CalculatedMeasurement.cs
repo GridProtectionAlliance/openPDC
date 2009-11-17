@@ -237,7 +237,7 @@ namespace openPDCManager.Web.Data.Entities
 {
     public class CalculatedMeasurement
     {
-		public Guid NodeId { get; set; }
+		public string NodeId { get; set; }
         public int ID { get; set; }
 		public string Acronym { get; set; }
         public string Name { get; set; }

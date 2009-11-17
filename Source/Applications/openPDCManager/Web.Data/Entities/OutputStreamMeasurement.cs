@@ -235,7 +235,7 @@ namespace openPDCManager.Web.Data.Entities
 {
 	public class OutputStreamMeasurement
 	{
-		public Guid NodeID { get; set; }
+		public string NodeID { get; set; }
 		public int AdapterID { get; set; }
 		public int ID { get; set; }
 		public int? HistorianID { get; set; }

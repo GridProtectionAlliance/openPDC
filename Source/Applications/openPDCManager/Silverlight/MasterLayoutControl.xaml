@@ -57,7 +57,12 @@
                                             <Image Source="Images/Pmu.png" />
                                         </igMenu:XamWebMenuItem.Icon>
                                     </igMenu:XamWebMenuItem>
-                                    <igMenu:XamWebSeparator />
+                                    <igMenu:XamWebMenuItem Header="Configuration Wizard" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Devices/InputWizard.xaml">
+                                        <igMenu:XamWebMenuItem.Icon>
+                                            <Image Source="Images/Configuration.png" />
+                                        </igMenu:XamWebMenuItem.Icon>
+                                    </igMenu:XamWebMenuItem>
+                            <igMenu:XamWebSeparator />
                                     <igMenu:XamWebMenuItem Header="Active Map" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Devices/ActiveMap.xaml">
                                         <igMenu:XamWebMenuItem.Icon>
                                             <Image Source="Images/Earth.png" />
@@ -146,10 +151,11 @@
                                 </igMenu:XamWebMenuItem.Icon>
                             </igMenu:XamWebMenuItem>
                         </igMenu:XamWebMenuItem>
+                        <igMenu:XamWebMenuItem Header="Help" Style="{StaticResource XamWebMenuItemStyleMainMenu}" Click="XamWebMenuItem_Click" />
                     </igMenu:XamWebMenu>
                             <TextBlock Text="" Width="{StaticResource XXXSmallItemSize}" />
                             <TextBlock Text="Node: " FontWeight="Bold" Margin="5" Foreground="#FFFFFFFF" />
-                            <ComboBox x:Name="ComboboxNode" Margin="5" DisplayMemberPath="Value" Width="{StaticResource XLargeItemSize}" />
+                            <ComboBox x:Name="ComboboxNode" Margin="5" DisplayMemberPath="Value" Width="{StaticResource LargerItemSize}" />
                 </StackPanel>
                     </StackPanel>
                 <!--</StackPanel>-->

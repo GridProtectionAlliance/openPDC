@@ -252,7 +252,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		public OtherDevices()
 		{
 			InitializeComponent();
-			binding.MaxReceivedMessageSize = 65536 * 2;
+			binding.MaxReceivedMessageSize = 65536 * 10;
 			client = new PhasorDataServiceClient(binding, address);
 			client.GetOtherDeviceListCompleted += new EventHandler<GetOtherDeviceListCompletedEventArgs>(client_GetOtherDeviceListCompleted);
 			Loaded += new RoutedEventHandler(OtherDevices_Loaded);

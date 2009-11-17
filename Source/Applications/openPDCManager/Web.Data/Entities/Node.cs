@@ -235,7 +235,7 @@ namespace openPDCManager.Web.Data.Entities
 {
 	public class Node
 	{
-		public Guid ID { get; set; }
+		public string ID { get; set; }
 		public string Name { get; set; }
 		public int? CompanyID { get; set; }
 		public decimal? Longitude { get; set; }

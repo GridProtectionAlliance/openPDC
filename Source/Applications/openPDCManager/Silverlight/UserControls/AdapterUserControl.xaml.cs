@@ -247,7 +247,7 @@ namespace openPDCManager.Silverlight.UserControls
 		bool inEditMode = false;
 		int adapterID = 0;
 		AdapterType adapterType;
-		Guid nodeID;
+		string nodeID;
 
 		public AdapterUserControl()
 		{
@@ -286,7 +286,7 @@ namespace openPDCManager.Silverlight.UserControls
 			{
 				Adapter selectedAdapter = ListBoxAdapterList.SelectedItem as Adapter;
 				GridAdapterDetail.DataContext = selectedAdapter;
-				ComboboxNode.SelectedItem = new KeyValuePair<Guid, string>(selectedAdapter.NodeID, selectedAdapter.NodeName);
+				ComboboxNode.SelectedItem = new KeyValuePair<string, string>(selectedAdapter.NodeID, selectedAdapter.NodeName);
 				inEditMode = true;
 				adapterID = selectedAdapter.ID;
 			}
@@ -306,7 +306,7 @@ namespace openPDCManager.Silverlight.UserControls
 		{
 			Adapter adapter = new Adapter();
 			adapter.adapterType = adapterType;
-			adapter.NodeID = ((KeyValuePair<Guid, string>)ComboboxNode.SelectedItem).Key;
+			adapter.NodeID = ((KeyValuePair<string, string>)ComboboxNode.SelectedItem).Key;
 			adapter.AdapterName = TextBoxAdapterName.Text;
 			adapter.AssemblyName = TextBoxAssemblyName.Text;
 			adapter.TypeName = TextBoxTypeName.Text;

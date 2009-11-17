@@ -263,10 +263,43 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			client.GetTimeZonesCompleted += new EventHandler<GetTimeZonesCompletedEventArgs>(client_GetTimeZonesCompleted);
 			client.SaveDeviceCompleted += new EventHandler<SaveDeviceCompletedEventArgs>(client_SaveDeviceCompleted);
 			client.GetDeviceByDeviceIDCompleted += new EventHandler<GetDeviceByDeviceIDCompletedEventArgs>(client_GetDeviceByDeviceIDCompleted);
+			client.GetConcentratorDeviceCompleted += new EventHandler<GetConcentratorDeviceCompletedEventArgs>(client_GetConcentratorDeviceCompleted);
+			client.GetDeviceListByParentIDCompleted += new EventHandler<GetDeviceListByParentIDCompletedEventArgs>(client_GetDeviceListByParentIDCompleted);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
+			ButtonView.Click += new RoutedEventHandler(ButtonView_Click);
+			ComboboxParent.SelectionChanged += new SelectionChangedEventHandler(ComboboxParent_SelectionChanged);
 		}
 
+		void client_GetDeviceListByParentIDCompleted(object sender, GetDeviceListByParentIDCompletedEventArgs e)
+		{
+			if (e.Error == null)
+			{
+				ListBoxDeviceList.ItemsSource = e.Result;
+			}
+		}
+		void ButtonView_Click(object sender, RoutedEventArgs e)
+		{
+			if (((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key != 0)
+				NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?did=" + ((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key.ToString(), UriKind.Relative));
+		}
+		void client_GetConcentratorDeviceCompleted(object sender, GetConcentratorDeviceCompletedEventArgs e)
+		{
+			if (e.Error == null && e.Result != null)
+			{
+				Device device = new Device();
+				device = e.Result;
+				ToolTip toolTip = new ToolTip();
+				toolTip.DataContext = device;				
+				toolTip.Template = Application.Current.Resources["PdcInfoToolTipTemplate"] as ControlTemplate;
+				ToolTipService.SetToolTip(ButtonView, toolTip);				
+			}
+		}
+		void ComboboxParent_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key != 0)
+				client.GetConcentratorDeviceAsync(((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key);			
+		}
 		void client_GetDeviceByDeviceIDCompleted(object sender, GetDeviceByDeviceIDCompletedEventArgs e)
 		{
 			Device deviceToEdit = new Device();
@@ -274,7 +307,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			{
 				deviceToEdit = e.Result;
 				GridDeviceDetail.DataContext = deviceToEdit;
-				ComboboxNode.SelectedItem = new KeyValuePair<Guid, string>(deviceToEdit.NodeID, deviceToEdit.NodeName);
+				ComboboxNode.SelectedItem = new KeyValuePair<string, string>(deviceToEdit.NodeID, deviceToEdit.NodeName);
 				if (deviceToEdit.CompanyID.HasValue)
 					ComboboxCompany.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.CompanyID, deviceToEdit.CompanyName);
 				else
@@ -303,6 +336,15 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					ComboboxVendorDevice.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.VendorDeviceID, deviceToEdit.VendorDeviceName);
 				else
 					ComboboxVendorDevice.SelectedIndex = 0;
+
+				if (deviceToEdit.IsConcentrator)	//then display list of devices.
+				{
+					client.GetDeviceListByParentIDAsync(deviceToEdit.ID);					
+					StackPanelDeviceList.Visibility = Visibility.Visible;
+					TextBlockTitle.Text = "Devices For Concentrator: " + deviceToEdit.Acronym;
+				}
+				else
+					StackPanelDeviceList.Visibility = Visibility.Collapsed;
 			}
 		}
 		void client_SaveDeviceCompleted(object sender, SaveDeviceCompletedEventArgs e)
@@ -322,7 +364,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Device device = new Device();
-			device.NodeID = ((KeyValuePair<Guid, string>)ComboboxNode.SelectedItem).Key;
+			device.NodeID = ((KeyValuePair<string, string>)ComboboxNode.SelectedItem).Key;
 			device.ParentID = ((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key;
 			device.Acronym = TextBoxAcronym.Text;
 			device.Name = TextBoxName.Text;
@@ -437,6 +479,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			{
 				deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
 				inEditMode = true;
+				System.Threading.Thread.Sleep(1000);
 				client.GetDeviceByDeviceIDAsync(deviceID);
 			}
 		}
@@ -457,6 +500,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+		}
+
+		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+		{
+			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
+			NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?did=" + deviceId, UriKind.Relative));
 		}
 
 	}

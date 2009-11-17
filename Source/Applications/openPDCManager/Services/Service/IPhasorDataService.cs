@@ -236,6 +236,7 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using openPDCManager.Web.Data.Entities;
 using openPDCManager.Web.Data.BusinessObjects;
+using System.IO;
 
 namespace PCS.Services.Service
 {
@@ -243,50 +244,9 @@ namespace PCS.Services.Service
 	/// <summary>
 	/// Interface defines service and operation contract between WCF service and its consumers.
 	/// </summary>
-    [ServiceContract]
-    public interface IPhasorDataService
-    {
-		//[OperationContract]
-		//List<Pdc> GetPdcList();
-
-		//[OperationContract]
-		//List<BasicPmuInfo> GetValidatedPmuList();
-
-		//[OperationContract]
-		//List<BasicPmuInfo> GetAllPmuList();
-
-		//[OperationContract]
-		//List<Historian> GetHistorianList();
-
-		//[OperationContract]
-		//List<CalculatedMeasurement> GetCalculatedMeasurementList();
-
-		//[OperationContract]
-		//List<OutputStream> GetOutputStreamList();
-
-		//[OperationContract]
-		//Dictionary<int, string> GetCompanyList();
-		
-		//[OperationContract]
-		//Dictionary<int, string> GetVendorList();
-
-		//[OperationContract]
-		//Dictionary<int, string> GetProtocolList();
-
-		//[OperationContract]
-		//List<string> GetTransportProtocolList();
-
-		//[OperationContract]
-		//List<string> GetParityList();
-
-		//[OperationContract]
-		//List<string> GetStopBitList();
-
-		//[OperationContract]
-		//Dictionary<string, string> GetTimeZonesList();
-
-		//[OperationContract]
-		//List<StatusReport> GetStatusReportList();
+	[ServiceContract]
+	public interface IPhasorDataService
+	{
 
 		#region " Manage Node Code"
 
@@ -294,7 +254,7 @@ namespace PCS.Services.Service
 		List<Node> GetNodeList();
 
 		[OperationContract]
-		Dictionary<Guid, string> GetNodes(bool enabledOnly, bool isOptional);
+		Dictionary<string, string> GetNodes(bool enabledOnly, bool isOptional);
 
 		[OperationContract]
 		string SaveNode(Node node, bool isNew);
@@ -317,7 +277,7 @@ namespace PCS.Services.Service
 		#region " Manage Historian Code"
 
 		[OperationContract]
-		List<Historian> GetHistorianList(Guid nodeID);
+		List<Historian> GetHistorianList(string nodeID);
 
 		[OperationContract]
 		string SaveHistorian(Historian historian, bool isNew);
@@ -354,9 +314,12 @@ namespace PCS.Services.Service
 		#endregion
 
 		#region " Manage Device Code"
-			
+
 		[OperationContract]
-		List<Device> GetDeviceList(Guid nodeID);
+		List<Device> GetDeviceList(string nodeID);
+
+		[OperationContract]
+		List<Device> GetDeviceListByParentID(int parentID);
 
 		[OperationContract]
 		Dictionary<int, string> GetDevices(DeviceType deviceType, bool isOptional);
@@ -368,7 +331,13 @@ namespace PCS.Services.Service
 		Device GetDeviceByDeviceID(int deviceID);
 
 		[OperationContract]
+		Device GetDeviceByAcronym(string acronym);
+
+		[OperationContract]
 		Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID);
+
+		[OperationContract]
+		Device GetConcentratorDevice(int deviceID);
 
 		#endregion
 
@@ -388,7 +357,7 @@ namespace PCS.Services.Service
 		#region " Manage Measurements Code"
 
 		[OperationContract]
-		List<Measurement> GetMeasurementList(Guid nodeID);
+		List<Measurement> GetMeasurementList(string nodeID);
 
 		[OperationContract]
 		string SaveMeasurement(Measurement measurement, bool isNew);
@@ -397,10 +366,10 @@ namespace PCS.Services.Service
 		List<Measurement> GetMeasurementsByDevice(int deviceID);
 
 		[OperationContract]
-		List<Measurement> GetMeasurementsForOutputStream(Guid nodeID, int outputStreamID);
+		List<Measurement> GetMeasurementsForOutputStream(string nodeID, int outputStreamID);
 
 		#endregion
-								
+
 		#region " Manage Other Device Code"
 
 		[OperationContract]
@@ -438,7 +407,7 @@ namespace PCS.Services.Service
 		#region " Manage Calculated Measurements Code"
 
 		[OperationContract]
-		List<CalculatedMeasurement> GetCalculatedMeasurementList(Guid nodeID);
+		List<CalculatedMeasurement> GetCalculatedMeasurementList(string nodeID);
 
 		[OperationContract]
 		string SaveCalculatedMeasurement(CalculatedMeasurement calculatedMeasurement, bool isNew);
@@ -448,7 +417,7 @@ namespace PCS.Services.Service
 		#region " Manage Custom Adapters Code"
 
 		[OperationContract]
-		List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType, Guid nodeID);
+		List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType, string nodeID);
 
 		[OperationContract]
 		string SaveAdapter(Adapter adapter, bool isNew);
@@ -529,5 +498,21 @@ namespace PCS.Services.Service
 
 		[OperationContract]
 		List<MapData> GetMapData(MapType mapType);
+
+		[OperationContract]
+		ConnectionSettings GetConnectionSettings(Stream inputStream);
+
+		[OperationContract]
+		List<WizardDeviceInfo> GetWizardConfigurationInfo(Stream inputStream);
+
+		[OperationContract]
+		string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID);
+
+		[OperationContract]
+		string GetExecutingAssemblyPath();
+
+		[OperationContract]
+		string SaveIniFile(Stream input);
+
 	}
 }

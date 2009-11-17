@@ -247,7 +247,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 		bool inEditMode;
 		int historianID;
-		Guid nodeID;
+		string nodeID;
 
 		public Historians()
 		{
@@ -286,7 +286,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			{
 				Historian selectedHistorian = ListBoxHistorianList.SelectedItem as Historian;
 				GridHistorianDetail.DataContext = selectedHistorian;
-				ComboBoxNode.SelectedItem = new KeyValuePair<Guid, string>(selectedHistorian.NodeID, selectedHistorian.NodeName);
+				ComboBoxNode.SelectedItem = new KeyValuePair<string, string>(selectedHistorian.NodeID, selectedHistorian.NodeName);
 				inEditMode = true;
 				historianID = selectedHistorian.ID;
 			}
@@ -301,7 +301,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Historian historian = new Historian();
-			historian.NodeID = ((KeyValuePair<Guid, string>)ComboBoxNode.SelectedItem).Key;
+			historian.NodeID = ((KeyValuePair<string, string>)ComboBoxNode.SelectedItem).Key;
 			historian.Acronym = TextBoxAcronym.Text;
 			historian.Name = TextBoxName.Text;
 			historian.AssemblyName = TextBoxAssemblyName.Text;

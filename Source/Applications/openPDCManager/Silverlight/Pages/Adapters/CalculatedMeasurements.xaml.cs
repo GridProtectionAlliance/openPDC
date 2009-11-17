@@ -247,7 +247,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 		bool inEditMode = false;
 		int calculatedMeasurementID = 0;
-		Guid nodeID;
+		string nodeID;
 
 		public CalculatedMeasurements()
 		{
@@ -285,7 +285,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			{
 				CalculatedMeasurement selectedCalculatedMeasurement = ListBoxCalculatedMeasurementList.SelectedItem as CalculatedMeasurement;
 				GridCalculatedMeasurementDetail.DataContext = selectedCalculatedMeasurement;
-				ComboBoxNode.SelectedItem = new KeyValuePair<Guid, string>(selectedCalculatedMeasurement.NodeId, selectedCalculatedMeasurement.NodeName);
+				ComboBoxNode.SelectedItem = new KeyValuePair<string, string>(selectedCalculatedMeasurement.NodeId, selectedCalculatedMeasurement.NodeName);
 				calculatedMeasurementID = selectedCalculatedMeasurement.ID;
 				inEditMode = true;
 			}
@@ -297,7 +297,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			CalculatedMeasurement calculatedMeasurement = new CalculatedMeasurement();
-			calculatedMeasurement.NodeId = ((KeyValuePair<Guid, string>)ComboBoxNode.SelectedItem).Key;
+			calculatedMeasurement.NodeId = ((KeyValuePair<string, string>)ComboBoxNode.SelectedItem).Key;
 			calculatedMeasurement.Acronym = TextBoxAcronym.Text;
 			calculatedMeasurement.Name = TextBoxName.Text;
 			calculatedMeasurement.AssemblyName = TextBoxAssemblyName.Text;

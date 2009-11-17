@@ -38,13 +38,15 @@
             
     		<ControlTemplate x:Key="SmallImageButtonTemplate" TargetType="Button">
     			<Image Source="{TemplateBinding Content}" Width="16" Height="16" />
-    		</ControlTemplate>
+    		</ControlTemplate>            
+            
             <ControlTemplate x:Key="ImageButtonTemplate" TargetType="Button">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{TemplateBinding Content}" Width="16" Height="16" Margin="2" />    
                     <TextBlock Text="{TemplateBinding Tag}" FontWeight="Bold" FontSize="{StaticResource LargeTextSize}"/>
                 </StackPanel>                
             </ControlTemplate>
+
             <ControlTemplate x:Key="GrayPushPinButtonTemplate" TargetType="Button">
                 <Grid>              
                     <Ellipse Width="20" Height="20" Fill="{StaticResource GrayRadialGradientBrush}"/>                    
@@ -114,6 +116,39 @@
                                 <TextBlock Text="{Binding Path=Longitude}" Width="220" Padding="2" Grid.Row="3" Grid.Column="1"/>
                                 <TextBlock Text="Latitude:" Width="80" TextAlignment="Right" Padding="2" FontWeight="Bold" Grid.Row="4" Grid.Column="0"/>
                                 <TextBlock Text="{Binding Path=Latitude}" Width="220" Padding="2" Grid.Row="4" Grid.Column="1"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </ControlTemplate>
+            
+            <ControlTemplate x:Key="PdcInfoToolTipTemplate" TargetType="ToolTip">
+                <Border Style="{StaticResource PortletBorderStyle}">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock HorizontalAlignment="Center" Text="{Binding Path=Acronym}" Style="{StaticResource LargeWhiteTextStyle}" Padding="1"/>
+                        <Border BorderThickness="0" Background="{StaticResource PortletBackgroundBrush}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="21"/>
+                                    <RowDefinition Height="21"/>
+                                    <RowDefinition Height="21"/>
+                                    <RowDefinition Height="21"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="200"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Name:" TextAlignment="Right" Padding="2" FontWeight="Bold" Grid.Row="0" Grid.Column="0"/>
+                                <TextBlock Text="{Binding Path=Name}" Padding="2" Grid.Row="0" Grid.Column="1"/>
+                                <TextBlock Text="Company:" TextAlignment="Right" Padding="2" FontWeight="Bold" Grid.Row="1" Grid.Column="0"/>
+                                <TextBlock Text="{Binding Path=CompanyName}" Padding="2" Grid.Row="1" Grid.Column="1"/>
+                                <TextBlock Text="Protocol:" TextAlignment="Right" Padding="2" FontWeight="Bold" Grid.Row="2" Grid.Column="0"/>
+                                <TextBlock Text="{Binding Path=ProtocolName}" Padding="2" Grid.Row="2" Grid.Column="1"/>
+                                <TextBlock Text="Vendor Device:" TextAlignment="Right" Padding="2" FontWeight="Bold" Grid.Row="3" Grid.Column="0"/>
+                                <TextBlock Text="{Binding Path=VendorDeviceName}" Padding="2" Grid.Row="3" Grid.Column="1"/>
+                                <TextBlock Text="Node Name:" TextAlignment="Right" Padding="2" FontWeight="Bold" Grid.Row="4" Grid.Column="0"/>
+                                <TextBlock Text="{Binding Path=NodeName}" Padding="2" Grid.Row="4" Grid.Column="1"/>                                
                             </Grid>
                         </Border>
                     </StackPanel>

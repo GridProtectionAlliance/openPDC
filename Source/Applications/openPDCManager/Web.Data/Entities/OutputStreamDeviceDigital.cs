@@ -238,7 +238,7 @@ namespace openPDCManager.Web.Data.Entities
 {
 	public class OutputStreamDeviceDigital
 	{
-		public Guid NodeID { get; set; }
+		public string NodeID { get; set; }
 		public int OutputStreamDeviceID { get; set; }
 		public int ID { get; set; }
 		public string Label { get; set; }		

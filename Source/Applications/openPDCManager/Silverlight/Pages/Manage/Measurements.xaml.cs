@@ -246,7 +246,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		PhasorDataServiceClient client;
 
 		bool inEditMode = false;
-		Guid signalID = Guid.Empty;
+		string signalID = string.Empty;
 		int deviceID = 0;
 
 		public Measurements()
@@ -351,7 +351,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			measurement.Description = TextBoxDescription.Text;
 			measurement.Enabled = (bool)CheckboxEnabled.IsChecked;
 
-			if (inEditMode == true && signalID != Guid.Empty)
+			if (inEditMode == true && !string.IsNullOrEmpty(signalID))
 			{
 				measurement.SignalID = signalID;
 				client.SaveMeasurementAsync(measurement, false);
@@ -435,7 +435,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			ComboBoxPhasorSource.SelectedIndex = 0;
 			ComboBoxSignalType.SelectedIndex = 0;
 			inEditMode = false;
-			signalID = Guid.Empty;
+			signalID = string.Empty;
 			ListBoxMeasurementList.SelectedIndex = -1;
 		}
 		// Executes when the user navigates to this page.

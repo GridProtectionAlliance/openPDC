@@ -264,9 +264,18 @@ namespace openPDCManager.Silverlight.Pages
 			duplexClient.SendToServiceCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(duplexClient_SendToServiceCompleted);
 			duplexClient.SendToClientReceived += new EventHandler<SendToClientReceivedEventArgs>(duplexClient_SendToClientReceived);
 			duplexClient.SendToServiceAsync(new ConnectMessage());
-            
-            InitializeComponent();            
+
+            InitializeComponent();
+
+			ButtonShowMessage.Click += new RoutedEventHandler(ButtonShowMessage_Click);
+			ButtonShowMessage.Visibility = Visibility.Collapsed;
         }
+
+		void ButtonShowMessage_Click(object sender, RoutedEventArgs e)
+		{
+			//openPDCManager.Silverlight.ModalDialogs.SystemMessages sm = new openPDCManager.Silverlight.ModalDialogs.SystemMessages();
+			//sm.Show();			
+		}
 		void duplexClient_SendToServiceCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
 		{            
 		    if (e.Error == null)
@@ -296,6 +305,7 @@ namespace openPDCManager.Silverlight.Pages
         // Executes when the user navigates to this page.
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+			
         }
 
     }

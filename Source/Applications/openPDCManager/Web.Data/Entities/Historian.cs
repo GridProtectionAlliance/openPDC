@@ -237,7 +237,7 @@ namespace openPDCManager.Web.Data.Entities
 {
     public class Historian
     {
-		public Guid NodeID { get; set; }
+		public string NodeID { get; set; }
         public int ID { get; set; }
         public string Acronym { get; set; }
         public string Name { get; set; }

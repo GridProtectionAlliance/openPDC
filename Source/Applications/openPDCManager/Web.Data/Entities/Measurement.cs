@@ -235,7 +235,7 @@ namespace openPDCManager.Web.Data.Entities
 {
 	public class Measurement
 	{
-		public Guid SignalID { get; set; }
+		public string SignalID { get; set; }
 		public int? HistorianID { get; set; }
 		public int PointID { get; set; }
 		public int? DeviceID { get; set; }

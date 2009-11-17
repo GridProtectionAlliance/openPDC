@@ -235,7 +235,7 @@ namespace openPDCManager.Web.Data.Entities
 {
 	public class Adapter
 	{
-		public Guid NodeID { get; set; }
+		public string NodeID { get; set; }
 		public int ID { get; set; }
 		public string AdapterName { get; set; }
 		public string AssemblyName { get; set; }

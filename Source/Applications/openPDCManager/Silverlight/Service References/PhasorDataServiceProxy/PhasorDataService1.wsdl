@@ -4,11 +4,32 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
       <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
       <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/Message" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/TVA.PhasorProtocols" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/TVA.Communication" />
     </xsd:schema>
   </wsdl:types>
+  <wsdl:message name="IPhasorDataService_GetOtherDeviceByDeviceID_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOtherDeviceByDeviceID" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOtherDeviceByDeviceID_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOtherDeviceByDeviceIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetInterconnections_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetInterconnections" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetInterconnections_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetInterconnectionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetProtocols_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetProtocols" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetProtocols_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetProtocolsResponse" />
+  </wsdl:message>
   <wsdl:message name="IPhasorDataService_GetSignalTypes_InputMessage">
     <wsdl:part name="parameters" element="tns:GetSignalTypes" />
   </wsdl:message>
@@ -141,6 +162,48 @@
   <wsdl:message name="IPhasorDataService_GetMapData_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetMapDataResponse" />
   </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetConnectionSettings_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetConnectionSettings" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetConnectionSettings_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetConnectionSettingsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetWizardConfigurationInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetWizardConfigurationInfo" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetWizardConfigurationInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetWizardConfigurationInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveWizardConfigurationInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveWizardConfigurationInfo" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveWizardConfigurationInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveWizardConfigurationInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetExecutingAssemblyPath_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetExecutingAssemblyPath" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetExecutingAssemblyPath_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetExecutingAssemblyPathResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveIniFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveIniFile" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveIniFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveIniFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetTestData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTestData" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetTestData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTestDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveTestData_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveTestData" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveTestData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveTestDataResponse" />
+  </wsdl:message>
   <wsdl:message name="IPhasorDataService_GetNodeList_InputMessage">
     <wsdl:part name="parameters" element="tns:GetNodeList" />
   </wsdl:message>
@@ -237,6 +300,12 @@
   <wsdl:message name="IPhasorDataService_GetDeviceList_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetDeviceListResponse" />
   </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceListByParentID_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceListByParentID" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceListByParentID_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceListByParentIDResponse" />
+  </wsdl:message>
   <wsdl:message name="IPhasorDataService_GetDevices_InputMessage">
     <wsdl:part name="parameters" element="tns:GetDevices" />
   </wsdl:message>
@@ -255,11 +324,23 @@
   <wsdl:message name="IPhasorDataService_GetDeviceByDeviceID_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetDeviceByDeviceIDResponse" />
   </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceByAcronym_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceByAcronym" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceByAcronym_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceByAcronymResponse" />
+  </wsdl:message>
   <wsdl:message name="IPhasorDataService_GetDevicesForOutputStream_InputMessage">
     <wsdl:part name="parameters" element="tns:GetDevicesForOutputStream" />
   </wsdl:message>
   <wsdl:message name="IPhasorDataService_GetDevicesForOutputStream_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetDevicesForOutputStreamResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetConcentratorDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetConcentratorDevice" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetConcentratorDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetConcentratorDeviceResponse" />
   </wsdl:message>
   <wsdl:message name="IPhasorDataService_GetPhasorList_InputMessage">
     <wsdl:part name="parameters" element="tns:GetPhasorList" />
@@ -315,25 +396,19 @@
   <wsdl:message name="IPhasorDataService_SaveOtherDevice_OutputMessage">
     <wsdl:part name="parameters" element="tns:SaveOtherDeviceResponse" />
   </wsdl:message>
-  <wsdl:message name="IPhasorDataService_GetOtherDeviceByDeviceID_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetOtherDeviceByDeviceID" />
-  </wsdl:message>
-  <wsdl:message name="IPhasorDataService_GetOtherDeviceByDeviceID_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetOtherDeviceByDeviceIDResponse" />
-  </wsdl:message>
-  <wsdl:message name="IPhasorDataService_GetInterconnections_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetInterconnections" />
-  </wsdl:message>
-  <wsdl:message name="IPhasorDataService_GetInterconnections_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetInterconnectionsResponse" />
-  </wsdl:message>
-  <wsdl:message name="IPhasorDataService_GetProtocols_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetProtocols" />
-  </wsdl:message>
-  <wsdl:message name="IPhasorDataService_GetProtocols_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetProtocolsResponse" />
-  </wsdl:message>
   <wsdl:portType name="IPhasorDataService">
+    <wsdl:operation name="GetOtherDeviceByDeviceID">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetOtherDeviceByDeviceID" message="tns:IPhasorDataService_GetOtherDeviceByDeviceID_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetOtherDeviceByDeviceIDResponse" message="tns:IPhasorDataService_GetOtherDeviceByDeviceID_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetInterconnections">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetInterconnections" message="tns:IPhasorDataService_GetInterconnections_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetInterconnectionsResponse" message="tns:IPhasorDataService_GetInterconnections_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProtocols">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocols" message="tns:IPhasorDataService_GetProtocols_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocolsResponse" message="tns:IPhasorDataService_GetProtocols_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="GetSignalTypes">
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetSignalTypes" message="tns:IPhasorDataService_GetSignalTypes_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetSignalTypesResponse" message="tns:IPhasorDataService_GetSignalTypes_OutputMessage" />
@@ -422,6 +497,34 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetMapData" message="tns:IPhasorDataService_GetMapData_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetMapDataResponse" message="tns:IPhasorDataService_GetMapData_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="GetConnectionSettings">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetConnectionSettings" message="tns:IPhasorDataService_GetConnectionSettings_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetConnectionSettingsResponse" message="tns:IPhasorDataService_GetConnectionSettings_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetWizardConfigurationInfo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetWizardConfigurationInfo" message="tns:IPhasorDataService_GetWizardConfigurationInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetWizardConfigurationInfoResponse" message="tns:IPhasorDataService_GetWizardConfigurationInfo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveWizardConfigurationInfo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfo" message="tns:IPhasorDataService_SaveWizardConfigurationInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfoResponse" message="tns:IPhasorDataService_SaveWizardConfigurationInfo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetExecutingAssemblyPath">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetExecutingAssemblyPath" message="tns:IPhasorDataService_GetExecutingAssemblyPath_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetExecutingAssemblyPathResponse" message="tns:IPhasorDataService_GetExecutingAssemblyPath_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveIniFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveIniFile" message="tns:IPhasorDataService_SaveIniFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveIniFileResponse" message="tns:IPhasorDataService_SaveIniFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTestData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetTestData" message="tns:IPhasorDataService_GetTestData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetTestDataResponse" message="tns:IPhasorDataService_GetTestData_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveTestData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveTestData" message="tns:IPhasorDataService_SaveTestData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveTestDataResponse" message="tns:IPhasorDataService_SaveTestData_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="GetNodeList">
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetNodeList" message="tns:IPhasorDataService_GetNodeList_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetNodeListResponse" message="tns:IPhasorDataService_GetNodeList_OutputMessage" />
@@ -486,6 +589,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceList" message="tns:IPhasorDataService_GetDeviceList_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceListResponse" message="tns:IPhasorDataService_GetDeviceList_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="GetDeviceListByParentID">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceListByParentID" message="tns:IPhasorDataService_GetDeviceListByParentID_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceListByParentIDResponse" message="tns:IPhasorDataService_GetDeviceListByParentID_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="GetDevices">
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetDevices" message="tns:IPhasorDataService_GetDevices_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetDevicesResponse" message="tns:IPhasorDataService_GetDevices_OutputMessage" />
@@ -498,9 +605,17 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceByDeviceID" message="tns:IPhasorDataService_GetDeviceByDeviceID_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceByDeviceIDResponse" message="tns:IPhasorDataService_GetDeviceByDeviceID_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="GetDeviceByAcronym">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceByAcronym" message="tns:IPhasorDataService_GetDeviceByAcronym_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceByAcronymResponse" message="tns:IPhasorDataService_GetDeviceByAcronym_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="GetDevicesForOutputStream">
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetDevicesForOutputStream" message="tns:IPhasorDataService_GetDevicesForOutputStream_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetDevicesForOutputStreamResponse" message="tns:IPhasorDataService_GetDevicesForOutputStream_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetConcentratorDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetConcentratorDevice" message="tns:IPhasorDataService_GetConcentratorDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetConcentratorDeviceResponse" message="tns:IPhasorDataService_GetConcentratorDevice_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="GetPhasorList">
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetPhasorList" message="tns:IPhasorDataService_GetPhasorList_InputMessage" />
@@ -538,21 +653,36 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOtherDevice" message="tns:IPhasorDataService_SaveOtherDevice_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOtherDeviceResponse" message="tns:IPhasorDataService_SaveOtherDevice_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="GetOtherDeviceByDeviceID">
-      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetOtherDeviceByDeviceID" message="tns:IPhasorDataService_GetOtherDeviceByDeviceID_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetOtherDeviceByDeviceIDResponse" message="tns:IPhasorDataService_GetOtherDeviceByDeviceID_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="GetInterconnections">
-      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetInterconnections" message="tns:IPhasorDataService_GetInterconnections_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetInterconnectionsResponse" message="tns:IPhasorDataService_GetInterconnections_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="GetProtocols">
-      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocols" message="tns:IPhasorDataService_GetProtocols_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocolsResponse" message="tns:IPhasorDataService_GetProtocols_OutputMessage" />
-    </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IPhasorDataService" type="tns:IPhasorDataService">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetOtherDeviceByDeviceID">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetOtherDeviceByDeviceID" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetInterconnections">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetInterconnections" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProtocols">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetProtocols" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="GetSignalTypes">
       <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetSignalTypes" style="document" />
       <wsdl:input>
@@ -751,6 +881,69 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetConnectionSettings">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetConnectionSettings" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetWizardConfigurationInfo">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetWizardConfigurationInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveWizardConfigurationInfo">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetExecutingAssemblyPath">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetExecutingAssemblyPath" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveIniFile">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveIniFile" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTestData">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetTestData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveTestData">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveTestData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="GetNodeList">
       <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetNodeList" style="document" />
       <wsdl:input>
@@ -895,6 +1088,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetDeviceListByParentID">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceListByParentID" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="GetDevices">
       <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetDevices" style="document" />
       <wsdl:input>
@@ -922,8 +1124,26 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetDeviceByAcronym">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceByAcronym" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="GetDevicesForOutputStream">
       <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetDevicesForOutputStream" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetConcentratorDevice">
+      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetConcentratorDevice" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -1005,33 +1225,6 @@
     </wsdl:operation>
     <wsdl:operation name="SaveOtherDevice">
       <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOtherDevice" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetOtherDeviceByDeviceID">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetOtherDeviceByDeviceID" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetInterconnections">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetInterconnections" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetProtocols">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetProtocols" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

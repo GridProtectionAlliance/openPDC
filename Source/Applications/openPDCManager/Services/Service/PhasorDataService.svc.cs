@@ -234,6 +234,7 @@ using System.Collections.Generic;
 using openPDCManager.Web.Data;
 using openPDCManager.Web.Data.Entities;
 using openPDCManager.Web.Data.BusinessObjects;
+using System.IO;
 
 namespace PCS.Services.Service
 {
@@ -241,31 +242,6 @@ namespace PCS.Services.Service
 	[System.ServiceModel.ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class PhasorDataService : IPhasorDataService
     {
-		//public List<Pdc> GetPdcList()
-		//{
-		//    return CommonFunctions.GetPdcList();
-		//}
-		//public List<BasicPmuInfo> GetValidatedPmuList()
-		//{
-		//    return CommonFunctions.GetValidatedPmuList();
-		//}
-		//public List<BasicPmuInfo> GetAllPmuList()
-		//{
-		//    return CommonFunctions.GetAllPmuList();
-		//}
-		//public List<Historian> GetHistorianList()
-		//{
-		//    return CommonFunctions.GetHistorianList();
-		//}
-		//public List<CalculatedMeasurement> GetCalculatedMeasurementList()
-		//{
-		//    return CommonFunctions.GetCalculatedMeasurementList();
-		//}
-		//public List<OutputStream> GetOutputStreamList()
-		//{
-		//    return CommonFunctions.GetOutputStreamList();
-		//}
-
 		#region " Manage Company Code"				
 		public List<Company> GetCompanyList()
 		{
@@ -282,7 +258,7 @@ namespace PCS.Services.Service
 		#endregion
 
 		#region " Manage Historian Code"
-		public List<Historian> GetHistorianList(Guid nodeID)
+		public List<Historian> GetHistorianList(string nodeID)
 		{
 			return CommonFunctions.GetHistorianList(nodeID);
 		}
@@ -331,7 +307,7 @@ namespace PCS.Services.Service
 		{
 			return CommonFunctions.GetNodeList();
 		}
-		public Dictionary<Guid, string> GetNodes(bool enabledOnly, bool isOptional)
+		public Dictionary<string, string> GetNodes(bool enabledOnly, bool isOptional)
 		{
 			return CommonFunctions.GetNodes(enabledOnly, isOptional);
 		}
@@ -342,13 +318,13 @@ namespace PCS.Services.Service
 		#endregion
 
 		#region " Manage Device Code"
-		//public List<Device> GetDeviceList()
-		//{
-		//    return CommonFunctions.GetDeviceList();
-		//}
-		public List<Device> GetDeviceList(Guid nodeID)
+		public List<Device> GetDeviceList(string nodeID)
 		{
 			return CommonFunctions.GetDeviceList(nodeID);
+		}
+		public List<Device> GetDeviceListByParentID(int parentID)
+		{
+			return CommonFunctions.GetDeviceListByParentID(parentID);
 		}
 		public Dictionary<int, string> GetDevices(DeviceType deviceType, bool isOptional)
 		{
@@ -362,9 +338,17 @@ namespace PCS.Services.Service
 		{
 			return CommonFunctions.GetDeviceByDeviceID(deviceID);
 		}
+		public Device GetDeviceByAcronym(string acronym)
+		{
+			return CommonFunctions.GetDeviceByAcronym(acronym);
+		}
 		public Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID)
 		{
 			return CommonFunctions.GetDevicesForOutputStream(outputStreamID);
+		}
+		public Device GetConcentratorDevice(int deviceID)
+		{
+			return CommonFunctions.GetConcentratorDevice(deviceID);
 		}
 		#endregion
 
@@ -389,7 +373,7 @@ namespace PCS.Services.Service
 
 		#region " Manage Measurement Code"
 
-		public List<Measurement> GetMeasurementList(Guid nodeID)
+		public List<Measurement> GetMeasurementList(string nodeID)
 		{
 			return CommonFunctions.GetMeasurementList(nodeID);
 		}
@@ -403,7 +387,7 @@ namespace PCS.Services.Service
 		{
 			return CommonFunctions.GetMeasurementsByDevice(deviceID);
 		}
-		public List<Measurement> GetMeasurementsForOutputStream(Guid nodeID, int outputStreamID)
+		public List<Measurement> GetMeasurementsForOutputStream(string nodeID, int outputStreamID)
 		{
 			return CommonFunctions.GetMeasurementsForOutputStream(nodeID, outputStreamID);
 		}
@@ -454,7 +438,7 @@ namespace PCS.Services.Service
 
 		#region " Manage Calculated Measurements Code"
 
-		public List<CalculatedMeasurement> GetCalculatedMeasurementList(Guid nodeID)
+		public List<CalculatedMeasurement> GetCalculatedMeasurementList(string nodeID)
 		{
 			return CommonFunctions.GetCalculatedMeasurementList(nodeID);
 		}
@@ -468,7 +452,7 @@ namespace PCS.Services.Service
 
 		#region " Manage Custom Adapters Code"
 
-		public List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType, Guid nodeID)
+		public List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType, string nodeID)
 		{
 			return CommonFunctions.GetAdapterList(enabledOnly, adapterType, nodeID);
 		}
@@ -587,33 +571,25 @@ namespace PCS.Services.Service
 			return CommonFunctions.GetMapData(mapType);
 		}
 
-		//public Dictionary<int, string> GetVendorList()
-		//{
-		//    return CommonFunctions.GetVendorList();
-		//}
-		//public Dictionary<int, string> GetProtocolList()
-		//{
-		//    return CommonFunctions.GetProtocolList();
-		//}
-		//public List<string> GetTransportProtocolList()
-		//{
-		//    return CommonFunctions.GetTransportProtocolList();
-		//}
-		//public List<string> GetParityList()
-		//{
-		//    return CommonFunctions.GetParityList();
-		//}
-		//public List<string> GetStopBitList()
-		//{
-		//    return CommonFunctions.GetStopBitList();
-		//}
-		//public Dictionary<string, string> GetTimeZonesList()
-		//{
-		//    return CommonFunctions.GetTimeZonesList();
-		//}
-		//public List<StatusReport> GetStatusReportList()
-		//{
-		//    return CommonFunctions.GetStatusReportList();
-		//}
+		public ConnectionSettings GetConnectionSettings(Stream inputStream)
+		{
+			return CommonFunctions.GetConnectionSettings(inputStream);
+		}
+		public List<WizardDeviceInfo> GetWizardConfigurationInfo(Stream inputStream)
+		{
+			return CommonFunctions.GetWizardConfigurationInfo(inputStream);
+		}
+		public string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID)
+		{
+			return CommonFunctions.SaveWizardConfigurationInfo(nodeID, wizardDeviceInfoList, connectionString, protocolID, companyID, historianID, interconnectionID, parentID);
+		}
+		public string GetExecutingAssemblyPath()
+		{
+			return CommonFunctions.GetExecutingAssemblyPath();
+		}
+		public string SaveIniFile(Stream input)
+		{
+			return CommonFunctions.SaveIniFile(input);
+		}		
 	}
 }

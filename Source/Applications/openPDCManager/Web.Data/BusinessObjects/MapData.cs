@@ -239,7 +239,7 @@ namespace openPDCManager.Web.Data.BusinessObjects
 	public class MapData
 	{
 		public string DeviceType { get; set; }
-		public Guid? NodeID { get; set; }
+		public string NodeID { get; set; }
 		public int ID { get; set; }
 		public string Acronym { get; set; }
 		public string Name { get; set; }

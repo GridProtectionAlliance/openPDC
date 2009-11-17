@@ -307,7 +307,7 @@ namespace openPDCManager.Web.Data
 
             // Open ADO.NET provider connection
             m_connection = (IDbConnection)Activator.CreateInstance(m_connectionType);
-            m_connection.ConnectionString = m_connectionString;
+            m_connection.ConnectionString = m_connectionString;			
             m_connection.Open();
         }
 

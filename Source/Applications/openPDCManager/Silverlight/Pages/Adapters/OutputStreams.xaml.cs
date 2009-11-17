@@ -296,7 +296,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			{
 				OutputStream selectedOutputStream = ListBoxOutputStreamList.SelectedItem as OutputStream;
 				GridOutputStreamDetail.DataContext = selectedOutputStream;
-				ComboBoxNode.SelectedItem = new KeyValuePair<Guid, string>(selectedOutputStream.NodeID, selectedOutputStream.NodeName);
+				ComboBoxNode.SelectedItem = new KeyValuePair<string, string>(selectedOutputStream.NodeID, selectedOutputStream.NodeName);
 				if (selectedOutputStream.Type == 0)
 					ComboBoxType.SelectedItem = new KeyValuePair<int, string>(0, "IEEE C37.118");
 				else
@@ -313,7 +313,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			OutputStream outputStream = new OutputStream();
-			outputStream.NodeID = ((KeyValuePair<Guid, string>)ComboBoxNode.SelectedItem).Key;
+			outputStream.NodeID = ((KeyValuePair<string, string>)ComboBoxNode.SelectedItem).Key;
 			outputStream.Acronym = TextBoxAcronym.Text;
 			outputStream.Name = TextBoxName.Text;
 			outputStream.Type = ((KeyValuePair<int, string>)ComboBoxType.SelectedItem).Key;

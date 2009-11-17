@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" />
-  <xs:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" />
+  <xs:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/TVA.PhasorProtocols" />
+  <xs:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/TVA.Communication" />
   <xs:complexType name="ArrayOfIaonTree">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="IaonTree" nillable="true" type="tns:IaonTree" />
@@ -40,11 +41,60 @@
       <xs:element minOccurs="0" name="Latitude" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="Longitude" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="NodeID" nillable="true" type="ser:guid" />
+      <xs:element minOccurs="0" name="NodeID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Planned" type="xs:boolean" />
       <xs:element minOccurs="0" name="Reporting" type="xs:boolean" />
       <xs:element minOccurs="0" name="VendorDeviceName" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="MapData" nillable="true" type="tns:MapData" />
+  <xs:complexType name="ConnectionSettings">
+    <xs:sequence>
+      <xs:element name="AutoRepeatPlayback" type="xs:boolean" />
+      <xs:element name="ByteEncodingDisplayFormat" type="xs:int" />
+      <xs:element name="ConnectionParameters" nillable="true" type="xs:anyType" />
+      <xs:element name="ConnectionString" nillable="true" type="xs:string" />
+      <xs:element name="FrameRate" type="xs:int" />
+      <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/TVA.PhasorProtocols" name="PhasorProtocol" type="q2:PhasorProtocol" />
+      <xs:element name="PmuID" type="xs:int" />
+      <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/TVA.Communication" name="TransportProtocol" type="q3:TransportProtocol" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConnectionSettings" nillable="true" type="tns:ConnectionSettings" />
+  <xs:complexType name="ArrayOfWizardDeviceInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="WizardDeviceInfo" nillable="true" type="tns:WizardDeviceInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfWizardDeviceInfo" nillable="true" type="tns:ArrayOfWizardDeviceInfo" />
+  <xs:complexType name="WizardDeviceInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AccessID" type="xs:int" />
+      <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Include" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Latitude" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Longitude" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ParentAccessID" type="xs:int" />
+      <xs:element minOccurs="0" name="PhasorList" nillable="true" type="tns:ArrayOfPhasorInfo" />
+      <xs:element minOccurs="0" name="VendorDeviceID" nillable="true" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="WizardDeviceInfo" nillable="true" type="tns:WizardDeviceInfo" />
+  <xs:complexType name="ArrayOfPhasorInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PhasorInfo" nillable="true" type="tns:PhasorInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPhasorInfo" nillable="true" type="tns:ArrayOfPhasorInfo" />
+  <xs:complexType name="PhasorInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DestinationLabel" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Include" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Label" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Phase" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PhasorInfo" nillable="true" type="tns:PhasorInfo" />
 </xs:schema>

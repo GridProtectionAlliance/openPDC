@@ -268,7 +268,7 @@ namespace openPDCManager.Silverlight
 		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			App app = (App)Application.Current;
-			app.NodeValue = ((KeyValuePair<Guid, string>)(ComboboxNode.SelectedItem)).Key;			
+			app.NodeValue = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Key;			
 		}
 		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
 		{
@@ -281,10 +281,10 @@ namespace openPDCManager.Silverlight
 			if (ComboboxNode.Items.Count > 0)
 			{
 				ComboboxNode.SelectedIndex = 0;
-				app.NodeValue = ((KeyValuePair<Guid, string>)(ComboboxNode.SelectedItem)).Key;
+				app.NodeValue = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Key;
 			}
 			else
-				app.NodeValue = Guid.Empty;
+				app.NodeValue = string.Empty;
 		}
 		void GridLayoutRoot_SizeChanged(object sender, SizeChangedEventArgs e)
 		{
@@ -353,6 +353,10 @@ namespace openPDCManager.Silverlight
 				TextBlockConnectivity.Text = "Disconnected (offline)";
 				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Red);
 			}
+		}
+		private void XamWebMenuItem_Click(object sender, EventArgs e)
+		{
+			System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration"), "_blank");
 		}
 	}
 }

@@ -254,7 +254,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		public ActiveMap()
 		{
 			InitializeComponent();
-			binding.MaxReceivedMessageSize = 65536 * 2;
+			binding.MaxReceivedMessageSize = 65536 * 10;
 			client = new PhasorDataServiceClient(binding, address);
 			Loaded += new RoutedEventHandler(ActiveMap_Loaded);
 			client.GetMapDataCompleted += new EventHandler<GetMapDataCompletedEventArgs>(client_GetMapDataCompleted);		
