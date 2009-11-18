@@ -243,6 +243,8 @@ using openPDCManager.Web.Data.BusinessObjects;
 using openPDCManager.Web.Data.Entities;
 using TVA.PhasorProtocols;
 using System.Xml.Serialization;
+using System.Xml;
+using System.Text;
 
 namespace openPDCManager.Web.Data
 {
@@ -251,15 +253,35 @@ namespace openPDCManager.Web.Data
 	/// </summary>
     public static class CommonFunctions
     {   		
-		//public static string GetReturnMessage(Message message)
-		//{
-		//    XmlSerializer xs = new XmlSerializer(typeof(Message));
-		//    xs.Serialize(
-		//}
+		public static string GetReturnMessage(string source, string userMessage, string systemMessage, string detail, MessageType userMessageType)
+		{
+			Message message = new Message();
+			message.Source = source;
+			message.UserMessage = userMessage;
+			message.SystemMessage = systemMessage;
+			message.Detail = detail;
+			message.UserMessageType = userMessageType;
+			
+			MemoryStream memoryStream = new MemoryStream();
+		    XmlSerializer xs = new XmlSerializer(typeof(Message));
+			XmlTextWriter xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
+			xs.Serialize(xmlTextWriter, message);
+			memoryStream = (MemoryStream)xmlTextWriter.BaseStream;
+			return (new UTF8Encoding()).GetString(memoryStream.ToArray());
+		}
 
 		public static string GetExecutingAssemblyPath()
 		{
-			return TVA.IO.FilePath.GetAbsolutePath("Temp");
+			try
+			{
+				throw new ArgumentException("Invalid Operation");
+				//return TVA.IO.FilePath.GetAbsolutePath("Temp");
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("GetExcecutingAssemblyPath()", "Failed to Retrieve Current Execution Path",
+					ex.Message, ex.ToString(), MessageType.Error);
+			}
 		}
 
 		public static string SaveIniFile(Stream input)
@@ -275,12 +297,13 @@ namespace openPDCManager.Web.Data
 					{
 						fs.Write(buffer, 0, bytesRead);
 					}
-				}
+				}				
 				return fileName;
 			}
-			catch
+			catch(Exception ex)
 			{
-				return string.Empty;
+				throw new InvalidOperationException(GetReturnMessage("ConfigurationWizard.SaveIniFile()",
+					"Failed to Upload INI File", ex.Message, ex.ToString(), MessageType.Error));
 			}
 		}
 
@@ -1238,7 +1261,7 @@ namespace openPDCManager.Web.Data
 							Longitude = item.Field<decimal?>("Longitude"),
 							Latitude = item.Field<decimal?>("Latitude"),
 							Description = item.Field<string>("Description"),
-							Image = item.Field<string>("Image"),
+							Image = item.Field<string>("ImagePath"),
 							Master = Convert.ToBoolean(item.Field<object>("Master")),
 							LoadOrder = item.Field<int>("LoadOrder"),
 							Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
@@ -1285,9 +1308,9 @@ namespace openPDCManager.Web.Data
 			command.CommandType = CommandType.Text;
 
 			if (isNew)
-				command.CommandText = "Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, [Image], Master, LoadOrder, Enabled) Values (@name, @companyID, @longitude, @latitude, @description, @image, @master, @loadOrder, @enabled)";
+				command.CommandText = "Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, ImagePath, Master, LoadOrder, Enabled) Values (@name, @companyID, @longitude, @latitude, @description, @image, @master, @loadOrder, @enabled)";
 			else
-				command.CommandText = "Update Node Set Name = @name, CompanyID = @companyID, Longitude = @longitude, Latitude = @latitude, Description = @description, [Image] = @image, Master = @master, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+				command.CommandText = "Update Node Set Name = @name, CompanyID = @companyID, Longitude = @longitude, Latitude = @latitude, Description = @description, ImagePath = @image, Master = @master, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
 
 			command.Parameters.Add(AddWithValue(command, "@name", node.Name));
 			command.Parameters.Add(AddWithValue(command, "@companyID", node.CompanyID ?? (object)DBNull.Value));
@@ -1704,6 +1727,16 @@ namespace openPDCManager.Web.Data
 
 		#region " Manage Phasor Code"
 
+		static DataSet GetResultSet(IDbCommand command)
+		{
+			DataSet dataSet = new DataSet();
+			DataTable dataTable = new DataTable();
+			dataSet.EnforceConstraints = false;
+			dataTable.Load(command.ExecuteReader());
+			dataSet.Tables.Add(dataTable);
+			return dataSet;
+		}
+
 		public static List<Phasor> GetPhasorList(int deviceID)
 		{
 			List<Phasor> phasorList = new List<Phasor>();
@@ -1713,10 +1746,12 @@ namespace openPDCManager.Web.Data
 			command.CommandText = "Select * From PhasorDetail Where DeviceID = @deviceID Order By SourceIndex";
 			command.Parameters.Add(AddWithValue(command, "@deviceID", deviceID));
 
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
+			//DataTable resultTable = new DataTable();
+			//resultTable.BeginLoadData();
+			//resultTable.Load(command.ExecuteReader());
+			//resultTable.EndLoadData();
 
-			phasorList = (from item in resultTable.AsEnumerable()
+			phasorList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
 						  select new Phasor()
 						  {
 							  ID = item.Field<int>("ID"),
