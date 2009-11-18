@@ -343,12 +343,12 @@ namespace HistorianAdapters
             string payloadAware;
             string maximumSamples;
             string conserveBandwidth;
-            string errorMessage = "{0} is missing from Settings - Example: Server=localhost;Port=1003;PayloadAware=True;MaximumSamples=100000;ConserveBandwidth=True";
+            string errorMessage = "{0} is missing from Settings - Example: server=localhost;port=1003;payloadAware=True;maximumSamples=100000;conserveBandwidth=True";
             Dictionary<string, string> settings = Settings;
 
             // Validate settings.
             if (!settings.TryGetValue("server", out server))
-                throw new ArgumentException(string.Format(errorMessage, "Server"));
+                throw new ArgumentException(string.Format(errorMessage, "server"));
 
             if (!settings.TryGetValue("port", out port))
                 port = DefaultHistorianPort.ToString();

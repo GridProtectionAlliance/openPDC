@@ -14,6 +14,8 @@
 //       Added new header and license agreement.
 //  09/17/2009 - Pinal C. Patel
 //       Re-wrote the adapter to utilize existing historian components.
+//  11/18/2009 - Pinal C. Patel
+//       Removed the need for HistorianID in Settings by using adapter Name instead.
 //
 //*******************************************************************************************************
 
@@ -311,31 +313,27 @@ namespace HistorianAdapters
         {
             base.Initialize();
 
-            string historianID;
             string server;
             string port;
             string protocol;
             string outbound;
-            string message = "{0} is missing from Settings - Example: HistorianID=P1; Protocol=UDP; Server=opdw; Port=2004; InitiateConnection=True";
+            string message = "{0} is missing from Settings - Example: protocol=UDP;server=openpdc;port=2004;initiateConnection=True";
             Dictionary<string, string> settings = Settings;
 
             // Validate settings.
-            if (!settings.TryGetValue("HistorianID", out historianID))
-                throw new ArgumentException(string.Format(message, "HistorianID"));
+            if (!settings.TryGetValue("server", out server))
+                throw new ArgumentException(string.Format(message, "server"));
 
-            if (!settings.TryGetValue("Server", out server))
-                throw new ArgumentException(string.Format(message, "Server"));
+            if (!settings.TryGetValue("port", out port))
+                throw new ArgumentException(string.Format(message, "port"));
 
-            if (!settings.TryGetValue("Port", out port))
-                throw new ArgumentException(string.Format(message, "Port"));
+            if (!settings.TryGetValue("protocol", out protocol))
+                throw new ArgumentException(string.Format(message, "protocol"));
 
-            if (!settings.TryGetValue("Protocol", out protocol))
-                throw new ArgumentException(string.Format(message, "Protocol"));
+            if (!settings.TryGetValue("initiateconnection", out outbound))
+                throw new ArgumentException(string.Format(message, "initiateConnection"));
 
-            if (!settings.TryGetValue("InitiateConnection", out outbound))
-                throw new ArgumentException(string.Format(message, "InitiateConnection"));
-
-            m_historianDataListener.ID = historianID;
+            m_historianDataListener.ID = Name;
             m_historianDataListener.InitializeData = false;
             m_historianDataListener.CacheData = false;
             m_historianDataListener.Server = server;

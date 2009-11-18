@@ -23,6 +23,8 @@
 //  10/28/2009 - Pinal C. Patel
 //       Modified to allow for multiple instances of the adapter to be loaded and configured with 
 //       different settings by persisting the settings in the config file under unique categories.
+//  11/18/2009 - Pinal C. Patel
+//       Added support for the replication of local historian archive.
 //
 //*******************************************************************************************************
 
@@ -250,6 +252,7 @@ using System.Threading;
 using TVA;
 using TVA.Historian.Files;
 using TVA.Historian.MetadataProviders;
+using TVA.Historian.Replication;
 using TVA.Historian.Services;
 using TVA.IO;
 using TVA.Measurements;
@@ -268,6 +271,7 @@ namespace HistorianAdapters
         private ArchiveFile m_archive;
         private Services m_archiveServices;
         private MetadataProviders m_metadataProviders;
+        private ReplicationProviders m_replicationProviders;
         private bool m_refreshMetadata;
         private long m_archivedMeasurements;
         private bool m_disposed;
@@ -384,12 +388,12 @@ namespace HistorianAdapters
             string instanceName;
             string archivePath;
             string refreshMetadata;
-            string errorMessage = "{0} is missing from Settings - Example: InstanceName=XX;ArchivePath=c:\\;RefreshMetadata=True";
+            string errorMessage = "{0} is missing from Settings - Example: instanceName=XX;archivePath=c:\\;refreshMetadata=True";
             Dictionary<string, string> settings = Settings;
 
             // Validate settings.
             if (!settings.TryGetValue("instancename", out instanceName))
-                throw new ArgumentException(string.Format(errorMessage, "InstanceName"));
+                throw new ArgumentException(string.Format(errorMessage, "instanceName"));
             
             if (!settings.TryGetValue("archivepath", out archivePath))
                 archivePath = FilePath.GetAbsolutePath("");
@@ -417,26 +421,35 @@ namespace HistorianAdapters
 
             // Initialize data archive file.           
             m_archive.FileName = Path.Combine(archivePath, instanceName + "_archive.d");
+            m_archive.FileSize = 100;
             m_archive.CompressData = false;
             m_archive.PersistSettings = true;
             m_archive.SettingsCategory = Name + m_archive.SettingsCategory;
+            m_archive.RolloverStart += Archive_RolloverStart;
             m_archive.RolloverComplete += Archive_RolloverComplete;
+            m_archive.RolloverException += Archive_RolloverException;
             m_archive.Initialize();
 
             // Provide web service support.
             m_archiveServices = new Services();
             m_archiveServices.AdapterLoaded += ArchiveServices_AdapterLoaded;
             m_archiveServices.AdapterUnloaded += ArchiveServices_AdapterUnloaded;
-            m_archiveServices.AdapterLoadException += ArchiveServices_AdapterLoadException;
+            m_archiveServices.AdapterLoadException += AdapterLoader_AdapterLoadException;
             m_archiveServices.Initialize();
 
             // Provide metadata sync support.
             m_metadataProviders = new MetadataProviders();
-            m_metadataProviders.WatchForAdapters = false;
             m_metadataProviders.AdapterLoaded += MetadataProviders_AdapterLoaded;
             m_metadataProviders.AdapterUnloaded += MetadataProviders_AdapterUnloaded;
-            m_metadataProviders.AdapterLoadException += MetadataProviders_AdapterLoadException;
+            m_metadataProviders.AdapterLoadException += AdapterLoader_AdapterLoadException;
             m_metadataProviders.Initialize(new Type[] { typeof(AdoMetadataProvider) });
+
+            // Provide archive replication support.
+            m_replicationProviders = new ReplicationProviders();
+            m_replicationProviders.AdapterLoaded += ReplicationProviders_AdapterLoaded;
+            m_replicationProviders.AdapterUnloaded += ReplicationProviders_AdapterUnloaded;
+            m_replicationProviders.AdapterLoadException += AdapterLoader_AdapterLoadException;
+            m_replicationProviders.Initialize();
         }
 
         /// <summary>
@@ -467,7 +480,7 @@ namespace HistorianAdapters
                         {
                             m_archiveServices.AdapterLoaded -= ArchiveServices_AdapterLoaded;
                             m_archiveServices.AdapterUnloaded -= ArchiveServices_AdapterUnloaded;
-                            m_archiveServices.AdapterLoadException -= ArchiveServices_AdapterLoadException;
+                            m_archiveServices.AdapterLoadException -= AdapterLoader_AdapterLoadException;
                             m_archiveServices.Dispose();
                         }
 
@@ -475,13 +488,23 @@ namespace HistorianAdapters
                         {
                             m_metadataProviders.AdapterLoaded -= MetadataProviders_AdapterLoaded;
                             m_metadataProviders.AdapterUnloaded -= MetadataProviders_AdapterUnloaded;
-                            m_metadataProviders.AdapterLoadException -= MetadataProviders_AdapterLoadException;
+                            m_metadataProviders.AdapterLoadException -= AdapterLoader_AdapterLoadException;
                             m_metadataProviders.Dispose();
+                        }
+
+                        if (m_replicationProviders != null)
+                        {
+                            m_replicationProviders.AdapterLoaded -= ReplicationProviders_AdapterLoaded;
+                            m_replicationProviders.AdapterUnloaded -= ReplicationProviders_AdapterUnloaded;
+                            m_replicationProviders.AdapterLoadException -= AdapterLoader_AdapterLoadException;
+                            m_replicationProviders.Dispose();
                         }
 
                         if (m_archive != null)
                         {
+                            m_archive.RolloverStart -= Archive_RolloverStart;
                             m_archive.RolloverComplete -= Archive_RolloverComplete;
+                            m_archive.RolloverException -= Archive_RolloverException;
                             m_archive.Dispose();
 
                             if (m_archive.MetadataFile != null)
@@ -584,9 +607,20 @@ namespace HistorianAdapters
             m_archivedMeasurements += measurements.Length;
         }
 
+        private void Archive_RolloverStart(object sender, EventArgs e)
+        {
+            OnStatusMessage("Archive is being rolled over...");
+        }
+
         private void Archive_RolloverComplete(object sender, EventArgs e)
         {
-            OnStatusMessage("Rollover of archive is complete.");
+            OnStatusMessage("Archive rollover is complete.");
+        }
+
+        private void Archive_RolloverException(object sender, EventArgs<Exception> e)
+        {
+            OnProcessException(e.Argument);
+            OnStatusMessage("Archive rollover failed - {0}", e.Argument.Message);
         }
 
         private void ArchiveServices_AdapterLoaded(object sender, EventArgs<IService> e)
@@ -601,16 +635,6 @@ namespace HistorianAdapters
             e.Argument.Archive = null;
             e.Argument.ServiceProcessError -= ArchiveServices_ServiceProcessError;
             OnStatusMessage("{0} has been unloaded.", e.Argument.GetType().Name);
-        }
-
-        private void ArchiveServices_AdapterLoadException(object sender, EventArgs<Type, Exception> e)
-        {
-            OnStatusMessage("{0} could not be loaded - {1}", e.Argument1.Name, e.Argument2.Message);
-        }
-
-        private void ArchiveServices_ServiceProcessError(object sender, EventArgs<Exception> e)
-        {
-            OnProcessException(e.Argument);
         }
 
         private void MetadataProviders_AdapterLoaded(object sender, EventArgs<IMetadataProvider> e)
@@ -633,9 +657,32 @@ namespace HistorianAdapters
             OnStatusMessage("{0} has been unloaded.", e.Argument.GetType().Name);
         }
 
-        private void MetadataProviders_AdapterLoadException(object sender, EventArgs<Type, Exception> e)
+        private void ReplicationProviders_AdapterLoaded(object sender, EventArgs<IReplicationProvider> e)
+        {
+            e.Argument.ReplicationStart += ReplicationProvider_ReplicationStart;
+            e.Argument.ReplicationComplete += ReplicationProvider_ReplicationComplete;
+            e.Argument.ReplicationProgress += ReplicationProvider_ReplicationProgress;
+            e.Argument.ReplicationException += ReplicationProvider_ReplicationException;
+            OnStatusMessage("{0} has been loaded.", e.Argument.GetType().Name);
+        }
+
+        private void ReplicationProviders_AdapterUnloaded(object sender, EventArgs<IReplicationProvider> e)
+        {
+            e.Argument.ReplicationStart -= ReplicationProvider_ReplicationStart;
+            e.Argument.ReplicationComplete -= ReplicationProvider_ReplicationComplete;
+            e.Argument.ReplicationProgress -= ReplicationProvider_ReplicationProgress;
+            e.Argument.ReplicationException -= ReplicationProvider_ReplicationException;
+            OnStatusMessage("{0} has been unloaded.", e.Argument.GetType().Name);
+        }
+
+        private void AdapterLoader_AdapterLoadException(object sender, EventArgs<Type, Exception> e)
         {
             OnStatusMessage("{0} could not be loaded - {1}", e.Argument1.Name, e.Argument2.Message);
+        }
+
+        private void ArchiveServices_ServiceProcessError(object sender, EventArgs<Exception> e)
+        {
+            OnProcessException(e.Argument);
         }
 
         private void MetadataProviders_MetadataRefreshStart(object sender, EventArgs e)
@@ -654,6 +701,26 @@ namespace HistorianAdapters
         }
 
         private void MetadataProviders_MetadataRefreshException(object sender, EventArgs<Exception> e)
+        {
+            OnProcessException(e.Argument);
+        }
+
+        private void ReplicationProvider_ReplicationStart(object sender, EventArgs e)
+        {
+            OnStatusMessage("{0} has started archive replication...", sender.GetType().Name);
+        }
+
+        private void ReplicationProvider_ReplicationComplete(object sender, EventArgs e)
+        {
+            OnStatusMessage("{0} has finished archive replication.", sender.GetType().Name);
+        }
+
+        private void ReplicationProvider_ReplicationProgress(object sender, EventArgs<ProcessProgress<int>> e)
+        {
+            OnStatusMessage("{0} has replicated archive file {1}.", sender.GetType().Name, e.Argument.ProgressMessage);
+        }
+
+        private void ReplicationProvider_ReplicationException(object sender, EventArgs<Exception> e)
         {
             OnProcessException(e.Argument);
         }
