@@ -1915,10 +1915,10 @@ namespace openPDCManager.Web.Data
 				command.CommandText = "Select * From MeasurementDetail Where NodeID = @nodeID Order By PointTag";
 				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 			}
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
+			//DataTable resultTable = new DataTable();
+			//resultTable.Load(command.ExecuteReader());
 
-			measurementList = (from item in resultTable.AsEnumerable()
+			measurementList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
 							   select new Measurement()
 							   {
 								   SignalID = item.Field<object>("SignalID").ToString(),
