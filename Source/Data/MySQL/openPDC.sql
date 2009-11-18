@@ -90,7 +90,7 @@ CREATE TABLE Node(
 	Longitude DECIMAL(9, 6) NULL,
 	Latitude DECIMAL(9, 6) NULL,
 	Description LONGTEXT NULL,
-	Image LONGTEXT NULL,
+	ImagePath LONGTEXT NULL,
 	Master TINYINT NOT NULL DEFAULT 0,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled TINYINT NOT NULL DEFAULT 0,
@@ -133,8 +133,8 @@ CREATE TABLE Device(
 	InterconnectionID INT NULL,
 	ConnectionString LONGTEXT NULL,
 	TimeZone NVARCHAR(128) NULL,
-	TimeAdjustmentTicks BIGINT NOT NULL DEFAULT 0,
-	DataLossInterval FLOAT NOT NULL DEFAULT 35,
+	TimeAdjustmentTicks INT NOT NULL DEFAULT 0,
+	DataLossInterval DOUBLE NOT NULL DEFAULT 35,
 	ContactList LONGTEXT NULL,
 	MeasuredLines INT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
@@ -192,8 +192,8 @@ CREATE TABLE Measurement(
 	SignalTypeID INT NOT NULL,
 	PhasorSourceIndex INT NULL,
 	SignalReference NVARCHAR(24) NOT NULL,
-	Adder FLOAT NOT NULL DEFAULT 0.0,
-	Multiplier FLOAT NOT NULL DEFAULT 1.0,
+	Adder DOUBLE NOT NULL DEFAULT 0.0,
+	Multiplier DOUBLE NOT NULL DEFAULT 1.0,
 	Description LONGTEXT NULL,
 	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_Measurement PRIMARY KEY (SignalID ASC),
@@ -251,8 +251,8 @@ CREATE TABLE CalculatedMeasurement(
 	OutputMeasurements LONGTEXT NULL,
 	MinimumMeasurementsToUse INT NOT NULL DEFAULT -1,
 	FramesPerSecond INT NOT NULL DEFAULT 30,
-	LagTime FLOAT NOT NULL DEFAULT 3.0,
-	LeadTime FLOAT NOT NULL DEFAULT 1.0,
+	LagTime DOUBLE NOT NULL DEFAULT 3.0,
+	LeadTime DOUBLE NOT NULL DEFAULT 1.0,
 	UseLocalClockAsRealTime TINYINT NOT NULL DEFAULT 0,
 	AllowSortsByArrival TINYINT NOT NULL DEFAULT 0,
 	LoadOrder INT NOT NULL DEFAULT 0,
@@ -313,8 +313,8 @@ CREATE TABLE OutputStream(
 	AutoStartDataChannel TINYINT NOT NULL DEFAULT 1,
 	NominalFrequency INT NOT NULL DEFAULT 60,
 	FramesPerSecond INT NOT NULL DEFAULT 30,
-	LagTime FLOAT NOT NULL DEFAULT 3.0,
-	LeadTime FLOAT NOT NULL DEFAULT 1.0,
+	LagTime DOUBLE NOT NULL DEFAULT 3.0,
+	LeadTime DOUBLE NOT NULL DEFAULT 1.0,
 	UseLocalClockAsRealTime TINYINT NOT NULL DEFAULT 0,
 	AllowSortsByArrival TINYINT NOT NULL DEFAULT 0,
 	LoadOrder INT NOT NULL DEFAULT 0,
@@ -624,8 +624,8 @@ FROM Historian AS H INNER JOIN
 
 CREATE VIEW NodeDetail
 AS
-SELECT N.ID, N.Name, COALESCE(N.CompanyID, 0) AS CompanyID, COALESCE(N.Longitude, 0) AS Longitude, COALESCE(N.Latitude, 0) AS Latitude, 
-		COALESCE(N.Description, '') AS Description, COALESCE(N.Image, '') AS Image, N.Master, N.LoadOrder, N.Enabled, COALESCE(C.Name, '') AS CompanyName
+SELECT N.ID, N.Name, N.CompanyID AS CompanyID, COALESCE(N.Longitude, 0) AS Longitude, COALESCE(N.Latitude, 0) AS Latitude, 
+		COALESCE(N.Description, '') AS Description, COALESCE(N.ImagePath, '') AS ImagePath, N.Master, N.LoadOrder, N.Enabled, COALESCE(C.Name, '') AS CompanyName
 FROM Node N, Company C 
 WHERE N.CompanyID = C.ID;
 
