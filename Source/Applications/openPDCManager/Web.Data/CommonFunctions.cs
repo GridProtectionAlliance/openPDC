@@ -252,7 +252,18 @@ namespace openPDCManager.Web.Data
 	/// Class that defines common operations on data (retrieval and update)
 	/// </summary>
     public static class CommonFunctions
-    {   		
+    {
+
+        static DataSet GetResultSet(IDbCommand command)
+        {
+            DataSet dataSet = new DataSet();
+            DataTable dataTable = new DataTable();
+            dataSet.EnforceConstraints = false;
+            dataSet.Tables.Add(dataTable);
+            dataTable.Load(command.ExecuteReader());
+            return dataSet;
+        }
+
 		public static string GetReturnMessage(string source, string userMessage, string systemMessage, string detail, MessageType userMessageType)
 		{
 			Message message = new Message();
@@ -474,7 +485,7 @@ namespace openPDCManager.Web.Data
 			command.CommandType = CommandType.Text;
 			command.CommandText = "Select Master From Node Where ID = @id";
 			command.Parameters.Add(AddWithValue(command, "@id", nodeID));
-			isMaster = (bool)command.ExecuteScalar();
+			isMaster = Convert.ToBoolean(command.ExecuteScalar());
 			return isMaster;
 		}
 
@@ -1727,16 +1738,6 @@ namespace openPDCManager.Web.Data
 
 		#region " Manage Phasor Code"
 
-		static DataSet GetResultSet(IDbCommand command)
-		{
-			DataSet dataSet = new DataSet();
-			DataTable dataTable = new DataTable();
-			dataSet.EnforceConstraints = false;
-			dataTable.Load(command.ExecuteReader());
-			dataSet.Tables.Add(dataTable);
-			return dataSet;
-		}
-
 		public static List<Phasor> GetPhasorList(int deviceID)
 		{
 			List<Phasor> phasorList = new List<Phasor>();
@@ -1961,10 +1962,10 @@ namespace openPDCManager.Web.Data
 			commnad.CommandType = CommandType.Text;
 			commnad.CommandText = "Select * From MeasurementDetail Where DeviceID = @deviceID Order By PointTag";
 			commnad.Parameters.Add(AddWithValue(commnad, "@deviceID", deviceID));
-			DataTable resultTable = new DataTable();
-			resultTable.Load(commnad.ExecuteReader());
+			//DataTable resultTable = new DataTable();
+            //resultTable.Load(commnad.ExecuteReader());
 
-			measurementList = (from item in resultTable.AsEnumerable()
+			measurementList = (from item in GetResultSet(commnad).Tables[0].AsEnumerable()
 							   select new Measurement()
 							   {
 								   SignalID = item.Field<object>("SignalID").ToString(),
