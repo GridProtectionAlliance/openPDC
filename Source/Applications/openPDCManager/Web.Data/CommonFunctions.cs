@@ -2041,9 +2041,9 @@ namespace openPDCManager.Web.Data
 			}
 			command.Parameters.Add(AddWithValue(command, "@outputStreamID", outputStreamID));
 
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-			measurementList = (from item in resultTable.AsEnumerable()
+			//DataTable resultTable = new DataTable();
+			//resultTable.Load(command.ExecuteReader());
+			measurementList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
 							   select new Measurement()
 							   {
 								   SignalID = item.Field<object>("SignalID").ToString(),
@@ -2470,8 +2470,10 @@ namespace openPDCManager.Web.Data
 			command.CommandType = CommandType.Text;
 			command.CommandText = "Select * From IaonTreeView";
 			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-			resultSet.Tables.Add(resultTable.Copy());
+			//resultTable.Load(command.ExecuteReader());
+            resultTable = GetResultSet(command).Tables[0];
+            resultSet.Tables.Add(resultTable);
+			//resultSet.Tables.Add(GetResultSet(command).Tables[0].Copy());
 			resultSet.Tables[0].TableName = "RootNodesTable";
 			resultSet.Tables[1].TableName = "AdapterData";
 					
