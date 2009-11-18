@@ -2,7 +2,7 @@
 Imports System.Runtime.InteropServices
 
 ' Assembly identity attributes.
-<Assembly: AssemblyVersion("1.0.29.37604")> 
+<Assembly: AssemblyVersion("1.0.30.37676")> 
 
 ' Informational attributes.
 <Assembly: AssemblyCompany("TVA")> 
