@@ -254,8 +254,9 @@ namespace openPDCManager.Web.Data
     public static class CommonFunctions
     {
 
-        static DataSet GetResultSet(IDbCommand command)
+        static DataSet GetResultSet(IDbCommand command)		//This function was added because at few places mySQL complained about foreign key constraints which I was not able to figure out.
         {
+			//TODO: Find a way to get rid of this function for mySQL.
             DataSet dataSet = new DataSet();
             DataTable dataTable = new DataTable();
             dataSet.EnforceConstraints = false;
@@ -285,8 +286,8 @@ namespace openPDCManager.Web.Data
 		{
 			try
 			{
-				throw new ArgumentException("Invalid Operation");
-				//return TVA.IO.FilePath.GetAbsolutePath("Temp");
+				//throw new ArgumentException("Invalid Operation");
+				return TVA.IO.FilePath.GetAbsolutePath("Temp");
 			}
 			catch (Exception ex)
 			{
@@ -744,11 +745,7 @@ namespace openPDCManager.Web.Data
 			DataConnection connection = new DataConnection();
 			IDbCommand command = connection.Connection.CreateCommand();
 			command.CommandType = CommandType.Text;
-			command.CommandText = "Select * From OutputStreamMeasurementDetail Where AdapterID = @adapterID";
-			//IDbDataParameter param = command.CreateParameter();
-			//param.ParameterName = "@adapterID";
-			//param.Value = outputStreamID;
-			//command.Parameters.Add(param);
+			command.CommandText = "Select * From OutputStreamMeasurementDetail Where AdapterID = @adapterID";			
 			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
 
 			DataTable resultTable = new DataTable();
@@ -1710,8 +1707,8 @@ namespace openPDCManager.Web.Data
 			IDbCommand command = connection.Connection.CreateCommand();
 			command.CommandType = CommandType.Text;
 			command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator AND Acronym NOT IN (Select Acronym From OutputStreamDevice Where AdapterID = @adapterID)";
-			command.Parameters.Add(AddWithValue(command, "@isConcentrator", false));
-			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
+			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));	//this has to be the first paramter for MS Access to succeed because it evaluates subquery first.
+			command.Parameters.Add(AddWithValue(command, "@isConcentrator", false));			
 			DataTable resultTable = new DataTable();
 			resultTable.Load(command.ExecuteReader());
 
@@ -1746,12 +1743,7 @@ namespace openPDCManager.Web.Data
 			command.CommandType = CommandType.Text;
 			command.CommandText = "Select * From PhasorDetail Where DeviceID = @deviceID Order By SourceIndex";
 			command.Parameters.Add(AddWithValue(command, "@deviceID", deviceID));
-
-			//DataTable resultTable = new DataTable();
-			//resultTable.BeginLoadData();
-			//resultTable.Load(command.ExecuteReader());
-			//resultTable.EndLoadData();
-
+						
 			phasorList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
 						  select new Phasor()
 						  {
@@ -1923,10 +1915,10 @@ namespace openPDCManager.Web.Data
 				command.CommandText = "Select * From MeasurementDetail Where NodeID = @nodeID Order By PointTag";
 				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 			}
-			//DataTable resultTable = new DataTable();
-			//resultTable.Load(command.ExecuteReader());
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
 
-			measurementList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
+			measurementList = (from item in resultTable.AsEnumerable()
 							   select new Measurement()
 							   {
 								   SignalID = item.Field<object>("SignalID").ToString(),
@@ -1962,9 +1954,7 @@ namespace openPDCManager.Web.Data
 			commnad.CommandType = CommandType.Text;
 			commnad.CommandText = "Select * From MeasurementDetail Where DeviceID = @deviceID Order By PointTag";
 			commnad.Parameters.Add(AddWithValue(commnad, "@deviceID", deviceID));
-			//DataTable resultTable = new DataTable();
-            //resultTable.Load(commnad.ExecuteReader());
-
+			
 			measurementList = (from item in GetResultSet(commnad).Tables[0].AsEnumerable()
 							   select new Measurement()
 							   {
@@ -2040,9 +2030,7 @@ namespace openPDCManager.Web.Data
 				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 			}
 			command.Parameters.Add(AddWithValue(command, "@outputStreamID", outputStreamID));
-
-			//DataTable resultTable = new DataTable();
-			//resultTable.Load(command.ExecuteReader());
+						
 			measurementList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
 							   select new Measurement()
 							   {
@@ -2470,10 +2458,8 @@ namespace openPDCManager.Web.Data
 			command.CommandType = CommandType.Text;
 			command.CommandText = "Select * From IaonTreeView";
 			DataTable resultTable = new DataTable();
-			//resultTable.Load(command.ExecuteReader());
-            resultTable = GetResultSet(command).Tables[0];
-            resultSet.Tables.Add(resultTable);
-			//resultSet.Tables.Add(GetResultSet(command).Tables[0].Copy());
+			resultTable.Load(command.ExecuteReader());                        
+			resultSet.Tables.Add(resultTable.Copy());			
 			resultSet.Tables[0].TableName = "RootNodesTable";
 			resultSet.Tables[1].TableName = "AdapterData";
 					
