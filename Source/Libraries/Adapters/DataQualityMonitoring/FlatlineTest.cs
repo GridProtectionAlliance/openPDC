@@ -325,32 +325,28 @@ namespace DataQualityMonitoring
 
             m_latestTimestamp = frame.Timestamp;
 
-            foreach (MeasurementKey key in InputMeasurementKeys)
+            foreach (MeasurementKey key in frame.Measurements.Keys)
             {
-                // check the frame to see if the measurement has changed
-                if (frame.Measurements.TryGetValue(key, out measurement))
-                {
-                    if (!m_lastChange.ContainsKey(key))
-                        m_lastChange.Add(key, measurement);
-                    else if (m_lastChange[key].Value != measurement.Value)
-                        m_lastChange[key] = measurement;
-                }
+                measurement = frame.Measurements[key];
+
+                if (!m_lastChange.ContainsKey(key))
+                    m_lastChange.Add(key, measurement);
+                else if (m_lastChange[key].Value != measurement.Value)
+                    m_lastChange[key] = measurement;
             }
         }
 
         private void m_warningTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            IMeasurement measurement;
+            IMeasurement measurement = null;
 
-            foreach (MeasurementKey key in InputMeasurementKeys)
+            foreach (MeasurementKey key in m_lastChange.Keys)
             {
-                // check for how long the measurement has remained unchanged
-                if (m_lastChange.TryGetValue(key, out measurement))
-                {
-                    Ticks diff = m_latestTimestamp - measurement.Timestamp;
-                    if (diff >= m_minFlatline)
-                        OnStatusMessage(measurement.ToString() + " flatlined for " + ((int)diff.ToSeconds()).ToString() + " seconds.");
-                }
+                measurement = m_lastChange[key];
+
+                Ticks diff = m_latestTimestamp - measurement.Timestamp;
+                if (diff >= m_minFlatline)
+                    OnStatusMessage(measurement.ToString() + " flatlined for " + ((int)diff.ToSeconds()).ToString() + " seconds.");
             }
         }
 

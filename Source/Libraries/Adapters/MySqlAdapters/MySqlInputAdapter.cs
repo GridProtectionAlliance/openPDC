@@ -256,6 +256,7 @@ namespace MySqlAdapters
         private int m_inputInterval;
         private int m_measurementsPerInput;
         private int m_startingMeasurement;
+        private bool m_fakeTimestamps;
 
         #endregion
 
@@ -269,6 +270,7 @@ namespace MySqlAdapters
             m_timer = new Timer();
             m_inputInterval = 33;
             m_measurementsPerInput = 5;
+            m_fakeTimestamps = false;
         }
 
         #endregion
@@ -304,7 +306,7 @@ namespace MySqlAdapters
         #region [ Methods ]
 
         /// <summary>
-        /// Initializes this <see cref="MySqlOutputAdapter"/>.
+        /// Initializes this <see cref="MySqlInputAdapter"/>.
         /// </summary>
         public override void Initialize()
         {
@@ -318,6 +320,9 @@ namespace MySqlAdapters
 
             if (settings.TryGetValue("measurementsPerInput", out setting))
                 m_measurementsPerInput = int.Parse(setting);
+
+            if (settings.TryGetValue("fakeTimestamps", out setting))
+                m_fakeTimestamps = bool.Parse(setting);
 
             // Create the MySQL connection string using only the portions of the
             // original connection string that are used by MySQL
@@ -365,7 +370,7 @@ namespace MySqlAdapters
         }
 
         /// <summary>
-        /// Gets a short one-line status of this <see cref="MySqlOutputAdapter"/>.
+        /// Gets a short one-line status of this <see cref="MySqlInputAdapter"/>.
         /// </summary>
         /// <param name="maxLength">Maximum length of the status message.</param>
         /// <returns>Text of the status message.</returns>
@@ -382,7 +387,10 @@ namespace MySqlAdapters
             List<IMeasurement> measurements = new List<IMeasurement>();
 
             while (reader.Read())
-                measurements.Add(new Measurement(reader.GetGuid("SignalID"), reader.GetDouble("Value"), new Ticks(reader.GetInt64("Timestamp"))));
+            {
+                Ticks timeStamp = m_fakeTimestamps ? new Ticks(DateTime.UtcNow) : new Ticks(reader.GetInt64("Timestamp"));
+                measurements.Add(new Measurement(reader.GetGuid("SignalID"), reader.GetDouble("Value"), timeStamp));
+            }
 
             reader.Close();
             OnNewMeasurements(measurements);
