@@ -875,21 +875,23 @@ namespace openPDCManager.Web.Data
 
 		public static string DeleteOutputStreamDevice(int outputStreamID, List<string> devicesToBeDeleted)
 		{
-			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
+			DataConnection connection = new DataConnection();			
 
 			foreach (string acronym in devicesToBeDeleted)
 			{
-				command.CommandText = "Delete From OutputStreamDevice Where Acronym = @acronym And AdapterID = @adapterID";
-				command.Parameters.Add(AddWithValue(command, "@acronym", acronym));
-				command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
-				command.ExecuteNonQuery();
-
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
 				command.CommandText = "Delete From OutputStreamMeasurement Where AdapterID = @outputStreamID And SignalReference LIKE @signalReference";
 				command.Parameters.Add(AddWithValue(command, "@outputStreamID", outputStreamID));
-				command.Parameters.Add(AddWithValue(command, "@signalReference", acronym + "%"));
+				command.Parameters.Add(AddWithValue(command, "@signalReference", "%" + acronym + "%"));
 				command.ExecuteNonQuery();
+
+				IDbCommand command1 = connection.Connection.CreateCommand();
+				command1.CommandType = CommandType.Text;
+				command1.CommandText = "Delete From OutputStreamDevice Where Acronym = @acronym And AdapterID = @adapterID";
+				command1.Parameters.Add(AddWithValue(command, "@acronym", acronym));
+				command1.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
+				command1.ExecuteNonQuery();
 			}
 
 			connection.Dispose();
@@ -2457,9 +2459,10 @@ namespace openPDCManager.Web.Data
 			IDbCommand command = connection.Connection.CreateCommand();
 			command.CommandType = CommandType.Text;
 			command.CommandText = "Select * From IaonTreeView";
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());                        
-			resultSet.Tables.Add(resultTable.Copy());			
+			DataTable resultTable = new DataTable();			
+			resultSet.EnforceConstraints = false;	//this is needed to make it work against mySQL.
+			resultSet.Tables.Add(resultTable);
+			resultTable.Load(command.ExecuteReader());                        						
 			resultSet.Tables[0].TableName = "RootNodesTable";
 			resultSet.Tables[1].TableName = "AdapterData";
 					
