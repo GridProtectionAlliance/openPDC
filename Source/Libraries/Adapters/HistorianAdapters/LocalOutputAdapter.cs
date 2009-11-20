@@ -250,10 +250,10 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using TVA;
+using TVA.Historian.DataServices;
 using TVA.Historian.Files;
 using TVA.Historian.MetadataProviders;
 using TVA.Historian.Replication;
-using TVA.Historian.Services;
 using TVA.IO;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
@@ -269,7 +269,7 @@ namespace HistorianAdapters
 
         // Fields
         private ArchiveFile m_archive;
-        private Services m_archiveServices;
+        private DataServices m_dataServices;
         private MetadataProviders m_metadataProviders;
         private ReplicationProviders m_replicationProviders;
         private bool m_refreshMetadata;
@@ -431,11 +431,11 @@ namespace HistorianAdapters
             m_archive.Initialize();
 
             // Provide web service support.
-            m_archiveServices = new Services();
-            m_archiveServices.AdapterLoaded += ArchiveServices_AdapterLoaded;
-            m_archiveServices.AdapterUnloaded += ArchiveServices_AdapterUnloaded;
-            m_archiveServices.AdapterLoadException += AdapterLoader_AdapterLoadException;
-            m_archiveServices.Initialize();
+            m_dataServices = new DataServices();
+            m_dataServices.AdapterLoaded += DataServices_AdapterLoaded;
+            m_dataServices.AdapterUnloaded += DataServices_AdapterUnloaded;
+            m_dataServices.AdapterLoadException += AdapterLoader_AdapterLoadException;
+            m_dataServices.Initialize();
 
             // Provide metadata sync support.
             m_metadataProviders = new MetadataProviders();
@@ -476,12 +476,12 @@ namespace HistorianAdapters
                     if (disposing)
                     {
                         // This will be done only when the object is disposed by calling Dispose().
-                        if (m_archiveServices != null)
+                        if (m_dataServices != null)
                         {
-                            m_archiveServices.AdapterLoaded -= ArchiveServices_AdapterLoaded;
-                            m_archiveServices.AdapterUnloaded -= ArchiveServices_AdapterUnloaded;
-                            m_archiveServices.AdapterLoadException -= AdapterLoader_AdapterLoadException;
-                            m_archiveServices.Dispose();
+                            m_dataServices.AdapterLoaded -= DataServices_AdapterLoaded;
+                            m_dataServices.AdapterUnloaded -= DataServices_AdapterUnloaded;
+                            m_dataServices.AdapterLoadException -= AdapterLoader_AdapterLoadException;
+                            m_dataServices.Dispose();
                         }
 
                         if (m_metadataProviders != null)
@@ -623,17 +623,17 @@ namespace HistorianAdapters
             OnStatusMessage("Archive rollover failed - {0}", e.Argument.Message);
         }
 
-        private void ArchiveServices_AdapterLoaded(object sender, EventArgs<IService> e)
+        private void DataServices_AdapterLoaded(object sender, EventArgs<IDataService> e)
         {
             e.Argument.Archive = m_archive;
-            e.Argument.ServiceProcessError += ArchiveServices_ServiceProcessError;
+            e.Argument.ServiceProcessException += DataServices_ServiceProcessException;
             OnStatusMessage("{0} has been loaded.", e.Argument.GetType().Name);
         }
 
-        private void ArchiveServices_AdapterUnloaded(object sender, EventArgs<IService> e)
+        private void DataServices_AdapterUnloaded(object sender, EventArgs<IDataService> e)
         {
             e.Argument.Archive = null;
-            e.Argument.ServiceProcessError -= ArchiveServices_ServiceProcessError;
+            e.Argument.ServiceProcessException -= DataServices_ServiceProcessException;
             OnStatusMessage("{0} has been unloaded.", e.Argument.GetType().Name);
         }
 
@@ -680,7 +680,7 @@ namespace HistorianAdapters
             OnStatusMessage("{0} could not be loaded - {1}", e.Argument1.Name, e.Argument2.Message);
         }
 
-        private void ArchiveServices_ServiceProcessError(object sender, EventArgs<Exception> e)
+        private void DataServices_ServiceProcessException(object sender, EventArgs<Exception> e)
         {
             OnProcessException(e.Argument);
         }

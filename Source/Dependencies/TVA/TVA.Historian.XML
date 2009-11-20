@@ -4922,12 +4922,12 @@
             <exception cref="T:System.ArgumentNullException"><paramref name="readerData"/> is null.</exception>
             <exception cref="T:System.ArgumentException"><paramref name="readerData"/> does not contain 43 columns.</exception>
         </member>
-        <member name="M:TVA.Historian.MetadataProviders.MetadataUpdater.UpdateMetadata(System.IO.Stream,TVA.Historian.Services.SerializationFormat)">
+        <member name="M:TVA.Historian.MetadataProviders.MetadataUpdater.UpdateMetadata(System.IO.Stream,TVA.Web.Services.SerializationFormat)">
             <summary>
             Updates the <see cref="P:TVA.Historian.MetadataProviders.MetadataUpdater.Metadata"/> from <paramref name="streamData"/>
             </summary>
-            <param name="streamData"><see cref="T:System.IO.Stream"/> containing serialized <see cref="T:TVA.Historian.Services.SerializableMetadata"/>.</param>
-            <param name="dataFormat"><see cref="T:TVA.Historian.Services.SerializationFormat"/> in which the <see cref="T:TVA.Historian.Services.SerializableMetadata"/> was serialized to <paramref name="streamData"/>.</param>
+            <param name="streamData"><see cref="T:System.IO.Stream"/> containing serialized <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/>.</param>
+            <param name="dataFormat"><see cref="T:TVA.Web.Services.SerializationFormat"/> in which the <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> was serialized to <paramref name="streamData"/>.</param>
         </member>
         <member name="P:TVA.Historian.MetadataProviders.MetadataUpdater.Metadata">
             <summary>
@@ -5010,7 +5010,7 @@
         </member>
         <member name="P:TVA.Historian.MetadataProviders.RestWebServiceMetadataProvider.ServiceDataFormat">
             <summary>
-            Gets or sets the <see cref="T:TVA.Historian.Services.SerializationFormat"/> in which the REST web service exposes the data.
+            Gets or sets the <see cref="T:TVA.Web.Services.SerializationFormat"/> in which the REST web service exposes the data.
             </summary>
         </member>
         <member name="T:TVA.Historian.NamespaceDoc">
@@ -5208,930 +5208,6 @@
         <member name="T:TVA.Historian.Replication.ReplicationProviders">
             <summary>
             A class that loads all of the <see cref="T:TVA.Historian.Replication.IReplicationProvider">replication providers</see>.
-            </summary>
-        </member>
-        <member name="T:TVA.Historian.Services.IMetadataService">
-            <summary>
-            Defines a REST web service for historian metadata.
-            </summary>
-            <seealso cref="T:TVA.Historian.Services.SerializableMetadata"/>
-        </member>
-        <member name="M:TVA.Historian.Services.IMetadataService.WriteMetadataAsXml(TVA.Historian.Services.SerializableMetadata)">
-            <summary>
-            Writes <paramref name="metadata"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format to the <see cref="P:TVA.Historian.Services.Service.Archive"/>.
-            </summary>
-            <param name="metadata">An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</param>
-        </member>
-        <member name="M:TVA.Historian.Services.IMetadataService.WriteMetadataAsJson(TVA.Historian.Services.SerializableMetadata)">
-            <summary>
-            Writes <paramref name="metadata"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format to the <see cref="P:TVA.Historian.Services.Service.Archive"/>.
-            </summary>
-            <param name="metadata">An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</param>
-        </member>
-        <member name="M:TVA.Historian.Services.IMetadataService.ReadAllMetadataAsXml">
-            <summary>
-            Reads all metadata from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.IMetadataService.ReadSelectMetadataAsXml(System.String)">
-            <summary>
-            Reads a subset of metadata from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <param name="idList">A comma or semi-colon delimited list of IDs for which metadata is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.IMetadataService.ReadRangeMetadataAsXml(System.String,System.String)">
-            <summary>
-            Reads a subset of metadata from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <param name="fromID">Starting ID in the ID range for which metadata is to be read.</param>
-            <param name="toID">Ending ID in the ID range for which metadata is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.IMetadataService.ReadAllMetadataAsJson">
-            <summary>
-            Reads all metadata from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.IMetadataService.ReadSelectMetadataAsJson(System.String)">
-            <summary>
-            Reads a subset of metadata from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <param name="idList">A comma or semi-colon delimited list of IDs for which metadata is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.IMetadataService.ReadRangeMetadataAsJson(System.String,System.String)">
-            <summary>
-            Reads a subset of metadata from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <param name="fromID">Starting ID in the ID range for which metadata is to be read.</param>
-            <param name="toID">Ending ID in the ID range for which metadata is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</returns>
-        </member>
-        <member name="T:TVA.Historian.Services.DataFlowDirection">
-            <summary>
-            Indicates the direction in which data will be flowing from a web service.
-            </summary>
-        </member>
-        <member name="F:TVA.Historian.Services.DataFlowDirection.Incoming">
-            <summary>
-            Data will be flowing in to the web service.
-            </summary>
-        </member>
-        <member name="F:TVA.Historian.Services.DataFlowDirection.Outgoing">
-            <summary>
-            Data will be flowing out from the web service.
-            </summary>
-        </member>
-        <member name="F:TVA.Historian.Services.DataFlowDirection.BothWays">
-            <summary>
-            Data will be flowing both in and out from the web service.
-            </summary>
-        </member>
-        <member name="T:TVA.Historian.Services.IService">
-            <summary>
-            Defines a web service that can send and receive data over REST (Representational State Transfer) interface.
-            </summary>
-        </member>
-        <member name="E:TVA.Historian.Services.IService.ServiceHostCreated">
-            <summary>
-            Occurs when the <see cref="P:TVA.Historian.Services.IService.ServiceHost"/> has been created for the specified <see cref="P:TVA.Historian.Services.IService.ServiceUri"/>.
-            </summary>
-        </member>
-        <member name="E:TVA.Historian.Services.IService.ServiceHostStarted">
-            <summary>
-            Occurs when the <see cref="P:TVA.Historian.Services.IService.ServiceHost"/> can process requests via all of its endpoints.
-            </summary>
-        </member>
-        <member name="E:TVA.Historian.Services.IService.ServiceProcessError">
-            <summary>
-            Occurs when an <see cref="T:System.Exception"/> is encountered when processing a request.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.IService.Archive">
-            <summary>
-            Gets or sets the <see cref="T:TVA.Historian.IArchive"/> used by the web service for its data.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.IService.ServiceUri">
-            <summary>
-            Gets or sets the URI where the web service is to be hosted.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.IService.ServiceContract">
-            <summary>
-            Gets or sets the contract interface implemented by the web service.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.IService.ServiceDataFlow">
-            <summary>
-            Gets or sets the <see cref="T:TVA.Historian.Services.DataFlowDirection"/> of the web service.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.IService.ServiceHost">
-            <summary>
-            Gets the <see cref="T:System.ServiceModel.Web.WebServiceHost"/> hosting the web service.
-            </summary>
-        </member>
-        <member name="T:TVA.Historian.Services.ITimeSeriesDataService">
-            <summary>
-            Defines a REST web service for time-series data.
-            </summary>
-            <seealso cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/>
-        </member>
-        <member name="M:TVA.Historian.Services.ITimeSeriesDataService.WriteTimeSeriesDataAsXml(TVA.Historian.Services.SerializableTimeSeriesData)">
-            <summary>
-            Writes <paramref name="data"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format to the <see cref="P:TVA.Historian.Services.Service.Archive"/>.
-            </summary>
-            <param name="data">An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</param>
-        </member>
-        <member name="M:TVA.Historian.Services.ITimeSeriesDataService.WriteTimeSeriesDataAsJson(TVA.Historian.Services.SerializableTimeSeriesData)">
-            <summary>
-            Writes <paramref name="data"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format to the <see cref="P:TVA.Historian.Services.Service.Archive"/>.
-            </summary>
-            <param name="data">An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</param>
-        </member>
-        <member name="M:TVA.Historian.Services.ITimeSeriesDataService.ReadSelectCurrentTimeSeriesDataAsXml(System.String)">
-            <summary>
-            Reads current time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <param name="idList">A comma or semi-colon delimited list of IDs for which current time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.ITimeSeriesDataService.ReadRangeCurrentTimeSeriesDataAsXml(System.String,System.String)">
-            <summary>
-            Reads current time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <param name="fromID">Starting ID in the ID range for which current time-series data is to be read.</param>
-            <param name="toID">Ending ID in the ID range for which current time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.ITimeSeriesDataService.ReadSelectCurrentTimeSeriesDataAsJson(System.String)">
-            <summary>
-            Reads current time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <param name="idList">A comma or semi-colon delimited list of IDs for which current time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.ITimeSeriesDataService.ReadRangeCurrentTimeSeriesDataAsJson(System.String,System.String)">
-            <summary>
-            Reads current time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <param name="fromID">Starting ID in the ID range for which current time-series data is to be read.</param>
-            <param name="toID">Ending ID in the ID range for which current time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.ITimeSeriesDataService.ReadSelectHistoricTimeSeriesDataAsXml(System.String,System.String,System.String)">
-            <summary>
-            Reads historic time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <param name="idList">A comma or semi-colon delimited list of IDs for which historic time-series data is to be read.</param>
-            <param name="startTime">Start time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
-            <param name="endTime">End time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.ITimeSeriesDataService.ReadRangeHistoricTimeSeriesDataAsXml(System.String,System.String,System.String,System.String)">
-            <summary>
-            Reads historic time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <param name="fromID">Starting ID in the ID range for which historic time-series data is to be read.</param>
-            <param name="toID">Ending ID in the ID range for which historic time-series data is to be read.</param>
-            <param name="startTime">Start time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
-            <param name="endTime">End time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.ITimeSeriesDataService.ReadSelectHistoricTimeSeriesDataAsJson(System.String,System.String,System.String)">
-            <summary>
-            Reads historic time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <param name="idList">A comma or semi-colon delimited list of IDs for which historic time-series data is to be read.</param>
-            <param name="startTime">Start time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
-            <param name="endTime">End time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.ITimeSeriesDataService.ReadRangeHistoricTimeSeriesDataAsJson(System.String,System.String,System.String,System.String)">
-            <summary>
-            Reads historic time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <param name="fromID">Starting ID in the ID range for which historic time-series data is to be read.</param>
-            <param name="toID">Ending ID in the ID range for which historic time-series data is to be read.</param>
-            <param name="startTime">Start time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
-            <param name="endTime">End time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
-        </member>
-        <member name="T:TVA.Historian.Services.MetadataService">
-            <summary>
-            Represents a REST web service for historian metadata.
-            </summary>
-            <seealso cref="T:TVA.Historian.Services.SerializableMetadata"/>
-        </member>
-        <member name="T:TVA.Historian.Services.Service">
-            <summary>
-            A base class for web service that can send and receive data over REST (Representational State Transfer) interface.
-            </summary>
-        </member>
-        <member name="M:TVA.Historian.Services.Service.#ctor">
-            <summary>
-            Initializes a new instance of the web service.
-            </summary>
-        </member>
-        <member name="M:TVA.Historian.Services.Service.Finalize">
-            <summary>
-            Releases the unmanaged resources before the web service is reclaimed by <see cref="T:System.GC"/>.
-            </summary>
-        </member>
-        <member name="M:TVA.Historian.Services.Service.Dispose">
-            <summary>
-            Releases all the resources used by the web service.
-            </summary>
-        </member>
-        <member name="M:TVA.Historian.Services.Service.Initialize">
-            <summary>
-            Initializes the web service.
-            </summary>
-        </member>
-        <member name="M:TVA.Historian.Services.Service.SaveSettings">
-            <summary>
-            Saves web service settings to the config file if the <see cref="P:TVA.Historian.Services.Service.PersistSettings"/> property is set to true.
-            </summary>        
-        </member>
-        <member name="M:TVA.Historian.Services.Service.LoadSettings">
-            <summary>
-            Loads saved web service settings from the config file if the <see cref="P:TVA.Historian.Services.Service.PersistSettings"/> property is set to true.
-            </summary>        
-        </member>
-        <member name="M:TVA.Historian.Services.Service.Dispose(System.Boolean)">
-            <summary>
-            Releases the unmanaged resources used by the web service and optionally releases the managed resources.
-            </summary>
-            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        </member>
-        <member name="M:TVA.Historian.Services.Service.OnServiceHostCreated">
-            <summary>
-            Raises the <see cref="E:TVA.Historian.Services.Service.ServiceHostCreated"/> event.
-            </summary>
-        </member>
-        <member name="M:TVA.Historian.Services.Service.OnServiceHostStarted">
-            <summary>
-            Raises the <see cref="E:TVA.Historian.Services.Service.ServiceHostStarted"/> event.
-            </summary>
-        </member>
-        <member name="M:TVA.Historian.Services.Service.OnServiceProcessError(System.Exception)">
-            <summary>
-            Raises the <see cref="E:TVA.Historian.Services.Service.ServiceProcessError"/> event.
-            </summary>
-            <param name="exception"><see cref="T:System.Exception"/> to sent to <see cref="E:TVA.Historian.Services.Service.ServiceProcessError"/> event.</param>
-        </member>
-        <member name="E:TVA.Historian.Services.Service.ServiceHostCreated">
-            <summary>
-            Occurs when the <see cref="P:TVA.Historian.Services.Service.ServiceHost"/> has been created for the specified <see cref="P:TVA.Historian.Services.Service.ServiceUri"/>.
-            </summary>
-            <remarks>
-            When <see cref="E:TVA.Historian.Services.Service.ServiceHostCreated"/> event is fired, changes like adding new endpoints, can be made to the <see cref="P:TVA.Historian.Services.Service.ServiceHost"/>.
-            </remarks>
-        </member>
-        <member name="E:TVA.Historian.Services.Service.ServiceHostStarted">
-            <summary>
-            Occurs when the <see cref="P:TVA.Historian.Services.Service.ServiceHost"/> has can process requests via all of its endpoints.
-            </summary>
-        </member>
-        <member name="E:TVA.Historian.Services.Service.ServiceProcessError">
-            <summary>
-            Occurs when an <see cref="T:System.Exception"/> is encountered when processing a request.
-            </summary>
-            <remarks>
-            <see cref="F:TVA.EventArgs`1.Argument"/> is the exception encountered when processing a request.
-            </remarks>
-        </member>
-        <member name="P:TVA.Historian.Services.Service.Archive">
-            <summary>
-            Gets or sets the <see cref="T:TVA.Historian.IArchive"/> used by the web service for its data.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.Service.ServiceUri">
-            <summary>
-            Gets or sets the URI where the web service is to be hosted.
-            </summary>
-            <remarks>
-            Set <see cref="P:TVA.Historian.Services.Service.ServiceUri"/> to a null or empty string to disable web service hosting.
-            </remarks>
-        </member>
-        <member name="P:TVA.Historian.Services.Service.ServiceContract">
-            <summary>
-            Gets or sets the contract interface implemented by the web service.
-            </summary>
-            <remarks>
-            This is the <see cref="P:System.Type.FullName"/> of the contract interface implemented by the web service.
-            </remarks>
-            <exception cref="T:System.ArgumentNullException">The value being assigned is a null or empty string.</exception>
-        </member>
-        <member name="P:TVA.Historian.Services.Service.ServiceDataFlow">
-            <summary>
-            Gets or sets the <see cref="T:TVA.Historian.Services.DataFlowDirection"/> of the web service.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.Service.Enabled">
-            <summary>
-            Gets or sets a boolean value that indicates whether the web service is currently enabled.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.Service.PersistSettings">
-            <summary>
-            Gets or sets a boolean value that indicates whether the web service settings are to be saved to the config file.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.Service.SettingsCategory">
-            <summary>
-            Gets or sets the category under which the web service settings are to be saved to the config file if the <see cref="P:TVA.Historian.Services.Service.PersistSettings"/> property is set to true.
-            </summary>
-            <exception cref="T:System.ArgumentNullException">The value being assigned is a null or empty string.</exception>
-        </member>
-        <member name="P:TVA.Historian.Services.Service.ServiceHost">
-            <summary>
-            Gets the <see cref="T:System.ServiceModel.Web.WebServiceHost"/> hosting the web service.
-            </summary>
-            <remarks>
-            By default, the <see cref="P:TVA.Historian.Services.Service.ServiceHost"/> only has <see cref="T:System.ServiceModel.WebHttpBinding"/> endpoint at the <see cref="P:TVA.Historian.Services.Service.ServiceUri"/>. 
-            Additional endpoints can be added to the <see cref="P:TVA.Historian.Services.Service.ServiceHost"/> when <see cref="E:TVA.Historian.Services.Service.ServiceHostCreated"/> event is fired.
-            </remarks>
-        </member>
-        <member name="P:TVA.Historian.Services.Service.CanRead">
-            <summary>
-            Gets a boolean value that indicates whether the web service can read <see cref="P:TVA.Historian.Services.Service.Archive"/> data and send it.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.Service.CanWrite">
-            <summary>
-            Gets a boolean value that indicates whether the web service can receive data and write it to <see cref="P:TVA.Historian.Services.Service.Archive"/>.
-            </summary>
-        </member>
-        <member name="M:TVA.Historian.Services.MetadataService.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Services.MetadataService"/> class.
-            </summary>
-        </member>
-        <member name="M:TVA.Historian.Services.MetadataService.WriteMetadataAsXml(TVA.Historian.Services.SerializableMetadata)">
-            <summary>
-            Writes <paramref name="metadata"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format to the <see cref="P:TVA.Historian.Services.Service.Archive"/>.
-            </summary>
-            <param name="metadata">An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</param>
-        </member>
-        <member name="M:TVA.Historian.Services.MetadataService.WriteMetadataAsJson(TVA.Historian.Services.SerializableMetadata)">
-            <summary>
-            Writes <paramref name="metadata"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format to the <see cref="P:TVA.Historian.Services.Service.Archive"/>.
-            </summary>
-            <param name="metadata">An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</param>
-        </member>
-        <member name="M:TVA.Historian.Services.MetadataService.ReadAllMetadataAsXml">
-            <summary>
-            Reads all metadata from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.MetadataService.ReadSelectMetadataAsXml(System.String)">
-            <summary>
-            Reads a subset of metadata from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <param name="idList">A comma or semi-colon delimited list of IDs for which metadata is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.MetadataService.ReadRangeMetadataAsXml(System.String,System.String)">
-            <summary>
-            Reads a subset of metadata from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <param name="fromID">Starting ID in the ID range for which metadata is to be read.</param>
-            <param name="toID">Ending ID in the ID range for which metadata is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.MetadataService.ReadAllMetadataAsJson">
-            <summary>
-            Reads all metadata from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.MetadataService.ReadSelectMetadataAsJson(System.String)">
-            <summary>
-            Reads a subset of metadata from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <param name="idList">A comma or semi-colon delimited list of IDs for which metadata is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</returns>
-        </member>
-        <member name="M:TVA.Historian.Services.MetadataService.ReadRangeMetadataAsJson(System.String,System.String)">
-            <summary>
-            Reads a subset of metadata from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <param name="fromID">Starting ID in the ID range for which metadata is to be read.</param>
-            <param name="toID">Ending ID in the ID range for which metadata is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableMetadata"/> object.</returns>
-        </member>
-        <member name="T:TVA.Historian.Services.NamespaceDoc">
-            <summary>
-            Contains classes that define the fundamental web services for a historian.
-            </summary>
-        </member>
-        <member name="T:TVA.Historian.Services.SerializableMetadata">
-            <summary>
-            Represents a container for <see cref="T:TVA.Historian.Services.SerializableMetadataRecord"/>s that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
-            </summary>
-            <example>
-            This is the output for <see cref="T:TVA.Historian.Services.SerializableMetadata"/> serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>:
-            <code>
-            <![CDATA[
-            <?xml version="1.0" encoding="utf-8" ?> 
-            <Metadata xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-              <MetadataRecords>
-                <MetadataRecord HistorianID="1" DataType="0" Name="TVA_CORD-BUS2:ABBV" Synonym1="4-PM1" Synonym2="VPHM" Synonym3="" 
-                  Description="Cordova ABB-521 500 kV Bus 2 Positive Sequence Voltage Magnitude" HardwareInfo="ABB RES521" Remarks="" 
-                  PlantCode="P1" UnitNumber="1" SystemName="CORD" SourceID="3" Enabled="true" ScanRate="0.0333333351" CompressionMinTime="0" 
-                  CompressionMaxTime="0" EngineeringUnits="Volts" LowWarning="475000" HighWarning="525000" LowAlarm="450000" HighAlarm="550000" 
-                  LowRange="475000" HighRange="525000" CompressionLimit="0" ExceptionLimit="0" DisplayDigits="7" SetDescription="" ClearDescription="" 
-                  AlarmState="0" ChangeSecurity="5" AccessSecurity="0" StepCheck="false" AlarmEnabled="false" AlarmFlags="0" AlarmDelay="0" AlarmToFile="false" 
-                  AlarmByEmail="false" AlarmByPager="false" AlarmByPhone="false" AlarmEmails="" AlarmPagers="" AlarmPhones="" /> 
-              </MetadataRecords>
-            </Metadata>
-            ]]>
-            </code>
-            This is the output for <see cref="T:TVA.Historian.Services.SerializableMetadata"/> serialized using <see cref="T:System.Runtime.Serialization.DataContractSerializer"/>:
-            <code>
-            <![CDATA[
-            <Metadata xmlns="http://schemas.datacontract.org/2004/07/TVA.Historian.Services" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-              <MetadataRecords>
-                <MetadataRecord>
-                  <HistorianID>1</HistorianID> 
-                  <DataType>0</DataType> 
-                  <Name>TVA_CORD-BUS2:ABBV</Name> 
-                  <Synonym1>4-PM1</Synonym1> 
-                  <Synonym2>VPHM</Synonym2> 
-                  <Synonym3 /> 
-                  <Description>Cordova ABB-521 500 kV Bus 2 Positive Sequence Voltage Magnitude</Description> 
-                  <HardwareInfo>ABB RES521</HardwareInfo> 
-                  <Remarks /> 
-                  <PlantCode>P1</PlantCode> 
-                  <UnitNumber>1</UnitNumber> 
-                  <SystemName>CORD</SystemName> 
-                  <SourceID>3</SourceID> 
-                  <Enabled>true</Enabled> 
-                  <ScanRate>0.0333333351</ScanRate> 
-                  <CompressionMinTime>0</CompressionMinTime> 
-                  <CompressionMaxTime>0</CompressionMaxTime> 
-                  <EngineeringUnits>Volts</EngineeringUnits> 
-                  <LowWarning>475000</LowWarning> 
-                  <HighWarning>525000</HighWarning> 
-                  <LowAlarm>450000</LowAlarm> 
-                  <HighAlarm>550000</HighAlarm> 
-                  <LowRange>475000</LowRange> 
-                  <HighRange>525000</HighRange> 
-                  <CompressionLimit>0</CompressionLimit> 
-                  <ExceptionLimit>0</ExceptionLimit> 
-                  <DisplayDigits>7</DisplayDigits> 
-                  <SetDescription /> 
-                  <ClearDescription /> 
-                  <AlarmState>0</AlarmState> 
-                  <ChangeSecurity>5</ChangeSecurity> 
-                  <AccessSecurity>0</AccessSecurity> 
-                  <StepCheck>false</StepCheck> 
-                  <AlarmEnabled>false</AlarmEnabled> 
-                  <AlarmFlags>0</AlarmFlags> 
-                  <AlarmDelay>0</AlarmDelay> 
-                  <AlarmToFile>false</AlarmToFile> 
-                  <AlarmByEmail>false</AlarmByEmail> 
-                  <AlarmByPager>false</AlarmByPager> 
-                  <AlarmByPhone>false</AlarmByPhone> 
-                  <AlarmEmails /> 
-                  <AlarmPagers /> 
-                  <AlarmPhones /> 
-                </MetadataRecord>
-              </MetadataRecords>
-            </Metadata>
-            ]]>
-            </code>
-            This is the output for <see cref="T:TVA.Historian.Services.SerializableMetadata"/> serialized using <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>:
-            <code>
-            {
-              "MetadataRecords":
-                [{"HistorianID":1,
-                  "DataType":0,
-                  "Name":"TVA_CORD-BUS2:ABBV",
-                  "Synonym1":"4-PM1",
-                  "Synonym2":"VPHM",
-                  "Synonym3":"",
-                  "Description":"Cordova ABB-521 500 kV Bus 2 Positive Sequence Voltage Magnitude",
-                  "HardwareInfo":"ABB RES521",
-                  "Remarks":"",
-                  "PlantCode":"P1",
-                  "UnitNumber":1,
-                  "SystemName":"CORD",
-                  "SourceID":3,
-                  "Enabled":true,
-                  "ScanRate":0.0333333351,
-                  "CompressionMinTime":0,
-                  "CompressionMaxTime":0,
-                  "EngineeringUnits":"Volts",
-                  "LowWarning":475000,
-                  "HighWarning":525000,
-                  "LowAlarm":450000,
-                  "HighAlarm":550000,
-                  "LowRange":475000,
-                  "HighRange":525000,
-                  "CompressionLimit":0,
-                  "ExceptionLimit":0,
-                  "DisplayDigits":7,
-                  "SetDescription":"",
-                  "ClearDescription":"",
-                  "AlarmState":0,
-                  "ChangeSecurity":5,
-                  "AccessSecurity":0,
-                  "StepCheck":false,
-                  "AlarmEnabled":false,
-                  "AlarmFlags":0,
-                  "AlarmDelay":0,
-                  "AlarmToFile":false,
-                  "AlarmByEmail":false,
-                  "AlarmByPager":false,
-                  "AlarmByPhone":false,
-                  "AlarmEmails":"",
-                  "AlarmPagers":"",
-                  "AlarmPhones":""}]
-            }
-            </code>
-            </example>
-            <seealso cref="T:TVA.Historian.Files.MetadataFile"/>
-            <seealso cref="T:TVA.Historian.Services.SerializableMetadataRecord"/>
-            <seealso cref="T:System.Xml.Serialization.XmlSerializer"/>
-            <seealso cref="T:System.Runtime.Serialization.DataContractSerializer"/>
-            <seealso cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>
-        </member>
-        <member name="M:TVA.Historian.Services.SerializableMetadata.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Services.SerializableMetadata"/> class.
-            </summary>
-        </member>
-        <member name="M:TVA.Historian.Services.SerializableMetadata.#ctor(TVA.Historian.Files.MetadataFile)">
-            <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Services.SerializableMetadata"/> class.
-            </summary>
-            <param name="metadataFile"><see cref="T:TVA.Historian.Files.MetadataFile"/> object from which <see cref="T:TVA.Historian.Services.SerializableMetadata"/> is to be initialized.</param>
-            <exception cref="T:System.ArgumentNullException"><paramref name="metadataFile"/> is null.</exception>
-            <exception cref="T:System.ArgumentException"><paramref name="metadataFile"/> is closed.</exception>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadata.MetadataRecords">
-            <summary>
-            Gets or sets the <see cref="T:TVA.Historian.Services.SerializableMetadataRecord"/>s contained in the <see cref="T:TVA.Historian.Services.SerializableMetadata"/>.
-            </summary>
-        </member>
-        <member name="T:TVA.Historian.Services.SerializableMetadataRecord">
-            <summary>
-            Represents a flattened <see cref="T:TVA.Historian.Files.MetadataRecord"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
-            </summary>
-            <example>
-            This is the output for <see cref="T:TVA.Historian.Services.SerializableMetadataRecord"/> serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>:
-            <code>
-            <![CDATA[
-            <?xml version="1.0" encoding="utf-8" ?> 
-            <MetadataRecord HistorianID="1" DataType="0" Name="TVA_CORD-BUS2:ABBV" Synonym1="4-PM1" Synonym2="VPHM" Synonym3="" Description="Cordova ABB-521 500 kV Bus 2 Positive Sequence Voltage Magnitude" HardwareInfo="ABB RES521" 
-              Remarks="" PlantCode="P1" UnitNumber="1" SystemName="CORD" SourceID="3" Enabled="true" ScanRate="0.0333333351" CompressionMinTime="0" CompressionMaxTime="0" EngineeringUnits="Volts" LowWarning="475000" HighWarning="525000" 
-              LowAlarm="450000" HighAlarm="550000" LowRange="475000" HighRange="525000" CompressionLimit="0" ExceptionLimit="0" DisplayDigits="7" SetDescription="" ClearDescription="" AlarmState="0" ChangeSecurity="5" AccessSecurity="0" 
-              StepCheck="false" AlarmEnabled="false" AlarmFlags="0" AlarmDelay="0" AlarmToFile="false" AlarmByEmail="false" AlarmByPager="false" AlarmByPhone="false" AlarmEmails="" AlarmPagers="" AlarmPhones="" 
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" /> 
-            ]]>
-            </code>
-            This is the output for <see cref="T:TVA.Historian.Services.SerializableMetadataRecord"/> serialized using <see cref="T:System.Runtime.Serialization.DataContractSerializer"/>:
-            <code>
-            <![CDATA[
-            <MetadataRecord xmlns="http://schemas.datacontract.org/2004/07/TVA.Historian.Services" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-              <HistorianID>1</HistorianID> 
-              <DataType>0</DataType> 
-              <Name>TVA_CORD-BUS2:ABBV</Name> 
-              <Synonym1>4-PM1</Synonym1> 
-              <Synonym2>VPHM</Synonym2> 
-              <Synonym3 /> 
-              <Description>Cordova ABB-521 500 kV Bus 2 Positive Sequence Voltage Magnitude</Description> 
-              <HardwareInfo>ABB RES521</HardwareInfo> 
-              <Remarks /> 
-              <PlantCode>P1</PlantCode> 
-              <UnitNumber>1</UnitNumber> 
-              <SystemName>CORD</SystemName> 
-              <SourceID>3</SourceID> 
-              <Enabled>true</Enabled> 
-              <ScanRate>0.0333333351</ScanRate> 
-              <CompressionMinTime>0</CompressionMinTime> 
-              <CompressionMaxTime>0</CompressionMaxTime> 
-              <EngineeringUnits>Volts</EngineeringUnits> 
-              <LowWarning>475000</LowWarning> 
-              <HighWarning>525000</HighWarning> 
-              <LowAlarm>450000</LowAlarm> 
-              <HighAlarm>550000</HighAlarm> 
-              <LowRange>475000</LowRange> 
-              <HighRange>525000</HighRange> 
-              <CompressionLimit>0</CompressionLimit> 
-              <ExceptionLimit>0</ExceptionLimit> 
-              <DisplayDigits>7</DisplayDigits> 
-              <SetDescription /> 
-              <ClearDescription /> 
-              <AlarmState>0</AlarmState> 
-              <ChangeSecurity>5</ChangeSecurity> 
-              <AccessSecurity>0</AccessSecurity> 
-              <StepCheck>false</StepCheck> 
-              <AlarmEnabled>false</AlarmEnabled> 
-              <AlarmFlags>0</AlarmFlags> 
-              <AlarmDelay>0</AlarmDelay> 
-              <AlarmToFile>false</AlarmToFile> 
-              <AlarmByEmail>false</AlarmByEmail> 
-              <AlarmByPager>false</AlarmByPager> 
-              <AlarmByPhone>false</AlarmByPhone> 
-              <AlarmEmails /> 
-              <AlarmPagers /> 
-              <AlarmPhones /> 
-            </MetadataRecord>
-            ]]>
-            </code>
-            This is the output for <see cref="T:TVA.Historian.Services.SerializableMetadataRecord"/> serialized using <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>:
-            <code>
-            {
-              "HistorianID":1,
-              "DataType":0,
-              "Name":"TVA_CORD-BUS2:ABBV",
-              "Synonym1":"4-PM1",
-              "Synonym2":"VPHM",
-              "Synonym3":"",
-              "Description":"Cordova ABB-521 500 kV Bus 2 Positive Sequence Voltage Magnitude",
-              "HardwareInfo":"ABB RES521",
-              "Remarks":"",
-              "PlantCode":"P1",
-              "UnitNumber":1,
-              "SystemName":"CORD",
-              "SourceID":3,
-              "Enabled":true,
-              "ScanRate":0.0333333351,
-              "CompressionMinTime":0,
-              "CompressionMaxTime":0,
-              "EngineeringUnits":"Volts",
-              "LowWarning":475000,
-              "HighWarning":525000,
-              "LowAlarm":450000,
-              "HighAlarm":550000,
-              "LowRange":475000,
-              "HighRange":525000,
-              "CompressionLimit":0,
-              "ExceptionLimit":0,
-              "DisplayDigits":7,
-              "SetDescription":"",
-              "ClearDescription":"",
-              "AlarmState":0,
-              "ChangeSecurity":5,
-              "AccessSecurity":0,
-              "StepCheck":false,
-              "AlarmEnabled":false,
-              "AlarmFlags":0,
-              "AlarmDelay":0,
-              "AlarmToFile":false,
-              "AlarmByEmail":false,
-              "AlarmByPager":false,
-              "AlarmByPhone":false,
-              "AlarmEmails":"",
-              "AlarmPagers":"",
-              "AlarmPhones":""
-            }
-            </code>
-            </example>
-            <seealso cref="T:TVA.Historian.Files.MetadataRecord"/>
-            <seealso cref="T:System.Xml.Serialization.XmlSerializer"/>
-            <seealso cref="T:System.Runtime.Serialization.DataContractSerializer"/>
-            <seealso cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>
-        </member>
-        <member name="M:TVA.Historian.Services.SerializableMetadataRecord.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Services.SerializableMetadataRecord"/> class.
-            </summary>
-        </member>
-        <member name="M:TVA.Historian.Services.SerializableMetadataRecord.#ctor(TVA.Historian.Files.MetadataRecord)">
-            <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Services.SerializableMetadataRecord"/> class.
-            </summary>
-            <param name="metadataRecord"><see cref="T:TVA.Historian.Files.MetadataRecord"/> from which <see cref="T:TVA.Historian.Services.SerializableMetadataRecord"/> is to be initialized.</param>
-            <exception cref="T:System.ArgumentNullException"><paramref name="metadataRecord"/> is null.</exception>
-        </member>
-        <member name="M:TVA.Historian.Services.SerializableMetadataRecord.Deflate">
-            <summary>
-            Returns an <see cref="T:TVA.Historian.Files.MetadataRecord"/> object for this <see cref="T:TVA.Historian.Services.SerializableMetadataRecord"/>.
-            </summary>
-            <returns>An <see cref="T:TVA.Historian.Files.MetadataRecord"/> object.</returns>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.HistorianID">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.HistorianID"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.DataType">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.DataType"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.Name">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.Name"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.Synonym1">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.Synonym1"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.Synonym2">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.Synonym2"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.Synonym3">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.Synonym3"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.Description">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.Description"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.HardwareInfo">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.HardwareInfo"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.Remarks">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.Remarks"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.PlantCode">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.PlantCode"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.UnitNumber">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.UnitNumber"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.SystemName">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.SystemName"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.SourceID">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.SourceID"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.Enabled">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.Enabled"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.ScanRate">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.ScanRate"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.CompressionMinTime">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.CompressionMinTime"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.CompressionMaxTime">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.CompressionMaxTime"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.EngineeringUnits">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.EngineeringUnits"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.LowWarning">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.LowWarning"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.HighWarning">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.HighWarning"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.LowAlarm">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.LowAlarm"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.HighAlarm">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.HighAlarm"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.LowRange">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.LowRange"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.HighRange">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.HighRange"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.CompressionLimit">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.CompressionLimit"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.ExceptionLimit">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.ExceptionLimit"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.DisplayDigits">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.DisplayDigits"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.SetDescription">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordDigitalFields.SetDescription"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.ClearDescription">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordDigitalFields.ClearDescription"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.AlarmState">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordDigitalFields.AlarmState"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.ChangeSecurity">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordSecurityFlags.ChangeSecurity"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.AccessSecurity">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordSecurityFlags.AccessSecurity"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.StepCheck">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.StepCheck"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.AlarmEnabled">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.AlarmEnabled"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.AlarmFlags">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAlarmFlags.Value"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.AlarmDelay">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.AlarmDelay"/> or <see cref="P:TVA.Historian.Files.MetadataRecordDigitalFields.AlarmDelay"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.AlarmToFile">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.AlarmToFile"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.AlarmByEmail">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.AlarmByEmail"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.AlarmByPager">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.AlarmByPager"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.AlarmByPhone">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.AlarmByPhone"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.AlarmEmails">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.AlarmEmails"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.AlarmPagers">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.AlarmPagers"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Services.SerializableMetadataRecord.AlarmPhones">
-            <summary>
-            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.AlarmPhones"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Notifiers.EmailNotifier">
@@ -7126,12 +6202,771 @@
             Gets the binary representation of <see cref="T:TVA.Historian.Packets.PacketType5"/>.
             </summary>
         </member>
-        <member name="T:TVA.Historian.Services.SerializableTimeSeriesData">
+        <member name="T:TVA.Historian.DataServices.IMetadataService">
             <summary>
-            Represents a container for <see cref="T:TVA.Historian.Services.SerializableTimeSeriesDataPoint"/>s that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            Defines a REST web service for historian metadata.
+            </summary>
+            <seealso cref="T:TVA.Historian.DataServices.SerializableMetadata"/>
+        </member>
+        <member name="M:TVA.Historian.DataServices.IMetadataService.WriteMetadataAsXml(TVA.Historian.DataServices.SerializableMetadata)">
+            <summary>
+            Writes <paramref name="metadata"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format to the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/>.
+            </summary>
+            <param name="metadata">An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</param>
+        </member>
+        <member name="M:TVA.Historian.DataServices.IMetadataService.WriteMetadataAsJson(TVA.Historian.DataServices.SerializableMetadata)">
+            <summary>
+            Writes <paramref name="metadata"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format to the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/>.
+            </summary>
+            <param name="metadata">An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</param>
+        </member>
+        <member name="M:TVA.Historian.DataServices.IMetadataService.ReadAllMetadataAsXml">
+            <summary>
+            Reads all metadata from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.IMetadataService.ReadSelectMetadataAsXml(System.String)">
+            <summary>
+            Reads a subset of metadata from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <param name="idList">A comma or semi-colon delimited list of IDs for which metadata is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.IMetadataService.ReadRangeMetadataAsXml(System.String,System.String)">
+            <summary>
+            Reads a subset of metadata from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <param name="fromID">Starting ID in the ID range for which metadata is to be read.</param>
+            <param name="toID">Ending ID in the ID range for which metadata is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.IMetadataService.ReadAllMetadataAsJson">
+            <summary>
+            Reads all metadata from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.IMetadataService.ReadSelectMetadataAsJson(System.String)">
+            <summary>
+            Reads a subset of metadata from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <param name="idList">A comma or semi-colon delimited list of IDs for which metadata is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.IMetadataService.ReadRangeMetadataAsJson(System.String,System.String)">
+            <summary>
+            Reads a subset of metadata from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <param name="fromID">Starting ID in the ID range for which metadata is to be read.</param>
+            <param name="toID">Ending ID in the ID range for which metadata is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</returns>
+        </member>
+        <member name="T:TVA.Historian.DataServices.DataFlowDirection">
+            <summary>
+            Indicates the direction in which data will be flowing from a web service.
+            </summary>
+        </member>
+        <member name="F:TVA.Historian.DataServices.DataFlowDirection.Incoming">
+            <summary>
+            Data will be flowing in to the web service.
+            </summary>
+        </member>
+        <member name="F:TVA.Historian.DataServices.DataFlowDirection.Outgoing">
+            <summary>
+            Data will be flowing out from the web service.
+            </summary>
+        </member>
+        <member name="F:TVA.Historian.DataServices.DataFlowDirection.BothWays">
+            <summary>
+            Data will be flowing both in and out from the web service.
+            </summary>
+        </member>
+        <member name="T:TVA.Historian.DataServices.IDataService">
+            <summary>
+            Defines a web service that can send and receive historian data over REST (Representational State Transfer) interface.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.IDataService.Archive">
+            <summary>
+            Gets or sets the <see cref="T:TVA.Historian.IArchive"/> used by the web service for its data.
+            </summary>
+        </member>
+        <member name="T:TVA.Historian.DataServices.ITimeSeriesDataService">
+            <summary>
+            Defines a REST web service for time-series data.
+            </summary>
+            <seealso cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/>
+        </member>
+        <member name="M:TVA.Historian.DataServices.ITimeSeriesDataService.WriteTimeSeriesDataAsXml(TVA.Historian.DataServices.SerializableTimeSeriesData)">
+            <summary>
+            Writes <paramref name="data"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format to the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/>.
+            </summary>
+            <param name="data">An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</param>
+        </member>
+        <member name="M:TVA.Historian.DataServices.ITimeSeriesDataService.WriteTimeSeriesDataAsJson(TVA.Historian.DataServices.SerializableTimeSeriesData)">
+            <summary>
+            Writes <paramref name="data"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format to the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/>.
+            </summary>
+            <param name="data">An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</param>
+        </member>
+        <member name="M:TVA.Historian.DataServices.ITimeSeriesDataService.ReadSelectCurrentTimeSeriesDataAsXml(System.String)">
+            <summary>
+            Reads current time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <param name="idList">A comma or semi-colon delimited list of IDs for which current time-series data is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.ITimeSeriesDataService.ReadRangeCurrentTimeSeriesDataAsXml(System.String,System.String)">
+            <summary>
+            Reads current time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <param name="fromID">Starting ID in the ID range for which current time-series data is to be read.</param>
+            <param name="toID">Ending ID in the ID range for which current time-series data is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.ITimeSeriesDataService.ReadSelectCurrentTimeSeriesDataAsJson(System.String)">
+            <summary>
+            Reads current time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <param name="idList">A comma or semi-colon delimited list of IDs for which current time-series data is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.ITimeSeriesDataService.ReadRangeCurrentTimeSeriesDataAsJson(System.String,System.String)">
+            <summary>
+            Reads current time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <param name="fromID">Starting ID in the ID range for which current time-series data is to be read.</param>
+            <param name="toID">Ending ID in the ID range for which current time-series data is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.ITimeSeriesDataService.ReadSelectHistoricTimeSeriesDataAsXml(System.String,System.String,System.String)">
+            <summary>
+            Reads historic time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <param name="idList">A comma or semi-colon delimited list of IDs for which historic time-series data is to be read.</param>
+            <param name="startTime">Start time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
+            <param name="endTime">End time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.ITimeSeriesDataService.ReadRangeHistoricTimeSeriesDataAsXml(System.String,System.String,System.String,System.String)">
+            <summary>
+            Reads historic time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <param name="fromID">Starting ID in the ID range for which historic time-series data is to be read.</param>
+            <param name="toID">Ending ID in the ID range for which historic time-series data is to be read.</param>
+            <param name="startTime">Start time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
+            <param name="endTime">End time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.ITimeSeriesDataService.ReadSelectHistoricTimeSeriesDataAsJson(System.String,System.String,System.String)">
+            <summary>
+            Reads historic time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <param name="idList">A comma or semi-colon delimited list of IDs for which historic time-series data is to be read.</param>
+            <param name="startTime">Start time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
+            <param name="endTime">End time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.ITimeSeriesDataService.ReadRangeHistoricTimeSeriesDataAsJson(System.String,System.String,System.String,System.String)">
+            <summary>
+            Reads historic time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <param name="fromID">Starting ID in the ID range for which historic time-series data is to be read.</param>
+            <param name="toID">Ending ID in the ID range for which historic time-series data is to be read.</param>
+            <param name="startTime">Start time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
+            <param name="endTime">End time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
+        </member>
+        <member name="T:TVA.Historian.DataServices.MetadataService">
+            <summary>
+            Represents a REST web service for historian metadata.
+            </summary>
+            <seealso cref="T:TVA.Historian.DataServices.SerializableMetadata"/>
+        </member>
+        <member name="T:TVA.Historian.DataServices.DataService">
+            <summary>
+            A base class for web service that can send and receive historian data over REST (Representational State Transfer) interface.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.DataService.Archive">
+            <summary>
+            Gets or sets the <see cref="T:TVA.Historian.IArchive"/> used by the web service for its data.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.DataServices.MetadataService.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:TVA.Historian.DataServices.MetadataService"/> class.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.DataServices.MetadataService.WriteMetadataAsXml(TVA.Historian.DataServices.SerializableMetadata)">
+            <summary>
+            Writes <paramref name="metadata"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format to the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/>.
+            </summary>
+            <param name="metadata">An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</param>
+        </member>
+        <member name="M:TVA.Historian.DataServices.MetadataService.WriteMetadataAsJson(TVA.Historian.DataServices.SerializableMetadata)">
+            <summary>
+            Writes <paramref name="metadata"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format to the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/>.
+            </summary>
+            <param name="metadata">An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</param>
+        </member>
+        <member name="M:TVA.Historian.DataServices.MetadataService.ReadAllMetadataAsXml">
+            <summary>
+            Reads all metadata from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.MetadataService.ReadSelectMetadataAsXml(System.String)">
+            <summary>
+            Reads a subset of metadata from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <param name="idList">A comma or semi-colon delimited list of IDs for which metadata is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.MetadataService.ReadRangeMetadataAsXml(System.String,System.String)">
+            <summary>
+            Reads a subset of metadata from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <param name="fromID">Starting ID in the ID range for which metadata is to be read.</param>
+            <param name="toID">Ending ID in the ID range for which metadata is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.MetadataService.ReadAllMetadataAsJson">
+            <summary>
+            Reads all metadata from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.MetadataService.ReadSelectMetadataAsJson(System.String)">
+            <summary>
+            Reads a subset of metadata from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <param name="idList">A comma or semi-colon delimited list of IDs for which metadata is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</returns>
+        </member>
+        <member name="M:TVA.Historian.DataServices.MetadataService.ReadRangeMetadataAsJson(System.String,System.String)">
+            <summary>
+            Reads a subset of metadata from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <param name="fromID">Starting ID in the ID range for which metadata is to be read.</param>
+            <param name="toID">Ending ID in the ID range for which metadata is to be read.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> object.</returns>
+        </member>
+        <member name="T:TVA.Historian.DataServices.NamespaceDoc">
+            <summary>
+            Contains classes that define the fundamental data web services for a historian.
+            </summary>
+        </member>
+        <member name="T:TVA.Historian.DataServices.SerializableMetadata">
+            <summary>
+            Represents a container for <see cref="T:TVA.Historian.DataServices.SerializableMetadataRecord"/>s that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
             </summary>
             <example>
-            This is the output for <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>:
+            This is the output for <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>:
+            <code>
+            <![CDATA[
+            <?xml version="1.0" encoding="utf-8" ?> 
+            <Metadata xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+              <MetadataRecords>
+                <MetadataRecord HistorianID="1" DataType="0" Name="TVA_CORD-BUS2:ABBV" Synonym1="4-PM1" Synonym2="VPHM" Synonym3="" 
+                  Description="Cordova ABB-521 500 kV Bus 2 Positive Sequence Voltage Magnitude" HardwareInfo="ABB RES521" Remarks="" 
+                  PlantCode="P1" UnitNumber="1" SystemName="CORD" SourceID="3" Enabled="true" ScanRate="0.0333333351" CompressionMinTime="0" 
+                  CompressionMaxTime="0" EngineeringUnits="Volts" LowWarning="475000" HighWarning="525000" LowAlarm="450000" HighAlarm="550000" 
+                  LowRange="475000" HighRange="525000" CompressionLimit="0" ExceptionLimit="0" DisplayDigits="7" SetDescription="" ClearDescription="" 
+                  AlarmState="0" ChangeSecurity="5" AccessSecurity="0" StepCheck="false" AlarmEnabled="false" AlarmFlags="0" AlarmDelay="0" AlarmToFile="false" 
+                  AlarmByEmail="false" AlarmByPager="false" AlarmByPhone="false" AlarmEmails="" AlarmPagers="" AlarmPhones="" /> 
+              </MetadataRecords>
+            </Metadata>
+            ]]>
+            </code>
+            This is the output for <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> serialized using <see cref="T:System.Runtime.Serialization.DataContractSerializer"/>:
+            <code>
+            <![CDATA[
+            <Metadata xmlns="http://schemas.datacontract.org/2004/07/TVA.Historian.Services" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+              <MetadataRecords>
+                <MetadataRecord>
+                  <HistorianID>1</HistorianID> 
+                  <DataType>0</DataType> 
+                  <Name>TVA_CORD-BUS2:ABBV</Name> 
+                  <Synonym1>4-PM1</Synonym1> 
+                  <Synonym2>VPHM</Synonym2> 
+                  <Synonym3 /> 
+                  <Description>Cordova ABB-521 500 kV Bus 2 Positive Sequence Voltage Magnitude</Description> 
+                  <HardwareInfo>ABB RES521</HardwareInfo> 
+                  <Remarks /> 
+                  <PlantCode>P1</PlantCode> 
+                  <UnitNumber>1</UnitNumber> 
+                  <SystemName>CORD</SystemName> 
+                  <SourceID>3</SourceID> 
+                  <Enabled>true</Enabled> 
+                  <ScanRate>0.0333333351</ScanRate> 
+                  <CompressionMinTime>0</CompressionMinTime> 
+                  <CompressionMaxTime>0</CompressionMaxTime> 
+                  <EngineeringUnits>Volts</EngineeringUnits> 
+                  <LowWarning>475000</LowWarning> 
+                  <HighWarning>525000</HighWarning> 
+                  <LowAlarm>450000</LowAlarm> 
+                  <HighAlarm>550000</HighAlarm> 
+                  <LowRange>475000</LowRange> 
+                  <HighRange>525000</HighRange> 
+                  <CompressionLimit>0</CompressionLimit> 
+                  <ExceptionLimit>0</ExceptionLimit> 
+                  <DisplayDigits>7</DisplayDigits> 
+                  <SetDescription /> 
+                  <ClearDescription /> 
+                  <AlarmState>0</AlarmState> 
+                  <ChangeSecurity>5</ChangeSecurity> 
+                  <AccessSecurity>0</AccessSecurity> 
+                  <StepCheck>false</StepCheck> 
+                  <AlarmEnabled>false</AlarmEnabled> 
+                  <AlarmFlags>0</AlarmFlags> 
+                  <AlarmDelay>0</AlarmDelay> 
+                  <AlarmToFile>false</AlarmToFile> 
+                  <AlarmByEmail>false</AlarmByEmail> 
+                  <AlarmByPager>false</AlarmByPager> 
+                  <AlarmByPhone>false</AlarmByPhone> 
+                  <AlarmEmails /> 
+                  <AlarmPagers /> 
+                  <AlarmPhones /> 
+                </MetadataRecord>
+              </MetadataRecords>
+            </Metadata>
+            ]]>
+            </code>
+            This is the output for <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> serialized using <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>:
+            <code>
+            {
+              "MetadataRecords":
+                [{"HistorianID":1,
+                  "DataType":0,
+                  "Name":"TVA_CORD-BUS2:ABBV",
+                  "Synonym1":"4-PM1",
+                  "Synonym2":"VPHM",
+                  "Synonym3":"",
+                  "Description":"Cordova ABB-521 500 kV Bus 2 Positive Sequence Voltage Magnitude",
+                  "HardwareInfo":"ABB RES521",
+                  "Remarks":"",
+                  "PlantCode":"P1",
+                  "UnitNumber":1,
+                  "SystemName":"CORD",
+                  "SourceID":3,
+                  "Enabled":true,
+                  "ScanRate":0.0333333351,
+                  "CompressionMinTime":0,
+                  "CompressionMaxTime":0,
+                  "EngineeringUnits":"Volts",
+                  "LowWarning":475000,
+                  "HighWarning":525000,
+                  "LowAlarm":450000,
+                  "HighAlarm":550000,
+                  "LowRange":475000,
+                  "HighRange":525000,
+                  "CompressionLimit":0,
+                  "ExceptionLimit":0,
+                  "DisplayDigits":7,
+                  "SetDescription":"",
+                  "ClearDescription":"",
+                  "AlarmState":0,
+                  "ChangeSecurity":5,
+                  "AccessSecurity":0,
+                  "StepCheck":false,
+                  "AlarmEnabled":false,
+                  "AlarmFlags":0,
+                  "AlarmDelay":0,
+                  "AlarmToFile":false,
+                  "AlarmByEmail":false,
+                  "AlarmByPager":false,
+                  "AlarmByPhone":false,
+                  "AlarmEmails":"",
+                  "AlarmPagers":"",
+                  "AlarmPhones":""}]
+            }
+            </code>
+            </example>
+            <seealso cref="T:TVA.Historian.Files.MetadataFile"/>
+            <seealso cref="T:TVA.Historian.DataServices.SerializableMetadataRecord"/>
+            <seealso cref="T:System.Xml.Serialization.XmlSerializer"/>
+            <seealso cref="T:System.Runtime.Serialization.DataContractSerializer"/>
+            <seealso cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>
+        </member>
+        <member name="M:TVA.Historian.DataServices.SerializableMetadata.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> class.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.DataServices.SerializableMetadata.#ctor(TVA.Historian.Files.MetadataFile)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> class.
+            </summary>
+            <param name="metadataFile"><see cref="T:TVA.Historian.Files.MetadataFile"/> object from which <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> is to be initialized.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="metadataFile"/> is null.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="metadataFile"/> is closed.</exception>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadata.MetadataRecords">
+            <summary>
+            Gets or sets the <see cref="T:TVA.Historian.DataServices.SerializableMetadataRecord"/>s contained in the <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/>.
+            </summary>
+        </member>
+        <member name="T:TVA.Historian.DataServices.SerializableMetadataRecord">
+            <summary>
+            Represents a flattened <see cref="T:TVA.Historian.Files.MetadataRecord"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            </summary>
+            <example>
+            This is the output for <see cref="T:TVA.Historian.DataServices.SerializableMetadataRecord"/> serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>:
+            <code>
+            <![CDATA[
+            <?xml version="1.0" encoding="utf-8" ?> 
+            <MetadataRecord HistorianID="1" DataType="0" Name="TVA_CORD-BUS2:ABBV" Synonym1="4-PM1" Synonym2="VPHM" Synonym3="" Description="Cordova ABB-521 500 kV Bus 2 Positive Sequence Voltage Magnitude" HardwareInfo="ABB RES521" 
+              Remarks="" PlantCode="P1" UnitNumber="1" SystemName="CORD" SourceID="3" Enabled="true" ScanRate="0.0333333351" CompressionMinTime="0" CompressionMaxTime="0" EngineeringUnits="Volts" LowWarning="475000" HighWarning="525000" 
+              LowAlarm="450000" HighAlarm="550000" LowRange="475000" HighRange="525000" CompressionLimit="0" ExceptionLimit="0" DisplayDigits="7" SetDescription="" ClearDescription="" AlarmState="0" ChangeSecurity="5" AccessSecurity="0" 
+              StepCheck="false" AlarmEnabled="false" AlarmFlags="0" AlarmDelay="0" AlarmToFile="false" AlarmByEmail="false" AlarmByPager="false" AlarmByPhone="false" AlarmEmails="" AlarmPagers="" AlarmPhones="" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" /> 
+            ]]>
+            </code>
+            This is the output for <see cref="T:TVA.Historian.DataServices.SerializableMetadataRecord"/> serialized using <see cref="T:System.Runtime.Serialization.DataContractSerializer"/>:
+            <code>
+            <![CDATA[
+            <MetadataRecord xmlns="http://schemas.datacontract.org/2004/07/TVA.Historian.Services" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+              <HistorianID>1</HistorianID> 
+              <DataType>0</DataType> 
+              <Name>TVA_CORD-BUS2:ABBV</Name> 
+              <Synonym1>4-PM1</Synonym1> 
+              <Synonym2>VPHM</Synonym2> 
+              <Synonym3 /> 
+              <Description>Cordova ABB-521 500 kV Bus 2 Positive Sequence Voltage Magnitude</Description> 
+              <HardwareInfo>ABB RES521</HardwareInfo> 
+              <Remarks /> 
+              <PlantCode>P1</PlantCode> 
+              <UnitNumber>1</UnitNumber> 
+              <SystemName>CORD</SystemName> 
+              <SourceID>3</SourceID> 
+              <Enabled>true</Enabled> 
+              <ScanRate>0.0333333351</ScanRate> 
+              <CompressionMinTime>0</CompressionMinTime> 
+              <CompressionMaxTime>0</CompressionMaxTime> 
+              <EngineeringUnits>Volts</EngineeringUnits> 
+              <LowWarning>475000</LowWarning> 
+              <HighWarning>525000</HighWarning> 
+              <LowAlarm>450000</LowAlarm> 
+              <HighAlarm>550000</HighAlarm> 
+              <LowRange>475000</LowRange> 
+              <HighRange>525000</HighRange> 
+              <CompressionLimit>0</CompressionLimit> 
+              <ExceptionLimit>0</ExceptionLimit> 
+              <DisplayDigits>7</DisplayDigits> 
+              <SetDescription /> 
+              <ClearDescription /> 
+              <AlarmState>0</AlarmState> 
+              <ChangeSecurity>5</ChangeSecurity> 
+              <AccessSecurity>0</AccessSecurity> 
+              <StepCheck>false</StepCheck> 
+              <AlarmEnabled>false</AlarmEnabled> 
+              <AlarmFlags>0</AlarmFlags> 
+              <AlarmDelay>0</AlarmDelay> 
+              <AlarmToFile>false</AlarmToFile> 
+              <AlarmByEmail>false</AlarmByEmail> 
+              <AlarmByPager>false</AlarmByPager> 
+              <AlarmByPhone>false</AlarmByPhone> 
+              <AlarmEmails /> 
+              <AlarmPagers /> 
+              <AlarmPhones /> 
+            </MetadataRecord>
+            ]]>
+            </code>
+            This is the output for <see cref="T:TVA.Historian.DataServices.SerializableMetadataRecord"/> serialized using <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>:
+            <code>
+            {
+              "HistorianID":1,
+              "DataType":0,
+              "Name":"TVA_CORD-BUS2:ABBV",
+              "Synonym1":"4-PM1",
+              "Synonym2":"VPHM",
+              "Synonym3":"",
+              "Description":"Cordova ABB-521 500 kV Bus 2 Positive Sequence Voltage Magnitude",
+              "HardwareInfo":"ABB RES521",
+              "Remarks":"",
+              "PlantCode":"P1",
+              "UnitNumber":1,
+              "SystemName":"CORD",
+              "SourceID":3,
+              "Enabled":true,
+              "ScanRate":0.0333333351,
+              "CompressionMinTime":0,
+              "CompressionMaxTime":0,
+              "EngineeringUnits":"Volts",
+              "LowWarning":475000,
+              "HighWarning":525000,
+              "LowAlarm":450000,
+              "HighAlarm":550000,
+              "LowRange":475000,
+              "HighRange":525000,
+              "CompressionLimit":0,
+              "ExceptionLimit":0,
+              "DisplayDigits":7,
+              "SetDescription":"",
+              "ClearDescription":"",
+              "AlarmState":0,
+              "ChangeSecurity":5,
+              "AccessSecurity":0,
+              "StepCheck":false,
+              "AlarmEnabled":false,
+              "AlarmFlags":0,
+              "AlarmDelay":0,
+              "AlarmToFile":false,
+              "AlarmByEmail":false,
+              "AlarmByPager":false,
+              "AlarmByPhone":false,
+              "AlarmEmails":"",
+              "AlarmPagers":"",
+              "AlarmPhones":""
+            }
+            </code>
+            </example>
+            <seealso cref="T:TVA.Historian.Files.MetadataRecord"/>
+            <seealso cref="T:System.Xml.Serialization.XmlSerializer"/>
+            <seealso cref="T:System.Runtime.Serialization.DataContractSerializer"/>
+            <seealso cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>
+        </member>
+        <member name="M:TVA.Historian.DataServices.SerializableMetadataRecord.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:TVA.Historian.DataServices.SerializableMetadataRecord"/> class.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.DataServices.SerializableMetadataRecord.#ctor(TVA.Historian.Files.MetadataRecord)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TVA.Historian.DataServices.SerializableMetadataRecord"/> class.
+            </summary>
+            <param name="metadataRecord"><see cref="T:TVA.Historian.Files.MetadataRecord"/> from which <see cref="T:TVA.Historian.DataServices.SerializableMetadataRecord"/> is to be initialized.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="metadataRecord"/> is null.</exception>
+        </member>
+        <member name="M:TVA.Historian.DataServices.SerializableMetadataRecord.Deflate">
+            <summary>
+            Returns an <see cref="T:TVA.Historian.Files.MetadataRecord"/> object for this <see cref="T:TVA.Historian.DataServices.SerializableMetadataRecord"/>.
+            </summary>
+            <returns>An <see cref="T:TVA.Historian.Files.MetadataRecord"/> object.</returns>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.HistorianID">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.HistorianID"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.DataType">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.DataType"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.Name">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.Name"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.Synonym1">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.Synonym1"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.Synonym2">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.Synonym2"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.Synonym3">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.Synonym3"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.Description">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.Description"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.HardwareInfo">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.HardwareInfo"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.Remarks">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.Remarks"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.PlantCode">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.PlantCode"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.UnitNumber">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.UnitNumber"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.SystemName">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.SystemName"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.SourceID">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.SourceID"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.Enabled">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.Enabled"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.ScanRate">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.ScanRate"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.CompressionMinTime">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.CompressionMinTime"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.CompressionMaxTime">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.CompressionMaxTime"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.EngineeringUnits">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.EngineeringUnits"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.LowWarning">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.LowWarning"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.HighWarning">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.HighWarning"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.LowAlarm">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.LowAlarm"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.HighAlarm">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.HighAlarm"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.LowRange">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.LowRange"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.HighRange">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.HighRange"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.CompressionLimit">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.CompressionLimit"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.ExceptionLimit">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.ExceptionLimit"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.DisplayDigits">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.DisplayDigits"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.SetDescription">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordDigitalFields.SetDescription"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.ClearDescription">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordDigitalFields.ClearDescription"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.AlarmState">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordDigitalFields.AlarmState"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.ChangeSecurity">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordSecurityFlags.ChangeSecurity"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.AccessSecurity">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordSecurityFlags.AccessSecurity"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.StepCheck">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.StepCheck"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.AlarmEnabled">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.AlarmEnabled"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.AlarmFlags">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAlarmFlags.Value"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.AlarmDelay">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.AlarmDelay"/> or <see cref="P:TVA.Historian.Files.MetadataRecordDigitalFields.AlarmDelay"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.AlarmToFile">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.AlarmToFile"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.AlarmByEmail">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.AlarmByEmail"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.AlarmByPager">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.AlarmByPager"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.AlarmByPhone">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecordGeneralFlags.AlarmByPhone"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.AlarmEmails">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.AlarmEmails"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.AlarmPagers">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.AlarmPagers"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableMetadataRecord.AlarmPhones">
+            <summary>
+            Gets or sets the <see cref="P:TVA.Historian.Files.MetadataRecord.AlarmPhones"/>.
+            </summary>
+        </member>
+        <member name="T:TVA.Historian.DataServices.SerializableTimeSeriesData">
+            <summary>
+            Represents a container for <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint"/>s that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            </summary>
+            <example>
+            This is the output for <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>:
             <code>
             <![CDATA[
             <?xml version="1.0" encoding="utf-8" ?> 
@@ -7146,7 +6981,7 @@
             </TimeSeriesData>
             ]]>
             </code>
-            This is the output for <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> serialized using <see cref="T:System.Runtime.Serialization.DataContractSerializer"/>:
+            This is the output for <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> serialized using <see cref="T:System.Runtime.Serialization.DataContractSerializer"/>:
             <code>
             <![CDATA[
             <TimeSeriesData xmlns="http://schemas.datacontract.org/2004/07/TVA.Historian.Services" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
@@ -7185,7 +7020,7 @@
             </TimeSeriesData>
             ]]>
             </code>
-            This is the output for <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> serialized using <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>:
+            This is the output for <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> serialized using <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>:
             <code>
             {
               "TimeSeriesDataPoints":
@@ -7212,34 +7047,34 @@
             }
             </code>
             </example>
-            <seealso cref="T:TVA.Historian.Services.SerializableTimeSeriesDataPoint"/>
+            <seealso cref="T:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint"/>
             <seealso cref="T:System.Xml.Serialization.XmlSerializer"/>
             <seealso cref="T:System.Runtime.Serialization.DataContractSerializer"/>
             <seealso cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>
         </member>
-        <member name="M:TVA.Historian.Services.SerializableTimeSeriesData.#ctor">
+        <member name="M:TVA.Historian.DataServices.SerializableTimeSeriesData.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> class.
+            Initializes a new instance of the <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> class.
             </summary>
         </member>
-        <member name="M:TVA.Historian.Services.SerializableTimeSeriesData.#ctor(System.Collections.Generic.IEnumerable{TVA.Historian.IDataPoint})">
+        <member name="M:TVA.Historian.DataServices.SerializableTimeSeriesData.#ctor(System.Collections.Generic.IEnumerable{TVA.Historian.IDataPoint})">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> class.
+            Initializes a new instance of the <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> class.
             </summary>
-            <param name="dataPoints">List of <see cref="T:TVA.Historian.IDataPoint"/> from which <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> is to be initialized.</param>
+            <param name="dataPoints">List of <see cref="T:TVA.Historian.IDataPoint"/> from which <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> is to be initialized.</param>
             <exception cref="T:System.ArgumentNullException"><paramref name="dataPoints"/> is null.</exception>
         </member>
-        <member name="P:TVA.Historian.Services.SerializableTimeSeriesData.TimeSeriesDataPoints">
+        <member name="P:TVA.Historian.DataServices.SerializableTimeSeriesData.TimeSeriesDataPoints">
             <summary>
-            Gets or sets the <see cref="T:TVA.Historian.Services.SerializableTimeSeriesDataPoint"/>s contained in the <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/>.
+            Gets or sets the <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint"/>s contained in the <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/>.
             </summary>
         </member>
-        <member name="T:TVA.Historian.Services.SerializableTimeSeriesDataPoint">
+        <member name="T:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint">
             <summary>
             Represents a time-series data-point that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
             </summary>
             <example>
-            This is the output for <see cref="T:TVA.Historian.Services.SerializableTimeSeriesDataPoint"/> serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>:
+            This is the output for <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint"/> serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>:
             <code>
             <![CDATA[
             <?xml version="1.0"?>
@@ -7247,7 +7082,7 @@
               HistorianID="1" Time="21-Aug-2009 14:21:23.236" Value="60.0419579" Quality="Good" />
             ]]>
             </code>
-            This is the output for <see cref="T:TVA.Historian.Services.SerializableTimeSeriesDataPoint"/> serialized using <see cref="T:System.Runtime.Serialization.DataContractSerializer"/>:
+            This is the output for <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint"/> serialized using <see cref="T:System.Runtime.Serialization.DataContractSerializer"/>:
             <code>
             <![CDATA[
             <TimeSeriesDataPoint xmlns="http://schemas.datacontract.org/2004/07/TVA.Historian.Services" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
@@ -7258,7 +7093,7 @@
             </TimeSeriesDataPoint>
             ]]>
             </code>
-            This is the output for <see cref="T:TVA.Historian.Services.SerializableTimeSeriesDataPoint"/> serialized using <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>:
+            This is the output for <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint"/> serialized using <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>:
             <code>
             {
               "HistorianID":1,
@@ -7273,187 +7108,139 @@
             <seealso cref="T:System.Runtime.Serialization.DataContractSerializer"/>
             <seealso cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>
         </member>
-        <member name="M:TVA.Historian.Services.SerializableTimeSeriesDataPoint.#ctor">
+        <member name="M:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Services.SerializableTimeSeriesDataPoint"/> class.
+            Initializes a new instance of the <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint"/> class.
             </summary>
         </member>
-        <member name="M:TVA.Historian.Services.SerializableTimeSeriesDataPoint.#ctor(TVA.Historian.IDataPoint)">
+        <member name="M:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint.#ctor(TVA.Historian.IDataPoint)">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Services.SerializableTimeSeriesDataPoint"/> class.
+            Initializes a new instance of the <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint"/> class.
             </summary>
-            <param name="dataPoint"><see cref="T:TVA.Historian.IDataPoint"/> from which <see cref="T:TVA.Historian.Services.SerializableTimeSeriesDataPoint"/> is to be initialized.</param>
+            <param name="dataPoint"><see cref="T:TVA.Historian.IDataPoint"/> from which <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint"/> is to be initialized.</param>
             <exception cref="T:System.ArgumentNullException"><paramref name="dataPoint"/> is null.</exception>
         </member>
-        <member name="M:TVA.Historian.Services.SerializableTimeSeriesDataPoint.Deflate">
+        <member name="M:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint.Deflate">
             <summary>
-            Returns an <see cref="T:TVA.Historian.IDataPoint"/> object for this <see cref="T:TVA.Historian.Services.SerializableTimeSeriesDataPoint"/>.
+            Returns an <see cref="T:TVA.Historian.IDataPoint"/> object for this <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint"/>.
             </summary>
             <returns>An <see cref="T:TVA.Historian.IDataPoint"/> object.</returns>
         </member>
-        <member name="P:TVA.Historian.Services.SerializableTimeSeriesDataPoint.HistorianID">
+        <member name="P:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint.HistorianID">
             <summary>
             Gets or sets the <see cref="P:TVA.Historian.IDataPoint.HistorianID"/>.
             </summary>
         </member>
-        <member name="P:TVA.Historian.Services.SerializableTimeSeriesDataPoint.Time">
+        <member name="P:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint.Time">
             <summary>
             Gets or sets the <see cref="T:System.String"/> representation of <see cref="P:TVA.Historian.IDataPoint.Time"/>.
             </summary>
         </member>
-        <member name="P:TVA.Historian.Services.SerializableTimeSeriesDataPoint.Value">
+        <member name="P:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint.Value">
             <summary>
             Gets or sets the <see cref="P:TVA.Historian.IDataPoint.Value"/>.
             </summary>
         </member>
-        <member name="P:TVA.Historian.Services.SerializableTimeSeriesDataPoint.Quality">
+        <member name="P:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint.Quality">
             <summary>
             Gets or sets the <see cref="P:TVA.Historian.IDataPoint.Quality"/>.
             </summary>
         </member>
-        <member name="T:TVA.Historian.Services.SerializationFormat">
+        <member name="T:TVA.Historian.DataServices.DataServices">
             <summary>
-            Indicates the format of <see cref="T:System.Object"/> serialization or deserialization.
+            A class that loads all of the <see cref="T:TVA.Historian.DataServices.IDataService">data web services</see>.
             </summary>
         </member>
-        <member name="F:TVA.Historian.Services.SerializationFormat.Json">
-            <summary>
-            <see cref="T:System.Object"/> is serialized or deserialized using <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/> to JSON (JavaScript Object Notation) format.
-            </summary>
-        </member>
-        <member name="F:TVA.Historian.Services.SerializationFormat.PoxAsmx">
-            <summary>
-            <see cref="T:System.Object"/> is serialized or deserialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> to ASMX (.NET Web Service) compatible XML (eXtensible Markup Language) format.
-            </summary>
-        </member>
-        <member name="F:TVA.Historian.Services.SerializationFormat.PoxRest">
-            <summary>
-            <see cref="T:System.Object"/> is serialized or deserialized using <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> to REST (Representational State Transfer) compatible XML (eXtensible Markup Language) format.
-            </summary>
-        </member>
-        <member name="T:TVA.Historian.Services.Serialization">
-            <summary>
-            Helper class to serialize and deserialize <see cref="T:System.Object"/>s to web service compatible <see cref="T:TVA.Historian.Services.SerializationFormat"/>s.
-            </summary>
-            <seealso cref="T:TVA.Historian.Services.SerializationFormat"/>
-        </member>
-        <member name="M:TVA.Historian.Services.Serialization.Serialize``1(System.IO.Stream@,``0,TVA.Historian.Services.SerializationFormat)">
-            <summary>
-            Serializes an <see cref="T:System.Object"/>.
-            </summary>
-            <typeparam name="T"><see cref="T:System.Type"/> of the <paramref name="serializableObject"/>.</typeparam>
-            <param name="serializedOutput"><see cref="T:System.IO.Stream"/> where the <paramref name="serializableObject"/> is to be serialized.</param>
-            <param name="serializableObject"><see cref="T:System.Object"/> to be serialized.</param>
-            <param name="serializationFormat"><see cref="T:TVA.Historian.Services.SerializationFormat"/> in which the <paramref name="serializableObject"/> is to be serialized.</param>
-            <exception cref="T:System.ArgumentNullException"><paramref name="serializedOutput"/> or <paramref name="serializableObject"/> is null.</exception>
-            <exception cref="T:System.NotSupportedException">Specified <paramref name="serializationFormat"/> is not supported.</exception>
-        </member>
-        <member name="M:TVA.Historian.Services.Serialization.Deserialize``1(System.IO.Stream,TVA.Historian.Services.SerializationFormat)">
-            <summary>
-            Deserializes a serialized <see cref="T:System.Object"/>.
-            </summary>
-            <typeparam name="T"><see cref="T:System.Type"/> of the deserialized <see cref="T:System.Object"/> to be returned.</typeparam>
-            <param name="serializedObject"><see cref="T:System.IO.Stream"/> contaning the serialized <see cref="T:System.Object"/> that is to be deserialized.</param>
-            <param name="serializationFormat"><see cref="T:TVA.Historian.Services.SerializationFormat"/> in which the <paramref name="serializedObject"/> was serialized.</param>
-            <returns>The deserialized <see cref="T:System.Object"/>.</returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="serializedObject"/> is null.</exception>
-            <exception cref="T:System.NotSupportedException">Specified <paramref name="serializationFormat"/> is not supported.</exception>
-        </member>
-        <member name="T:TVA.Historian.Services.Services">
-            <summary>
-            A class that loads all of the <see cref="T:TVA.Historian.Services.IService">web services</see>.
-            </summary>
-        </member>
-        <member name="T:TVA.Historian.Services.TimeSeriesDataService">
+        <member name="T:TVA.Historian.DataServices.TimeSeriesDataService">
             <summary>
             Represents a REST web service for time-series data.
             </summary>
-            <seealso cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/>
+            <seealso cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/>
         </member>
-        <member name="M:TVA.Historian.Services.TimeSeriesDataService.#ctor">
+        <member name="M:TVA.Historian.DataServices.TimeSeriesDataService.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Services.TimeSeriesDataService"/> class.
+            Initializes a new instance of the <see cref="T:TVA.Historian.DataServices.TimeSeriesDataService"/> class.
             </summary>
         </member>
-        <member name="M:TVA.Historian.Services.TimeSeriesDataService.WriteTimeSeriesDataAsXml(TVA.Historian.Services.SerializableTimeSeriesData)">
+        <member name="M:TVA.Historian.DataServices.TimeSeriesDataService.WriteTimeSeriesDataAsXml(TVA.Historian.DataServices.SerializableTimeSeriesData)">
             <summary>
-            Writes <paramref name="data"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format to the <see cref="P:TVA.Historian.Services.Service.Archive"/>.
+            Writes <paramref name="data"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format to the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/>.
             </summary>
-            <param name="data">An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</param>
+            <param name="data">An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</param>
         </member>
-        <member name="M:TVA.Historian.Services.TimeSeriesDataService.WriteTimeSeriesDataAsJson(TVA.Historian.Services.SerializableTimeSeriesData)">
+        <member name="M:TVA.Historian.DataServices.TimeSeriesDataService.WriteTimeSeriesDataAsJson(TVA.Historian.DataServices.SerializableTimeSeriesData)">
             <summary>
-            Writes <paramref name="data"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format to the <see cref="P:TVA.Historian.Services.Service.Archive"/>.
+            Writes <paramref name="data"/> received in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format to the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/>.
             </summary>
-            <param name="data">An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</param>
+            <param name="data">An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</param>
         </member>
-        <member name="M:TVA.Historian.Services.TimeSeriesDataService.ReadSelectCurrentTimeSeriesDataAsXml(System.String)">
+        <member name="M:TVA.Historian.DataServices.TimeSeriesDataService.ReadSelectCurrentTimeSeriesDataAsXml(System.String)">
             <summary>
-            Reads current time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            Reads current time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
             </summary>
             <param name="idList">A comma or semi-colon delimited list of IDs for which current time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
         </member>
-        <member name="M:TVA.Historian.Services.TimeSeriesDataService.ReadRangeCurrentTimeSeriesDataAsXml(System.String,System.String)">
+        <member name="M:TVA.Historian.DataServices.TimeSeriesDataService.ReadRangeCurrentTimeSeriesDataAsXml(System.String,System.String)">
             <summary>
-            Reads current time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            Reads current time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
             </summary>
             <param name="fromID">Starting ID in the ID range for which current time-series data is to be read.</param>
             <param name="toID">Ending ID in the ID range for which current time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
         </member>
-        <member name="M:TVA.Historian.Services.TimeSeriesDataService.ReadSelectCurrentTimeSeriesDataAsJson(System.String)">
+        <member name="M:TVA.Historian.DataServices.TimeSeriesDataService.ReadSelectCurrentTimeSeriesDataAsJson(System.String)">
             <summary>
-            Reads current time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            Reads current time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
             </summary>
             <param name="idList">A comma or semi-colon delimited list of IDs for which current time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
         </member>
-        <member name="M:TVA.Historian.Services.TimeSeriesDataService.ReadRangeCurrentTimeSeriesDataAsJson(System.String,System.String)">
+        <member name="M:TVA.Historian.DataServices.TimeSeriesDataService.ReadRangeCurrentTimeSeriesDataAsJson(System.String,System.String)">
             <summary>
-            Reads current time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            Reads current time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
             </summary>
             <param name="fromID">Starting ID in the ID range for which current time-series data is to be read.</param>
             <param name="toID">Ending ID in the ID range for which current time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
         </member>
-        <member name="M:TVA.Historian.Services.TimeSeriesDataService.ReadSelectHistoricTimeSeriesDataAsXml(System.String,System.String,System.String)">
+        <member name="M:TVA.Historian.DataServices.TimeSeriesDataService.ReadSelectHistoricTimeSeriesDataAsXml(System.String,System.String,System.String)">
             <summary>
-            Reads historic time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            Reads historic time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
             </summary>
             <param name="idList">A comma or semi-colon delimited list of IDs for which historic time-series data is to be read.</param>
             <param name="startTime">Start time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
             <param name="endTime">End time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
         </member>
-        <member name="M:TVA.Historian.Services.TimeSeriesDataService.ReadRangeHistoricTimeSeriesDataAsXml(System.String,System.String,System.String,System.String)">
+        <member name="M:TVA.Historian.DataServices.TimeSeriesDataService.ReadRangeHistoricTimeSeriesDataAsXml(System.String,System.String,System.String,System.String)">
             <summary>
-            Reads historic time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            Reads historic time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
             </summary>
             <param name="fromID">Starting ID in the ID range for which historic time-series data is to be read.</param>
             <param name="toID">Ending ID in the ID range for which historic time-series data is to be read.</param>
             <param name="startTime">Start time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
             <param name="endTime">End time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
         </member>
-        <member name="M:TVA.Historian.Services.TimeSeriesDataService.ReadSelectHistoricTimeSeriesDataAsJson(System.String,System.String,System.String)">
+        <member name="M:TVA.Historian.DataServices.TimeSeriesDataService.ReadSelectHistoricTimeSeriesDataAsJson(System.String,System.String,System.String)">
             <summary>
-            Reads historic time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            Reads historic time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
             </summary>
             <param name="idList">A comma or semi-colon delimited list of IDs for which historic time-series data is to be read.</param>
             <param name="startTime">Start time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
             <param name="endTime">End time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
         </member>
-        <member name="M:TVA.Historian.Services.TimeSeriesDataService.ReadRangeHistoricTimeSeriesDataAsJson(System.String,System.String,System.String,System.String)">
+        <member name="M:TVA.Historian.DataServices.TimeSeriesDataService.ReadRangeHistoricTimeSeriesDataAsJson(System.String,System.String,System.String,System.String)">
             <summary>
-            Reads historic time-series data from the <see cref="P:TVA.Historian.Services.Service.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            Reads historic time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
             </summary>
             <param name="fromID">Starting ID in the ID range for which historic time-series data is to be read.</param>
             <param name="toID">Ending ID in the ID range for which historic time-series data is to be read.</param>
             <param name="startTime">Start time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
             <param name="endTime">End time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
-            <returns>An <see cref="T:TVA.Historian.Services.SerializableTimeSeriesData"/> object.</returns>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
         </member>
         <member name="T:TVA.Historian.TimeTag">
             <summary>

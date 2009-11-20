@@ -64,6 +64,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Historian.dll</HintPath>
     </Reference>
+    <Reference Include="TVA.Web, Version=1.0.33.37828, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\TVA\TVA.Web.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
@@ -84,7 +88,8 @@
   -->
   <Import Project="$(MSBuildBinPath)/Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>COPY "$(TargetPath)" "$(OutDir)..\Applications\openPDC\$(TargetFileName)"
-COPY "$(TargetDir)TVA.Historian.dll" ""$(OutDir)..\Applications\openPDC\TVA.Historian.dll"</PostBuildEvent>
+    <PostBuildEvent>COPY "$(TargetPath)" "$(OutDir)..\Applications\openPDC"
+COPY "$(TargetDir)TVA.Web.dll" "$(OutDir)..\Applications\openPDC"
+COPY "$(TargetDir)TVA.Historian.dll" "$(OutDir)..\Applications\openPDC"</PostBuildEvent>
   </PropertyGroup>
 </Project>
