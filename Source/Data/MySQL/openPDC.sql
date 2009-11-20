@@ -721,10 +721,11 @@ FROM         OutputStream AS OS INNER JOIN
                       Node AS N ON OS.NodeID = N.ID;
                       
 CREATE VIEW OutputStreamMeasurementDetail AS
-SELECT OSM.NodeID, OSM.AdapterID, OSM.ID, OSM.HistorianID, OSM.PointID, OSM.SignalReference,
-      COALESCE(H.Acronym, '') AS HistorianAcronym
-FROM OutputStreamMeasurement OSM
-      LEFT OUTER JOIN Historian H ON (H.ID = OSM.HistorianID);
+SELECT     OSM.NodeID, OSM.AdapterID, OSM.ID, OSM.HistorianID, OSM.PointID, OSM.SignalReference, M.PointTag AS SourcePointTag, COALESCE(H.Acronym, '') 
+                      AS HistorianAcronym
+FROM         OutputStreamMeasurement AS OSM INNER JOIN
+                      Measurement AS M ON M.PointID = OSM.PointID LEFT OUTER JOIN
+                      Historian AS H ON H.ID = OSM.HistorianID;
       
 CREATE VIEW OutputStreamDeviceDetail AS
 SELECT OSD.NodeID, OSD.AdapterID, OSD.ID, OSD.Acronym, COALESCE(OSD.BpaAcronym, '') AS BpaAcronym, OSD.Name, OSD.LoadOrder, OSD.Enabled, 
