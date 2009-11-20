@@ -299,7 +299,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 					outputStreamMeasurement.AdapterID = sourceOutputStreamID;
 					outputStreamMeasurement.HistorianID = string.IsNullOrEmpty(measurement[2]) ? (int?)null : Convert.ToInt32(measurement[2]);
 					outputStreamMeasurement.PointID = Convert.ToInt32(measurement[0]);
-					outputStreamMeasurement.SignalReference = measurement[1];
+					outputStreamMeasurement.SignalReference = measurement[1].Replace(measurement[1].Substring(0, measurement[1].LastIndexOf("-")), "<UNASSIGNED>");
 					client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, true);
 				}
 				MessageBox.Show("Done!");

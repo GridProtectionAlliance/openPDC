@@ -1278,6 +1278,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private string SignalReferenceField;
         
+        private string SourcePointTagField;
+        
         [System.Runtime.Serialization.DataMemberAttribute()]
         public int AdapterID {
             get {
@@ -1365,6 +1367,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((object.ReferenceEquals(this.SignalReferenceField, value) != true)) {
                     this.SignalReferenceField = value;
                     this.RaisePropertyChanged("SignalReference");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string SourcePointTag {
+            get {
+                return this.SourcePointTagField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SourcePointTagField, value) != true)) {
+                    this.SourcePointTagField = value;
+                    this.RaisePropertyChanged("SourcePointTag");
                 }
             }
         }
@@ -2010,8 +2025,6 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDeviceAnalog))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDeviceDigital>))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDeviceDigital))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.Node>))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.Node))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.Company>))]
@@ -2443,81 +2456,6 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         File = 3,
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="TestObject", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities")]
-    public partial class TestObject : object, System.ComponentModel.INotifyPropertyChanged {
-        
-        private string AcronymField;
-        
-        private string NameField;
-        
-        private string NodeIDField;
-        
-        private System.Nullable<int> ParentIDField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Acronym {
-            get {
-                return this.AcronymField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.AcronymField, value) != true)) {
-                    this.AcronymField = value;
-                    this.RaisePropertyChanged("Acronym");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Name {
-            get {
-                return this.NameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NameField, value) != true)) {
-                    this.NameField = value;
-                    this.RaisePropertyChanged("Name");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string NodeID {
-            get {
-                return this.NodeIDField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NodeIDField, value) != true)) {
-                    this.NodeIDField = value;
-                    this.RaisePropertyChanged("NodeID");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<int> ParentID {
-            get {
-                return this.ParentIDField;
-            }
-            set {
-                if ((this.ParentIDField.Equals(value) != true)) {
-                    this.ParentIDField = value;
-                    this.RaisePropertyChanged("ParentID");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -4338,16 +4276,6 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         string EndSaveIniFile(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetTestData", ReplyAction="http://tempuri.org/IPhasorDataService/GetTestDataResponse")]
-        System.IAsyncResult BeginGetTestData(string nodeID, System.AsyncCallback callback, object asyncState);
-        
-        System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject> EndGetTestData(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/SaveTestData", ReplyAction="http://tempuri.org/IPhasorDataService/SaveTestDataResponse")]
-        System.IAsyncResult BeginSaveTestData(openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject testObject, bool isNew, System.AsyncCallback callback, object asyncState);
-        
-        string EndSaveTestData(System.IAsyncResult result);
-        
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetNodeList", ReplyAction="http://tempuri.org/IPhasorDataService/GetNodeListResponse")]
         System.IAsyncResult BeginGetNodeList(System.AsyncCallback callback, object asyncState);
         
@@ -5071,44 +4999,6 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         private object[] results;
         
         public SaveIniFileCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public string Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
-    public partial class GetTestDataCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public GetTestDataCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject> Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject>)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
-    public partial class SaveTestDataCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public SaveTestDataCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -5913,18 +5803,6 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.Threading.SendOrPostCallback onSaveIniFileCompletedDelegate;
         
-        private BeginOperationDelegate onBeginGetTestDataDelegate;
-        
-        private EndOperationDelegate onEndGetTestDataDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetTestDataCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginSaveTestDataDelegate;
-        
-        private EndOperationDelegate onEndSaveTestDataDelegate;
-        
-        private System.Threading.SendOrPostCallback onSaveTestDataCompletedDelegate;
-        
         private BeginOperationDelegate onBeginGetNodeListDelegate;
         
         private EndOperationDelegate onEndGetNodeListDelegate;
@@ -6229,10 +6107,6 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         public event System.EventHandler<GetExecutingAssemblyPathCompletedEventArgs> GetExecutingAssemblyPathCompleted;
         
         public event System.EventHandler<SaveIniFileCompletedEventArgs> SaveIniFileCompleted;
-        
-        public event System.EventHandler<GetTestDataCompletedEventArgs> GetTestDataCompleted;
-        
-        public event System.EventHandler<SaveTestDataCompletedEventArgs> SaveTestDataCompleted;
         
         public event System.EventHandler<GetNodeListCompletedEventArgs> GetNodeListCompleted;
         
@@ -7720,100 +7594,6 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             }
             base.InvokeAsync(this.onBeginSaveIniFileDelegate, new object[] {
                         input}, this.onEndSaveIniFileDelegate, this.onSaveIniFileCompletedDelegate, userState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetTestData(string nodeID, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetTestData(nodeID, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject> openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndGetTestData(System.IAsyncResult result) {
-            return base.Channel.EndGetTestData(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetTestData(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            string nodeID = ((string)(inValues[0]));
-            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetTestData(nodeID, callback, asyncState);
-        }
-        
-        private object[] OnEndGetTestData(System.IAsyncResult result) {
-            System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject> retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndGetTestData(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetTestDataCompleted(object state) {
-            if ((this.GetTestDataCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetTestDataCompleted(this, new GetTestDataCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetTestDataAsync(string nodeID) {
-            this.GetTestDataAsync(nodeID, null);
-        }
-        
-        public void GetTestDataAsync(string nodeID, object userState) {
-            if ((this.onBeginGetTestDataDelegate == null)) {
-                this.onBeginGetTestDataDelegate = new BeginOperationDelegate(this.OnBeginGetTestData);
-            }
-            if ((this.onEndGetTestDataDelegate == null)) {
-                this.onEndGetTestDataDelegate = new EndOperationDelegate(this.OnEndGetTestData);
-            }
-            if ((this.onGetTestDataCompletedDelegate == null)) {
-                this.onGetTestDataCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetTestDataCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetTestDataDelegate, new object[] {
-                        nodeID}, this.onEndGetTestDataDelegate, this.onGetTestDataCompletedDelegate, userState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginSaveTestData(openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject testObject, bool isNew, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginSaveTestData(testObject, isNew, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        string openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndSaveTestData(System.IAsyncResult result) {
-            return base.Channel.EndSaveTestData(result);
-        }
-        
-        private System.IAsyncResult OnBeginSaveTestData(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject testObject = ((openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject)(inValues[0]));
-            bool isNew = ((bool)(inValues[1]));
-            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginSaveTestData(testObject, isNew, callback, asyncState);
-        }
-        
-        private object[] OnEndSaveTestData(System.IAsyncResult result) {
-            string retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndSaveTestData(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnSaveTestDataCompleted(object state) {
-            if ((this.SaveTestDataCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.SaveTestDataCompleted(this, new SaveTestDataCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void SaveTestDataAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject testObject, bool isNew) {
-            this.SaveTestDataAsync(testObject, isNew, null);
-        }
-        
-        public void SaveTestDataAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject testObject, bool isNew, object userState) {
-            if ((this.onBeginSaveTestDataDelegate == null)) {
-                this.onBeginSaveTestDataDelegate = new BeginOperationDelegate(this.OnBeginSaveTestData);
-            }
-            if ((this.onEndSaveTestDataDelegate == null)) {
-                this.onEndSaveTestDataDelegate = new EndOperationDelegate(this.OnEndSaveTestData);
-            }
-            if ((this.onSaveTestDataCompletedDelegate == null)) {
-                this.onSaveTestDataCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnSaveTestDataCompleted);
-            }
-            base.InvokeAsync(this.onBeginSaveTestDataDelegate, new object[] {
-                        testObject,
-                        isNew}, this.onEndSaveTestDataDelegate, this.onSaveTestDataCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -9789,33 +9569,6 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             public string EndSaveIniFile(System.IAsyncResult result) {
                 object[] _args = new object[0];
                 string _result = ((string)(base.EndInvoke("SaveIniFile", _args, result)));
-                return _result;
-            }
-            
-            public System.IAsyncResult BeginGetTestData(string nodeID, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[1];
-                _args[0] = nodeID;
-                System.IAsyncResult _result = base.BeginInvoke("GetTestData", _args, callback, asyncState);
-                return _result;
-            }
-            
-            public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject> EndGetTestData(System.IAsyncResult result) {
-                object[] _args = new object[0];
-                System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject> _result = ((System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject>)(base.EndInvoke("GetTestData", _args, result)));
-                return _result;
-            }
-            
-            public System.IAsyncResult BeginSaveTestData(openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject testObject, bool isNew, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[2];
-                _args[0] = testObject;
-                _args[1] = isNew;
-                System.IAsyncResult _result = base.BeginInvoke("SaveTestData", _args, callback, asyncState);
-                return _result;
-            }
-            
-            public string EndSaveTestData(System.IAsyncResult result) {
-                object[] _args = new object[0];
-                string _result = ((string)(base.EndInvoke("SaveTestData", _args, result)));
                 return _result;
             }
             

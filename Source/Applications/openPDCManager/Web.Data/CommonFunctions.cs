@@ -760,6 +760,7 @@ namespace openPDCManager.Web.Data
 											   PointID = item.Field<int>("PointID"),
 											   HistorianID = item.Field<int?>("HistorianID"),
 											   SignalReference = item.Field<string>("SignalReference"),
+											   SourcePointTag = item.Field<string>("SourcePointTag"),
 											   HistorianAcronym = item.Field<string>("HistorianAcronym")
 										   }).ToList();
 			connection.Dispose();

@@ -233,16 +233,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace openPDCManager.Web.Data.BusinessObjects
 {
+	[Serializable()]
 	public class Message
 	{
+		public MessageType UserMessageType { get; set; }
+		[XmlIgnore]
 		public string Source { get; set; }
 		public string UserMessage { get; set; }
 		public string SystemMessage { get; set; }
-		public string Detail { get; set; }
-		public MessageType UserMessageType { get; set; }
+		[XmlIgnore]
+		public string Detail { get; set; }		
 	}
 
 	public enum MessageType

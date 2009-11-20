@@ -241,6 +241,7 @@ namespace openPDCManager.Web.Data.Entities
 		public int? HistorianID { get; set; }
 		public int PointID { get; set; }
 		public string SignalReference { get; set; }
+		public string SourcePointTag { get; set; }
 		public string HistorianAcronym { get; set; }
 	}
 }

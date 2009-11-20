@@ -192,18 +192,6 @@
   <wsdl:message name="IPhasorDataService_SaveIniFile_OutputMessage">
     <wsdl:part name="parameters" element="tns:SaveIniFileResponse" />
   </wsdl:message>
-  <wsdl:message name="IPhasorDataService_GetTestData_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetTestData" />
-  </wsdl:message>
-  <wsdl:message name="IPhasorDataService_GetTestData_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetTestDataResponse" />
-  </wsdl:message>
-  <wsdl:message name="IPhasorDataService_SaveTestData_InputMessage">
-    <wsdl:part name="parameters" element="tns:SaveTestData" />
-  </wsdl:message>
-  <wsdl:message name="IPhasorDataService_SaveTestData_OutputMessage">
-    <wsdl:part name="parameters" element="tns:SaveTestDataResponse" />
-  </wsdl:message>
   <wsdl:message name="IPhasorDataService_GetNodeList_InputMessage">
     <wsdl:part name="parameters" element="tns:GetNodeList" />
   </wsdl:message>
@@ -516,14 +504,6 @@
     <wsdl:operation name="SaveIniFile">
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveIniFile" message="tns:IPhasorDataService_SaveIniFile_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveIniFileResponse" message="tns:IPhasorDataService_SaveIniFile_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="GetTestData">
-      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetTestData" message="tns:IPhasorDataService_GetTestData_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetTestDataResponse" message="tns:IPhasorDataService_GetTestData_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="SaveTestData">
-      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveTestData" message="tns:IPhasorDataService_SaveTestData_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveTestDataResponse" message="tns:IPhasorDataService_SaveTestData_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="GetNodeList">
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetNodeList" message="tns:IPhasorDataService_GetNodeList_InputMessage" />
@@ -919,24 +899,6 @@
     </wsdl:operation>
     <wsdl:operation name="SaveIniFile">
       <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveIniFile" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetTestData">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetTestData" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="SaveTestData">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveTestData" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

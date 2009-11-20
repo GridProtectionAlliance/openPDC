@@ -205,6 +205,9 @@
     <Compile Include="UserControls\AdapterUserControl.xaml.cs">
       <DependentUpon>AdapterUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\SelectNode.xaml.cs">
+      <DependentUpon>SelectNode.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -351,6 +354,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
+    <Page Include="UserControls\SelectNode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AppManifest.xml" />
@@ -468,9 +475,6 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Phasor.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.TestObject.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Vendor.datasource">

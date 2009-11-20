@@ -146,6 +146,7 @@
       <xs:element minOccurs="0" name="NodeID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PointID" type="xs:int" />
       <xs:element minOccurs="0" name="SignalReference" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SourcePointTag" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="OutputStreamMeasurement" nillable="true" type="tns:OutputStreamMeasurement" />
@@ -203,21 +204,6 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="OutputStreamDeviceDigital" nillable="true" type="tns:OutputStreamDeviceDigital" />
-  <xs:complexType name="ArrayOfTestObject">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="TestObject" nillable="true" type="tns:TestObject" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ArrayOfTestObject" nillable="true" type="tns:ArrayOfTestObject" />
-  <xs:complexType name="TestObject">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="NodeID" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="ParentID" nillable="true" type="xs:int" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="TestObject" nillable="true" type="tns:TestObject" />
   <xs:complexType name="ArrayOfNode">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="Node" nillable="true" type="tns:Node" />

@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation" 
+    xmlns:nodesControl="clr-namespace:openPDCManager.Silverlight.UserControls"
     >
     
     <Grid x:Name="GridLayoutRoot" Background="{StaticResource PageBackgroundBrush}">
@@ -155,7 +156,8 @@
                     </igMenu:XamWebMenu>
                             <TextBlock Text="" Width="{StaticResource XXXSmallItemSize}" />
                             <TextBlock Text="Node: " FontWeight="Bold" Margin="5" Foreground="#FFFFFFFF" />
-                            <ComboBox x:Name="ComboboxNode" Margin="5" DisplayMemberPath="Value" Width="{StaticResource LargerItemSize}" />
+                            <nodesControl:SelectNode x:Name="UserControlSelectNode" Background="Transparent" />
+                    <!--<ComboBox x:Name="ComboboxNode" Margin="5" DisplayMemberPath="Value" Width="{StaticResource LargerItemSize}" />-->
                 </StackPanel>
                     </StackPanel>
                 <!--</StackPanel>-->
