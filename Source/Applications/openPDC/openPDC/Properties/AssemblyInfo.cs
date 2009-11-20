@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 
 // Assembly identity attributes.
-[assembly: AssemblyVersion("1.0.32.37746")]
+[assembly: AssemblyVersion("1.0.33.37862")]
 
 // Informational attributes.
 [assembly: AssemblyCompany("TVA")]
