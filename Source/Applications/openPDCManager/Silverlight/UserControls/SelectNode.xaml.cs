@@ -40,41 +40,50 @@ namespace openPDCManager.Silverlight.UserControls
 
 		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			App app = (App)Application.Current;
-			app.NodeValue = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Key;
+			if (!raiseNodesCollectionChanged)
+			{
+				App app = (App)Application.Current;
+				app.NodeValue = ((KeyValuePair<string, string>)ComboboxNode.SelectedItem).Key;
+				app.NodeName = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Value;
+			}
 		}
 
 		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
 		{
 			if (e.Error == null)
 			{
-				ComboboxNode.ItemsSource = e.Result;
-				if (NodeCollectionChanged != null && raiseNodesCollectionChanged)
-				    NodeCollectionChanged(this, null);
-				raiseNodesCollectionChanged = false;
+				ComboboxNode.ItemsSource = e.Result;				
+				App app = (App)Application.Current;
+				if (ComboboxNode.Items.Count > 0)
+				{
+					if (!string.IsNullOrEmpty(app.NodeValue))
+						ComboboxNode.SelectedItem = new KeyValuePair<string, string>(app.NodeValue, app.NodeName);
+					else
+						ComboboxNode.SelectedIndex = 0;
+					app.NodeValue = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Key;
+					app.NodeName = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Value;
+				}
+				else
+					app.NodeValue = string.Empty;
+				
 			}
 			else
 				MessageBox.Show(e.Error.Message);
 
-			App app = (App)Application.Current;
-			if (ComboboxNode.Items.Count > 0)
-			{
-				ComboboxNode.SelectedIndex = 0;
-				app.NodeValue = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Key;
-			}
-			else
-				app.NodeValue = string.Empty;
+			raiseNodesCollectionChanged = false;
 		}
 
 		public void RefreshNodeList()
 		{				
-			client.GetNodesAsync(true, false);
+			client.GetNodesAsync(true, false);			
 		}
 
 		public void RaiseNotification()
 		{
 			raiseNodesCollectionChanged = true;
-			RefreshNodeList();
+			if (NodeCollectionChanged != null && raiseNodesCollectionChanged)
+				NodeCollectionChanged(this, null);
+						
 		}
 		
 	}

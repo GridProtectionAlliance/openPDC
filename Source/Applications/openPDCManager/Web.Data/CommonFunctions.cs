@@ -1620,14 +1620,12 @@ namespace openPDCManager.Web.Data
 				return "Done!";		//As we do not add measurements for PDC device or device which is concentrator.
 
 			Device addedDevice = new Device();
-			addedDevice = GetDeviceByAcronym(device.Acronym);
-			
+			addedDevice = GetDeviceByAcronym(device.Acronym);			
 			DataTable pmuSignalTypes = new DataTable();
 		    pmuSignalTypes = GetPmuSignalTypes();
 
 			Measurement measurement;
-
-			foreach (DataRow row in pmuSignalTypes.Rows)
+			foreach (DataRow row in pmuSignalTypes.Rows)	//This will only create or update PMU related measurements and not phasor related.
 			{
 				measurement = new Measurement();
 				measurement.HistorianID = addedDevice.HistorianID;
@@ -1655,6 +1653,18 @@ namespace openPDCManager.Web.Data
 						measurement.SignalID = existingMeasurement.SignalID;
 						SaveMeasurement(measurement, false);
 					}
+
+					//After all the PMU related measurements are updated then lets go through each phasors for the PMU
+					//and update all the phasors and their measurements to reflect changes made to the PMU configuration.
+					//We are not going to make any changes to the Phasor definition itselft but only to reflect PMU related
+					//changes in the measurement.
+
+					foreach (Phasor phasor in GetPhasorList(addedDevice.ID))
+					{
+						SavePhasor(phasor, false);	//we will save phasor without modifying it so that only measurements will reflect changes related to PMU.
+						//nothing will change in phasor itself.
+					}
+
 				}
 			}
 						

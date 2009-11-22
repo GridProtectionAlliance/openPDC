@@ -267,13 +267,14 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			{
 				ClearForm();
 				MessageBox.Show(e.Result);
-			
+				client.GetNodeListAsync();
+
 				//openPDCManager.Silverlight.UserControls.SelectNode sn = new openPDCManager.Silverlight.UserControls.SelectNode();
 				//sn.RaiseNotification();
+				(Application.Current.RootVisual as MasterLayoutControl).UserControlSelectNode.RaiseNotification();
 			}
 			else
-				MessageBox.Show(e.Error.ToString());
-			client.GetNodeListAsync();
+				MessageBox.Show(e.Error.ToString());			
 		}
 		void ListBoxNodeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{

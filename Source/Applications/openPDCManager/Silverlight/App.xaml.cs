@@ -237,6 +237,7 @@ namespace openPDCManager.Silverlight
     public partial class App : Application
     {
 		public string NodeValue { get; set; }
+		public string NodeName { get; set; }
 
         public App()
         {
