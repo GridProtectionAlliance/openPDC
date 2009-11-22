@@ -270,6 +270,7 @@ namespace openPDCManager.Silverlight
 		void UserControlSelectNode_NodeCollectionChanged(object sender, RoutedEventArgs e)
 		{
 			(sender as SelectNode).RefreshNodeList();
+			//UserControlSelectNode.NodeCollectionChanged += new SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);
 		}
 
 		

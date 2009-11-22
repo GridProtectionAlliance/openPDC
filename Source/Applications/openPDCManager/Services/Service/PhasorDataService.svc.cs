@@ -489,9 +489,9 @@ namespace PCS.Services.Service
 			return CommonFunctions.GetOutputStreamDeviceList(outputStreamID, enabledOnly);
 		}
 
-		public string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew)
+		public string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym)
 		{
-			return CommonFunctions.SaveOutputStreamDevice(outputStreamDevice, isNew);
+			return CommonFunctions.SaveOutputStreamDevice(outputStreamDevice, isNew, originalAcronym);
 		}
 
 		public string DeleteOutputStreamDevice(int outputStreamID, List<string> devicesToBeDeleted)

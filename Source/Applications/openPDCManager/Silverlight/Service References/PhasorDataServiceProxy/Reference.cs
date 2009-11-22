@@ -4187,7 +4187,7 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevice> EndGetOutputStreamDeviceList(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamDevice", ReplyAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceResponse")]
-        System.IAsyncResult BeginSaveOutputStreamDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevice outputStreamDevice, bool isNew, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginSaveOutputStreamDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym, System.AsyncCallback callback, object asyncState);
         
         string EndSaveOutputStreamDevice(System.IAsyncResult result);
         
@@ -6739,8 +6739,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginSaveOutputStreamDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevice outputStreamDevice, bool isNew, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginSaveOutputStreamDevice(outputStreamDevice, isNew, callback, asyncState);
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginSaveOutputStreamDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginSaveOutputStreamDevice(outputStreamDevice, isNew, originalAcronym, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -6751,7 +6751,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         private System.IAsyncResult OnBeginSaveOutputStreamDevice(object[] inValues, System.AsyncCallback callback, object asyncState) {
             openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevice outputStreamDevice = ((openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevice)(inValues[0]));
             bool isNew = ((bool)(inValues[1]));
-            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginSaveOutputStreamDevice(outputStreamDevice, isNew, callback, asyncState);
+            string originalAcronym = ((string)(inValues[2]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginSaveOutputStreamDevice(outputStreamDevice, isNew, originalAcronym, callback, asyncState);
         }
         
         private object[] OnEndSaveOutputStreamDevice(System.IAsyncResult result) {
@@ -6767,11 +6768,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             }
         }
         
-        public void SaveOutputStreamDeviceAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevice outputStreamDevice, bool isNew) {
-            this.SaveOutputStreamDeviceAsync(outputStreamDevice, isNew, null);
+        public void SaveOutputStreamDeviceAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym) {
+            this.SaveOutputStreamDeviceAsync(outputStreamDevice, isNew, originalAcronym, null);
         }
         
-        public void SaveOutputStreamDeviceAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevice outputStreamDevice, bool isNew, object userState) {
+        public void SaveOutputStreamDeviceAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym, object userState) {
             if ((this.onBeginSaveOutputStreamDeviceDelegate == null)) {
                 this.onBeginSaveOutputStreamDeviceDelegate = new BeginOperationDelegate(this.OnBeginSaveOutputStreamDevice);
             }
@@ -6783,7 +6784,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             }
             base.InvokeAsync(this.onBeginSaveOutputStreamDeviceDelegate, new object[] {
                         outputStreamDevice,
-                        isNew}, this.onEndSaveOutputStreamDeviceDelegate, this.onSaveOutputStreamDeviceCompletedDelegate, userState);
+                        isNew,
+                        originalAcronym}, this.onEndSaveOutputStreamDeviceDelegate, this.onSaveOutputStreamDeviceCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -9323,10 +9325,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 return _result;
             }
             
-            public System.IAsyncResult BeginSaveOutputStreamDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevice outputStreamDevice, bool isNew, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[2];
+            public System.IAsyncResult BeginSaveOutputStreamDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[3];
                 _args[0] = outputStreamDevice;
                 _args[1] = isNew;
+                _args[2] = originalAcronym;
                 System.IAsyncResult _result = base.BeginInvoke("SaveOutputStreamDevice", _args, callback, asyncState);
                 return _result;
             }

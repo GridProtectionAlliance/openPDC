@@ -845,7 +845,7 @@ namespace openPDCManager.Web.Data
 				return null;
 		}
 
-		public static string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew)
+		public static string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym)
 		{
 			DataConnection connection = new DataConnection();
 			IDbCommand command = connection.Connection.CreateCommand();
@@ -866,7 +866,23 @@ namespace openPDCManager.Web.Data
 			command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDevice.LoadOrder));
 			command.Parameters.Add(AddWithValue(command, "@enabled", outputStreamDevice.Enabled));
 			if (!isNew)
+			{
 				command.Parameters.Add(AddWithValue(command, "@id", outputStreamDevice.ID));
+
+				//if output stream device is updated then modify signal references in the measurement table
+				//to reflect changes in the acronym of the device.
+				if (!string.IsNullOrEmpty(originalAcronym))
+				{
+					IDbCommand command1 = connection.Connection.CreateCommand();
+					command1.CommandType = CommandType.Text;
+					command1.CommandText = "Update OutputStreamMeasurement Set SignalReference = Replace(SignalReference, @originalAcronym, @newAcronym) Where AdapterID = @adapterID";	// and SignalReference LIKE @signalReference";
+					command1.Parameters.Add(AddWithValue(command1, "@originalAcronym", originalAcronym));
+					command1.Parameters.Add(AddWithValue(command1, "@newAcronym", outputStreamDevice.Acronym));
+					command1.Parameters.Add(AddWithValue(command1, "@adapterID", outputStreamDevice.AdapterID));
+					//command.Parameters.Add(AddWithValue(command1, "@signalReference", "%" + originalAcronym + "-%"));
+					command1.ExecuteNonQuery();
+				}
+			}
 
 			command.ExecuteNonQuery();
 			connection.Dispose();
@@ -890,8 +906,8 @@ namespace openPDCManager.Web.Data
 				IDbCommand command1 = connection.Connection.CreateCommand();
 				command1.CommandType = CommandType.Text;
 				command1.CommandText = "Delete From OutputStreamDevice Where Acronym = @acronym And AdapterID = @adapterID";
-				command1.Parameters.Add(AddWithValue(command, "@acronym", acronym));
-				command1.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
+				command1.Parameters.Add(AddWithValue(command1, "@acronym", acronym));
+				command1.Parameters.Add(AddWithValue(command1, "@adapterID", outputStreamID));
 				command1.ExecuteNonQuery();
 			}
 
@@ -913,7 +929,7 @@ namespace openPDCManager.Web.Data
 				outputStreamDevice.Name = device.Name;
 				outputStreamDevice.LoadOrder = device.LoadOrder;
 				outputStreamDevice.Enabled = true;
-				SaveOutputStreamDevice(outputStreamDevice, true);	//save in to OutputStreamDevice Table.
+				SaveOutputStreamDevice(outputStreamDevice, true, string.Empty);	//save in to OutputStreamDevice Table.
 
 				int savedOutputStreamDeviceID = GetOutputStreamDevice(outputStreamID, device.Acronym).ID;
 

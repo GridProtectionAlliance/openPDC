@@ -443,7 +443,7 @@ namespace PCS.Services.Service
 		List<OutputStreamDevice> GetOutputStreamDeviceList(int outputStreamID, bool enabledOnly);
 
 		[OperationContract]
-		string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew);
+		string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym);
 
 		[OperationContract]
 		string DeleteOutputStreamDevice(int outputStreamID, List<string> devicesToBeDeleted);

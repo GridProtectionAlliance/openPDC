@@ -267,8 +267,9 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			{
 				ClearForm();
 				MessageBox.Show(e.Result);
-				openPDCManager.Silverlight.UserControls.SelectNode sn = new openPDCManager.Silverlight.UserControls.SelectNode();
-				sn.RaiseNotification();
+			
+				//openPDCManager.Silverlight.UserControls.SelectNode sn = new openPDCManager.Silverlight.UserControls.SelectNode();
+				//sn.RaiseNotification();
 			}
 			else
 				MessageBox.Show(e.Error.ToString());

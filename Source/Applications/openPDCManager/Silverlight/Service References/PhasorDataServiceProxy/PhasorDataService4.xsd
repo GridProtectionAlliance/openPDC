@@ -181,6 +181,7 @@
       <xs:sequence>
         <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" minOccurs="0" name="outputStreamDevice" nillable="true" type="q14:OutputStreamDevice" />
         <xs:element minOccurs="0" name="isNew" type="xs:boolean" />
+        <xs:element minOccurs="0" name="originalAcronym" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

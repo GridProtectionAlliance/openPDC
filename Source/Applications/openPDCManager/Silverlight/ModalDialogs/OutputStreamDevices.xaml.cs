@@ -234,6 +234,7 @@ using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using System.Collections.ObjectModel;
 
 namespace openPDCManager.Silverlight.ModalDialogs
 {
@@ -247,6 +248,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 		bool inEditMode = false;
 		int outputStreamDeviceID = 0;
+		OutputStreamDevice selectedOutputStreamDevice;
 
 		public OutputStreamDevices(int outputStreamID, string outputStreamAcronym)
 		{
@@ -258,9 +260,18 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
 			client.GetOutputStreamDeviceListCompleted += new EventHandler<GetOutputStreamDeviceListCompletedEventArgs>(client_GetOutputStreamDeviceListCompleted);
 			client.SaveOutputStreamDeviceCompleted += new EventHandler<SaveOutputStreamDeviceCompletedEventArgs>(client_SaveOutputStreamDeviceCompleted);
+			client.DeleteOutputStreamDeviceCompleted += new EventHandler<DeleteOutputStreamDeviceCompletedEventArgs>(client_DeleteOutputStreamDeviceCompleted);
 			ListBoxOutputStreamDeviceList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDeviceList_SelectionChanged);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
+		}
+
+		void client_DeleteOutputStreamDeviceCompleted(object sender, DeleteOutputStreamDeviceCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				client.GetOutputStreamDeviceListAsync(sourceOutputStreamID, false);
+			else
+				MessageBox.Show(e.Error.Message);
 		}
 
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -279,10 +290,10 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			if (inEditMode == true && outputStreamDeviceID > 0)
 			{
 				outputStreamDevice.ID = outputStreamDeviceID;
-				client.SaveOutputStreamDeviceAsync(outputStreamDevice, false);
+				client.SaveOutputStreamDeviceAsync(outputStreamDevice, false, selectedOutputStreamDevice.Acronym);
 			}
 			else
-				client.SaveOutputStreamDeviceAsync(outputStreamDevice, true);
+				client.SaveOutputStreamDeviceAsync(outputStreamDevice, true, string.Empty);
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -292,7 +303,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		{
 			if (ListBoxOutputStreamDeviceList.SelectedIndex >= 0)
 			{
-				OutputStreamDevice selectedOutputStreamDevice = ListBoxOutputStreamDeviceList.SelectedItem as OutputStreamDevice;
+				selectedOutputStreamDevice = ListBoxOutputStreamDeviceList.SelectedItem as OutputStreamDevice;
 				GridOutputStreamDeviceDetail.DataContext = selectedOutputStreamDevice;
 				CheckBoxEnabled.IsChecked = selectedOutputStreamDevice.Enabled;
 				inEditMode = true;
@@ -351,9 +362,12 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			OutputStreamDeviceDigitals osdd = new OutputStreamDeviceDigitals(outputStreamDeviceId, acronym);
 			osdd.Show();
 		}
-		private void HyperlinkButtonWizard_Click(object sender, RoutedEventArgs e)
+		
+		private void HyperlinkButtonDelete_Click(object sender, RoutedEventArgs e)
 		{
-
+			int outputStreamDeviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ((HyperlinkButton)sender).Name;
+			client.DeleteOutputStreamDeviceAsync(sourceOutputStreamID, new ObservableCollection<string>(){acronym});
 		}
 		
 	}
