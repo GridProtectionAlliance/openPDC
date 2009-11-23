@@ -233,15 +233,15 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Net;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
 using System.Windows;
-using System.Windows.Browser;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
+using openPDCManager.Silverlight.ModalDialogs;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
@@ -293,18 +293,54 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 		void client_SaveIniFileCompleted(object sender, SaveIniFileCompletedEventArgs e)
 		{
+			Message message = new Message();
 			if (e.Error == null)
-				iniFileName = e.Result;
+			{
+				message = Common.ParseStringToMessage(e.Result);
+				if (message.UserMessageType == MessageType.Error)	//we will display popup dialog only if it is an error.
+				{
+					iniFileName = string.Empty;
+					SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+					sm.Show();
+				}
+				else
+					iniFileName = message.UserMessage;
+			}
 			else
-				MessageBox.Show("Failed to upload INI file.");
+			{
+				message.UserMessageType = MessageType.Error;
+				message.UserMessage = "Failed to Upload INI File";
+				message.SystemMessage = e.Error.Message;
+				SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+				sm.Show();			
+			}
 		}
 
 		#region " Service Event Handlers"
 
 		void client_GetExecutingAssemblyPathCompleted(object sender, GetExecutingAssemblyPathCompletedEventArgs e)
 		{
+			Message message = new Message();
 			if (e.Error == null)
-				iniFilePath = e.Result;
+			{
+				message = Common.ParseStringToMessage(e.Result);
+				if (message.UserMessageType == MessageType.Error)
+				{
+					iniFilePath = string.Empty;
+					SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+					sm.Show();
+				}
+				else
+					iniFilePath = message.UserMessage;
+			}
+			else
+			{
+				message.UserMessageType = MessageType.Error;
+				message.UserMessage = "Failed to Retrieve Current Execution Path";
+				message.SystemMessage = e.Error.Message;
+				SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void client_GetInterconnectionsCompleted(object sender, GetInterconnectionsCompletedEventArgs e)
 		{

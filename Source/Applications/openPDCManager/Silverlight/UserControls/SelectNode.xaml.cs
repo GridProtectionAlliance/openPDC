@@ -57,15 +57,24 @@ namespace openPDCManager.Silverlight.UserControls
 				if (ComboboxNode.Items.Count > 0)
 				{
 					if (!string.IsNullOrEmpty(app.NodeValue))
-						ComboboxNode.SelectedItem = new KeyValuePair<string, string>(app.NodeValue, app.NodeName);
+					{
+						foreach (KeyValuePair<string, string> item in ComboboxNode.Items)
+						{
+							if (item.Key == app.NodeValue)
+							{
+								ComboboxNode.SelectedItem = item;
+								break;
+							}
+								
+						}						
+					}
 					else
 						ComboboxNode.SelectedIndex = 0;
 					app.NodeValue = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Key;
 					app.NodeName = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Value;
 				}
 				else
-					app.NodeValue = string.Empty;
-				
+					app.NodeValue = string.Empty;				
 			}
 			else
 				MessageBox.Show(e.Error.Message);

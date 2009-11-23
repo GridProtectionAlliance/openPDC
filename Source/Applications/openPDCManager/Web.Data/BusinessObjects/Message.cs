@@ -251,6 +251,7 @@ namespace openPDCManager.Web.Data.BusinessObjects
 
 	public enum MessageType
 	{
+		Confirmation,
 		Information,
 		Success,
 		Warning,

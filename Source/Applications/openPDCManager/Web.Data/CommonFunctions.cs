@@ -239,12 +239,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Soap;
+using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 using openPDCManager.Web.Data.BusinessObjects;
 using openPDCManager.Web.Data.Entities;
 using TVA.PhasorProtocols;
-using System.Xml.Serialization;
-using System.Xml;
-using System.Text;
 
 namespace openPDCManager.Web.Data
 {
@@ -286,8 +286,8 @@ namespace openPDCManager.Web.Data
 		{
 			try
 			{
-				//throw new ArgumentException("Invalid Operation");
-				return TVA.IO.FilePath.GetAbsolutePath("Temp");
+				return GetReturnMessage("GetExcecutingAssemblyPath()", TVA.IO.FilePath.GetAbsolutePath("Temp"),
+					string.Empty, string.Empty, MessageType.Success); 
 			}
 			catch (Exception ex)
 			{
@@ -309,13 +309,12 @@ namespace openPDCManager.Web.Data
 					{
 						fs.Write(buffer, 0, bytesRead);
 					}
-				}				
-				return fileName;
+				}
+				return GetReturnMessage("SaveIniFile()", fileName, string.Empty, string.Empty, MessageType.Success);
 			}
 			catch(Exception ex)
 			{
-				throw new InvalidOperationException(GetReturnMessage("ConfigurationWizard.SaveIniFile()",
-					"Failed to Upload INI File", ex.Message, ex.ToString(), MessageType.Error));
+				return GetReturnMessage("SaveIniFile()", "Failed to Upload INI File", ex.Message, ex.ToString(), MessageType.Error);				
 			}
 		}
 
@@ -632,9 +631,7 @@ namespace openPDCManager.Web.Data
 			command.Parameters.Add(AddWithValue(command, "@loadOrder", company.LoadOrder));
 
 			if (!isNew)
-			{
 				command.Parameters.Add(AddWithValue(command, "@id", company.ID));
-			}
 
 			command.ExecuteNonQuery();
             connection.Dispose();
@@ -725,11 +722,9 @@ namespace openPDCManager.Web.Data
 			command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStream.LoadOrder));
 			command.Parameters.Add(AddWithValue(command, "@enabled", outputStream.Enabled));
 
-			if (!isNew)
-			{
+			if (!isNew)			
 				command.Parameters.Add(AddWithValue(command, "@id", outputStream.ID));
-			}
-
+			
 			command.ExecuteNonQuery();
 			connection.Dispose();			
 			return "Done!";
@@ -1331,30 +1326,45 @@ namespace openPDCManager.Web.Data
 		public static string SaveNode(Node node, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
+			try
+			{				
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
 
-			if (isNew)
-				command.CommandText = "Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, ImagePath, Master, LoadOrder, Enabled) Values (@name, @companyID, @longitude, @latitude, @description, @image, @master, @loadOrder, @enabled)";
-			else
-				command.CommandText = "Update Node Set Name = @name, CompanyID = @companyID, Longitude = @longitude, Latitude = @latitude, Description = @description, ImagePath = @image, Master = @master, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+				if (isNew)
+					command.CommandText = "Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, ImagePath, Master, LoadOrder, Enabled) Values (@name, @companyID, @longitude, @latitude, @description, @image, @master, @loadOrder, @enabled)";
+				else
+					command.CommandText = "Update Node Set Name = @name, CompanyID = @companyID, Longitude = @longitude, Latitude = @latitude, Description = @description, ImagePath = @image, Master = @master, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
 
-			command.Parameters.Add(AddWithValue(command, "@name", node.Name));
-			command.Parameters.Add(AddWithValue(command, "@companyID", node.CompanyID ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@longitude", node.Longitude ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@latitude", node.Latitude ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@description", node.Description));
-			command.Parameters.Add(AddWithValue(command, "@image", node.Image));
-			command.Parameters.Add(AddWithValue(command, "@master", node.Master));
-			command.Parameters.Add(AddWithValue(command, "@loadOrder", node.LoadOrder));
-			command.Parameters.Add(AddWithValue(command, "@enabled", node.Enabled));
+				command.Parameters.Add(AddWithValue(command, "@name", node.Name));
+				command.Parameters.Add(AddWithValue(command, "@companyID", node.CompanyID ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@longitude", node.Longitude ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@latitude", node.Latitude ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@description", node.Description));
+				command.Parameters.Add(AddWithValue(command, "@image", node.Image));
+				command.Parameters.Add(AddWithValue(command, "@master", node.Master));
+				command.Parameters.Add(AddWithValue(command, "@loadOrder", node.LoadOrder));
+				command.Parameters.Add(AddWithValue(command, "@enabled", node.Enabled));
+							
+				if (!isNew)
+				{
+					if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+						command.Parameters.Add(AddWithValue(command, "@signalID", "{" + node.ID + "}"));						
+					else
+						command.Parameters.Add(AddWithValue(command, "@id", node.ID));
+				}
 
-			if (!isNew)
-				command.Parameters.Add(AddWithValue(command, "@id", node.ID));
-
-			command.ExecuteNonQuery();		
-			connection.Dispose();
-			return "Done!";
+				command.ExecuteNonQuery();
+				return GetReturnMessage("SaveNode", "Node Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveNode()", "Failed to Save Node Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
         
 		#endregion
@@ -1653,18 +1663,20 @@ namespace openPDCManager.Web.Data
 						measurement.SignalID = existingMeasurement.SignalID;
 						SaveMeasurement(measurement, false);
 					}
+				}
+			}
 
-					//After all the PMU related measurements are updated then lets go through each phasors for the PMU
-					//and update all the phasors and their measurements to reflect changes made to the PMU configuration.
-					//We are not going to make any changes to the Phasor definition itselft but only to reflect PMU related
-					//changes in the measurement.
+			if (!isNew)
+			{
+				//After all the PMU related measurements are updated then lets go through each phasors for the PMU
+				//and update all the phasors and their measurements to reflect changes made to the PMU configuration.
+				//We are not going to make any changes to the Phasor definition itselft but only to reflect PMU related
+				//changes in the measurement.
 
-					foreach (Phasor phasor in GetPhasorList(addedDevice.ID))
-					{
-						SavePhasor(phasor, false);	//we will save phasor without modifying it so that only measurements will reflect changes related to PMU.
-						//nothing will change in phasor itself.
-					}
-
+				foreach (Phasor phasor in GetPhasorList(addedDevice.ID))
+				{
+					SavePhasor(phasor, false);	//we will save phasor without modifying it so that only measurements will reflect changes related to PMU.
+					//nothing will change in phasor itself.
 				}
 			}
 						
@@ -2024,8 +2036,7 @@ namespace openPDCManager.Web.Data
 				command.CommandText = "Update Measurement Set HistorianID = @historianID, DeviceID = @deviceID, PointTag = @pointTag, AlternateTag = @alternateTag, SignalTypeID = @signalTypeID, " +
 					"PhasorSourceIndex = @phasorSourceIndex, SignalReference = @signalReference, Adder = @adder, Multiplier = @multiplier, Description = @description, Enabled = @enabled Where SignalID = @signalID";
 
-			command.Parameters.Add(AddWithValue(command, "@historianID", measurement.HistorianID ?? (object)DBNull.Value));
-			//command.Parameters.Add(AddWithValue(command, "@pointID", measurement.PointID));
+			command.Parameters.Add(AddWithValue(command, "@historianID", measurement.HistorianID ?? (object)DBNull.Value));			
 			command.Parameters.Add(AddWithValue(command, "@deviceID", measurement.DeviceID ?? (object)DBNull.Value));
 			command.Parameters.Add(AddWithValue(command, "@pointTag", measurement.PointTag));
 			command.Parameters.Add(AddWithValue(command, "@alternateTag", measurement.AlternateTag));
@@ -2038,8 +2049,13 @@ namespace openPDCManager.Web.Data
 			command.Parameters.Add(AddWithValue(command, "@enabled", measurement.Enabled));
 
 			if (!isNew)
-				command.Parameters.Add(AddWithValue(command, "@signalID", measurement.SignalID));
-
+			{
+				if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+					command.Parameters.Add(AddWithValue(command, "@signalID", "{" + measurement.SignalID + "}"));
+				else
+					command.Parameters.Add(AddWithValue(command, "@signalID", measurement.SignalID));
+			}
+			//System.Diagnostics.Debug.WriteLine(command.ExecuteNonQuery());
 			command.ExecuteNonQuery();
 			connection.Dispose();
 			return "Done!";

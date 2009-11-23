@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  Nodes.xaml.cs - Gbtc
+//  Common.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  09/16/2009 - Mehulbhai P. Thakkar
+//  11/23/2009 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -230,128 +230,24 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ServiceModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
+using System.Linq;
+using System.Xml.Linq;
 
-namespace openPDCManager.Silverlight.Pages.Manage
+namespace openPDCManager.Silverlight.Utilities
 {
-	public partial class Nodes : Page
+	public static class Common
 	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
-		PhasorDataServiceClient client;
-
-		bool inEditMode = false;
-		string nodeID = string.Empty;
-
-		public Nodes()
-		{
-			InitializeComponent();
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
-			client.GetNodeListCompleted += new EventHandler<GetNodeListCompletedEventArgs>(client_GetNodeListCompleted);
-			client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);
-			client.SaveNodeCompleted += new EventHandler<SaveNodeCompletedEventArgs>(client_SaveNodeCompleted);
-			Loaded += new RoutedEventHandler(Nodes_Loaded);
-			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
-			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
-			ListBoxNodeList.SelectionChanged += new SelectionChangedEventHandler(ListBoxNodeList_SelectionChanged);
+		public static Message ParseStringToMessage(string messageXML)
+		{	
+			XDocument xdoc = XDocument.Parse(messageXML.Substring(1));
+			var message = from element in xdoc.Descendants("Message")
+						  select new Message()
+						  {
+							  UserMessageType = (MessageType)Enum.Parse(typeof(MessageType), element.Element("UserMessageType").Value, true),
+							  UserMessage = element.Element("UserMessage").Value,
+							  SystemMessage = element.Element("SystemMessage").Value
+						  };
+			return message.ToList()[0] as Message;
 		}
-
-		void client_SaveNodeCompleted(object sender, SaveNodeCompletedEventArgs e)
-		{			
-			if (e.Error == null)
-			{
-				SystemMessages sm = new SystemMessages(Common.ParseStringToMessage(e.Result), ButtonType.OkOnly);
-				sm.Show();
-				ClearForm();
-				client.GetNodeListAsync();
-				(Application.Current.RootVisual as MasterLayoutControl).UserControlSelectNode.RaiseNotification();
-			}
-			else
-			{
-				Message message = new Message();
-				message.UserMessageType = MessageType.Error;
-				message.UserMessage = "Failed to Save Node Information";
-				message.SystemMessage = e.Error.Message;
-				SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
-				sm.Show();
-			}						
-		}
-
-		void ListBoxNodeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (ListBoxNodeList.SelectedIndex >= 0)
-			{
-				Node selectedNode = ListBoxNodeList.SelectedItem as Node;
-				GridNodeDetail.DataContext = selectedNode;
-				if (selectedNode.CompanyID.HasValue)
-					ComboBoxCompany.SelectedItem = new KeyValuePair<int, string>((int)selectedNode.CompanyID, selectedNode.CompanyName);
-				else
-					ComboBoxCompany.SelectedIndex = 0;
-				inEditMode = true;
-				nodeID = selectedNode.ID;
-			}
-		}
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Node node = new Node();
-			node.Name = TextBoxName.Text;
-			node.CompanyID = ((KeyValuePair<int, string>)ComboBoxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxCompany.SelectedItem).Key;
-			node.Longitude = string.IsNullOrEmpty(TextBoxLongitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLongitude.Text);
-			node.Latitude = string.IsNullOrEmpty(TextBoxLatitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLatitude.Text);
-			node.Description = TextBoxDescription.Text;
-			node.Image = TextBoxImage.Text;
-			node.Master = (bool)CheckboxMaster.IsChecked;
-			node.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
-			node.Enabled = (bool)CheckboxEnabled.IsChecked;
-
-			if (inEditMode == true && !string.IsNullOrEmpty(nodeID))
-			{
-				node.ID = nodeID;
-				client.SaveNodeAsync(node, false);
-			}
-			else
-				client.SaveNodeAsync(node, true);
-		}
-		void ButtonClear_Click(object sender, RoutedEventArgs e)
-		{
-			ClearForm();
-		}
-		void Nodes_Loaded(object sender, RoutedEventArgs e)
-		{
-			client.GetNodeListAsync();
-			client.GetCompaniesAsync(true);
-		}
-		void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboBoxCompany.ItemsSource = e.Result;
-			ComboBoxCompany.SelectedIndex = 0;
-		}
-		void client_GetNodeListCompleted(object sender, GetNodeListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ListBoxNodeList.ItemsSource = e.Result;
-		}
-		void ClearForm()
-		{
-			GridNodeDetail.DataContext = new Node();
-			ComboBoxCompany.SelectedIndex = 0;
-			inEditMode = false;
-			nodeID = string.Empty;
-			ListBoxNodeList.SelectedIndex = -1;
-		}
-
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-		}
-
 	}
 }
