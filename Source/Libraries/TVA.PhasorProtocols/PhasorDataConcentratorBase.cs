@@ -12,6 +12,8 @@
 //       Generated original version of source code.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
+//  11/25/2009 - Pinal C. Patel
+//       Modified Start() to wait for initialization to complete for thread synchronization.
 //
 //*******************************************************************************************************
 
@@ -656,6 +658,9 @@ namespace TVA.PhasorProtocols
         /// </summary>
         public override void Start()
         {
+            // Wait for initialization to complete.
+            base.WaitForInitialize();
+
             // Start communications servers
             if (m_autoStartDataChannel && m_dataChannel != null && m_dataChannel.CurrentState == ServerState.NotRunning)
                 m_dataChannel.Start();
