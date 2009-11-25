@@ -17,6 +17,58 @@ namespace DataQualityMonitoring
 
         #region [ Members ]
 
+        // Constants
+
+        /// <summary>
+        /// Default low range for frequency measurements.
+        /// </summary>
+        public const double DEFAULT_FREQ_LOW_RANGE = 59.95;
+
+        /// <summary>
+        /// Default high range for frequency measurements.
+        /// </summary>
+        public const double DEFAULT_FREQ_HIGH_RANGE = 60.05;
+
+        /// <summary>
+        /// Default low range for voltage phasor magnitudes.
+        /// </summary>
+        public const double DEFAULT_VPHM_LOW_RANGE = 475000.0;
+
+        /// <summary>
+        /// Default high range for voltage phasor magnitudes.
+        /// </summary>
+        public const double DEFAULT_VPHM_HIGH_RANGE = 525000.0;
+
+        /// <summary>
+        /// Default low range for current phasor magnitudes.
+        /// </summary>
+        public const double DEFAULT_IPHM_LOW_RANGE = 0.0;
+
+        /// <summary>
+        /// Default high range for current phasor magnitudes.
+        /// </summary>
+        public const double DEFAULT_IPHM_HIGH_RANGE = 3000.0;
+
+        /// <summary>
+        /// Default low range for voltage phasor angles.
+        /// </summary>
+        public const double DEFAULT_VPHA_LOW_RANGE = -180.0;
+
+        /// <summary>
+        /// Default high range for voltage phasor angles.
+        /// </summary>
+        public const double DEFAULT_VPHA_HIGH_RANGE = 180.0;
+
+        /// <summary>
+        /// Default low range for current phasor angles.
+        /// </summary>
+        public const double DEFAULT_IPHA_LOW_RANGE = -180.0;
+
+        /// <summary>
+        /// Default high range for current phasor angles.
+        /// </summary>
+        public const double DEFAULT_IPHA_HIGH_RANGE = 180.0;
+
         // Fields
         private Dictionary<MeasurementKey, LinkedList<IMeasurement>> m_outOfRangeMeasurements;
         private double m_lowRange;
@@ -197,61 +249,6 @@ namespace DataQualityMonitoring
         }
 
         #endregion
-
-        #region [ Static ]
-
-        // Static Fields
-
-        /// <summary>
-        /// Default low range for frequency measurements.
-        /// </summary>
-        public const double DEFAULT_FREQ_LOW_RANGE = 59.95;
-
-        /// <summary>
-        /// Default high range for frequency measurements.
-        /// </summary>
-        public const double DEFAULT_FREQ_HIGH_RANGE = 60.05;
-
-        /// <summary>
-        /// Default low range for voltage phasor magnitudes.
-        /// </summary>
-        public const double DEFAULT_VPHM_LOW_RANGE = 475000.0;
-
-        /// <summary>
-        /// Default high range for voltage phasor magnitudes.
-        /// </summary>
-        public const double DEFAULT_VPHM_HIGH_RANGE = 525000.0;
-
-        /// <summary>
-        /// Default low range for current phasor magnitudes.
-        /// </summary>
-        public const double DEFAULT_IPHM_LOW_RANGE = 0.0;
-
-        /// <summary>
-        /// Default high range for current phasor magnitudes.
-        /// </summary>
-        public const double DEFAULT_IPHM_HIGH_RANGE = 3000.0;
-
-        /// <summary>
-        /// Default low range for voltage phasor angles.
-        /// </summary>
-        public const double DEFAULT_VPHA_LOW_RANGE = -180.0;
-
-        /// <summary>
-        /// Default high range for voltage phasor angles.
-        /// </summary>
-        public const double DEFAULT_VPHA_HIGH_RANGE = 180.0;
-
-        /// <summary>
-        /// Default low range for current phasor angles.
-        /// </summary>
-        public const double DEFAULT_IPHA_LOW_RANGE = -180.0;
-
-        /// <summary>
-        /// Default high range for current phasor angles.
-        /// </summary>
-        public const double DEFAULT_IPHA_HIGH_RANGE = 180.0;
-
-        #endregion
+        
     }
 }
