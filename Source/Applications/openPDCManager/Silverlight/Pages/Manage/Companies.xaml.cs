@@ -234,7 +234,9 @@ using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
 
 namespace openPDCManager.Silverlight.Pages.Manage
 {
@@ -260,13 +262,20 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 		void client_SaveCompanyCompleted(object sender, SaveCompanyCompletedEventArgs e)
 		{
+			Message message = new Message();
 			if (e.Error == null)
 			{
 				ClearForm();
-				MessageBox.Show(e.Result);
+				message = Common.ParseStringToMessage(e.Result);
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				message.UserMessageType = MessageType.Error;
+				message.UserMessage = "Failed to Save Company Information";
+				message.SystemMessage = e.Error.Message;
+			}
+			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+			sm.Show();
 			client.GetCompanyListAsync();	//refresh data to reflect changes.
 		}
 		void Companies_Loaded(object sender, RoutedEventArgs e)

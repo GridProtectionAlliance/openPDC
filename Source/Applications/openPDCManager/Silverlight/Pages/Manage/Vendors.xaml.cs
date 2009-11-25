@@ -235,6 +235,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
+using openPDCManager.Silverlight.ModalDialogs;
 
 namespace openPDCManager.Silverlight.Pages.Manage
 {
@@ -260,13 +262,20 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 		void client_SaveVendorCompleted(object sender, SaveVendorCompletedEventArgs e)
 		{
+			Message message = new Message();
 			if (e.Error == null)
 			{
 				ClearForm();
-				MessageBox.Show(e.Result);
+				message = Common.ParseStringToMessage(e.Result);
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				message.UserMessageType = MessageType.Error;
+				message.UserMessage = "Failed to Save Vendor Information";
+				message.SystemMessage = e.Error.Message;
+			}
+			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+			sm.Show();
 			client.GetVendorListAsync();	//Refresh data to reflect changes on the current screen.
 		}
 		void ListBoxVendorList_SelectionChanged(object sender, SelectionChangedEventArgs e)

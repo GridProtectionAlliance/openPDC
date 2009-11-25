@@ -238,6 +238,7 @@ using System.Windows.Navigation;
 using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
 
 namespace openPDCManager.Silverlight.Pages.Adapters
 {
@@ -266,13 +267,21 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 		void client_SaveOutputStreamCompleted(object sender, SaveOutputStreamCompletedEventArgs e)
 		{
+			Message message = new Message();
 			if (e.Error == null)
 			{
 				ClearForm();
-				MessageBox.Show(e.Result);
+				message = Common.ParseStringToMessage(e.Result);
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				message.UserMessageType = MessageType.Error;
+				message.UserMessage = "Failed to Save Output Stream Information";
+				message.SystemMessage = e.Error.Message;
+			}
+
+			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+			sm.Show();
 			client.GetOutputStreamListAsync(false);
 		}
 		void client_GetOutputStreamListCompleted(object sender, GetOutputStreamListCompletedEventArgs e)

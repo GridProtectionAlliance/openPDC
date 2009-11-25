@@ -11,7 +11,7 @@
                     <TextBlock x:Name="TextBlockMessageType" Foreground="#FFFFFFFF" FontWeight="Bold" Effect="{StaticResource TextBlockDarkShadowEffect}" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
                 </StackPanel>                
                 <Border Background="{StaticResource PortletBackgroundBrush}" Margin="2">
-                    <Grid x:Name="GridSystemMessageDetail" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" Height="{StaticResource XLargeItemSize}" Width="{StaticResource XXXLargeItemSize}">
+                    <Grid x:Name="GridSystemMessageDetail" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" Height="{StaticResource LargeItemSize}" Width="{StaticResource XXXLargeItemSize}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />

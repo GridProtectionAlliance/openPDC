@@ -235,6 +235,7 @@ using System.Windows;
 using System.Windows.Controls;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using System.Collections.ObjectModel;
+using openPDCManager.Silverlight.Utilities;
 
 namespace openPDCManager.Silverlight.ModalDialogs
 {
@@ -268,10 +269,20 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 		void client_DeleteOutputStreamDeviceCompleted(object sender, DeleteOutputStreamDeviceCompletedEventArgs e)
 		{
+			Message message = new Message();
 			if (e.Error == null)
+			{
+				message = Common.ParseStringToMessage(e.Result);
 				client.GetOutputStreamDeviceListAsync(sourceOutputStreamID, false);
+			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				message.UserMessageType = MessageType.Error;
+				message.UserMessage = "Failed to Delete Output Stream Device";
+				message.SystemMessage = e.Error.Message;
+			}
+			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+			sm.Show();
 		}
 
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -316,13 +327,20 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		}
 		void client_SaveOutputStreamDeviceCompleted(object sender, SaveOutputStreamDeviceCompletedEventArgs e)
 		{
+			Message message = new Message();
 			if (e.Error == null)
 			{
 				ClearForm();
-				MessageBox.Show(e.Result);
+				message = Common.ParseStringToMessage(e.Result);
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				message.UserMessageType = MessageType.Error;
+				message.UserMessage = "Failed to Save Output Stream Device Information";
+				message.SystemMessage = e.Error.Message;
+			}
+			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+			sm.Show();
 			client.GetOutputStreamDeviceListAsync(sourceOutputStreamID, false);
 		}
 		void client_GetOutputStreamDeviceListCompleted(object sender, GetOutputStreamDeviceListCompletedEventArgs e)

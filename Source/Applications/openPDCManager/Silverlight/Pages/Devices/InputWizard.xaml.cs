@@ -291,6 +291,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			ComboboxProtocol.SelectionChanged += new SelectionChangedEventHandler(ComboboxProtocol_SelectionChanged);
 		}
 
+		
+		#region " Service Event Handlers"
+
 		void client_SaveIniFileCompleted(object sender, SaveIniFileCompletedEventArgs e)
 		{
 			Message message = new Message();
@@ -312,11 +315,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				message.UserMessage = "Failed to Upload INI File";
 				message.SystemMessage = e.Error.Message;
 				SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
-				sm.Show();			
+				sm.Show();
 			}
 		}
-
-		#region " Service Event Handlers"
 
 		void client_GetExecutingAssemblyPathCompleted(object sender, GetExecutingAssemblyPathCompletedEventArgs e)
 		{
@@ -413,10 +414,17 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}		
 		void client_SaveWizardConfigurationInfoCompleted(object sender, SaveWizardConfigurationInfoCompletedEventArgs e)
 		{
-			if (e.Error == null)
-				MessageBox.Show(e.Result);
+			Message message = new Message();
+			if (e.Error == null)			
+				message = Common.ParseStringToMessage(e.Result);							
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				message.UserMessageType = MessageType.Error;
+				message.UserMessage = "Failed to Save Configuration Information";
+				message.SystemMessage = e.Error.Message;				
+			}
+			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+			sm.Show();
 		}
 		void client_GetDeviceByAcronymCompleted(object sender, GetDeviceByAcronymCompletedEventArgs e)
 		{

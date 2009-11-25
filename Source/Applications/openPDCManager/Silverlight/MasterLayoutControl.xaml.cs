@@ -243,10 +243,6 @@ namespace openPDCManager.Silverlight
 {
 	public partial class MasterLayoutControl : UserControl
 	{
-		//static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		//EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
-		//PhasorDataServiceClient client;
-
 		const double layoutRootHeight = 768;
 		const double layoutRootWidth = 1024;
 
@@ -260,42 +256,14 @@ namespace openPDCManager.Silverlight
 			Loaded += new RoutedEventHandler(MasterLayoutControl_Loaded);
 			NetworkChange.NetworkAddressChanged += new NetworkAddressChangedEventHandler(NetworkChange_NetworkAddressChanged);
 			ButtonChangeMode.Click += new RoutedEventHandler(ButtonChangeMode_Click);
-			UserControlSelectNode.NodeCollectionChanged += new SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);
-
-			//client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
-			//client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
-			//ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
+			UserControlSelectNode.NodeCollectionChanged += new SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);			
 		}
 
 		void UserControlSelectNode_NodeCollectionChanged(object sender, RoutedEventArgs e)
 		{
-			(sender as SelectNode).RefreshNodeList();
-			//UserControlSelectNode.NodeCollectionChanged += new SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);
+			(sender as SelectNode).RefreshNodeList();			
 		}
-
-		
-		
-		//void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		//{
-		//    App app = (App)Application.Current;
-		//    app.NodeValue = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Key;			
-		//}
-		//void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
-		//{
-		//    if (e.Error == null)
-		//        ComboboxNode.ItemsSource = e.Result;
-		//    else
-		//        MessageBox.Show(e.Error.Message);
-
-		//    App app = (App)Application.Current;
-		//    if (ComboboxNode.Items.Count > 0)
-		//    {
-		//        ComboboxNode.SelectedIndex = 0;
-		//        app.NodeValue = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Key;
-		//    }
-		//    else
-		//        app.NodeValue = string.Empty;
-		//}
+				
 		void GridLayoutRoot_SizeChanged(object sender, SizeChangedEventArgs e)
 		{
 			
@@ -324,8 +292,7 @@ namespace openPDCManager.Silverlight
 			{
 				TextBlockConnectivity.Text = "Disconnected (offline)";
 				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Red);
-			}
-			//client.GetNodesAsync(true, false);
+			}			
 		}
 		void Content_Resized(object sender, EventArgs e)
 		{			

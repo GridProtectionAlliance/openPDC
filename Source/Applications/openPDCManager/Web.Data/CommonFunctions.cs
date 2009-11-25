@@ -327,13 +327,12 @@ namespace openPDCManager.Web.Data
 				sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
 				sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
 				sf.Binder = new VersionConfigToNamespaceAssemblyObjectBinder();
-				connectionSettings = sf.Deserialize(inputStream) as ConnectionSettings;
+				connectionSettings = sf.Deserialize(inputStream) as ConnectionSettings;				
 			}
-			catch
+			catch 
 			{
-				throw;				
+				throw;
 			}
-
 			return connectionSettings;
 		}
 
@@ -384,82 +383,89 @@ namespace openPDCManager.Web.Data
 		public static string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, 
 				int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID)
 		{
-			//Before we start saving information into database make sure all the device acronyms are unique in the collection.
-			List<string> acronymList = new List<string>();
-			acronymList = (from item in wizardDeviceInfoList
-						   select item.Acronym).Distinct().ToList();
-
-			if (acronymList.Count != wizardDeviceInfoList.Count)	//i.e. there are duplicate acronyms.
-				throw new ArgumentException("Duplicate Acronyms Exists!");
-
-			int loadOrder = 1;
-			foreach (WizardDeviceInfo info in wizardDeviceInfoList)
+			try
 			{
-				if (info.Include)
+				//Before we start saving information into database make sure all the device acronyms are unique in the collection.
+				List<string> acronymList = new List<string>();
+				acronymList = (from item in wizardDeviceInfoList
+							   select item.Acronym).Distinct().ToList();
+
+				if (acronymList.Count != wizardDeviceInfoList.Count)	//i.e. there are duplicate acronyms.
+					throw new ArgumentException("Duplicate Acronyms Exists!");
+
+				int loadOrder = 1;
+				foreach (WizardDeviceInfo info in wizardDeviceInfoList)
 				{
-					Device device = new Device();
-					device.NodeID = nodeID;
-					device.Acronym = info.Acronym;
-					device.Name = info.Name;
-					device.IsConcentrator = false;
-					device.Longitude = info.Longitude;
-					device.Latitude = info.Latitude;
-					device.ConnectionString = parentID == null ? connectionString : string.Empty;
-					device.ProtocolID = protocolID;
-					device.CompanyID = companyID;
-					device.HistorianID = historianID;
-					device.InterconnectionID = interconnectionID;
-					device.Enabled = true;
-					device.VendorDeviceID = info.VendorDeviceID == null ? (int?)null : info.VendorDeviceID == 0 ? (int?)null : info.VendorDeviceID;
-					device.ParentID = parentID;
-					device.TimeZone = string.Empty;
-					device.AccessID = info.AccessID;
-					//Please review from here.										
-					device.TimeAdjustmentTicks = 0;
-					device.DataLossInterval = 35;
-					device.MeasuredLines = 1;
-					device.LoadOrder = loadOrder;
-					device.ContactList = string.Empty;
-
-					Device existingDevice = GetDeviceByAcronym(info.Acronym);
-					if (existingDevice != null)
+					if (info.Include)
 					{
-						device.ID = existingDevice.ID;
-						SaveDevice(device, false);
-					}
-					else
-						SaveDevice(device, true);
+						Device device = new Device();
+						device.NodeID = nodeID;
+						device.Acronym = info.Acronym;
+						device.Name = info.Name;
+						device.IsConcentrator = false;
+						device.Longitude = info.Longitude;
+						device.Latitude = info.Latitude;
+						device.ConnectionString = parentID == null ? connectionString : string.Empty;
+						device.ProtocolID = protocolID;
+						device.CompanyID = companyID;
+						device.HistorianID = historianID;
+						device.InterconnectionID = interconnectionID;
+						device.Enabled = true;
+						device.VendorDeviceID = info.VendorDeviceID == null ? (int?)null : info.VendorDeviceID == 0 ? (int?)null : info.VendorDeviceID;
+						device.ParentID = parentID;
+						device.TimeZone = string.Empty;
+						device.AccessID = info.AccessID;
+						//Please review from here.										
+						device.TimeAdjustmentTicks = 0;
+						device.DataLossInterval = 35;
+						device.MeasuredLines = 1;
+						device.LoadOrder = loadOrder;
+						device.ContactList = string.Empty;
 
-					Device addedDevice = GetDeviceByAcronym(info.Acronym);
-					int count = 1;
-					foreach (PhasorInfo phasorInfo in info.PhasorList)
-					{
-						if (phasorInfo.Label.ToLower() != "unused")
+						Device existingDevice = GetDeviceByAcronym(info.Acronym);
+						if (existingDevice != null)
 						{
-							Phasor phasor = new Phasor();
-							phasor.DeviceID = addedDevice.ID;
-							phasor.Label = phasorInfo.Label;
-							phasor.Type = phasorInfo.Type;
-							phasor.Phase = phasorInfo.Phase;
-							phasor.DestinationPhasorID = null;
-							phasor.SourceIndex = count;
-
-							Phasor existingPhasor = GetPhasorBySourceIndex(addedDevice.ID, phasor.SourceIndex);
-							if (existingPhasor != null)
-							{
-								phasor.ID = existingPhasor.ID;
-								SavePhasor(phasor, false);
-							}
-							else
-								SavePhasor(phasor, true);
+							device.ID = existingDevice.ID;
+							SaveDevice(device, false);
 						}
-						count++;
-					}
-				}
-				loadOrder++;
-			}
+						else
+							SaveDevice(device, true);
 
-			return "Done!";
+						Device addedDevice = GetDeviceByAcronym(info.Acronym);
+						int count = 1;
+						foreach (PhasorInfo phasorInfo in info.PhasorList)
+						{
+							if (phasorInfo.Label.ToLower() != "unused")
+							{
+								Phasor phasor = new Phasor();
+								phasor.DeviceID = addedDevice.ID;
+								phasor.Label = phasorInfo.Label;
+								phasor.Type = phasorInfo.Type;
+								phasor.Phase = phasorInfo.Phase;
+								phasor.DestinationPhasorID = null;
+								phasor.SourceIndex = count;
+
+								Phasor existingPhasor = GetPhasorBySourceIndex(addedDevice.ID, phasor.SourceIndex);
+								if (existingPhasor != null)
+								{
+									phasor.ID = existingPhasor.ID;
+									SavePhasor(phasor, false);
+								}
+								else
+									SavePhasor(phasor, true);
+							}
+							count++;
+						}
+					}
+					loadOrder++;
+				}
+				return GetReturnMessage("SaveWizardConfigurationInfo()", "Configuration Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveWizardConfigurationInfo()", "Failed to Save Configuration Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			
 		}
 
 		public static IDbDataParameter AddWithValue(IDbCommand command, string name, object value)
@@ -616,26 +622,36 @@ namespace openPDCManager.Web.Data
 		public static string SaveCompany(Company company, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
 
-			if (isNew)
-				command.CommandText = "INSERT INTO Company (Acronym, MapAcronym, Name, URL, LoadOrder) VALUES (@acronym, @mapAcronym, @name, @url, @loadOrder)";
-			else
-				command.CommandText = "UPDATE Company SET Acronym = @acronym, MapAcronym = @mapAcronym, Name = @name, URL = @url, LoadOrder = @loadOrder WHERE ID = @id";
-			
-			command.Parameters.Add(AddWithValue(command, "@acronym", company.Acronym));
-			command.Parameters.Add(AddWithValue(command, "@mapAcronym", company.MapAcronym));
-			command.Parameters.Add(AddWithValue(command, "@name", company.Name));
-			command.Parameters.Add(AddWithValue(command, "@url", company.URL));
-			command.Parameters.Add(AddWithValue(command, "@loadOrder", company.LoadOrder));
+				if (isNew)
+					command.CommandText = "INSERT INTO Company (Acronym, MapAcronym, Name, URL, LoadOrder) VALUES (@acronym, @mapAcronym, @name, @url, @loadOrder)";
+				else
+					command.CommandText = "UPDATE Company SET Acronym = @acronym, MapAcronym = @mapAcronym, Name = @name, URL = @url, LoadOrder = @loadOrder WHERE ID = @id";
 
-			if (!isNew)
-				command.Parameters.Add(AddWithValue(command, "@id", company.ID));
+				command.Parameters.Add(AddWithValue(command, "@acronym", company.Acronym));
+				command.Parameters.Add(AddWithValue(command, "@mapAcronym", company.MapAcronym));
+				command.Parameters.Add(AddWithValue(command, "@name", company.Name));
+				command.Parameters.Add(AddWithValue(command, "@url", company.URL));
+				command.Parameters.Add(AddWithValue(command, "@loadOrder", company.LoadOrder));
 
-			command.ExecuteNonQuery();
-            connection.Dispose();
-            return "Done!";
+				if (!isNew)
+					command.Parameters.Add(AddWithValue(command, "@id", company.ID));
+
+				command.ExecuteNonQuery();				
+				return GetReturnMessage("SaveCompany()", "Company Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveCompany()", "Failed to Save Company Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		#endregion
@@ -691,43 +707,54 @@ namespace openPDCManager.Web.Data
 		public static string SaveOutputStream(OutputStream outputStream, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
 
-			if (isNew)
-				command.CommandText = "INSERT INTO OutputStream (NodeID, Acronym, Name, Type, ConnectionString, IDCode, CommandChannel, DataChannel, AutoPublishConfigFrame, AutoStartDataChannel, NominalFrequency, FramesPerSecond, LagTime, LeadTime, " +
-									"UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled) VALUES (@nodeID, @acronym, @name, @type, @connectionString, @idCode, @commandChannel, @dataChannel, @autoPublishConfigFrame, @autoStartDataChannel, " +
-									"@nominalFrequency, @framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled)";
-			else
-				command.CommandText = "UPDATE OutputStream SET NodeID = @nodeID, Acronym = @acronym, Name = @name, Type = @type, ConnectionString = @connectionString, IDCode = @idCode, CommandChannel = @commandChannel, DataChannel = @dataChannel, AutoPublishConfigFrame = @autoPublishConfigFrame, " +
-									"AutoStartDataChannel = @autoStartDataChannel, NominalFrequency = @nominalFrequency, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, UseLocalClockAsRealTime = @useLocalClockAsRealTime, " +
-									"AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled WHERE ID = @id";
-						
-			command.Parameters.Add(AddWithValue(command, "@nodeID", outputStream.NodeID));
-			command.Parameters.Add(AddWithValue(command, "@acronym", outputStream.Acronym));
-			command.Parameters.Add(AddWithValue(command, "@name", outputStream.Name));
-			command.Parameters.Add(AddWithValue(command, "@type", outputStream.Type));
-			command.Parameters.Add(AddWithValue(command, "@connectionString", outputStream.ConnectionString));
-			command.Parameters.Add(AddWithValue(command, "@idCode", outputStream.IDCode));
-			command.Parameters.Add(AddWithValue(command, "@commandChannel", outputStream.CommandChannel));
-			command.Parameters.Add(AddWithValue(command, "@dataChannel", outputStream.DataChannel));
-			command.Parameters.Add(AddWithValue(command, "@autoPublishConfigFrame", outputStream.AutoPublishConfigFrame));
-			command.Parameters.Add(AddWithValue(command, "@autoStartDataChannel", outputStream.AutoStartDataChannel));
-			command.Parameters.Add(AddWithValue(command, "@nominalFrequency", outputStream.NominalFrequency));
-			command.Parameters.Add(AddWithValue(command, "@framesPerSecond", outputStream.FramesPerSecond));
-			command.Parameters.Add(AddWithValue(command, "@lagTime", outputStream.LagTime));
-			command.Parameters.Add(AddWithValue(command, "@leadTime", outputStream.LeadTime));
-			command.Parameters.Add(AddWithValue(command, "@useLocalClockAsRealTime", outputStream.UseLocalClockAsRealTime));
-			command.Parameters.Add(AddWithValue(command, "@allowSortsByArrival", outputStream.AllowSortsByArrival));
-			command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStream.LoadOrder));
-			command.Parameters.Add(AddWithValue(command, "@enabled", outputStream.Enabled));
+				if (isNew)
+					command.CommandText = "INSERT INTO OutputStream (NodeID, Acronym, Name, Type, ConnectionString, IDCode, CommandChannel, DataChannel, AutoPublishConfigFrame, AutoStartDataChannel, NominalFrequency, FramesPerSecond, LagTime, LeadTime, " +
+										"UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled) VALUES (@nodeID, @acronym, @name, @type, @connectionString, @idCode, @commandChannel, @dataChannel, @autoPublishConfigFrame, @autoStartDataChannel, " +
+										"@nominalFrequency, @framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled)";
+				else
+					command.CommandText = "UPDATE OutputStream SET NodeID = @nodeID, Acronym = @acronym, Name = @name, Type = @type, ConnectionString = @connectionString, IDCode = @idCode, CommandChannel = @commandChannel, DataChannel = @dataChannel, AutoPublishConfigFrame = @autoPublishConfigFrame, " +
+										"AutoStartDataChannel = @autoStartDataChannel, NominalFrequency = @nominalFrequency, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, UseLocalClockAsRealTime = @useLocalClockAsRealTime, " +
+										"AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled WHERE ID = @id";
 
-			if (!isNew)			
-				command.Parameters.Add(AddWithValue(command, "@id", outputStream.ID));
-			
-			command.ExecuteNonQuery();
-			connection.Dispose();			
-			return "Done!";
+				command.Parameters.Add(AddWithValue(command, "@nodeID", outputStream.NodeID));
+				command.Parameters.Add(AddWithValue(command, "@acronym", outputStream.Acronym));
+				command.Parameters.Add(AddWithValue(command, "@name", outputStream.Name));
+				command.Parameters.Add(AddWithValue(command, "@type", outputStream.Type));
+				command.Parameters.Add(AddWithValue(command, "@connectionString", outputStream.ConnectionString));
+				command.Parameters.Add(AddWithValue(command, "@idCode", outputStream.IDCode));
+				command.Parameters.Add(AddWithValue(command, "@commandChannel", outputStream.CommandChannel));
+				command.Parameters.Add(AddWithValue(command, "@dataChannel", outputStream.DataChannel));
+				command.Parameters.Add(AddWithValue(command, "@autoPublishConfigFrame", outputStream.AutoPublishConfigFrame));
+				command.Parameters.Add(AddWithValue(command, "@autoStartDataChannel", outputStream.AutoStartDataChannel));
+				command.Parameters.Add(AddWithValue(command, "@nominalFrequency", outputStream.NominalFrequency));
+				command.Parameters.Add(AddWithValue(command, "@framesPerSecond", outputStream.FramesPerSecond));
+				command.Parameters.Add(AddWithValue(command, "@lagTime", outputStream.LagTime));
+				command.Parameters.Add(AddWithValue(command, "@leadTime", outputStream.LeadTime));
+				command.Parameters.Add(AddWithValue(command, "@useLocalClockAsRealTime", outputStream.UseLocalClockAsRealTime));
+				command.Parameters.Add(AddWithValue(command, "@allowSortsByArrival", outputStream.AllowSortsByArrival));
+				command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStream.LoadOrder));
+				command.Parameters.Add(AddWithValue(command, "@enabled", outputStream.Enabled));
+
+				if (!isNew)
+					command.Parameters.Add(AddWithValue(command, "@id", outputStream.ID));
+
+				command.ExecuteNonQuery();
+
+				return GetReturnMessage("SaveOutputStream()", "Output Stream Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveOutputStream()", "Failed to Save Output Stream Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		#endregion
@@ -765,28 +792,38 @@ namespace openPDCManager.Web.Data
 		public static string SaveOutputStreamMeasurement(OutputStreamMeasurement outputStreamMeasurement, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
 
-			if (isNew)
-				command.CommandText = "Insert Into OutputStreamMeasurement (NodeID, AdapterID, HistorianID, PointID, SignalReference) " +
-					"Values (@nodeID, @adapterID, @historianID, @pointID, @signalReference)";
-			else
-				command.CommandText = "Update OutputStreamMeasurement Set NodeID = @nodeID, AdapterID = @adapterID, HistorianID = @historianID, " +
-					"PointID = @pointID, SignalReference = @signalReference WHERE ID = @id";
+				if (isNew)
+					command.CommandText = "Insert Into OutputStreamMeasurement (NodeID, AdapterID, HistorianID, PointID, SignalReference) " +
+						"Values (@nodeID, @adapterID, @historianID, @pointID, @signalReference)";
+				else
+					command.CommandText = "Update OutputStreamMeasurement Set NodeID = @nodeID, AdapterID = @adapterID, HistorianID = @historianID, " +
+						"PointID = @pointID, SignalReference = @signalReference WHERE ID = @id";
 
-			command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamMeasurement.NodeID));
-			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamMeasurement.AdapterID));
-			command.Parameters.Add(AddWithValue(command, "@historianID", outputStreamMeasurement.HistorianID ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@pointID", outputStreamMeasurement.PointID));
-			command.Parameters.Add(AddWithValue(command, "@signalReference", outputStreamMeasurement.SignalReference));
+				command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamMeasurement.NodeID));
+				command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamMeasurement.AdapterID));
+				command.Parameters.Add(AddWithValue(command, "@historianID", outputStreamMeasurement.HistorianID ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@pointID", outputStreamMeasurement.PointID));
+				command.Parameters.Add(AddWithValue(command, "@signalReference", outputStreamMeasurement.SignalReference));
 
-			if (!isNew)
-				command.Parameters.Add(AddWithValue(command, "@id", outputStreamMeasurement.ID));
+				if (!isNew)
+					command.Parameters.Add(AddWithValue(command, "@id", outputStreamMeasurement.ID));
 
-			command.ExecuteNonQuery();
-			connection.Dispose();
-			return "Done!";
+				command.ExecuteNonQuery();
+				return GetReturnMessage("SaveOutputStreamMeasurement()", "Output Stream Measurement Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveOutputStreamMeasurement()", "Failed to Save Output Stream Measurement Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		#endregion
@@ -843,149 +880,175 @@ namespace openPDCManager.Web.Data
 		public static string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-
-			if (isNew)
-				command.CommandText = "Insert Into OutputStreamDevice (NodeID, AdapterID, Acronym, BpaAcronym, Name, LoadOrder, Enabled) " +
-					"Values (@nodeID, @adapterID, @acronym, @bpaAcronym, @name, @loadOrder, @enabled)";
-			else
-				command.CommandText = "Update OutputStreamDevice Set NodeID = @nodeID, AdapterID = @adapterID, Acronym = @acronym, " +
-					"BpaAcronym = @bpaAcronym, Name = @name, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
-
-			command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDevice.NodeID));
-			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamDevice.AdapterID));
-			command.Parameters.Add(AddWithValue(command, "@acronym", outputStreamDevice.Acronym));
-			command.Parameters.Add(AddWithValue(command, "@bpaAcronym", outputStreamDevice.BpaAcronym));
-			command.Parameters.Add(AddWithValue(command, "@name", outputStreamDevice.Name));
-			command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDevice.LoadOrder));
-			command.Parameters.Add(AddWithValue(command, "@enabled", outputStreamDevice.Enabled));
-			if (!isNew)
+			try
 			{
-				command.Parameters.Add(AddWithValue(command, "@id", outputStreamDevice.ID));
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
 
-				//if output stream device is updated then modify signal references in the measurement table
-				//to reflect changes in the acronym of the device.
-				if (!string.IsNullOrEmpty(originalAcronym))
+				if (isNew)
+					command.CommandText = "Insert Into OutputStreamDevice (NodeID, AdapterID, Acronym, BpaAcronym, Name, LoadOrder, Enabled) " +
+						"Values (@nodeID, @adapterID, @acronym, @bpaAcronym, @name, @loadOrder, @enabled)";
+				else
+					command.CommandText = "Update OutputStreamDevice Set NodeID = @nodeID, AdapterID = @adapterID, Acronym = @acronym, " +
+						"BpaAcronym = @bpaAcronym, Name = @name, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+
+				command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDevice.NodeID));
+				command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamDevice.AdapterID));
+				command.Parameters.Add(AddWithValue(command, "@acronym", outputStreamDevice.Acronym));
+				command.Parameters.Add(AddWithValue(command, "@bpaAcronym", outputStreamDevice.BpaAcronym));
+				command.Parameters.Add(AddWithValue(command, "@name", outputStreamDevice.Name));
+				command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDevice.LoadOrder));
+				command.Parameters.Add(AddWithValue(command, "@enabled", outputStreamDevice.Enabled));
+				if (!isNew)
 				{
-					IDbCommand command1 = connection.Connection.CreateCommand();
-					command1.CommandType = CommandType.Text;
-					command1.CommandText = "Update OutputStreamMeasurement Set SignalReference = Replace(SignalReference, @originalAcronym, @newAcronym) Where AdapterID = @adapterID";	// and SignalReference LIKE @signalReference";
-					command1.Parameters.Add(AddWithValue(command1, "@originalAcronym", originalAcronym));
-					command1.Parameters.Add(AddWithValue(command1, "@newAcronym", outputStreamDevice.Acronym));
-					command1.Parameters.Add(AddWithValue(command1, "@adapterID", outputStreamDevice.AdapterID));
-					//command.Parameters.Add(AddWithValue(command1, "@signalReference", "%" + originalAcronym + "-%"));
-					command1.ExecuteNonQuery();
+					command.Parameters.Add(AddWithValue(command, "@id", outputStreamDevice.ID));
+
+					//if output stream device is updated then modify signal references in the measurement table
+					//to reflect changes in the acronym of the device.
+					if (!string.IsNullOrEmpty(originalAcronym))
+					{
+						IDbCommand command1 = connection.Connection.CreateCommand();
+						command1.CommandType = CommandType.Text;
+						command1.CommandText = "Update OutputStreamMeasurement Set SignalReference = Replace(SignalReference, @originalAcronym, @newAcronym) Where AdapterID = @adapterID";	// and SignalReference LIKE @signalReference";
+						command1.Parameters.Add(AddWithValue(command1, "@originalAcronym", originalAcronym));
+						command1.Parameters.Add(AddWithValue(command1, "@newAcronym", outputStreamDevice.Acronym));
+						command1.Parameters.Add(AddWithValue(command1, "@adapterID", outputStreamDevice.AdapterID));
+						//command.Parameters.Add(AddWithValue(command1, "@signalReference", "%" + originalAcronym + "-%"));
+						command1.ExecuteNonQuery();
+					}
 				}
+
+				command.ExecuteNonQuery();
+
+				return GetReturnMessage("SaveOutputStreamDevice()", "Output Stream Device Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
 			}
-
-			command.ExecuteNonQuery();
-			connection.Dispose();
-
-			return "Done!";
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveOutputStreamDevice()", "Failed to Save Output Stream Device Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		public static string DeleteOutputStreamDevice(int outputStreamID, List<string> devicesToBeDeleted)
 		{
-			DataConnection connection = new DataConnection();			
-
-			foreach (string acronym in devicesToBeDeleted)
+			DataConnection connection = new DataConnection();
+			try
 			{
-				IDbCommand command = connection.Connection.CreateCommand();
-				command.CommandType = CommandType.Text;
-				command.CommandText = "Delete From OutputStreamMeasurement Where AdapterID = @outputStreamID And SignalReference LIKE @signalReference";
-				command.Parameters.Add(AddWithValue(command, "@outputStreamID", outputStreamID));
-				command.Parameters.Add(AddWithValue(command, "@signalReference", "%" + acronym + "%"));
-				command.ExecuteNonQuery();
+				foreach (string acronym in devicesToBeDeleted)
+				{
+					IDbCommand command = connection.Connection.CreateCommand();
+					command.CommandType = CommandType.Text;
+					command.CommandText = "Delete From OutputStreamMeasurement Where AdapterID = @outputStreamID And SignalReference LIKE @signalReference";
+					command.Parameters.Add(AddWithValue(command, "@outputStreamID", outputStreamID));
+					command.Parameters.Add(AddWithValue(command, "@signalReference", "%" + acronym + "%"));
+					command.ExecuteNonQuery();
 
-				IDbCommand command1 = connection.Connection.CreateCommand();
-				command1.CommandType = CommandType.Text;
-				command1.CommandText = "Delete From OutputStreamDevice Where Acronym = @acronym And AdapterID = @adapterID";
-				command1.Parameters.Add(AddWithValue(command1, "@acronym", acronym));
-				command1.Parameters.Add(AddWithValue(command1, "@adapterID", outputStreamID));
-				command1.ExecuteNonQuery();
+					IDbCommand command1 = connection.Connection.CreateCommand();
+					command1.CommandType = CommandType.Text;
+					command1.CommandText = "Delete From OutputStreamDevice Where Acronym = @acronym And AdapterID = @adapterID";
+					command1.Parameters.Add(AddWithValue(command1, "@acronym", acronym));
+					command1.Parameters.Add(AddWithValue(command1, "@adapterID", outputStreamID));
+					command1.ExecuteNonQuery();
+				}
+
+				return GetReturnMessage("DeleteOutputStreamDevice()", "Output Stream Device Deleted Successfully", string.Empty, string.Empty, MessageType.Success);
 			}
-
-			connection.Dispose();
-			return "Done!";
+			catch (Exception ex)
+			{
+				return GetReturnMessage("DeleteOutputStreamDevice()", "Failed to Delete Output Stream Device", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		public static string AddDevices(int outputStreamID, Dictionary<int, string> devicesToBeAdded, bool addDigitals, bool addAnalogs)
 		{
-			foreach (KeyValuePair<int, string> deviceInfo in devicesToBeAdded)	//loop through all the devices that needs to be added.
+			try
 			{
-				Device device = new Device();
-				device = GetDeviceByDeviceID(deviceInfo.Key);	//Get alll the information about the device to be added.
-				OutputStreamDevice outputStreamDevice = new OutputStreamDevice();
-				outputStreamDevice.NodeID = device.NodeID;
-				outputStreamDevice.AdapterID = outputStreamID;
-				outputStreamDevice.Acronym = device.Acronym;
-				outputStreamDevice.BpaAcronym = string.Empty;
-				outputStreamDevice.Name = device.Name;
-				outputStreamDevice.LoadOrder = device.LoadOrder;
-				outputStreamDevice.Enabled = true;
-				SaveOutputStreamDevice(outputStreamDevice, true, string.Empty);	//save in to OutputStreamDevice Table.
-
-				int savedOutputStreamDeviceID = GetOutputStreamDevice(outputStreamID, device.Acronym).ID;
-
-
-				//********************************************
-				List<Phasor> phasorList = new List<Phasor>();
-				phasorList = GetPhasorList(deviceInfo.Key);			//Get all the phasor information for the device to be added.
-
-				foreach (Phasor phasor in phasorList)
+				foreach (KeyValuePair<int, string> deviceInfo in devicesToBeAdded)	//loop through all the devices that needs to be added.
 				{
-					OutputStreamDevicePhasor outputStreamDevicePhasor = new OutputStreamDevicePhasor(); //Add all phasors one by one into OutputStreamDevicePhasor table.
-					outputStreamDevicePhasor.NodeID = device.NodeID;
-					outputStreamDevicePhasor.OutputStreamDeviceID = savedOutputStreamDeviceID;
-					outputStreamDevicePhasor.Label = phasor.Label;
-					outputStreamDevicePhasor.Type = phasor.Type;
-					outputStreamDevicePhasor.Phase = phasor.Phase;
-					outputStreamDevicePhasor.LoadOrder = phasor.SourceIndex;
-					SaveOutputStreamDevicePhasor(outputStreamDevicePhasor, true);
-				}
-				//********************************************
+					Device device = new Device();
+					device = GetDeviceByDeviceID(deviceInfo.Key);	//Get alll the information about the device to be added.
+					OutputStreamDevice outputStreamDevice = new OutputStreamDevice();
+					outputStreamDevice.NodeID = device.NodeID;
+					outputStreamDevice.AdapterID = outputStreamID;
+					outputStreamDevice.Acronym = device.Acronym;
+					outputStreamDevice.BpaAcronym = string.Empty;
+					outputStreamDevice.Name = device.Name;
+					outputStreamDevice.LoadOrder = device.LoadOrder;
+					outputStreamDevice.Enabled = true;
+					SaveOutputStreamDevice(outputStreamDevice, true, string.Empty);	//save in to OutputStreamDevice Table.
 
-				//********************************************
-				List<Measurement> measurementList = new List<Measurement>();
-				measurementList = GetMeasurementsByDevice(deviceInfo.Key);
+					int savedOutputStreamDeviceID = GetOutputStreamDevice(outputStreamID, device.Acronym).ID;
 
-				foreach (Measurement measurement in measurementList)
-				{
-					OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
-					outputStreamMeasurement.NodeID = device.NodeID;
-					outputStreamMeasurement.AdapterID = outputStreamID;
-					outputStreamMeasurement.HistorianID = measurement.HistorianID;
-					outputStreamMeasurement.PointID = measurement.PointID;
-					outputStreamMeasurement.SignalReference = measurement.SignalReference;
-					SaveOutputStreamMeasurement(outputStreamMeasurement, true);
 
-					if (addAnalogs && measurement.SignalSuffix == "AV") //if add analogs checked and measurement is analog value then add it to OutputStreamDeviceAnalog Table.
+					//********************************************
+					List<Phasor> phasorList = new List<Phasor>();
+					phasorList = GetPhasorList(deviceInfo.Key);			//Get all the phasor information for the device to be added.
+
+					foreach (Phasor phasor in phasorList)
 					{
-						OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
-						outputStreamDeviceAnalog.NodeID = device.NodeID;
-						outputStreamDeviceAnalog.OutputStreamDeviceID = savedOutputStreamDeviceID;
-						outputStreamDeviceAnalog.Label = measurement.PointTag;
-						outputStreamDeviceAnalog.Type = 0;	//default
-						outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
-						SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, true);
+						OutputStreamDevicePhasor outputStreamDevicePhasor = new OutputStreamDevicePhasor(); //Add all phasors one by one into OutputStreamDevicePhasor table.
+						outputStreamDevicePhasor.NodeID = device.NodeID;
+						outputStreamDevicePhasor.OutputStreamDeviceID = savedOutputStreamDeviceID;
+						outputStreamDevicePhasor.Label = phasor.Label;
+						outputStreamDevicePhasor.Type = phasor.Type;
+						outputStreamDevicePhasor.Phase = phasor.Phase;
+						outputStreamDevicePhasor.LoadOrder = phasor.SourceIndex;
+						SaveOutputStreamDevicePhasor(outputStreamDevicePhasor, true);
 					}
+					//********************************************
 
-					if (addDigitals && measurement.SignalSuffix == "DV") //if add digitals checked and measurement is digital value then add it to OutputStreamDeviceDigital Table.
+					//********************************************
+					List<Measurement> measurementList = new List<Measurement>();
+					measurementList = GetMeasurementsByDevice(deviceInfo.Key);
+
+					foreach (Measurement measurement in measurementList)
 					{
-						OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
-						outputStreamDeviceDigital.NodeID = device.NodeID;
-						outputStreamDeviceDigital.OutputStreamDeviceID = savedOutputStreamDeviceID;
-						outputStreamDeviceDigital.Label = measurement.PointTag;
-						outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
-						SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, true);
-					}
-				}
-				//********************************************
+						OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
+						outputStreamMeasurement.NodeID = device.NodeID;
+						outputStreamMeasurement.AdapterID = outputStreamID;
+						outputStreamMeasurement.HistorianID = measurement.HistorianID;
+						outputStreamMeasurement.PointID = measurement.PointID;
+						outputStreamMeasurement.SignalReference = measurement.SignalReference;
+						SaveOutputStreamMeasurement(outputStreamMeasurement, true);
 
+						if (addAnalogs && measurement.SignalSuffix == "AV") //if add analogs checked and measurement is analog value then add it to OutputStreamDeviceAnalog Table.
+						{
+							OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
+							outputStreamDeviceAnalog.NodeID = device.NodeID;
+							outputStreamDeviceAnalog.OutputStreamDeviceID = savedOutputStreamDeviceID;
+							outputStreamDeviceAnalog.Label = measurement.PointTag;
+							outputStreamDeviceAnalog.Type = 0;	//default
+							outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
+							SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, true);
+						}
+
+						if (addDigitals && measurement.SignalSuffix == "DV") //if add digitals checked and measurement is digital value then add it to OutputStreamDeviceDigital Table.
+						{
+							OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
+							outputStreamDeviceDigital.NodeID = device.NodeID;
+							outputStreamDeviceDigital.OutputStreamDeviceID = savedOutputStreamDeviceID;
+							outputStreamDeviceDigital.Label = measurement.PointTag;
+							outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
+							SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, true);
+						}
+					}
+					//********************************************
+
+				}
+
+				return GetReturnMessage("AddDevices()", "Output Stream Device(s) Added Successfully", string.Empty, string.Empty, MessageType.Success);
 			}
-
-			return "Done!";
+			catch (Exception ex)
+			{
+				return GetReturnMessage("AddDevices()", "Failed to Add Output Stream Device(s)", ex.Message, ex.ToString(), MessageType.Error);
+			}
 		}
 
 		#endregion
@@ -1024,28 +1087,38 @@ namespace openPDCManager.Web.Data
 		public static string SaveOutputStreamDevicePhasor(OutputStreamDevicePhasor outputStreamDevicePhasor, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
 
-			if (isNew)
-				command.CommandText = "Insert Into OutputStreamDevicePhasor (NodeID, OutputStreamDeviceID, Label, Type, Phase, LoadOrder) " +
-					"Values (@nodeID, @outputStreamDeviceID, @label, @type, @phase, @loadOrder)";
-			else
-				command.CommandText = "Update OutputStreamDevicePhasor Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
-					"Type = @type, Phase = @phase, LoadOrder = @loadOrder Where ID = @id";
+				if (isNew)
+					command.CommandText = "Insert Into OutputStreamDevicePhasor (NodeID, OutputStreamDeviceID, Label, Type, Phase, LoadOrder) " +
+						"Values (@nodeID, @outputStreamDeviceID, @label, @type, @phase, @loadOrder)";
+				else
+					command.CommandText = "Update OutputStreamDevicePhasor Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
+						"Type = @type, Phase = @phase, LoadOrder = @loadOrder Where ID = @id";
 
-			command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDevicePhasor.NodeID));
-			command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDevicePhasor.OutputStreamDeviceID));
-			command.Parameters.Add(AddWithValue(command, "@label", outputStreamDevicePhasor.Label));
-			command.Parameters.Add(AddWithValue(command, "@type", outputStreamDevicePhasor.Type));
-			command.Parameters.Add(AddWithValue(command, "@phase", outputStreamDevicePhasor.Phase));
-			command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDevicePhasor.LoadOrder));
-			if (!isNew)
-				command.Parameters.Add(AddWithValue(command, "@id", outputStreamDevicePhasor.ID));
+				command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDevicePhasor.NodeID));
+				command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDevicePhasor.OutputStreamDeviceID));
+				command.Parameters.Add(AddWithValue(command, "@label", outputStreamDevicePhasor.Label));
+				command.Parameters.Add(AddWithValue(command, "@type", outputStreamDevicePhasor.Type));
+				command.Parameters.Add(AddWithValue(command, "@phase", outputStreamDevicePhasor.Phase));
+				command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDevicePhasor.LoadOrder));
+				if (!isNew)
+					command.Parameters.Add(AddWithValue(command, "@id", outputStreamDevicePhasor.ID));
 
-			command.ExecuteNonQuery();
-			connection.Dispose();
-			return "Done!";
+				command.ExecuteNonQuery();
+				return GetReturnMessage("SaveOutputStreamDevicePhasor()", "Output Stream Device Phasor Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveOutputStreamDevicePhasor()", "Failed to Save Output Stream Device Phasor Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		#endregion
@@ -1082,28 +1155,37 @@ namespace openPDCManager.Web.Data
 		public static string SaveOutputStreamDeviceAnalog(OutputStreamDeviceAnalog outputStreamDeviceAnalog, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
 
-			if (isNew)
-				command.CommandText = "Insert Into OutputStreamDeviceAnalog (NodeID, OutputStreamDeviceID, Label, Type, LoadOrder) " +
-					"Values (@nodeID, @outputStreamDeviceID, @label, @type, @loadOrder)";
-			else
-				command.CommandText = "Update OutputStreamDeviceAnalog Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
-					"Type = @type, LoadOrder = @loadOrder Where ID = @id";
+				if (isNew)
+					command.CommandText = "Insert Into OutputStreamDeviceAnalog (NodeID, OutputStreamDeviceID, Label, Type, LoadOrder) " +
+						"Values (@nodeID, @outputStreamDeviceID, @label, @type, @loadOrder)";
+				else
+					command.CommandText = "Update OutputStreamDeviceAnalog Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
+						"Type = @type, LoadOrder = @loadOrder Where ID = @id";
 
-			command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDeviceAnalog.NodeID));
-			command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceAnalog.OutputStreamDeviceID));
-			command.Parameters.Add(AddWithValue(command, "@label", outputStreamDeviceAnalog.Label));
-			command.Parameters.Add(AddWithValue(command, "@type", outputStreamDeviceAnalog.Type));
-			command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDeviceAnalog.LoadOrder));
-			if (!isNew)
-				command.Parameters.Add(AddWithValue(command, "@id", outputStreamDeviceAnalog.ID));
+				command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDeviceAnalog.NodeID));
+				command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceAnalog.OutputStreamDeviceID));
+				command.Parameters.Add(AddWithValue(command, "@label", outputStreamDeviceAnalog.Label));
+				command.Parameters.Add(AddWithValue(command, "@type", outputStreamDeviceAnalog.Type));
+				command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDeviceAnalog.LoadOrder));
+				if (!isNew)
+					command.Parameters.Add(AddWithValue(command, "@id", outputStreamDeviceAnalog.ID));
 
-			command.ExecuteNonQuery();
-			connection.Dispose();
-
-			return "Done!";
+				command.ExecuteNonQuery();
+				return GetReturnMessage("SaveOutputStreamDeviceAnalog()", "Output Stream Device Analog Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveOutputStreamDeviceAnalog()", "Failed to Save Outptu Stream Device Analog Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		#endregion
@@ -1139,27 +1221,36 @@ namespace openPDCManager.Web.Data
 		public static string SaveOutputStreamDeviceDigital(OutputStreamDeviceDigital outputStreamDeviceDigital, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
 
-			if (isNew)
-				command.CommandText = "Insert Into OutputStreamDeviceDigital (NodeID, OutputStreamDeviceID, Label, LoadOrder) " +
-					"Values (@nodeID, @outputStreamDeviceID, @label, @loadOrder)";
-			else
-				command.CommandText = "Update OutputStreamDeviceDigital Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
-					"LoadOrder = @loadOrder Where ID = @id";
+				if (isNew)
+					command.CommandText = "Insert Into OutputStreamDeviceDigital (NodeID, OutputStreamDeviceID, Label, LoadOrder) " +
+						"Values (@nodeID, @outputStreamDeviceID, @label, @loadOrder)";
+				else
+					command.CommandText = "Update OutputStreamDeviceDigital Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
+						"LoadOrder = @loadOrder Where ID = @id";
 
-			command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDeviceDigital.NodeID));
-			command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceDigital.OutputStreamDeviceID));
-			command.Parameters.Add(AddWithValue(command, "@label", outputStreamDeviceDigital.Label));			
-			command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDeviceDigital.LoadOrder));
-			if (!isNew)
-				command.Parameters.Add(AddWithValue(command, "@id", outputStreamDeviceDigital.ID));
+				command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDeviceDigital.NodeID));
+				command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceDigital.OutputStreamDeviceID));
+				command.Parameters.Add(AddWithValue(command, "@label", outputStreamDeviceDigital.Label));
+				command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDeviceDigital.LoadOrder));
+				if (!isNew)
+					command.Parameters.Add(AddWithValue(command, "@id", outputStreamDeviceDigital.ID));
 
-			command.ExecuteNonQuery();
-			connection.Dispose();
-
-			return "Done!";
+				command.ExecuteNonQuery();
+				return GetReturnMessage("SaveOutputStreamDeviceDigital()", "Output Stream Device Digital Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveOutputStreamDeviceDigital()", "Failed to Save Output Stream Device Digital Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		#endregion
@@ -1232,32 +1323,42 @@ namespace openPDCManager.Web.Data
 		public static string SaveHistorian(Historian historian, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (isNew)
-				command.CommandText = "Insert Into Historian (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) Values " +
-					"(@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @isLocal, @description, @loadOrder, @enabled)";
-			else
-				command.CommandText = "Update Historian Set NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, TypeName = @typeName, " +
-					"ConnectionString = @connectionString, IsLocal = @isLocal, Description = @description, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (isNew)
+					command.CommandText = "Insert Into Historian (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) Values " +
+						"(@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @isLocal, @description, @loadOrder, @enabled)";
+				else
+					command.CommandText = "Update Historian Set NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, TypeName = @typeName, " +
+						"ConnectionString = @connectionString, IsLocal = @isLocal, Description = @description, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
 
-			command.Parameters.Add(AddWithValue(command, "@nodeID", historian.NodeID));
-			command.Parameters.Add(AddWithValue(command, "@acronym", historian.Acronym));
-			command.Parameters.Add(AddWithValue(command, "@name", historian.Name));
-			command.Parameters.Add(AddWithValue(command, "@assemblyName", historian.AssemblyName));
-			command.Parameters.Add(AddWithValue(command, "@typeName", historian.TypeName));
-			command.Parameters.Add(AddWithValue(command, "@connectionString", historian.ConnectionString));
-			command.Parameters.Add(AddWithValue(command, "@isLocal", historian.IsLocal));
-			command.Parameters.Add(AddWithValue(command, "@description", historian.Description));
-			command.Parameters.Add(AddWithValue(command, "@loadOrder", historian.LoadOrder));
-			command.Parameters.Add(AddWithValue(command, "@enabled", historian.Enabled));
+				command.Parameters.Add(AddWithValue(command, "@nodeID", historian.NodeID));
+				command.Parameters.Add(AddWithValue(command, "@acronym", historian.Acronym));
+				command.Parameters.Add(AddWithValue(command, "@name", historian.Name));
+				command.Parameters.Add(AddWithValue(command, "@assemblyName", historian.AssemblyName));
+				command.Parameters.Add(AddWithValue(command, "@typeName", historian.TypeName));
+				command.Parameters.Add(AddWithValue(command, "@connectionString", historian.ConnectionString));
+				command.Parameters.Add(AddWithValue(command, "@isLocal", historian.IsLocal));
+				command.Parameters.Add(AddWithValue(command, "@description", historian.Description));
+				command.Parameters.Add(AddWithValue(command, "@loadOrder", historian.LoadOrder));
+				command.Parameters.Add(AddWithValue(command, "@enabled", historian.Enabled));
 
-			if (!isNew)
-				command.Parameters.Add(AddWithValue(command, "@id", historian.ID));
+				if (!isNew)
+					command.Parameters.Add(AddWithValue(command, "@id", historian.ID));
 
-			command.ExecuteNonQuery();
-			connection.Dispose();
-			return "Done!";
+				command.ExecuteNonQuery();
+				return GetReturnMessage("SaveHistorian()", "Historian Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveHistorian()", "Failed to Save Historian Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
         #endregion
@@ -1421,25 +1522,35 @@ namespace openPDCManager.Web.Data
 		public static string SaveVendor(Vendor vendor, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (isNew)
-				command.CommandText = "Insert Into Vendor (Acronym, Name, PhoneNumber, ContactEmail, URL) Values (@acronym, @name, @phoneNumber, @contactEmail, @url)";
-			else
-				command.CommandText = "Update Vendor Set Acronym = @acronym, Name = @name, PhoneNumber = @phoneNumber, ContactEmail = @contactEmail, URL = @url Where ID = @id";
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (isNew)
+					command.CommandText = "Insert Into Vendor (Acronym, Name, PhoneNumber, ContactEmail, URL) Values (@acronym, @name, @phoneNumber, @contactEmail, @url)";
+				else
+					command.CommandText = "Update Vendor Set Acronym = @acronym, Name = @name, PhoneNumber = @phoneNumber, ContactEmail = @contactEmail, URL = @url Where ID = @id";
 
-			command.Parameters.Add(AddWithValue(command, "@acronym", vendor.Acronym));
-			command.Parameters.Add(AddWithValue(command, "@name", vendor.Name));
-			command.Parameters.Add(AddWithValue(command, "@phoneNumber", vendor.PhoneNumber));
-			command.Parameters.Add(AddWithValue(command, "@contactEmail", vendor.ContactEmail));
-			command.Parameters.Add(AddWithValue(command, "@url", vendor.URL));
+				command.Parameters.Add(AddWithValue(command, "@acronym", vendor.Acronym));
+				command.Parameters.Add(AddWithValue(command, "@name", vendor.Name));
+				command.Parameters.Add(AddWithValue(command, "@phoneNumber", vendor.PhoneNumber));
+				command.Parameters.Add(AddWithValue(command, "@contactEmail", vendor.ContactEmail));
+				command.Parameters.Add(AddWithValue(command, "@url", vendor.URL));
 
-			if (!isNew)
-				command.Parameters.Add(AddWithValue(command, "@id", vendor.ID));
+				if (!isNew)
+					command.Parameters.Add(AddWithValue(command, "@id", vendor.ID));
 
-			command.ExecuteNonQuery();
-			connection.Dispose();
-			return "Done!";
+				command.ExecuteNonQuery();
+				return GetReturnMessage("SaveVendor()", "Vendor Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveVendor()", "Failed to Save Vendor Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
         
 		#endregion
@@ -1473,24 +1584,35 @@ namespace openPDCManager.Web.Data
 		public static string SaveVendorDevice(VendorDevice vendorDevice, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (isNew)
-				command.CommandText = "Insert Into VendorDevice (VendorID, Name, Description, URL) Values (@vendorID, @name, @description, @url)";
-			else
-				command.CommandText = "Update VendorDevice Set VendorID = @vendorID, Name = @name, Description = @description, URL = @url Where ID = @id";
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (isNew)
+					command.CommandText = "Insert Into VendorDevice (VendorID, Name, Description, URL) Values (@vendorID, @name, @description, @url)";
+				else
+					command.CommandText = "Update VendorDevice Set VendorID = @vendorID, Name = @name, Description = @description, URL = @url Where ID = @id";
 
-			command.Parameters.Add(AddWithValue(command, "@vendorID", vendorDevice.VendorID));
-			command.Parameters.Add(AddWithValue(command, "@name", vendorDevice.Name));
-			command.Parameters.Add(AddWithValue(command, "@description", vendorDevice.Description));
-			command.Parameters.Add(AddWithValue(command, "@url", vendorDevice.URL));
+				command.Parameters.Add(AddWithValue(command, "@vendorID", vendorDevice.VendorID));
+				command.Parameters.Add(AddWithValue(command, "@name", vendorDevice.Name));
+				command.Parameters.Add(AddWithValue(command, "@description", vendorDevice.Description));
+				command.Parameters.Add(AddWithValue(command, "@url", vendorDevice.URL));
 
-			if (!isNew)
-				command.Parameters.Add(AddWithValue(command, "@id", vendorDevice.ID));
-			
-			command.ExecuteNonQuery();
-			connection.Dispose();
-			return "Done!";
+				if (!isNew)
+					command.Parameters.Add(AddWithValue(command, "@id", vendorDevice.ID));
+
+				command.ExecuteNonQuery();
+
+				return GetReturnMessage("SaveVendorDevice()", "Vendor Device Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveVendorDevice()", "Failed to Save Vendor Device Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		public static Dictionary<int, string> GetVendorDevices(bool isOptional)
