@@ -80,7 +80,7 @@
         </Setter>
         <Setter Property="StylePalette">
             <Setter.Value>
-                <visualizationToolkit:StylePalette>                      
+                <visualizationToolkit:StylePalette>                   
                     <Style TargetType="Control">     
                         <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
                         <Setter Property="Background">

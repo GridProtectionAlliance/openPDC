@@ -236,6 +236,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
+using openPDCManager.Silverlight.ModalDialogs;
 
 namespace openPDCManager.Silverlight.Pages.Adapters
 {
@@ -263,13 +265,20 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		}
 		void client_SaveCalculatedMeasurementCompleted(object sender, SaveCalculatedMeasurementCompletedEventArgs e)
 		{
+			Message message = new Message();
 			if (e.Error == null)
 			{
 				ClearForm();
-				MessageBox.Show(e.Result);
+				message = Common.ParseStringToMessage(e.Result);
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				message.UserMessageType = MessageType.Error;
+				message.UserMessage = "Failed to Save Calculated Measurement Information";
+				message.SystemMessage = e.Error.Message;
+			}
+			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+			sm.Show();
 			client.GetCalculatedMeasurementListAsync(nodeID);
 		}
 		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)

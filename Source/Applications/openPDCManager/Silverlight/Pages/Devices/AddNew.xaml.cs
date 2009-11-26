@@ -236,6 +236,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
+using openPDCManager.Silverlight.ModalDialogs;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
@@ -349,13 +351,20 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void client_SaveDeviceCompleted(object sender, SaveDeviceCompletedEventArgs e)
 		{
+			Message message = new Message();
 			if (e.Error == null)
 			{
 				ClearForm();
-				MessageBox.Show(e.Result);
+				message = Common.ParseStringToMessage(e.Result);
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				message.UserMessageType = MessageType.Error;
+				message.UserMessage = "Failed to Save Device Infomration";
+				message.SystemMessage = e.Error.Message;
+			}
+			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+			sm.Show();
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{

@@ -235,6 +235,7 @@ using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
 
 namespace openPDCManager.Silverlight.ModalDialogs
 {
@@ -267,10 +268,17 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 		void client_SavePhasorCompleted(object sender, SavePhasorCompletedEventArgs e)
 		{
+			Message message = new Message();
 			if (e.Error == null)
-				MessageBox.Show(e.Result);
+				message = Common.ParseStringToMessage(e.Result);
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				message.UserMessageType = MessageType.Error;
+				message.UserMessage = "Failed to Save Phasor Information";
+				message.SystemMessage = e.Error.Message;
+			}
+			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+			sm.Show();
 			client.GetPhasorListAsync(sourceDeviceID);
 			client.GetPhasorsAsync(sourceDeviceID, true);
 		}

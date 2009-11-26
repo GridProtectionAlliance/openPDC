@@ -235,6 +235,8 @@ using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
+using openPDCManager.Silverlight.ModalDialogs;
 
 namespace openPDCManager.Silverlight.UserControls
 {
@@ -271,13 +273,20 @@ namespace openPDCManager.Silverlight.UserControls
 		}
 		void client_SaveAdapterCompleted(object sender, SaveAdapterCompletedEventArgs e)
 		{
+			Message message = new Message();
 			if (e.Error == null)
 			{
 				ClearForm();
-				MessageBox.Show(e.Result);
+				message = Common.ParseStringToMessage(e.Result);
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				message.UserMessageType = MessageType.Error;
+				message.UserMessage = "Failed to Save Adapter Infomration";
+				message.SystemMessage = e.Error.Message;
+			}
+			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+			sm.Show();
 			client.GetAdapterListAsync(false, adapterType, nodeID);
 		}
 		void ListBoxAdapterList_SelectionChanged(object sender, SelectionChangedEventArgs e)

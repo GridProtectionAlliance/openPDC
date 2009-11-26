@@ -1708,101 +1708,111 @@ namespace openPDCManager.Web.Data
 		public static string SaveDevice(Device device, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-
-			if (isNew)
-				command.CommandText = "Insert Into Device (NodeID, ParentID, Acronym, Name, IsConcentrator, CompanyID, HistorianID, AccessID, VendorDeviceID, ProtocolID, Longitude, Latitude, InterconnectionID, ConnectionString, TimeZone, TimeAdjustmentTicks, " +
-					"DataLossInterval, ContactList, MeasuredLines, LoadOrder, Enabled) Values (@nodeID, @parentID, @acronym, @name, @isConcentrator, @companyID, @historianID, @accessID, @vendorDeviceID, @protocolID, @longitude, @latitude, @interconnectionID, " +
-					"@connectionString, @timezone, @timeAdjustmentTicks, @dataLossInterval, @contactList, @measuredLines, @loadOrder, @enabled)";
-			else
-				command.CommandText = "Update Device Set NodeID = @nodeID, ParentID = @parentID, Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, CompanyID = @companyID, HistorianID = @historianID, AccessID = @accessID, VendorDeviceID = @vendorDeviceID, " +
-					"ProtocolID = @protocolID, Longitude = @longitude, Latitude = @latitude, InterconnectionID = @interconnectionID, ConnectionString = @connectionString, TimeZone = @timezone, TimeAdjustmentTicks = @timeAdjustmentTicks, DataLossInterval = @dataLossInterval, " +
-					"ContactList = @contactList, MeasuredLines = @measuredLines, LoadOrder = @loadOrder, Enabled = @enabled WHERE ID = @id";
-
-			command.CommandType = CommandType.Text;			
-			command.Parameters.Add(AddWithValue(command, "@nodeID", device.NodeID));
-			command.Parameters.Add(AddWithValue(command, "@parentID", device.ParentID ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@acronym", device.Acronym));
-			command.Parameters.Add(AddWithValue(command, "@name", device.Name));
-			command.Parameters.Add(AddWithValue(command, "@isConcentrator", device.IsConcentrator));
-			command.Parameters.Add(AddWithValue(command, "@companyID", device.CompanyID));
-			command.Parameters.Add(AddWithValue(command, "@historianID", device.HistorianID ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@accessID", device.AccessID));
-			command.Parameters.Add(AddWithValue(command, "@vendorDeviceID", device.VendorDeviceID == null ? (object)DBNull.Value : device.VendorDeviceID == 0 ? (object)DBNull.Value : device.VendorDeviceID));
-			command.Parameters.Add(AddWithValue(command, "@protocolID", device.ProtocolID));
-			command.Parameters.Add(AddWithValue(command, "@longitude", device.Longitude ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@latitude", device.Latitude ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@interconnectionID", device.InterconnectionID ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@connectionString", device.ConnectionString));
-			command.Parameters.Add(AddWithValue(command, "@timezone", device.TimeZone));
-			command.Parameters.Add(AddWithValue(command, "@timeAdjustmentTicks", device.TimeAdjustmentTicks));
-			command.Parameters.Add(AddWithValue(command, "@dataLossInterval", device.DataLossInterval));
-			command.Parameters.Add(AddWithValue(command, "@contactList", device.ContactList));
-			command.Parameters.Add(AddWithValue(command, "@measuredLines", device.MeasuredLines ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@loadOrder", device.LoadOrder));
-			command.Parameters.Add(AddWithValue(command, "@enabled", device.Enabled));
-
-			if (!isNew)
-				command.Parameters.Add(AddWithValue(command, "@id", device.ID));
-
-			command.ExecuteNonQuery();
-			connection.Dispose();
-
-			if (device.IsConcentrator)
-				return "Done!";		//As we do not add measurements for PDC device or device which is concentrator.
-
-			Device addedDevice = new Device();
-			addedDevice = GetDeviceByAcronym(device.Acronym);			
-			DataTable pmuSignalTypes = new DataTable();
-		    pmuSignalTypes = GetPmuSignalTypes();
-
-			Measurement measurement;
-			foreach (DataRow row in pmuSignalTypes.Rows)	//This will only create or update PMU related measurements and not phasor related.
+			try
 			{
-				measurement = new Measurement();
-				measurement.HistorianID = addedDevice.HistorianID;
-				measurement.DeviceID = addedDevice.ID;
-				measurement.PointTag = addedDevice.CompanyAcronym + "_" + addedDevice.Acronym + ":" + addedDevice.VendorAcronym + row["Abbreviation"].ToString();
-				measurement.AlternateTag = string.Empty;
-				measurement.SignalTypeID = Convert.ToInt32(row["ID"]);
-				measurement.PhasorSourceIndex = (int?)null;
-				measurement.SignalReference = addedDevice.Acronym + "-" + row["Suffix"].ToString();
-				measurement.Adder = 0.0d;
-				measurement.Multiplier = 1.0d;
-				measurement.Description = addedDevice.Name + " " + addedDevice.VendorDeviceName + " " + row["Name"].ToString();
-				measurement.Enabled = true;
-				if (isNew)	//if it is a new device then measurements are new too. So don't worry about updating them.
-					SaveMeasurement(measurement, true);
-				else	//if device is existing one, then check and see if its measusremnts exist, if so then update measurements.
-				{
-					Measurement existingMeasurement = new Measurement();
-					existingMeasurement = GetMeasurementInfo(measurement.DeviceID, row["Suffix"].ToString(), measurement.PhasorSourceIndex);
+				IDbCommand command = connection.Connection.CreateCommand();
 
-					if (existingMeasurement == null)	//measurement does not exist for this device and signal type then add as a new measurement otherwise update.
+				if (isNew)
+					command.CommandText = "Insert Into Device (NodeID, ParentID, Acronym, Name, IsConcentrator, CompanyID, HistorianID, AccessID, VendorDeviceID, ProtocolID, Longitude, Latitude, InterconnectionID, ConnectionString, TimeZone, TimeAdjustmentTicks, " +
+						"DataLossInterval, ContactList, MeasuredLines, LoadOrder, Enabled) Values (@nodeID, @parentID, @acronym, @name, @isConcentrator, @companyID, @historianID, @accessID, @vendorDeviceID, @protocolID, @longitude, @latitude, @interconnectionID, " +
+						"@connectionString, @timezone, @timeAdjustmentTicks, @dataLossInterval, @contactList, @measuredLines, @loadOrder, @enabled)";
+				else
+					command.CommandText = "Update Device Set NodeID = @nodeID, ParentID = @parentID, Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, CompanyID = @companyID, HistorianID = @historianID, AccessID = @accessID, VendorDeviceID = @vendorDeviceID, " +
+						"ProtocolID = @protocolID, Longitude = @longitude, Latitude = @latitude, InterconnectionID = @interconnectionID, ConnectionString = @connectionString, TimeZone = @timezone, TimeAdjustmentTicks = @timeAdjustmentTicks, DataLossInterval = @dataLossInterval, " +
+						"ContactList = @contactList, MeasuredLines = @measuredLines, LoadOrder = @loadOrder, Enabled = @enabled WHERE ID = @id";
+
+				command.CommandType = CommandType.Text;
+				command.Parameters.Add(AddWithValue(command, "@nodeID", device.NodeID));
+				command.Parameters.Add(AddWithValue(command, "@parentID", device.ParentID ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@acronym", device.Acronym));
+				command.Parameters.Add(AddWithValue(command, "@name", device.Name));
+				command.Parameters.Add(AddWithValue(command, "@isConcentrator", device.IsConcentrator));
+				command.Parameters.Add(AddWithValue(command, "@companyID", device.CompanyID));
+				command.Parameters.Add(AddWithValue(command, "@historianID", device.HistorianID ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@accessID", device.AccessID));
+				command.Parameters.Add(AddWithValue(command, "@vendorDeviceID", device.VendorDeviceID == null ? (object)DBNull.Value : device.VendorDeviceID == 0 ? (object)DBNull.Value : device.VendorDeviceID));
+				command.Parameters.Add(AddWithValue(command, "@protocolID", device.ProtocolID));
+				command.Parameters.Add(AddWithValue(command, "@longitude", device.Longitude ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@latitude", device.Latitude ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@interconnectionID", device.InterconnectionID ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@connectionString", device.ConnectionString));
+				command.Parameters.Add(AddWithValue(command, "@timezone", device.TimeZone));
+				command.Parameters.Add(AddWithValue(command, "@timeAdjustmentTicks", device.TimeAdjustmentTicks));
+				command.Parameters.Add(AddWithValue(command, "@dataLossInterval", device.DataLossInterval));
+				command.Parameters.Add(AddWithValue(command, "@contactList", device.ContactList));
+				command.Parameters.Add(AddWithValue(command, "@measuredLines", device.MeasuredLines ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@loadOrder", device.LoadOrder));
+				command.Parameters.Add(AddWithValue(command, "@enabled", device.Enabled));
+
+				if (!isNew)
+					command.Parameters.Add(AddWithValue(command, "@id", device.ID));
+
+				command.ExecuteNonQuery();
+
+				if (device.IsConcentrator)
+					return GetReturnMessage("SaveDevice()", "Concentrator Device Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);		//As we do not add measurements for PDC device or device which is concentrator.
+
+				Device addedDevice = new Device();
+				addedDevice = GetDeviceByAcronym(device.Acronym);
+				DataTable pmuSignalTypes = new DataTable();
+				pmuSignalTypes = GetPmuSignalTypes();
+
+				Measurement measurement;
+				foreach (DataRow row in pmuSignalTypes.Rows)	//This will only create or update PMU related measurements and not phasor related.
+				{
+					measurement = new Measurement();
+					measurement.HistorianID = addedDevice.HistorianID;
+					measurement.DeviceID = addedDevice.ID;
+					measurement.PointTag = addedDevice.CompanyAcronym + "_" + addedDevice.Acronym + ":" + addedDevice.VendorAcronym + row["Abbreviation"].ToString();
+					measurement.AlternateTag = string.Empty;
+					measurement.SignalTypeID = Convert.ToInt32(row["ID"]);
+					measurement.PhasorSourceIndex = (int?)null;
+					measurement.SignalReference = addedDevice.Acronym + "-" + row["Suffix"].ToString();
+					measurement.Adder = 0.0d;
+					measurement.Multiplier = 1.0d;
+					measurement.Description = addedDevice.Name + " " + addedDevice.VendorDeviceName + " " + row["Name"].ToString();
+					measurement.Enabled = true;
+					if (isNew)	//if it is a new device then measurements are new too. So don't worry about updating them.
 						SaveMeasurement(measurement, true);
-					else
+					else	//if device is existing one, then check and see if its measusremnts exist, if so then update measurements.
 					{
-						measurement.SignalID = existingMeasurement.SignalID;
-						SaveMeasurement(measurement, false);
+						Measurement existingMeasurement = new Measurement();
+						existingMeasurement = GetMeasurementInfo(measurement.DeviceID, row["Suffix"].ToString(), measurement.PhasorSourceIndex);
+
+						if (existingMeasurement == null)	//measurement does not exist for this device and signal type then add as a new measurement otherwise update.
+							SaveMeasurement(measurement, true);
+						else
+						{
+							measurement.SignalID = existingMeasurement.SignalID;
+							SaveMeasurement(measurement, false);
+						}
 					}
 				}
-			}
 
-			if (!isNew)
-			{
-				//After all the PMU related measurements are updated then lets go through each phasors for the PMU
-				//and update all the phasors and their measurements to reflect changes made to the PMU configuration.
-				//We are not going to make any changes to the Phasor definition itselft but only to reflect PMU related
-				//changes in the measurement.
-
-				foreach (Phasor phasor in GetPhasorList(addedDevice.ID))
+				if (!isNew)
 				{
-					SavePhasor(phasor, false);	//we will save phasor without modifying it so that only measurements will reflect changes related to PMU.
-					//nothing will change in phasor itself.
+					//After all the PMU related measurements are updated then lets go through each phasors for the PMU
+					//and update all the phasors and their measurements to reflect changes made to the PMU configuration.
+					//We are not going to make any changes to the Phasor definition itselft but only to reflect PMU related
+					//changes in the measurement.
+
+					foreach (Phasor phasor in GetPhasorList(addedDevice.ID))
+					{
+						SavePhasor(phasor, false);	//we will save phasor without modifying it so that only measurements will reflect changes related to PMU.
+						//nothing will change in phasor itself.
+					}
 				}
+
+				return GetReturnMessage("SaveDevice()", "Device Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
 			}
-						
-			return "Done";			
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveDevice()", "Failed to Save Device Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		public static Dictionary<int, string> GetDevices(DeviceType deviceType, bool isOptional)
@@ -1956,73 +1966,83 @@ namespace openPDCManager.Web.Data
 		public static string SavePhasor(Phasor phasor, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-
-			if (isNew)
-				command.CommandText = "Insert Into Phasor (DeviceID, Label, Type, Phase, DestinationPhasorID, SourceIndex) Values (@deviceID, @label, @type, @phase, " +
-					"@destinationPhasorID, @sourceIndex)";
-			else
-				command.CommandText = "Update Phasor Set DeviceID =@deviceID, Label = @label, Type = @type, Phase = @phase, DestinationPhasorID = @destinationPhasorID, " +
-					"SourceIndex = @sourceIndex Where ID = @id";
-
-			command.Parameters.Add(AddWithValue(command, "@deviceID", phasor.DeviceID));
-			command.Parameters.Add(AddWithValue(command, "@label", phasor.Label));
-			command.Parameters.Add(AddWithValue(command, "@type", phasor.Type));
-			command.Parameters.Add(AddWithValue(command, "@phase", phasor.Phase));
-			command.Parameters.Add(AddWithValue(command, "@destinationPhasorID", phasor.DestinationPhasorID ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@sourceIndex", phasor.SourceIndex));
-
-			if (!isNew)
-				command.Parameters.Add(AddWithValue(command, "@id", phasor.ID));
-
-			command.ExecuteNonQuery();
-			connection.Dispose();
-
-			Phasor addedPhasor = new Phasor();
-			addedPhasor = GetPhasorByLabel(phasor.DeviceID, phasor.Label);
-
-			Device device = new Device();
-			device = GetDeviceByDeviceID(phasor.DeviceID);
-			
-			Measurement measurement;
-
-			DataTable phasorSignalTypes = new DataTable();
-			phasorSignalTypes = GetPhasorSignalTypes(phasor.Type);
-
-			foreach (DataRow row in phasorSignalTypes.Rows)
+			try
 			{
-				measurement = new Measurement();
-				measurement.HistorianID = device.HistorianID;
-				measurement.DeviceID = device.ID;
-				if (addedPhasor.DestinationPhasorID.HasValue)
-					measurement.PointTag = device.CompanyAcronym + "_" + device.Acronym + "-" + GetPhasorByID(addedPhasor.DeviceID, (int)addedPhasor.DestinationPhasorID).Label + ":" + device.VendorAcronym + row["Abbreviation"].ToString();
+				IDbCommand command = connection.Connection.CreateCommand();
+
+				if (isNew)
+					command.CommandText = "Insert Into Phasor (DeviceID, Label, Type, Phase, DestinationPhasorID, SourceIndex) Values (@deviceID, @label, @type, @phase, " +
+						"@destinationPhasorID, @sourceIndex)";
 				else
-					measurement.PointTag = device.CompanyAcronym + "_" + device.Acronym + "-" + row["Suffix"].ToString() + addedPhasor.SourceIndex.ToString() + ":" + device.VendorAcronym + row["Abbreviation"].ToString();
-				measurement.AlternateTag = string.Empty;
-				measurement.SignalTypeID = Convert.ToInt32(row["ID"]);
-				measurement.PhasorSourceIndex = addedPhasor.SourceIndex;
-				measurement.SignalReference = device.Acronym + "-" + row["Suffix"].ToString() + addedPhasor.SourceIndex.ToString();
-				measurement.Adder = 0.0d;
-				measurement.Multiplier = 1.0d;
-				measurement.Description = device.Name + " " + addedPhasor.Label + " " + device.VendorDeviceName + " " + addedPhasor.PhaseType + " " + row["Name"].ToString();
-				measurement.Enabled = true;
-				if (isNew)	//if it is a new phasor then add measurements as new.
-					SaveMeasurement(measurement, true);
-				else //Check if measurement exists, if so then update them otherwise add new.
+					command.CommandText = "Update Phasor Set DeviceID =@deviceID, Label = @label, Type = @type, Phase = @phase, DestinationPhasorID = @destinationPhasorID, " +
+						"SourceIndex = @sourceIndex Where ID = @id";
+
+				command.Parameters.Add(AddWithValue(command, "@deviceID", phasor.DeviceID));
+				command.Parameters.Add(AddWithValue(command, "@label", phasor.Label));
+				command.Parameters.Add(AddWithValue(command, "@type", phasor.Type));
+				command.Parameters.Add(AddWithValue(command, "@phase", phasor.Phase));
+				command.Parameters.Add(AddWithValue(command, "@destinationPhasorID", phasor.DestinationPhasorID ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@sourceIndex", phasor.SourceIndex));
+
+				if (!isNew)
+					command.Parameters.Add(AddWithValue(command, "@id", phasor.ID));
+
+				command.ExecuteNonQuery();
+				
+				Phasor addedPhasor = new Phasor();
+				addedPhasor = GetPhasorByLabel(phasor.DeviceID, phasor.Label);
+
+				Device device = new Device();
+				device = GetDeviceByDeviceID(phasor.DeviceID);
+
+				Measurement measurement;
+
+				DataTable phasorSignalTypes = new DataTable();
+				phasorSignalTypes = GetPhasorSignalTypes(phasor.Type);
+
+				foreach (DataRow row in phasorSignalTypes.Rows)
 				{
-					Measurement existingMeasurement = new Measurement();
-					existingMeasurement = GetMeasurementInfo(measurement.DeviceID, row["Suffix"].ToString(), measurement.PhasorSourceIndex);
-					if (existingMeasurement == null)
-						SaveMeasurement(measurement, true);
+					measurement = new Measurement();
+					measurement.HistorianID = device.HistorianID;
+					measurement.DeviceID = device.ID;
+					if (addedPhasor.DestinationPhasorID.HasValue)
+						measurement.PointTag = device.CompanyAcronym + "_" + device.Acronym + "-" + GetPhasorByID(addedPhasor.DeviceID, (int)addedPhasor.DestinationPhasorID).Label + ":" + device.VendorAcronym + row["Abbreviation"].ToString();
 					else
+						measurement.PointTag = device.CompanyAcronym + "_" + device.Acronym + "-" + row["Suffix"].ToString() + addedPhasor.SourceIndex.ToString() + ":" + device.VendorAcronym + row["Abbreviation"].ToString();
+					measurement.AlternateTag = string.Empty;
+					measurement.SignalTypeID = Convert.ToInt32(row["ID"]);
+					measurement.PhasorSourceIndex = addedPhasor.SourceIndex;
+					measurement.SignalReference = device.Acronym + "-" + row["Suffix"].ToString() + addedPhasor.SourceIndex.ToString();
+					measurement.Adder = 0.0d;
+					measurement.Multiplier = 1.0d;
+					measurement.Description = device.Name + " " + addedPhasor.Label + " " + device.VendorDeviceName + " " + addedPhasor.PhaseType + " " + row["Name"].ToString();
+					measurement.Enabled = true;
+					if (isNew)	//if it is a new phasor then add measurements as new.
+						SaveMeasurement(measurement, true);
+					else //Check if measurement exists, if so then update them otherwise add new.
 					{
-						measurement.SignalID = existingMeasurement.SignalID;
-						SaveMeasurement(measurement, false);
+						Measurement existingMeasurement = new Measurement();
+						existingMeasurement = GetMeasurementInfo(measurement.DeviceID, row["Suffix"].ToString(), measurement.PhasorSourceIndex);
+						if (existingMeasurement == null)
+							SaveMeasurement(measurement, true);
+						else
+						{
+							measurement.SignalID = existingMeasurement.SignalID;
+							SaveMeasurement(measurement, false);
+						}
 					}
 				}
-			}
 
-			return "Done!";
+				return GetReturnMessage("SavePhasor()", "Phasor Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SavePhasor()", "Failed to Save Phasor Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		static Phasor GetPhasorByLabel(int deviceID, string label)
@@ -2149,38 +2169,48 @@ namespace openPDCManager.Web.Data
 		public static string SaveMeasurement(Measurement measurement, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-
-			if (isNew)
-				command.CommandText = "Insert Into Measurement (HistorianID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, Adder, Multiplier, Description, Enabled) " +
-					"Values (@historianID, @deviceID, @pointTag, @alternateTag, @signalTypeID, @phasorSourceIndex, @signalReference, @adder, @multiplier, @description, @enabled)";
-			else
-				command.CommandText = "Update Measurement Set HistorianID = @historianID, DeviceID = @deviceID, PointTag = @pointTag, AlternateTag = @alternateTag, SignalTypeID = @signalTypeID, " +
-					"PhasorSourceIndex = @phasorSourceIndex, SignalReference = @signalReference, Adder = @adder, Multiplier = @multiplier, Description = @description, Enabled = @enabled Where SignalID = @signalID";
-
-			command.Parameters.Add(AddWithValue(command, "@historianID", measurement.HistorianID ?? (object)DBNull.Value));			
-			command.Parameters.Add(AddWithValue(command, "@deviceID", measurement.DeviceID ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@pointTag", measurement.PointTag));
-			command.Parameters.Add(AddWithValue(command, "@alternateTag", measurement.AlternateTag));
-			command.Parameters.Add(AddWithValue(command, "@signalTypeID", measurement.SignalTypeID));
-			command.Parameters.Add(AddWithValue(command, "@phasorSourceIndex", measurement.PhasorSourceIndex ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@signalReference", measurement.SignalReference));
-			command.Parameters.Add(AddWithValue(command, "@adder", measurement.Adder));
-			command.Parameters.Add(AddWithValue(command, "@multiplier", measurement.Multiplier));
-			command.Parameters.Add(AddWithValue(command, "@description", measurement.Description));
-			command.Parameters.Add(AddWithValue(command, "@enabled", measurement.Enabled));
-
-			if (!isNew)
+			try
 			{
-				if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
-					command.Parameters.Add(AddWithValue(command, "@signalID", "{" + measurement.SignalID + "}"));
+				IDbCommand command = connection.Connection.CreateCommand();
+
+				if (isNew)
+					command.CommandText = "Insert Into Measurement (HistorianID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, Adder, Multiplier, Description, Enabled) " +
+						"Values (@historianID, @deviceID, @pointTag, @alternateTag, @signalTypeID, @phasorSourceIndex, @signalReference, @adder, @multiplier, @description, @enabled)";
 				else
-					command.Parameters.Add(AddWithValue(command, "@signalID", measurement.SignalID));
+					command.CommandText = "Update Measurement Set HistorianID = @historianID, DeviceID = @deviceID, PointTag = @pointTag, AlternateTag = @alternateTag, SignalTypeID = @signalTypeID, " +
+						"PhasorSourceIndex = @phasorSourceIndex, SignalReference = @signalReference, Adder = @adder, Multiplier = @multiplier, Description = @description, Enabled = @enabled Where SignalID = @signalID";
+
+				command.Parameters.Add(AddWithValue(command, "@historianID", measurement.HistorianID ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@deviceID", measurement.DeviceID ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@pointTag", measurement.PointTag));
+				command.Parameters.Add(AddWithValue(command, "@alternateTag", measurement.AlternateTag));
+				command.Parameters.Add(AddWithValue(command, "@signalTypeID", measurement.SignalTypeID));
+				command.Parameters.Add(AddWithValue(command, "@phasorSourceIndex", measurement.PhasorSourceIndex ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@signalReference", measurement.SignalReference));
+				command.Parameters.Add(AddWithValue(command, "@adder", measurement.Adder));
+				command.Parameters.Add(AddWithValue(command, "@multiplier", measurement.Multiplier));
+				command.Parameters.Add(AddWithValue(command, "@description", measurement.Description));
+				command.Parameters.Add(AddWithValue(command, "@enabled", measurement.Enabled));
+
+				if (!isNew)
+				{
+					if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+						command.Parameters.Add(AddWithValue(command, "@signalID", "{" + measurement.SignalID + "}"));
+					else
+						command.Parameters.Add(AddWithValue(command, "@signalID", measurement.SignalID));
+				}
+				
+				command.ExecuteNonQuery();
+				return GetReturnMessage("SaveMeasurement()", "Measurement Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
 			}
-			//System.Diagnostics.Debug.WriteLine(command.ExecuteNonQuery());
-			command.ExecuteNonQuery();
-			connection.Dispose();
-			return "Done!";
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveMeasurement()", "Failed to Save Measurement Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		public static List<Measurement> GetMeasurementsForOutputStream(string nodeID, int outputStreamID)
@@ -2277,33 +2307,43 @@ namespace openPDCManager.Web.Data
 		public static string SaveOtherDevice(OtherDevice otherDevice, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (isNew)
-				command.CommandText = "Insert Into OtherDevice (Acronym, Name, IsConcentrator, CompanyID, VendorDeviceID, Longitude, Latitude, InterconnectionID, Planned, Desired, InProgress) Values " +
-					"(@acronym, @name, @isConcentrator, @companyID, @vendorDeviceID, @longitude, @latitude, @interconnectionID, @planned, @desired, @inProgress)";
-			else
-				command.CommandText = "Update OtherDevice Set Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, CompanyID = @companyID, VendorDeviceID = @vendorDeviceID, Longitude = @longitude, " +
-					"Latitude = @latitude, InterconnectionID = @interconnectionID, Planned = @planned, Desired = @desired, InProgress = @inProgress Where ID = @id";
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (isNew)
+					command.CommandText = "Insert Into OtherDevice (Acronym, Name, IsConcentrator, CompanyID, VendorDeviceID, Longitude, Latitude, InterconnectionID, Planned, Desired, InProgress) Values " +
+						"(@acronym, @name, @isConcentrator, @companyID, @vendorDeviceID, @longitude, @latitude, @interconnectionID, @planned, @desired, @inProgress)";
+				else
+					command.CommandText = "Update OtherDevice Set Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, CompanyID = @companyID, VendorDeviceID = @vendorDeviceID, Longitude = @longitude, " +
+						"Latitude = @latitude, InterconnectionID = @interconnectionID, Planned = @planned, Desired = @desired, InProgress = @inProgress Where ID = @id";
 
-			command.Parameters.Add(AddWithValue(command, "@acronym", otherDevice.Acronym));
-			command.Parameters.Add(AddWithValue(command, "@name", otherDevice.Name));
-			command.Parameters.Add(AddWithValue(command, "@isConcentrator", otherDevice.IsConcentrator));
-			command.Parameters.Add(AddWithValue(command, "@companyID", otherDevice.CompanyID ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@vendorDeviceID", otherDevice.VendorDeviceID ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@longitude", otherDevice.Longitude ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@latitude", otherDevice.Latitude ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@interconnectionID", otherDevice.InterconnectionID ?? (object)DBNull.Value));
-			command.Parameters.Add(AddWithValue(command, "@planned", otherDevice.Planned));
-			command.Parameters.Add(AddWithValue(command, "@desired", otherDevice.Desired));
-			command.Parameters.Add(AddWithValue(command, "@inProgress", otherDevice.InProgress));
+				command.Parameters.Add(AddWithValue(command, "@acronym", otherDevice.Acronym));
+				command.Parameters.Add(AddWithValue(command, "@name", otherDevice.Name));
+				command.Parameters.Add(AddWithValue(command, "@isConcentrator", otherDevice.IsConcentrator));
+				command.Parameters.Add(AddWithValue(command, "@companyID", otherDevice.CompanyID ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@vendorDeviceID", otherDevice.VendorDeviceID ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@longitude", otherDevice.Longitude ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@latitude", otherDevice.Latitude ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@interconnectionID", otherDevice.InterconnectionID ?? (object)DBNull.Value));
+				command.Parameters.Add(AddWithValue(command, "@planned", otherDevice.Planned));
+				command.Parameters.Add(AddWithValue(command, "@desired", otherDevice.Desired));
+				command.Parameters.Add(AddWithValue(command, "@inProgress", otherDevice.InProgress));
 
-			if (!isNew)			
-				command.Parameters.Add(AddWithValue(command, "@id", otherDevice.ID));
-		
-			command.ExecuteScalar();
-			connection.Dispose();
-			return "Done!";
+				if (!isNew)
+					command.Parameters.Add(AddWithValue(command, "@id", otherDevice.ID));
+
+				command.ExecuteScalar();
+				return GetReturnMessage("SaveOtherDevice()", "Other Device Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveOtherDevice()", "Failed to Save Other Device Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		public static OtherDevice GetOtherDeviceByDeviceID(int deviceID)
@@ -2475,42 +2515,53 @@ namespace openPDCManager.Web.Data
 		public static string SaveCalculatedMeasurement(CalculatedMeasurement calculatedMeasurement, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
 
-			if (isNew)
-				command.CommandText = "Insert Into CalculatedMeasurement (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, ConfigSection, InputMeasurements, OutputMeasurements, MinimumMeasurementsToUse, FramesPerSecond, LagTime, LeadTime, " +
-					"UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled) Values (@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @configSection, @inputMeasurements, @outputMeasurements, @minimumMeasurementsToUse, " +
-					"@framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled)";
-			else
-				command.CommandText = "Update CalculatedMeasurement Set NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, TypeName = @typeName, ConnectionString = @connectionString, ConfigSection = @configSection, " +
-					"InputMeasurements = @inputMeasurements, OutputMeasurements = @outputMeasurements, MinimumMeasurementsToUse = @minimumMeasurementsToUse, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, " +
-					"UseLocalClockAsRealTime = @useLocalClockAsRealTime, AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+				if (isNew)
+					command.CommandText = "Insert Into CalculatedMeasurement (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, ConfigSection, InputMeasurements, OutputMeasurements, MinimumMeasurementsToUse, FramesPerSecond, LagTime, LeadTime, " +
+						"UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled) Values (@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @configSection, @inputMeasurements, @outputMeasurements, @minimumMeasurementsToUse, " +
+						"@framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled)";
+				else
+					command.CommandText = "Update CalculatedMeasurement Set NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, TypeName = @typeName, ConnectionString = @connectionString, ConfigSection = @configSection, " +
+						"InputMeasurements = @inputMeasurements, OutputMeasurements = @outputMeasurements, MinimumMeasurementsToUse = @minimumMeasurementsToUse, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, " +
+						"UseLocalClockAsRealTime = @useLocalClockAsRealTime, AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
 
-			command.Parameters.Add(AddWithValue(command, "@nodeID", calculatedMeasurement.NodeId));
-			command.Parameters.Add(AddWithValue(command, "@acronym", calculatedMeasurement.Acronym));
-			command.Parameters.Add(AddWithValue(command, "@name", calculatedMeasurement.Name));
-			command.Parameters.Add(AddWithValue(command, "@assemblyName", calculatedMeasurement.AssemblyName));
-			command.Parameters.Add(AddWithValue(command, "@typeName", calculatedMeasurement.TypeName));
-			command.Parameters.Add(AddWithValue(command, "@connectionString", calculatedMeasurement.ConnectionString));
-			command.Parameters.Add(AddWithValue(command, "@configSection", calculatedMeasurement.ConfigSection));
-			command.Parameters.Add(AddWithValue(command, "@inputMeasurements", calculatedMeasurement.InputMeasurements));
-			command.Parameters.Add(AddWithValue(command, "@outputMeasurements", calculatedMeasurement.OutputMeasurements));
-			command.Parameters.Add(AddWithValue(command, "@minimumMeasurementsToUse", calculatedMeasurement.MinimumMeasurementsToUse));
-			command.Parameters.Add(AddWithValue(command, "@framesPerSecond", calculatedMeasurement.FramesPerSecond));
-			command.Parameters.Add(AddWithValue(command, "@lagTime", calculatedMeasurement.LagTime));
-			command.Parameters.Add(AddWithValue(command, "@leadTime", calculatedMeasurement.LeadTime));
-			command.Parameters.Add(AddWithValue(command, "@useLocalClockAsRealTime", calculatedMeasurement.UseLocalClockAsRealTime));
-			command.Parameters.Add(AddWithValue(command, "@allowSortsByArrival", calculatedMeasurement.AllowSortsByArrival));
-			command.Parameters.Add(AddWithValue(command, "@loadOrder", calculatedMeasurement.LoadOrder));
-			command.Parameters.Add(AddWithValue(command, "@enabled", calculatedMeasurement.Enabled));
+				command.Parameters.Add(AddWithValue(command, "@nodeID", calculatedMeasurement.NodeId));
+				command.Parameters.Add(AddWithValue(command, "@acronym", calculatedMeasurement.Acronym));
+				command.Parameters.Add(AddWithValue(command, "@name", calculatedMeasurement.Name));
+				command.Parameters.Add(AddWithValue(command, "@assemblyName", calculatedMeasurement.AssemblyName));
+				command.Parameters.Add(AddWithValue(command, "@typeName", calculatedMeasurement.TypeName));
+				command.Parameters.Add(AddWithValue(command, "@connectionString", calculatedMeasurement.ConnectionString));
+				command.Parameters.Add(AddWithValue(command, "@configSection", calculatedMeasurement.ConfigSection));
+				command.Parameters.Add(AddWithValue(command, "@inputMeasurements", calculatedMeasurement.InputMeasurements));
+				command.Parameters.Add(AddWithValue(command, "@outputMeasurements", calculatedMeasurement.OutputMeasurements));
+				command.Parameters.Add(AddWithValue(command, "@minimumMeasurementsToUse", calculatedMeasurement.MinimumMeasurementsToUse));
+				command.Parameters.Add(AddWithValue(command, "@framesPerSecond", calculatedMeasurement.FramesPerSecond));
+				command.Parameters.Add(AddWithValue(command, "@lagTime", calculatedMeasurement.LagTime));
+				command.Parameters.Add(AddWithValue(command, "@leadTime", calculatedMeasurement.LeadTime));
+				command.Parameters.Add(AddWithValue(command, "@useLocalClockAsRealTime", calculatedMeasurement.UseLocalClockAsRealTime));
+				command.Parameters.Add(AddWithValue(command, "@allowSortsByArrival", calculatedMeasurement.AllowSortsByArrival));
+				command.Parameters.Add(AddWithValue(command, "@loadOrder", calculatedMeasurement.LoadOrder));
+				command.Parameters.Add(AddWithValue(command, "@enabled", calculatedMeasurement.Enabled));
 
-			if (!isNew)
-				command.Parameters.Add(AddWithValue(command, "@id", calculatedMeasurement.ID));
-			
-			command.ExecuteNonQuery();			
-			connection.Dispose();
-			return "Done!";
+				if (!isNew)
+					command.Parameters.Add(AddWithValue(command, "@id", calculatedMeasurement.ID));
+
+				command.ExecuteNonQuery();
+
+				return GetReturnMessage("SaveCalculatedMeasurement()", "Calculated Measurement Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveCalculatedMeasurement()", "Failed to Save Calculated Measurement Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		#endregion
@@ -2572,30 +2623,41 @@ namespace openPDCManager.Web.Data
 				tableName = "CustomOutputAdapter";
 
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
 
-			if (isNew)
-				command.CommandText = "Insert Into " + tableName + " (NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, LoadOrder, Enabled) Values " +
-					"(@nodeID, @adapterName, @assemblyName, @typeName, @connectionString, @loadOrder, @enabled)";
-			else
-				command.CommandText = "Update " + tableName + " Set NodeID = @nodeID, AdapterName = @adapterName, AssemblyName = @assemblyName, TypeName = @typeName, " +
-					"ConnectionString = @connectionString, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+				if (isNew)
+					command.CommandText = "Insert Into " + tableName + " (NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, LoadOrder, Enabled) Values " +
+						"(@nodeID, @adapterName, @assemblyName, @typeName, @connectionString, @loadOrder, @enabled)";
+				else
+					command.CommandText = "Update " + tableName + " Set NodeID = @nodeID, AdapterName = @adapterName, AssemblyName = @assemblyName, TypeName = @typeName, " +
+						"ConnectionString = @connectionString, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
 
-			command.Parameters.Add(AddWithValue(command, "@nodeID", adapter.NodeID));
-			command.Parameters.Add(AddWithValue(command, "@adapterName", adapter.AdapterName));
-			command.Parameters.Add(AddWithValue(command, "@assemblyName", adapter.AssemblyName));
-			command.Parameters.Add(AddWithValue(command, "@typeName", adapter.TypeName));
-			command.Parameters.Add(AddWithValue(command, "@connectionString", adapter.ConnectionString));
-			command.Parameters.Add(AddWithValue(command, "@loadOrder", adapter.LoadOrder));
-			command.Parameters.Add(AddWithValue(command, "@enabled", adapter.Enabled));
+				command.Parameters.Add(AddWithValue(command, "@nodeID", adapter.NodeID));
+				command.Parameters.Add(AddWithValue(command, "@adapterName", adapter.AdapterName));
+				command.Parameters.Add(AddWithValue(command, "@assemblyName", adapter.AssemblyName));
+				command.Parameters.Add(AddWithValue(command, "@typeName", adapter.TypeName));
+				command.Parameters.Add(AddWithValue(command, "@connectionString", adapter.ConnectionString));
+				command.Parameters.Add(AddWithValue(command, "@loadOrder", adapter.LoadOrder));
+				command.Parameters.Add(AddWithValue(command, "@enabled", adapter.Enabled));
 
-			if (!isNew)			
-				command.Parameters.Add(AddWithValue(command, "@id", adapter.ID));
+				if (!isNew)
+					command.Parameters.Add(AddWithValue(command, "@id", adapter.ID));
 
-			command.ExecuteNonQuery();						
-			connection.Dispose();
-			return "Done!";
+				command.ExecuteNonQuery();
+
+				return GetReturnMessage("SaveAdapter()", "Adapter Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+			}
+			catch (Exception ex)
+			{
+				return GetReturnMessage("SaveAdapter()", "Failed to Save Adapter Information", ex.Message, ex.ToString(), MessageType.Error);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		public static List<IaonTree> GetIaonTreeData()
