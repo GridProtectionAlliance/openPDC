@@ -6483,7 +6483,7 @@
             This is the output for <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> serialized using <see cref="T:System.Runtime.Serialization.DataContractSerializer"/>:
             <code>
             <![CDATA[
-            <Metadata xmlns="http://schemas.datacontract.org/2004/07/TVA.Historian.Services" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+            <Metadata xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
               <MetadataRecords>
                 <MetadataRecord>
                   <HistorianID>1</HistorianID> 
@@ -6627,7 +6627,7 @@
             This is the output for <see cref="T:TVA.Historian.DataServices.SerializableMetadataRecord"/> serialized using <see cref="T:System.Runtime.Serialization.DataContractSerializer"/>:
             <code>
             <![CDATA[
-            <MetadataRecord xmlns="http://schemas.datacontract.org/2004/07/TVA.Historian.Services" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+            <MetadataRecord xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
               <HistorianID>1</HistorianID> 
               <DataType>0</DataType> 
               <Name>TVA_CORD-BUS2:ABBV</Name> 
@@ -6984,7 +6984,7 @@
             This is the output for <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> serialized using <see cref="T:System.Runtime.Serialization.DataContractSerializer"/>:
             <code>
             <![CDATA[
-            <TimeSeriesData xmlns="http://schemas.datacontract.org/2004/07/TVA.Historian.Services" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+            <TimeSeriesData xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
               <TimeSeriesDataPoints>
                 <TimeSeriesDataPoint>
                   <HistorianID>1</HistorianID> 
@@ -7085,7 +7085,7 @@
             This is the output for <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint"/> serialized using <see cref="T:System.Runtime.Serialization.DataContractSerializer"/>:
             <code>
             <![CDATA[
-            <TimeSeriesDataPoint xmlns="http://schemas.datacontract.org/2004/07/TVA.Historian.Services" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+            <TimeSeriesDataPoint xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
               <HistorianID>1</HistorianID>
               <Time>21-Aug-2009 14:21:54.612</Time>
               <Value>60.025547</Value>
