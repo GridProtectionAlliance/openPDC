@@ -125,7 +125,7 @@ namespace DataQualityMonitoring
             if (settings.TryGetValue("warnInterval", out setting))
                 m_warnInterval = Ticks.FromSeconds(double.Parse(setting));
 
-            m_warningTimer.Interval = m_warnInterval;
+            m_warningTimer.Interval = m_warnInterval.ToMilliseconds();
             m_warningTimer.Elapsed += m_warningTimer_Elapsed;
         }
 
@@ -162,11 +162,13 @@ namespace DataQualityMonitoring
         /// </remarks>
         protected override void PublishFrame(TVA.Measurements.IFrame frame, int index)
         {
+            m_latestTimestamp = frame.Timestamp;
+
             foreach (MeasurementKey key in frame.Measurements.Keys)
             {
                 IMeasurement measurement = frame.Measurements[key];
 
-                if (measurement.Value <= m_lowRange || measurement.Value >= m_highRange)
+                if (measurement.AdjustedValue <= m_lowRange || measurement.AdjustedValue >= m_highRange)
                 {
                     AddOutOfRangeMeasurement(key, measurement);
                 }
