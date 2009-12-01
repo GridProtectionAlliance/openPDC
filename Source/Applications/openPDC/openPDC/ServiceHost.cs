@@ -254,6 +254,7 @@ using TVA.Measurements.Routing;
 using TVA.Reflection;
 using TVA.Security.Cryptography;
 using TVA.Services;
+using System.Net;
 
 namespace openPDC
 {
@@ -725,22 +726,33 @@ namespace openPDC
                     break;
                 case ConfigurationType.WebService:
                     // Attempt to load configuration from webservice based connection
+                    WebRequest request = null;
+                    Stream response = null;
                     try
                     {
-                        // TODO: Define methods to download dataset from common web service...
-                        //DisplayStatusMessage("Webservice configuration connection opened.");
+                        DisplayStatusMessage("Webservice configuration connection opened.", UpdateType.Information);
 
-                        //configuration = new DataSet("Iaon");
+                        configuration = new DataSet("Iaon");
+                        request = WebRequest.Create(connectionString);
+                        response = request.GetResponse().GetResponseStream();
+                        configuration.ReadXml(response);
 
-                        //DisplayStatusMessage("Webservice configuration successfully loaded.");
+                        DisplayStatusMessage("Webservice configuration successfully loaded.", UpdateType.Information);
 
-                        //CacheCurrentConfiguration(configuration);
+                        CacheCurrentConfiguration(configuration);
                     }
                     catch (Exception ex)
                     {
                         DisplayStatusMessage("Failed to load webservice configuration due to exception: {0} Attempting to use last known good configuration.", UpdateType.Warning, ex.Message);
                         m_serviceHelper.ErrorLogger.Log(ex);
                         configuration = GetConfigurationDataSet(ConfigurationType.XmlFile, m_cachedConfigurationFile, null);
+                    }
+                    finally
+                    {
+                        if (response != null)
+                            response.Dispose();
+
+                        DisplayStatusMessage("Webservice configuration connection closed.", UpdateType.Information);
                     }
 
                     break;
