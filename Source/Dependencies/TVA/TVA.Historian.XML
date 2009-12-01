@@ -2183,11 +2183,6 @@
             Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.DataBlockSize"/> property.
             </summary>
         </member>
-        <member name="F:TVA.Historian.Files.ArchiveFile.DefaultRolloverOnFull">
-            <summary>
-            Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.RolloverOnFull"/> property.
-            </summary>
-        </member>
         <member name="F:TVA.Historian.Files.ArchiveFile.DefaultRolloverPreparationThreshold">
             <summary>
             Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.RolloverPreparationThreshold"/> property.
@@ -2703,11 +2698,6 @@
             Gets or sets the size (in KB) of the <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>s.
             </summary>
             <exception cref="T:System.ArgumentException">The value being assigned is not positive.</exception>
-        </member>
-        <member name="P:TVA.Historian.Files.ArchiveFile.RolloverOnFull">
-            <summary>
-            Gets or sets a boolean value that indicates whether the current <see cref="T:TVA.Historian.Files.ArchiveFile"/> will rollover to a new <see cref="T:TVA.Historian.Files.ArchiveFile"/> when full.
-            </summary>
         </member>
         <member name="P:TVA.Historian.Files.ArchiveFile.RolloverPreparationThreshold">
             <summary>
