@@ -25,6 +25,8 @@
 //       different settings by persisting the settings in the config file under unique categories.
 //  11/18/2009 - Pinal C. Patel
 //       Added support for the replication of local historian archive.
+//  12/01/2009 - Pinal C. Patel
+//       Modified Initialize() to load all available metadata providers.
 //
 //*******************************************************************************************************
 
@@ -442,7 +444,7 @@ namespace HistorianAdapters
             m_metadataProviders.AdapterLoaded += MetadataProviders_AdapterLoaded;
             m_metadataProviders.AdapterUnloaded += MetadataProviders_AdapterUnloaded;
             m_metadataProviders.AdapterLoadException += AdapterLoader_AdapterLoadException;
-            m_metadataProviders.Initialize(new Type[] { typeof(AdoMetadataProvider) });
+            m_metadataProviders.Initialize();
 
             // Provide archive replication support.
             m_replicationProviders = new ReplicationProviders();
