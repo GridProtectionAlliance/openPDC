@@ -7074,7 +7074,7 @@
             <![CDATA[
             <?xml version="1.0"?>
             <TimeSeriesDataPoint xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-              HistorianID="1" Time="21-Aug-2009 14:21:23.236" Value="60.0419579" Quality="Good" />
+              HistorianID="1" Time="2009-08-21 14:21:23.236" Value="60.0419579" Quality="Good" />
             ]]>
             </code>
             This is the output for <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesDataPoint"/> serialized using <see cref="T:System.Runtime.Serialization.DataContractSerializer"/>:
@@ -7082,7 +7082,7 @@
             <![CDATA[
             <TimeSeriesDataPoint xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
               <HistorianID>1</HistorianID>
-              <Time>21-Aug-2009 14:21:54.612</Time>
+              <Time>2009-08-21 14:21:54.612</Time>
               <Value>60.025547</Value>
               <Quality>Good</Quality>
             </TimeSeriesDataPoint>
@@ -7092,7 +7092,7 @@
             <code>
             {
               "HistorianID":1,
-              "Time":"21-Aug-2009 14:22:26.971",
+              "Time":"2009-08-21 14:22:26.971",
               "Value":59.9974136,
               "Quality":29
             }
