@@ -565,7 +565,7 @@ namespace TVA.PhasorProtocols
             else
                 m_accessID = 1;
 
-            if (settings.TryGetValue("timeZone", out setting))
+            if (settings.TryGetValue("timeZone", out setting) && !String.IsNullOrEmpty(setting))
                 m_timezone = TimeZoneInfo.FindSystemTimeZoneById(setting);
             else
                 m_timezone = TimeZoneInfo.Utc;
