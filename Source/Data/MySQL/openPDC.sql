@@ -416,8 +416,8 @@ ORDER BY OutputStreamMeasurement.HistorianID, OutputStreamMeasurement.PointID;
 CREATE VIEW RuntimeHistorian
 AS
 SELECT Historian.NodeID, Runtime.ID, Historian.Acronym AS AdapterName,
- COALESCE(Historian.AssemblyName, N'HistorianAdapters.dll') AS AssemblyName, 
- COALESCE(Historian.TypeName, IF(IsLocal = 1, N'HistorianAdapters.LocalOutputAdapter', N'HistorianAdapters.RemoteOutputAdapter')) AS TypeName, 
+ COALESCE(TRIM(Historian.AssemblyName), N'HistorianAdapters.dll') AS AssemblyName, 
+ COALESCE(TRIM(Historian.TypeName), IF(IsLocal = 1, N'HistorianAdapters.LocalOutputAdapter', N'HistorianAdapters.RemoteOutputAdapter')) AS TypeName, 
  CONCAT_WS(';', Historian.ConnectionString, CONCAT(N'instanceName=', Historian.Acronym)) AS ConnectionString
 FROM Historian LEFT OUTER JOIN
  Runtime ON Historian.ID = Runtime.SourceID AND Runtime.SourceTable = N'Historian'
@@ -443,7 +443,7 @@ ORDER BY Device.LoadOrder;
 CREATE VIEW RuntimeCustomOutputAdapter
 AS
 SELECT CustomOutputAdapter.NodeID, Runtime.ID, CustomOutputAdapter.AdapterName, 
- CustomOutputAdapter.AssemblyName, CustomOutputAdapter.TypeName, CustomOutputAdapter.ConnectionString
+ TRIM(CustomOutputAdapter.AssemblyName) AS AssemblyName, TRIM(CustomOutputAdapter.TypeName) AS TypeName, CustomOutputAdapter.ConnectionString
 FROM CustomOutputAdapter LEFT OUTER JOIN
  Runtime ON CustomOutputAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = N'CustomOutputAdapter'
 WHERE (CustomOutputAdapter.Enabled <> 0)
@@ -461,7 +461,7 @@ ORDER BY Device.LoadOrder;
 CREATE VIEW RuntimeCustomInputAdapter
 AS
 SELECT CustomInputAdapter.NodeID, Runtime.ID, CustomInputAdapter.AdapterName, 
- CustomInputAdapter.AssemblyName, CustomInputAdapter.TypeName, CustomInputAdapter.ConnectionString
+ TRIM(CustomInputAdapter.AssemblyName) AS AssemblyName, TRIM(CustomInputAdapter.TypeName) AS TypeName, CustomInputAdapter.ConnectionString
 FROM CustomInputAdapter LEFT OUTER JOIN
  Runtime ON CustomInputAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = N'CustomInputAdapter'
 WHERE (CustomInputAdapter.Enabled <> 0)
@@ -501,7 +501,7 @@ ORDER BY OutputStream.LoadOrder;
 CREATE VIEW RuntimeCustomActionAdapter
 AS
 SELECT CustomActionAdapter.NodeID, Runtime.ID, CustomActionAdapter.AdapterName, 
- CustomActionAdapter.AssemblyName, CustomActionAdapter.TypeName, CustomActionAdapter.ConnectionString
+ TRIM(CustomActionAdapter.AssemblyName) AS AssemblyName, TRIM(CustomActionAdapter.TypeName) AS TypeName, CustomActionAdapter.ConnectionString
 FROM CustomActionAdapter LEFT OUTER JOIN
  Runtime ON CustomActionAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = N'CustomActionAdapter'
 WHERE (CustomActionAdapter.Enabled <> 0)
@@ -510,7 +510,7 @@ ORDER BY CustomActionAdapter.LoadOrder;
 CREATE VIEW RuntimeCalculatedMeasurement
 AS
 SELECT CalculatedMeasurement.NodeID, Runtime.ID, CalculatedMeasurement.Acronym AS AdapterName, 
- CalculatedMeasurement.AssemblyName, CalculatedMeasurement.TypeName,
+ TRIM(CalculatedMeasurement.AssemblyName) AS AssemblyName, TRIM(CalculatedMeasurement.TypeName) AS TypeName,
  CONCAT_WS(';', IF(ConfigSection IS NULL, N'', CONCAT(N'configurationSection=', ConfigSection)),
  CONCAT(N'minimumMeasurementsToUse=', CAST(CalculatedMeasurement.MinimumMeasurementsToUse AS CHAR)),
  CONCAT(N'framesPerSecond=', CAST(CalculatedMeasurement.FramesPerSecond AS CHAR)),
