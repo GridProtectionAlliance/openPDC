@@ -144,6 +144,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVA", "TVA", "{4CA4A21E-97E
 		Dependencies\TVA\TVA.Core.dll = Dependencies\TVA\TVA.Core.dll
 		Dependencies\TVA\TVA.Core.xml = Dependencies\TVA\TVA.Core.xml
 		Dependencies\TVA\TVA.Historian.dll = Dependencies\TVA\TVA.Historian.dll
+		Dependencies\TVA\TVA.Historian.XML = Dependencies\TVA\TVA.Historian.XML
 		Dependencies\TVA\TVA.Services.dll = Dependencies\TVA\TVA.Services.dll
 		Dependencies\TVA\TVA.Services.XML = Dependencies\TVA\TVA.Services.XML
 		Dependencies\TVA\TVA.Web.dll = Dependencies\TVA\TVA.Web.dll
