@@ -232,6 +232,12 @@
 using System;
 using System.Linq;
 using System.Xml.Linq;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using System.Windows;
+using System.ServiceModel;
+using System.Windows.Browser;
+using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
+using System.ServiceModel.Channels;
 
 namespace openPDCManager.Silverlight.Utilities
 {
@@ -248,6 +254,47 @@ namespace openPDCManager.Silverlight.Utilities
 							  SystemMessage = element.Element("SystemMessage").Value
 						  };
 			return message.ToList()[0] as Message;
+		}
+
+		public static PhasorDataServiceClient GetPhasorDataServiceProxyClient()
+		{
+			string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
+			EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
+			BasicHttpBinding binding;
+			if (HtmlPage.Document.DocumentUri.Scheme.ToLower().StartsWith("https"))
+				binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
+			else
+				binding = new BasicHttpBinding();
+
+			binding.MaxReceivedMessageSize = 65536 * 30;
+			return new PhasorDataServiceClient(binding, address);
+		}
+
+		public static DuplexServiceClient GetDuplexServiceClient()
+		{
+			string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
+			EndpointAddress address = new EndpointAddress(baseServiceUrl + "DuplexService/PhasorDataDuplexService.svc");
+			CustomBinding binding;new CustomBinding(
+									new PollingDuplexBindingElement(),
+									new BinaryMessageEncodingBindingElement(),
+									new HttpTransportBindingElement()									
+									);
+			
+			if (HtmlPage.Document.DocumentUri.Scheme.ToLower().StartsWith("https"))
+				binding = new CustomBinding(
+									new PollingDuplexBindingElement(),
+									new BinaryMessageEncodingBindingElement(),
+									new HttpsTransportBindingElement()
+									);
+			else
+				binding = new CustomBinding(
+									new PollingDuplexBindingElement(),
+									new BinaryMessageEncodingBindingElement(),
+									new HttpTransportBindingElement()
+									);
+
+			//binding.MaxReceivedMessageSize = 65536 * 10;
+			return new DuplexServiceClient(binding, address);
 		}
 	}
 }

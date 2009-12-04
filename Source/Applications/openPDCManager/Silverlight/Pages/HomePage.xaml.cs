@@ -239,20 +239,16 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
+using openPDCManager.Silverlight.ModalDialogs;
 
 namespace openPDCManager.Silverlight.Pages
 {
     public partial class HomePage : Page
     {
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "DuplexService/PhasorDataDuplexService.svc");
-		CustomBinding binding = new CustomBinding(
-									new PollingDuplexBindingElement(),
-									new BinaryMessageEncodingBindingElement(),
-									new HttpTransportBindingElement());
-
 		DuplexServiceClient duplexClient;
 		bool connected = false;
+		ActivityWindow activityWindow;
 
 		//ObservableCollection<PmuDistribution> pmuDistributionList = new ObservableCollection<PmuDistribution>();
 		ObservableCollection<InterconnectionStatus> interconnectionStatusList = new ObservableCollection<InterconnectionStatus>();
@@ -260,7 +256,7 @@ namespace openPDCManager.Silverlight.Pages
 
         public HomePage()
         {
-			duplexClient = new DuplexServiceClient(binding, address);
+			duplexClient = Common.GetDuplexServiceClient();
 			duplexClient.SendToServiceCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(duplexClient_SendToServiceCompleted);
 			duplexClient.SendToClientReceived += new EventHandler<SendToClientReceivedEventArgs>(duplexClient_SendToClientReceived);
 			duplexClient.SendToServiceAsync(new ConnectMessage());
@@ -269,6 +265,8 @@ namespace openPDCManager.Silverlight.Pages
 
 			ButtonShowMessage.Click += new RoutedEventHandler(ButtonShowMessage_Click);
 			ButtonShowMessage.Visibility = Visibility.Collapsed;
+			activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+			activityWindow.Show();
         }
 
 		void ButtonShowMessage_Click(object sender, RoutedEventArgs e)
@@ -294,6 +292,8 @@ namespace openPDCManager.Silverlight.Pages
 		        ChartDeviceDistribution.DataContext = deviceDistributionList;
 		        ItemControlInterconnectionStatus.ItemsSource = interconnectionStatusList;                
 		    }
+			if (activityWindow != null)
+				activityWindow.Close();
 		}
 		//// Executes just before a page is no longer the active page in a frame.
 		protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)

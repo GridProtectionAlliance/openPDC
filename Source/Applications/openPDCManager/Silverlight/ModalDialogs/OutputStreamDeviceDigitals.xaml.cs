@@ -241,13 +241,10 @@ namespace openPDCManager.Silverlight.ModalDialogs
 	public partial class OutputStreamDeviceDigitals : ChildWindow
 	{
 		int sourceOutputStreamDeviceID;
-		string sourceOutputStreamDeviceAcronym;
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
-		PhasorDataServiceClient client;
-
+		string sourceOutputStreamDeviceAcronym;				
 		bool inEditMode = false;
 		int outputStreamDeviceDigitalID = 0;
+		PhasorDataServiceClient client;
 
 		public OutputStreamDeviceDigitals(int outputStreamDeviceID, string outputStreamDeviceAcronym)
 		{
@@ -258,7 +255,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			Loaded += new RoutedEventHandler(OutputStreamDeviceDigitals_Loaded);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetOutputStreamDeviceDigitalListCompleted += new EventHandler<GetOutputStreamDeviceDigitalListCompletedEventArgs>(client_GetOutputStreamDeviceDigitalListCompleted);
 			client.SaveOutputStreamDeviceDigitalCompleted += new EventHandler<SaveOutputStreamDeviceDigitalCompletedEventArgs>(client_SaveOutputStreamDeviceDigitalCompleted);
 			ListBoxOutputStreamDeviceDigitalList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDeviceDigitalList_SelectionChanged);

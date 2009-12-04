@@ -243,17 +243,14 @@ namespace openPDCManager.Silverlight.Pages.Manage
 {
 	public partial class Nodes : Page
 	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
 		PhasorDataServiceClient client;
-
 		bool inEditMode = false;
 		string nodeID = string.Empty;
 
 		public Nodes()
 		{
 			InitializeComponent();
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetNodeListCompleted += new EventHandler<GetNodeListCompletedEventArgs>(client_GetNodeListCompleted);
 			client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);
 			client.SaveNodeCompleted += new EventHandler<SaveNodeCompletedEventArgs>(client_SaveNodeCompleted);

@@ -246,7 +246,7 @@ namespace PCS.Services.DuplexService
 				
 		public LivePhasorDataService()
 		{
-		    liveDataTimer = new Timer(new TimerCallback(LivePhasorDataUpdate), null, 0, 10000);            
+		    liveDataTimer = new Timer(new TimerCallback(LivePhasorDataUpdate), null, 0, 600000);            
 		}
 
 		void LivePhasorDataUpdate(object obj)

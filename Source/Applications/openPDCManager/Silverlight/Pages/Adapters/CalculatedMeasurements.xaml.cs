@@ -243,10 +243,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 {
 	public partial class CalculatedMeasurements : Page
 	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
 		PhasorDataServiceClient client;
-
 		bool inEditMode = false;
 		int calculatedMeasurementID = 0;
 		string nodeID;
@@ -254,7 +251,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		public CalculatedMeasurements()
 		{
 			InitializeComponent();
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);			
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetCalculatedMeasurementListCompleted += new EventHandler<GetCalculatedMeasurementListCompletedEventArgs>(client_GetCalculatedMeasurementListCompleted);
 			client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
 			client.SaveCalculatedMeasurementCompleted += new EventHandler<SaveCalculatedMeasurementCompletedEventArgs>(client_SaveCalculatedMeasurementCompleted);

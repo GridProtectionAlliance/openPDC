@@ -243,19 +243,18 @@ using System.Windows.Shapes;
 using System.Windows.Navigation;
 using System.ServiceModel;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
 
 namespace openPDCManager.Silverlight.Pages.Adapters
 {
 	public partial class IaonTree : Page
 	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
 		PhasorDataServiceClient client;
 
 		public IaonTree()
 		{
 			InitializeComponent();
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetIaonTreeDataCompleted += new EventHandler<GetIaonTreeDataCompletedEventArgs>(client_GetIaonTreeDataCompleted);
 			Loaded += new RoutedEventHandler(IaonTree_Loaded);			
 		}

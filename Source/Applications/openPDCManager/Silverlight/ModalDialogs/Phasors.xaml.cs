@@ -243,12 +243,9 @@ namespace openPDCManager.Silverlight.ModalDialogs
 	{
 		int sourceDeviceID;
 		string sourceDeviceAcronym;
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
-		PhasorDataServiceClient client;
-
 		bool inEditMode = false;
 		int phasorID = 0;
+		PhasorDataServiceClient client;
 
 		public Phasors(int deviceID, string deviceAcronym)
 		{
@@ -259,7 +256,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			Loaded += new RoutedEventHandler(Phasors_Loaded);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetPhasorListCompleted += new EventHandler<GetPhasorListCompletedEventArgs>(client_GetPhasorListCompleted);
 			client.GetPhasorsCompleted += new EventHandler<GetPhasorsCompletedEventArgs>(client_GetPhasorsCompleted);
 			client.SavePhasorCompleted += new EventHandler<SavePhasorCompletedEventArgs>(client_SavePhasorCompleted);

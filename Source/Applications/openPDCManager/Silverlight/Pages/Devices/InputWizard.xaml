@@ -194,24 +194,7 @@
                                     </ScrollViewer>
                                 </StackPanel>
                             </layoutToolkit:AccordionItem.Content>
-                        </layoutToolkit:AccordionItem>
-                        <!--<layoutToolkit:AccordionItem Header="Step 4: Manage Phasors Information">
-                            <layoutToolkit:AccordionItem.Content>
-                                <Grid Width="{StaticResource LayoutColumnWidth}" Height="{StaticResource XXXLargeItemSize}" HorizontalAlignment="Center">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="2*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-
-                                </Grid>
-                            </layoutToolkit:AccordionItem.Content>
-                        </layoutToolkit:AccordionItem>-->                        
+                        </layoutToolkit:AccordionItem>                                                
                     </layoutToolkit:Accordion>                    
                 </Border>
                 <Border Style="{StaticResource HeaderRowBorderStyle}">

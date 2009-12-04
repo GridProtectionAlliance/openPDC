@@ -238,23 +238,20 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.ModalDialogs;
+using openPDCManager.Silverlight.Utilities;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class Browse : Page
-	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
-		BasicHttpBinding binding = new BasicHttpBinding();
+	{		
 		PhasorDataServiceClient client;
-
 		ObservableCollection<Device> deviceList = new ObservableCollection<Device>();
+		ActivityWindow activityWindow;
 		
 		public Browse()
 		{
 			InitializeComponent();
-			binding.MaxReceivedMessageSize = 65536 * 10;
-			client = new PhasorDataServiceClient(binding, address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetDeviceListCompleted += new EventHandler<GetDeviceListCompletedEventArgs>(client_GetDeviceListCompleted);
 			Loaded += new RoutedEventHandler(Browse_Loaded);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
@@ -274,6 +271,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void Browse_Loaded(object sender, RoutedEventArgs e)
 		{
+			activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+			activityWindow.Show();
 			App app = (App)Application.Current;
 			string nodeID = app.NodeValue;
 			client.GetDeviceListAsync(nodeID);	
@@ -285,6 +284,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				deviceList = e.Result;
 				ListBoxDeviceList.ItemsSource = deviceList;
 			}
+			if (activityWindow != null)
+				activityWindow.Close();
 		}
 
 		// Executes when the user navigates to this page.

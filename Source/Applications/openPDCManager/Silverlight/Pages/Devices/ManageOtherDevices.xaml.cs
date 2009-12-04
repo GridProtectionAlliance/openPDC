@@ -243,17 +243,14 @@ namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class ManageOtherDevices : Page
 	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
 		PhasorDataServiceClient client;
-
 		bool inEditMode = false;
 		int deviceID = 0;
 
 		public ManageOtherDevices()
 		{
 			InitializeComponent();
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			Loaded += new RoutedEventHandler(ManageOtherDevices_Loaded);
 			client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);
 			client.GetVendorDevicesCompleted += new EventHandler<GetVendorDevicesCompletedEventArgs>(client_GetVendorDevicesCompleted);

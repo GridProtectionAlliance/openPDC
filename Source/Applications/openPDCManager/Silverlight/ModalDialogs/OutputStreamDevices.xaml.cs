@@ -243,13 +243,10 @@ namespace openPDCManager.Silverlight.ModalDialogs
 	{
 		int sourceOutputStreamID;
 		string sourceOutputStreamAcronym;
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
-		PhasorDataServiceClient client;
-
 		bool inEditMode = false;
 		int outputStreamDeviceID = 0;
 		OutputStreamDevice selectedOutputStreamDevice;
+		PhasorDataServiceClient client;
 
 		public OutputStreamDevices(int outputStreamID, string outputStreamAcronym)
 		{
@@ -258,7 +255,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			sourceOutputStreamAcronym = outputStreamAcronym;
 			this.Title = "Manage Devices For Output Stream: " + sourceOutputStreamAcronym;
 			Loaded += new RoutedEventHandler(OutputStreamDevices_Loaded);
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetOutputStreamDeviceListCompleted += new EventHandler<GetOutputStreamDeviceListCompletedEventArgs>(client_GetOutputStreamDeviceListCompleted);
 			client.SaveOutputStreamDeviceCompleted += new EventHandler<SaveOutputStreamDeviceCompletedEventArgs>(client_SaveOutputStreamDeviceCompleted);
 			client.DeleteOutputStreamDeviceCompleted += new EventHandler<DeleteOutputStreamDeviceCompletedEventArgs>(client_DeleteOutputStreamDeviceCompleted);

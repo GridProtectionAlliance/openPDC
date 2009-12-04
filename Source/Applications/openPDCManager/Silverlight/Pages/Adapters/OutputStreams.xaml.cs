@@ -244,18 +244,14 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 {
 	public partial class OutputStreams : Page
 	{
-
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
 		PhasorDataServiceClient client;
-
 		bool inEditMode = false;
 		int outputStreamID = 0;		
 
 		public OutputStreams()
 		{
 			InitializeComponent();
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
 			client.GetOutputStreamListCompleted += new EventHandler<GetOutputStreamListCompletedEventArgs>(client_GetOutputStreamListCompleted);
 			client.SaveOutputStreamCompleted += new EventHandler<SaveOutputStreamCompletedEventArgs>(client_SaveOutputStreamCompleted);

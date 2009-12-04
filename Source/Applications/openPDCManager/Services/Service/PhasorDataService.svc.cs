@@ -575,18 +575,22 @@ namespace PCS.Services.Service
 		{
 			return CommonFunctions.GetConnectionSettings(inputStream);
 		}
+		
 		public List<WizardDeviceInfo> GetWizardConfigurationInfo(Stream inputStream)
 		{
 			return CommonFunctions.GetWizardConfigurationInfo(inputStream);
 		}
+		
 		public string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID)
 		{
 			return CommonFunctions.SaveWizardConfigurationInfo(nodeID, wizardDeviceInfoList, connectionString, protocolID, companyID, historianID, interconnectionID, parentID);
 		}
+		
 		public string GetExecutingAssemblyPath()
 		{
 			return CommonFunctions.GetExecutingAssemblyPath();
 		}
+		
 		public string SaveIniFile(Stream input)
 		{
 			return CommonFunctions.SaveIniFile(input);

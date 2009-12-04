@@ -246,12 +246,8 @@ using openPDCManager.Silverlight.ModalDialogs;
 namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class InputWizard : Page
-	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
-		BasicHttpBinding binding = new BasicHttpBinding();
+	{		
 		PhasorDataServiceClient client;
-
 		Stream configFileData, connectionFileData, iniFileData;
 		ConnectionSettings connectionSettings;
 		ObservableCollection<WizardDeviceInfo> wizardDeviceInfoList;
@@ -263,9 +259,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		public InputWizard()
 		{
 			InitializeComponent();
-			//Services Events
-			binding.MaxReceivedMessageSize = 65536 * 10;			
-			client = new PhasorDataServiceClient(binding, address);
+			//Services Events			
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetProtocolsCompleted += new EventHandler<GetProtocolsCompletedEventArgs>(client_GetProtocolsCompleted);
 			client.GetVendorDevicesCompleted += new EventHandler<GetVendorDevicesCompletedEventArgs>(client_GetVendorDevicesCompleted);
 			client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);

@@ -102,6 +102,9 @@
     <Compile Include="MasterLayoutControl.xaml.cs">
       <DependentUpon>MasterLayoutControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ModalDialogs\ActivityWindow.xaml.cs">
+      <DependentUpon>ActivityWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ModalDialogs\OutputStreamDeviceAnalogs.xaml.cs">
       <DependentUpon>OutputStreamDeviceAnalogs.xaml</DependentUpon>
     </Compile>
@@ -218,6 +221,10 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </ApplicationDefinition>
     <Page Include="MasterLayoutControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="ModalDialogs\ActivityWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>

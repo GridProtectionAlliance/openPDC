@@ -238,14 +238,12 @@ using System.Collections.ObjectModel;
 using System;
 using System.Linq;
 using Microsoft.VirtualEarth.MapControl;
+using openPDCManager.Silverlight.Utilities;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class ActiveMap : Page
-	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
-		BasicHttpBinding binding = new BasicHttpBinding();
+	{	
 		PhasorDataServiceClient client;
 		Button pushPinButton;		
 		ToolTip toolTip;		
@@ -254,8 +252,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		public ActiveMap()
 		{
 			InitializeComponent();
-			binding.MaxReceivedMessageSize = 65536 * 10;
-			client = new PhasorDataServiceClient(binding, address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			Loaded += new RoutedEventHandler(ActiveMap_Loaded);
 			client.GetMapDataCompleted += new EventHandler<GetMapDataCompletedEventArgs>(client_GetMapDataCompleted);		
 		}

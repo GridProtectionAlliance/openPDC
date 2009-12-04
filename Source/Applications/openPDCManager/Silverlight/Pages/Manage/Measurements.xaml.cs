@@ -238,24 +238,24 @@ using System.Windows.Navigation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
 using openPDCManager.Silverlight.ModalDialogs;
+using openPDCManager.Silverlight.UserControls;
+using System.Windows.Controls.Primitives;
 
 namespace openPDCManager.Silverlight.Pages.Manage
 {
 	public partial class Measurements : Page
 	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
 		PhasorDataServiceClient client;
-
 		bool inEditMode = false;
 		string signalID = string.Empty;
 		int deviceID = 0;
-
+		ActivityWindow activityWindow;
+		
 		public Measurements()
 		{
 			InitializeComponent();
 			Loaded += new RoutedEventHandler(Measurements_Loaded);
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetHistoriansCompleted += new EventHandler<GetHistoriansCompletedEventArgs>(client_GetHistoriansCompleted);
 			client.GetDevicesCompleted += new EventHandler<GetDevicesCompletedEventArgs>(client_GetDevicesCompleted);
 			client.GetSignalTypesCompleted += new EventHandler<GetSignalTypesCompletedEventArgs>(client_GetSignalTypesCompleted);
@@ -284,14 +284,18 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			if (e.Error == null)
 				ListBoxMeasurementList.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+				MessageBox.Show(e.Error.Message);			
+			if (activityWindow != null)
+				activityWindow.Close();	
 		}
 		void client_GetMeasurementListCompleted(object sender, GetMeasurementListCompletedEventArgs e)
 		{
 			if (e.Error == null)
 				ListBoxMeasurementList.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+				MessageBox.Show(e.Error.Message);			
+			if (activityWindow != null)
+				activityWindow.Close();			
 		}
 		void client_SaveMeasurementCompleted(object sender, SaveMeasurementCompletedEventArgs e)
 		{
@@ -374,6 +378,9 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 		void Measurements_Loaded(object sender, RoutedEventArgs e)
 		{
+			activityWindow = new ActivityWindow("Loading Data... Please Wait...");			
+			activityWindow.Show();
+
 			client.GetHistoriansAsync(true, true);
 			client.GetDevicesAsync(DeviceType.NonConcentrator, true);
 			client.GetSignalTypesAsync(false);

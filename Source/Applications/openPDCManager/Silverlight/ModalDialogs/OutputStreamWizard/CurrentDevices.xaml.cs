@@ -243,10 +243,7 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 	{
 		int sourceOutputStreamID;
 		string sourceOutputStreamAcronym;		
-		ObservableCollection<string> devicesToBeDeleted;
-
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
+		ObservableCollection<string> devicesToBeDeleted;		
 		PhasorDataServiceClient client;
 
 		public CurrentDevices(int outputStreamID, string outputStreamAcronym)
@@ -256,7 +253,7 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			sourceOutputStreamID = outputStreamID;
 			this.Title = "Current Devices For Output Stream: " + sourceOutputStreamAcronym;
 			Loaded += new RoutedEventHandler(CurrentDevices_Loaded);
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetOutputStreamDeviceListCompleted += new EventHandler<GetOutputStreamDeviceListCompletedEventArgs>(client_GetOutputStreamDeviceListCompleted);
 			client.DeleteOutputStreamDeviceCompleted += new EventHandler<DeleteOutputStreamDeviceCompletedEventArgs>(client_DeleteOutputStreamDeviceCompleted);
 			ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);

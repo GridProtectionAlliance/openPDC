@@ -245,11 +245,7 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 		int sourceOutputStreamID;
 		string sourceOutputStreamAcronym;
 		Dictionary<int, string> devicesToBeAdded;
-
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
 		PhasorDataServiceClient client;
-
 		Dictionary<int, string> deviceList;
 
 		public AddDevices(int outputStreamID, string outputStreamAcronym)
@@ -262,7 +258,7 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
 			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client = Common.GetPhasorDataServiceProxyClient();	
 			client.GetDevicesForOutputStreamCompleted += new EventHandler<GetDevicesForOutputStreamCompletedEventArgs>(client_GetDevicesForOutputStreamCompleted);
 			client.AddDevicesCompleted += new EventHandler<AddDevicesCompletedEventArgs>(client_AddDevicesCompleted);
 		}

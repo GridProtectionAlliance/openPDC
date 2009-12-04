@@ -256,7 +256,7 @@
                 <Setter Property="FontSize" Value="{StaticResource LargerTextSize}"/>
                 <Setter Property="Foreground" Value="#FFFFFFFF"/>
                 <Setter Property="Effect" Value="{StaticResource TextBlockDarkShadowEffect}"/>
-            </Style>            
+            </Style>              
             <Style x:Key="XamWebMenuStyle" TargetType="igMenu:XamWebMenu">
                 <Setter Property="Background" Value="{x:Null}"/>
                 <Setter Property="Foreground" Value="#FFFFFFFF"/>

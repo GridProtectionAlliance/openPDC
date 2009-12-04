@@ -243,10 +243,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 {
 	public partial class Historians : Page
 	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
 		PhasorDataServiceClient client;
-
 		bool inEditMode;
 		int historianID;
 		string nodeID;
@@ -254,7 +251,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		public Historians()
 		{
 			InitializeComponent();
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetHistorianListCompleted +=new EventHandler<GetHistorianListCompletedEventArgs>(client_GetHistorianListCompleted);
 			client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
 			client.SaveHistorianCompleted += new EventHandler<SaveHistorianCompletedEventArgs>(client_SaveHistorianCompleted);

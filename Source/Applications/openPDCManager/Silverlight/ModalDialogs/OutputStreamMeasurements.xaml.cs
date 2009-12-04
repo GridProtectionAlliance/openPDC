@@ -242,13 +242,10 @@ namespace openPDCManager.Silverlight.ModalDialogs
 	public partial class OutputStreamMeasurements : ChildWindow
 	{
 		int sourceOutputStreamID;
-		string sourceOutputStreamAcronym;
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
-		PhasorDataServiceClient client;
-
+		string sourceOutputStreamAcronym;		
 		bool inEditMode = false;
 		int outputStreamMeasurementID = 0;
+		PhasorDataServiceClient client;
 
 		public OutputStreamMeasurements(int outputStreamID, string outputStreamAcronym)
 		{
@@ -261,7 +258,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSourceMeasurement.Click += new RoutedEventHandler(ButtonSourceMeasurement_Click);
 			ListBoxOutputStreamMeasurementList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamMeasurementList_SelectionChanged);
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetOutputStreamMeasurementListCompleted += new EventHandler<GetOutputStreamMeasurementListCompletedEventArgs>(client_GetOutputStreamMeasurementListCompleted);
 			client.SaveOutputStreamMeasurementCompleted += new EventHandler<SaveOutputStreamMeasurementCompletedEventArgs>(client_SaveOutputStreamMeasurementCompleted);		
 		}

@@ -237,23 +237,19 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class OtherDevices : Page
 	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
-		BasicHttpBinding binding = new BasicHttpBinding();
 		PhasorDataServiceClient client;
-
 		ObservableCollection<OtherDevice> otherDeviceList = new ObservableCollection<OtherDevice>();
 		
 		public OtherDevices()
 		{
 			InitializeComponent();
-			binding.MaxReceivedMessageSize = 65536 * 10;
-			client = new PhasorDataServiceClient(binding, address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetOtherDeviceListCompleted += new EventHandler<GetOtherDeviceListCompletedEventArgs>(client_GetOtherDeviceListCompleted);
 			Loaded += new RoutedEventHandler(OtherDevices_Loaded);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);

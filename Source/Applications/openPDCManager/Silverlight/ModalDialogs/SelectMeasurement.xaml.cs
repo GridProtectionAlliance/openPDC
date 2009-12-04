@@ -237,6 +237,7 @@ using System.Windows;
 using System.Windows.Controls;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using System.Collections.Generic;
+using openPDCManager.Silverlight.Utilities;
 
 namespace openPDCManager.Silverlight.ModalDialogs
 {
@@ -244,10 +245,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 	{
 		int sourceOutputStreamID;
 		string sourceOutputStreamAcronym;
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
 		PhasorDataServiceClient client;
-
 		ObservableCollection<Measurement> measurementList;		
 		List<string[]> measurementsToBeAdded;
 
@@ -261,7 +259,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
 			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);			
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetMeasurementsForOutputStreamCompleted += new EventHandler<GetMeasurementsForOutputStreamCompletedEventArgs>(client_GetMeasurementsForOutputStreamCompleted);
 		}
 

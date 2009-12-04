@@ -492,6 +492,7 @@ namespace openPDCManager.Web.Data
 			command.CommandText = "Select Master From Node Where ID = @id";
 			command.Parameters.Add(AddWithValue(command, "@id", nodeID));
 			isMaster = Convert.ToBoolean(command.ExecuteScalar());
+			connection.Dispose();
 			return isMaster;
 		}
 
@@ -524,6 +525,7 @@ namespace openPDCManager.Web.Data
 			{
 				deviceDistribution.Add(row["VendorName"].ToString(), Convert.ToInt32(row["DeviceCount"]));
 			}
+			connection.Dispose();
 			return deviceDistribution;
 		}
 
@@ -560,7 +562,7 @@ namespace openPDCManager.Web.Data
 																  TotalDevices = Convert.ToInt32(cs.Field<object>("DeviceCount"))
 															  }).ToList()
 										 }).ToList();
-
+			connection.Dispose();
 		    return interConnectionStatusList;
 		}
 			
@@ -1214,7 +1216,6 @@ namespace openPDCManager.Web.Data
 												LoadOrder = item.Field<int>("LoadOrder")
 											}).ToList();
 			connection.Dispose();
-
 			return outputStreamDeviceDigitalList;
 		}
 
@@ -2447,6 +2448,7 @@ namespace openPDCManager.Web.Data
 			command.CommandText = "Select * From SignalType Where Source = 'PMU' AND Suffix IN ('FQ', 'DF', 'SF')";
 			DataTable resultTable = new DataTable();
 			resultTable.Load(command.ExecuteReader());
+			connection.Dispose();
 			return resultTable;
 		}
 
@@ -2461,6 +2463,7 @@ namespace openPDCManager.Web.Data
 				command.CommandText = "Select * From SignalType Where Source = 'Phasor' AND Acronym LIKE 'I%'";
 			DataTable resultTable = new DataTable();
 			resultTable.Load(command.ExecuteReader());
+			connection.Dispose();
 			return resultTable;
 		}
 

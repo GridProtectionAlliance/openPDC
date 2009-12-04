@@ -242,17 +242,14 @@ namespace openPDCManager.Silverlight.Pages.Manage
 {
 	public partial class Companies : Page
 	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
 		PhasorDataServiceClient client;
-
 		bool inEditMode = false;
 		int companyID = 0;
 
 		public Companies()
 		{
 			InitializeComponent();
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetCompanyListCompleted += new EventHandler<GetCompanyListCompletedEventArgs>(client_GetCompanyListCompleted);
 			client.SaveCompanyCompleted += new EventHandler<SaveCompanyCompletedEventArgs>(client_SaveCompanyCompleted);
 			Loaded += new RoutedEventHandler(Companies_Loaded);

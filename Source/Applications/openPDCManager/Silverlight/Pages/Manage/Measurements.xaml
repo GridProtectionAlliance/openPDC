@@ -4,7 +4,7 @@
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            mc:Ignorable="d"
-           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"           
+           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"              
            Title="Manage Measurements">
     <Grid x:Name="GridManageMeasurements">
         <Border Style="{StaticResource PortletBorderStyle}">
@@ -80,7 +80,7 @@
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
                     <ScrollViewer BorderThickness="0" Padding="0" Height="510">
-                        <ScrollViewer.Content>
+                        <ScrollViewer.Content>                            
                             <ListBox x:Name="ListBoxMeasurementList" Margin="0" Padding="0">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -89,7 +89,7 @@
                                                 <TextBlock Text="{Binding Path=PointID}" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" Padding="1"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=Historian}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                                <TextBlock Text="{Binding Path=HistorianAcronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <TextBlock Text="{Binding Path=DeviceAcronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
