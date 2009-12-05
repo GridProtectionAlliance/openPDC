@@ -338,12 +338,16 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 				if (deviceToEdit.IsConcentrator)	//then display list of devices.
 				{
-					client.GetDeviceListByParentIDAsync(deviceToEdit.ID);					
+					client.GetDeviceListByParentIDAsync(deviceToEdit.ID);
 					StackPanelDeviceList.Visibility = Visibility.Visible;
+					StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
 					TextBlockTitle.Text = "Devices For Concentrator: " + deviceToEdit.Acronym;
 				}
 				else
+				{
+					StackPanelPhasorsMeassurements.Visibility = Visibility.Visible;
 					StackPanelDeviceList.Visibility = Visibility.Collapsed;
+				}
 			}
 		}
 		void client_SaveDeviceCompleted(object sender, SaveDeviceCompletedEventArgs e)
@@ -473,6 +477,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void AddNew_Loaded(object sender, RoutedEventArgs e)
 		{
+			StackPanelDeviceList.Visibility = Visibility.Collapsed;
+			StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
 			client.GetDevicesAsync(DeviceType.Concentrator, true);
 			client.GetCompaniesAsync(true);
 			client.GetNodesAsync(true, false);
@@ -512,6 +518,20 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
 			NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?did=" + deviceId, UriKind.Relative));
+		}
+
+		private void HyperlinkButtonPhasors_Click(object sender, RoutedEventArgs e)
+		{
+			int deviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());			
+			string acronym = ToolTipService.GetToolTip((HyperlinkButton)sender).ToString();			 
+			Phasors phasors = new Phasors(deviceId, acronym);
+			phasors.Show();
+		}
+
+		private void HyperlinkButtonMeasurements_Click(object sender, RoutedEventArgs e)
+		{
+			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
+			NavigationService.Navigate(new Uri("/Pages/Manage/Measurements.xaml?did=" + deviceId, UriKind.Relative));
 		}
 
 	}

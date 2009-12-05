@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:tns="http://tempuri.org/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="PhasorDataService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="CustomBinding_IPhasorDataService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
   <wsdl:types>
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
@@ -634,570 +642,577 @@
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOtherDeviceResponse" message="tns:IPhasorDataService_SaveOtherDevice_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding name="BasicHttpBinding_IPhasorDataService" type="tns:IPhasorDataService">
-    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+  <wsdl:binding name="CustomBinding_IPhasorDataService" type="tns:IPhasorDataService">
+    <wsp:PolicyReference URI="#CustomBinding_IPhasorDataService_policy" />
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="GetOtherDeviceByDeviceID">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetOtherDeviceByDeviceID" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOtherDeviceByDeviceID" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetInterconnections">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetInterconnections" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetInterconnections" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetProtocols">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetProtocols" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetProtocols" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetSignalTypes">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetSignalTypes" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetSignalTypes" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetCalculatedMeasurementList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetCalculatedMeasurementList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetCalculatedMeasurementList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveCalculatedMeasurement">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveCalculatedMeasurement" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveCalculatedMeasurement" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetAdapterList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetAdapterList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetAdapterList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveAdapter">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveAdapter" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveAdapter" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetIaonTreeData">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetIaonTreeData" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetIaonTreeData" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetOutputStreamList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveOutputStream">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStream" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStream" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetOutputStreamDeviceList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveOutputStreamDevice">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamDevice" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamDevice" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="DeleteOutputStreamDevice">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/DeleteOutputStreamDevice" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/DeleteOutputStreamDevice" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="AddDevices">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/AddDevices" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/AddDevices" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetOutputStreamMeasurementList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamMeasurementList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamMeasurementList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveOutputStreamMeasurement">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamMeasurement" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamMeasurement" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetOutputStreamDevicePhasorList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamDevicePhasorList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamDevicePhasorList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveOutputStreamDevicePhasor">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamDevicePhasor" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamDevicePhasor" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetOutputStreamDeviceAnalogList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceAnalogList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceAnalogList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveOutputStreamDeviceAnalog">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceAnalog" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceAnalog" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetOutputStreamDeviceDigitalList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceDigitalList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceDigitalList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveOutputStreamDeviceDigital">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceDigital" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceDigital" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetTimeZones">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetTimeZones" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetTimeZones" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetMapData">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetMapData" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetMapData" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetConnectionSettings">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetConnectionSettings" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetConnectionSettings" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetWizardConfigurationInfo">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetWizardConfigurationInfo" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetWizardConfigurationInfo" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveWizardConfigurationInfo">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfo" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfo" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetExecutingAssemblyPath">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetExecutingAssemblyPath" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetExecutingAssemblyPath" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveIniFile">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveIniFile" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveIniFile" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetNodeList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetNodeList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetNodeList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetNodes">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetNodes" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetNodes" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveNode">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveNode" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveNode" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetCompanyList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetCompanyList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetCompanyList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetCompanies">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetCompanies" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetCompanies" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveCompany">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveCompany" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveCompany" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetHistorianList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetHistorianList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetHistorianList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveHistorian">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveHistorian" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveHistorian" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetHistorians">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetHistorians" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetHistorians" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetVendorList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetVendorList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetVendorList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetVendors">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetVendors" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetVendors" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveVendor">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveVendor" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveVendor" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetVendorDeviceList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetVendorDeviceList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetVendorDeviceList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveVendorDevice">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveVendorDevice" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveVendorDevice" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetVendorDevices">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetVendorDevices" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetVendorDevices" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetDeviceList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetDeviceListByParentID">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceListByParentID" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceListByParentID" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetDevices">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetDevices" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetDevices" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveDevice">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveDevice" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveDevice" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetDeviceByDeviceID">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceByDeviceID" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceByDeviceID" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetDeviceByAcronym">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceByAcronym" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceByAcronym" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetDevicesForOutputStream">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetDevicesForOutputStream" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetDevicesForOutputStream" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetConcentratorDevice">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetConcentratorDevice" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetConcentratorDevice" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetPhasorList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetPhasorList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetPhasorList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetPhasors">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetPhasors" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetPhasors" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SavePhasor">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SavePhasor" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SavePhasor" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetMeasurementList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetMeasurementList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetMeasurementList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveMeasurement">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveMeasurement" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveMeasurement" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetMeasurementsByDevice">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetMeasurementsByDevice" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetMeasurementsByDevice" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetMeasurementsForOutputStream">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetMeasurementsForOutputStream" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetMeasurementsForOutputStream" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetOtherDeviceList">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/GetOtherDeviceList" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOtherDeviceList" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SaveOtherDevice">
-      <soap:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOtherDevice" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOtherDevice" style="document" />
       <wsdl:input>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="literal" />
+        <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="PhasorDataService">
-    <wsdl:port name="BasicHttpBinding_IPhasorDataService" binding="tns:BasicHttpBinding_IPhasorDataService">
-      <soap:address location="http://localhost:1068/Service/PhasorDataService.svc" />
+    <wsdl:port name="CustomBinding_IPhasorDataService" binding="tns:CustomBinding_IPhasorDataService">
+      <soap12:address location="http://localhost:1068/Service/PhasorDataService.svc" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>http://localhost:1068/Service/PhasorDataService.svc</wsa10:Address>
+        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+          <Dns>localhost</Dns>
+        </Identity>
+      </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

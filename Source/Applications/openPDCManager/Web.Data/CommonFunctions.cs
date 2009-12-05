@@ -2093,10 +2093,12 @@ namespace openPDCManager.Web.Data
 			IDbCommand command = connection.Connection.CreateCommand();
 			command.CommandType = CommandType.Text;
 			if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
-				command.CommandText = "Select * From MeasurementDetail Order By PointTag";
+				command.CommandText = "Select SignalID, HistorianID, PointID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, " +
+					"Adder, Multiplier, Description, Enabled, HistorianAcronym, DeviceAcronym, SignalName, SignalAcronym, SignalTypeSuffix, PhasorLabel From MeasurementDetail Order By PointTag";
 			else
 			{
-				command.CommandText = "Select * From MeasurementDetail Where NodeID = @nodeID Order By PointTag";
+				command.CommandText = "Select SignalID, HistorianID, PointID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, " +
+					"Adder, Multiplier, Description, Enabled, HistorianAcronym, DeviceAcronym, SignalName, SignalAcronym, SignalTypeSuffix, PhasorLabel From MeasurementDetail Where NodeID = @nodeID Order By PointTag";
 				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 			}
 			//DataTable resultTable = new DataTable();
@@ -2754,6 +2756,7 @@ namespace openPDCManager.Web.Data
 				mapDataList = (from item in resultTable.AsEnumerable()
 							   select new MapData()
 							   {
+								   DeviceType = item.Field<string>("DeviceType"),
 								   ID = item.Field<int>("ID"),
 								   Acronym = item.Field<string>("Acronym"),
 								   Name = item.Field<string>("Name"),

@@ -33,7 +33,12 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="3*" />
                         </Grid.ColumnDefinitions>
-                        <!--<TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4" HorizontalAlignment="Right" Text="Click Here to Launch Device Configuration Wizard"/>-->
+                        
+                        <StackPanel x:Name="StackPanelPhasorsMeassurements" Orientation="Horizontal" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Right">                            
+                            <HyperlinkButton Content="Manage Phasors" Tag="{Binding Path=ID}" ToolTipService.ToolTip="{Binding Path=Acronym}" Foreground="#FF095188" FontWeight="Bold" Click="HyperlinkButtonPhasors_Click" />
+                            <TextBlock Text="|" HorizontalAlignment="Center" Margin="10,0,10,0" />
+                            <HyperlinkButton Content="Manage Meassurements" Tag="{Binding Path=ID}" ToolTipService.ToolTip="{Binding Path=Acronym}" Foreground="#FF095188" FontWeight="Bold" Click="HyperlinkButtonMeasurements_Click"/>
+                        </StackPanel>
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Node" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                         <ComboBox x:Name="ComboboxNode" Grid.Row="1" Grid.Column="1" Margin="5" DisplayMemberPath="Value" Width="{StaticResource XLargeItemSize}" HorizontalAlignment="Left"/>                        
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="Concentrator" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
@@ -76,13 +81,12 @@
                         <TextBlock Grid.Row="10" Grid.Column="0" Text="Contact List" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                         <TextBox x:Name="TextBoxContactList" Grid.Row="10" Grid.Column="1" Text="{Binding Path=ContactList}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                         <CheckBox x:Name="CheckboxConcentrator" Grid.Row="10" Grid.Column="2" IsChecked="{Binding Path=IsConcentrator}" Content="Concentrator" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
-                        <CheckBox x:Name="CheckboxEnabled" Grid.Row="10" Grid.Column="3" IsChecked="{Binding Path=Enabled}" Content="Enabled" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                        <CheckBox x:Name="CheckboxEnabled" Grid.Row="10" Grid.Column="3" IsChecked="{Binding Path=Enabled}" Content="Enabled" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>                        
                         <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"/>
                             <TextBlock Text="     "/>
                             <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="Save" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"/>
-                        </StackPanel>
-                        <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="11"/>                        
+                        </StackPanel>                        
                     </Grid>
                 </Border>
                 <StackPanel Orientation="Vertical" x:Name="StackPanelDeviceList">

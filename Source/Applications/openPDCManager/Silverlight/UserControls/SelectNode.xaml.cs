@@ -11,13 +11,12 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.ServiceModel;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
 
 namespace openPDCManager.Silverlight.UserControls
 {
 	public partial class SelectNode : UserControl
-	{
-		static string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-		EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
+	{		
 		PhasorDataServiceClient client;
 
 		public delegate void OnNodesChanged(object sender, RoutedEventArgs e);
@@ -27,7 +26,7 @@ namespace openPDCManager.Silverlight.UserControls
 		public SelectNode()
 		{
 			InitializeComponent();
-			client = new PhasorDataServiceClient(new BasicHttpBinding(), address);
+			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
 			ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
 			Loaded += new RoutedEventHandler(SelectNode_Loaded);

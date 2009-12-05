@@ -260,13 +260,34 @@ namespace openPDCManager.Silverlight.Utilities
 		{
 			string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
 			EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
-			BasicHttpBinding binding;
-			if (HtmlPage.Document.DocumentUri.Scheme.ToLower().StartsWith("https"))
-				binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
-			else
-				binding = new BasicHttpBinding();
+			//BasicHttpBinding binding;
+			//if (HtmlPage.Document.DocumentUri.Scheme.ToLower().StartsWith("https"))
+			//    binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
+			//else
+			//    binding = new BasicHttpBinding();
+			//binding.MaxReceivedMessageSize = 65536 * 30;
 
-			binding.MaxReceivedMessageSize = 65536 * 30;
+			CustomBinding binding;
+
+			if (HtmlPage.Document.DocumentUri.Scheme.ToLower().StartsWith("https"))
+			{
+				HttpsTransportBindingElement httpsTransportBindingElement = new HttpsTransportBindingElement();
+				httpsTransportBindingElement.MaxReceivedMessageSize = 65536 * 30;
+				binding = new CustomBinding(
+									new BinaryMessageEncodingBindingElement(),
+									httpsTransportBindingElement
+									);
+			}
+			else
+			{
+				HttpTransportBindingElement httpTransportBindingElement = new HttpTransportBindingElement();
+				httpTransportBindingElement.MaxReceivedMessageSize = 65536 * 30;
+				binding = new CustomBinding(
+									new BinaryMessageEncodingBindingElement(),
+									httpTransportBindingElement
+									);
+			}
+				
 			return new PhasorDataServiceClient(binding, address);
 		}
 
@@ -274,17 +295,12 @@ namespace openPDCManager.Silverlight.Utilities
 		{
 			string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
 			EndpointAddress address = new EndpointAddress(baseServiceUrl + "DuplexService/PhasorDataDuplexService.svc");
-			CustomBinding binding;new CustomBinding(
-									new PollingDuplexBindingElement(),
-									new BinaryMessageEncodingBindingElement(),
-									new HttpTransportBindingElement()									
-									);
-			
+			CustomBinding binding;
 			if (HtmlPage.Document.DocumentUri.Scheme.ToLower().StartsWith("https"))
 				binding = new CustomBinding(
 									new PollingDuplexBindingElement(),
 									new BinaryMessageEncodingBindingElement(),
-									new HttpsTransportBindingElement()
+									new HttpsTransportBindingElement()									
 									);
 			else
 				binding = new CustomBinding(

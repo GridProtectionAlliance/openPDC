@@ -236,6 +236,7 @@ using System.Windows.Controls;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using System.Collections.ObjectModel;
 using openPDCManager.Silverlight.Utilities;
+using openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard;
 
 namespace openPDCManager.Silverlight.ModalDialogs
 {
@@ -383,6 +384,17 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			int outputStreamDeviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
 			string acronym = ((HyperlinkButton)sender).Name;
 			client.DeleteOutputStreamDeviceAsync(sourceOutputStreamID, new ObservableCollection<string>(){acronym});
+		}
+
+		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+		{
+			AddDevices addDevices = new AddDevices(sourceOutputStreamID, sourceOutputStreamAcronym);
+			addDevices.Closed += new EventHandler(addDevices_Closed);
+			addDevices.Show();
+		}
+		void addDevices_Closed(object sender, EventArgs e)
+		{
+			client.GetOutputStreamDeviceListAsync(sourceOutputStreamID, false);
 		}
 		
 	}
