@@ -289,11 +289,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		}
 		void OutputStreams_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetNodesAsync(true, false);
-			ComboBoxType.Items.Add(new KeyValuePair<int, string>(0, "IEEE C37.118"));
-			ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "BPA"));
-			ComboBoxType.SelectedIndex = 0;
-			client.GetOutputStreamListAsync(false);
+			
 		}
 		void ListBoxOutputStreamList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -376,6 +372,11 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			client.GetNodesAsync(true, false);
+			ComboBoxType.Items.Add(new KeyValuePair<int, string>(0, "IEEE C37.118"));
+			ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "BPA"));
+			ComboBoxType.SelectedIndex = 0;
+			client.GetOutputStreamListAsync(false);
 		}
 		private void HyperlinkButtonDevices_Click(object sender, RoutedEventArgs e)
 		{	

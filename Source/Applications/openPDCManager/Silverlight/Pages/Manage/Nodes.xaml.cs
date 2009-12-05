@@ -322,8 +322,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 		void Nodes_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetNodeListAsync();
-			client.GetCompaniesAsync(true);
+			
 		}
 		void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
 		{
@@ -348,6 +347,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			client.GetNodeListAsync();
+			client.GetCompaniesAsync(true);
 		}
 
 	}

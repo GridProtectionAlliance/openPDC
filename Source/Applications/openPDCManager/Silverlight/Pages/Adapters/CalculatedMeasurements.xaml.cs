@@ -330,11 +330,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 				client.SaveCalculatedMeasurementAsync(calculatedMeasurement, true);
 		}
 		void CalculatedMeasurements_Loaded(object sender, RoutedEventArgs e)
-		{
-			App app = (App)Application.Current;
-			nodeID = app.NodeValue;
-			client.GetCalculatedMeasurementListAsync(nodeID);
-			client.GetNodesAsync(true, false);
+		{			
 		}
 		void client_GetCalculatedMeasurementListCompleted(object sender, GetCalculatedMeasurementListCompletedEventArgs e)
 		{
@@ -356,6 +352,10 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			App app = (App)Application.Current;
+			nodeID = app.NodeValue;
+			client.GetCalculatedMeasurementListAsync(nodeID);
+			client.GetNodesAsync(true, false);
 		}
 
 	}

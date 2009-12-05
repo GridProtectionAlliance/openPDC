@@ -260,8 +260,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		}
 
 		void IaonTree_Loaded(object sender, RoutedEventArgs e)
-		{
-			client.GetIaonTreeDataAsync();	
+		{			
 		}
 		void client_GetIaonTreeDataCompleted(object sender, GetIaonTreeDataCompletedEventArgs e)
 		{
@@ -272,6 +271,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			client.GetIaonTreeDataAsync();	
 		}
 
 	}

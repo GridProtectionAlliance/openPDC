@@ -272,10 +272,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		void Browse_Loaded(object sender, RoutedEventArgs e)
 		{
 			activityWindow = new ActivityWindow("Loading Data... Please Wait...");
-			activityWindow.Show();
-			App app = (App)Application.Current;
-			string nodeID = app.NodeValue;
-			client.GetDeviceListAsync(nodeID);	
+			activityWindow.Show();			
 		}
 		void client_GetDeviceListCompleted(object sender, GetDeviceListCompletedEventArgs e)
 		{
@@ -291,6 +288,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			App app = (App)Application.Current;
+			string nodeID = app.NodeValue;
+			client.GetDeviceListAsync(nodeID);	
 		}
 
 		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)

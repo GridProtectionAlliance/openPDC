@@ -311,8 +311,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 		void VendorDevices_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetVendorsAsync(false);
-			client.GetVendorDeviceListAsync();
+			
 		}
 		void client_GetVendorsCompleted(object sender, GetVendorsCompletedEventArgs e)
 		{
@@ -339,6 +338,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			client.GetVendorsAsync(false);
+			client.GetVendorDeviceListAsync();
 		}
 
 	}

@@ -304,6 +304,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			Device deviceToEdit = new Device();
 			if (e.Error == null)
 			{
+				System.Threading.Thread.Sleep(500);
 				deviceToEdit = e.Result;
 				GridDeviceDetail.DataContext = deviceToEdit;
 				ComboboxNode.SelectedItem = new KeyValuePair<string, string>(deviceToEdit.NodeID, deviceToEdit.NodeName);
@@ -477,21 +478,10 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void AddNew_Loaded(object sender, RoutedEventArgs e)
 		{
-			StackPanelDeviceList.Visibility = Visibility.Collapsed;
-			StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
-			client.GetDevicesAsync(DeviceType.Concentrator, true);
-			client.GetCompaniesAsync(true);
-			client.GetNodesAsync(true, false);
-			client.GetHistoriansAsync(true, true);
-			client.GetInterconnectionsAsync(true);
-			client.GetVendorDevicesAsync(true);
-			client.GetProtocolsAsync(true);
-			client.GetTimeZonesAsync(true);
 			if (this.NavigationContext.QueryString.ContainsKey("did"))
 			{
 				deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
-				inEditMode = true;
-				System.Threading.Thread.Sleep(1000);
+				inEditMode = true;				
 				client.GetDeviceByDeviceIDAsync(deviceID);
 			}
 		}
@@ -512,6 +502,16 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			StackPanelDeviceList.Visibility = Visibility.Collapsed;
+			StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
+			client.GetDevicesAsync(DeviceType.Concentrator, true);
+			client.GetCompaniesAsync(true);
+			client.GetNodesAsync(true, false);
+			client.GetHistoriansAsync(true, true);
+			client.GetInterconnectionsAsync(true);
+			client.GetVendorDevicesAsync(true);
+			client.GetProtocolsAsync(true);
+			client.GetTimeZonesAsync(true);			
 		}
 
 		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)

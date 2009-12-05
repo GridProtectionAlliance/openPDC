@@ -277,7 +277,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 		void Companies_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetCompanyListAsync();	
+			
 		}
 		void ListBoxCompanyList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -326,6 +326,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			client.GetCompanyListAsync();	
 		}
 
 	}

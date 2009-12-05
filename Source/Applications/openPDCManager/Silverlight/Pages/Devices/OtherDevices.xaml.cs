@@ -269,7 +269,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void OtherDevices_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetOtherDeviceListAsync();	
+			
 		}
 		void client_GetOtherDeviceListCompleted(object sender, GetOtherDeviceListCompletedEventArgs e)
 		{
@@ -283,6 +283,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			client.GetOtherDeviceListAsync();	
 		}
 
 		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)

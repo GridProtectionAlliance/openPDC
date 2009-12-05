@@ -324,11 +324,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void PlanningMap_Loaded(object sender, RoutedEventArgs e)
 		{			
-			client.GetMapDataAsync(MapType.Planning);
+			
 		}
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			client.GetMapDataAsync(MapType.Planning);
 		}
 
 	}

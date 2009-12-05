@@ -285,11 +285,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}		
 		void ActiveMap_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetMapDataAsync(MapType.Active);
+			
 		}
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			client.GetMapDataAsync(MapType.Active);
 		}
 
 	}

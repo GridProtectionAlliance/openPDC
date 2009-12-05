@@ -348,9 +348,6 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void ManageOtherDevices_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetCompaniesAsync(true);
-			client.GetVendorDevicesAsync(true);
-			client.GetInterconnectionsAsync(true);
 			if (this.NavigationContext.QueryString.ContainsKey("did"))
 			{
 				deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
@@ -371,6 +368,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			client.GetCompaniesAsync(true);
+			client.GetVendorDevicesAsync(true);
+			client.GetInterconnectionsAsync(true);			
 		}
 
 	}

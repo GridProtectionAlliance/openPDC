@@ -655,17 +655,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		//}
 		void InputWizard_Loaded(object sender, RoutedEventArgs e)
 		{
-			wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>();
-			vendorDeviceList = new Dictionary<int, string>();			
-			client.GetProtocolsAsync(false);
-			client.GetVendorDevicesAsync(true);			
-			PdcInfoVisualization(Visibility.Collapsed);
-			if (AccordianWizard.SelectedIndex == 0)
-				ButtonPrevious.Visibility = Visibility.Collapsed;
-			client.GetCompaniesAsync(true);
-			client.GetHistoriansAsync(true, true);
-			client.GetInterconnectionsAsync(true);
-			client.GetExecutingAssemblyPathAsync();
+			
 		}
 		void PdcInfoVisualization(Visibility visibility)
 		{
@@ -716,6 +706,17 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>();
+			vendorDeviceList = new Dictionary<int, string>();
+			client.GetProtocolsAsync(false);
+			client.GetVendorDevicesAsync(true);
+			PdcInfoVisualization(Visibility.Collapsed);
+			if (AccordianWizard.SelectedIndex == 0)
+				ButtonPrevious.Visibility = Visibility.Collapsed;
+			client.GetCompaniesAsync(true);
+			client.GetHistoriansAsync(true, true);
+			client.GetInterconnectionsAsync(true);
+			client.GetExecutingAssemblyPathAsync();
 		}
 	}
 }

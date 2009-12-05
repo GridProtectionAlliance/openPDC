@@ -378,25 +378,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 		void Measurements_Loaded(object sender, RoutedEventArgs e)
 		{
-			activityWindow = new ActivityWindow("Loading Data... Please Wait...");			
-			activityWindow.Show();
-
-			client.GetHistoriansAsync(true, true);
-			client.GetDevicesAsync(DeviceType.NonConcentrator, true);
-			client.GetSignalTypesAsync(false);
-			App app = (App)Application.Current;			
-
-			if (this.NavigationContext.QueryString.ContainsKey("did"))
-			{
-				deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);				
-				client.GetMeasurementsByDeviceAsync(deviceID);
-				client.GetDeviceByDeviceIDAsync(deviceID);
-			}
-			else
-			{
-				client.GetMeasurementListAsync(app.NodeValue);
-			}
-
+			
 		}
 		void client_GetPhasorsCompleted(object sender, GetPhasorsCompletedEventArgs e)
 		{
@@ -457,6 +439,23 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+			activityWindow.Show();
+			client.GetHistoriansAsync(true, true);
+			client.GetDevicesAsync(DeviceType.NonConcentrator, true);
+			client.GetSignalTypesAsync(false);
+			App app = (App)Application.Current;
+
+			if (this.NavigationContext.QueryString.ContainsKey("did"))
+			{
+				deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
+				client.GetMeasurementsByDeviceAsync(deviceID);
+				client.GetDeviceByDeviceIDAsync(deviceID);
+			}
+			else
+			{
+				client.GetMeasurementListAsync(app.NodeValue);
+			}
 		}
 
 	}

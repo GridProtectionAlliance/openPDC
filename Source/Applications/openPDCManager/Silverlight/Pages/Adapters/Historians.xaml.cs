@@ -298,11 +298,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			}
 		}
 		void Historians_Loaded(object sender, RoutedEventArgs e)
-		{
-			App app = (App)Application.Current;
-			nodeID = app.NodeValue;
-			client.GetHistorianListAsync(nodeID);
-			client.GetNodesAsync(true, false);
+		{			
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
@@ -348,6 +344,10 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			App app = (App)Application.Current;
+			nodeID = app.NodeValue;
+			client.GetHistorianListAsync(nodeID);
+			client.GetNodesAsync(true, false);
 		}
 
 	}

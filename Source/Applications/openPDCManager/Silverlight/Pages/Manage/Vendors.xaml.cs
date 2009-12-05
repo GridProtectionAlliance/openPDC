@@ -308,7 +308,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 		void Vendors_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetVendorListAsync();
+			
 		}
 		void client_GetVendorListCompleted(object sender, GetVendorListCompletedEventArgs e)
 		{
@@ -326,6 +326,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			client.GetVendorListAsync();
 		}
 
 	}
