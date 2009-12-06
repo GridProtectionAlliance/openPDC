@@ -296,7 +296,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			if (e.Error == null)
 				ListBoxOutputStreamMeasurementList.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Measurements List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void ListBoxOutputStreamMeasurementList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{

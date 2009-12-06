@@ -302,7 +302,11 @@ namespace openPDCManager.Silverlight.UserControls
 			if (e.Error == null)
 				ListBoxAdapterList.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Adapters List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{

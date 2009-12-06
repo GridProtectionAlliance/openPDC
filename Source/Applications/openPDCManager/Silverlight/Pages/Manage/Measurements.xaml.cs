@@ -284,7 +284,11 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			if (e.Error == null)
 				ListBoxMeasurementList.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);			
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Measurements for Device", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (activityWindow != null)
 				activityWindow.Close();	
 		}
@@ -293,7 +297,11 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			if (e.Error == null)
 				ListBoxMeasurementList.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);			
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Measurements List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (activityWindow != null)
 				activityWindow.Close();			
 		}
@@ -390,7 +398,11 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					ComboBoxPhasorSource.SelectedIndex = 0;
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasors", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void client_GetSignalTypesCompleted(object sender, GetSignalTypesCompletedEventArgs e)
 		{
@@ -401,7 +413,11 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					ComboBoxSignalType.SelectedIndex = 0;
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Signal Types", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void client_GetDevicesCompleted(object sender, GetDevicesCompletedEventArgs e)
 		{
@@ -412,7 +428,11 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					ComboBoxDevice.SelectedIndex = 0;
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void client_GetHistoriansCompleted(object sender, GetHistoriansCompletedEventArgs e)
 		{
@@ -423,7 +443,11 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					ComboBoxHistorian.SelectedIndex = 0;
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void ClearForm()
 		{

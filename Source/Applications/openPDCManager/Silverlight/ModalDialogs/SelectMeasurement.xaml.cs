@@ -271,7 +271,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				ListBoxMeasurementList.ItemsSource = measurementList;
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Measurements for Output Stream", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}		
 		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
 		{
@@ -300,11 +304,17 @@ namespace openPDCManager.Silverlight.ModalDialogs
 					outputStreamMeasurement.SignalReference = measurement[1].Replace(measurement[1].Substring(0, measurement[1].LastIndexOf("-")), "<UNASSIGNED>");
 					client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, true);
 				}
-				MessageBox.Show("Done!");
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Output Stream Measurements Added Successfully", SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						 ButtonType.OkOnly);
+				sm.Show();
 				client.GetMeasurementsForOutputStreamAsync(app.NodeValue, sourceOutputStreamID);
 			}
 			else
-				MessageBox.Show("Please select at least one measurement.");
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please Select Measurement(s) to Add", SystemMessage = string.Empty, UserMessageType = MessageType.Information },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}				
 		}
 		void SelectMeasurement_Loaded(object sender, RoutedEventArgs e)
 		{

@@ -346,7 +346,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			if (e.Error == null)
 				ListBoxOutputStreamDeviceList.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Devices List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void ClearForm()
 		{

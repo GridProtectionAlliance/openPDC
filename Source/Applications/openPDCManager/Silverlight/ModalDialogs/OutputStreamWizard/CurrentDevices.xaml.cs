@@ -280,7 +280,10 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			if (devicesToBeDeleted.Count > 0)
 				client.DeleteOutputStreamDeviceAsync(sourceOutputStreamID, devicesToBeDeleted);
 			else
-				MessageBox.Show("Select atleast one device.");
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please select device(s) to delete", SystemMessage = string.Empty, UserMessageType = MessageType.Information }, ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void ButtonAdd_Click(object sender, RoutedEventArgs e)
 		{
@@ -297,7 +300,11 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			if (e.Error == null)
 				ListBoxOutputStreamDeviceList.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Devices List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}			
 		}
 		void CurrentDevices_Loaded(object sender, RoutedEventArgs e)
 		{

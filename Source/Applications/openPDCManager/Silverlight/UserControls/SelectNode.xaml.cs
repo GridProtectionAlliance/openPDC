@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using System.ServiceModel;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
+using openPDCManager.Silverlight.ModalDialogs;
 
 namespace openPDCManager.Silverlight.UserControls
 {
@@ -51,7 +52,7 @@ namespace openPDCManager.Silverlight.UserControls
 		{
 			if (e.Error == null)
 			{
-				ComboboxNode.ItemsSource = e.Result;				
+				ComboboxNode.ItemsSource = e.Result;
 				App app = (App)Application.Current;
 				if (ComboboxNode.Items.Count > 0)
 				{
@@ -64,8 +65,8 @@ namespace openPDCManager.Silverlight.UserControls
 								ComboboxNode.SelectedItem = item;
 								break;
 							}
-								
-						}						
+
+						}
 					}
 					else
 						ComboboxNode.SelectedIndex = 0;
@@ -73,11 +74,14 @@ namespace openPDCManager.Silverlight.UserControls
 					app.NodeName = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Value;
 				}
 				else
-					app.NodeValue = string.Empty;				
+					app.NodeValue = string.Empty;
 			}
 			else
-				MessageBox.Show(e.Error.Message);
-
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			raiseNodesCollectionChanged = false;
 		}
 

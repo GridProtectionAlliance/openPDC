@@ -288,7 +288,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 					ComboboxDestinationPhasor.SelectedIndex = 0;
 			}
 			else
-				MessageBox.Show(e.Error.Message);				
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasors", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void ListBoxPhasorList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -312,7 +316,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			if (e.Error == null)
 				ListBoxPhasorList.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasors List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{

@@ -409,7 +409,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 				ComboboxTimeZone.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Time Zones", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (ComboboxTimeZone.Items.Count > 0)
 				ComboboxTimeZone.SelectedIndex = 0;
 		}
@@ -418,7 +422,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 				ComboboxProtocol.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Protocols", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (ComboboxProtocol.Items.Count > 0)
 				ComboboxProtocol.SelectedIndex = 0;
 		}
@@ -427,7 +435,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 				ComboboxVendorDevice.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (ComboboxVendorDevice.Items.Count > 0)
 				ComboboxVendorDevice.SelectedIndex = 0;
 		}
@@ -436,7 +448,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 				ComboboxInterconnection.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (ComboboxInterconnection.Items.Count > 0)
 				ComboboxInterconnection.SelectedIndex = 0;
 		}
@@ -445,7 +461,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 				ComboboxHistorian.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (ComboboxHistorian.Items.Count > 0)
 				ComboboxHistorian.SelectedIndex = 0;
 		}
@@ -454,7 +474,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 				ComboboxNode.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (ComboboxNode.Items.Count > 0)
 				ComboboxNode.SelectedIndex = 0;
 		}
@@ -463,7 +487,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 				ComboboxCompany.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (ComboboxCompany.Items.Count > 0)
 				ComboboxCompany.SelectedIndex = 0;
 		}
@@ -472,7 +500,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 				ComboboxParent.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (ComboboxParent.Items.Count > 0)
 				ComboboxParent.SelectedIndex = 0;
 		}

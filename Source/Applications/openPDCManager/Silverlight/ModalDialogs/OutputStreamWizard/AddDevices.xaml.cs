@@ -297,14 +297,22 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 				deviceList = e.Result;
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Devices for Output Stream", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void ButtonAdd_Click(object sender, RoutedEventArgs e)
 		{
 			if (devicesToBeAdded.Count > 0)
 				client.AddDevicesAsync(sourceOutputStreamID, devicesToBeAdded, (bool)CheckAddDigitals.IsChecked, (bool)CheckAddAnalog.IsChecked);
 			else
-				MessageBox.Show("Select atleast one device to add.");
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please Select Device(s) to Add", SystemMessage = string.Empty, UserMessageType = MessageType.Information },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}				
 		}
 		void AddDevices_Loaded(object sender, RoutedEventArgs e)
 		{

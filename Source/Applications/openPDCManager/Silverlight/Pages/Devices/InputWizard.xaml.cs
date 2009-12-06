@@ -343,7 +343,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 				ComboboxInterconnection.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (ComboboxInterconnection.Items.Count > 0)
 				ComboboxInterconnection.SelectedIndex = 0;
 		}
@@ -352,7 +356,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 				ComboboxHistorian.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (ComboboxHistorian.Items.Count > 0)
 				ComboboxHistorian.SelectedIndex = 0;
 		}
@@ -361,7 +369,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 				ComboboxCompany.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (ComboboxCompany.Items.Count > 0)
 				ComboboxCompany.SelectedIndex = 0;
 		}
@@ -373,7 +385,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				ComboboxPDCVendor.ItemsSource = vendorDeviceList;
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (ComboboxPDCVendor.Items.Count > 0)
 				ComboboxPDCVendor.SelectedIndex = 0;
 		}
@@ -382,7 +398,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 				ComboboxProtocol.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Protocols", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 			if (ComboboxProtocol.Items.Count > 0)
 				ComboboxProtocol.SelectedIndex = 0;
 		}
@@ -395,7 +415,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					TextBoxConnectionString.Text = connectionSettings.ConnectionString;
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Connection String", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void client_GetWizardConfigurationInfoCompleted(object sender, GetWizardConfigurationInfoCompletedEventArgs e)
 		{
@@ -405,7 +429,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				ItemControlDeviceList.ItemsSource = wizardDeviceInfoList;
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Parse Configuration File", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}		
 		void client_SaveWizardConfigurationInfoCompleted(object sender, SaveWizardConfigurationInfoCompletedEventArgs e)
 		{
@@ -458,14 +486,22 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				}
 			}
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void client_SaveDeviceCompleted(object sender, SaveDeviceCompletedEventArgs e)
 		{
 			if (e.Error == null)
 				client.GetDeviceByAcronymAsync(TextBoxPDCAcronym.Text);	// calling this again would set parentID needed in the final step of the wizard.
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 
 		#endregion

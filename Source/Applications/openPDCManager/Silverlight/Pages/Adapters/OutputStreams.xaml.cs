@@ -285,7 +285,11 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			if (e.Error == null)
 				ListBoxOutputStreamList.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Streams List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void OutputStreams_Loaded(object sender, RoutedEventArgs e)
 		{

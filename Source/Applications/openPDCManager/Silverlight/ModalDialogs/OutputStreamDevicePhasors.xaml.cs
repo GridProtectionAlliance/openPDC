@@ -297,7 +297,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			if (e.Error == null)
 				ListBoxOutputStreamDevicePhasorList.ItemsSource = e.Result;
 			else
-				MessageBox.Show(e.Error.Message);
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device Phasors List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						 ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
