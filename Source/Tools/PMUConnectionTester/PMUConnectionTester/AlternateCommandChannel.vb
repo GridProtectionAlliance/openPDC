@@ -321,7 +321,7 @@ Public Class AlternateCommandChannel
 
                 CheckBoxUndefined.Checked = False
                 connectionData = connectionData("commandchannel").ParseKeyValuePairs()
-                protocol = DirectCast([Enum].Parse(GetType(TransportProtocol), connectionData("protocol")), TransportProtocol)
+                protocol = DirectCast([Enum].Parse(GetType(TransportProtocol), connectionData("protocol"), True), TransportProtocol)
 
                 ' Load remaining connection settings
                 TabControlCommunications.Tabs(IIf(protocol > TransportProtocol.Tcp, protocol - 1, protocol)).Selected = True

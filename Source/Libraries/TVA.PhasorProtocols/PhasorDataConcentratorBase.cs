@@ -763,12 +763,12 @@ namespace TVA.PhasorProtocols
                 m_nominalFrequency = LineFrequency.Hz60;
 
             if (settings.TryGetValue("dataFormat", out setting))
-                m_dataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), setting);
+                m_dataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), setting, true);
             else
                 m_dataFormat = DataFormat.FloatingPoint;
 
             if (settings.TryGetValue("coordinateFormat", out setting))
-                m_coordinateFormat = (CoordinateFormat)Enum.Parse(typeof(CoordinateFormat), setting);
+                m_coordinateFormat = (CoordinateFormat)Enum.Parse(typeof(CoordinateFormat), setting, true);
             else
                 m_coordinateFormat = CoordinateFormat.Polar;
 

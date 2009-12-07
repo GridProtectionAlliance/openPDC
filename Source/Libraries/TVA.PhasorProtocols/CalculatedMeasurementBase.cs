@@ -331,7 +331,7 @@ namespace TVA.PhasorProtocols
             try
             {
                 DataRow row = DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID = '{0}'", key.ToString()))[0];
-                return (SignalType)Enum.Parse(typeof(SignalType), row["SignalType"].ToString());
+                return (SignalType)Enum.Parse(typeof(SignalType), row["SignalType"].ToString(), true);
             }
             catch
             {

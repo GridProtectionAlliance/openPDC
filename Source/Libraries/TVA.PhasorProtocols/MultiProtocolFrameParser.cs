@@ -603,10 +603,10 @@ namespace TVA.PhasorProtocols
                 string setting;
 
                 if (settings.TryGetValue("phasorProtocol", out setting))
-                    PhasorProtocol = (PhasorProtocol)Enum.Parse(typeof(PhasorProtocol), setting);
+                    PhasorProtocol = (PhasorProtocol)Enum.Parse(typeof(PhasorProtocol), setting, true);
 
                 if (settings.TryGetValue("transportProtocol", out setting) || settings.TryGetValue("protocol", out setting))
-                    TransportProtocol = (TransportProtocol)Enum.Parse(typeof(TransportProtocol), setting);
+                    TransportProtocol = (TransportProtocol)Enum.Parse(typeof(TransportProtocol), setting, true);
 
                 m_deviceSupportsCommands = DeriveCommandSupport();
             }
@@ -1317,7 +1317,7 @@ namespace TVA.PhasorProtocols
                             fnetParameters.FrameRate = ushort.Parse(setting);
 
                         if (settings.TryGetValue("nominalFrequency", out setting))
-                            fnetParameters.NominalFrequency = (LineFrequency)Enum.Parse(typeof(LineFrequency), setting);
+                            fnetParameters.NominalFrequency = (LineFrequency)Enum.Parse(typeof(LineFrequency), setting, true);
                     }
                     break;
                 case PhasorProtocol.SelFastMessage:
@@ -1329,7 +1329,7 @@ namespace TVA.PhasorProtocols
                     if (selParameters != null)
                     {
                         if (settings.TryGetValue("messageperiod", out setting))
-                            selParameters.MessagePeriod = (SelFastMessage.MessagePeriod)Enum.Parse(typeof(SelFastMessage.MessagePeriod), setting);
+                            selParameters.MessagePeriod = (SelFastMessage.MessagePeriod)Enum.Parse(typeof(SelFastMessage.MessagePeriod), setting, true);
                     }
                     break;
                 case PhasorProtocol.Macrodyne:
