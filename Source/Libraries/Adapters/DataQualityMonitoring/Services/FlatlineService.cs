@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  FlatlineTest.cs - Gbtc
+//  FlatlineService.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  11/10/2009 - Stephen C. Wills
+//  12/10/2009 - Stephen C. Wills
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -233,45 +233,36 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Timers;
-using DataQualityMonitoring.Services;
-using TVA;
+using System.ServiceModel;
 using TVA.Measurements;
-using TVA.Measurements.Routing;
+using TVA.Web.Services;
+using System.Data;
 
-namespace DataQualityMonitoring
+namespace DataQualityMonitoring.Services
 {
     /// <summary>
-    /// Tests measurements to determine whether they have flatlined.
+    /// Represents a REST web service for flatlined measurements.
     /// </summary>
-    public class FlatlineTest : ActionAdapterBase
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    public class FlatlineService : RestService, IFlatlineService
     {
 
         #region [ Members ]
 
         // Fields
-        private Ticks m_minFlatline;
-        private Ticks m_warnInterval;
-        private Ticks m_latestTimestamp;
-        private Dictionary<MeasurementKey, IMeasurement> m_lastChange;
-        private Timer m_warningTimer;
-        private FlatlineServices m_flatlineServices;
-        private bool m_disposed;
+        private FlatlineTest m_test;
 
         #endregion
 
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new instance of the <see cref="FlatlineTest"/> class.
+        /// Initializes a new instance of the <see cref="FlatlineService"/>
         /// </summary>
-        public FlatlineTest()
+        public FlatlineService()
+            : base()
         {
-            m_minFlatline = Ticks.FromSeconds(4);
-            m_warnInterval = Ticks.FromSeconds(4);
-            m_latestTimestamp = 0L;
-            m_lastChange = new Dictionary<MeasurementKey, IMeasurement>();
-            m_warningTimer = new Timer();
+            ServiceUri = "http://localhost:6100/flatlinetest";
         }
 
         #endregion
@@ -279,13 +270,17 @@ namespace DataQualityMonitoring
         #region [ Properties ]
 
         /// <summary>
-        /// Returns the timestamp of the most recently published frame.
+        /// Gets or sets the <see cref="FlatlineTest"/> used by the web service for its data.
         /// </summary>
-        public Ticks LatestTimestamp
+        public FlatlineTest Test
         {
             get
             {
-                return m_latestTimestamp;
+                return m_test;
+            }
+            set
+            {
+                m_test = value;
             }
         }
 
@@ -294,155 +289,105 @@ namespace DataQualityMonitoring
         #region [ Methods ]
 
         /// <summary>
-        /// Initializes <see cref="FlatlineTest"/>.
+        /// Reads all flatlined measurements from the <see cref="Test"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
         /// </summary>
-        public override void Initialize()
+        /// <returns>A <see cref="SerializableFlatlineTest"/> object.</returns>
+        public SerializableFlatlineTest ReadAllFlatlinedMeasurementsAsXml()
         {
-            base.Initialize();
-
-            Dictionary<string, string> settings = Settings;
-            string setting;
-
-            if (settings.TryGetValue("minFlatline", out setting))
-                m_minFlatline = Ticks.FromSeconds(double.Parse(setting));
-
-            if (settings.TryGetValue("warnInterval", out setting))
-                m_warnInterval = Ticks.FromSeconds(double.Parse(setting));
-
-            m_warningTimer.Interval = m_warnInterval.ToMilliseconds();
-            m_warningTimer.Elapsed += m_warningTimer_Elapsed;
-
-            m_flatlineServices = new FlatlineServices();
-            m_flatlineServices.AdapterLoaded += m_flatlineServices_AdapterLoaded;
-            m_flatlineServices.AdapterUnloaded += m_flatlineServices_AdapterUnloaded;
-            m_flatlineServices.AdapterLoadException += m_flatlineServices_AdapterLoadException;
-            m_flatlineServices.Initialize();
+            return ReadFlatlinedMeasurements();
         }
 
         /// <summary>
-        /// Starts the <see cref="FlatlineTest"/>, if it is not already running.
+        /// Reads all flatlined measurements from the <see cref="Test"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format.
         /// </summary>
-        public override void Start()
+        /// <returns>A <see cref="SerializableFlatlineTest"/> object.</returns>
+        public SerializableFlatlineTest ReadAllFlatlinedMeasurementsAsJson()
         {
-            base.Start();
-            m_warningTimer.Start();
+            return ReadFlatlinedMeasurements();
         }
 
         /// <summary>
-        /// Stops the <see cref="FlatlineTest"/>.
+        /// Reads all flatlined measurements from the specified device and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
         /// </summary>
-        public override void Stop()
+        /// <param name="device">The name of the device to check for flatlined measurements.</param>
+        /// <returns>A <see cref="SerializableFlatlineTest"/> object.</returns>
+        public SerializableFlatlineTest ReadFlatlinedMeasurementsFromDeviceAsXml(string device)
         {
-            m_warningTimer.Stop();
-            base.Stop();
+            return ReadFlatlinedMeasurements(device);
         }
 
         /// <summary>
-        /// Publish <see cref="IFrame"/> of time-aligned collection of <see cref="IMeasurement"/> values that arrived within the
-        /// concentrator's defined <see cref="ConcentratorBase.LagTime"/>.
+        /// Reads all flatlined measurements from the specified device and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
         /// </summary>
-        /// <param name="frame"><see cref="IFrame"/> of measurements with the same timestamp that arrived within <see cref="ConcentratorBase.LagTime"/> that are ready for processing.</param>
-        /// <param name="index">Index of <see cref="IFrame"/> within a second ranging from zero to <c><see cref="ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
-        protected override void PublishFrame(IFrame frame, int index)
+        /// <param name="device">The name of the device to check for flatlined measurements.</param>
+        /// <returns>A <see cref="SerializableFlatlineTest"/> object.</returns>
+        public SerializableFlatlineTest ReadFlatlinedMeasurementsFromDeviceAsJson(string device)
         {
-            IMeasurement measurement = null;
-
-            m_latestTimestamp = frame.Timestamp;
-
-            foreach (MeasurementKey key in frame.Measurements.Keys)
-            {
-                measurement = frame.Measurements[key];
-
-                if (!m_lastChange.ContainsKey(key))
-                    m_lastChange.Add(key, measurement);
-                else if (m_lastChange[key].Value != measurement.Value)
-                    m_lastChange[key] = measurement;
-            }
+            return ReadFlatlinedMeasurements(device);
         }
 
-        /// <summary>
-        /// Returns a collection of measurements that are flatlined.
-        /// </summary>
-        /// <returns>A collection of flatlined measurements.</returns>
-        public ICollection<IMeasurement> GetFlatlinedMeasurements()
+        private SerializableFlatlineTest ReadFlatlinedMeasurements()
         {
-            ICollection<IMeasurement> flatlinedMeasurements = new List<IMeasurement>();
-            IMeasurement measurement = null;
+            SerializableFlatlineTest serializableTest = new SerializableFlatlineTest();
+            ICollection<IMeasurement> flatlinedMeasurements = Test.GetFlatlinedMeasurements();
+            string signalType;
+            string device;
 
-            foreach (MeasurementKey key in m_lastChange.Keys)
-            {
-                measurement = m_lastChange[key];
-
-                Ticks diff = m_latestTimestamp - measurement.Timestamp;
-                if (diff >= m_minFlatline)
-                    flatlinedMeasurements.Add(measurement);
-            }
-
-            return flatlinedMeasurements;
-        }
-
-        /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="FlatlineTest"/> object and optionally releases the managed resources.
-        /// </summary>
-        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (!m_disposed)
-            {
-                try
-                {
-                    if (disposing)
-                    {
-                        if (m_flatlineServices != null)
-                        {
-                            m_flatlineServices.AdapterLoaded -= m_flatlineServices_AdapterLoaded;
-                            m_flatlineServices.AdapterUnloaded -= m_flatlineServices_AdapterUnloaded;
-                            m_flatlineServices.AdapterLoadException -= m_flatlineServices_AdapterLoadException;
-                            m_flatlineServices.Dispose();
-                        }
-                    }
-                }
-                finally
-                {
-                    base.Dispose(disposing);    // Call base class Dispose().
-                    m_disposed = true;          // Prevent duplicate dispose.
-                }
-            }
-        }
-
-        private void m_warningTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            ICollection<IMeasurement> flatlinedMeasurements = GetFlatlinedMeasurements();
-
+            List<SerializableFlatlinedMeasurement> serializableFlatlinedMeasurements = new List<SerializableFlatlinedMeasurement>();
             foreach (IMeasurement measurement in flatlinedMeasurements)
             {
-                Ticks diff = m_latestTimestamp - measurement.Timestamp;
-                OnStatusMessage(measurement.ToString() + " flatlined for " + ((int)diff.ToSeconds()).ToString() + " seconds.");
+                SerializableFlatlinedMeasurement serializableMeasurement = new SerializableFlatlinedMeasurement(measurement, Test.LatestTimestamp - measurement.Timestamp);
+                TryGetMeasurementInfo(measurement, out signalType, out device);
+                serializableMeasurement.SignalType = signalType;
+                serializableMeasurement.Device = device;
+                serializableFlatlinedMeasurements.Add(serializableMeasurement);
             }
+
+            serializableTest.FlatlinedMeasurements = serializableFlatlinedMeasurements.ToArray();
+            return serializableTest;
         }
 
-        private void m_flatlineServices_AdapterLoaded(object sender, EventArgs<IFlatlineService> e)
+        private SerializableFlatlineTest ReadFlatlinedMeasurements(string device)
         {
-            e.Argument.Test = this;
-            e.Argument.ServiceProcessException += Argument_ServiceProcessException;
-            OnStatusMessage("{0} has been loaded.", e.Argument.GetType().Name);
+            SerializableFlatlineTest serializableTest = new SerializableFlatlineTest();
+            ICollection<IMeasurement> flatlinedMeasurements = Test.GetFlatlinedMeasurements();
+            string measurementSignalType;
+            string measurementDevice;
+
+            List<SerializableFlatlinedMeasurement> serializableFlatlinedMeasurements = new List<SerializableFlatlinedMeasurement>();
+            foreach (IMeasurement measurement in flatlinedMeasurements)
+            {
+                SerializableFlatlinedMeasurement serializableMeasurement = new SerializableFlatlinedMeasurement(measurement, Test.LatestTimestamp - measurement.Timestamp);
+                TryGetMeasurementInfo(measurement, out measurementSignalType, out measurementDevice);
+
+                if (measurementDevice == device)
+                {
+                    serializableMeasurement.SignalType = measurementSignalType;
+                    serializableMeasurement.Device = measurementDevice;
+                    serializableFlatlinedMeasurements.Add(serializableMeasurement);
+                }
+            }
+
+            serializableTest.FlatlinedMeasurements = serializableFlatlinedMeasurements.ToArray();
+            return serializableTest;
         }
 
-        private void m_flatlineServices_AdapterUnloaded(object sender, EventArgs<IFlatlineService> e)
+        private bool TryGetMeasurementInfo(IMeasurement measurement, out string signalType, out string device)
         {
-            e.Argument.Test = null;
-            e.Argument.ServiceProcessException -= Argument_ServiceProcessException;
-            OnStatusMessage("{0} has been unloaded.", e.Argument.GetType().Name);
-        }
-
-        private void m_flatlineServices_AdapterLoadException(object sender, EventArgs<Type, Exception> e)
-        {
-            OnStatusMessage("{0} could not be loaded - {1}", e.Argument1.Name, e.Argument2.Message);
-        }
-
-        private void Argument_ServiceProcessException(object sender, EventArgs<Exception> e)
-        {
-            OnProcessException(e.Argument);
+            try
+            {
+                DataRow row = Test.DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID = '{0}'", measurement.Key.ToString()))[0];
+                signalType = row["SignalType"].ToString();
+                device = row["Device"].ToString();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                OnServiceProcessException(ex);
+                signalType = string.Empty;
+                device = string.Empty;
+                return false;
+            }
         }
 
         #endregion
