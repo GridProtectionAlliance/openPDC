@@ -259,9 +259,10 @@ namespace DataQualityMonitoring.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="FlatlineService"/>
         /// </summary>
-        public FlatlineService()
+        public FlatlineService(FlatlineTest test)
             : base()
         {
+            Test = test;
             ServiceUri = "http://localhost:6100/flatlinetest";
         }
 

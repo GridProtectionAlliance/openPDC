@@ -255,7 +255,7 @@ namespace DataQualityMonitoring
         private Ticks m_latestTimestamp;
         private Dictionary<MeasurementKey, IMeasurement> m_lastChange;
         private Timer m_warningTimer;
-        private FlatlineServices m_flatlineServices;
+        private FlatlineService m_flatlineService;
         private bool m_disposed;
 
         #endregion
@@ -312,11 +312,9 @@ namespace DataQualityMonitoring
             m_warningTimer.Interval = m_warnInterval.ToMilliseconds();
             m_warningTimer.Elapsed += m_warningTimer_Elapsed;
 
-            m_flatlineServices = new FlatlineServices();
-            m_flatlineServices.AdapterLoaded += m_flatlineServices_AdapterLoaded;
-            m_flatlineServices.AdapterUnloaded += m_flatlineServices_AdapterUnloaded;
-            m_flatlineServices.AdapterLoadException += m_flatlineServices_AdapterLoadException;
-            m_flatlineServices.Initialize();
+            m_flatlineService = new FlatlineService(this);
+            m_flatlineService.ServiceProcessException += m_flatlineService_ServiceProcessException;
+            m_flatlineService.Initialize();
         }
 
         /// <summary>
@@ -393,12 +391,10 @@ namespace DataQualityMonitoring
                 {
                     if (disposing)
                     {
-                        if (m_flatlineServices != null)
+                        if (m_flatlineService != null)
                         {
-                            m_flatlineServices.AdapterLoaded -= m_flatlineServices_AdapterLoaded;
-                            m_flatlineServices.AdapterUnloaded -= m_flatlineServices_AdapterUnloaded;
-                            m_flatlineServices.AdapterLoadException -= m_flatlineServices_AdapterLoadException;
-                            m_flatlineServices.Dispose();
+                            m_flatlineService.ServiceProcessException -= m_flatlineService_ServiceProcessException;
+                            m_flatlineService.Dispose();
                         }
                     }
                 }
@@ -421,26 +417,7 @@ namespace DataQualityMonitoring
             }
         }
 
-        private void m_flatlineServices_AdapterLoaded(object sender, EventArgs<IFlatlineService> e)
-        {
-            e.Argument.Test = this;
-            e.Argument.ServiceProcessException += Argument_ServiceProcessException;
-            OnStatusMessage("{0} has been loaded.", e.Argument.GetType().Name);
-        }
-
-        private void m_flatlineServices_AdapterUnloaded(object sender, EventArgs<IFlatlineService> e)
-        {
-            e.Argument.Test = null;
-            e.Argument.ServiceProcessException -= Argument_ServiceProcessException;
-            OnStatusMessage("{0} has been unloaded.", e.Argument.GetType().Name);
-        }
-
-        private void m_flatlineServices_AdapterLoadException(object sender, EventArgs<Type, Exception> e)
-        {
-            OnStatusMessage("{0} could not be loaded - {1}", e.Argument1.Name, e.Argument2.Message);
-        }
-
-        private void Argument_ServiceProcessException(object sender, EventArgs<Exception> e)
+        private void m_flatlineService_ServiceProcessException(object sender, EventArgs<Exception> e)
         {
             OnProcessException(e.Argument);
         }
