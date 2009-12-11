@@ -10,6 +10,9 @@
 //  -----------------------------------------------------------------------------------------------------
 //  11/10/2009 - Stephen C. Wills
 //       Generated original version of source code.
+//  12/11/2009 - Pinal C. Patel
+//       Added thread synchronization.
+//       Replaced the use of LatestTimestamp with base.RealTime.
 //
 //*******************************************************************************************************
 
@@ -231,8 +234,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Timers;
 using DataQualityMonitoring.Services;
 using TVA;
@@ -252,9 +254,8 @@ namespace DataQualityMonitoring
         // Fields
         private Ticks m_minFlatline;
         private Ticks m_warnInterval;
-        private Ticks m_latestTimestamp;
         private Dictionary<MeasurementKey, IMeasurement> m_lastChange;
-        private Timer m_warningTimer;
+        private System.Timers.Timer m_warningTimer;
         private FlatlineService m_flatlineService;
         private bool m_disposed;
 
@@ -269,30 +270,14 @@ namespace DataQualityMonitoring
         {
             m_minFlatline = Ticks.FromSeconds(4);
             m_warnInterval = Ticks.FromSeconds(4);
-            m_latestTimestamp = 0L;
             m_lastChange = new Dictionary<MeasurementKey, IMeasurement>();
-            m_warningTimer = new Timer();
-        }
-
-        #endregion
-
-        #region [ Properties ]
-
-        /// <summary>
-        /// Returns the timestamp of the most recently published frame.
-        /// </summary>
-        public Ticks LatestTimestamp
-        {
-            get
-            {
-                return m_latestTimestamp;
-            }
+            m_warningTimer = new System.Timers.Timer();
         }
 
         #endregion
 
         #region [ Methods ]
-
+        
         /// <summary>
         /// Initializes <see cref="FlatlineTest"/>.
         /// </summary>
@@ -344,17 +329,17 @@ namespace DataQualityMonitoring
         protected override void PublishFrame(IFrame frame, int index)
         {
             IMeasurement measurement = null;
-
-            m_latestTimestamp = frame.Timestamp;
-
-            foreach (MeasurementKey key in frame.Measurements.Keys)
+            lock (m_lastChange)
             {
-                measurement = frame.Measurements[key];
+                foreach (MeasurementKey key in frame.Measurements.Keys)
+                {
+                    measurement = frame.Measurements[key];
 
-                if (!m_lastChange.ContainsKey(key))
-                    m_lastChange.Add(key, measurement);
-                else if (m_lastChange[key].Value != measurement.Value)
-                    m_lastChange[key] = measurement;
+                    if (m_lastChange.ContainsKey(key))
+                        m_lastChange[key] = measurement;
+                    else
+                        m_lastChange.Add(key, measurement);
+                }
             }
         }
 
@@ -365,15 +350,25 @@ namespace DataQualityMonitoring
         public ICollection<IMeasurement> GetFlatlinedMeasurements()
         {
             ICollection<IMeasurement> flatlinedMeasurements = new List<IMeasurement>();
-            IMeasurement measurement = null;
 
-            foreach (MeasurementKey key in m_lastChange.Keys)
+            if (Monitor.TryEnter(m_lastChange))
             {
-                measurement = m_lastChange[key];
+                try
+                {
+                    IMeasurement measurement = null;
+                    foreach (MeasurementKey key in m_lastChange.Keys)
+                    {
+                        measurement = m_lastChange[key];
 
-                Ticks diff = m_latestTimestamp - measurement.Timestamp;
-                if (diff >= m_minFlatline)
-                    flatlinedMeasurements.Add(measurement);
+                        Ticks timeDiff = base.RealTime - measurement.Timestamp;
+                        if (timeDiff >= m_minFlatline)
+                            flatlinedMeasurements.Add(measurement);
+                    }
+                }
+                finally
+                {
+                    Monitor.Exit(m_lastChange);
+                }
             }
 
             return flatlinedMeasurements;
@@ -412,8 +407,8 @@ namespace DataQualityMonitoring
 
             foreach (IMeasurement measurement in flatlinedMeasurements)
             {
-                Ticks diff = m_latestTimestamp - measurement.Timestamp;
-                OnStatusMessage(measurement.ToString() + " flatlined for " + ((int)diff.ToSeconds()).ToString() + " seconds.");
+                Ticks timeDiff = RealTime - measurement.Timestamp;
+                OnStatusMessage(string.Format("{0} flatlined for {1} seconds.", measurement, (int)timeDiff.ToSeconds()));
             }
         }
 

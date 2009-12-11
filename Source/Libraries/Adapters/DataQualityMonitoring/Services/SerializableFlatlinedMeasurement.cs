@@ -10,6 +10,8 @@
 //  -----------------------------------------------------------------------------------------------------
 //  12/10/2009 - Stephen C. Wills
 //       Generated original version of source code.
+//  12/11/2009 - Pinal C. Patel
+//       Changed Timestamp to string and TimeSinceLastChange to double.
 //
 //*******************************************************************************************************
 
@@ -230,11 +232,9 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
+using TVA;
 using TVA.Measurements;
 
 namespace DataQualityMonitoring.Services
@@ -269,8 +269,8 @@ namespace DataQualityMonitoring.Services
             Key = measurement.Key.ToString();
             SignalID = measurement.SignalID.ToString();
             Value = measurement.AdjustedValue;
-            Timestamp = measurement.Timestamp;
-            TimeSinceLastChange = timeSinceLastChange;
+            Timestamp = ((DateTime)measurement.Timestamp).ToString("yyyy-MM-dd HH:mm:ss.fff");
+            TimeSinceLastChange = Ticks.ToSeconds(timeSinceLastChange);
         }
 
         #endregion
@@ -296,16 +296,16 @@ namespace DataQualityMonitoring.Services
         public double Value { get; set; }
 
         /// <summary>
-        /// Gets or sets the <see cref="IMeasurement.Timestamp"/>.
+        /// Gets or sets the <see cref="IMeasurement.Timestamp"/> in <see cref="DateTime"/> string format.
         /// </summary>
         [XmlAttribute(), DataMember(Order = 3)]
-        public long Timestamp { get; set; }
+        public string Timestamp { get; set; }
 
         /// <summary>
-        /// Gets or sets the amount of time since the <see cref="IMeasurement"/> last changed its value.
+        /// Gets or sets the amount of time in seconds since the <see cref="IMeasurement"/> last changed its value.
         /// </summary>
         [XmlAttribute(), DataMember(Order = 4)]
-        public long TimeSinceLastChange { get; set; }
+        public double TimeSinceLastChange { get; set; }
 
         /// <summary>
         /// Gets or sets the signal type of the <see cref="IMeasurement"/>.

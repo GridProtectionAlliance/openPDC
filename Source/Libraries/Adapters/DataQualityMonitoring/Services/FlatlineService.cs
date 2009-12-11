@@ -10,6 +10,8 @@
 //  -----------------------------------------------------------------------------------------------------
 //  12/10/2009 - Stephen C. Wills
 //       Generated original version of source code.
+//  12/11/2009 - Pinal C. Patel
+//       Added error checking to TryGetMeasurementInfo().
 //
 //*******************************************************************************************************
 
@@ -231,12 +233,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Data;
 using System.ServiceModel;
 using TVA.Measurements;
 using TVA.Web.Services;
-using System.Data;
 
 namespace DataQualityMonitoring.Services
 {
@@ -337,7 +337,7 @@ namespace DataQualityMonitoring.Services
             List<SerializableFlatlinedMeasurement> serializableFlatlinedMeasurements = new List<SerializableFlatlinedMeasurement>();
             foreach (IMeasurement measurement in flatlinedMeasurements)
             {
-                SerializableFlatlinedMeasurement serializableMeasurement = new SerializableFlatlinedMeasurement(measurement, Test.LatestTimestamp - measurement.Timestamp);
+                SerializableFlatlinedMeasurement serializableMeasurement = new SerializableFlatlinedMeasurement(measurement, Test.RealTime - measurement.Timestamp);
                 TryGetMeasurementInfo(measurement, out signalType, out device);
                 serializableMeasurement.SignalType = signalType;
                 serializableMeasurement.Device = device;
@@ -358,7 +358,7 @@ namespace DataQualityMonitoring.Services
             List<SerializableFlatlinedMeasurement> serializableFlatlinedMeasurements = new List<SerializableFlatlinedMeasurement>();
             foreach (IMeasurement measurement in flatlinedMeasurements)
             {
-                SerializableFlatlinedMeasurement serializableMeasurement = new SerializableFlatlinedMeasurement(measurement, Test.LatestTimestamp - measurement.Timestamp);
+                SerializableFlatlinedMeasurement serializableMeasurement = new SerializableFlatlinedMeasurement(measurement, Test.RealTime - measurement.Timestamp);
                 TryGetMeasurementInfo(measurement, out measurementSignalType, out measurementDevice);
 
                 if (measurementDevice == device)
@@ -377,10 +377,18 @@ namespace DataQualityMonitoring.Services
         {
             try
             {
-                DataRow row = Test.DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID = '{0}'", measurement.Key.ToString()))[0];
-                signalType = row["SignalType"].ToString();
-                device = row["Device"].ToString();
-                return true;
+                DataRow[] filter = Test.DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID = '{0}'", measurement.Key.ToString()));
+                if (filter.Length == 0)
+                {
+                    signalType = string.Empty;
+                    device = string.Empty;
+                    return false;
+                }
+                {
+                    signalType = filter[0]["SignalType"].ToString();
+                    device = filter[0]["Device"].ToString();
+                    return true;
+                }
             }
             catch (Exception ex)
             {
