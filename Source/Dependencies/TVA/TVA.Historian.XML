@@ -4866,15 +4866,21 @@
             </summary>
             <seealso cref="T:TVA.Historian.MetadataProviders.IMetadataProvider"/>
         </member>
-        <member name="M:TVA.Historian.MetadataProviders.MetadataProviders.RefreshAll">
+        <member name="M:TVA.Historian.MetadataProviders.MetadataProviders.Initialize">
             <summary>
-            <see cref="M:TVA.Historian.MetadataProviders.IMetadataProvider.Refresh"/>es the <see cref="P:TVA.Historian.MetadataProviders.IMetadataProvider.Metadata"/> for all loaded metadata provider <see cref="P:TVA.AdapterLoader`1.Adapters"/>.
+            Initializes the <see cref="T:TVA.Historian.MetadataProviders.MetadataProviders"/>.
             </summary>
         </member>
-        <member name="M:TVA.Historian.MetadataProviders.MetadataProviders.RefreshOne">
+        <member name="M:TVA.Historian.MetadataProviders.MetadataProviders.RefreshAll">
             <summary>
-            <see cref="M:TVA.Historian.MetadataProviders.IMetadataProvider.Refresh"/>es the <see cref="P:TVA.Historian.MetadataProviders.IMetadataProvider.Metadata"/> for the first of all loaded metadata provider <see cref="P:TVA.AdapterLoader`1.Adapters"/>.
+            <see cref="M:TVA.Historian.MetadataProviders.IMetadataProvider.Refresh"/>es the <see cref="P:TVA.Historian.MetadataProviders.IMetadataProvider.Metadata"/> using all loaded metadata provider <see cref="P:TVA.AdapterLoader`1.Adapters"/>.
             </summary>
+        </member>
+        <member name="M:TVA.Historian.MetadataProviders.MetadataProviders.RefreshOne(System.String)">
+            <summary>
+            <see cref="M:TVA.Historian.MetadataProviders.IMetadataProvider.Refresh"/>es the <see cref="P:TVA.Historian.MetadataProviders.IMetadataProvider.Metadata"/> using the specified <paramref name="provider"/> from the loaded metadata provider <see cref="P:TVA.AdapterLoader`1.Adapters"/>.
+            </summary>
+            <param name="provider">Name of the <see cref="T:TVA.Historian.MetadataProviders.IMetadataProvider"/> to use for the <see cref="M:TVA.Historian.MetadataProviders.IMetadataProvider.Refresh"/>.</param>
         </member>
         <member name="M:TVA.Historian.MetadataProviders.MetadataProviders.ExecuteAdapterOperation(TVA.Historian.MetadataProviders.IMetadataProvider,System.Object)">
             <summary>

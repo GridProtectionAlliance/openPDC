@@ -27,8 +27,9 @@
 //       Added support for the replication of local historian archive.
 //  12/01/2009 - Pinal C. Patel
 //       Modified Initialize() to load all available metadata providers.
-//  12/03/2009 - Pinal C. Patel
-//       Modified to use seperate ArchiveFile component for reading data to improve efficiency.
+//  12/11/2009 - Pinal C. Patel
+//       Fixed the implementation for allowing multiple adapter instances.
+//       Expanded the adapter status to include dynamically loaded plugins.
 //
 //*******************************************************************************************************
 
@@ -254,6 +255,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using TVA;
+using TVA.Configuration;
 using TVA.Historian.DataServices;
 using TVA.Historian.Files;
 using TVA.Historian.MetadataProviders;
@@ -272,8 +274,7 @@ namespace HistorianAdapters
         #region [ Members ]
 
         // Fields
-        private ArchiveFile m_readArchive;
-        private ArchiveFile m_writeArchive;
+        private ArchiveFile m_archive;
         private DataServices m_dataServices;
         private MetadataProviders m_metadataProviders;
         private ReplicationProviders m_replicationProviders;
@@ -292,16 +293,10 @@ namespace HistorianAdapters
             : base()
         {
             m_refreshMetadata = true;
-            // Instantiate archive file for writing data.
-            m_writeArchive = new ArchiveFile();
-            m_writeArchive.MetadataFile = new MetadataFile();
-            m_writeArchive.StateFile = new StateFile();
-            m_writeArchive.IntercomFile = new IntercomFile();
-            // Instantiate archive file for reading data.
-            m_readArchive = new ArchiveFile();
-            m_readArchive.MetadataFile = m_writeArchive.MetadataFile;
-            m_readArchive.StateFile = m_writeArchive.StateFile;
-            m_readArchive.IntercomFile = m_writeArchive.IntercomFile;
+            m_archive = new ArchiveFile();
+            m_archive.MetadataFile = new MetadataFile();
+            m_archive.StateFile = new StateFile();
+            m_archive.IntercomFile = new IntercomFile();
         }
 
         #endregion
@@ -318,13 +313,19 @@ namespace HistorianAdapters
                 StringBuilder status = new StringBuilder();
                 status.Append(base.Status);
                 status.AppendLine();
-                status.Append(m_writeArchive.Status);
+                status.Append(m_archive.Status);
                 status.AppendLine();
-                status.Append(m_writeArchive.MetadataFile.Status);
+                status.Append(m_archive.MetadataFile.Status);
                 status.AppendLine();
-                status.Append(m_writeArchive.StateFile.Status);
+                status.Append(m_archive.StateFile.Status);
                 status.AppendLine();
-                status.Append(m_writeArchive.IntercomFile.Status);
+                status.Append(m_archive.IntercomFile.Status);
+                status.AppendLine();
+                status.Append(m_dataServices.Status);
+                status.AppendLine();
+                status.Append(m_metadataProviders.Status);
+                status.AppendLine();
+                status.Append(m_replicationProviders.Status);
 
                 return status.ToString();
             }
@@ -376,7 +377,7 @@ namespace HistorianAdapters
                 }
 
                 // Wait for the metabase to synchronize.
-                while (m_writeArchive.StateFile.RecordsOnDisk != m_writeArchive.MetadataFile.RecordsOnDisk)
+                while (m_archive.StateFile.RecordsOnDisk != m_archive.MetadataFile.RecordsOnDisk)
                 {
                     Thread.Sleep(100);
                 }
@@ -412,42 +413,39 @@ namespace HistorianAdapters
             if (settings.TryGetValue("refreshmetadata", out refreshMetadata))
                 m_refreshMetadata = refreshMetadata.ParseBoolean();
 
-            // Initialize metadata file.           
-            m_writeArchive.MetadataFile.FileName = Path.Combine(archivePath, instanceName + "_dbase.dat");
-            m_writeArchive.MetadataFile.PersistSettings = true;
-            m_writeArchive.MetadataFile.SettingsCategory = Name + m_writeArchive.MetadataFile.SettingsCategory;
-            m_writeArchive.MetadataFile.Initialize();
+            // Initialize metadata file.
+            instanceName = instanceName.ToLower();
+            m_archive.MetadataFile.FileName = Path.Combine(archivePath, instanceName + "_dbase.dat");
+            m_archive.MetadataFile.PersistSettings = true;
+            m_archive.MetadataFile.SettingsCategory = Name + m_archive.MetadataFile.SettingsCategory;
+            m_archive.MetadataFile.Initialize();
 
             // Initialize state file.
-            m_writeArchive.StateFile.FileName = Path.Combine(archivePath, instanceName + "_startup.dat");
-            m_writeArchive.StateFile.PersistSettings = true;
-            m_writeArchive.StateFile.SettingsCategory = Name + m_writeArchive.StateFile.SettingsCategory;
-            m_writeArchive.StateFile.Initialize();
+            m_archive.StateFile.FileName = Path.Combine(archivePath, instanceName + "_startup.dat");
+            m_archive.StateFile.PersistSettings = true;
+            m_archive.StateFile.SettingsCategory = Name + m_archive.StateFile.SettingsCategory;
+            m_archive.StateFile.Initialize();
 
             // Initialize intercom file.
-            m_writeArchive.IntercomFile.FileName = Path.Combine(archivePath, "scratch.dat");
-            m_writeArchive.IntercomFile.PersistSettings = true;
-            m_writeArchive.IntercomFile.SettingsCategory = Name + m_writeArchive.IntercomFile.SettingsCategory;
-            m_writeArchive.IntercomFile.Initialize();
+            m_archive.IntercomFile.FileName = Path.Combine(archivePath, "scratch.dat");
+            m_archive.IntercomFile.PersistSettings = true;
+            m_archive.IntercomFile.SettingsCategory = Name + m_archive.IntercomFile.SettingsCategory;
+            m_archive.IntercomFile.Initialize();
 
-            // Initialize archive file for writing data.
-            m_writeArchive.FileName = Path.Combine(archivePath, instanceName + "_archive.d");
-            m_writeArchive.FileSize = 100;
-            m_writeArchive.CompressData = false;
-            m_writeArchive.PersistSettings = true;
-            m_writeArchive.SettingsCategory = Name + m_writeArchive.SettingsCategory;
-            m_writeArchive.RolloverStart += Archive_RolloverStart;
-            m_writeArchive.RolloverComplete += Archive_RolloverComplete;
-            m_writeArchive.RolloverException += Archive_RolloverException;
-            m_writeArchive.Initialize();
-
-            // Initialize archive file for reading data.
-            m_readArchive.FileName = m_writeArchive.FileName;
-            m_readArchive.FileAccessMode = FileAccess.Read;
-            m_readArchive.Initialize();
+            // Initialize data archive file.           
+            m_archive.FileName = Path.Combine(archivePath, instanceName + "_archive.d");
+            m_archive.FileSize = 100;
+            m_archive.CompressData = false;
+            m_archive.PersistSettings = true;
+            m_archive.SettingsCategory = Name + m_archive.SettingsCategory;
+            m_archive.RolloverStart += Archive_RolloverStart;
+            m_archive.RolloverComplete += Archive_RolloverComplete;
+            m_archive.RolloverException += Archive_RolloverException;
+            m_archive.Initialize();
 
             // Provide web service support.
             m_dataServices = new DataServices();
+            m_dataServices.AdapterCreated += DataServices_AdapterCreated;
             m_dataServices.AdapterLoaded += DataServices_AdapterLoaded;
             m_dataServices.AdapterUnloaded += DataServices_AdapterUnloaded;
             m_dataServices.AdapterLoadException += AdapterLoader_AdapterLoadException;
@@ -455,6 +453,7 @@ namespace HistorianAdapters
 
             // Provide metadata sync support.
             m_metadataProviders = new MetadataProviders();
+            m_metadataProviders.AdapterCreated += MetadataProviders_AdapterCreated;
             m_metadataProviders.AdapterLoaded += MetadataProviders_AdapterLoaded;
             m_metadataProviders.AdapterUnloaded += MetadataProviders_AdapterUnloaded;
             m_metadataProviders.AdapterLoadException += AdapterLoader_AdapterLoadException;
@@ -462,6 +461,7 @@ namespace HistorianAdapters
 
             // Provide archive replication support.
             m_replicationProviders = new ReplicationProviders();
+            m_replicationProviders.AdapterCreated += ReplicationProviders_AdapterCreated;
             m_replicationProviders.AdapterLoaded += ReplicationProviders_AdapterLoaded;
             m_replicationProviders.AdapterUnloaded += ReplicationProviders_AdapterUnloaded;
             m_replicationProviders.AdapterLoadException += AdapterLoader_AdapterLoadException;
@@ -494,6 +494,7 @@ namespace HistorianAdapters
                         // This will be done only when the object is disposed by calling Dispose().
                         if (m_dataServices != null)
                         {
+                            m_dataServices.AdapterCreated -= DataServices_AdapterCreated;
                             m_dataServices.AdapterLoaded -= DataServices_AdapterLoaded;
                             m_dataServices.AdapterUnloaded -= DataServices_AdapterUnloaded;
                             m_dataServices.AdapterLoadException -= AdapterLoader_AdapterLoadException;
@@ -502,6 +503,7 @@ namespace HistorianAdapters
 
                         if (m_metadataProviders != null)
                         {
+                            m_metadataProviders.AdapterCreated -= MetadataProviders_AdapterCreated;
                             m_metadataProviders.AdapterLoaded -= MetadataProviders_AdapterLoaded;
                             m_metadataProviders.AdapterUnloaded -= MetadataProviders_AdapterUnloaded;
                             m_metadataProviders.AdapterLoadException -= AdapterLoader_AdapterLoadException;
@@ -510,44 +512,37 @@ namespace HistorianAdapters
 
                         if (m_replicationProviders != null)
                         {
+                            m_replicationProviders.AdapterCreated -= ReplicationProviders_AdapterCreated;
                             m_replicationProviders.AdapterLoaded -= ReplicationProviders_AdapterLoaded;
                             m_replicationProviders.AdapterUnloaded -= ReplicationProviders_AdapterUnloaded;
                             m_replicationProviders.AdapterLoadException -= AdapterLoader_AdapterLoadException;
                             m_replicationProviders.Dispose();
                         }
 
-                        if (m_writeArchive != null)
+                        if (m_archive != null)
                         {
-                            m_writeArchive.RolloverStart -= Archive_RolloverStart;
-                            m_writeArchive.RolloverComplete -= Archive_RolloverComplete;
-                            m_writeArchive.RolloverException -= Archive_RolloverException;
-                            m_writeArchive.Dispose();
+                            m_archive.RolloverStart -= Archive_RolloverStart;
+                            m_archive.RolloverComplete -= Archive_RolloverComplete;
+                            m_archive.RolloverException -= Archive_RolloverException;
+                            m_archive.Dispose();
 
-                            if (m_writeArchive.MetadataFile != null)
+                            if (m_archive.MetadataFile != null)
                             {
-                                m_writeArchive.MetadataFile.Dispose();
-                                m_writeArchive.MetadataFile = null;
+                                m_archive.MetadataFile.Dispose();
+                                m_archive.MetadataFile = null;
                             }
 
-                            if (m_writeArchive.StateFile != null)
+                            if (m_archive.StateFile != null)
                             {
-                                m_writeArchive.StateFile.Dispose();
-                                m_writeArchive.StateFile = null;
+                                m_archive.StateFile.Dispose();
+                                m_archive.StateFile = null;
                             }
 
-                            if (m_writeArchive.IntercomFile != null)
+                            if (m_archive.IntercomFile != null)
                             {
-                                m_writeArchive.IntercomFile.Dispose();
-                                m_writeArchive.IntercomFile = null;
+                                m_archive.IntercomFile.Dispose();
+                                m_archive.IntercomFile = null;
                             }
-                        }
-
-                        if (m_readArchive != null)
-                        {
-                            m_readArchive.Dispose();
-                            m_readArchive.MetadataFile = null;
-                            m_readArchive.StateFile = null;
-                            m_readArchive.IntercomFile = null;
                         }
                     }
                 }
@@ -564,11 +559,10 @@ namespace HistorianAdapters
         /// </summary>
         protected override void AttemptConnection()
         {
-            m_writeArchive.MetadataFile.Open();
-            m_writeArchive.StateFile.Open();
-            m_writeArchive.IntercomFile.Open();
-            m_writeArchive.Open();
-            m_readArchive.Open();
+            m_archive.MetadataFile.Open();
+            m_archive.StateFile.Open();
+            m_archive.IntercomFile.Open();
+            m_archive.Open();
 
             if (m_refreshMetadata)
             {
@@ -584,33 +578,30 @@ namespace HistorianAdapters
         /// </summary>
         protected override void AttemptDisconnection()
         {
-            if (m_readArchive != null && m_readArchive.IsOpen)
-                m_readArchive.Close();
-
-            if (m_writeArchive != null)
+            if (m_archive != null)
             {
-                if (m_writeArchive.IsOpen)
+                if (m_archive.IsOpen)
                 {
-                    m_writeArchive.Save();
-                    m_writeArchive.Close();
+                    m_archive.Save();
+                    m_archive.Close();
                 }
 
-                if (m_writeArchive.MetadataFile != null && m_writeArchive.MetadataFile.IsOpen)
+                if (m_archive.MetadataFile != null && m_archive.MetadataFile.IsOpen)
                 {
-                    m_writeArchive.MetadataFile.Save();
-                    m_writeArchive.MetadataFile.Close();
+                    m_archive.MetadataFile.Save();
+                    m_archive.MetadataFile.Close();
                 }
 
-                if (m_writeArchive.StateFile != null && m_writeArchive.StateFile.IsOpen)
+                if (m_archive.StateFile != null && m_archive.StateFile.IsOpen)
                 {
-                    m_writeArchive.StateFile.Save();
-                    m_writeArchive.StateFile.Close();
+                    m_archive.StateFile.Save();
+                    m_archive.StateFile.Close();
                 }
 
-                if (m_writeArchive.IntercomFile != null && m_writeArchive.IntercomFile.IsOpen)
+                if (m_archive.IntercomFile != null && m_archive.IntercomFile.IsOpen)
                 {
-                    m_writeArchive.IntercomFile.Save();
-                    m_writeArchive.IntercomFile.Close();
+                    m_archive.IntercomFile.Save();
+                    m_archive.IntercomFile.Close();
                 }
 
                 OnDisconnected();
@@ -625,31 +616,23 @@ namespace HistorianAdapters
         /// <exception cref="InvalidOperationException">Local archive is closed.</exception>
         protected override void ProcessMeasurements(IMeasurement[] measurements)
         {
-            if (!m_writeArchive.IsOpen)
+            if (!m_archive.IsOpen)
                 throw new InvalidOperationException("Archive is closed.");
 
             foreach (IMeasurement measurement in measurements)
             {
-                m_writeArchive.WriteData(new ArchiveDataPoint(measurement));
+                m_archive.WriteData(new ArchiveDataPoint(measurement));
             }
             m_archivedMeasurements += measurements.Length;
         }
 
         private void Archive_RolloverStart(object sender, EventArgs e)
         {
-            // Close the archive file used for reading data.
-            if (m_readArchive != null && m_readArchive.IsOpen)
-                m_readArchive.Close();
-
             OnStatusMessage("Archive is being rolled over...");
         }
 
         private void Archive_RolloverComplete(object sender, EventArgs e)
         {
-            // Re-open the archive file used for reading data.
-            if (m_readArchive != null && !m_readArchive.IsOpen)
-                m_readArchive.Open();
-
             OnStatusMessage("Archive rollover is complete.");
         }
 
@@ -659,9 +642,15 @@ namespace HistorianAdapters
             OnStatusMessage("Archive rollover failed - {0}", e.Argument.Message);
         }
 
+        private void DataServices_AdapterCreated(object sender, EventArgs<IDataService> e)
+        {
+            e.Argument.Enabled = true;
+            e.Argument.SettingsCategory = Name + e.Argument.SettingsCategory;
+        }
+
         private void DataServices_AdapterLoaded(object sender, EventArgs<IDataService> e)
         {
-            e.Argument.Archive = m_readArchive;
+            e.Argument.Archive = m_archive;
             e.Argument.ServiceProcessException += DataServices_ServiceProcessException;
             OnStatusMessage("{0} has been loaded.", e.Argument.GetType().Name);
         }
@@ -673,9 +662,24 @@ namespace HistorianAdapters
             OnStatusMessage("{0} has been unloaded.", e.Argument.GetType().Name);
         }
 
+        private void MetadataProviders_AdapterCreated(object sender, EventArgs<IMetadataProvider> e)
+        {
+            e.Argument.SettingsCategory = Name + e.Argument.SettingsCategory;
+            if (e.Argument.GetType() == typeof(AdoMetadataProvider))
+            {
+                // Populate the default configuration for AdoMetadataProvider.
+                ConfigurationFile config = ConfigurationFile.Current;
+                AdoMetadataProvider provider = e.Argument as AdoMetadataProvider;
+                provider.Enabled = true;
+                provider.SelectString = string.Format("SELECT * FROM HistorianMetadata WHERE PlantCode='{0}'", Name);
+                provider.ConnectionString = config.Settings["SystemSettings"]["ConnectionString"].Value;
+                provider.DataProviderString = config.Settings["SystemSettings"]["DataProviderString"].Value;
+            }
+        }
+
         private void MetadataProviders_AdapterLoaded(object sender, EventArgs<IMetadataProvider> e)
         {
-            e.Argument.Metadata = m_writeArchive.MetadataFile;
+            e.Argument.Metadata = m_archive.MetadataFile;
             e.Argument.MetadataRefreshStart += MetadataProviders_MetadataRefreshStart;
             e.Argument.MetadataRefreshComplete += MetadataProviders_MetadataRefreshComplete;
             e.Argument.MetadataRefreshTimeout += MetadataProviders_MetadataRefreshTimeout;
@@ -691,6 +695,11 @@ namespace HistorianAdapters
             e.Argument.MetadataRefreshTimeout -= MetadataProviders_MetadataRefreshTimeout;
             e.Argument.MetadataRefreshException -= MetadataProviders_MetadataRefreshException;
             OnStatusMessage("{0} has been unloaded.", e.Argument.GetType().Name);
+        }
+
+        private void ReplicationProviders_AdapterCreated(object sender, EventArgs<IReplicationProvider> e)
+        {
+            e.Argument.SettingsCategory = Name + e.Argument.SettingsCategory;
         }
 
         private void ReplicationProviders_AdapterLoaded(object sender, EventArgs<IReplicationProvider> e)
@@ -713,7 +722,7 @@ namespace HistorianAdapters
 
         private void AdapterLoader_AdapterLoadException(object sender, EventArgs<Type, Exception> e)
         {
-            OnStatusMessage("{0} could not be loaded - {1}", e.Argument1.Name, e.Argument2.Message);
+            OnProcessException(e.Argument2);
         }
 
         private void DataServices_ServiceProcessException(object sender, EventArgs<Exception> e)
