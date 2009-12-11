@@ -12,9 +12,9 @@
                     <Button x:Name="ButtonShowAll" Content="../../Images/CancelSearch.png" Tag="Show All" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="5"/>
                 </StackPanel>
                 
-                <ScrollViewer BorderThickness="0" Padding="0">
+                <ScrollViewer BorderThickness="0" Padding="0" Height="{StaticResource XXXLargeItemSize}">
                     <ScrollViewer.Content>
-                        <ListBox x:Name="ListBoxDeviceList" Margin="0" Padding="0" Height="{StaticResource XXXLargeItemSize}">
+                        <ListBox x:Name="ListBoxDeviceList" Margin="0" Padding="0">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <CheckBox HorizontalAlignment="Center" Content="{Binding Path=Value}" Tag="{Binding Path=Key}" Width="{StaticResource XLargeItemSize}" 

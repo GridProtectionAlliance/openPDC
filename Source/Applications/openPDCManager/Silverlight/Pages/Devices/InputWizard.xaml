@@ -54,7 +54,7 @@
                                         <TextBox x:Name="TextBoxIniFile" Width="{StaticResource XXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
                                         <Button x:Name="ButtonBrowseIniFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2"/>
                                     </StackPanel>
-                                    <TextBlock Grid.Row="7" Grid.Column="0" Text="ID Code" HorizontalAlignment="Left" Margin="2"/>
+                                    <!--<TextBlock Grid.Row="7" Grid.Column="0" Text="ID Code" HorizontalAlignment="Left" Margin="2"/>-->
                                     <CheckBox x:Name="CheckboxConnectToPDC" Content="Connect to PDC" Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Margin="2"/>                                    
                                     <TextBlock Grid.Row="8" Grid.Column="0" x:Name="TextBlockPDCName" Text="PDC Name" HorizontalAlignment="Left" Margin="2"/>
                                     <TextBox x:Name="TextBoxPDCName" Grid.Row="8" Grid.Column="1" Width="{StaticResource LargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
@@ -86,7 +86,8 @@
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Interconnection" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
                                     <ComboBox x:Name="ComboboxInterconnection" Grid.Row="2" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
                                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Connection String" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
-                                    <TextBox Grid.Row="3" Grid.Column="1" x:Name="TextBoxConnectionString" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" />                                    
+                                    <TextBox Grid.Row="3" Grid.Column="1" x:Name="TextBoxConnectionString" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" 
+                                             TextAlignment="Left" VerticalAlignment="Center" Margin="2" TextWrapping="Wrap" />
                                 </Grid>
                             </layoutToolkit:AccordionItem.Content>
                         </layoutToolkit:AccordionItem>

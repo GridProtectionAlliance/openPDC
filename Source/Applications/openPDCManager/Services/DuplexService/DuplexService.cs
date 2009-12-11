@@ -241,7 +241,7 @@ namespace PCS.Services.DuplexService
     /// <summary>
     /// Derive your own Duplex service from this class
     /// </summary>
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, AddressFilterMode = AddressFilterMode.Any)]
     public abstract class DuplexService : IUniversalDuplexContract
     {    
         object syncRoot = new object();

@@ -2415,6 +2415,22 @@ namespace openPDCManager.Web.Data
 			return protocolList;
 		}
 
+		public static int GetProtocolIDByAcronym(string acronym)
+		{
+			DataConnection connection = new DataConnection();
+			IDbCommand command = connection.Connection.CreateCommand();
+			command.CommandType = CommandType.Text;
+			command.CommandText = "Select ID From Protocol Where Acronym = @acronym";
+			command.Parameters.Add(AddWithValue(command, "@acronym", acronym));
+			DataTable resultTable = new DataTable();
+			resultTable.Load(command.ExecuteReader());
+			connection.Dispose();
+			if (resultTable.Rows.Count > 0)
+				return Convert.ToInt32(resultTable.Rows[0]["ID"]);
+			else
+				return 0;
+		}
+
 		#endregion
 
 		#region " Manage Signal Types Code"

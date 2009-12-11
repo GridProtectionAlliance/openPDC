@@ -38,6 +38,12 @@
   <wsdl:message name="IPhasorDataService_GetProtocols_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetProtocolsResponse" />
   </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetProtocolIDByAcronym_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetProtocolIDByAcronym" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetProtocolIDByAcronym_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetProtocolIDByAcronymResponse" />
+  </wsdl:message>
   <wsdl:message name="IPhasorDataService_GetSignalTypes_InputMessage">
     <wsdl:part name="parameters" element="tns:GetSignalTypes" />
   </wsdl:message>
@@ -405,6 +411,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocols" message="tns:IPhasorDataService_GetProtocols_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocolsResponse" message="tns:IPhasorDataService_GetProtocols_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="GetProtocolIDByAcronym">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocolIDByAcronym" message="tns:IPhasorDataService_GetProtocolIDByAcronym_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocolIDByAcronymResponse" message="tns:IPhasorDataService_GetProtocolIDByAcronym_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="GetSignalTypes">
       <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetSignalTypes" message="tns:IPhasorDataService_GetSignalTypes_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetSignalTypesResponse" message="tns:IPhasorDataService_GetSignalTypes_OutputMessage" />
@@ -665,6 +675,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetProtocols">
       <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetProtocols" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProtocolIDByAcronym">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetProtocolIDByAcronym" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

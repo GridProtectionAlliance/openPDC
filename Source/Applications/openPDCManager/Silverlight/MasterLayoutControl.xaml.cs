@@ -243,8 +243,8 @@ namespace openPDCManager.Silverlight
 {
 	public partial class MasterLayoutControl : UserControl
 	{
-		const double layoutRootHeight = 768;
-		const double layoutRootWidth = 1024;
+		const double layoutRootHeight = 900;
+		const double layoutRootWidth = 1200;
 
 		public MasterLayoutControl()
 		{
@@ -256,7 +256,26 @@ namespace openPDCManager.Silverlight
 			Loaded += new RoutedEventHandler(MasterLayoutControl_Loaded);
 			NetworkChange.NetworkAddressChanged += new NetworkAddressChangedEventHandler(NetworkChange_NetworkAddressChanged);
 			ButtonChangeMode.Click += new RoutedEventHandler(ButtonChangeMode_Click);
-			UserControlSelectNode.NodeCollectionChanged += new SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);			
+			UserControlSelectNode.NodeCollectionChanged += new SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);
+			UserControlSelectNode.ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
+		}
+
+		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (UserControlSelectNode.ComboboxNode.SelectedItem != null)
+				TextBlockNode.Text = ((KeyValuePair<string, string>)UserControlSelectNode.ComboboxNode.SelectedItem).Value;
+
+			Uri homeUri = new Uri("/Pages/HomePage.xaml", UriKind.Relative);
+			ContentFrame.Navigate(homeUri);
+
+			//if (ContentFrame.CurrentSource != homeUri)
+			//{
+			//	ContentFrame.Navigate(homeUri);				
+			//}
+			//else
+			//{
+
+			//}
 		}
 
 		void UserControlSelectNode_NodeCollectionChanged(object sender, RoutedEventArgs e)
@@ -296,24 +315,28 @@ namespace openPDCManager.Silverlight
 		}
 		void Content_Resized(object sender, EventArgs e)
 		{			
-			//ScaleContent(Application.Current.Host.Content.ActualHeight, Application.Current.Host.Content.ActualWidth);
+			ScaleContent(Application.Current.Host.Content.ActualHeight, Application.Current.Host.Content.ActualWidth);
 		}
 		void ScaleContent(double height, double width)
 		{			
 			if (height > 0 && width > 0)
 			{
-				//LayoutRootScale.ScaleX = width / layoutRootWidth;
-				//LayoutRootScale.ScaleY = height / layoutRootHeight;
-				if (height / layoutRootHeight < width / layoutRootWidth)
-				{
-					LayoutRootScale.ScaleX = height / layoutRootHeight;
-					LayoutRootScale.ScaleY = height / layoutRootHeight;
-				}
-				else
-				{
-					LayoutRootScale.ScaleX = width / layoutRootWidth;
-					LayoutRootScale.ScaleY = width / layoutRootWidth;
-				}
+				LayoutRootScale.ScaleX = 0.99 * (width / layoutRootWidth);
+				LayoutRootScale.ScaleY = 0.98 * (height / layoutRootHeight);
+
+				//LayoutRootScale1.ScaleX = 0.99 * (width / layoutRootWidth);
+				//LayoutRootScale1.ScaleY = 0.99 * (height / layoutRootHeight);
+
+				//if (height / layoutRootHeight < width / layoutRootWidth)
+				//{
+				//    LayoutRootScale.ScaleX = 0.9 * (height / layoutRootHeight);
+				//    LayoutRootScale.ScaleY = 0.9 * (height / layoutRootHeight);
+				//}
+				//else
+				//{
+				//    LayoutRootScale.ScaleX = width / layoutRootWidth;
+				//    LayoutRootScale.ScaleY = width / layoutRootWidth;
+				//}
 			}
 			//System.Diagnostics.Debug.WriteLine("SL: " + GridLayoutRoot.Height.ToString() + " - " + GridLayoutRoot.Width.ToString());
 			//System.Diagnostics.Debug.WriteLine("Browser: " + height.ToString() + " - " + width.ToString());
@@ -335,7 +358,6 @@ namespace openPDCManager.Silverlight
 		{
 			System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration"), "_blank");
 		}
-
 		
 	}
 }

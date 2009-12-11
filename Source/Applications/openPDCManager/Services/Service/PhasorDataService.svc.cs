@@ -235,11 +235,12 @@ using openPDCManager.Web.Data;
 using openPDCManager.Web.Data.Entities;
 using openPDCManager.Web.Data.BusinessObjects;
 using System.IO;
+using System.ServiceModel;
 
 namespace PCS.Services.Service
 {
     // NOTE: If you change the class name "PhasorDataService" here, you must also update the reference to "PhasorDataService" in Web.config.	
-	[System.ServiceModel.ServiceBehavior(IncludeExceptionDetailInFaults = true)]
+	[ServiceBehavior(IncludeExceptionDetailInFaults = true, AddressFilterMode = AddressFilterMode.Any)]
     public class PhasorDataService : IPhasorDataService
     {
 		#region " Manage Company Code"				
@@ -423,6 +424,11 @@ namespace PCS.Services.Service
 		public Dictionary<int, string> GetProtocols(bool isOptional)
 		{
 			return CommonFunctions.GetProtocols(isOptional);
+		}
+
+		public int GetProtocolIDByAcronym(string acronym)
+		{
+			return CommonFunctions.GetProtocolIDByAcronym(acronym);
 		}
 
 		#endregion

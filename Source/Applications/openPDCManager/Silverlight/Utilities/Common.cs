@@ -259,20 +259,13 @@ namespace openPDCManager.Silverlight.Utilities
 		public static PhasorDataServiceClient GetPhasorDataServiceProxyClient()
 		{
 			string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
-			EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
-			//BasicHttpBinding binding;
-			//if (HtmlPage.Document.DocumentUri.Scheme.ToLower().StartsWith("https"))
-			//    binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
-			//else
-			//    binding = new BasicHttpBinding();
-			//binding.MaxReceivedMessageSize = 65536 * 30;
-
+			EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");			
 			CustomBinding binding;
 
 			if (HtmlPage.Document.DocumentUri.Scheme.ToLower().StartsWith("https"))
 			{
 				HttpsTransportBindingElement httpsTransportBindingElement = new HttpsTransportBindingElement();
-				httpsTransportBindingElement.MaxReceivedMessageSize = 65536 * 30;
+				httpsTransportBindingElement.MaxReceivedMessageSize = 65536 * 50;
 				binding = new CustomBinding(
 									new BinaryMessageEncodingBindingElement(),
 									httpsTransportBindingElement
@@ -281,35 +274,41 @@ namespace openPDCManager.Silverlight.Utilities
 			else
 			{
 				HttpTransportBindingElement httpTransportBindingElement = new HttpTransportBindingElement();
-				httpTransportBindingElement.MaxReceivedMessageSize = 65536 * 30;
+				httpTransportBindingElement.MaxReceivedMessageSize = 65536 * 50;
 				binding = new CustomBinding(
 									new BinaryMessageEncodingBindingElement(),
 									httpTransportBindingElement
 									);
 			}
-				
+
 			return new PhasorDataServiceClient(binding, address);
 		}
 
-		public static DuplexServiceClient GetDuplexServiceClient()
+		public static DuplexServiceClient GetDuplexServiceProxyClient()
 		{
 			string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
 			EndpointAddress address = new EndpointAddress(baseServiceUrl + "DuplexService/PhasorDataDuplexService.svc");
 			CustomBinding binding;
 			if (HtmlPage.Document.DocumentUri.Scheme.ToLower().StartsWith("https"))
+			{
+				HttpsTransportBindingElement httpsTransportBindingElement = new HttpsTransportBindingElement();
+				httpsTransportBindingElement.MaxReceivedMessageSize = 65536 * 50;
 				binding = new CustomBinding(
 									new PollingDuplexBindingElement(),
 									new BinaryMessageEncodingBindingElement(),
-									new HttpsTransportBindingElement()									
+									httpsTransportBindingElement
 									);
+			}
 			else
+			{
+				HttpTransportBindingElement httpTransportBindingElement = new HttpTransportBindingElement();
+				httpTransportBindingElement.MaxReceivedMessageSize = 65536 * 50;
 				binding = new CustomBinding(
 									new PollingDuplexBindingElement(),
 									new BinaryMessageEncodingBindingElement(),
-									new HttpTransportBindingElement()
+									httpTransportBindingElement
 									);
-
-			//binding.MaxReceivedMessageSize = 65536 * 10;
+			}	
 			return new DuplexServiceClient(binding, address);
 		}
 	}

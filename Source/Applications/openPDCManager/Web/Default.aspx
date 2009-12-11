@@ -68,16 +68,13 @@
 <body>
     <form id="form1" runat="server" style="width:100%; height:100%;">
         <div id="silverlightControlHost">
-            <object id="PcsSilverlightApp" data="data:application/x-silverlight-2," type="application/x-silverlight-2" style="width:100%; height:100%; min-height: 768px; min-width: 1024;">            
+            <object id="PcsSilverlightApp" data="data:application/x-silverlight-2," type="application/x-silverlight-2" width="100%" height="100%">            
 		        <param name="source" value="ClientBin/openPDCManager.Silverlight.xap"/>
 		        <param name="onError" value="onSilverlightError" />		        
 		        <param name="onload" value="onSilverlightLoad" />
 		        <param name="minRuntimeVersion" value="3.0.40624.0" />
 		        <param name="autoUpgrade" value="true" />
-		        <param name="initParams" value="BaseServiceUrl=<%=GetBaseServiceUrl %>" />
-		        <%--<a href="http://go.microsoft.com/fwlink/?LinkID=149156&v=3.0.40624.0" style="text-decoration:none">
- 			        <img src="http://go.microsoft.com/fwlink/?LinkId=108181" alt="Get Microsoft Silverlight" style="border-style:none"/>
-		        </a>--%>
+		        <param name="initParams" value="BaseServiceUrl=<%=GetBaseServiceUrl %>" />		       
 		        <div id="SilverlightMessage">		  
 		            <p align='center'>
 		                <br />

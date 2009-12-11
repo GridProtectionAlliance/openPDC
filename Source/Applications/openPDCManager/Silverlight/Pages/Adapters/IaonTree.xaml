@@ -14,7 +14,7 @@
             <StackPanel Orientation="Vertical">                
                 <StackPanel.Resources>                    
                     <common:HierarchicalDataTemplate x:Key="ChildNodeTemplate">
-                        <StackPanel Orientation="Horizontal">                                                                                                                                                            
+                        <StackPanel Orientation="Horizontal" ToolTipService.ToolTip="{Binding Path=ConnectionString}">                                                                                                                                                            
                                                     <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                         <TextBlock Text="{Binding Path=AdapterName}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
                                                     </Border>

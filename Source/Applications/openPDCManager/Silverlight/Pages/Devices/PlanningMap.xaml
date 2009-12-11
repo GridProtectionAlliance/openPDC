@@ -21,7 +21,7 @@
                 </Border>
             </StackPanel>
         </Border>
-        <Border Height="75" Width="95" Background="Black" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10">
+        <Border Height="75" Width="95" Background="Black" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,65">
             <Border Margin="2" BorderBrush="#FFFFFFFF" BorderThickness="2" CornerRadius="10">
                 <StackPanel Orientation="Vertical" Margin="5">
                     <StackPanel Orientation="Horizontal" Height="19">

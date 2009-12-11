@@ -13,9 +13,9 @@
                     <converter:InvertBooleanConverter x:Key="invertBooleanConverter" />
                 </StackPanel.Resources>
 
-                <ScrollViewer BorderThickness="0" Padding="0">
+                <ScrollViewer BorderThickness="0" Padding="0" Height="{StaticResource XXLargeItemSize}">
                     <ScrollViewer.Content>
-                        <ListBox x:Name="ListBoxOutputStreamDeviceList" Margin="0" Padding="0" Height="{StaticResource XXLargeItemSize}">
+                        <ListBox x:Name="ListBoxOutputStreamDeviceList" Margin="0" Padding="0">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <CheckBox HorizontalAlignment="Center" Content="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Width="{StaticResource XLargeItemSize}" 

@@ -4141,6 +4141,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         System.Collections.Generic.Dictionary<int, string> EndGetProtocols(System.IAsyncResult result);
         
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetProtocolIDByAcronym", ReplyAction="http://tempuri.org/IPhasorDataService/GetProtocolIDByAcronymResponse")]
+        System.IAsyncResult BeginGetProtocolIDByAcronym(string acronym, System.AsyncCallback callback, object asyncState);
+        
+        int EndGetProtocolIDByAcronym(System.IAsyncResult result);
+        
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetSignalTypes", ReplyAction="http://tempuri.org/IPhasorDataService/GetSignalTypesResponse")]
         System.IAsyncResult BeginGetSignalTypes(bool isOptional, System.AsyncCallback callback, object asyncState);
         
@@ -4494,6 +4499,25 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             get {
                 base.RaiseExceptionIfNecessary();
                 return ((System.Collections.Generic.Dictionary<int, string>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class GetProtocolIDByAcronymCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetProtocolIDByAcronymCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public int Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((int)(this.results[0]));
             }
         }
     }
@@ -5641,6 +5665,12 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.Threading.SendOrPostCallback onGetProtocolsCompletedDelegate;
         
+        private BeginOperationDelegate onBeginGetProtocolIDByAcronymDelegate;
+        
+        private EndOperationDelegate onEndGetProtocolIDByAcronymDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetProtocolIDByAcronymCompletedDelegate;
+        
         private BeginOperationDelegate onBeginGetSignalTypesDelegate;
         
         private EndOperationDelegate onEndGetSignalTypesDelegate;
@@ -6054,6 +6084,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         public event System.EventHandler<GetProtocolsCompletedEventArgs> GetProtocolsCompleted;
         
+        public event System.EventHandler<GetProtocolIDByAcronymCompletedEventArgs> GetProtocolIDByAcronymCompleted;
+        
         public event System.EventHandler<GetSignalTypesCompletedEventArgs> GetSignalTypesCompleted;
         
         public event System.EventHandler<GetCalculatedMeasurementListCompletedEventArgs> GetCalculatedMeasurementListCompleted;
@@ -6312,6 +6344,52 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             }
             base.InvokeAsync(this.onBeginGetProtocolsDelegate, new object[] {
                         isOptional}, this.onEndGetProtocolsDelegate, this.onGetProtocolsCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetProtocolIDByAcronym(string acronym, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetProtocolIDByAcronym(acronym, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        int openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndGetProtocolIDByAcronym(System.IAsyncResult result) {
+            return base.Channel.EndGetProtocolIDByAcronym(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetProtocolIDByAcronym(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            string acronym = ((string)(inValues[0]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetProtocolIDByAcronym(acronym, callback, asyncState);
+        }
+        
+        private object[] OnEndGetProtocolIDByAcronym(System.IAsyncResult result) {
+            int retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndGetProtocolIDByAcronym(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetProtocolIDByAcronymCompleted(object state) {
+            if ((this.GetProtocolIDByAcronymCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetProtocolIDByAcronymCompleted(this, new GetProtocolIDByAcronymCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetProtocolIDByAcronymAsync(string acronym) {
+            this.GetProtocolIDByAcronymAsync(acronym, null);
+        }
+        
+        public void GetProtocolIDByAcronymAsync(string acronym, object userState) {
+            if ((this.onBeginGetProtocolIDByAcronymDelegate == null)) {
+                this.onBeginGetProtocolIDByAcronymDelegate = new BeginOperationDelegate(this.OnBeginGetProtocolIDByAcronym);
+            }
+            if ((this.onEndGetProtocolIDByAcronymDelegate == null)) {
+                this.onEndGetProtocolIDByAcronymDelegate = new EndOperationDelegate(this.OnEndGetProtocolIDByAcronym);
+            }
+            if ((this.onGetProtocolIDByAcronymCompletedDelegate == null)) {
+                this.onGetProtocolIDByAcronymCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetProtocolIDByAcronymCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetProtocolIDByAcronymDelegate, new object[] {
+                        acronym}, this.onEndGetProtocolIDByAcronymDelegate, this.onGetProtocolIDByAcronymCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -9200,6 +9278,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             public System.Collections.Generic.Dictionary<int, string> EndGetProtocols(System.IAsyncResult result) {
                 object[] _args = new object[0];
                 System.Collections.Generic.Dictionary<int, string> _result = ((System.Collections.Generic.Dictionary<int, string>)(base.EndInvoke("GetProtocols", _args, result)));
+                return _result;
+            }
+            
+            public System.IAsyncResult BeginGetProtocolIDByAcronym(string acronym, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[1];
+                _args[0] = acronym;
+                System.IAsyncResult _result = base.BeginInvoke("GetProtocolIDByAcronym", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public int EndGetProtocolIDByAcronym(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                int _result = ((int)(base.EndInvoke("GetProtocolIDByAcronym", _args, result)));
                 return _result;
             }
             

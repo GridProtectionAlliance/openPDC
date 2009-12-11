@@ -231,6 +231,11 @@
 
 using System;
 using System.Windows;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
+using System.Windows.Browser;
 
 namespace openPDCManager.Silverlight
 {
@@ -238,6 +243,8 @@ namespace openPDCManager.Silverlight
     {
 		public string NodeValue { get; set; }
 		public string NodeName { get; set; }
+		//public PhasorDataServiceClient PhasorDataServiceProxyClient { get; set; }
+		//public DuplexServiceClient DuplexServiceProxyClient { get; set; }
 
         public App()
         {
@@ -251,8 +258,9 @@ namespace openPDCManager.Silverlight
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             if ((e.InitParams != null) && (e.InitParams.ContainsKey("BaseServiceUrl")))
-                Resources.Add("BaseServiceUrl", e.InitParams["BaseServiceUrl"]);
-            //this.RootVisual = new LayoutContainer();
+                Resources.Add("BaseServiceUrl", e.InitParams["BaseServiceUrl"]);            			
+			//this.PhasorDataServiceProxyClient = GetPhasorDataServiceProxyClient();
+			//this.DuplexServiceProxyClient = GetDuplexServiceProxyClient();
 			this.RootVisual = new MasterLayoutControl();
         }
         private void Application_Exit(object sender, EventArgs e)
@@ -288,5 +296,62 @@ namespace openPDCManager.Silverlight
             {
             }
         }
-    }
+
+		//PhasorDataServiceClient GetPhasorDataServiceProxyClient()
+		//{
+		//    string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
+		//    EndpointAddress address = new EndpointAddress(baseServiceUrl + "Service/PhasorDataService.svc");
+		//    CustomBinding binding;
+
+		//    if (HtmlPage.Document.DocumentUri.Scheme.ToLower().StartsWith("https"))
+		//    {
+		//        HttpsTransportBindingElement httpsTransportBindingElement = new HttpsTransportBindingElement();
+		//        httpsTransportBindingElement.MaxReceivedMessageSize = 65536 * 50;
+		//        binding = new CustomBinding(
+		//                            new BinaryMessageEncodingBindingElement(),
+		//                            httpsTransportBindingElement
+		//                            );
+		//    }
+		//    else
+		//    {
+		//        HttpTransportBindingElement httpTransportBindingElement = new HttpTransportBindingElement();
+		//        httpTransportBindingElement.MaxReceivedMessageSize = 65536 * 50;
+		//        binding = new CustomBinding(
+		//                            new BinaryMessageEncodingBindingElement(),
+		//                            httpTransportBindingElement
+		//                            );
+		//    }
+
+		//    return new PhasorDataServiceClient(binding, address);
+		//}
+
+		//DuplexServiceClient GetDuplexServiceProxyClient()
+		//{
+		//    string baseServiceUrl = Application.Current.Resources["BaseServiceUrl"].ToString();
+		//    EndpointAddress address = new EndpointAddress(baseServiceUrl + "DuplexService/PhasorDataDuplexService.svc");
+		//    CustomBinding binding;
+		//    if (HtmlPage.Document.DocumentUri.Scheme.ToLower().StartsWith("https"))
+		//    {
+		//        HttpsTransportBindingElement httpsTransportBindingElement = new HttpsTransportBindingElement();
+		//        httpsTransportBindingElement.MaxReceivedMessageSize = 65536 * 50;
+		//        binding = new CustomBinding(
+		//                            new PollingDuplexBindingElement(),
+		//                            new BinaryMessageEncodingBindingElement(),
+		//                            httpsTransportBindingElement
+		//                            );
+		//    }
+		//    else
+		//    {
+		//        HttpTransportBindingElement httpTransportBindingElement = new HttpTransportBindingElement();
+		//        httpTransportBindingElement.MaxReceivedMessageSize = 65536 * 50;
+		//        binding = new CustomBinding(
+		//                            new PollingDuplexBindingElement(),
+		//                            new BinaryMessageEncodingBindingElement(),
+		//                            httpTransportBindingElement
+		//                            );
+		//    }			
+		//    return new DuplexServiceClient(binding, address);
+		//}
+	
+	}
 }

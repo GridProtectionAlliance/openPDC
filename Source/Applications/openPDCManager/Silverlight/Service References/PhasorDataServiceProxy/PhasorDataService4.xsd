@@ -46,6 +46,20 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="GetProtocolIDByAcronym">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="acronym" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetProtocolIDByAcronymResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetProtocolIDByAcronymResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="GetSignalTypes">
     <xs:complexType>
       <xs:sequence>

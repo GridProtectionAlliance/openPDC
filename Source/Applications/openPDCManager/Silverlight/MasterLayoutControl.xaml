@@ -6,17 +6,13 @@
     xmlns:nodesControl="clr-namespace:openPDCManager.Silverlight.UserControls"
     >
     
-    <Grid x:Name="GridLayoutRoot" Background="{StaticResource PageBackgroundBrush}">
-        <!--<Grid.RenderTransform>
-            <ScaleTransform x:Name="LayoutRootScale" ScaleX="1" ScaleY="1"/>
-        </Grid.RenderTransform>-->
-        
-        <!--<Canvas x:Name="LayoutRoot" Background="Transparent" VerticalAlignment="Top" HorizontalAlignment="Center" Height="875" Width="1200">
+    <Grid x:Name="GridLayoutRoot" Background="{StaticResource PageBackgroundBrush}">        
+        <Canvas x:Name="LayoutRoot" Background="Transparent" VerticalAlignment="Top" HorizontalAlignment="Left" Height="900" Width="1200">
             <Canvas.RenderTransform>
                 <ScaleTransform x:Name="LayoutRootScale" ScaleX="1" ScaleY="1"/>
-            </Canvas.RenderTransform>-->
+            </Canvas.RenderTransform>
 
-            <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,0,25,25" Background="Transparent" Height="900" Width="1200">
+            <Grid Canvas.Left="10" Canvas.Top="2" Background="Transparent" Height="900" Width="1200">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="11*" />
@@ -25,15 +21,13 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Grid.RenderTransform>
-                    <ScaleTransform x:Name="LayoutRootScale" ScaleX="1" ScaleY="1"/>
-                </Grid.RenderTransform>
                 
-                <!--<StackPanel x:Name="StackPanelHeaderLayout" Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Background="{StaticResource HeaderBackgroundBrush}">-->
-                    <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" Background="{StaticResource HeaderBackgroundBrush}" HorizontalAlignment="Stretch">
-                        <TextBlock Text="Tennessee Valley Authority" Style="{StaticResource LargeWhiteTextWithEffectStyle}" />
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Background="{StaticResource HeaderBackgroundBrush}">                    
+                    <StackPanel Orientation="Vertical"  HorizontalAlignment="Stretch">
+                        <TextBlock x:Name="TextBlockNode" Text="" Style="{StaticResource LargeWhiteTextWithEffectStyle}" />
                         <TextBlock Text="openPDC Manager" Style="{StaticResource MainTitleStyle}" />
                     </StackPanel>
+                </StackPanel>
                     <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" Background="{StaticResource HeaderBackgroundBrush}" HorizontalAlignment="Stretch">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <TextBlock Text="Execution Mode: " Style="{StaticResource SmallWhiteTextStyle}" />
@@ -63,7 +57,7 @@
                                             <Image Source="Images/Configuration.png" />
                                         </igMenu:XamWebMenuItem.Icon>
                                     </igMenu:XamWebMenuItem>
-                            <igMenu:XamWebSeparator />
+                                    <igMenu:XamWebSeparator />
                                     <igMenu:XamWebMenuItem Header="Active Map" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Devices/ActiveMap.xaml">
                                         <igMenu:XamWebMenuItem.Icon>
                                             <Image Source="Images/Earth.png" />
@@ -156,13 +150,11 @@
                     </igMenu:XamWebMenu>
                             <TextBlock Text="" Width="{StaticResource XXXSmallItemSize}" />
                             <TextBlock Text="Node: " FontWeight="Bold" Margin="5" Foreground="#FFFFFFFF" />
-                            <nodesControl:SelectNode x:Name="UserControlSelectNode" Background="Transparent" />
-                    <!--<ComboBox x:Name="ComboboxNode" Margin="5" DisplayMemberPath="Value" Width="{StaticResource LargerItemSize}" />-->
+                            <nodesControl:SelectNode x:Name="UserControlSelectNode" Background="Transparent" />                   
                 </StackPanel>
                     </StackPanel>
-                <!--</StackPanel>-->
-
-                <Border x:Name="BorderMain" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MainBorderStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                
+                <Border x:Name="BorderMain" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MainBorderStyle}" >
 
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
 
@@ -176,7 +168,7 @@
 
             </Grid>
 
-        <!--</Canvas>-->
+        </Canvas>
     
     </Grid>
     

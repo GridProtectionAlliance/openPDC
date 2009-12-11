@@ -395,6 +395,9 @@ namespace PCS.Services.Service
 		[OperationContract]
 		Dictionary<int, string> GetProtocols(bool isOptional);
 
+		[OperationContract]
+		int GetProtocolIDByAcronym(string acronym);
+
 		#endregion
 
 		#region " Manage Signal Types Code"

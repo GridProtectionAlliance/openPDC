@@ -256,7 +256,7 @@ namespace openPDCManager.Silverlight.Pages
 
         public HomePage()
         {
-			duplexClient = Common.GetDuplexServiceClient();
+			duplexClient = Common.GetDuplexServiceProxyClient();
 			duplexClient.SendToServiceCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(duplexClient_SendToServiceCompleted);
 			duplexClient.SendToClientReceived += new EventHandler<SendToClientReceivedEventArgs>(duplexClient_SendToClientReceived);
 			duplexClient.SendToServiceAsync(new ConnectMessage());

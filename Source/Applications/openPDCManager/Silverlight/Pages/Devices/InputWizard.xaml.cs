@@ -273,6 +273,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			client.SaveDeviceCompleted += new EventHandler<SaveDeviceCompletedEventArgs>(client_SaveDeviceCompleted);
 			client.GetExecutingAssemblyPathCompleted += new EventHandler<GetExecutingAssemblyPathCompletedEventArgs>(client_GetExecutingAssemblyPathCompleted);
 			client.SaveIniFileCompleted += new EventHandler<SaveIniFileCompletedEventArgs>(client_SaveIniFileCompleted);
+			client.GetProtocolIDByAcronymCompleted += new EventHandler<GetProtocolIDByAcronymCompletedEventArgs>(client_GetProtocolIDByAcronymCompleted);
 			//Controls Events
 			Loaded += new RoutedEventHandler(InputWizard_Loaded);
 			ButtonBrowseConfigurationFile.Click += new RoutedEventHandler(ButtonBrowseConfigurationFile_Click);
@@ -286,8 +287,22 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			ComboboxProtocol.SelectionChanged += new SelectionChangedEventHandler(ComboboxProtocol_SelectionChanged);
 		}
 
-		
 		#region " Service Event Handlers"
+
+		void client_GetProtocolIDByAcronymCompleted(object sender, GetProtocolIDByAcronymCompletedEventArgs e)
+		{
+			if (e.Error == null && e.Result > 0)
+			{
+				foreach (KeyValuePair<int, string> item in ComboboxProtocol.Items)
+				{
+					if (item.Key == e.Result)
+					{
+						ComboboxProtocol.SelectedItem = item;
+						break;
+					}
+				}
+			}
+		}
 
 		void client_SaveIniFileCompleted(object sender, SaveIniFileCompletedEventArgs e)
 		{
@@ -412,7 +427,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			{
 				connectionSettings = e.Result;
 				if (connectionSettings != null)
-					TextBoxConnectionString.Text = connectionSettings.ConnectionString;
+				{
+					TextBoxConnectionString.Text = "TransportProtocol=" + connectionSettings.TransportProtocol.ToString() + ";" + connectionSettings.ConnectionString;
+					//Select Phasor Protocol type in the combobox based on the protocol in the connection file.
+					client.GetProtocolIDByAcronymAsync(connectionSettings.PhasorProtocol.ToString());
+				}
 			}
 			else
 			{
