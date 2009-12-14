@@ -526,9 +526,10 @@ ORDER BY CalculatedMeasurement.LoadOrder;
 CREATE VIEW ActiveMeasurement
 AS
 SELECT Device.NodeID, CONCAT_WS(':', Historian.Acronym, CAST(Measurement.PointID AS CHAR)) AS ID, Measurement.SignalID, Measurement.PointTag, 
-	Measurement.AlternateTag, Measurement.SignalReference, Device.Acronym AS Device, Runtime.ID AS DeviceID, Protocol.Acronym AS Protocol,
-	SignalType.Acronym AS SignalType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier, Company.Acronym AS Company, 
-	Device.Longitude, Device.Latitude, Measurement.Description
+	Measurement.AlternateTag, Measurement.SignalReference, Device.Acronym AS Device,
+	CASE WHEN Device.IsConcentrator = 0 AND Device.ParentID IS NOT NULL THEN RuntimeP.ID ELSE Runtime.ID END AS DeviceID,
+	Protocol.Acronym AS Protocol, SignalType.Acronym AS SignalType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier,
+	Company.Acronym AS Company, Device.Longitude, Device.Latitude, Measurement.Description
 FROM Company RIGHT OUTER JOIN
 	Device ON Company.ID = Device.CompanyID RIGHT OUTER JOIN
 	Measurement LEFT OUTER JOIN
@@ -537,7 +538,8 @@ FROM Company RIGHT OUTER JOIN
 	Measurement.PhasorSourceIndex = Phasor.SourceIndex LEFT OUTER JOIN
 	Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
 	Historian ON Measurement.HistorianID = Historian.ID LEFT OUTER JOIN
-	Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device'
+	Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device' LEFT OUTER JOIN
+	Runtime AS RuntimeP ON RuntimeP.SourceID = Device.ParentID AND RuntimeP.SourceTable = N'Device'
 WHERE (Device.Enabled <> 0);
 
 CREATE VIEW IaonOutputAdapter
