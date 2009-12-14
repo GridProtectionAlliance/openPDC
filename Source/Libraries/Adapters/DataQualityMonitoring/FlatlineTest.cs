@@ -335,10 +335,10 @@ namespace DataQualityMonitoring
                 {
                     measurement = frame.Measurements[key];
 
-                    if (m_lastChange.ContainsKey(key))
-                        m_lastChange[key] = measurement;
-                    else
+                    if (!m_lastChange.ContainsKey(key))
                         m_lastChange.Add(key, measurement);
+                    else if (m_lastChange[key].Value != measurement.Value)
+                        m_lastChange[key] = measurement;
                 }
             }
         }
