@@ -733,12 +733,16 @@ namespace TVA.PhasorProtocols
         public override void Initialize()
         {
             base.Initialize();
+            string errorMessage = "{0} is missing from Settings - Example: IDCode=235; dataChannel={Port=0; Clients=localhost:8800}";
 
             Dictionary<string, string> settings = Settings;
             string setting, dataChannel, commandChannel;
 
             // Load required parameters
-            m_idCode = ushort.Parse(settings["IDCode"]);
+            if (!settings.TryGetValue("IDCode", out setting))
+                throw new ArgumentException(string.Format(errorMessage, "IDCode"));
+
+            m_idCode = ushort.Parse(setting);
             settings.TryGetValue("dataChannel", out dataChannel);
             settings.TryGetValue("commandChannel", out commandChannel);
 

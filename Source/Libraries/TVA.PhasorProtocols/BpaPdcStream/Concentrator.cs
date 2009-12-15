@@ -279,8 +279,14 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// </summary>
         public override void Initialize()
         {
+            string errorMessage = "{0} is missing from Settings - Example: iniFileName=TESTSTREAM.ini";
+            string setting;
+
             // Load required parameters
-            m_iniFileName = FilePath.GetAbsolutePath(Settings["iniFileName"]);
+            if (!Settings.TryGetValue("iniFileName", out setting))
+                throw new ArgumentException(string.Format(errorMessage, "iniFileName"));
+
+            m_iniFileName = FilePath.GetAbsolutePath(setting);
 
             // Start base class initialization
             base.Initialize();

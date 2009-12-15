@@ -3,6 +3,7 @@ using System.Timers;
 using TVA;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
+using System;
 
 namespace DataQualityMonitoring
 {
@@ -102,17 +103,27 @@ namespace DataQualityMonitoring
         {
             base.Initialize();
 
+            string errorMessage = "{0} is missing from Settings - Example: lowRange=59.95; highRange=60.05";
+            bool rangeSet = false;
+
             Dictionary<string, string> settings = Settings;
             string setting;
-            bool rangeSet = false;
 
             if (settings.TryGetValue("signalType", out setting))
                 rangeSet = TrySetRange(setting);
 
             if(!rangeSet)
             {
-                m_lowRange = double.Parse(settings["lowRange"]);
-                m_highRange = double.Parse(settings["highRange"]);
+                if (!settings.TryGetValue("lowRange", out setting))
+                    throw new ArgumentException(string.Format(errorMessage, "lowRange"));
+
+                m_lowRange = double.Parse(setting);
+
+                if (!settings.TryGetValue("highRange", out setting))
+                    throw new ArgumentException(string.Format(errorMessage, "highRange"));
+
+                m_highRange = double.Parse(setting);
+
                 rangeSet = true;
             }
 
