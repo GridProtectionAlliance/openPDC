@@ -525,7 +525,7 @@ ORDER BY CalculatedMeasurement.LoadOrder;
 
 CREATE VIEW ActiveMeasurement
 AS
-SELECT Device.NodeID, CONCAT_WS(':', Historian.Acronym, CAST(Measurement.PointID AS CHAR)) AS ID, Measurement.SignalID, Measurement.PointTag, 
+SELECT COALESCE(Historian.NodeID, Device.NodeID) AS NodeID, CONCAT_WS(':', Historian.Acronym, CAST(Measurement.PointID AS CHAR)) AS ID, Measurement.SignalID, Measurement.PointTag, 
 	Measurement.AlternateTag, Measurement.SignalReference, Device.Acronym AS Device,
 	CASE WHEN Device.IsConcentrator = 0 AND Device.ParentID IS NOT NULL THEN RuntimeP.ID ELSE Runtime.ID END AS DeviceID,
 	Protocol.Acronym AS Protocol, SignalType.Acronym AS SignalType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier,
@@ -540,7 +540,7 @@ FROM Company RIGHT OUTER JOIN
 	Historian ON Measurement.HistorianID = Historian.ID LEFT OUTER JOIN
 	Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device' LEFT OUTER JOIN
 	Runtime AS RuntimeP ON RuntimeP.SourceID = Device.ParentID AND RuntimeP.SourceTable = N'Device'
-WHERE (Device.Enabled <> 0);
+WHERE (Device.Enabled <> 0 OR Device.Enabled IS NULL) AND (Measurement.Enabled <> 0);
 
 CREATE VIEW IaonOutputAdapter
 AS
