@@ -236,6 +236,65 @@ using TVA.Measurements.Routing;
 
 namespace TVA.PhasorProtocols
 {
+    #region [ Enumerations ]
+
+    /// <summary>
+    /// Signal type enumeration.
+    /// </summary>
+    /// <remarks>
+    /// The signal type represents the explicit fundamental type of a signal that a value represents.
+    /// </remarks>
+    [Serializable()]
+    public enum SignalType
+    {
+        /// <summary>
+        /// Current magnitude.
+        /// </summary>
+        IPHM = 1,
+        /// <summary>
+        /// Current phase angle.
+        /// </summary>
+        IPHA = 2,
+        /// <summary>
+        /// Voltage magnitude.
+        /// </summary>
+        VPHM = 3,
+        /// <summary>
+        /// Voltage phase angle.
+        /// </summary>
+        VPHA = 4,
+        /// <summary>
+        /// Frequency.
+        /// </summary>
+        FREQ = 5,
+        /// <summary>
+        /// Frequency delta (dF/dt).
+        /// </summary>
+        DFDT = 6,
+        /// <summary>
+        /// Analog value.
+        /// </summary>
+        ALOG = 7,
+        /// <summary>
+        /// Status flags.
+        /// </summary>
+        STAT = 8,
+        /// <summary>
+        /// Digital value.
+        /// </summary>
+        DIGI = 9,
+        /// <summary>
+        /// Calculated value.
+        /// </summary>
+        CALC = 10,
+        /// <summary>
+        /// Undefined signal.
+        /// </summary>
+        NONE = -1
+    }
+
+    #endregion
+
     /// <summary>
     /// Represents the base class for calculated measurements that use phasor data.
     /// </summary>

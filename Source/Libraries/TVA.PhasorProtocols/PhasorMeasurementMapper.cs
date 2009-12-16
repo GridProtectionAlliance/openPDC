@@ -904,7 +904,7 @@ namespace TVA.PhasorProtocols
 
                         // Map status flags (SF) from device data cell itself (IDataCell implements IMeasurement
                         // and exposes the status flags as its value)
-                        MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(SignalReferenceType.Status), parsedDevice);
+                        MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(FundamentalSignalType.Status), parsedDevice);
 
                         // Map phase angles (PAn) and magnitudes (PMn)
                         phasors = parsedDevice.PhasorValues;
@@ -916,20 +916,20 @@ namespace TVA.PhasorProtocols
                             measurements = phasors[x].Measurements;
 
                             // Map angle
-                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(SignalReferenceType.Angle, x, count), measurements[AngleIndex]);
+                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(FundamentalSignalType.Angle, x, count), measurements[AngleIndex]);
 
                             // Map magnitude
-                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(SignalReferenceType.Magnitude, x, count), measurements[MagnitudeIndex]);
+                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(FundamentalSignalType.Magnitude, x, count), measurements[MagnitudeIndex]);
                         }
 
                         // Map frequency (FQ) and dF/dt (DF)
                         measurements = parsedDevice.FrequencyValue.Measurements;
 
                         // Map frequency
-                        MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(SignalReferenceType.Frequency), measurements[FrequencyIndex]);
+                        MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(FundamentalSignalType.Frequency), measurements[FrequencyIndex]);
 
                         // Map dF/dt
-                        MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(SignalReferenceType.DfDt), measurements[DfDtIndex]);
+                        MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(FundamentalSignalType.DfDt), measurements[DfDtIndex]);
 
                         // Map analog values (AVn)
                         analogs = parsedDevice.AnalogValues;
@@ -938,7 +938,7 @@ namespace TVA.PhasorProtocols
                         for (x = 0; x < count; x++)
                         {
                             // Map analog value
-                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(SignalReferenceType.Analog, x, count), analogs[x].Measurements[0]);
+                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(FundamentalSignalType.Analog, x, count), analogs[x].Measurements[0]);
                         }
 
                         // Map digital values (DVn)
@@ -948,7 +948,7 @@ namespace TVA.PhasorProtocols
                         for (x = 0; x < count; x++)
                         {
                             // Map digital value
-                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(SignalReferenceType.Digital, x, count), digitals[x].Measurements[0]);
+                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(FundamentalSignalType.Digital, x, count), digitals[x].Measurements[0]);
                         }
                     }
                     else
