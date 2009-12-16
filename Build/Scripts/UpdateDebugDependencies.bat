@@ -18,5 +18,6 @@ COPY "..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Com
 COPY "..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Core.*" "..\..\Source\Dependencies\TVA\"
 COPY "..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Services.*" "..\..\Source\Dependencies\TVA\"
 COPY "..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Windows.*" "..\..\Source\Dependencies\TVA\"
+COPY "..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Web.*" "..\..\Source\Dependencies\TVA\"
 COPY "..\..\..\..\Historian\Current Version\Build\Output\Debug\Libraries\TVA.Historian.*" "..\..\Source\Dependencies\TVA\"
 PAUSE
