@@ -725,6 +725,15 @@ namespace TVA.PhasorProtocols
             info.AddValue("digitalValues", m_digitalValues, typeof(DigitalValueCollection));
         }
 
+        /// <summary>
+        /// Returns a string representation of the status flags.
+        /// </summary>
+        /// <returns>A string representation of the status flags <see cref="IMeasurement"/>.</returns>
+        public override string ToString()
+        {
+            return Measurement.ToString(this);
+        }
+
         #endregion
 
         #region [ IMeasurement Implementation ]
