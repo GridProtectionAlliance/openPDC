@@ -596,12 +596,12 @@
             <param name="export"><see cref="T:TVA.Historian.Exporters.Export"/> to send to <see cref="E:TVA.Historian.Exporters.ExporterBase.ExportProcessException"/> event.</param>
             <param name="exception"><see cref="T:System.Exception"/> to send to <see cref="E:TVA.Historian.Exporters.ExporterBase.ExportProcessException"/> event.</param>
         </member>
-        <member name="M:TVA.Historian.Exporters.ExporterBase.HandleParserDataParsed(System.Object,TVA.EventArgs{System.Guid,System.Collections.Generic.IList{TVA.Historian.Packets.IPacket}})">
+        <member name="M:TVA.Historian.Exporters.ExporterBase.ProcessRealTimeData(System.Object,TVA.EventArgs{System.Collections.Generic.IList{TVA.Historian.IDataPoint}})">
             <summary>
-            Handles the event that get raised when the <see cref="P:TVA.Historian.DataListener.Parser"/> of one of the <see cref="P:TVA.Historian.Exporters.ExporterBase.Listeners"/> finishes parsing real-time packets.
+            Handles the <see cref="E:TVA.Historian.DataListener.DataExtracted"/> event for all the <see cref="P:TVA.Historian.Exporters.ExporterBase.Listeners"/>.
             </summary>
-            <param name="sender"><see cref="T:TVA.Historian.DataListener"/> object whose <see cref="P:TVA.Historian.DataListener.Parser"/> finished parsing real-time packets.</param>
-            <param name="e"><see cref="T:TVA.EventArgs`2"/> object where <see cref="F:TVA.EventArgs`2.Argument2"/> is the collection of parsed real-time packets.</param>
+            <param name="sender"><see cref="T:TVA.Historian.DataListener"/> object that raised the event.</param>
+            <param name="e"><see cref="T:TVA.EventArgs`1"/> object where <see cref="F:TVA.EventArgs`1.Argument"/> is the collection of real-time time-sereis data received.</param>
         </member>
         <member name="M:TVA.Historian.Exporters.ExporterBase.GetExportData(TVA.Historian.Exporters.Export)">
             <summary>
@@ -749,19 +749,24 @@
             Gets or sets the <see cref="T:System.Delegate"/> to be invoked when an existing <see cref="T:TVA.Historian.Exporters.Export"/> from the <see cref="P:TVA.Historian.Exporters.ExporterBase.Exports"/> is updated.
             </summary>
         </member>
+        <member name="P:TVA.Historian.Exporters.ExporterBase.RealTimeExportQueue">
+            <summary>
+            Gets the internal <see cref="T:TVA.Collections.ProcessQueue`1"/> used for processing <see cref="P:TVA.Historian.Exporters.ExporterBase.Exports"/> defined as <see cref="F:TVA.Historian.Exporters.ExportType.RealTime"/>.
+            </summary>
+        </member>
         <member name="T:TVA.Historian.Exporters.ExporterBase.RealTimeData">
             <summary>
             A class that can be used to save real-time time-series data for <see cref="F:TVA.Historian.Exporters.ExporterBase.RealTimeData.Export"/>s of type <see cref="F:TVA.Historian.Exporters.ExportType.RealTime"/>.
             </summary>
             <seealso cref="F:TVA.Historian.Exporters.ExporterBase.RealTimeData.Export"/>
         </member>
-        <member name="M:TVA.Historian.Exporters.ExporterBase.RealTimeData.#ctor(TVA.Historian.Exporters.Export,TVA.Historian.DataListener,System.Collections.Generic.IList{TVA.Historian.Packets.IPacket})">
+        <member name="M:TVA.Historian.Exporters.ExporterBase.RealTimeData.#ctor(TVA.Historian.Exporters.Export,TVA.Historian.DataListener,System.Collections.Generic.IList{TVA.Historian.IDataPoint})">
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Exporters.ExporterBase.RealTimeData"/> class.
             </summary>
             <param name="export">The <see cref="F:TVA.Historian.Exporters.ExporterBase.RealTimeData.Export"/> to which the <paramref name="data"/> belongs.</param>
             <param name="listener">The <see cref="T:TVA.Historian.DataListener"/> that provided the <paramref name="data"/>.</param>
-            <param name="data">The real-time data packets received by the <paramref name="listener"/>.</param>
+            <param name="data">The real-time time-series data received by the <paramref name="listener"/>.</param>
         </member>
         <member name="F:TVA.Historian.Exporters.ExporterBase.RealTimeData.Export">
             <summary>
@@ -775,7 +780,7 @@
         </member>
         <member name="F:TVA.Historian.Exporters.ExporterBase.RealTimeData.Data">
             <summary>
-            Gets or sets the real-time data packets received by the <see cref="F:TVA.Historian.Exporters.ExporterBase.RealTimeData.Listener"/>.
+            Gets or sets the real-time time-series data received by the <see cref="F:TVA.Historian.Exporters.ExporterBase.RealTimeData.Listener"/>.
             </summary>
         </member>
         <member name="M:TVA.Historian.Exporters.CsvExporter.#ctor">
@@ -1387,12 +1392,12 @@
             <param name="data">Real-time time-series data received by the <paramref name="listener"/>.</param>
             <exception cref="T:System.NotSupportedException">Always</exception>
         </member>
-        <member name="M:TVA.Historian.Exporters.RawDataExporter.HandleParserDataParsed(System.Object,TVA.EventArgs{System.Guid,System.Collections.Generic.IList{TVA.Historian.Packets.IPacket}})">
+        <member name="M:TVA.Historian.Exporters.RawDataExporter.ProcessRealTimeData(System.Object,TVA.EventArgs{System.Collections.Generic.IList{TVA.Historian.IDataPoint}})">
             <summary>
-            Handles the event that get raised when the <see cref="P:TVA.Historian.DataListener.Parser"/> of one of the <see cref="P:TVA.Historian.Exporters.ExporterBase.Listeners"/> finishes parsing real-time packets.
+            Handles the <see cref="E:TVA.Historian.DataListener.DataExtracted"/> event for all the <see cref="P:TVA.Historian.Exporters.ExporterBase.Listeners"/>.
             </summary>
-            <param name="sender"><see cref="T:TVA.Historian.DataListener"/> object whose <see cref="P:TVA.Historian.DataListener.Parser"/> finished parsing real-time packets.</param>
-            <param name="e"><see cref="T:TVA.EventArgs`2"/> object where <see cref="F:TVA.EventArgs`2.Argument2"/> is the collection of parsed real-time packets.</param>
+            <param name="sender"><see cref="T:TVA.Historian.DataListener"/> object that raised the event.</param>
+            <param name="e"><see cref="T:TVA.EventArgs`1"/> object where <see cref="F:TVA.EventArgs`1.Argument"/> is the collection of real-time time-sereis data received.</param>
         </member>
         <member name="M:TVA.Historian.Exporters.RawDataExporter.GetBufferedData(System.String)">
             <summary>
