@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  SerializableFlatlinedMeasurement.cs - Gbtc
+//  IOutOfRangeService.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,12 +8,8 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  12/10/2009 - Stephen C. Wills
-//       Generated original version of source code.
-//  12/11/2009 - Pinal C. Patel
-//       Changed Timestamp to string and TimeSinceLastChange to double.
 //  12/16/2009 - Stephen C. Wills
-//       Refactored most of the implementation into the SerializableMeasurement base class.
+//       Generated original version of source code.
 //
 //*******************************************************************************************************
 
@@ -233,51 +229,101 @@
 */
 #endregion
 
-using System.Runtime.Serialization;
-using System.Xml.Serialization;
-using TVA;
-using TVA.Measurements;
+using System.Collections.Generic;
+using System.ServiceModel;
+using System.ServiceModel.Web;
 
 namespace DataQualityMonitoring.Services
 {
     /// <summary>
-    /// Represents a flatlined <see cref="IMeasurement"/> that can be serialized using <see cref="XmlSerializer"/>, <see cref="DataContractSerializer"/> or <see cref="System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+    /// Defines a REST web service for out-of-range measurements.
     /// </summary>
-    [XmlType("FlatlinedMeasurement"), DataContract(Name = "FlatlinedMeasurement", Namespace = "")]
-    public class SerializableFlatlinedMeasurement : SerializableMeasurement
+    [ServiceContract()]
+    public interface IOutOfRangeService
     {
-
-        #region [ Constructors ]
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SerializableFlatlinedMeasurement"/> class.
-        /// </summary>
-        public SerializableFlatlinedMeasurement()
-            : base()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SerializableFlatlinedMeasurement"/> class.
-        /// </summary>
-        /// <param name="measurement"><see cref="IMeasurement"/> from which <see cref="SerializableFlatlinedMeasurement"/> is to be initialized.</param>
-        /// <param name="timeSinceLastChange">The amount of time since the flatlined measurement last changed in ticks.</param>
-        public SerializableFlatlinedMeasurement(IMeasurement measurement, long timeSinceLastChange)
-            : base(measurement)
-        {
-            TimeSinceLastChange = Ticks.ToSeconds(timeSinceLastChange);
-        }
-
-        #endregion
 
         #region [ Properties ]
 
         /// <summary>
-        /// Gets or sets the amount of time in seconds since the <see cref="IMeasurement"/> last changed its value.
+        /// Gets or collection of <see cref="RangeTest"/>s used by the web service for its data.
         /// </summary>
-        [XmlAttribute(), DataMember(Order = 6)]
-        public double TimeSinceLastChange { get; set; }
+        ICollection<RangeTest> Tests { get; }
 
         #endregion
+
+        #region [ Methods ]
+
+        /// <summary>
+        /// Reads all out-of-range measurements from the <see cref="Tests"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+        /// </summary>
+        /// <returns>A <see cref="SerializableRangeTest"/> object.</returns>
+        [OperationContract(),
+        WebGet(ResponseFormat = WebMessageFormat.Xml, UriTemplate = "/outofrangemeasurements/read/xml")]
+        SerializableRangeTestCollection ReadAllOutOfRangeMeasurementsAsXml();
+
+        /// <summary>
+        /// Reads all out-of-range measurements from the <see cref="Tests"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+        /// </summary>
+        /// <returns>A <see cref="SerializableRangeTest"/> object.</returns>
+        [OperationContract(),
+        WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "/outofrangemeasurements/read/json")]
+        SerializableRangeTestCollection ReadAllOutOfRangeMeasurementsAsJson();
+
+        /// <summary>
+        /// Reads all out-of-range measurements with the specified signal type and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+        /// </summary>
+        /// <param name="signalType">The signal type of the desired out-of-range measurements.</param>
+        /// <returns>A <see cref="SerializableRangeTest"/> object.</returns>
+        [OperationContract(),
+        WebGet(ResponseFormat = WebMessageFormat.Xml, UriTemplate = "/outofrangemeasurements/read/signaltype:{signalType}/xml")]
+        SerializableRangeTestCollection ReadOutOfRangeMeasurementsWithSignalTypeAsXml(string signalType);
+
+        /// <summary>
+        /// Reads all out-of-range measurements with the specified signal type and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
+        /// </summary>
+        /// <param name="signalType">The signal type of the desired out-of-range measurements.</param>
+        /// <returns>A <see cref="SerializableRangeTest"/> object.</returns>
+        [OperationContract(),
+        WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "/outofrangemeasurements/read/signaltype:{signalType}/json")]
+        SerializableRangeTestCollection ReadOutOfRangeMeasurementsWithSignalTypeAsJson(string signalType);
+
+        /// <summary>
+        /// Reads all out-of-range measurements from the specified device and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+        /// </summary>
+        /// <param name="device">The name of the device to check for out-of-range measurements.</param>
+        /// <returns>A <see cref="SerializableRangeTest"/> object.</returns>
+        [OperationContract(),
+        WebGet(ResponseFormat = WebMessageFormat.Xml, UriTemplate = "/outofrangemeasurements/read/device:{device}/xml")]
+        SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromDeviceAsXml(string device);
+
+        /// <summary>
+        /// Reads all out-of-range measurements from the specified device and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
+        /// </summary>
+        /// <param name="device">The name of the device to check for out-of-range measurements.</param>
+        /// <returns>A <see cref="SerializableRangeTest"/> object.</returns>
+        [OperationContract(),
+        WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "/outofrangemeasurements/read/device:{device}/json")]
+        SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromDeviceAsJson(string device);
+
+        /// <summary>
+        /// Reads all out-of-range measurements from the specified <see cref="RangeTest"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+        /// </summary>
+        /// <param name="test">The name of the <see cref="RangeTest"/> to check for out-of-range measurements.</param>
+        /// <returns>A <see cref="SerializableRangeTest"/> object.</returns>
+        [OperationContract(),
+        WebGet(ResponseFormat = WebMessageFormat.Xml, UriTemplate = "/outofrangemeasurements/read/test:{test}/xml")]
+        SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromTestAsXml(string test);
+
+        /// <summary>
+        /// Reads all out-of-range measurements from the specified <see cref="RangeTest"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
+        /// </summary>
+        /// <param name="test">The name of the <see cref="RangeTest"/> to check for out-of-range measurements.</param>
+        /// <returns>A <see cref="SerializableRangeTest"/> object.</returns>
+        [OperationContract(),
+        WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "/outofrangemeasurements/read/test:{test}/json")]
+        SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromTestAsJson(string test);
+
+        #endregion
+        
     }
 }

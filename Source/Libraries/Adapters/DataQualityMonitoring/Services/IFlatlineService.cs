@@ -231,7 +231,6 @@
 
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using TVA.Web.Services;
 
 namespace DataQualityMonitoring.Services
 {
@@ -239,7 +238,7 @@ namespace DataQualityMonitoring.Services
     /// Defines a REST web service for flatlined measurements.
     /// </summary>
     [ServiceContract()]
-    public interface IFlatlineService : IRestService
+    public interface IFlatlineService
     {
 
         #region [ Properties ]
@@ -279,7 +278,7 @@ namespace DataQualityMonitoring.Services
         SerializableFlatlineTest ReadFlatlinedMeasurementsFromDeviceAsXml(string device);
 
         /// <summary>
-        /// Reads all flatlined measurements from the specified device and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+        /// Reads all flatlined measurements from the specified device and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
         /// </summary>
         /// <param name="device">The name of the device to check for flatlined measurements.</param>
         /// <returns>A <see cref="SerializableFlatlineTest"/> object.</returns>

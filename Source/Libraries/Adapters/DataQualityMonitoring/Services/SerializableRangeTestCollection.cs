@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  SerializableFlatlinedMeasurement.cs - Gbtc
+//  SerializableRangeTestCollection.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,12 +8,8 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  12/10/2009 - Stephen C. Wills
-//       Generated original version of source code.
-//  12/11/2009 - Pinal C. Patel
-//       Changed Timestamp to string and TimeSinceLastChange to double.
 //  12/16/2009 - Stephen C. Wills
-//       Refactored most of the implementation into the SerializableMeasurement base class.
+//       Generated original version of source code.
 //
 //*******************************************************************************************************
 
@@ -235,49 +231,25 @@
 
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
-using TVA;
-using TVA.Measurements;
 
 namespace DataQualityMonitoring.Services
 {
     /// <summary>
-    /// Represents a flatlined <see cref="IMeasurement"/> that can be serialized using <see cref="XmlSerializer"/>, <see cref="DataContractSerializer"/> or <see cref="System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+    /// Represents a container for <see cref="SerializableRangeTest"/>s that can be serialized using <see cref="XmlSerializer"/> or <see cref="System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
     /// </summary>
-    [XmlType("FlatlinedMeasurement"), DataContract(Name = "FlatlinedMeasurement", Namespace = "")]
-    public class SerializableFlatlinedMeasurement : SerializableMeasurement
+    [XmlRoot("RangeTestCollection"), DataContract(Name = "RangeTestCollection", Namespace = "")]
+    public class SerializableRangeTestCollection
     {
-
-        #region [ Constructors ]
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SerializableFlatlinedMeasurement"/> class.
-        /// </summary>
-        public SerializableFlatlinedMeasurement()
-            : base()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SerializableFlatlinedMeasurement"/> class.
-        /// </summary>
-        /// <param name="measurement"><see cref="IMeasurement"/> from which <see cref="SerializableFlatlinedMeasurement"/> is to be initialized.</param>
-        /// <param name="timeSinceLastChange">The amount of time since the flatlined measurement last changed in ticks.</param>
-        public SerializableFlatlinedMeasurement(IMeasurement measurement, long timeSinceLastChange)
-            : base(measurement)
-        {
-            TimeSinceLastChange = Ticks.ToSeconds(timeSinceLastChange);
-        }
-
-        #endregion
 
         #region [ Properties ]
 
         /// <summary>
-        /// Gets or sets the amount of time in seconds since the <see cref="IMeasurement"/> last changed its value.
+        /// Gets or sets the <see cref="SerializableRangeTest"/>s contained in the <see cref="SerializableRangeTestCollection"/>.
         /// </summary>
-        [XmlAttribute(), DataMember(Order = 6)]
-        public double TimeSinceLastChange { get; set; }
+        [XmlArray(), DataMember()]
+        public SerializableRangeTest[] RangeTests { get; set; }
 
         #endregion
+        
     }
 }

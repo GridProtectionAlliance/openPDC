@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  SerializableFlatlinedMeasurement.cs - Gbtc
+//  SerializableMeasurement.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,12 +8,8 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  12/10/2009 - Stephen C. Wills
-//       Generated original version of source code.
-//  12/11/2009 - Pinal C. Patel
-//       Changed Timestamp to string and TimeSinceLastChange to double.
 //  12/16/2009 - Stephen C. Wills
-//       Refactored most of the implementation into the SerializableMeasurement base class.
+//       Generated original version of source code.
 //
 //*******************************************************************************************************
 
@@ -233,39 +229,63 @@
 */
 #endregion
 
+using System;
+using System.Data;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using TVA;
 using TVA.Measurements;
 
-namespace DataQualityMonitoring.Services
+namespace DataQualityMonitoring
 {
     /// <summary>
-    /// Represents a flatlined <see cref="IMeasurement"/> that can be serialized using <see cref="XmlSerializer"/>, <see cref="DataContractSerializer"/> or <see cref="System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+    /// Represents a serializable <see cref="IMeasurement"/> that can be serialized using <see cref="XmlSerializer"/>, <see cref="DataContractSerializer"/> or <see cref="System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
     /// </summary>
-    [XmlType("FlatlinedMeasurement"), DataContract(Name = "FlatlinedMeasurement", Namespace = "")]
-    public class SerializableFlatlinedMeasurement : SerializableMeasurement
+    [XmlType("Measurement"), DataContract(Name = "Measurement", Namespace = "")]
+    public class SerializableMeasurement
     {
+
+        #region [ Members ]
+
+        // Events
+        /// <summary>
+        /// Occurs when an System.Exception is encountered when processing a request.
+        /// </summary>
+        /// <remarks><see cref="EventArgs{T}.Argument"/> is the exception encountered when processing a request.</remarks>
+        public event EventHandler<EventArgs<Exception>> ProcessException;
+
+        // Fields
+        IMeasurement m_sourceMeasurement;
+
+        #endregion
 
         #region [ Constructors ]
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SerializableFlatlinedMeasurement"/> class.
+        /// Initializes a new instance of the <see cref="SerializableMeasurement"/> class.
         /// </summary>
-        public SerializableFlatlinedMeasurement()
-            : base()
+        public SerializableMeasurement()
         {
+            Key = string.Empty;
+            SignalID = string.Empty;
+            Timestamp = string.Empty;
+            SignalType = string.Empty;
+            Device = string.Empty;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SerializableFlatlinedMeasurement"/> class.
+        /// Initializes a new instance of the <see cref="SerializableMeasurement"/> class.
         /// </summary>
-        /// <param name="measurement"><see cref="IMeasurement"/> from which <see cref="SerializableFlatlinedMeasurement"/> is to be initialized.</param>
-        /// <param name="timeSinceLastChange">The amount of time since the flatlined measurement last changed in ticks.</param>
-        public SerializableFlatlinedMeasurement(IMeasurement measurement, long timeSinceLastChange)
-            : base(measurement)
+        /// <param name="measurement"><see cref="IMeasurement"/> from which <see cref="SerializableMeasurement"/> is to be initialized.</param>
+        public SerializableMeasurement(IMeasurement measurement)
         {
-            TimeSinceLastChange = Ticks.ToSeconds(timeSinceLastChange);
+            m_sourceMeasurement = measurement;
+            Key = measurement.Key.ToString();
+            SignalID = measurement.SignalID.ToString();
+            Value = measurement.AdjustedValue;
+            Timestamp = ((DateTime)measurement.Timestamp).ToString("yyyy-MM-dd HH:mm:ss.fff");
+            SignalType = string.Empty;
+            Device = string.Empty;
         }
 
         #endregion
@@ -273,10 +293,100 @@ namespace DataQualityMonitoring.Services
         #region [ Properties ]
 
         /// <summary>
-        /// Gets or sets the amount of time in seconds since the <see cref="IMeasurement"/> last changed its value.
+        /// Gets or sets the <see cref="IMeasurement.Key"/>.
         /// </summary>
-        [XmlAttribute(), DataMember(Order = 6)]
-        public double TimeSinceLastChange { get; set; }
+        [XmlAttribute(), DataMember(Order = 0)]
+        public string Key { get; set; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="IMeasurement.SignalID"/>.
+        /// </summary>
+        [XmlAttribute(), DataMember(Order = 1)]
+        public string SignalID { get; set; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="IMeasurement.AdjustedValue"/>.
+        /// </summary>
+        [XmlAttribute(), DataMember(Order = 2)]
+        public double Value { get; set; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="IMeasurement.Timestamp"/> in <see cref="DateTime"/> string format.
+        /// </summary>
+        [XmlAttribute(), DataMember(Order = 3)]
+        public string Timestamp { get; set; }
+
+        /// <summary>
+        /// Gets or sets the signal type of the <see cref="IMeasurement"/>.
+        /// </summary>
+        [XmlAttribute(), DataMember(Order = 4)]
+        public string SignalType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the device of the <see cref="IMeasurement"/>.
+        /// </summary>
+        [XmlAttribute(), DataMember(Order = 5)]
+        public string Device { get; set; }
+
+        #endregion
+
+        #region [ Methods ]
+
+        /// <summary>
+        /// Acquires and sets the device and signal type of the source measurement.
+        /// </summary>
+        /// <param name="dataSource"><see cref="DataSet"/> which contains information about the device and the signal type of the source measurement.</param>
+        public void SetDeviceAndSignalType(DataSet dataSource)
+        {
+            try
+            {
+                DataRow row = dataSource.Tables["ActiveMeasurements"].Select(string.Format("ID = '{0}'", m_sourceMeasurement.Key.ToString()))[0];
+                TrySetDevice(row);
+                TrySetSignalType(row);
+            }
+            catch (Exception ex)
+            {
+                OnProcessException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Raises the <see cref="ProcessException"/> event.
+        /// </summary>
+        /// <param name="exception"><see cref="Exception"/> to send to <see cref="ProcessException"/> event.</param>
+        protected virtual void OnProcessException(Exception exception)
+        {
+            if (ProcessException != null)
+                ProcessException(this, new EventArgs<Exception>(exception));
+        }
+
+        private bool TrySetDevice(DataRow row)
+        {
+            try
+            {
+                Device = row["Device"].ToString();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                OnProcessException(ex);
+                return false;
+            }
+        }
+
+        private bool TrySetSignalType(DataRow row)
+        {
+            try
+            {
+                SignalType = row["SignalType"].ToString();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                OnProcessException(ex);
+                return false;
+            }
+        }
 
         #endregion
     }

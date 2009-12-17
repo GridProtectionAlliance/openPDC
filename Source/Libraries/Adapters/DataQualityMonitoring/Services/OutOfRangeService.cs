@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  FlatlineTest.cs - Gbtc
+//  OutOfRangeService.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,11 +8,8 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  11/10/2009 - Stephen C. Wills
+//  12/16/2009 - Stephen C. Wills
 //       Generated original version of source code.
-//  12/11/2009 - Pinal C. Patel
-//       Added thread synchronization.
-//       Replaced the use of LatestTimestamp with base.RealTime.
 //
 //*******************************************************************************************************
 
@@ -234,181 +231,286 @@
 
 using System;
 using System.Collections.Generic;
-using System.Timers;
-using DataQualityMonitoring.Services;
-using TVA;
+using System.ServiceModel;
 using TVA.Measurements;
-using TVA.Measurements.Routing;
+using TVA.Web.Services;
 
-namespace DataQualityMonitoring
+namespace DataQualityMonitoring.Services
 {
     /// <summary>
-    /// Tests measurements to determine whether they have flatlined.
+    /// Represents a REST web service for out-of-range measurements.
     /// </summary>
-    public class FlatlineTest : ActionAdapterBase
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    public class OutOfRangeService : RestService, IOutOfRangeService
     {
-
+        
         #region [ Members ]
 
         // Fields
-        private Ticks m_minFlatline;
-        private Ticks m_warnInterval;
-        private Dictionary<MeasurementKey, IMeasurement> m_lastChange;
-        private System.Timers.Timer m_warningTimer;
-        private FlatlineService m_flatlineService;
-        private bool m_disposed;
+        Dictionary<int, RangeTest> m_tests;
+        int m_currentIndex;
 
         #endregion
 
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new instance of the <see cref="FlatlineTest"/> class.
+        /// Initializes a new instance of the <see cref="OutOfRangeService"/> class.
         /// </summary>
-        public FlatlineTest()
+        public OutOfRangeService()
         {
-            m_minFlatline = Ticks.FromSeconds(4);
-            m_warnInterval = Ticks.FromSeconds(4);
-            m_lastChange = new Dictionary<MeasurementKey, IMeasurement>();
-            m_warningTimer = new System.Timers.Timer();
+            m_tests = new Dictionary<int, RangeTest>();
+            ServiceUri = "http://localhost:6101/rangetest";
+        }
+
+        #endregion
+
+        #region [ Properties ]
+
+        public ICollection<RangeTest> Tests
+        {
+            get
+            {
+                return m_tests.Values;
+            }
         }
 
         #endregion
 
         #region [ Methods ]
-        
+
         /// <summary>
-        /// Initializes <see cref="FlatlineTest"/>.
+        /// Reads all out-of-range measurements from the <see cref="Tests"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
         /// </summary>
-        public override void Initialize()
+        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
+        public SerializableRangeTestCollection ReadAllOutOfRangeMeasurementsAsXml()
         {
-            base.Initialize();
-
-            Dictionary<string, string> settings = Settings;
-            string setting;
-
-            if (settings.TryGetValue("minFlatline", out setting))
-                m_minFlatline = Ticks.FromSeconds(double.Parse(setting));
-
-            if (settings.TryGetValue("warnInterval", out setting))
-                m_warnInterval = Ticks.FromSeconds(double.Parse(setting));
-
-            m_warningTimer.Interval = m_warnInterval.ToMilliseconds();
-            m_warningTimer.Elapsed += m_warningTimer_Elapsed;
-
-            m_flatlineService = new FlatlineService(this);
-            m_flatlineService.ServiceProcessException += m_flatlineService_ServiceProcessException;
-            m_flatlineService.Initialize();
+            return ReadOutOfRangeMeasurements();
         }
 
         /// <summary>
-        /// Starts the <see cref="FlatlineTest"/>, if it is not already running.
+        /// Reads all out-of-range measurements from the <see cref="Tests"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format.
         /// </summary>
-        public override void Start()
+        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
+        public SerializableRangeTestCollection ReadAllOutOfRangeMeasurementsAsJson()
         {
-            base.Start();
-            m_warningTimer.Start();
+            return ReadOutOfRangeMeasurements();
         }
 
         /// <summary>
-        /// Stops the <see cref="FlatlineTest"/>.
+        /// Reads all out-of-range measurements with the specified signal type and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
         /// </summary>
-        public override void Stop()
+        /// <param name="signalType">The signal type of the desired out-of-range measurements.</param>
+        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
+        public SerializableRangeTestCollection ReadOutOfRangeMeasurementsWithSignalTypeAsXml(string signalType)
         {
-            m_warningTimer.Stop();
-            base.Stop();
+            return ReadOutOfRangeMeasurementsWithSignalType(signalType);
         }
 
         /// <summary>
-        /// Publish <see cref="IFrame"/> of time-aligned collection of <see cref="IMeasurement"/> values that arrived within the
-        /// concentrator's defined <see cref="ConcentratorBase.LagTime"/>.
+        /// Reads all out-of-range measurements with the specified signal type and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
         /// </summary>
-        /// <param name="frame"><see cref="IFrame"/> of measurements with the same timestamp that arrived within <see cref="ConcentratorBase.LagTime"/> that are ready for processing.</param>
-        /// <param name="index">Index of <see cref="IFrame"/> within a second ranging from zero to <c><see cref="ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
-        protected override void PublishFrame(IFrame frame, int index)
+        /// <param name="signalType">The signal type of the desired out-of-range measurements.</param>
+        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
+        public SerializableRangeTestCollection ReadOutOfRangeMeasurementsWithSignalTypeAsJson(string signalType)
         {
-            IMeasurement measurement = null;
-            lock (m_lastChange)
+            return ReadOutOfRangeMeasurementsWithSignalType(signalType);
+        }
+
+        /// <summary>
+        /// Reads all out-of-range measurements from the specified device and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+        /// </summary>
+        /// <param name="device">The name of the device to check for out-of-range measurements.</param>
+        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
+        public SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromDeviceAsXml(string device)
+        {
+            return ReadOutOfRangeMeasurementsFromDevice(device);
+        }
+
+        /// <summary>
+        /// Reads all out-of-range measurements from the specified device and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
+        /// </summary>
+        /// <param name="device">The name of the device to check for out-of-range measurements.</param>
+        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
+        public SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromDeviceAsJson(string device)
+        {
+            return ReadOutOfRangeMeasurementsFromDevice(device);
+        }
+
+        /// <summary>
+        /// Reads all out-of-range measurements from the specified <see cref="RangeTest"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+        /// </summary>
+        /// <param name="test">The name of the <see cref="RangeTest"/> to check for out-of-range measurements.</param>
+        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
+        public SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromTestAsXml(string test)
+        {
+            return ReadOutOfRangeMeasurementsFromTest(int.Parse(test));
+        }
+
+        /// <summary>
+        /// Reads all out-of-range measurements from the specified <see cref="RangeTest"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
+        /// </summary>
+        /// <param name="test">The name of the <see cref="RangeTest"/> to check for out-of-range measurements.</param>
+        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
+        public SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromTestAsJson(string test)
+        {
+            return ReadOutOfRangeMeasurementsFromTest(int.Parse(test));
+        }
+
+        /// <summary>
+        /// Attaches a <see cref="RangeTest"/> to this <see cref="OutOfRangeService"/>.
+        /// </summary>
+        /// <param name="test">The <see cref="RangeTest"/> to be attached to this <see cref="OutOfRangeService"/>.</param>
+        public void AttachRangeTest(RangeTest test)
+        {
+            m_tests[m_currentIndex] = test;
+            m_currentIndex++;
+        }
+
+        /// <summary>
+        /// Detaches a <see cref="RangeTest"/> from this <see cref="OutOfRangeService"/>.
+        /// </summary>
+        /// <param name="test">The <see cref="RangeTest"/> to be detached from this <see cref="OutOfRangeService"/>.</param>
+        public void DetachRangeTest(RangeTest test)
+        {
+            foreach (int index in m_tests.Keys)
             {
-                foreach (MeasurementKey key in frame.Measurements.Keys)
+                if (m_tests[index] == test)
                 {
-                    measurement = frame.Measurements[key];
-
-                    if (!m_lastChange.ContainsKey(key))
-                        m_lastChange.Add(key, measurement);
-                    else if (m_lastChange[key].Value != measurement.Value)
-                        m_lastChange[key] = measurement;
+                    m_tests.Remove(index);
+                    return;
                 }
             }
         }
 
-        /// <summary>
-        /// Returns a collection of measurements that are flatlined.
-        /// </summary>
-        /// <returns>A collection of flatlined measurements.</returns>
-        public ICollection<IMeasurement> GetFlatlinedMeasurements()
+        private SerializableRangeTestCollection ReadOutOfRangeMeasurements()
         {
-            ICollection<IMeasurement> flatlinedMeasurements = new List<IMeasurement>();
+            SerializableRangeTestCollection serializableCollection = new SerializableRangeTestCollection();
+            List<SerializableRangeTest> serializableTests = new List<SerializableRangeTest>();
 
-            lock (m_lastChange)
+            // Convert RangeTests to SerializableRangeTests and add them to the list of serializable tests.
+            foreach (int index in m_tests.Keys)
             {
-                IMeasurement measurement = null;
-                foreach (MeasurementKey key in m_lastChange.Keys)
-                {
-                    measurement = m_lastChange[key];
+                RangeTest test = m_tests[index];
+                SerializableRangeTest serializableTest = new SerializableRangeTest(index);
+                List<SerializableOutOfRangeMeasurement> serializableMeasurements = new List<SerializableOutOfRangeMeasurement>();
+                ICollection<IMeasurement> outOfRangeMeasurements = test.GetOutOfRangeMeasurements();
 
-                    Ticks timeDiff = base.RealTime - measurement.Timestamp;
-                    if (timeDiff >= m_minFlatline)
-                        flatlinedMeasurements.Add(measurement);
+                // Convert IMeasurements to SerializableOutOfRangeMeasurements and add them to the list of serializable measurements.
+                foreach (IMeasurement measurement in outOfRangeMeasurements)
+                {
+                    SerializableOutOfRangeMeasurement serializableMeasurement = CreateSerializableOutOfRangeMeasurement(test, measurement);
+                    serializableMeasurements.Add(serializableMeasurement);
                 }
+
+                serializableTest.OutOfRangeMeasurements = serializableMeasurements.ToArray();
+                serializableTests.Add(serializableTest);
             }
 
-            return flatlinedMeasurements;
+            serializableCollection.RangeTests = serializableTests.ToArray();
+            return serializableCollection;
         }
 
-        /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="FlatlineTest"/> object and optionally releases the managed resources.
-        /// </summary>
-        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        protected override void Dispose(bool disposing)
+        private SerializableRangeTestCollection ReadOutOfRangeMeasurementsWithSignalType(string signalType)
         {
-            if (!m_disposed)
+            SerializableRangeTestCollection serializableCollection = new SerializableRangeTestCollection();
+            List<SerializableRangeTest> serializableTests = new List<SerializableRangeTest>();
+
+            // Convert RangeTests to SerializableRangeTests and add them to the list of serializable tests.
+            foreach (int index in m_tests.Keys)
             {
-                try
+                RangeTest test = m_tests[index];
+                SerializableRangeTest serializableTest = new SerializableRangeTest(index);
+                List<SerializableOutOfRangeMeasurement> serializableMeasurements = new List<SerializableOutOfRangeMeasurement>();
+                ICollection<IMeasurement> outOfRangeMeasurements = test.GetOutOfRangeMeasurements();
+
+                // Convert IMeasurements to SerializableOutOfRangeMeasurements and add them to the list of serializable measurements.
+                foreach (IMeasurement measurement in outOfRangeMeasurements)
                 {
-                    if (disposing)
-                    {
-                        if (m_flatlineService != null)
-                        {
-                            m_flatlineService.ServiceProcessException -= m_flatlineService_ServiceProcessException;
-                            m_flatlineService.Dispose();
-                        }
-                    }
+                    SerializableOutOfRangeMeasurement serializableMeasurement = CreateSerializableOutOfRangeMeasurement(test, measurement);
+
+                    if (serializableMeasurement.SignalType == signalType)
+                        serializableMeasurements.Add(serializableMeasurement);
                 }
-                finally
-                {
-                    base.Dispose(disposing);    // Call base class Dispose().
-                    m_disposed = true;          // Prevent duplicate dispose.
-                }
+
+                serializableTest.OutOfRangeMeasurements = serializableMeasurements.ToArray();
+                serializableTests.Add(serializableTest);
             }
+
+            serializableCollection.RangeTests = serializableTests.ToArray();
+            return serializableCollection;
         }
 
-        private void m_warningTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromDevice(string device)
         {
-            ICollection<IMeasurement> flatlinedMeasurements = GetFlatlinedMeasurements();
+            SerializableRangeTestCollection serializableCollection = new SerializableRangeTestCollection();
+            List<SerializableRangeTest> serializableTests = new List<SerializableRangeTest>();
 
-            foreach (IMeasurement measurement in flatlinedMeasurements)
+            // Convert RangeTests to SerializableRangeTests and add them to the list of serializable tests.
+            foreach (int index in m_tests.Keys)
             {
-                Ticks timeDiff = RealTime - measurement.Timestamp;
-                OnStatusMessage(string.Format("{0} flatlined for {1} seconds.", measurement, (int)timeDiff.ToSeconds()));
+                RangeTest test = m_tests[index];
+                SerializableRangeTest serializableTest = new SerializableRangeTest(index);
+                List<SerializableOutOfRangeMeasurement> serializableMeasurements = new List<SerializableOutOfRangeMeasurement>();
+                ICollection<IMeasurement> outOfRangeMeasurements = test.GetOutOfRangeMeasurements();
+
+                // Convert IMeasurements to SerializableOutOfRangeMeasurements and add them to the list of serializable measurements.
+                foreach (IMeasurement measurement in outOfRangeMeasurements)
+                {
+                    SerializableOutOfRangeMeasurement serializableMeasurement = CreateSerializableOutOfRangeMeasurement(test, measurement);
+
+                    if(serializableMeasurement.Device == device)
+                        serializableMeasurements.Add(serializableMeasurement);
+                }
+
+                serializableTest.OutOfRangeMeasurements = serializableMeasurements.ToArray();
+                serializableTests.Add(serializableTest);
             }
+
+            serializableCollection.RangeTests = serializableTests.ToArray();
+            return serializableCollection;
         }
 
-        private void m_flatlineService_ServiceProcessException(object sender, EventArgs<Exception> e)
+        private SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromTest(int index)
         {
-            OnProcessException(e.Argument);
+            SerializableRangeTestCollection serializableCollection = new SerializableRangeTestCollection();
+            List<SerializableRangeTest> serializableTests = new List<SerializableRangeTest>();
+            RangeTest test = m_tests[index];
+
+            // Convert RangeTest to SerializableRangeTest and add it to the list of serializable tests.
+            SerializableRangeTest serializableTest = new SerializableRangeTest(index);
+            List<SerializableOutOfRangeMeasurement> serializableMeasurements = new List<SerializableOutOfRangeMeasurement>();
+            ICollection<IMeasurement> outOfRangeMeasurements = test.GetOutOfRangeMeasurements();
+
+            // Convert IMeasurements to SerializableOutOfRangeMeasurements and add them to the list of serializable measurements.
+            foreach (IMeasurement measurement in outOfRangeMeasurements)
+            {
+                SerializableOutOfRangeMeasurement serializableMeasurement = CreateSerializableOutOfRangeMeasurement(test, measurement);
+                serializableMeasurements.Add(serializableMeasurement);
+            }
+
+            serializableTest.OutOfRangeMeasurements = serializableMeasurements.ToArray();
+            serializableTests.Add(serializableTest);
+
+            serializableCollection.RangeTests = serializableTests.ToArray();
+            return serializableCollection;
+        }
+
+        private SerializableOutOfRangeMeasurement CreateSerializableOutOfRangeMeasurement(RangeTest test, IMeasurement measurement)
+        {
+            SerializableOutOfRangeMeasurement serializableMeasurement = new SerializableOutOfRangeMeasurement(measurement, test.LowRange, test.HighRange);
+            serializableMeasurement.ProcessException += serializableMeasurement_ProcessException;
+            serializableMeasurement.SetDeviceAndSignalType(test.DataSource);
+            return serializableMeasurement;
+        }
+
+        // Exceptions from out-of-range measurements get forwarded to the ServiceProcessException event.
+        private void serializableMeasurement_ProcessException(object sender, TVA.EventArgs<Exception> e)
+        {
+            OnServiceProcessException(e.Argument);
         }
 
         #endregion
+
     }
 }

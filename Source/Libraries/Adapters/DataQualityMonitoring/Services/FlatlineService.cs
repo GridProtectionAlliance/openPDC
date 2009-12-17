@@ -12,6 +12,8 @@
 //       Generated original version of source code.
 //  12/11/2009 - Pinal C. Patel
 //       Added error checking to TryGetMeasurementInfo().
+//  12/16/2009 - Stephen C. Wills
+//       Replaced TryGetMeasurementInfo() with SerializableMeasurement.SetDeviceAndSignalType().
 //
 //*******************************************************************************************************
 
@@ -233,7 +235,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.ServiceModel;
 using TVA.Measurements;
 using TVA.Web.Services;
@@ -257,12 +258,12 @@ namespace DataQualityMonitoring.Services
         #region [ Constructors ]
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FlatlineService"/>
+        /// Initializes a new instance of the <see cref="FlatlineService"/> class.
         /// </summary>
         public FlatlineService(FlatlineTest test)
             : base()
         {
-            Test = test;
+            m_test = test;
             ServiceUri = "http://localhost:6100/flatlinetest";
         }
 
@@ -327,76 +328,55 @@ namespace DataQualityMonitoring.Services
             return ReadFlatlinedMeasurements(device);
         }
 
+        // Reads all flatlined measurements.
         private SerializableFlatlineTest ReadFlatlinedMeasurements()
         {
             SerializableFlatlineTest serializableTest = new SerializableFlatlineTest();
-            ICollection<IMeasurement> flatlinedMeasurements = Test.GetFlatlinedMeasurements();
-            string signalType;
-            string device;
+            ICollection<IMeasurement> flatlinedMeasurements = m_test.GetFlatlinedMeasurements();
 
             List<SerializableFlatlinedMeasurement> serializableFlatlinedMeasurements = new List<SerializableFlatlinedMeasurement>();
             foreach (IMeasurement measurement in flatlinedMeasurements)
             {
-                SerializableFlatlinedMeasurement serializableMeasurement = new SerializableFlatlinedMeasurement(measurement, Test.RealTime - measurement.Timestamp);
-                TryGetMeasurementInfo(measurement, out signalType, out device);
-                serializableMeasurement.SignalType = signalType;
-                serializableMeasurement.Device = device;
-                serializableFlatlinedMeasurements.Add(serializableMeasurement);
+                SerializableFlatlinedMeasurement serializableFlatlinedMeasurement = CreateSerializableFlatlinedMeasurement(measurement);
+                serializableFlatlinedMeasurements.Add(serializableFlatlinedMeasurement);
             }
 
             serializableTest.FlatlinedMeasurements = serializableFlatlinedMeasurements.ToArray();
             return serializableTest;
         }
 
+        // Reads all flatlined measurements associated with a particular device.
         private SerializableFlatlineTest ReadFlatlinedMeasurements(string device)
         {
             SerializableFlatlineTest serializableTest = new SerializableFlatlineTest();
-            ICollection<IMeasurement> flatlinedMeasurements = Test.GetFlatlinedMeasurements();
-            string measurementSignalType;
-            string measurementDevice;
+            ICollection<IMeasurement> flatlinedMeasurements = m_test.GetFlatlinedMeasurements();
 
             List<SerializableFlatlinedMeasurement> serializableFlatlinedMeasurements = new List<SerializableFlatlinedMeasurement>();
             foreach (IMeasurement measurement in flatlinedMeasurements)
             {
-                SerializableFlatlinedMeasurement serializableMeasurement = new SerializableFlatlinedMeasurement(measurement, Test.RealTime - measurement.Timestamp);
-                TryGetMeasurementInfo(measurement, out measurementSignalType, out measurementDevice);
+                SerializableFlatlinedMeasurement serializableFlatlinedMeasurement = CreateSerializableFlatlinedMeasurement(measurement);
 
-                if (measurementDevice == device)
-                {
-                    serializableMeasurement.SignalType = measurementSignalType;
-                    serializableMeasurement.Device = measurementDevice;
-                    serializableFlatlinedMeasurements.Add(serializableMeasurement);
-                }
+                if (serializableFlatlinedMeasurement.Device == device)
+                    serializableFlatlinedMeasurements.Add(serializableFlatlinedMeasurement);
             }
 
             serializableTest.FlatlinedMeasurements = serializableFlatlinedMeasurements.ToArray();
             return serializableTest;
         }
 
-        private bool TryGetMeasurementInfo(IMeasurement measurement, out string signalType, out string device)
+        // Properly creates a SerializableFlatlinedMeasurement by sending in TimeSinceLastChange, attaching to the exception event, and setting device and signal type.
+        private SerializableFlatlinedMeasurement CreateSerializableFlatlinedMeasurement(IMeasurement measurement)
         {
-            try
-            {
-                DataRow[] filter = Test.DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID = '{0}'", measurement.Key.ToString()));
-                if (filter.Length == 0)
-                {
-                    signalType = string.Empty;
-                    device = string.Empty;
-                    return false;
-                }
-                {
-                    signalType = filter[0]["SignalType"].ToString();
-                    device = filter[0]["Device"].ToString();
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                OnServiceProcessException(ex);
-                signalType = string.Empty;
-                device = string.Empty;
-                return false;
-            }
+            SerializableFlatlinedMeasurement serializableMeasurement = new SerializableFlatlinedMeasurement(measurement, m_test.RealTime - measurement.Timestamp);
+            serializableMeasurement.ProcessException += serializableMeasurement_ProcessException;
+            serializableMeasurement.SetDeviceAndSignalType(m_test.DataSource);
+            return serializableMeasurement;
+        }
+
+        // Exceptions from flatlined measurements get forwarded to the ServiceProcessException event.
+        private void serializableMeasurement_ProcessException(object sender, TVA.EventArgs<Exception> e)
+        {
+            OnServiceProcessException(e.Argument);
         }
 
         #endregion

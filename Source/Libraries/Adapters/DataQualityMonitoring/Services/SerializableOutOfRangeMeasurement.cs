@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  SerializableFlatlinedMeasurement.cs - Gbtc
+//  SerializableOutOfRangeMeasurement.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,12 +8,8 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  12/10/2009 - Stephen C. Wills
-//       Generated original version of source code.
-//  12/11/2009 - Pinal C. Patel
-//       Changed Timestamp to string and TimeSinceLastChange to double.
 //  12/16/2009 - Stephen C. Wills
-//       Refactored most of the implementation into the SerializableMeasurement base class.
+//       Generated original version of source code.
 //
 //*******************************************************************************************************
 
@@ -235,37 +231,38 @@
 
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
-using TVA;
 using TVA.Measurements;
 
 namespace DataQualityMonitoring.Services
 {
     /// <summary>
-    /// Represents a flatlined <see cref="IMeasurement"/> that can be serialized using <see cref="XmlSerializer"/>, <see cref="DataContractSerializer"/> or <see cref="System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+    /// Represents an out-of-range <see cref="IMeasurement"/> that can be serialized using <see cref="XmlSerializer"/>, <see cref="DataContractSerializer"/> or <see cref="System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
     /// </summary>
-    [XmlType("FlatlinedMeasurement"), DataContract(Name = "FlatlinedMeasurement", Namespace = "")]
-    public class SerializableFlatlinedMeasurement : SerializableMeasurement
+    [XmlType("OutOfRangeMeasurement"), DataContract(Name = "OutOfRangeMeasurement", Namespace = "")]
+    public class SerializableOutOfRangeMeasurement : SerializableMeasurement
     {
 
         #region [ Constructors ]
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SerializableFlatlinedMeasurement"/> class.
+        /// Initializes a new instance of the <see cref="SerializableOutOfRangeMeasurement"/> class.
         /// </summary>
-        public SerializableFlatlinedMeasurement()
+        public SerializableOutOfRangeMeasurement()
             : base()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SerializableFlatlinedMeasurement"/> class.
+        /// Initializes a new instance of the <see cref="SerializableOutOfRangeMeasurement"/> class.
         /// </summary>
-        /// <param name="measurement"><see cref="IMeasurement"/> from which <see cref="SerializableFlatlinedMeasurement"/> is to be initialized.</param>
-        /// <param name="timeSinceLastChange">The amount of time since the flatlined measurement last changed in ticks.</param>
-        public SerializableFlatlinedMeasurement(IMeasurement measurement, long timeSinceLastChange)
+        /// <param name="measurement"><see cref="IMeasurement"/> from which <see cref="SerializableOutOfRangeMeasurement"/> is to be initialized.</param>
+        /// <param name="lowRange">The lower boundary of the <see cref="IMeasurement"/>'s value.</param>
+        /// <param name="highRange">The upper boundary of the <see cref="IMeasurement"/>'s value.</param>
+        public SerializableOutOfRangeMeasurement(IMeasurement measurement, double lowRange, double highRange)
             : base(measurement)
         {
-            TimeSinceLastChange = Ticks.ToSeconds(timeSinceLastChange);
+            LowRange = lowRange;
+            HighRange = highRange;
         }
 
         #endregion
@@ -273,11 +270,18 @@ namespace DataQualityMonitoring.Services
         #region [ Properties ]
 
         /// <summary>
-        /// Gets or sets the amount of time in seconds since the <see cref="IMeasurement"/> last changed its value.
+        /// Gets or sets the lower boundary of the <see cref="IMeasurement"/>'s value.
         /// </summary>
         [XmlAttribute(), DataMember(Order = 6)]
-        public double TimeSinceLastChange { get; set; }
+        public double LowRange { get; set; }
+
+        /// <summary>
+        /// Gets or sets the upper boundary of the <see cref="IMeasurement"/>'s value.
+        /// </summary>
+        [XmlAttribute(), DataMember(Order = 7)]
+        public double HighRange { get; set; }
 
         #endregion
+        
     }
 }

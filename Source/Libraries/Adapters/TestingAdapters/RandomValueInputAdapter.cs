@@ -467,16 +467,18 @@ namespace TestingAdapters
 
             for (int i = 0; i < m_pointsToSend; i++)
             {
+                ICollection<IMeasurement> outputMeasurementClones = new List<IMeasurement>();
                 timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 for (int j = 0; j < OutputMeasurements.Length; j++)
                 {
                     OutputMeasurements[j].Timestamp = timestamp;
                     OutputMeasurements[j].Value = randomNumber.NextDouble();
+                    outputMeasurementClones.Add(Measurement.Clone(OutputMeasurements[j]));
                 }
 
                 // Publish next set of measurements to consumer...
-                this.OnNewMeasurements(OutputMeasurements);
+                this.OnNewMeasurements(outputMeasurementClones);
 
                 // Sleep until next desired publication...
                 Thread.Sleep(m_interpointDelay);

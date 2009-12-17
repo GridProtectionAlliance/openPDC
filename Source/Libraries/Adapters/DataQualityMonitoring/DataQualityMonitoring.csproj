@@ -68,6 +68,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\IOutOfRangeService.cs" />
+    <Compile Include="Services\OutOfRangeService.cs" />
+    <Compile Include="Services\SerializableMeasurement.cs" />
     <Compile Include="Services\FlatlineService.cs" />
     <Compile Include="FlatlineTest.cs" />
     <Compile Include="Services\IFlatlineService.cs" />
@@ -75,6 +78,9 @@
     <Compile Include="RangeTest.cs" />
     <Compile Include="Services\SerializableFlatlinedMeasurement.cs" />
     <Compile Include="Services\SerializableFlatlineTest.cs" />
+    <Compile Include="Services\SerializableOutOfRangeMeasurement.cs" />
+    <Compile Include="Services\SerializableRangeTest.cs" />
+    <Compile Include="Services\SerializableRangeTestCollection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
