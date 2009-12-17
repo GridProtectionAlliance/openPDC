@@ -240,6 +240,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.ServiceProcess;
 using System.Text;
@@ -252,9 +253,7 @@ using TVA.IO;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
 using TVA.Reflection;
-using TVA.Security.Cryptography;
 using TVA.Services;
-using System.Net;
 
 namespace openPDC
 {

@@ -388,7 +388,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         protected override IFrame CreateNewFrame(Ticks timestamp)
         {
             // We create a new BPA PDCstream data frame based on current configuration frame
-            ushort sampleNumber = (ushort)(((decimal)timestamp.DistanceBeyondSecond() + 1) / base.TicksPerFrame + 1);
+            ushort sampleNumber = (ushort)(((double)timestamp.DistanceBeyondSecond() + 1.0D) / base.TicksPerFrame + 1.0D);
 
             DataFrame dataFrame = new DataFrame(timestamp, m_configurationFrame, 1, sampleNumber);
             DataCell dataCell;
