@@ -11,6 +11,8 @@
 //  -----------------------------------------------------------------------------------------------------
 //  12/02/2009 - Jian R. Zuo
 //       Generated original version of source code.
+//  12/16/2009 - Jian R. Zuo
+//       Reading parameters configuration from database   
 //
 //*******************************************************************************************************
 
@@ -329,8 +331,10 @@ namespace LOFTrigger
             base.Initialize();
 
             Dictionary<string, string> settings = Settings;
-            //string setting;
 
+#if DEBUG
+            OnStatusMessage("********In Initialize()***********");
+#endif
             // Load required parameters
             m_PSet = double.Parse(settings["PSet"]);
             m_QSet = double.Parse(settings["QSet"]);
@@ -342,11 +346,11 @@ namespace LOFTrigger
             m_count2 = 0;
 
 
-            m_PSet = -600;
-            m_QSet = 200;
-            m_QAreaSet = 500;
-            m_VThreshold = 475000;
-            m_interval = 30;
+            //m_PSet = -600;
+            //m_QSet = 200;
+            //m_QAreaSet = 500;
+            //m_VThreshold = 475000;
+            //m_interval = 30;
 
             m_MontVoltageMagnitude = new MeasurementKey(3981, "P2");
             m_MontVoltageAngle = new MeasurementKey(3980, "P2");
@@ -418,7 +422,7 @@ namespace LOFTrigger
                     try
                     {
                         if (frame.Measurements.TryGetValue(m_MontVoltageMagnitude, out measurement))
-                            voltageMagnitude = measurement.AdjustedValue;
+                            voltageMagnitude = measurement.AdjustedValue;                           
                         else
                             continue;
                         if (frame.Measurements.TryGetValue(m_MontVoltageAngle, out measurement))
@@ -429,14 +433,15 @@ namespace LOFTrigger
                             currentMagnitude = measurement.AdjustedValue;
                         else
                             continue;
-                        if (frame.Measurements.TryGetValue(m_MontVoltageAngle, out measurement))
-                            currentAngle = measurement.AdjustedValue / 180.00 * Math.PI;
+                        if (frame.Measurements.TryGetValue(m_MontCurrentAngle, out measurement))
+                            currentAngle = measurement.AdjustedValue / 180.00 * Math.PI;                       
                         else
                             continue;
 
                         realPower = 3 * voltageMagnitude * currentMagnitude * Math.Cos(voltageAngle - currentAngle) / 1000000.00;
                         reactivePower = 3 * voltageMagnitude * currentMagnitude * Math.Sin(voltageAngle - currentAngle) / 1000000.00;
                         deltaT = (m_count2 - m_count1) / FramesPerSecond;
+
                         if ((realPower < m_PSet) && (reactivePower > m_QSet))
                         {
                             m_QAreamVar = m_QAreamVar + deltaT * (reactivePower - m_QSet);
@@ -447,6 +452,14 @@ namespace LOFTrigger
                         }
                         else
                             m_QAreamVar = 0;
+#if DEBUG
+                        OnStatusMessage("In ProcessFrames: MontVoltageMagnitude is {0}", voltageMagnitude);
+                        OnStatusMessage("In ProcessFrames: MontVoltageAngle is {0}", voltageAngle);
+                        OnStatusMessage("In ProcessFrames: MontCurrentMagnitude is {0}", currentMagnitude);
+                        OnStatusMessage("In ProcessFrames: MontCurrentAngle is {0}", currentAngle);
+                        OnStatusMessage("In ProcessFrames: RealPower is {0};ReactivePower is {1}; DeltaT is {2}", realPower, reactivePower, deltaT);
+                        OnStatusMessage("In ProcessFrames: m_QAreamVar is {0}", m_QAreamVar);
+#endif
                     }
                     catch (Exception ex)
                     {
