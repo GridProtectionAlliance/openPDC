@@ -329,7 +329,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
 
             foreach (TVA.PhasorProtocols.Anonymous.ConfigurationCell baseCell in baseConfigurationFrame.Cells)
             {
-                // Create a new IEEE C37.118 configuration cell (i.e., a PMU configuration)
+                // Create a new BPA PDCstream configuration cell (i.e., a PMU configuration)
                 newCell = new ConfigurationCell(configurationFrame, baseCell.IDCode, base.NominalFrequency);
 
                 // Update other cell level attributes
@@ -368,7 +368,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             // Setup new configuration cells with their proper INI file settings
             configurationFrame.Refresh(true);
 
-            // Cache new IEEE C7.118 for later use
+            // Cache new BPA PDCstream for later use
             Interlocked.Exchange(ref m_configurationFrame, configurationFrame);
 
             return configurationFrame;
@@ -388,7 +388,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         protected override IFrame CreateNewFrame(Ticks timestamp)
         {
             // We create a new BPA PDCstream data frame based on current configuration frame
-            ushort sampleNumber = (ushort)(((double)timestamp.DistanceBeyondSecond() + 1.0D) / base.TicksPerFrame + 1.0D);
+            ushort sampleNumber = (ushort)(((double)timestamp.DistanceBeyondSecond() + 1.0D) / (double)base.TicksPerFrame + 1.0D);
 
             DataFrame dataFrame = new DataFrame(timestamp, m_configurationFrame, 1, sampleNumber);
             DataCell dataCell;
