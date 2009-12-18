@@ -255,7 +255,7 @@ namespace DataQualityMonitoring.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="SerializableRangeTest"/>.
         /// </summary>
-        /// <param name="index">The index of the <see cref="SerializableRangeTest"/></param>
+        /// <param name="acronym">The acronym of the <see cref="SerializableRangeTest"/></param>
         public SerializableRangeTest(string acronym)
         {
             Acronym = acronym;

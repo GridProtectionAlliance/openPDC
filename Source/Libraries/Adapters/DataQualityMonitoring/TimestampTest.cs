@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  OutOfRangeService.cs - Gbtc
+//  TimestampTest.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  12/16/2009 - Stephen C. Wills
+//  12/18/2009 - Stephen C. Wills
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -231,35 +231,47 @@
 
 using System;
 using System.Collections.Generic;
-using System.ServiceModel;
+using System.Linq;
+using System.Text;
+using TVA.Measurements.Routing;
 using TVA.Measurements;
-using TVA.Web.Services;
+using TVA;
 
-namespace DataQualityMonitoring.Services
+namespace DataQualityMonitoring
 {
     /// <summary>
-    /// Represents a REST web service for out-of-range measurements.
+    /// 
     /// </summary>
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class OutOfRangeService : RestService, IOutOfRangeService
+    public class TimestampTest : OutputAdapterBase
     {
-        
+
         #region [ Members ]
 
         // Fields
-        private Dictionary<string, RangeTest> m_tests;
+        private Dictionary<Ticks, LinkedList<IMeasurement>> m_badTimestampMeasurements;
+        private Ticks m_lagTime;
+        private Ticks m_leadTime;
+        private Ticks m_timeToPurge;
+        private Ticks m_warnInterval;
+        private System.Timers.Timer m_purgeTimer;
+        private System.Timers.Timer m_warningTimer;
 
         #endregion
 
         #region [ Constructors ]
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OutOfRangeService"/> class.
+        /// Initializes a new instance of the <see cref="TimestampTest"/> class.
         /// </summary>
-        public OutOfRangeService()
+        public TimestampTest()
         {
-            m_tests = new Dictionary<string, RangeTest>();
-            ServiceUri = "http://localhost:6101/rangetest";
+            m_badTimestampMeasurements = new Dictionary<Ticks, LinkedList<IMeasurement>>();
+            m_lagTime = 0L;
+            m_leadTime = 0L;
+            m_timeToPurge = Ticks.FromSeconds(1.0);
+            m_warnInterval = Ticks.FromSeconds(4.0);
+            m_purgeTimer = new System.Timers.Timer();
+            m_warningTimer = new System.Timers.Timer();
         }
 
         #endregion
@@ -267,13 +279,24 @@ namespace DataQualityMonitoring.Services
         #region [ Properties ]
 
         /// <summary>
-        /// Gets the collection of <see cref="RangeTest"/>s that have registered with the service.
+        /// Measurements sent to this <see cref="TimestampTest"/> are not destined for archival.
         /// </summary>
-        public ICollection<RangeTest> Tests
+        public override bool OutputIsForArchive
         {
             get
             {
-                return m_tests.Values;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// This <see cref="TimestampTest"/> does not connect asynchronously.
+        /// </summary>
+        protected override bool UseAsyncConnect
+        {
+            get
+            {
+                return false;
             }
         }
 
@@ -282,226 +305,181 @@ namespace DataQualityMonitoring.Services
         #region [ Methods ]
 
         /// <summary>
-        /// Reads all out-of-range measurements from the <see cref="Tests"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+        /// Attempts to connect to this <see cref="TimestampTest"/>.
         /// </summary>
-        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
-        public SerializableRangeTestCollection ReadAllOutOfRangeMeasurementsAsXml()
+        protected override void AttemptConnection()
         {
-            return ReadOutOfRangeMeasurements();
         }
 
         /// <summary>
-        /// Reads all out-of-range measurements from the <see cref="Tests"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+        /// Attempts to disconnect from this <see cref="TimestampTest"/>.
         /// </summary>
-        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
-        public SerializableRangeTestCollection ReadAllOutOfRangeMeasurementsAsJson()
+        protected override void AttemptDisconnection()
         {
-            return ReadOutOfRangeMeasurements();
         }
 
         /// <summary>
-        /// Reads all out-of-range measurements with the specified signal type and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+        /// Process the measurements to determine if any measurements are coming in with bad timestamps.
         /// </summary>
-        /// <param name="signalType">The signal type of the desired out-of-range measurements.</param>
-        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
-        public SerializableRangeTestCollection ReadOutOfRangeMeasurementsWithSignalTypeAsXml(string signalType)
+        /// <param name="measurements">The array of measurements to check for bad timestamps.</param>
+        protected override void ProcessMeasurements(IMeasurement[] measurements)
         {
-            return ReadOutOfRangeMeasurementsWithSignalType(signalType);
-        }
+            Ticks currentTime = DateTime.UtcNow.Ticks;
 
-        /// <summary>
-        /// Reads all out-of-range measurements with the specified signal type and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
-        /// </summary>
-        /// <param name="signalType">The signal type of the desired out-of-range measurements.</param>
-        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
-        public SerializableRangeTestCollection ReadOutOfRangeMeasurementsWithSignalTypeAsJson(string signalType)
-        {
-            return ReadOutOfRangeMeasurementsWithSignalType(signalType);
-        }
-
-        /// <summary>
-        /// Reads all out-of-range measurements from the specified device and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-        /// </summary>
-        /// <param name="device">The name of the device to check for out-of-range measurements.</param>
-        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
-        public SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromDeviceAsXml(string device)
-        {
-            return ReadOutOfRangeMeasurementsFromDevice(device);
-        }
-
-        /// <summary>
-        /// Reads all out-of-range measurements from the specified device and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
-        /// </summary>
-        /// <param name="device">The name of the device to check for out-of-range measurements.</param>
-        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
-        public SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromDeviceAsJson(string device)
-        {
-            return ReadOutOfRangeMeasurementsFromDevice(device);
-        }
-
-        /// <summary>
-        /// Reads all out-of-range measurements from the specified <see cref="RangeTest"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-        /// </summary>
-        /// <param name="test">The name of the <see cref="RangeTest"/> to check for out-of-range measurements.</param>
-        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
-        public SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromTestAsXml(string test)
-        {
-            return ReadOutOfRangeMeasurementsFromTest(test);
-        }
-
-        /// <summary>
-        /// Reads all out-of-range measurements from the specified <see cref="RangeTest"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
-        /// </summary>
-        /// <param name="test">The name of the <see cref="RangeTest"/> to check for out-of-range measurements.</param>
-        /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
-        public SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromTestAsJson(string test)
-        {
-            return ReadOutOfRangeMeasurementsFromTest(test);
-        }
-
-        /// <summary>
-        /// Attaches a <see cref="RangeTest"/> to this <see cref="OutOfRangeService"/>.
-        /// </summary>
-        /// <param name="test">The <see cref="RangeTest"/> to be attached to this <see cref="OutOfRangeService"/>.</param>
-        public void AttachRangeTest(RangeTest test)
-        {
-            m_tests[test.Name] = test;
-        }
-
-        /// <summary>
-        /// Detaches a <see cref="RangeTest"/> from this <see cref="OutOfRangeService"/>.
-        /// </summary>
-        /// <param name="test">The <see cref="RangeTest"/> to be detached from this <see cref="OutOfRangeService"/>.</param>
-        public void DetachRangeTest(RangeTest test)
-        {
-            m_tests.Remove(test.Name);
-        }
-
-        private SerializableRangeTestCollection ReadOutOfRangeMeasurements()
-        {
-            SerializableRangeTestCollection serializableCollection = new SerializableRangeTestCollection();
-            List<SerializableRangeTest> serializableTests = new List<SerializableRangeTest>();
-
-            // Convert RangeTests to SerializableRangeTests and add them to the list of serializable tests.
-            foreach (RangeTest test in m_tests.Values)
+            lock (m_badTimestampMeasurements)
             {
-                SerializableRangeTest serializableTest = new SerializableRangeTest(test.Name);
-                List<SerializableOutOfRangeMeasurement> serializableMeasurements = new List<SerializableOutOfRangeMeasurement>();
-                ICollection<IMeasurement> outOfRangeMeasurements = test.GetOutOfRangeMeasurements();
-
-                // Convert IMeasurements to SerializableOutOfRangeMeasurements and add them to the list of serializable measurements.
-                foreach (IMeasurement measurement in outOfRangeMeasurements)
+                foreach (IMeasurement measurement in measurements)
                 {
-                    SerializableOutOfRangeMeasurement serializableMeasurement = CreateSerializableOutOfRangeMeasurement(test, measurement);
-                    serializableMeasurements.Add(serializableMeasurement);
+                    Ticks distance = currentTime - measurement.Timestamp;
+
+                    if (IsInputMeasurement(measurement.Key) && (!measurement.TimestampQualityIsGood || distance > m_lagTime || distance < -m_leadTime))
+                        AddMeasurementWithBadTimestamp(currentTime, measurement);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns a short, one-line status message about the adapter.
+        /// </summary>
+        /// <param name="maxLength">The maximum length of the message to be returned.</param>
+        /// <returns>A short, one-line status message.</returns>
+        public override string GetShortStatus(int maxLength)
+        {
+            return string.Format("{0} input measurements; {1} bad timestamps", InputMeasurementKeys.Length, m_badTimestampMeasurements.Count);
+        }
+
+        /// <summary>
+        /// Initializes <see cref="TimestampTest"/>.
+        /// </summary>
+        public override void Initialize()
+        {
+            base.Initialize();
+            string errorMessage = "{0} is missing from Settings - Example: lagTime=3; leadTime=1";
+
+            Dictionary<string, string> settings = Settings;
+            string setting;
+
+            // Load optional parameters
+            if (settings.TryGetValue("timeToPurge", out setting))
+                m_timeToPurge = Ticks.FromSeconds(double.Parse(setting));
+
+            if (settings.TryGetValue("warnInterval", out setting))
+                m_warnInterval = Ticks.FromSeconds(double.Parse(setting));
+
+            // Load required parameters
+            if (!settings.TryGetValue("lagTime", out setting))
+                throw new ArgumentException(string.Format(errorMessage, "lagTime"));
+
+            m_lagTime = Ticks.FromSeconds(double.Parse(setting));
+
+            if (!settings.TryGetValue("leadTime", out setting))
+                throw new ArgumentException(string.Format(errorMessage, "leadTime"));
+
+            m_leadTime = Ticks.FromSeconds(double.Parse(setting));
+
+            m_purgeTimer.Interval = m_timeToPurge.ToMilliseconds();
+            m_purgeTimer.Elapsed += m_purgeTimer_Elapsed;
+
+            m_warningTimer.Interval = m_warnInterval.ToMilliseconds();
+            m_warningTimer.Elapsed += m_warningTimer_Elapsed;
+        }
+
+        /// <summary>
+        /// Starts this <see cref="TimestampTest"/>.
+        /// </summary>
+        public override void Start()
+        {
+            base.Start();
+
+            m_purgeTimer.Start();
+            m_warningTimer.Start();
+        }
+
+        /// <summary>
+        /// Stops this <see cref="TimestampTest"/>.
+        /// </summary>
+        public override void Stop()
+        {
+            base.Stop();
+
+            m_purgeTimer.Stop();
+            m_warningTimer.Stop();
+        }
+
+        /// <summary>
+        /// Returns a collection of all the measurements received with bad timestamps.
+        /// </summary>
+        /// <returns>A collection of measurements with bad timestamps.</returns>
+        public ICollection<IMeasurement> GetMeasurementsWithBadTimestamps()
+        {
+            ICollection<IMeasurement> badTimestampList = new LinkedList<IMeasurement>();
+
+            lock (m_badTimestampMeasurements)
+            {
+                PurgeOldMeasurements();
+
+                foreach (LinkedList<IMeasurement> measurementList in m_badTimestampMeasurements.Values)
+                {
+                    foreach (IMeasurement measurement in measurementList)
+                    {
+                        badTimestampList.Add(measurement);
+                    }
+                }
+            }
+
+            return badTimestampList;
+        }
+
+        private void AddMeasurementWithBadTimestamp(Ticks timeArrived, IMeasurement measurement)
+        {
+            lock (m_badTimestampMeasurements)
+            {
+                LinkedList<IMeasurement> measurementList;
+
+                if (!m_badTimestampMeasurements.TryGetValue(timeArrived, out measurementList))
+                {
+                    measurementList = new LinkedList<IMeasurement>();
+                    m_badTimestampMeasurements.Add(timeArrived, measurementList);
                 }
 
-                serializableTest.OutOfRangeMeasurements = serializableMeasurements.ToArray();
-                serializableTests.Add(serializableTest);
+                measurementList.AddLast(measurement);
             }
-
-            serializableCollection.RangeTests = serializableTests.ToArray();
-            return serializableCollection;
         }
 
-        private SerializableRangeTestCollection ReadOutOfRangeMeasurementsWithSignalType(string signalType)
+        private void PurgeOldMeasurements()
         {
-            SerializableRangeTestCollection serializableCollection = new SerializableRangeTestCollection();
-            List<SerializableRangeTest> serializableTests = new List<SerializableRangeTest>();
+            Ticks currentTime = DateTime.UtcNow.Ticks;
 
-            // Convert RangeTests to SerializableRangeTests and add them to the list of serializable tests.
-            foreach (RangeTest test in m_tests.Values)
+            lock (m_badTimestampMeasurements)
             {
-                SerializableRangeTest serializableTest = new SerializableRangeTest(test.Name);
-                List<SerializableOutOfRangeMeasurement> serializableMeasurements = new List<SerializableOutOfRangeMeasurement>();
-                ICollection<IMeasurement> outOfRangeMeasurements = test.GetOutOfRangeMeasurements();
+                List<Ticks> arrivalTimes = new List<Ticks>(m_badTimestampMeasurements.Keys);
 
-                // Convert IMeasurements to SerializableOutOfRangeMeasurements and add them to the list of serializable measurements.
-                foreach (IMeasurement measurement in outOfRangeMeasurements)
+                foreach (Ticks timeArrived in arrivalTimes)
                 {
-                    SerializableOutOfRangeMeasurement serializableMeasurement = CreateSerializableOutOfRangeMeasurement(test, measurement);
+                    Ticks distance = currentTime - timeArrived;
 
-                    if (serializableMeasurement.SignalType == signalType)
-                        serializableMeasurements.Add(serializableMeasurement);
+                    if (distance < m_timeToPurge)
+                        m_badTimestampMeasurements.Remove(timeArrived);
                 }
-
-                serializableTest.OutOfRangeMeasurements = serializableMeasurements.ToArray();
-                serializableTests.Add(serializableTest);
             }
-
-            serializableCollection.RangeTests = serializableTests.ToArray();
-            return serializableCollection;
         }
 
-        private SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromDevice(string device)
+        // Periodically purge measurements to speed up retrival of data.
+        private void m_purgeTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            SerializableRangeTestCollection serializableCollection = new SerializableRangeTestCollection();
-            List<SerializableRangeTest> serializableTests = new List<SerializableRangeTest>();
-
-            // Convert RangeTests to SerializableRangeTests and add them to the list of serializable tests.
-            foreach (RangeTest test in m_tests.Values)
-            {
-                SerializableRangeTest serializableTest = new SerializableRangeTest(test.Name);
-                List<SerializableOutOfRangeMeasurement> serializableMeasurements = new List<SerializableOutOfRangeMeasurement>();
-                ICollection<IMeasurement> outOfRangeMeasurements = test.GetOutOfRangeMeasurements();
-
-                // Convert IMeasurements to SerializableOutOfRangeMeasurements and add them to the list of serializable measurements.
-                foreach (IMeasurement measurement in outOfRangeMeasurements)
-                {
-                    SerializableOutOfRangeMeasurement serializableMeasurement = CreateSerializableOutOfRangeMeasurement(test, measurement);
-
-                    if(serializableMeasurement.Device == device)
-                        serializableMeasurements.Add(serializableMeasurement);
-                }
-
-                serializableTest.OutOfRangeMeasurements = serializableMeasurements.ToArray();
-                serializableTests.Add(serializableTest);
-            }
-
-            serializableCollection.RangeTests = serializableTests.ToArray();
-            return serializableCollection;
+            PurgeOldMeasurements();
         }
 
-        private SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromTest(string acronym)
+        // Periodically send updates to the console about any measurements with bad timestamps.
+        private void m_warningTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            SerializableRangeTestCollection serializableCollection = new SerializableRangeTestCollection();
-            List<SerializableRangeTest> serializableTests = new List<SerializableRangeTest>();
-            RangeTest test = m_tests[acronym];
+            ICollection<IMeasurement> badTimestampMeasurements = GetMeasurementsWithBadTimestamps();
+            int count = badTimestampMeasurements.Count;
 
-            // Convert RangeTest to SerializableRangeTest and add it to the list of serializable tests.
-            SerializableRangeTest serializableTest = new SerializableRangeTest(test.Name);
-            List<SerializableOutOfRangeMeasurement> serializableMeasurements = new List<SerializableOutOfRangeMeasurement>();
-            ICollection<IMeasurement> outOfRangeMeasurements = test.GetOutOfRangeMeasurements();
-
-            // Convert IMeasurements to SerializableOutOfRangeMeasurements and add them to the list of serializable measurements.
-            foreach (IMeasurement measurement in outOfRangeMeasurements)
-            {
-                SerializableOutOfRangeMeasurement serializableMeasurement = CreateSerializableOutOfRangeMeasurement(test, measurement);
-                serializableMeasurements.Add(serializableMeasurement);
-            }
-
-            serializableTest.OutOfRangeMeasurements = serializableMeasurements.ToArray();
-            serializableTests.Add(serializableTest);
-
-            serializableCollection.RangeTests = serializableTests.ToArray();
-            return serializableCollection;
-        }
-
-        private SerializableOutOfRangeMeasurement CreateSerializableOutOfRangeMeasurement(RangeTest test, IMeasurement measurement)
-        {
-            SerializableOutOfRangeMeasurement serializableMeasurement = new SerializableOutOfRangeMeasurement(measurement, test.LowRange, test.HighRange);
-            serializableMeasurement.ProcessException += serializableMeasurement_ProcessException;
-            serializableMeasurement.SetDeviceAndSignalType(test.DataSource);
-            return serializableMeasurement;
-        }
-
-        // Exceptions from out-of-range measurements get forwarded to the ServiceProcessException event.
-        private void serializableMeasurement_ProcessException(object sender, TVA.EventArgs<Exception> e)
-        {
-            OnServiceProcessException(e.Argument);
+            if (count > 0)
+                OnStatusMessage("Received {0} measurements with bad timestamps within the last {1} seconds.", count, (int)m_timeToPurge.ToSeconds());
         }
 
         #endregion
-
     }
 }

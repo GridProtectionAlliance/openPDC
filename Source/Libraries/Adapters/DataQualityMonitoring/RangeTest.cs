@@ -640,24 +640,30 @@ namespace DataQualityMonitoring
 
         private void AttachToService()
         {
-            m_service.AttachRangeTest(this);
+            lock (m_service)
+            {
+                m_service.AttachRangeTest(this);
 
-            if (exceptionProcessor == null)
-                exceptionProcessor = this;
+                if (exceptionProcessor == null)
+                    exceptionProcessor = this;
+            }
         }
 
         private void DetachFromService()
         {
-            m_service.DetachRangeTest(this);
-
-            if (this == exceptionProcessor)
+            lock (m_service)
             {
-                ICollection<RangeTest> tests = m_service.Tests;
+                m_service.DetachRangeTest(this);
 
-                if (tests.Count > 0)
-                    exceptionProcessor = tests.GetEnumerator().Current;
-                else
-                    exceptionProcessor = null;
+                if (this == exceptionProcessor)
+                {
+                    ICollection<RangeTest> tests = m_service.Tests;
+
+                    if (tests.Count > 0)
+                        exceptionProcessor = tests.GetEnumerator().Current;
+                    else
+                        exceptionProcessor = null;
+                }
             }
         }
 

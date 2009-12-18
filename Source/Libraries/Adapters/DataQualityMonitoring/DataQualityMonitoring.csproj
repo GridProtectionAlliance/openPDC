@@ -81,6 +81,7 @@
     <Compile Include="Services\SerializableOutOfRangeMeasurement.cs" />
     <Compile Include="Services\SerializableRangeTest.cs" />
     <Compile Include="Services\SerializableRangeTestCollection.cs" />
+    <Compile Include="TimestampTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
