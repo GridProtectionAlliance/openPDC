@@ -47,9 +47,9 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TVA.Core, Version=1.0.27.34928, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL">
+    <Reference Include="TVA.Core, Version=1.0.50.39320, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependencies\TVA\TVA.Core.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -57,7 +57,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Libraries\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj">
+    <ProjectReference Include="..\..\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj">
       <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>
       <Name>TVA.PhasorProtocols</Name>
     </ProjectReference>

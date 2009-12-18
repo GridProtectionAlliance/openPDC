@@ -162,7 +162,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{392338BF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataQualityMonitoring", "Libraries\Adapters\DataQualityMonitoring\DataQualityMonitoring.csproj", "{A6875AF1-9183-4FED-8628-9067E0324208}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LOFTrigger", "LOFTrigger\LOFTrigger.csproj", "{6778D5B5-B328-4D38-9879-2A1CD6336022}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LOFTrigger", "Libraries\Adapters\LOFTrigger\LOFTrigger.csproj", "{6778D5B5-B328-4D38-9879-2A1CD6336022}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
@@ -242,10 +242,10 @@ Global
 		SccProjectTopLevelParentUniqueName18 = Synchrophasor.sln
 		SccProjectName18 = Libraries/Adapters/DataQualityMonitoring
 		SccLocalPath18 = Libraries\\Adapters\\DataQualityMonitoring
-		SccProjectUniqueName19 = LOFTrigger\\LOFTrigger.csproj
+		SccProjectUniqueName19 = Libraries\\Adapters\\LOFTrigger\\LOFTrigger.csproj
 		SccProjectTopLevelParentUniqueName19 = Synchrophasor.sln
-		SccProjectName19 = LOFTrigger
-		SccLocalPath19 = LOFTrigger
+		SccProjectName19 = Libraries/Adapters/LOFTrigger
+		SccLocalPath19 = Libraries\\Adapters\\LOFTrigger
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
