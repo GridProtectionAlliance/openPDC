@@ -417,6 +417,7 @@ namespace openPDC
 
             if (settings.TryGetValue("Provider", out setting))
             {
+                // Check if provider is for Access since it uses braces as Guid delimeters
                 if (setting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.CurrentCultureIgnoreCase))
                 {
                     m_nodeIDQueryString = "{" + m_nodeID + "}";
@@ -710,7 +711,7 @@ namespace openPDC
                     }
                     catch (Exception ex)
                     {
-                        DisplayStatusMessage("WARNING: Failed to load database configuration due to exception: {0} Attempting to use last known good configuration.", UpdateType.Warning, ex.Message);
+                        DisplayStatusMessage("Failed to load database configuration due to exception: {0} Attempting to use last known good configuration.", UpdateType.Warning, ex.Message);
                         m_serviceHelper.ErrorLogger.Log(ex);
                         configuration = GetConfigurationDataSet(ConfigurationType.XmlFile, m_cachedConfigurationFile, null);
                     }
@@ -731,7 +732,7 @@ namespace openPDC
                     {
                         DisplayStatusMessage("Webservice configuration connection opened.", UpdateType.Information);
 
-                        configuration = new DataSet("Iaon");
+                        configuration = new DataSet();
                         request = WebRequest.Create(connectionString);
                         response = request.GetResponse().GetResponseStream();
                         configuration.ReadXml(response);
@@ -864,12 +865,12 @@ namespace openPDC
                 else
                     // It is only expected that output adapters will be mapped to this handler, but in case
                     // another adapter type uses this handler we will still display a message
-                    DisplayStatusMessage("[{0}] CRITICAL! There are {1} unprocessed measurements in the adapter queue - but sender \"{2}\" is not an IOutputAdapter, so no evasive action can be exercised.", UpdateType.Warning, GetDerivedName(sender), unprocessedMeasurements, sender.GetType().Name);
+                    DisplayStatusMessage("[{0}] CRITICAL: There are {1} unprocessed measurements in the adapter queue - but sender \"{2}\" is not an IOutputAdapter, so no evasive action can be exercised.", UpdateType.Warning, GetDerivedName(sender), unprocessedMeasurements, sender.GetType().Name);
             }
             else if (unprocessedMeasurements > m_measurementWarningThreshold)
             {
                 if (unprocessedMeasurements >= m_measurementDumpingThreshold - m_measurementWarningThreshold)
-                    DisplayStatusMessage("[{0}] CRITICAL! There are {1} unprocessed measurements in the output queue.", UpdateType.Warning, GetDerivedName(sender), unprocessedMeasurements);
+                    DisplayStatusMessage("[{0}] CRITICAL: There are {1} unprocessed measurements in the output queue.", UpdateType.Warning, GetDerivedName(sender), unprocessedMeasurements);
                 else
                     DisplayStatusMessage("[{0}] There are {1} unprocessed measurements in the output queue.", UpdateType.Warning, GetDerivedName(sender), unprocessedMeasurements);
             }
