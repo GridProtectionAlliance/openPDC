@@ -510,7 +510,8 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                 // Check for a configuration change notification from any data cell
                 for (int x = 0; x < dataCells.Count; x++)
                 {
-                    if (dataCells[x].ConfigurationChangeDetected)
+                    // Configuration change is only relevant if raw status flags <> FF (status undefined)
+                    if (dataCells[x].ConfigurationChangeDetected && ((DataCellBase)dataCells[x]).StatusFlags != ushort.MaxValue)
                     {
                         configurationChangeDetected = true;
 

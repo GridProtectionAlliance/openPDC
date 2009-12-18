@@ -254,6 +254,7 @@ using TVA.Measurements;
 using TVA.Measurements.Routing;
 using TVA.Reflection;
 using TVA.Services;
+using System.Diagnostics;
 
 namespace openPDC
 {
@@ -369,6 +370,7 @@ namespace openPDC
             systemSettings.Add("DataProviderString", "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089};ConnectionType=System.Data.OleDb.OleDbConnection;AdapterType=System.Data.OleDb.OleDbDataAdapter", "Configuration database ADO.NET data provider assembly type creation string");
             systemSettings.Add("CachedConfigurationFile", "SystemConfiguration.xml", "File name for last known good system configuration (only cached for a Database or WebService connection)");
             systemSettings.Add("UniqueAdaptersIDs", "True", "Set to true if all runtime adapter ID's will be unique to allow for easier adapter specification");
+            systemSettings.Add("ProcessPriority", "RealTime", "Sets desired process priority: Normal, AboveNormal, High, RealTime");
 
             // Example connection settings
             CategorizedSettingsElementCollection exampleSettings = configFile.Settings["exampleConnectionSettings"];
@@ -436,6 +438,17 @@ namespace openPDC
 
             if (string.IsNullOrEmpty(m_nodeIDQueryString))
                 m_nodeIDQueryString = "'" + m_nodeID + "'";
+
+            try
+            {
+                // Attempt to assign desired process priority. Note that process will require SeIncreaseBasePriorityPrivilege or 
+                // Administrative privileges to make this change
+                Process.GetCurrentProcess().PriorityClass = systemSettings["ProcessPriority"].ValueAs<ProcessPriorityClass>();
+            }
+            catch (Exception ex)
+            {
+                m_serviceHelper.ErrorLogger.Log(ex, false);
+            }
 
             // Initialize broadcast message settings
             m_messageDisplayTimepan = broadcastMessageSettings["MessageDisplayTimespan"].ValueAsInt32();
