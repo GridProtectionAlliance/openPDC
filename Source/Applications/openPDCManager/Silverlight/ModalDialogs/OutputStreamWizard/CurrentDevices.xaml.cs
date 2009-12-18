@@ -236,6 +236,7 @@ using System.Windows;
 using System.Windows.Controls;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
+using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 {
@@ -277,6 +278,12 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 		}
 		void ButtonDelete_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonDeleteTransform);
+			sb.Begin();
+
 			if (devicesToBeDeleted.Count > 0)
 				client.DeleteOutputStreamDeviceAsync(sourceOutputStreamID, devicesToBeDeleted);
 			else
@@ -287,6 +294,12 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 		}
 		void ButtonAdd_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonAddTransform);
+			sb.Begin();
+
 			AddDevices addDevices = new AddDevices(sourceOutputStreamID, sourceOutputStreamAcronym);
 			addDevices.Closed += new EventHandler(addDevices_Closed);
 			addDevices.Show();

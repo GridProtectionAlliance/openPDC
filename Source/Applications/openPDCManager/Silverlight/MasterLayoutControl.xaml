@@ -12,7 +12,7 @@
                 <ScaleTransform x:Name="LayoutRootScale" ScaleX="1" ScaleY="1"/>
             </Canvas.RenderTransform>
 
-            <Grid Canvas.Left="10" Canvas.Top="2" Background="Transparent" Height="900" Width="1200">
+            <Grid Canvas.Left="10" Canvas.Top="1" Background="Transparent" Height="900" Width="1200">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="11*" />

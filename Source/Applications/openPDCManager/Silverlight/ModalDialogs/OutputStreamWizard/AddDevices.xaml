@@ -8,8 +8,16 @@
             <StackPanel Orientation="Vertical" x:Name="StackPanelDevices">                               
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <TextBox x:Name="TextBoxSearch" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Margin="5" />
-                    <Button x:Name="ButtonSearch" Content="../../Images/Search.png" Tag="Search" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="5"/>
-                    <Button x:Name="ButtonShowAll" Content="../../Images/CancelSearch.png" Tag="Show All" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="5"/>
+                    <Button x:Name="ButtonSearch" Content="../../Images/Search.png" Tag="Search" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="5" Cursor="Hand">
+                        <Button.RenderTransform>
+                            <ScaleTransform x:Name="ButtonSearchTransform" ScaleX="1" ScaleY="1" />
+                        </Button.RenderTransform>
+                    </Button>
+                    <Button x:Name="ButtonShowAll" Content="../../Images/CancelSearch.png" Tag="Show All" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="5" Cursor="Hand">
+                        <Button.RenderTransform>
+                            <ScaleTransform x:Name="ButtonShowAllTransform" ScaleX="1" ScaleY="1" />
+                        </Button.RenderTransform>
+                    </Button>
                 </StackPanel>
                 
                 <ScrollViewer BorderThickness="0" Padding="0" Height="{StaticResource XXXLargeItemSize}">
@@ -30,7 +38,11 @@
                     <CheckBox x:Name="CheckAddDigitals" Content="Add Digitals" FontWeight="Bold" Margin="5" />
                 </StackPanel>
                 
-                <Button x:Name="ButtonAdd" Content="../../Images/Add.png" Tag="Add Selected" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"/>
+                <Button x:Name="ButtonAdd" Content="../../Images/Add.png" Tag="Add Selected" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                    <Button.RenderTransform>
+                        <ScaleTransform x:Name="ButtonAddTransform" ScaleX="1" ScaleY="1" />
+                    </Button.RenderTransform>
+                </Button>
 
             </StackPanel>
         </Border>

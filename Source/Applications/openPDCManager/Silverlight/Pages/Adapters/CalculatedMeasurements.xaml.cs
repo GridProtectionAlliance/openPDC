@@ -238,6 +238,7 @@ using System.Windows.Navigation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
 using openPDCManager.Silverlight.ModalDialogs;
+using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Adapters
 {
@@ -298,10 +299,22 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonClearTransform);
+			sb.Begin();
+
 			ClearForm();
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonSaveTransform);
+			sb.Begin();
+
 			CalculatedMeasurement calculatedMeasurement = new CalculatedMeasurement();
 			calculatedMeasurement.NodeId = ((KeyValuePair<string, string>)ComboBoxNode.SelectedItem).Key;
 			calculatedMeasurement.Acronym = TextBoxAcronym.Text;

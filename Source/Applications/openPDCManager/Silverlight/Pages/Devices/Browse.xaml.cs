@@ -239,6 +239,7 @@ using System.Windows.Navigation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.Utilities;
+using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
@@ -259,10 +260,22 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}		
 		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonShowAllTransform);
+			sb.Begin();
+
 			ListBoxDeviceList.ItemsSource = deviceList;			
 		}
 		void ButtonSearch_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonSearchTransform);
+			sb.Begin();
+
 			string searchText = TextBoxSearch.Text.ToUpper();			
 			ListBoxDeviceList.ItemsSource = (from item in deviceList
 											 where item.Acronym.ToUpper().Contains(searchText) || item.Name.ToUpper().Contains(searchText) || item.ProtocolName.ToUpper().Contains(searchText)

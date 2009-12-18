@@ -25,7 +25,7 @@
                     </ScrollViewer.Content>
                 </ScrollViewer>
 
-                <Button x:Name="ButtonAdd" Content="../../Images/Add.png" Tag="Add Selected" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"/>
+                <Button x:Name="ButtonAdd" Content="../../Images/Add.png" Tag="Add Selected" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand"/>
 
             </StackPanel>
         </Border>

@@ -238,6 +238,7 @@ using System.Windows.Navigation;
 using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
+using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Manage
 {
@@ -297,6 +298,12 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonSaveTransform);
+			sb.Begin();
+
 			Node node = new Node();
 			node.Name = TextBoxName.Text;
 			node.CompanyID = ((KeyValuePair<int, string>)ComboBoxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxCompany.SelectedItem).Key;
@@ -318,6 +325,12 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonClearTransform);
+			sb.Begin();
+
 			ClearForm();
 		}
 		void Nodes_Loaded(object sender, RoutedEventArgs e)

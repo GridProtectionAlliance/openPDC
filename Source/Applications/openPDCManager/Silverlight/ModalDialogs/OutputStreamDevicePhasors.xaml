@@ -30,9 +30,17 @@
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="Load Order" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                         <TextBox x:Name="TextBoxLoadOrder" Grid.Row="1" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
-                            <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"/>
+                            <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                                <Button.RenderTransform>
+                                    <ScaleTransform x:Name="ButtonClearTransform" ScaleX="1" ScaleY="1" />
+                                </Button.RenderTransform>
+                            </Button>
                             <TextBlock Text="     "/>
-                            <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="Save" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"/>
+                            <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="Save" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                                <Button.RenderTransform>
+                                    <ScaleTransform x:Name="ButtonSaveTransform" ScaleX="1" ScaleY="1" />
+                                </Button.RenderTransform>
+                            </Button>
                         </StackPanel>
                         <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4"/>
                     </Grid>

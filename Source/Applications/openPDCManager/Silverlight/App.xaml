@@ -35,8 +35,15 @@
             <sys:Double x:Key="ApplicationMinWidth">1024</sys:Double>
             <sys:Double x:Key="ApplicationStartupHeight">900</sys:Double>
             <sys:Double x:Key="ApplicationStartupWidth">1200</sys:Double>
-            
-    		<ControlTemplate x:Key="SmallImageButtonTemplate" TargetType="Button">
+
+            <Storyboard x:Key="ButtonPressAnimation">
+                <DoubleAnimation Storyboard.TargetProperty="ScaleX" 
+                    From="1.0" To="0.9" Duration="0:0:0.1" AutoReverse="True" />
+                <DoubleAnimation Storyboard.TargetProperty="ScaleY" 
+                    From="1.0" To="0.9" Duration="0:0:0.1" AutoReverse="True" />
+            </Storyboard>
+
+            <ControlTemplate x:Key="SmallImageButtonTemplate" TargetType="Button">
     			<Image Source="{TemplateBinding Content}" Width="16" Height="16" />
     		</ControlTemplate>            
             

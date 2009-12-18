@@ -40,19 +40,31 @@
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Select XML Configuration File (from PMU Connection Tester)" HorizontalAlignment="Left" Margin="2"/>
                                     <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
                                         <TextBox x:Name="TextBoxConfigurationFile" Width="{StaticResource XXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
-                                        <Button x:Name="ButtonBrowseConfigurationFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2"/>
+                                        <Button x:Name="ButtonBrowseConfigurationFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
+                                            <Button.RenderTransform>
+                                                <ScaleTransform x:Name="ButtonBrowseConfigurationFileTransform" ScaleX="1" ScaleY="1" />
+                                            </Button.RenderTransform>
+                                        </Button>
                                     </StackPanel>
                                     <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="Select PMU Connection File (from PMU Connection Tester)" HorizontalAlignment="Left" Margin="2" />
                                     <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
                                         <TextBox x:Name="TextBoxConnectionFile" Width="{StaticResource XXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
-                                        <Button x:Name="ButtonBrowseConnectionFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2"/>
+                                        <Button x:Name="ButtonBrowseConnectionFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
+                                            <Button.RenderTransform>
+                                                <ScaleTransform x:Name="ButtonBrowseConnectionFileTransform" ScaleX="1" ScaleY="1" />
+                                            </Button.RenderTransform>
+                                        </Button>
                                     </StackPanel>
                                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Device Protocol" HorizontalAlignment="Left" Margin="2"/>
                                     <ComboBox x:Name="ComboboxProtocol" Grid.Row="4" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
                                     <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" x:Name="TextBlockIniFile" Text="Select INI File to Upload" HorizontalAlignment="Left" Margin="2"/>
                                     <StackPanel x:Name="StackPanelIniFile" Orientation="Horizontal" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2">
                                         <TextBox x:Name="TextBoxIniFile" Width="{StaticResource XXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
-                                        <Button x:Name="ButtonBrowseIniFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2"/>
+                                        <Button x:Name="ButtonBrowseIniFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
+                                            <Button.RenderTransform>
+                                                <ScaleTransform x:Name="ButtonBrowseIniFileTransform" ScaleX="1" ScaleY="1" />
+                                            </Button.RenderTransform>
+                                        </Button>
                                     </StackPanel>
                                     <!--<TextBlock Grid.Row="7" Grid.Column="0" Text="ID Code" HorizontalAlignment="Left" Margin="2"/>-->
                                     <CheckBox x:Name="CheckboxConnectToPDC" Content="Connect to PDC" Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Margin="2"/>                                    
@@ -204,8 +216,16 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="ButtonPrevious" Grid.Column="0" Content="../../Images/Previous.png" Tag="Previous" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2"/>
-                        <Button x:Name="ButtonNext" Grid.Column="1" Content="../../Images/Next.png" Tag="Next" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2"/>
+                        <Button x:Name="ButtonPrevious" Grid.Column="0" Content="../../Images/Previous.png" Tag="Previous" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonPreviousTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
+                        <Button x:Name="ButtonNext" Grid.Column="1" Content="../../Images/Next.png" Tag="Next" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonNextTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
                     </Grid>
                 </Border>
             </StackPanel>

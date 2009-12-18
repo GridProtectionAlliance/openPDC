@@ -239,6 +239,7 @@ using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
+using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Adapters
 {
@@ -317,6 +318,12 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonSaveTransform);
+			sb.Begin();
+
 			OutputStream outputStream = new OutputStream();
 			outputStream.NodeID = ((KeyValuePair<string, string>)ComboBoxNode.SelectedItem).Key;
 			outputStream.Acronym = TextBoxAcronym.Text;
@@ -347,6 +354,12 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonClearTransform);
+			sb.Begin();
+
 			ClearForm();	
 		}
 		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)

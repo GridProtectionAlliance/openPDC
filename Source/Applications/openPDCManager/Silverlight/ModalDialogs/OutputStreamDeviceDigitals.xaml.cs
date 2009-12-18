@@ -235,6 +235,7 @@ using System.Windows;
 using System.Windows.Controls;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
+using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.ModalDialogs
 {
@@ -301,6 +302,12 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonSaveTransform);
+			sb.Begin();
+
 			OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
 			App app = (App)Application.Current;
 
@@ -318,6 +325,12 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonClearTransform);
+			sb.Begin();
+
 			ClearForm();
 		}
 		void OutputStreamDeviceDigitals_Loaded(object sender, RoutedEventArgs e)

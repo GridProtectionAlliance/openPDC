@@ -14,8 +14,16 @@
                 <Border Style="{StaticResource HeaderRowBorderStyle}">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                         <TextBox x:Name="TextBoxSearch" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Margin="5" />
-                        <Button x:Name="ButtonSearch" Content="../../Images/Search.png" Tag="Search" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="5"/>
-                        <Button x:Name="ButtonShowAll" Content="../../Images/CancelSearch.png" Tag="Show All" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="5"/>
+                        <Button x:Name="ButtonSearch" Content="../../Images/Search.png" Tag="Search" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="5" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonSearchTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
+                        <Button x:Name="ButtonShowAll" Content="../../Images/CancelSearch.png" Tag="Show All" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="5" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonShowAllTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
                     </StackPanel>
                 </Border>
                 <Border Style="{StaticResource HeaderRowBorderStyle}">

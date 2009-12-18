@@ -240,6 +240,7 @@ using openPDCManager.Silverlight.Utilities;
 using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.UserControls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Manage
 {
@@ -359,6 +360,12 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonSaveTransform);
+			sb.Begin();
+
 			Measurement measurement = new Measurement();
 			measurement.HistorianID = ((KeyValuePair<int, string>)ComboBoxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxHistorian.SelectedItem).Key;			
 			measurement.DeviceID = ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key;
@@ -382,6 +389,12 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonClearTransform);
+			sb.Begin();
+
 			ClearForm();	
 		}
 		void Measurements_Loaded(object sender, RoutedEventArgs e)

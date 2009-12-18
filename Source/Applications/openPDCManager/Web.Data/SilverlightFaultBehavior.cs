@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  AddDevices.xaml.cs - Gbtc
+//  SilverlightFaultBehavior.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  10/27/2009 - Mehulbhai P. Thakkar
+//  12/18/2009 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -229,131 +229,67 @@
 */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
-using System.Windows;
-using System.Windows.Controls;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
-using System.Windows.Media.Animation;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Configuration;
+using System.ServiceModel.Description;
+using System.ServiceModel.Dispatcher;
 
-namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
+namespace openPDCManager.Web.Data
 {
-	public partial class AddDevices : ChildWindow
+	public class SilverlightFaultBehavior : BehaviorExtensionElement, IEndpointBehavior
 	{
-		int sourceOutputStreamID;
-		string sourceOutputStreamAcronym;
-		Dictionary<int, string> devicesToBeAdded;
-		PhasorDataServiceClient client;
-		Dictionary<int, string> deviceList;
 
-		public AddDevices(int outputStreamID, string outputStreamAcronym)
+		public void ApplyDispatchBehavior(ServiceEndpoint endpoint, EndpointDispatcher endpointDispatcher)
 		{
-			InitializeComponent();
-			sourceOutputStreamID = outputStreamID;
-			sourceOutputStreamAcronym = outputStreamAcronym;
-			this.Title = "Add New Devices For Output Stream: " + sourceOutputStreamAcronym;
-			Loaded += new RoutedEventHandler(AddDevices_Loaded);
-			ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);
-			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
-			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
-			client = Common.GetPhasorDataServiceProxyClient();	
-			client.GetDevicesForOutputStreamCompleted += new EventHandler<GetDevicesForOutputStreamCompletedEventArgs>(client_GetDevicesForOutputStreamCompleted);
-			client.AddDevicesCompleted += new EventHandler<AddDevicesCompletedEventArgs>(client_AddDevicesCompleted);
+			SilverlightFaultMessageInspector inspector = new SilverlightFaultMessageInspector();
+			endpointDispatcher.DispatchRuntime.MessageInspectors.Add(inspector);
 		}
 
-		void client_AddDevicesCompleted(object sender, AddDevicesCompletedEventArgs e)
+		public class SilverlightFaultMessageInspector : IDispatchMessageInspector
 		{
-			Message message = new Message();
-			if (e.Error == null)
-				message = Common.ParseStringToMessage(e.Result);
-			else
+
+			public void BeforeSendReply(ref Message reply, object correlationState)
 			{
-				message.UserMessageType = MessageType.Error;
-				message.UserMessage = "Failed to Add Output Stream Device(s)";
-				message.SystemMessage = e.Error.Message;
+				if (reply.IsFault)
+				{
+					HttpResponseMessageProperty property = new HttpResponseMessageProperty();
+					// Here the response code is changed to 200.
+					property.StatusCode = System.Net.HttpStatusCode.OK;
+					reply.Properties[HttpResponseMessageProperty.Name] = property;
+				}
 			}
-			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
-			sm.Show();
-			client.GetDevicesForOutputStreamAsync(sourceOutputStreamID);
-		}
-		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonShowAllTransform);
-			sb.Begin();
 
-			ListBoxDeviceList.ItemsSource = deviceList;
-		}
-		void ButtonSearch_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSearchTransform);
-			sb.Begin();
-
-			string searchText = TextBoxSearch.Text.ToUpper();
-			ListBoxDeviceList.ItemsSource = (from item in deviceList.AsEnumerable()
-											 where item.Value.ToUpper().Contains(searchText)
-											 select item).ToList();
-		}
-		void client_GetDevicesForOutputStreamCompleted(object sender, GetDevicesForOutputStreamCompletedEventArgs e)
-		{
-			if (e.Error == null)
+			public object AfterReceiveRequest(ref Message request, IClientChannel channel, InstanceContext instanceContext)
 			{
-				ListBoxDeviceList.ItemsSource = e.Result;
-				deviceList = e.Result;
+				// Do nothing to the incoming message.
+				return null;
 			}
-			else
-			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Devices for Output Stream", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
-				sm.Show();
-			}
-		}
-		void ButtonAdd_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonAddTransform);
-			sb.Begin();
 
-			if (devicesToBeAdded.Count > 0)
-				client.AddDevicesAsync(sourceOutputStreamID, devicesToBeAdded, (bool)CheckAddDigitals.IsChecked, (bool)CheckAddAnalog.IsChecked);
-			else
-			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please Select Device(s) to Add", SystemMessage = string.Empty, UserMessageType = MessageType.Information },
-						 ButtonType.OkOnly);
-				sm.Show();
-			}				
 		}
-		void AddDevices_Loaded(object sender, RoutedEventArgs e)
+
+		// The following methods are stubs and not relevant. 
+		public void AddBindingParameters(ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
 		{
-			devicesToBeAdded = new Dictionary<int, string>();
-			deviceList = new Dictionary<int, string>();
-			client.GetDevicesForOutputStreamAsync(sourceOutputStreamID);
 		}
-		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+
+		public void ApplyClientBehavior(ServiceEndpoint endpoint, ClientRuntime clientRuntime)
 		{
-			string deviceAcronym = ((CheckBox)sender).Content.ToString();
-			int deviceID = Convert.ToInt32(((CheckBox)sender).Tag.ToString());
-			if (devicesToBeAdded.ContainsKey(deviceID))
-			    devicesToBeAdded.Remove(deviceID);
 		}
-		private void CheckBox_Checked(object sender, RoutedEventArgs e)
+
+		public void Validate(ServiceEndpoint endpoint)
 		{
-			string deviceAcronym = ((CheckBox)sender).Content.ToString();
-			int deviceID = Convert.ToInt32(((CheckBox)sender).Tag.ToString());
-			if (!devicesToBeAdded.ContainsKey(deviceID))
-				devicesToBeAdded.Add(deviceID, deviceAcronym);
-		}	
-		
+		}
+
+		public override System.Type BehaviorType
+		{
+			get { return typeof(SilverlightFaultBehavior); }
+		}
+
+		protected override object CreateBehavior()
+		{
+			return new SilverlightFaultBehavior();
+		}
+
 	}
 }
-

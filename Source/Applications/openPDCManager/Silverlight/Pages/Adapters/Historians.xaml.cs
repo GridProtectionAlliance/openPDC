@@ -238,6 +238,7 @@ using System.Windows.Navigation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
 using openPDCManager.Silverlight.ModalDialogs;
+using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Adapters
 {
@@ -302,6 +303,12 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonSaveTransform);
+			sb.Begin();
+
 			Historian historian = new Historian();
 			historian.NodeID = ((KeyValuePair<string, string>)ComboBoxNode.SelectedItem).Key;
 			historian.Acronym = TextBoxAcronym.Text;
@@ -324,6 +331,12 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonClearTransform);
+			sb.Begin();
+
 			ClearForm();
 		}
 		void client_GetHistorianListCompleted(object sender, GetHistorianListCompletedEventArgs e)

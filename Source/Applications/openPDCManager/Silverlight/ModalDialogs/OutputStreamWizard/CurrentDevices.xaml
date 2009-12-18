@@ -27,9 +27,17 @@
                 </ScrollViewer>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <Button x:Name="ButtonDelete" Content="../../Images/Cancel.png" Tag="Delete Selected" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"/>
+                    <Button x:Name="ButtonDelete" Content="../../Images/Cancel.png" Tag="Delete Selected" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                        <Button.RenderTransform>
+                            <ScaleTransform x:Name="ButtonDeleteTransform" ScaleX="1" ScaleY="1" />
+                        </Button.RenderTransform>
+                    </Button>
                     <TextBlock Text="     "/>
-                    <Button x:Name="ButtonAdd" Content="../../Images/Add.png" Tag="Add New" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"/>
+                    <Button x:Name="ButtonAdd" Content="../../Images/Add.png" Tag="Add New" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                        <Button.RenderTransform>
+                            <ScaleTransform x:Name="ButtonAddTransform" ScaleX="1" ScaleY="1" />
+                        </Button.RenderTransform>
+                    </Button>
                 </StackPanel>
 
             </StackPanel>

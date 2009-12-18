@@ -242,6 +242,7 @@ using System.Windows.Navigation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
 using openPDCManager.Silverlight.ModalDialogs;
+using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
@@ -563,6 +564,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}		
 		void ButtonBrowseIniFile_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonBrowseIniFileTransform);
+			sb.Begin();
+
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.Multiselect = false;
 			openFileDialog.Filter = "INI Files (*.ini)|*.ini|All Files (*.*)|*.*";
@@ -578,6 +585,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void ButtonBrowseConnectionFile_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonBrowseConnectionFileTransform);
+			sb.Begin();
+
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.Multiselect = false;
 			openFileDialog.Filter = "PMU Connection Files (*.PmuConnection)|*.PmuConnection|All Files (*.*)|*.*";
@@ -591,6 +604,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void ButtonBrowseConfigurationFile_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonBrowseConfigurationFileTransform);
+			sb.Begin();
+
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.Multiselect = false;
 			openFileDialog.Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*";
@@ -604,6 +623,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void ButtonPrevious_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonPreviousTransform);
+			sb.Begin();
+
 			if (AccordianWizard.SelectedIndex > 0)
 			{
 				AccordionItem item = AccordianWizard.Items[AccordianWizard.SelectedIndex - 1] as AccordionItem;
@@ -612,6 +637,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void ButtonNext_Click(object sender, RoutedEventArgs e)
 		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonNextTransform);
+			sb.Begin();
+
 			if (AccordianWizard.SelectedIndex == 0)	//we will wait till user clicks next on the first screen to read config file becuase INI file may play a role before we can read config file.
 			{
 				if ((((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Value.ToUpper().Contains("BPA")) && !string.IsNullOrEmpty(iniFileName))

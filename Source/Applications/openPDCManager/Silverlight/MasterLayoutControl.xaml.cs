@@ -251,8 +251,7 @@ namespace openPDCManager.Silverlight
 			InitializeComponent();			
 			
 			App.Current.Host.Content.Resized += new EventHandler(Content_Resized);
-			GridLayoutRoot.SizeChanged += new SizeChangedEventHandler(GridLayoutRoot_SizeChanged);
-
+			
 			Loaded += new RoutedEventHandler(MasterLayoutControl_Loaded);
 			NetworkChange.NetworkAddressChanged += new NetworkAddressChangedEventHandler(NetworkChange_NetworkAddressChanged);
 			ButtonChangeMode.Click += new RoutedEventHandler(ButtonChangeMode_Click);
@@ -266,16 +265,7 @@ namespace openPDCManager.Silverlight
 				TextBlockNode.Text = ((KeyValuePair<string, string>)UserControlSelectNode.ComboboxNode.SelectedItem).Value;
 
 			Uri homeUri = new Uri("/Pages/HomePage.xaml", UriKind.Relative);
-			ContentFrame.Navigate(homeUri);
-
-			//if (ContentFrame.CurrentSource != homeUri)
-			//{
-			//	ContentFrame.Navigate(homeUri);				
-			//}
-			//else
-			//{
-
-			//}
+			ContentFrame.Navigate(homeUri);			
 		}
 
 		void UserControlSelectNode_NodeCollectionChanged(object sender, RoutedEventArgs e)
@@ -283,10 +273,6 @@ namespace openPDCManager.Silverlight
 			(sender as SelectNode).RefreshNodeList();			
 		}
 				
-		void GridLayoutRoot_SizeChanged(object sender, SizeChangedEventArgs e)
-		{
-			
-		}
 		void ButtonChangeMode_Click(object sender, RoutedEventArgs e)
 		{		
             if (!App.Current.IsRunningOutOfBrowser && App.Current.InstallState == InstallState.NotInstalled)
@@ -321,7 +307,7 @@ namespace openPDCManager.Silverlight
 		{			
 			if (height > 0 && width > 0)
 			{
-				LayoutRootScale.ScaleX = 0.99 * (width / layoutRootWidth);
+				LayoutRootScale.ScaleX = 0.98 * (width / layoutRootWidth);
 				LayoutRootScale.ScaleY = 0.98 * (height / layoutRootHeight);
 
 				//LayoutRootScale1.ScaleX = 0.99 * (width / layoutRootWidth);
@@ -337,9 +323,7 @@ namespace openPDCManager.Silverlight
 				//    LayoutRootScale.ScaleX = width / layoutRootWidth;
 				//    LayoutRootScale.ScaleY = width / layoutRootWidth;
 				//}
-			}
-			//System.Diagnostics.Debug.WriteLine("SL: " + GridLayoutRoot.Height.ToString() + " - " + GridLayoutRoot.Width.ToString());
-			//System.Diagnostics.Debug.WriteLine("Browser: " + height.ToString() + " - " + width.ToString());
+			}		
 		}
 		void NetworkChange_NetworkAddressChanged(object sender, EventArgs e)
 		{
