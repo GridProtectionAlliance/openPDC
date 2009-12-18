@@ -247,7 +247,7 @@ namespace DataQualityMonitoring.Services
         #region [ Members ]
 
         // Fields
-        Dictionary<int, RangeTest> m_tests;
+        Dictionary<string, RangeTest> m_tests;
         int m_currentIndex;
 
         #endregion
@@ -259,7 +259,7 @@ namespace DataQualityMonitoring.Services
         /// </summary>
         public OutOfRangeService()
         {
-            m_tests = new Dictionary<int, RangeTest>();
+            m_tests = new Dictionary<string, RangeTest>();
             ServiceUri = "http://localhost:6101/rangetest";
         }
 
@@ -344,7 +344,7 @@ namespace DataQualityMonitoring.Services
         /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
         public SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromTestAsXml(string test)
         {
-            return ReadOutOfRangeMeasurementsFromTest(int.Parse(test));
+            return ReadOutOfRangeMeasurementsFromTest(test);
         }
 
         /// <summary>
@@ -354,7 +354,7 @@ namespace DataQualityMonitoring.Services
         /// <returns>A <see cref="SerializableRangeTestCollection"/> object.</returns>
         public SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromTestAsJson(string test)
         {
-            return ReadOutOfRangeMeasurementsFromTest(int.Parse(test));
+            return ReadOutOfRangeMeasurementsFromTest(test);
         }
 
         /// <summary>
@@ -363,8 +363,7 @@ namespace DataQualityMonitoring.Services
         /// <param name="test">The <see cref="RangeTest"/> to be attached to this <see cref="OutOfRangeService"/>.</param>
         public void AttachRangeTest(RangeTest test)
         {
-            m_tests[m_currentIndex] = test;
-            m_currentIndex++;
+            m_tests[test.Name] = test;
         }
 
         /// <summary>
@@ -373,14 +372,7 @@ namespace DataQualityMonitoring.Services
         /// <param name="test">The <see cref="RangeTest"/> to be detached from this <see cref="OutOfRangeService"/>.</param>
         public void DetachRangeTest(RangeTest test)
         {
-            foreach (int index in m_tests.Keys)
-            {
-                if (m_tests[index] == test)
-                {
-                    m_tests.Remove(index);
-                    return;
-                }
-            }
+            m_tests.Remove(test.Name);
         }
 
         private SerializableRangeTestCollection ReadOutOfRangeMeasurements()
@@ -389,10 +381,9 @@ namespace DataQualityMonitoring.Services
             List<SerializableRangeTest> serializableTests = new List<SerializableRangeTest>();
 
             // Convert RangeTests to SerializableRangeTests and add them to the list of serializable tests.
-            foreach (int index in m_tests.Keys)
+            foreach (RangeTest test in m_tests.Values)
             {
-                RangeTest test = m_tests[index];
-                SerializableRangeTest serializableTest = new SerializableRangeTest(index);
+                SerializableRangeTest serializableTest = new SerializableRangeTest(test.Name);
                 List<SerializableOutOfRangeMeasurement> serializableMeasurements = new List<SerializableOutOfRangeMeasurement>();
                 ICollection<IMeasurement> outOfRangeMeasurements = test.GetOutOfRangeMeasurements();
 
@@ -417,10 +408,9 @@ namespace DataQualityMonitoring.Services
             List<SerializableRangeTest> serializableTests = new List<SerializableRangeTest>();
 
             // Convert RangeTests to SerializableRangeTests and add them to the list of serializable tests.
-            foreach (int index in m_tests.Keys)
+            foreach (RangeTest test in m_tests.Values)
             {
-                RangeTest test = m_tests[index];
-                SerializableRangeTest serializableTest = new SerializableRangeTest(index);
+                SerializableRangeTest serializableTest = new SerializableRangeTest(test.Name);
                 List<SerializableOutOfRangeMeasurement> serializableMeasurements = new List<SerializableOutOfRangeMeasurement>();
                 ICollection<IMeasurement> outOfRangeMeasurements = test.GetOutOfRangeMeasurements();
 
@@ -447,10 +437,9 @@ namespace DataQualityMonitoring.Services
             List<SerializableRangeTest> serializableTests = new List<SerializableRangeTest>();
 
             // Convert RangeTests to SerializableRangeTests and add them to the list of serializable tests.
-            foreach (int index in m_tests.Keys)
+            foreach (RangeTest test in m_tests.Values)
             {
-                RangeTest test = m_tests[index];
-                SerializableRangeTest serializableTest = new SerializableRangeTest(index);
+                SerializableRangeTest serializableTest = new SerializableRangeTest(test.Name);
                 List<SerializableOutOfRangeMeasurement> serializableMeasurements = new List<SerializableOutOfRangeMeasurement>();
                 ICollection<IMeasurement> outOfRangeMeasurements = test.GetOutOfRangeMeasurements();
 
@@ -471,14 +460,14 @@ namespace DataQualityMonitoring.Services
             return serializableCollection;
         }
 
-        private SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromTest(int index)
+        private SerializableRangeTestCollection ReadOutOfRangeMeasurementsFromTest(string acronym)
         {
             SerializableRangeTestCollection serializableCollection = new SerializableRangeTestCollection();
             List<SerializableRangeTest> serializableTests = new List<SerializableRangeTest>();
-            RangeTest test = m_tests[index];
+            RangeTest test = m_tests[acronym];
 
             // Convert RangeTest to SerializableRangeTest and add it to the list of serializable tests.
-            SerializableRangeTest serializableTest = new SerializableRangeTest(index);
+            SerializableRangeTest serializableTest = new SerializableRangeTest(test.Name);
             List<SerializableOutOfRangeMeasurement> serializableMeasurements = new List<SerializableOutOfRangeMeasurement>();
             ICollection<IMeasurement> outOfRangeMeasurements = test.GetOutOfRangeMeasurements();
 

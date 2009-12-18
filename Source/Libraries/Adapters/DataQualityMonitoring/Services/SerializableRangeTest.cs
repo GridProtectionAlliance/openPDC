@@ -256,9 +256,9 @@ namespace DataQualityMonitoring.Services
         /// Initializes a new instance of the <see cref="SerializableRangeTest"/>.
         /// </summary>
         /// <param name="index">The index of the <see cref="SerializableRangeTest"/></param>
-        public SerializableRangeTest(int index)
+        public SerializableRangeTest(string acronym)
         {
-            Index = index;
+            Acronym = acronym;
         }
 
         /// <summary>
@@ -285,7 +285,7 @@ namespace DataQualityMonitoring.Services
         /// Gets or sets the index of the range test.
         /// </summary>
         [XmlAttribute(), DataMember(Order = 0)]
-        public int Index { get; set; }
+        public string Acronym { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref="SerializableOutOfRangeMeasurement"/>s contained in the <see cref="SerializableRangeTest"/>.
