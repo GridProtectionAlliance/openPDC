@@ -297,6 +297,7 @@ namespace DataQualityMonitoring
             m_warningTimer.Elapsed += m_warningTimer_Elapsed;
 
             m_flatlineService = new FlatlineService(this);
+            m_flatlineService.SettingsCategory = base.Name + m_flatlineService.SettingsCategory;
             m_flatlineService.ServiceProcessException += m_flatlineService_ServiceProcessException;
             m_flatlineService.Initialize();
         }
