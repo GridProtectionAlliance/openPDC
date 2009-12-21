@@ -1574,13 +1574,6 @@ namespace openPDC
             DisplayStatusMessage(string.Format(status, args), type);
         }
 
-        // Handles any exceptions encountered in the statsu message queue
-        private void StatusMessageQueueExceptionHandler(object sender, EventArgs<Exception> e)
-        {
-            // We still try to log message to error log file even if it couldn't be displayed...
-            m_serviceHelper.ErrorLogger.Log(e.Argument, false);
-        }
-
         #endregion
 
         #endregion
