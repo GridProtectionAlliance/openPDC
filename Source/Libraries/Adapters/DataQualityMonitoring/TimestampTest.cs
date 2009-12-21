@@ -231,16 +231,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TVA.Measurements.Routing;
-using TVA.Measurements;
+using DataQualityMonitoring.Services;
 using TVA;
+using TVA.Measurements;
+using TVA.Measurements.Routing;
 
 namespace DataQualityMonitoring
 {
     /// <summary>
-    /// 
+    /// Tests measurements to determine whether their timestamps are good or bad.
     /// </summary>
     public class TimestampTest : OutputAdapterBase
     {
@@ -255,6 +254,8 @@ namespace DataQualityMonitoring
         private Ticks m_warnInterval;
         private System.Timers.Timer m_purgeTimer;
         private System.Timers.Timer m_warningTimer;
+        private TimestampService m_timestampService;
+        private bool m_disposed;
 
         #endregion
 
@@ -332,7 +333,7 @@ namespace DataQualityMonitoring
                 {
                     Ticks distance = currentTime - measurement.Timestamp;
 
-                    if (IsInputMeasurement(measurement.Key) && (!measurement.TimestampQualityIsGood || distance > m_lagTime || distance < -m_leadTime))
+                    if (IsInputMeasurement(measurement.Key) && (!measurement.TimestampQualityIsGood || distance > m_leadTime || distance < -m_lagTime))
                         AddMeasurementWithBadTimestamp(currentTime, measurement);
                 }
             }
@@ -345,7 +346,8 @@ namespace DataQualityMonitoring
         /// <returns>A short, one-line status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return string.Format("{0} input measurements; {1} bad timestamps", InputMeasurementKeys.Length, m_badTimestampMeasurements.Count);
+            int count = GetBadTimestampMeasurementCount();
+            return string.Format("{0} input measurements; {1} bad timestamps", InputMeasurementKeys.Length, count);
         }
 
         /// <summary>
@@ -382,6 +384,11 @@ namespace DataQualityMonitoring
 
             m_warningTimer.Interval = m_warnInterval.ToMilliseconds();
             m_warningTimer.Elapsed += m_warningTimer_Elapsed;
+
+            m_timestampService = new TimestampService(this);
+            m_timestampService.ServiceProcessException += m_timestampService_ServiceProcessException;
+            m_timestampService.SettingsCategory = base.Name + m_timestampService.SettingsCategory;
+            m_timestampService.Initialize();
         }
 
         /// <summary>
@@ -407,27 +414,60 @@ namespace DataQualityMonitoring
         }
 
         /// <summary>
-        /// Returns a collection of all the measurements received with bad timestamps.
+        /// Releases the unmanaged resources used by the <see cref="TimestampTest"/> object and optionally releases the managed resources.
         /// </summary>
-        /// <returns>A collection of measurements with bad timestamps.</returns>
-        public ICollection<IMeasurement> GetMeasurementsWithBadTimestamps()
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
         {
-            ICollection<IMeasurement> badTimestampList = new LinkedList<IMeasurement>();
+            if (!m_disposed)
+            {
+                try
+                {
+                    if (disposing)
+                    {
+                        if (m_timestampService != null)
+                        {
+                            m_timestampService.ServiceProcessException -= m_timestampService_ServiceProcessException;
+                            m_timestampService.Dispose();
+                        }
+                    }
+                }
+                finally
+                {
+                    base.Dispose(disposing);    // Call base class Dispose().
+                    m_disposed = true;          // Prevent duplicate dispose.
+                }
+            }
+        }
 
+        /// <summary>
+        /// Gets all the measurements with bad timestamps.
+        /// </summary>
+        /// <returns>A dictionary where the keys are arrival times and the values are <see cref="LinkedList{IMeasurement}"/>s of measurements that arrived at the corresponding time.</returns>
+        public Dictionary<Ticks, LinkedList<IMeasurement>> GetMeasurementsWithBadTimestamps()
+        {
             lock (m_badTimestampMeasurements)
             {
                 PurgeOldMeasurements();
+                return new Dictionary<Ticks, LinkedList<IMeasurement>>(m_badTimestampMeasurements);
+            }
+        }
 
-                foreach (LinkedList<IMeasurement> measurementList in m_badTimestampMeasurements.Values)
-                {
-                    foreach (IMeasurement measurement in measurementList)
-                    {
-                        badTimestampList.Add(measurement);
-                    }
-                }
+        /// <summary>
+        /// Gets the number of measurements with bad timestamps received by this <see cref="TimestampTest"/>.
+        /// </summary>
+        /// <returns>The number of measurements with bad timestamps.</returns>
+        public int GetBadTimestampMeasurementCount()
+        {
+            Dictionary<Ticks, LinkedList<IMeasurement>> badTimestampMeasurements = GetMeasurementsWithBadTimestamps();
+            int count = 0;
+
+            foreach (LinkedList<IMeasurement> measurementList in badTimestampMeasurements.Values)
+            {
+                count += measurementList.Count;
             }
 
-            return badTimestampList;
+            return count;
         }
 
         private void AddMeasurementWithBadTimestamp(Ticks timeArrived, IMeasurement measurement)
@@ -473,11 +513,15 @@ namespace DataQualityMonitoring
         // Periodically send updates to the console about any measurements with bad timestamps.
         private void m_warningTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            ICollection<IMeasurement> badTimestampMeasurements = GetMeasurementsWithBadTimestamps();
-            int count = badTimestampMeasurements.Count;
+            int count = GetBadTimestampMeasurementCount();
 
             if (count > 0)
                 OnStatusMessage("Received {0} measurements with bad timestamps within the last {1} seconds.", count, (int)m_timeToPurge.ToSeconds());
+        }
+
+        private void m_timestampService_ServiceProcessException(object sender, EventArgs<Exception> e)
+        {
+            OnProcessException(e.Argument);
         }
 
         #endregion

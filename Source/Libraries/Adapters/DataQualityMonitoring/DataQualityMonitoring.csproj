@@ -69,7 +69,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Services\IOutOfRangeService.cs" />
+    <Compile Include="Services\ITimestampService.cs" />
     <Compile Include="Services\OutOfRangeService.cs" />
+    <Compile Include="Services\SerializableBadTimestampMeasurement.cs" />
     <Compile Include="Services\SerializableMeasurement.cs" />
     <Compile Include="Services\FlatlineService.cs" />
     <Compile Include="FlatlineTest.cs" />
@@ -81,6 +83,8 @@
     <Compile Include="Services\SerializableOutOfRangeMeasurement.cs" />
     <Compile Include="Services\SerializableRangeTest.cs" />
     <Compile Include="Services\SerializableRangeTestCollection.cs" />
+    <Compile Include="Services\SerializableTimestampTest.cs" />
+    <Compile Include="Services\TimestampService.cs" />
     <Compile Include="TimestampTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

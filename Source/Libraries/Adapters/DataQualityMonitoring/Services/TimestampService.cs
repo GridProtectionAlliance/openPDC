@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  FlatlineService.cs - Gbtc
+//  TimestampService.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,12 +8,8 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  12/10/2009 - Stephen C. Wills
+//  12/21/2009 - Stephen C. Wills
 //       Generated original version of source code.
-//  12/11/2009 - Pinal C. Patel
-//       Added error checking to TryGetMeasurementInfo().
-//  12/16/2009 - Stephen C. Wills
-//       Replaced TryGetMeasurementInfo() with SerializableMeasurement.SetDeviceAndSignalType().
 //
 //*******************************************************************************************************
 
@@ -235,37 +231,39 @@
 
 using System;
 using System.Collections.Generic;
-using System.ServiceModel;
-using TVA.Measurements;
+using System.Linq;
+using System.Text;
 using TVA.Web.Services;
+using TVA.Measurements;
+using TVA;
+using System.ServiceModel;
 
 namespace DataQualityMonitoring.Services
 {
     /// <summary>
-    /// Represents a REST web service for flatlined measurements.
+    /// Represents a REST web service for measurements with bad timestamps.
     /// </summary>
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class FlatlineService : RestService, IFlatlineService
+    public class TimestampService : RestService, ITimestampService
     {
 
         #region [ Members ]
 
         // Fields
-        private FlatlineTest m_test;
+        private TimestampTest m_test;
 
         #endregion
 
         #region [ Constructors ]
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FlatlineService"/> class.
+        /// Initializes a new instance of the <see cref="TimestampService"/> class.
         /// </summary>
-        /// <param name="test">The test to be used by this <see cref="FlatlineService"/>.</param>
-        public FlatlineService(FlatlineTest test)
-            : base()
+        /// <param name="test">The test to be used by this <see cref="TimestampService"/>.</param>
+        public TimestampService(TimestampTest test)
         {
             m_test = test;
-            ServiceUri = "http://localhost:6100/flatlinetest";
+            ServiceUri = "http://localhost:6102/timestamptest";
         }
 
         #endregion
@@ -273,9 +271,9 @@ namespace DataQualityMonitoring.Services
         #region [ Properties ]
 
         /// <summary>
-        /// Gets or sets the <see cref="FlatlineTest"/> used by the web service for its data.
+        /// Gets or sets the <see cref="TimestampTest"/> used by the web service for its data.
         /// </summary>
-        public FlatlineTest Test
+        public TimestampTest Test
         {
             get
             {
@@ -292,94 +290,97 @@ namespace DataQualityMonitoring.Services
         #region [ Methods ]
 
         /// <summary>
-        /// Reads all flatlined measurements from the <see cref="Test"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+        /// Reads all measurements with bad timestamps from the <see cref="Test"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
         /// </summary>
-        /// <returns>A <see cref="SerializableFlatlineTest"/> object.</returns>
-        public SerializableFlatlineTest ReadAllFlatlinedMeasurementsAsXml()
+        /// <returns>A <see cref="SerializableTimestampTest"/> object.</returns>
+        public SerializableTimestampTest ReadAllBadTimestampMeasurementsAsXml()
         {
-            return ReadFlatlinedMeasurements();
+            return ReadBadTimestampMeasurements();
         }
 
         /// <summary>
-        /// Reads all flatlined measurements from the <see cref="Test"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+        /// Reads all measurements with bad timestamps from the <see cref="Test"/> and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format.
         /// </summary>
-        /// <returns>A <see cref="SerializableFlatlineTest"/> object.</returns>
-        public SerializableFlatlineTest ReadAllFlatlinedMeasurementsAsJson()
+        /// <returns>A <see cref="SerializableTimestampTest"/> object.</returns>
+        public SerializableTimestampTest ReadAllBadTimestampMeasurementsAsJson()
         {
-            return ReadFlatlinedMeasurements();
+            return ReadBadTimestampMeasurements();
         }
 
         /// <summary>
-        /// Reads all flatlined measurements from the specified device and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+        /// Reads all measurements with bad timestamps from the specified device and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
         /// </summary>
         /// <param name="device">The name of the device to check for flatlined measurements.</param>
-        /// <returns>A <see cref="SerializableFlatlineTest"/> object.</returns>
-        public SerializableFlatlineTest ReadFlatlinedMeasurementsFromDeviceAsXml(string device)
+        /// <returns>A <see cref="SerializableTimestampTest"/> object.</returns>
+        public SerializableTimestampTest ReadBadTimestampMeasurementsFromDeviceAsXml(string device)
         {
-            return ReadFlatlinedMeasurements(device);
+            return ReadBadTimestampMeasurements(device);
         }
 
         /// <summary>
-        /// Reads all flatlined measurements from the specified device and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+        /// Reads all measurements with bad timestamps from the specified device and sends it in <see cref="System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
         /// </summary>
         /// <param name="device">The name of the device to check for flatlined measurements.</param>
-        /// <returns>A <see cref="SerializableFlatlineTest"/> object.</returns>
-        public SerializableFlatlineTest ReadFlatlinedMeasurementsFromDeviceAsJson(string device)
+        /// <returns>A <see cref="SerializableTimestampTest"/> object.</returns>
+        public SerializableTimestampTest ReadBadTimestampMeasurementsFromDeviceAsJson(string device)
         {
-            return ReadFlatlinedMeasurements(device);
+            return ReadBadTimestampMeasurements(device);
         }
 
-        // Reads all flatlined measurements.
-        private SerializableFlatlineTest ReadFlatlinedMeasurements()
+        private SerializableTimestampTest ReadBadTimestampMeasurements()
         {
-            SerializableFlatlineTest serializableTest = new SerializableFlatlineTest();
-            ICollection<IMeasurement> flatlinedMeasurements = m_test.GetFlatlinedMeasurements();
+            SerializableTimestampTest serializableTest = new SerializableTimestampTest();
+            Dictionary<Ticks, LinkedList<IMeasurement>> badTimestampMeasurements = m_test.GetMeasurementsWithBadTimestamps();
+            List<SerializableBadTimestampMeasurement> serializableBadTimestampMeasurements = new List<SerializableBadTimestampMeasurement>();
 
-            List<SerializableFlatlinedMeasurement> serializableFlatlinedMeasurements = new List<SerializableFlatlinedMeasurement>();
-            foreach (IMeasurement measurement in flatlinedMeasurements)
+            foreach (Ticks arrivalTime in badTimestampMeasurements.Keys)
             {
-                SerializableFlatlinedMeasurement serializableFlatlinedMeasurement = CreateSerializableFlatlinedMeasurement(measurement);
-                serializableFlatlinedMeasurements.Add(serializableFlatlinedMeasurement);
+                foreach (IMeasurement measurement in badTimestampMeasurements[arrivalTime])
+                {
+                    SerializableBadTimestampMeasurement serializableMeasurement = CreateSerializableBadTimestampMeasurement(measurement, arrivalTime);
+                    serializableBadTimestampMeasurements.Add(serializableMeasurement);
+                }
             }
 
-            serializableTest.FlatlinedMeasurements = serializableFlatlinedMeasurements.ToArray();
+            serializableTest.BadTimestampMeasurements = serializableBadTimestampMeasurements.ToArray();
             return serializableTest;
         }
 
-        // Reads all flatlined measurements associated with a particular device.
-        private SerializableFlatlineTest ReadFlatlinedMeasurements(string device)
+        private SerializableTimestampTest ReadBadTimestampMeasurements(string device)
         {
-            SerializableFlatlineTest serializableTest = new SerializableFlatlineTest();
-            ICollection<IMeasurement> flatlinedMeasurements = m_test.GetFlatlinedMeasurements();
+            SerializableTimestampTest serializableTest = new SerializableTimestampTest();
+            Dictionary<Ticks, LinkedList<IMeasurement>> badTimestampMeasurements = m_test.GetMeasurementsWithBadTimestamps();
+            List<SerializableBadTimestampMeasurement> serializableBadTimestampMeasurements = new List<SerializableBadTimestampMeasurement>();
 
-            List<SerializableFlatlinedMeasurement> serializableFlatlinedMeasurements = new List<SerializableFlatlinedMeasurement>();
-            foreach (IMeasurement measurement in flatlinedMeasurements)
+            foreach (Ticks arrivalTime in badTimestampMeasurements.Keys)
             {
-                SerializableFlatlinedMeasurement serializableFlatlinedMeasurement = CreateSerializableFlatlinedMeasurement(measurement);
+                foreach (IMeasurement measurement in badTimestampMeasurements[arrivalTime])
+                {
+                    SerializableBadTimestampMeasurement serializableMeasurement = CreateSerializableBadTimestampMeasurement(measurement, arrivalTime);
 
-                if (serializableFlatlinedMeasurement.Device == device)
-                    serializableFlatlinedMeasurements.Add(serializableFlatlinedMeasurement);
+                    if(device == serializableMeasurement.Device)
+                        serializableBadTimestampMeasurements.Add(serializableMeasurement);
+                }
             }
 
-            serializableTest.FlatlinedMeasurements = serializableFlatlinedMeasurements.ToArray();
+            serializableTest.BadTimestampMeasurements = serializableBadTimestampMeasurements.ToArray();
             return serializableTest;
         }
 
-        // Properly creates a SerializableFlatlinedMeasurement by sending in TimeSinceLastChange, attaching to the exception event, and setting device and signal type.
-        private SerializableFlatlinedMeasurement CreateSerializableFlatlinedMeasurement(IMeasurement measurement)
+        private SerializableBadTimestampMeasurement CreateSerializableBadTimestampMeasurement(IMeasurement measurement, Ticks arrivalTime)
         {
-            SerializableFlatlinedMeasurement serializableMeasurement = new SerializableFlatlinedMeasurement(measurement, m_test.RealTime - measurement.Timestamp);
+            SerializableBadTimestampMeasurement serializableMeasurement = new SerializableBadTimestampMeasurement(measurement, arrivalTime);
             serializableMeasurement.ProcessException += serializableMeasurement_ProcessException;
             serializableMeasurement.SetDeviceAndSignalType(m_test.DataSource);
             return serializableMeasurement;
         }
 
-        // Exceptions from flatlined measurements get forwarded to the ServiceProcessException event.
-        private void serializableMeasurement_ProcessException(object sender, TVA.EventArgs<Exception> e)
+        private void serializableMeasurement_ProcessException(object sender, EventArgs<Exception> e)
         {
             OnServiceProcessException(e.Argument);
         }
 
         #endregion
+
     }
 }
