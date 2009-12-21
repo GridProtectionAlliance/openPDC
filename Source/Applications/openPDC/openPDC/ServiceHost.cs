@@ -15,6 +15,9 @@
 //  10/23/2009 - Pinal C. Patel
 //       Modified to ensure that the connection string used by AdoMetadataProvider uses a fully 
 //       qualified path for file-based connections like Access database.
+//  12/21/2009 - Pinal C. Patel
+//       Removed code used for preventing flooding of status update messages since this functionality
+//       is now part of the ServiceHelper component.
 //
 //*******************************************************************************************************
 
@@ -246,7 +249,6 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using TVA;
-using TVA.Collections;
 using TVA.Configuration;
 using TVA.Data;
 using TVA.IO;
@@ -302,13 +304,6 @@ namespace openPDC
         private string m_dataProviderString;
         private string m_cachedConfigurationFile;
         private bool m_uniqueAdapterIDs;
-
-        // Broadcast message settings
-        private ProcessQueue<EventArgs<string, UpdateType>> m_statusMessageQueue;
-        private Ticks m_lastDisplayedMessageTime;
-        private long m_displayedMessageCount;
-        private int m_messageDisplayTimepan;
-        private int m_maximumMessagesToDisplay;
 
         // Threshold settings
         private int m_measurementWarningThreshold;
@@ -387,11 +382,6 @@ namespace openPDC
             exampleSettings.Add("WebService.ConnectionString", "https://naspi.tva.com/openPDC/LoadConfigurationData.aspx", "Example web service connection string");
             exampleSettings.Add("XmlFile.ConnectionString", "SystemConfiguration.xml", "Example XML configuration file connection string");
 
-            // Broadcast message settings
-            CategorizedSettingsElementCollection broadcastMessageSettings = configFile.Settings["broadcastMessageSettings"];
-            broadcastMessageSettings.Add("MessageDisplayTimespan", "2", "Timespan, in seconds, over which to monitor message volume");
-            broadcastMessageSettings.Add("MaximumMessagesToDisplay", "100", "Maximum number of messages to be tolerated during MessageDisplayTimespan");
-
             // Threshold settings
             CategorizedSettingsElementCollection thresholdSettings = configFile.Settings["thresholdSettings"];
             thresholdSettings.Add("MeasurementWarningThreshold", "100000", "Number of unarchived measurements allowed in any output adapter queue before displaying a warning message");
@@ -450,20 +440,10 @@ namespace openPDC
                 m_serviceHelper.ErrorLogger.Log(ex, false);
             }
 
-            // Initialize broadcast message settings
-            m_messageDisplayTimepan = broadcastMessageSettings["MessageDisplayTimespan"].ValueAsInt32();
-            m_maximumMessagesToDisplay = broadcastMessageSettings["MaximumMessagesToDisplay"].ValueAsInt32();
-            m_lastDisplayedMessageTime = DateTime.Now.Ticks;
-
             // Initialize threshold settings
             m_measurementWarningThreshold = thresholdSettings["MeasurementWarningThreshold"].ValueAsInt32();
             m_measurementDumpingThreshold = thresholdSettings["MeasurementDumpingThreshold"].ValueAsInt32();
             m_defaultSampleSizeWarningThreshold = thresholdSettings["DefaultSampleSizeWarningThreshold"].ValueAsInt32();
-
-            // Create status message queue
-            m_statusMessageQueue = ProcessQueue<EventArgs<string, UpdateType>>.CreateSynchronousQueue(StatusMessageQueueHandler);
-            m_statusMessageQueue.ProcessException += StatusMessageQueueExceptionHandler;
-            m_statusMessageQueue.Start();
         }
 
         // Once service has successfully started we handle system initialization
@@ -603,15 +583,6 @@ namespace openPDC
                 m_allAdapters.Dispose();
             }
             m_allAdapters = null;
-
-            // Dispose status message queue
-            if (m_statusMessageQueue != null)
-            {
-                m_statusMessageQueue.Stop();
-                m_statusMessageQueue.ProcessException -= StatusMessageQueueExceptionHandler;
-                m_statusMessageQueue.Dispose();
-            }
-            m_statusMessageQueue = null;
         }
 
         #endregion
@@ -1595,67 +1566,12 @@ namespace openPDC
         // Display status messages (broadcast to all clients)
         private void DisplayStatusMessage(string status, UpdateType type)
         {
-            string messagePrefix;
-
-            switch (type)
-            {
-                case UpdateType.Alarm:
-                    messagePrefix = "ERROR: ";
-                    break;
-                case UpdateType.Warning:
-                    messagePrefix = "WARNING: ";
-                    break;
-                default:
-                    messagePrefix = "";
-                    break;
-            }
-
-            // We queue up status messages for display on a separate thread so we don't slow any important activity
-            m_statusMessageQueue.Add(new EventArgs<string, UpdateType>(string.Format("{0}{1}\r\n\r\n", messagePrefix, status), type));
+            m_serviceHelper.UpdateStatus(type, string.Format("{0}\r\n\r\n", status));
         }
 
         private void DisplayStatusMessage(string status, UpdateType type, params object[] args)
         {
             DisplayStatusMessage(string.Format(status, args), type);
-        }
-
-        // Handles processing of queued status messages
-        private void StatusMessageQueueHandler(EventArgs<string, UpdateType>[] messages)
-        {
-            EventArgs<string, UpdateType> message;
-            bool displayMessage;
-
-            for (int x = 0; x < messages.Length; x++)
-            {
-                // When errors happen with data being processed at 30 samples per second you can get a hefty
-                // volume of messages very quickly, so to keep from flooding the message queue we'll only
-                // send a finite number of messages every few seconds
-                if ((DateTime.Now.Ticks - m_lastDisplayedMessageTime).ToSeconds() < m_messageDisplayTimepan)
-                {
-                    displayMessage = m_displayedMessageCount < m_maximumMessagesToDisplay;
-                    m_displayedMessageCount++;
-                }
-                else
-                {
-                    if (m_displayedMessageCount > m_maximumMessagesToDisplay)
-                        m_serviceHelper.UpdateStatus(UpdateType.Warning, "WARNING: {0:N0} status messages discarded to avoid flooding message queue, check log for full detail.", m_displayedMessageCount - m_maximumMessagesToDisplay);
-
-                    displayMessage = true;
-                    m_displayedMessageCount = 0;
-                    m_lastDisplayedMessageTime = DateTime.Now.Ticks;
-                }
-
-                if (displayMessage)
-                {
-                    message = messages[x];
-                    m_serviceHelper.UpdateStatus(message.Argument2, message.Argument1);
-                }
-                else if (m_serviceHelper.LogStatusUpdates && m_serviceHelper.StatusLog.IsOpen)
-                {
-                    // We always at least log messages
-                    m_serviceHelper.StatusLog.WriteTimestampedLine(messages[x].Argument1);
-                }
-            }
         }
 
         // Handles any exceptions encountered in the statsu message queue

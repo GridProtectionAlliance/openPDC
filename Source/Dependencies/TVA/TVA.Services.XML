@@ -509,6 +509,16 @@
             Specifies the default value for the <see cref="P:TVA.Services.ServiceHelper.LogStatusUpdates"/> property.
             </summary>
         </member>
+        <member name="F:TVA.Services.ServiceHelper.DefaultMaxStatusUpdatesLength">
+            <summary>
+            Specifies the default value for the <see cref="P:TVA.Services.ServiceHelper.MaxStatusUpdatesLength"/> property.
+            </summary>
+        </member>
+        <member name="F:TVA.Services.ServiceHelper.DefaultMaxStatusUpdatesFrequency">
+            <summary>
+            Specifies the default value for the <see cref="P:TVA.Services.ServiceHelper.MaxStatusUpdatesFrequency"/> property.
+            </summary>
+        </member>
         <member name="F:TVA.Services.ServiceHelper.DefaultMonitorServiceHealth">
             <summary>
             Specifies the default value for the <see cref="P:TVA.Services.ServiceHelper.MonitorServiceHealth"/> property.
@@ -863,6 +873,18 @@
             or <see cref="M:TVA.Services.ServiceHelper.UpdateStatus(System.Guid,TVA.Services.UpdateType,System.String,System.Object[])"/> are to be logged to the <see cref="P:TVA.Services.ServiceHelper.StatusLog"/>.
             </summary>
         </member>
+        <member name="P:TVA.Services.ServiceHelper.MaxStatusUpdatesLength">
+            <summary>
+            Gets or sets the maximum numbers of characters allowed in update status messages without getting suppressed from being displayed.
+            </summary>
+            <exception cref="T:System.ArgumentException">The value being assigned is negative or zero.</exception>
+        </member>
+        <member name="P:TVA.Services.ServiceHelper.MaxStatusUpdatesFrequency">
+            <summary>
+            Gets or sets the maximum number of status update messages that can be issued in a second without getting suppressed from being displayed.
+            </summary>
+            <exception cref="T:System.ArgumentException">The value being assigned is negative or zero.</exception>
+        </member>
         <member name="P:TVA.Services.ServiceHelper.MonitorServiceHealth">
             <summary>
             Gets or sets a boolean value that indicates whether the health of the <see cref="P:TVA.Services.ServiceHelper.ParentService"/> is to be monitored.
@@ -884,7 +906,7 @@
             Gets or sets a comma or semicolon delimited list of user logins allowed to connect to the <see cref="T:TVA.Services.ServiceHelper"/>.
             </summary>
             <remarks>Use '*' to allow access to any remote user.</remarks>
-            <exception cref="T:System.ArgumentException">The value being assigned is a null or empty string.</exception>
+            <exception cref="T:System.ArgumentNullException">The value being assigned is a null or empty string.</exception>
         </member>
         <member name="P:TVA.Services.ServiceHelper.ImpersonateRemoteUser">
             <summary>
