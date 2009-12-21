@@ -133,6 +133,7 @@ CREATE TABLE Device(
 	InterconnectionID INT NULL,
 	ConnectionString LONGTEXT NULL,
 	TimeZone NVARCHAR(128) NULL,
+	FramesPerSecond INT NULL DEFAULT 30,
 	TimeAdjustmentTicks BIGINT NOT NULL DEFAULT 0,
 	DataLossInterval DOUBLE NOT NULL DEFAULT 35,
 	ContactList LONGTEXT NULL,
@@ -526,9 +527,8 @@ ORDER BY CalculatedMeasurement.LoadOrder;
 CREATE VIEW ActiveMeasurement
 AS
 SELECT COALESCE(Historian.NodeID, Device.NodeID) AS NodeID, CONCAT_WS(':', Historian.Acronym, CAST(Measurement.PointID AS CHAR)) AS ID, Measurement.SignalID, Measurement.PointTag, 
-	Measurement.AlternateTag, Measurement.SignalReference, Device.Acronym AS Device,
-	CASE WHEN Device.IsConcentrator = 0 AND Device.ParentID IS NOT NULL THEN RuntimeP.ID ELSE Runtime.ID END AS DeviceID,
-	Protocol.Acronym AS Protocol, SignalType.Acronym AS SignalType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier,
+	Measurement.AlternateTag, Measurement.SignalReference, Device.Acronym AS Device, CASE WHEN Device.IsConcentrator = 0 AND Device.ParentID IS NOT NULL THEN RuntimeP.ID ELSE Runtime.ID END AS DeviceID,
+	COALESCE(Device.FramesPerSecond, 30) AS FramesPerSecond, Protocol.Acronym AS Protocol, SignalType.Acronym AS SignalType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier,
 	Company.Acronym AS Company, Device.Longitude, Device.Latitude, Measurement.Description
 FROM Company RIGHT OUTER JOIN
 	Device ON Company.ID = Device.CompanyID RIGHT OUTER JOIN
@@ -574,7 +574,7 @@ AS
 SELECT     Device.CompanyID, Company.Acronym AS CompanyAcronym, Company.Name AS CompanyName, Measurement.SignalID, 
                       Measurement.HistorianID, Historian.Acronym AS HistorianAcronym, Historian.ConnectionString AS HistorianConnectionString, 
                       Measurement.PointID, Measurement.PointTag, Measurement.AlternateTag, Measurement.DeviceID, Device.NodeID, 
-                      Device.Acronym AS DeviceAcronym, Device.Name AS DeviceName, Device.Enabled AS DeviceEnabled, Device.ContactList, 
+                      Device.Acronym AS DeviceAcronym, Device.Name AS DeviceName, COALESCE(Device.FramesPerSecond, 30) AS FramesPerSecond, Device.Enabled AS DeviceEnabled, Device.ContactList, 
                       Device.VendorDeviceID, VendorDevice.Name AS VendorDeviceName, VendorDevice.Description AS VendorDeviceDescription, 
                       Device.ProtocolID, Protocol.Acronym AS ProtocolAcronym, Protocol.Name AS ProtocolName, Measurement.SignalTypeID, 
                       Measurement.PhasorSourceIndex, Phasor.Label AS PhasorLabel, Phasor.Type AS PhasorType, Phasor.Phase, 
@@ -595,7 +595,7 @@ CREATE VIEW HistorianMetadata
 AS
 SELECT PointID AS HistorianID, IF(SignalAcronym = N'DIGI', 1, 0) AS DataType, PointTag AS Name, SignalReference AS Synonym1, 
 SignalAcronym AS Synonym2, AlternateTag AS Synonym3, Description, VendorDeviceDescription AS HardwareInfo, N'' AS Remarks, 
-HistorianAcronym AS PlantCode, 1 AS UnitNumber, DeviceAcronym AS SystemName, ProtocolID AS SourceID, Enabled, 0.0333333 AS ScanRate, 
+HistorianAcronym AS PlantCode, 1 AS UnitNumber, DeviceAcronym AS SystemName, FramesPerSecond, ProtocolID AS SourceID, Enabled, 0.0333333 AS ScanRate, 
 0 AS CompressionMinTime, 0 AS CompressionMaxTime, EngineeringUnits,
 CASE SignalAcronym WHEN N'FREQ' THEN 59.95 WHEN N'VPHM' THEN 475000 WHEN N'IPHM' THEN 0 WHEN N'VPHA' THEN -181 WHEN N'IPHA' THEN -181 ELSE 0 END AS LowWarning,
 CASE SignalAcronym WHEN N'FREQ' THEN 60.05 WHEN N'VPHM' THEN 525000 WHEN N'IPHM' THEN 3150 WHEN N'VPHA' THEN 181 WHEN N'IPHA' THEN 181 ELSE 0 END AS HighWarning,
