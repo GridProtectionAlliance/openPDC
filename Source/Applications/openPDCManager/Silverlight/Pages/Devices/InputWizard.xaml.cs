@@ -304,53 +304,42 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				}
 			}
 		}
-
 		void client_SaveIniFileCompleted(object sender, SaveIniFileCompletedEventArgs e)
 		{
-			Message message = new Message();
 			if (e.Error == null)
-			{
-				message = Common.ParseStringToMessage(e.Result);
-				if (message.UserMessageType == MessageType.Error)	//we will display popup dialog only if it is an error.
-				{
-					iniFileName = string.Empty;
-					SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
-					sm.Show();
-				}
-				else
-					iniFileName = message.UserMessage;
-			}
+				iniFileName = e.Result;
 			else
 			{
-				message.UserMessageType = MessageType.Error;
-				message.UserMessage = "Failed to Upload INI File";
-				message.SystemMessage = e.Error.Message;
-				SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Upload INI File", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
 				sm.Show();
-			}
+			}			
 		}
-
 		void client_GetExecutingAssemblyPathCompleted(object sender, GetExecutingAssemblyPathCompletedEventArgs e)
 		{
-			Message message = new Message();
 			if (e.Error == null)
-			{
-				message = Common.ParseStringToMessage(e.Result);
-				if (message.UserMessageType == MessageType.Error)
-				{
-					iniFilePath = string.Empty;
-					SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
-					sm.Show();
-				}
-				else
-					iniFilePath = message.UserMessage;
-			}
+				iniFilePath = e.Result;
 			else
 			{
-				message.UserMessageType = MessageType.Error;
-				message.UserMessage = "Failed to Retrieve Current Execution Path";
-				message.SystemMessage = e.Error.Message;
-				SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Current Execution Path", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
 				sm.Show();
 			}
 		}
@@ -360,8 +349,17 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				ComboboxInterconnection.ItemsSource = e.Result;
 			else
 			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
 				sm.Show();
 			}
 			if (ComboboxInterconnection.Items.Count > 0)
@@ -373,8 +371,17 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				ComboboxHistorian.ItemsSource = e.Result;
 			else
 			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
 				sm.Show();
 			}
 			if (ComboboxHistorian.Items.Count > 0)
@@ -386,8 +393,17 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				ComboboxCompany.ItemsSource = e.Result;
 			else
 			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
 				sm.Show();
 			}
 			if (ComboboxCompany.Items.Count > 0)
@@ -402,8 +418,17 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 			else
 			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
 				sm.Show();
 			}
 			if (ComboboxPDCVendor.Items.Count > 0)
@@ -415,8 +440,17 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				ComboboxProtocol.ItemsSource = e.Result;
 			else
 			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Protocols", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Protocols", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
 				sm.Show();
 			}
 			if (ComboboxProtocol.Items.Count > 0)
@@ -436,8 +470,17 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 			else
 			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Connection String", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Parse Connection File", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
 				sm.Show();
 			}
 		}
@@ -450,24 +493,41 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 			else
 			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Parse Configuration File", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Parse Configuration File", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
 				sm.Show();
 			}
 		}		
 		void client_SaveWizardConfigurationInfoCompleted(object sender, SaveWizardConfigurationInfoCompletedEventArgs e)
 		{
-			Message message = new Message();
-			if (e.Error == null)			
-				message = Common.ParseStringToMessage(e.Result);							
+			SystemMessages sm;
+			if (e.Error == null)
+			{
+				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						ButtonType.OkOnly);
+			}
 			else
 			{
-				message.UserMessageType = MessageType.Error;
-				message.UserMessage = "Failed to Save Configuration Information";
-				message.SystemMessage = e.Error.Message;				
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Configuration Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
 			}
-			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
-			sm.Show();
+			sm.Show();	
 		}
 		void client_GetDeviceByAcronymCompleted(object sender, GetDeviceByAcronymCompletedEventArgs e)
 		{
@@ -507,8 +567,17 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 			else
 			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device Information by Acronym", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
 				sm.Show();
 			}
 		}
@@ -518,8 +587,17 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				client.GetDeviceByAcronymAsync(TextBoxPDCAcronym.Text);	// calling this again would set parentID needed in the final step of the wizard.
 			else
 			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
 				sm.Show();
 			}
 		}

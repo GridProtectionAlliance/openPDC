@@ -272,8 +272,16 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			}
 			else
 			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Measurements for Output Stream", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Measurements For Output Stream", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
 				sm.Show();
 			}
 		}		

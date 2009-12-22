@@ -244,6 +244,7 @@ using System.Windows.Navigation;
 using System.ServiceModel;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
+using openPDCManager.Silverlight.ModalDialogs;
 
 namespace openPDCManager.Silverlight.Pages.Adapters
 {
@@ -265,7 +266,22 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		void client_GetIaonTreeDataCompleted(object sender, GetIaonTreeDataCompletedEventArgs e)
 		{
 			if (e.Error == null)
-			    TreeViewIaon.ItemsSource = e.Result;			
+			    TreeViewIaon.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Iaon Tree Data", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
 		}
 
 		// Executes when the user navigates to this page.

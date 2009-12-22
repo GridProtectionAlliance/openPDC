@@ -273,19 +273,25 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		}
 		void client_SaveOutputStreamDeviceDigitalCompleted(object sender, SaveOutputStreamDeviceDigitalCompletedEventArgs e)
 		{
-			Message message = new Message();
+			SystemMessages sm;
 			if (e.Error == null)
 			{
 				ClearForm();
-				message = Common.ParseStringToMessage(e.Result);
+				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						ButtonType.OkOnly);
 			}
 			else
 			{
-				message.UserMessageType = MessageType.Error;
-				message.UserMessage = "Failed to Save Output Stream Device Digital Information";
-				message.SystemMessage = e.Error.Message;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Digital Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
 			}
-			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
 			sm.Show();
 			client.GetOutputStreamDeviceDigitalListAsync(sourceOutputStreamDeviceID);	
 		}
@@ -295,8 +301,17 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				ListBoxOutputStreamDeviceDigitalList.ItemsSource = e.Result;
 			else
 			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device Digitals List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device Digital List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
 				sm.Show();
 			}
 		}

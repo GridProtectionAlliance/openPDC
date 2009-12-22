@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  VendorDevices.xaml.cs - Gbtc
+//  CustomServiceFault.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  09/28/2009 - Mehulbhai P. Thakkar
+//  12/18/2009 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -229,167 +229,12 @@
 */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.ServiceModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
-using System.Windows.Media.Animation;
 
-namespace openPDCManager.Silverlight.Pages.Manage
+namespace openPDCManager.Web.Data.BusinessObjects
 {
-	public partial class VendorDevices : Page
+	public class CustomServiceFault
 	{
-		PhasorDataServiceClient client;
-		bool inEditMode = false;
-		int vendorDeviceID = 0;
-
-		public VendorDevices()
-		{
-			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetVendorDeviceListCompleted += new EventHandler<GetVendorDeviceListCompletedEventArgs>(client_GetVendorDeviceListCompleted);
-			client.GetVendorsCompleted += new EventHandler<GetVendorsCompletedEventArgs>(client_GetVendorsCompleted);
-			client.SaveVendorDeviceCompleted += new EventHandler<SaveVendorDeviceCompletedEventArgs>(client_SaveVendorDeviceCompleted);
-			Loaded += new RoutedEventHandler(VendorDevices_Loaded);
-			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
-			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
-			ListBoxVendorDeviceList.SelectionChanged += new SelectionChangedEventHandler(ListBoxVendorDeviceList_SelectionChanged);
-		}
-		void client_SaveVendorDeviceCompleted(object sender, SaveVendorDeviceCompletedEventArgs e)
-		{
-			SystemMessages sm;
-			if (e.Error == null)
-			{
-				ClearForm();
-				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-						ButtonType.OkOnly);
-			}
-			else
-			{
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Vendor Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-			}
-			sm.Show();
-			
-			client.GetVendorDeviceListAsync(); //Refresh data to reflect changes on the current screen.
-		}
-		void ListBoxVendorDeviceList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (ListBoxVendorDeviceList.SelectedIndex >= 0)
-			{
-				VendorDevice selectedVendorDevice = ListBoxVendorDeviceList.SelectedItem as VendorDevice;
-				GridVendorDeviceDetail.DataContext = selectedVendorDevice;
-				ComboBoxVendor.SelectedItem = new KeyValuePair<int, string>(selectedVendorDevice.VendorID, selectedVendorDevice.VendorName);
-				vendorDeviceID = selectedVendorDevice.ID;
-				inEditMode = true;
-			}
-		}
-		void ButtonClear_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonClearTransform);
-			sb.Begin();
-			ClearForm();
-		}
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
-
-			VendorDevice vendorDevice = new VendorDevice();
-			KeyValuePair<int, string> selectedVendor = (KeyValuePair<int, string>)ComboBoxVendor.SelectedItem;
-			vendorDevice.VendorID = selectedVendor.Key;
-			vendorDevice.Name = TextBoxName.Text;
-			vendorDevice.Description = TextBoxDescription.Text;
-			vendorDevice.URL = TextBoxUrl.Text;
-
-			if (vendorDeviceID != 0 && inEditMode == true)
-			{
-				vendorDevice.ID = vendorDeviceID;
-				client.SaveVendorDeviceAsync(vendorDevice, false);
-			}
-			else
-				client.SaveVendorDeviceAsync(vendorDevice, true);
-		}
-		void VendorDevices_Loaded(object sender, RoutedEventArgs e)
-		{
-			
-		}
-		void client_GetVendorsCompleted(object sender, GetVendorsCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboBoxVendor.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendors", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-			if (ComboBoxVendor.Items.Count > 0)
-				ComboBoxVendor.SelectedIndex = 0;
-		}
-		void client_GetVendorDeviceListCompleted(object sender, GetVendorDeviceListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ListBoxVendorDeviceList.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Device List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-		}
-		void ClearForm()
-		{
-			if (ComboBoxVendor.Items.Count > 0)
-				ComboBoxVendor.SelectedIndex = 0;
-			GridVendorDeviceDetail.DataContext = new VendorDevice();	//Bind an empty element.	
-			inEditMode = false;
-			vendorDeviceID = 0;
-			ListBoxVendorDeviceList.SelectedIndex = -1;
-		}
-
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			client.GetVendorsAsync(false);
-			client.GetVendorDeviceListAsync();
-		}
-
+		public string UserMessage { get; set; }
+		public string SystemMessage { get; set; }
 	}
 }

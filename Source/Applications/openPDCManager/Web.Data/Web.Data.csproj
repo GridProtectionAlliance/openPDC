@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessObjects\ConnectionSettings.cs" />
+    <Compile Include="BusinessObjects\CustomServiceFault.cs" />
     <Compile Include="BusinessObjects\InterconnectionStatus.cs" />
     <Compile Include="BusinessObjects\IaonTree.cs" />
     <Compile Include="BusinessObjects\MapData.cs" />

@@ -251,12 +251,15 @@ namespace PCS.Services.Service
 		#region " Manage Node Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<Node> GetNodeList();
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		Dictionary<string, string> GetNodes(bool enabledOnly, bool isOptional);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveNode(Node node, bool isNew);
 
 		#endregion
@@ -264,12 +267,15 @@ namespace PCS.Services.Service
 		#region " Manage Company Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<Company> GetCompanyList();
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		Dictionary<int, string> GetCompanies(bool isOptional);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveCompany(Company company, bool isNew);
 
 		#endregion
@@ -277,12 +283,15 @@ namespace PCS.Services.Service
 		#region " Manage Historian Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<Historian> GetHistorianList(string nodeID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveHistorian(Historian historian, bool isNew);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		Dictionary<int, string> GetHistorians(bool enabledOnly, bool isOptional);
 
 		#endregion
@@ -290,12 +299,15 @@ namespace PCS.Services.Service
 		#region " Manage Vendor Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<Vendor> GetVendorList();
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		Dictionary<int, string> GetVendors(bool isOptional);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveVendor(Vendor vendor, bool isNew);
 
 		#endregion
@@ -303,12 +315,15 @@ namespace PCS.Services.Service
 		#region " Manage Vendor Device Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<VendorDevice> GetVendorDeviceList();
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveVendorDevice(VendorDevice vendorDevice, bool isNew);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		Dictionary<int, string> GetVendorDevices(bool isOptional);
 
 		#endregion
@@ -316,27 +331,35 @@ namespace PCS.Services.Service
 		#region " Manage Device Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<Device> GetDeviceList(string nodeID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<Device> GetDeviceListByParentID(int parentID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		Dictionary<int, string> GetDevices(DeviceType deviceType, bool isOptional);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveDevice(Device device, bool isNew);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		Device GetDeviceByDeviceID(int deviceID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		Device GetDeviceByAcronym(string acronym);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		Device GetConcentratorDevice(int deviceID);
 
 		#endregion
@@ -344,12 +367,15 @@ namespace PCS.Services.Service
 		#region " Manage Phasors Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<Phasor> GetPhasorList(int deviceID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		Dictionary<int, string> GetPhasors(int deviceID, bool isOptional);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SavePhasor(Phasor phasor, bool isNew);
 
 		#endregion
@@ -357,15 +383,19 @@ namespace PCS.Services.Service
 		#region " Manage Measurements Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<Measurement> GetMeasurementList(string nodeID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveMeasurement(Measurement measurement, bool isNew);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<Measurement> GetMeasurementsByDevice(int deviceID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<Measurement> GetMeasurementsForOutputStream(string nodeID, int outputStreamID);
 
 		#endregion
@@ -373,12 +403,15 @@ namespace PCS.Services.Service
 		#region " Manage Other Device Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<OtherDevice> GetOtherDeviceList();
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveOtherDevice(OtherDevice otherDevice, bool isNew);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		OtherDevice GetOtherDeviceByDeviceID(int deviceID);
 
 		#endregion
@@ -386,6 +419,7 @@ namespace PCS.Services.Service
 		#region " Manage Interconnection Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		Dictionary<int, string> GetInterconnections(bool isOptional);
 
 		#endregion
@@ -393,9 +427,11 @@ namespace PCS.Services.Service
 		#region " Manage Protocols Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		Dictionary<int, string> GetProtocols(bool isOptional);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		int GetProtocolIDByAcronym(string acronym);
 
 		#endregion
@@ -403,6 +439,7 @@ namespace PCS.Services.Service
 		#region " Manage Signal Types Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		Dictionary<int, string> GetSignalTypes(bool isOptional);
 
 		#endregion
@@ -410,9 +447,11 @@ namespace PCS.Services.Service
 		#region " Manage Calculated Measurements Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<CalculatedMeasurement> GetCalculatedMeasurementList(string nodeID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveCalculatedMeasurement(CalculatedMeasurement calculatedMeasurement, bool isNew);
 
 		#endregion
@@ -420,12 +459,15 @@ namespace PCS.Services.Service
 		#region " Manage Custom Adapters Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType, string nodeID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveAdapter(Adapter adapter, bool isNew);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<IaonTree> GetIaonTreeData();
 
 		#endregion
@@ -433,9 +475,11 @@ namespace PCS.Services.Service
 		#region " Manage Output Stream Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<OutputStream> GetOutputStreamList(bool enabledOnly);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveOutputStream(OutputStream outputStream, bool isNew);
 
 		#endregion
@@ -443,15 +487,19 @@ namespace PCS.Services.Service
 		#region " Manage Output Stream Device Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<OutputStreamDevice> GetOutputStreamDeviceList(int outputStreamID, bool enabledOnly);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string DeleteOutputStreamDevice(int outputStreamID, List<string> devicesToBeDeleted);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string AddDevices(int outputStreamID, Dictionary<int, string> devicesToBeAdded, bool addDigitals, bool addAnalogs);
 
 		#endregion
@@ -459,9 +507,11 @@ namespace PCS.Services.Service
 		#region " Manage Output Stream Measurements Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<OutputStreamMeasurement> GetOutputStreamMeasurementList(int outputStreamID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveOutputStreamMeasurement(OutputStreamMeasurement outputStreamMeasurement, bool isNew);
 
 		#endregion
@@ -469,9 +519,11 @@ namespace PCS.Services.Service
 		#region " Manage Output Stream Device Phasor Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<OutputStreamDevicePhasor> GetOutputStreamDevicePhasorList(int outputStreamDeviceID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveOutputStreamDevicePhasor(OutputStreamDevicePhasor outputStreamDevicePhasor, bool isNew);
 
 		#endregion
@@ -479,9 +531,11 @@ namespace PCS.Services.Service
 		#region " Manage Output Stream Device Analog Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<OutputStreamDeviceAnalog> GetOutputStreamDeviceAnalogList(int outputStreamDeviceID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveOutputStreamDeviceAnalog(OutputStreamDeviceAnalog outputStreamDeviceAnalog, bool isNew);
 
 		#endregion
@@ -489,32 +543,41 @@ namespace PCS.Services.Service
 		#region " Manage Output Stream Device Digital Code"
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<OutputStreamDeviceDigital> GetOutputStreamDeviceDigitalList(int outputStreamDeviceID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveOutputStreamDeviceDigital(OutputStreamDeviceDigital outputStreamDeviceDigital, bool isNew);
 
 		#endregion
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<string> GetTimeZones(bool isOptional);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<MapData> GetMapData(MapType mapType);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		ConnectionSettings GetConnectionSettings(Stream inputStream);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		List<WizardDeviceInfo> GetWizardConfigurationInfo(Stream inputStream);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID);
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string GetExecutingAssemblyPath();
 
 		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveIniFile(Stream input);
 
 	}

@@ -240,7 +240,7 @@ using System.ServiceModel;
 namespace PCS.Services.Service
 {
     // NOTE: If you change the class name "PhasorDataService" here, you must also update the reference to "PhasorDataService" in Web.config.	
-	[ServiceBehavior(IncludeExceptionDetailInFaults = true, AddressFilterMode = AddressFilterMode.Any)]
+	[ServiceBehavior(IncludeExceptionDetailInFaults = false, AddressFilterMode = AddressFilterMode.Any)]
     public class PhasorDataService : IPhasorDataService
     {
 		#region " Manage Company Code"				

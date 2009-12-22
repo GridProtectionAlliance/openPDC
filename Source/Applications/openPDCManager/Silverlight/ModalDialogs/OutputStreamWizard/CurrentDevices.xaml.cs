@@ -263,16 +263,24 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 
 		void client_DeleteOutputStreamDeviceCompleted(object sender, DeleteOutputStreamDeviceCompletedEventArgs e)
 		{
-			Message message = new Message();
+			SystemMessages sm;
 			if (e.Error == null)
-				message = Common.ParseStringToMessage(e.Result);
+			{				
+				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						ButtonType.OkOnly);
+			}
 			else
 			{
-				message.UserMessageType = MessageType.Error;
-				message.UserMessage = "Failed to Delete Output Stream Device(s)";
-				message.SystemMessage = e.Error.Message;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Output Stream Device(s)", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
 			}
-			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
 			sm.Show();
 			client.GetOutputStreamDeviceListAsync(sourceOutputStreamID, true);
 		}
@@ -314,8 +322,17 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 				ListBoxOutputStreamDeviceList.ItemsSource = e.Result;
 			else
 			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Devices List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
 				sm.Show();
 			}			
 		}

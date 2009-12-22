@@ -264,19 +264,25 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 		void client_SaveHistorianCompleted(object sender, SaveHistorianCompletedEventArgs e)
 		{
-			Message message = new Message();
+			SystemMessages sm;
 			if (e.Error == null)
 			{
 				ClearForm();
-				message = Common.ParseStringToMessage(e.Result);
+				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						ButtonType.OkOnly);
 			}
 			else
 			{
-				message.UserMessageType = MessageType.Error;
-				message.UserMessage = "Failed to Save Historian Information";
-				message.SystemMessage = e.Error.Message;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Historian Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
 			}
-			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
 			sm.Show();
 			client.GetHistorianListAsync(nodeID);
 		}
@@ -284,6 +290,21 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		{
 			if (e.Error == null)
 				ComboBoxNode.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
 			if (ComboBoxNode.Items.Count > 0)
 				ComboBoxNode.SelectedIndex = 0;
 		}
@@ -343,6 +364,21 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		{
 			if (e.Error == null)
 				ListBoxHistorianList.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
 		}
 		void ClearForm()
 		{

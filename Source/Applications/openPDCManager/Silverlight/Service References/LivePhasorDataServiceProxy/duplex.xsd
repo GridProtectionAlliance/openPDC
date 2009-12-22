@@ -4,14 +4,6 @@
     <xs:sequence />
   </xs:complexType>
   <xs:element name="DuplexMessage" nillable="true" type="tns:DuplexMessage" />
-  <xs:complexType name="DisconnectMessage">
-    <xs:complexContent mixed="false">
-      <xs:extension base="tns:DuplexMessage">
-        <xs:sequence />
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="DisconnectMessage" nillable="true" type="tns:DisconnectMessage" />
   <xs:complexType name="ConnectMessage">
     <xs:complexContent mixed="false">
       <xs:extension base="tns:DuplexMessage">
@@ -20,4 +12,12 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="ConnectMessage" nillable="true" type="tns:ConnectMessage" />
+  <xs:complexType name="DisconnectMessage">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DuplexMessage">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DisconnectMessage" nillable="true" type="tns:DisconnectMessage" />
 </xs:schema>

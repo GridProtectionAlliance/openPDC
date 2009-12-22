@@ -233,6 +233,7 @@
 
 using System;
 using System.ServiceModel;
+using openPDCManager.Web.Data.BusinessObjects;
 
 namespace PCS.Services.DuplexService
 {
@@ -242,7 +243,7 @@ namespace PCS.Services.DuplexService
     [ServiceContract]
     public interface IUniversalDuplexCallbackContract
     {
-        [OperationContract(IsOneWay = true)]
+        [OperationContract(IsOneWay = true)]		
         void SendToClient(DuplexMessage msg);
 
         [OperationContract(IsOneWay = true, AsyncPattern = true)]

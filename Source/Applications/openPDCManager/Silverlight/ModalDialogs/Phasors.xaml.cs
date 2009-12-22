@@ -266,34 +266,49 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 		void client_SavePhasorCompleted(object sender, SavePhasorCompletedEventArgs e)
 		{
-			Message message = new Message();
+			SystemMessages sm;
 			if (e.Error == null)
-				message = Common.ParseStringToMessage(e.Result);
+			{
+				ClearForm();
+				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						ButtonType.OkOnly);
+			}
 			else
 			{
-				message.UserMessageType = MessageType.Error;
-				message.UserMessage = "Failed to Save Phasor Information";
-				message.SystemMessage = e.Error.Message;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Phasor Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
 			}
-			SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
 			sm.Show();
 			client.GetPhasorListAsync(sourceDeviceID);
 			client.GetPhasorsAsync(sourceDeviceID, true);
 		}
 		void client_GetPhasorsCompleted(object sender, GetPhasorsCompletedEventArgs e)
 		{
-			if (e.Error == null)
-			{
-				ComboboxDestinationPhasor.ItemsSource = e.Result;
-				if (ComboboxDestinationPhasor.Items.Count > 0)
-					ComboboxDestinationPhasor.SelectedIndex = 0;
-			}
+			if (e.Error == null)			
+				ComboboxDestinationPhasor.ItemsSource = e.Result;							
 			else
 			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasors", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasors", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
 				sm.Show();
 			}
+			if (ComboboxDestinationPhasor.Items.Count > 0)
+				ComboboxDestinationPhasor.SelectedIndex = 0;
 		}
 		void ListBoxPhasorList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -318,8 +333,16 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				ListBoxPhasorList.ItemsSource = e.Result;
 			else
 			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasors List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						 ButtonType.OkOnly);
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasor List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
 				sm.Show();
 			}
 		}

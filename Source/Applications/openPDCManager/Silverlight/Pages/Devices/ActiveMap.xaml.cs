@@ -239,6 +239,7 @@ using System;
 using System.Linq;
 using Microsoft.VirtualEarth.MapControl;
 using openPDCManager.Silverlight.Utilities;
+using openPDCManager.Silverlight.ModalDialogs;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
@@ -281,6 +282,21 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					(VirtualEarthActiveMap.FindName("PushpinLayer") as MapLayer).AddChild(pushPinButton);
 				}
 				VirtualEarthActiveMap.Center = new Location(avgLatitude, avgLongitude);
+			}
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Map Data", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
 			}
 		}		
 		void ActiveMap_Loaded(object sender, RoutedEventArgs e)

@@ -262,24 +262,29 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 
 		void client_SaveNodeCompleted(object sender, SaveNodeCompletedEventArgs e)
-		{			
+		{
+			SystemMessages sm;
 			if (e.Error == null)
 			{
-				SystemMessages sm = new SystemMessages(Common.ParseStringToMessage(e.Result), ButtonType.OkOnly);
-				sm.Show();
 				ClearForm();
-				client.GetNodeListAsync();
 				(Application.Current.RootVisual as MasterLayoutControl).UserControlSelectNode.RaiseNotification();
+				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						ButtonType.OkOnly);
 			}
 			else
 			{
-				Message message = new Message();
-				message.UserMessageType = MessageType.Error;
-				message.UserMessage = "Failed to Save Node Information";
-				message.SystemMessage = e.Error.Message;
-				SystemMessages sm = new SystemMessages(message, ButtonType.OkOnly);
-				sm.Show();
-			}						
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Node Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+			}
+			sm.Show();
+			client.GetNodeListAsync();								
 		}
 
 		void ListBoxNodeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -341,12 +346,43 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		{
 			if (e.Error == null)
 				ComboBoxCompany.ItemsSource = e.Result;
-			ComboBoxCompany.SelectedIndex = 0;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboBoxCompany.Items.Count > 0)
+				ComboBoxCompany.SelectedIndex = 0;
 		}
 		void client_GetNodeListCompleted(object sender, GetNodeListCompletedEventArgs e)
 		{
 			if (e.Error == null)
 				ListBoxNodeList.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Node List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
 		}
 		void ClearForm()
 		{

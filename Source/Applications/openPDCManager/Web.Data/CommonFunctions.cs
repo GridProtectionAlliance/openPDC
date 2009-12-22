@@ -245,6 +245,7 @@ using System.Xml.Serialization;
 using openPDCManager.Web.Data.BusinessObjects;
 using openPDCManager.Web.Data.Entities;
 using TVA.PhasorProtocols;
+using System.ServiceModel;
 
 namespace openPDCManager.Web.Data
 {
@@ -253,7 +254,6 @@ namespace openPDCManager.Web.Data
 	/// </summary>
     public static class CommonFunctions
     {
-
         static DataSet GetResultSet(IDbCommand command)		//This function was added because at few places mySQL complained about foreign key constraints which I was not able to figure out.
         {
 			//TODO: Find a way to get rid of this function for mySQL.
@@ -282,17 +282,40 @@ namespace openPDCManager.Web.Data
 			return (new UTF8Encoding()).GetString(memoryStream.ToArray());
 		}
 
+		static void LogException(string source, Exception ex)
+		{
+			DataConnection connection = new DataConnection();
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Insert Into ErrorLog (Source, Message, Detail) Values (@source, @message, @detail)";
+				command.Parameters.Add(AddWithValue(command, "@source", source));
+				command.Parameters.Add(AddWithValue(command, "@message", ex.Message));
+				command.Parameters.Add(AddWithValue(command, "@detail", ex.ToString()));
+				command.ExecuteNonQuery();
+			}
+			catch
+			{
+				//Do nothing. Dont worry about it.
+			}
+			finally
+			{
+				connection.Dispose();
+			}
+		}
+
 		public static string GetExecutingAssemblyPath()
 		{
 			try
 			{
-				return GetReturnMessage("GetExcecutingAssemblyPath()", TVA.IO.FilePath.GetAbsolutePath("Temp"),
-					string.Empty, string.Empty, MessageType.Success); 
+				return TVA.IO.FilePath.GetAbsolutePath("Temp");
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("GetExcecutingAssemblyPath()", "Failed to Retrieve Current Execution Path",
-					ex.Message, ex.ToString(), MessageType.Error);
+				LogException("GetExecutingAssemblyPath", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Current Execution Path", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 		}
 
@@ -310,11 +333,13 @@ namespace openPDCManager.Web.Data
 						fs.Write(buffer, 0, bytesRead);
 					}
 				}
-				return GetReturnMessage("SaveIniFile()", fileName, string.Empty, string.Empty, MessageType.Success);
+				return fileName;
 			}
 			catch(Exception ex)
 			{
-				return GetReturnMessage("SaveIniFile()", "Failed to Upload INI File", ex.Message, ex.ToString(), MessageType.Error);				
+				LogException("SaveIniFile", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Upload INI File", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);				
 			}
 		}
 
@@ -327,20 +352,22 @@ namespace openPDCManager.Web.Data
 				sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
 				sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
 				sf.Binder = new VersionConfigToNamespaceAssemblyObjectBinder();
-				connectionSettings = sf.Deserialize(inputStream) as ConnectionSettings;				
+				connectionSettings = sf.Deserialize(inputStream) as ConnectionSettings;
+				return connectionSettings;
 			}
-			catch 
+			catch (Exception ex)
 			{
-				throw;
-			}
-			return connectionSettings;
+				LogException("GetConnectionSettings", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Parse Connection File", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);	
+			}			
 		}
 
 		public static List<WizardDeviceInfo> GetWizardConfigurationInfo(Stream inputStream)
-		{
-			List<WizardDeviceInfo> wizardDeviceInfoList = new List<WizardDeviceInfo>();
+		{			
 			try
 			{
+				List<WizardDeviceInfo> wizardDeviceInfoList = new List<WizardDeviceInfo>();
 				SoapFormatter sf = new SoapFormatter();
 				sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
 				sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
@@ -371,13 +398,14 @@ namespace openPDCManager.Web.Data
 											}).ToList();
 												
 				}
+				return wizardDeviceInfoList;
 			}
-			catch
+			catch(Exception ex)
 			{
-				throw;
-			}
-
-			return wizardDeviceInfoList;
+				LogException("GetWizardConfigurationInfo", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Parse Configuration File", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}			
 		}
 
 		public static string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, 
@@ -459,11 +487,13 @@ namespace openPDCManager.Web.Data
 					}
 					loadOrder++;
 				}
-				return GetReturnMessage("SaveWizardConfigurationInfo()", "Configuration Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Configuration Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveWizardConfigurationInfo()", "Failed to Save Configuration Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveWizardConfigurationInfo", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Configuration Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			
 		}
@@ -483,142 +513,206 @@ namespace openPDCManager.Web.Data
 		}
 
 		public static bool MasterNode(string nodeID)
-		{
+		{	
 			bool isMaster = false;
-
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select Master From Node Where ID = @id";
-			command.Parameters.Add(AddWithValue(command, "@id", nodeID));
-			isMaster = Convert.ToBoolean(command.ExecuteScalar());
-			connection.Dispose();
+			try
+			{	
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select Master From Node Where ID = @id";
+				command.Parameters.Add(AddWithValue(command, "@id", nodeID));
+				isMaster = Convert.ToBoolean(command.ExecuteScalar());				
+			}
+			catch (Exception ex)
+			{
+				isMaster = false;
+				LogException("MasterNode", ex);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 			return isMaster;
 		}
 
 		public static List<string> GetTimeZones(bool isOptional)
 		{
-			List<string> timeZonesList = new List<string>();
-			if (isOptional)
-				timeZonesList.Add("Select Timezone");
-
-			foreach (TimeZoneInfo tzi in TimeZoneInfo.GetSystemTimeZones())
+			try
 			{
-				if (!timeZonesList.Contains(tzi.StandardName))
-					timeZonesList.Add(tzi.StandardName);
+				List<string> timeZonesList = new List<string>();
+				if (isOptional)
+					timeZonesList.Add("Select Timezone");
+
+				foreach (TimeZoneInfo tzi in TimeZoneInfo.GetSystemTimeZones())
+				{
+					if (!timeZonesList.Contains(tzi.StandardName))
+						timeZonesList.Add(tzi.StandardName);
+				}
+				return timeZonesList;
 			}
-			return timeZonesList;
+			catch (Exception ex)
+			{
+				LogException("GetTimeZones", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Get Timezones List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
 		}
 
 		public static Dictionary<string, int> GetVendorDeviceDistribution()
 		{
-			Dictionary<string, int> deviceDistribution = new Dictionary<string, int>();			
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select * From VendorDeviceDistribution Order By VendorName";
-			
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-
-			foreach (DataRow row in resultTable.Rows)
+			Dictionary<string, int> deviceDistribution = new Dictionary<string, int>();
+			try
 			{
-				deviceDistribution.Add(row["VendorName"].ToString(), Convert.ToInt32(row["DeviceCount"]));
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select * From VendorDeviceDistribution Order By VendorName";
+
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+
+				foreach (DataRow row in resultTable.Rows)
+				{
+					deviceDistribution.Add(row["VendorName"].ToString(), Convert.ToInt32(row["DeviceCount"]));
+				}								
 			}
-			connection.Dispose();
+			catch (Exception ex)
+			{
+				LogException("GetVendorDeviceDistribution", ex);
+				//CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Get Vendor Device Distribution", SystemMessage = ex.Message };
+				//throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 			return deviceDistribution;
 		}
 
 		public static List<InterconnectionStatus> GetInterconnectionStatus()
 		{
-		    List<InterconnectionStatus> interConnectionStatusList = new List<InterconnectionStatus>();
-			
 			DataConnection connection = new DataConnection();
-			DataSet resultSet = new DataSet();
-			resultSet.Tables.Add(new DataTable("InterconnectionSummary"));
-			resultSet.Tables.Add(new DataTable("MemberSummary"));
-			
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select InterconnectionName, Count(*) AS DeviceCount From DeviceDetail Group By InterconnectionName";
-			resultSet.Tables["InterconnectionSummary"].Load(command.ExecuteReader());
+			List<InterconnectionStatus> interConnectionStatusList = new List<InterconnectionStatus>();				
+			try
+			{				
+				DataSet resultSet = new DataSet();
+				resultSet.Tables.Add(new DataTable("InterconnectionSummary"));
+				resultSet.Tables.Add(new DataTable("MemberSummary"));
 
-			command.CommandText = "Select CompanyAcronym, CompanyName, InterconnectionName, Count(*) AS DeviceCount, Count(MeasuredLines) AS MeasuredLines " +
-									"From DeviceDetail Group By CompanyAcronym, CompanyName, InterconnectionName";
-			resultSet.Tables["MemberSummary"].Load(command.ExecuteReader());		
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select InterconnectionName, Count(*) AS DeviceCount From DeviceDetail Group By InterconnectionName";
+				resultSet.Tables["InterconnectionSummary"].Load(command.ExecuteReader());
 
-			interConnectionStatusList = (from item in resultSet.Tables["InterconnectionSummary"].AsEnumerable()
-										 select new InterconnectionStatus()
-										 {
-											 InterConnection = item.Field<string>("InterconnectionName"),
-											 TotalDevices = "Total " + item.Field<object>("DeviceCount").ToString() + " Devices",
-											 MemberStatusList = (from cs in resultSet.Tables["MemberSummary"].AsEnumerable()
-															  where cs.Field<string>("InterconnectionName") == item.Field<string>("InterconnectionName")
-															  select new MemberStatus()
-															  {
-																  CompanyAcronym = cs.Field<string>("CompanyAcronym"),
-																  CompanyName = cs.Field<string>("CompanyName"),
-																  MeasuredLines = Convert.ToInt32(cs.Field<object>("MeasuredLines")),
-																  TotalDevices = Convert.ToInt32(cs.Field<object>("DeviceCount"))
-															  }).ToList()
-										 }).ToList();
-			connection.Dispose();
-		    return interConnectionStatusList;
+				command.CommandText = "Select CompanyAcronym, CompanyName, InterconnectionName, Count(*) AS DeviceCount, Sum(MeasuredLines) AS MeasuredLines " +
+										"From DeviceDetail Group By CompanyAcronym, CompanyName, InterconnectionName";
+				resultSet.Tables["MemberSummary"].Load(command.ExecuteReader());
+
+				interConnectionStatusList = (from item in resultSet.Tables["InterconnectionSummary"].AsEnumerable()
+											 select new InterconnectionStatus()
+											 {
+												 InterConnection = item.Field<string>("InterconnectionName"),
+												 TotalDevices = "Total " + item.Field<object>("DeviceCount").ToString() + " Devices",
+												 MemberStatusList = (from cs in resultSet.Tables["MemberSummary"].AsEnumerable()
+																	 where cs.Field<string>("InterconnectionName") == item.Field<string>("InterconnectionName")
+																	 select new MemberStatus()
+																	 {
+																		 CompanyAcronym = cs.Field<string>("CompanyAcronym"),
+																		 CompanyName = cs.Field<string>("CompanyName"),
+																		 MeasuredLines = Convert.ToInt32(cs.Field<object>("MeasuredLines")),
+																		 TotalDevices = Convert.ToInt32(cs.Field<object>("DeviceCount"))
+																	 }).ToList()
+											 }).ToList();								
+			}
+			catch (Exception ex)
+			{
+				LogException("GetInterconnectionStatus", ex);
+				//CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Get Interconnection Status", SystemMessage = ex.Message };
+				//throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
+			return interConnectionStatusList;
 		}
 			
 		#region " Manage Companies Code"
 
 		public static List<Company> GetCompanyList()
 		{
-			List<Company> companyList = new List<Company>();
-            DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "SELECT ID, Acronym, MapAcronym, Name, URL, LoadOrder FROM Company ORDER BY LoadOrder";
-			
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
+			DataConnection connection = new DataConnection();
+			try
+			{
+				List<Company> companyList = new List<Company>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "SELECT ID, Acronym, MapAcronym, Name, URL, LoadOrder FROM Company ORDER BY LoadOrder";
 
-			companyList = (from item in resultTable.AsEnumerable()
-						   select new Company()
-						   {
-							   ID = item.Field<int>("ID"),
-							   Acronym = item.Field<string>("Acronym"),
-							   MapAcronym = item.Field<string>("MapAcronym"),
-							   Name = item.Field<string>("Name"),
-							   URL = item.Field<string>("URL"),
-							   LoadOrder = item.Field<int>("LoadOrder")
-						   }).ToList();
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
 
-            connection.Dispose();
-
-			return companyList;
+				companyList = (from item in resultTable.AsEnumerable()
+							   select new Company()
+							   {
+								   ID = item.Field<int>("ID"),
+								   Acronym = item.Field<string>("Acronym"),
+								   MapAcronym = item.Field<string>("MapAcronym"),
+								   Name = item.Field<string>("Name"),
+								   URL = item.Field<string>("URL"),
+								   LoadOrder = item.Field<int>("LoadOrder")
+							   }).ToList();
+				return companyList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetCompanyList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Company List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static Dictionary<int, string> GetCompanies(bool isOptional)
 		{
-			Dictionary<int, string> companyList = new Dictionary<int, string>();
-			if (isOptional)
-				companyList.Add(0, "Select Company");
-            DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "SELECT ID, Name FROM Company ORDER BY LoadOrder";
-
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-
-            int id;
-            foreach (DataRow row in resultTable.Rows)
+			DataConnection connection = new DataConnection();
+			try
 			{
-                id = int.Parse(row["ID"].ToString());
+				Dictionary<int, string> companyList = new Dictionary<int, string>();
+				if (isOptional)
+					companyList.Add(0, "Select Company");
 
-                if (!companyList.ContainsKey(id))
-                    companyList.Add(id, row["Name"].ToString());
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "SELECT ID, Name FROM Company ORDER BY LoadOrder";
+
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+
+				int id;
+				foreach (DataRow row in resultTable.Rows)
+				{
+					id = int.Parse(row["ID"].ToString());
+
+					if (!companyList.ContainsKey(id))
+						companyList.Add(id, row["Name"].ToString());
+				}
+				return companyList;
 			}
-
-            connection.Dispose();
-			return companyList;
+			catch (Exception ex)
+			{
+				LogException("GetCompanies", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Companies", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static string SaveCompany(Company company, bool isNew)
@@ -644,11 +738,13 @@ namespace openPDCManager.Web.Data
 					command.Parameters.Add(AddWithValue(command, "@id", company.ID));
 
 				command.ExecuteNonQuery();				
-				return GetReturnMessage("SaveCompany()", "Company Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Company Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveCompany()", "Failed to Save Company Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveCompany", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Company Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -662,48 +758,60 @@ namespace openPDCManager.Web.Data
 
 		public static List<OutputStream> GetOutputStreamList(bool enabledOnly)
 		{
-			List<OutputStream> outputStreamList = new List<OutputStream>();
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (enabledOnly)
+			try
 			{
-				command.CommandText = "SELECT * FROM OutputStreamDetail Where Enabled = @enabled ORDER BY LoadOrder";				
-				command.Parameters.Add(AddWithValue(command, "@enabled", true));
+				List<OutputStream> outputStreamList = new List<OutputStream>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (enabledOnly)
+				{
+					command.CommandText = "SELECT * FROM OutputStreamDetail Where Enabled = @enabled ORDER BY LoadOrder";
+					command.Parameters.Add(AddWithValue(command, "@enabled", true));
+				}
+				else
+					command.CommandText = "SELECT * FROM OutputStreamDetail ORDER BY LoadOrder";
+
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+
+				outputStreamList = (from item in resultTable.AsEnumerable()
+									select new OutputStream()
+									{
+										NodeID = item.Field<object>("NodeID").ToString(),
+										ID = item.Field<int>("ID"),
+										Acronym = item.Field<string>("Acronym"),
+										Name = item.Field<string>("Name"),
+										Type = item.Field<int>("Type"),
+										ConnectionString = item.Field<string>("ConnectionString"),
+										IDCode = item.Field<int>("IDCode"),
+										CommandChannel = item.Field<string>("CommandChannel"),
+										DataChannel = item.Field<string>("DataChannel"),
+										AutoPublishConfigFrame = Convert.ToBoolean(item.Field<object>("AutoPublishConfigFrame")),
+										AutoStartDataChannel = Convert.ToBoolean(item.Field<object>("AutoStartDataChannel")),
+										NominalFrequency = item.Field<int>("NominalFrequency"),
+										FramesPerSecond = item.Field<int>("FramesPerSecond"),
+										LagTime = item.Field<double>("LagTime"),
+										LeadTime = item.Field<double>("LeadTime"),
+										UseLocalClockAsRealTime = Convert.ToBoolean(item.Field<object>("UseLocalClockAsRealTime")),
+										AllowSortsByArrival = Convert.ToBoolean(item.Field<object>("AllowSortsByArrival")),
+										LoadOrder = item.Field<int>("LoadOrder"),
+										Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+										NodeName = item.Field<string>("NodeName"),
+										TypeName = item.Field<int>("Type") == 0 ? "IEEE C37.118" : "BPA"
+									}).ToList();
+				return outputStreamList;
 			}
-			else
-				command.CommandText = "SELECT * FROM OutputStreamDetail ORDER BY LoadOrder";
-
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-
-			outputStreamList = (from item in resultTable.AsEnumerable()
-								select new OutputStream()
-								{
-									NodeID = item.Field<object>("NodeID").ToString(),
-									ID = item.Field<int>("ID"),
-									Acronym = item.Field<string>("Acronym"),
-									Name = item.Field<string>("Name"),
-									Type = item.Field<int>("Type"),
-									ConnectionString = item.Field<string>("ConnectionString"),
-									IDCode = item.Field<int>("IDCode"),
-									CommandChannel = item.Field<string>("CommandChannel"),
-									DataChannel = item.Field<string>("DataChannel"),
-									AutoPublishConfigFrame = Convert.ToBoolean(item.Field<object>("AutoPublishConfigFrame")),
-									AutoStartDataChannel = Convert.ToBoolean(item.Field<object>("AutoStartDataChannel")),
-									NominalFrequency = item.Field<int>("NominalFrequency"),
-									FramesPerSecond = item.Field<int>("FramesPerSecond"),
-									LagTime = item.Field<double>("LagTime"),
-									LeadTime = item.Field<double>("LeadTime"),
-									UseLocalClockAsRealTime = Convert.ToBoolean(item.Field<object>("UseLocalClockAsRealTime")),
-									AllowSortsByArrival = Convert.ToBoolean(item.Field<object>("AllowSortsByArrival")),
-									LoadOrder = item.Field<int>("LoadOrder"),
-									Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-									NodeName = item.Field<string>("NodeName"),
-									TypeName = item.Field<int>("Type") == 0 ? "IEEE C37.118" : "BPA"
-								}).ToList();
-			connection.Dispose();
-			return outputStreamList;
+			catch (Exception ex)
+			{
+				LogException("GetOutputStreamList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Output Stream List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static string SaveOutputStream(OutputStream outputStream, bool isNew)
@@ -747,11 +855,13 @@ namespace openPDCManager.Web.Data
 
 				command.ExecuteNonQuery();
 
-				return GetReturnMessage("SaveOutputStream()", "Output Stream Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Output Stream Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveOutputStream()", "Failed to Save Output Stream Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveOutputStream", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -765,30 +875,42 @@ namespace openPDCManager.Web.Data
 
 		public static List<OutputStreamMeasurement> GetOutputStreamMeasurementList(int outputStreamID)
 		{
-			List<OutputStreamMeasurement> outputStreamMeasurementList = new List<OutputStreamMeasurement>();
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select * From OutputStreamMeasurementDetail Where AdapterID = @adapterID";			
-			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
+			try
+			{
+				List<OutputStreamMeasurement> outputStreamMeasurementList = new List<OutputStreamMeasurement>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select * From OutputStreamMeasurementDetail Where AdapterID = @adapterID";
+				command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
 
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
 
-			outputStreamMeasurementList = (from item in resultTable.AsEnumerable()
-										   select new OutputStreamMeasurement()
-										   {
-											   NodeID = item.Field<object>("NodeID").ToString(),
-											   AdapterID = item.Field<int>("AdapterID"),
-											   ID = item.Field<int>("ID"),
-											   PointID = item.Field<int>("PointID"),
-											   HistorianID = item.Field<int?>("HistorianID"),
-											   SignalReference = item.Field<string>("SignalReference"),
-											   SourcePointTag = item.Field<string>("SourcePointTag"),
-											   HistorianAcronym = item.Field<string>("HistorianAcronym")
-										   }).ToList();
-			connection.Dispose();
-			return outputStreamMeasurementList;
+				outputStreamMeasurementList = (from item in resultTable.AsEnumerable()
+											   select new OutputStreamMeasurement()
+											   {
+												   NodeID = item.Field<object>("NodeID").ToString(),
+												   AdapterID = item.Field<int>("AdapterID"),
+												   ID = item.Field<int>("ID"),
+												   PointID = item.Field<int>("PointID"),
+												   HistorianID = item.Field<int?>("HistorianID"),
+												   SignalReference = item.Field<string>("SignalReference"),
+												   SourcePointTag = item.Field<string>("SourcePointTag"),
+												   HistorianAcronym = item.Field<string>("HistorianAcronym")
+											   }).ToList();
+				return outputStreamMeasurementList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetOutputStreamMeasurementList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Output Stream Measurement List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static string SaveOutputStreamMeasurement(OutputStreamMeasurement outputStreamMeasurement, bool isNew)
@@ -816,11 +938,13 @@ namespace openPDCManager.Web.Data
 					command.Parameters.Add(AddWithValue(command, "@id", outputStreamMeasurement.ID));
 
 				command.ExecuteNonQuery();
-				return GetReturnMessage("SaveOutputStreamMeasurement()", "Output Stream Measurement Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Output Stream Measurement Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveOutputStreamMeasurement()", "Failed to Save Output Stream Measurement Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveOutputStreamMeasurement", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Measurement Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -834,49 +958,69 @@ namespace openPDCManager.Web.Data
 
 		public static List<OutputStreamDevice> GetOutputStreamDeviceList(int outputStreamID, bool enabledOnly)
 		{
-			List<OutputStreamDevice> outputStreamDeviceList = new List<OutputStreamDevice>();
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (!enabledOnly)
-				command.CommandText = "Select * From OutputStreamDeviceDetail Where AdapterID = @adapterID";
-			else
-				command.CommandText = "Select * From OutputStreamDeviceDetail Where AdapterID = @adapterID AND Enabled = @enabled";
-	
-			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
-			if (enabledOnly)			
-				command.Parameters.Add(AddWithValue(command, "@enabled", true));
+			try
+			{
+				List<OutputStreamDevice> outputStreamDeviceList = new List<OutputStreamDevice>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (!enabledOnly)
+					command.CommandText = "Select * From OutputStreamDeviceDetail Where AdapterID = @adapterID";
+				else
+					command.CommandText = "Select * From OutputStreamDeviceDetail Where AdapterID = @adapterID AND Enabled = @enabled";
 
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
+				command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
+				if (enabledOnly)
+					command.Parameters.Add(AddWithValue(command, "@enabled", true));
 
-			outputStreamDeviceList = (from item in resultTable.AsEnumerable()
-									  select new OutputStreamDevice()
-									  {
-										  NodeID = item.Field<object>("NodeID").ToString(),
-										  AdapterID = item.Field<int>("AdapterID"),
-										  ID = item.Field<int>("ID"),
-										  Acronym = item.Field<string>("Acronym"),
-										  Name = item.Field<string>("Name"),
-										  BpaAcronym = item.Field<string>("BpaAcronym"),
-										  LoadOrder = item.Field<int>("LoadOrder"),
-										  Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-										  Virtual = Convert.ToBoolean(item.Field<object>("Virtual"))
-									  }).ToList();
-			connection.Dispose();
-			return outputStreamDeviceList;
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+
+				outputStreamDeviceList = (from item in resultTable.AsEnumerable()
+										  select new OutputStreamDevice()
+										  {
+											  NodeID = item.Field<object>("NodeID").ToString(),
+											  AdapterID = item.Field<int>("AdapterID"),
+											  ID = item.Field<int>("ID"),
+											  Acronym = item.Field<string>("Acronym"),
+											  Name = item.Field<string>("Name"),
+											  BpaAcronym = item.Field<string>("BpaAcronym"),
+											  LoadOrder = item.Field<int>("LoadOrder"),
+											  Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+											  Virtual = Convert.ToBoolean(item.Field<object>("Virtual"))
+										  }).ToList();
+				return outputStreamDeviceList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetOutputStreamDeviceList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Output Stream Device List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static OutputStreamDevice GetOutputStreamDevice(int outputStreamID, string acronym)
 		{
-			List<OutputStreamDevice> ouputStreamDeviceList = new List<OutputStreamDevice>();
-			ouputStreamDeviceList = (from item in GetOutputStreamDeviceList(outputStreamID, false)
-								  where item.Acronym == acronym
-								  select item).ToList();
-			if (ouputStreamDeviceList.Count > 0)
-				return ouputStreamDeviceList[0];
-			else
+			try
+			{
+				List<OutputStreamDevice> ouputStreamDeviceList = new List<OutputStreamDevice>();
+				ouputStreamDeviceList = (from item in GetOutputStreamDeviceList(outputStreamID, false)
+										 where item.Acronym == acronym
+										 select item).ToList();
+				if (ouputStreamDeviceList.Count > 0)
+					return ouputStreamDeviceList[0];
+				else
+					return null;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetOutputStreamDevice", ex);
 				return null;
+			}
 		}
 
 		public static string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym)
@@ -921,12 +1065,13 @@ namespace openPDCManager.Web.Data
 				}
 
 				command.ExecuteNonQuery();
-
-				return GetReturnMessage("SaveOutputStreamDevice()", "Output Stream Device Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Output Stream Device Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveOutputStreamDevice()", "Failed to Save Output Stream Device Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveOutputStreamDevice", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Device Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -956,11 +1101,13 @@ namespace openPDCManager.Web.Data
 					command1.ExecuteNonQuery();
 				}
 
-				return GetReturnMessage("DeleteOutputStreamDevice()", "Output Stream Device Deleted Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Output Stream Device Deleted Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("DeleteOutputStreamDevice()", "Failed to Delete Output Stream Device", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("DeleteOutputStreamDevice", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Delete Output Stream Device", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -1045,11 +1192,13 @@ namespace openPDCManager.Web.Data
 
 				}
 
-				return GetReturnMessage("AddDevices()", "Output Stream Device(s) Added Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Output Stream Device(s) Added Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("AddDevices()", "Failed to Add Output Stream Device(s)", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("AddDevices", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Device(s)", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 		}
 
@@ -1059,31 +1208,43 @@ namespace openPDCManager.Web.Data
 
 		public static List<OutputStreamDevicePhasor> GetOutputStreamDevicePhasorList(int outputStreamDeviceID)
 		{
-			List<OutputStreamDevicePhasor> outputStreamDevicePhasorList = new List<OutputStreamDevicePhasor>();
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select * From OutputStreamDevicePhasor Where OutputStreamDeviceID = @outputStreamDeviceID Order By LoadOrder";
-			command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceID));
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
+			try
+			{
+				List<OutputStreamDevicePhasor> outputStreamDevicePhasorList = new List<OutputStreamDevicePhasor>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select * From OutputStreamDevicePhasor Where OutputStreamDeviceID = @outputStreamDeviceID Order By LoadOrder";
+				command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceID));
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
 
-			outputStreamDevicePhasorList = (from item in resultTable.AsEnumerable()
-											select new OutputStreamDevicePhasor()
-											{
-												NodeID = item.Field<object>("NodeID").ToString(),
-												OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
-												ID = item.Field<int>("ID"),
-												Label = item.Field<string>("Label"),
-												Type = item.Field<string>("Type"),
-												Phase = item.Field<string>("Phase"),
-												LoadOrder = item.Field<int>("LoadOrder"),
-												PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
-												PhaseType = item.Field<string>("Phase") == "+" ? "Positive" : item.Field<string>("Phase") == "-" ? "Negative" :
-															item.Field<string>("Phase") == "A" ? "Phase A" : item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
-											}).ToList();
-			connection.Dispose();
-			return outputStreamDevicePhasorList;
+				outputStreamDevicePhasorList = (from item in resultTable.AsEnumerable()
+												select new OutputStreamDevicePhasor()
+												{
+													NodeID = item.Field<object>("NodeID").ToString(),
+													OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
+													ID = item.Field<int>("ID"),
+													Label = item.Field<string>("Label"),
+													Type = item.Field<string>("Type"),
+													Phase = item.Field<string>("Phase"),
+													LoadOrder = item.Field<int>("LoadOrder"),
+													PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
+													PhaseType = item.Field<string>("Phase") == "+" ? "Positive" : item.Field<string>("Phase") == "-" ? "Negative" :
+																item.Field<string>("Phase") == "A" ? "Phase A" : item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
+												}).ToList();
+				return outputStreamDevicePhasorList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetOutputStreamDevicePhasorList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Output Stream Device Phasor List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static string SaveOutputStreamDevicePhasor(OutputStreamDevicePhasor outputStreamDevicePhasor, bool isNew)
@@ -1111,11 +1272,13 @@ namespace openPDCManager.Web.Data
 					command.Parameters.Add(AddWithValue(command, "@id", outputStreamDevicePhasor.ID));
 
 				command.ExecuteNonQuery();
-				return GetReturnMessage("SaveOutputStreamDevicePhasor()", "Output Stream Device Phasor Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Output Stream Device Phasor Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveOutputStreamDevicePhasor()", "Failed to Save Output Stream Device Phasor Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveOutputStreamDevicePhasor", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Device Phasor Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -1129,29 +1292,41 @@ namespace openPDCManager.Web.Data
 
 		public static List<OutputStreamDeviceAnalog> GetOutputStreamDeviceAnalogList(int outputStreamDeviceID)
 		{
-			List<OutputStreamDeviceAnalog> outputStreamDeviceAnalogList = new List<OutputStreamDeviceAnalog>();
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select * From OutputStreamDeviceAnalog Where OutputStreamDeviceID = @outputStreamDeviceID Order By LoadOrder";
-			command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceID));
+			try
+			{
+				List<OutputStreamDeviceAnalog> outputStreamDeviceAnalogList = new List<OutputStreamDeviceAnalog>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select * From OutputStreamDeviceAnalog Where OutputStreamDeviceID = @outputStreamDeviceID Order By LoadOrder";
+				command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceID));
 
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
 
-			outputStreamDeviceAnalogList = (from item in resultTable.AsEnumerable()
-											select new OutputStreamDeviceAnalog()
-											{
-												NodeID = item.Field<object>("NodeID").ToString(),
-												OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
-												ID = item.Field<int>("ID"),
-												Label = item.Field<string>("Label"),
-												Type = item.Field<int>("Type"),
-												LoadOrder = item.Field<int>("LoadOrder"),
-												TypeName = item.Field<int>("Type") == 0 ? "Single point-on-wave" : item.Field<int>("Type") == 1 ? "RMS of analog input" : "Peak of analog input"
-											}).ToList();
-			connection.Dispose();
-			return outputStreamDeviceAnalogList;
+				outputStreamDeviceAnalogList = (from item in resultTable.AsEnumerable()
+												select new OutputStreamDeviceAnalog()
+												{
+													NodeID = item.Field<object>("NodeID").ToString(),
+													OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
+													ID = item.Field<int>("ID"),
+													Label = item.Field<string>("Label"),
+													Type = item.Field<int>("Type"),
+													LoadOrder = item.Field<int>("LoadOrder"),
+													TypeName = item.Field<int>("Type") == 0 ? "Single point-on-wave" : item.Field<int>("Type") == 1 ? "RMS of analog input" : "Peak of analog input"
+												}).ToList();
+				return outputStreamDeviceAnalogList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetOutputStreamDeviceAnalogList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Output Stream Device Analog List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static string SaveOutputStreamDeviceAnalog(OutputStreamDeviceAnalog outputStreamDeviceAnalog, bool isNew)
@@ -1178,11 +1353,13 @@ namespace openPDCManager.Web.Data
 					command.Parameters.Add(AddWithValue(command, "@id", outputStreamDeviceAnalog.ID));
 
 				command.ExecuteNonQuery();
-				return GetReturnMessage("SaveOutputStreamDeviceAnalog()", "Output Stream Device Analog Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Output Stream Device Analog Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveOutputStreamDeviceAnalog()", "Failed to Save Outptu Stream Device Analog Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveOutputStreamDeviceAnalog", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Device Analog Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -1196,27 +1373,39 @@ namespace openPDCManager.Web.Data
 
 		public static List<OutputStreamDeviceDigital> GetOutputStreamDeviceDigitalList(int outputStreamDeviceID)
 		{
-			List<OutputStreamDeviceDigital> outputStreamDeviceDigitalList = new List<OutputStreamDeviceDigital>();
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select * From OutputStreamDeviceDigital Where OutputStreamDeviceID = @outputStreamDeviceID Order By LoadOrder";
-			command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceID));
+			try
+			{
+				List<OutputStreamDeviceDigital> outputStreamDeviceDigitalList = new List<OutputStreamDeviceDigital>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select * From OutputStreamDeviceDigital Where OutputStreamDeviceID = @outputStreamDeviceID Order By LoadOrder";
+				command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceID));
 
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
 
-			outputStreamDeviceDigitalList = (from item in resultTable.AsEnumerable()
-											select new OutputStreamDeviceDigital()
-											{
-												NodeID = item.Field<object>("NodeID").ToString(),
-												OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
-												ID = item.Field<int>("ID"),
-												Label = item.Field<string>("Label"),												
-												LoadOrder = item.Field<int>("LoadOrder")
-											}).ToList();
-			connection.Dispose();
-			return outputStreamDeviceDigitalList;
+				outputStreamDeviceDigitalList = (from item in resultTable.AsEnumerable()
+												 select new OutputStreamDeviceDigital()
+												 {
+													 NodeID = item.Field<object>("NodeID").ToString(),
+													 OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
+													 ID = item.Field<int>("ID"),
+													 Label = item.Field<string>("Label"),
+													 LoadOrder = item.Field<int>("LoadOrder")
+												 }).ToList();
+				return outputStreamDeviceDigitalList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetOutputStreamDeviceDigitalList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Output Stream Device Digital List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static string SaveOutputStreamDeviceDigital(OutputStreamDeviceDigital outputStreamDeviceDigital, bool isNew)
@@ -1242,11 +1431,13 @@ namespace openPDCManager.Web.Data
 					command.Parameters.Add(AddWithValue(command, "@id", outputStreamDeviceDigital.ID));
 
 				command.ExecuteNonQuery();
-				return GetReturnMessage("SaveOutputStreamDeviceDigital()", "Output Stream Device Digital Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Output Stream Device Digital Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveOutputStreamDeviceDigital()", "Failed to Save Output Stream Device Digital Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveOutputStreamDeviceDigital", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Device Digital Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -1260,65 +1451,88 @@ namespace openPDCManager.Web.Data
 
 		public static List<Historian> GetHistorianList(string nodeID)
 		{
-			List<Historian> historianList = new List<Historian>();
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))			
-				command.CommandText = "Select * From HistorianDetail Order By LoadOrder";			
-			else
+			try
 			{
-				command.CommandText = "Select * From HistorianDetail Where NodeID = @nodeID Order By LoadOrder";				
-				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				List<Historian> historianList = new List<Historian>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
+					command.CommandText = "Select * From HistorianDetail Order By LoadOrder";
+				else
+				{
+					command.CommandText = "Select * From HistorianDetail Where NodeID = @nodeID Order By LoadOrder";
+					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				}
+
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+				historianList = (from item in resultTable.AsEnumerable()
+								 select new Historian()
+								 {
+									 NodeID = item.Field<object>("NodeID").ToString(),
+									 ID = item.Field<int>("ID"),
+									 Acronym = item.Field<string>("Acronym"),
+									 Name = item.Field<string>("Name"),
+									 ConnectionString = item.Field<string>("ConnectionString"),
+									 Description = item.Field<string>("Description"),
+									 Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+									 TypeName = item.Field<string>("TypeName"),
+									 AssemblyName = item.Field<string>("AssemblyName"),
+									 NodeName = item.Field<string>("NodeName")
+								 }).ToList();
+				return historianList;
 			}
-
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());		
-			historianList = (from item in resultTable.AsEnumerable()
-							 select new Historian()
-							 {
-								 NodeID = item.Field<object>("NodeID").ToString(),
-								 ID = item.Field<int>("ID"),
-								 Acronym = item.Field<string>("Acronym"),
-								 Name = item.Field<string>("Name"),
-								 ConnectionString = item.Field<string>("ConnectionString"),
-								 Description = item.Field<string>("Description"),
-								 Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-								 TypeName = item.Field<string>("TypeName"),
-								 AssemblyName = item.Field<string>("AssemblyName"),
-								 NodeName = item.Field<string>("NodeName")
-							 }).ToList();
-
-			connection.Dispose();
-			return historianList;
+			catch (Exception ex)
+			{
+				LogException("GetHistorianList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Historian List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static Dictionary<int, string> GetHistorians(bool enabledOnly, bool isOptional)
 		{
-			Dictionary<int, string> historianList = new Dictionary<int, string>();
-			if (isOptional)
-				historianList.Add(0, "Select Historian");
-			
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (enabledOnly)
+			try
 			{
-				command.CommandText = "Select ID, Acronym From Historian Where Enabled = @enabled Order By LoadOrder";
-				command.Parameters.Add(AddWithValue(command, "@enabled", true));
+				Dictionary<int, string> historianList = new Dictionary<int, string>();
+				if (isOptional)
+					historianList.Add(0, "Select Historian");
+
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (enabledOnly)
+				{
+					command.CommandText = "Select ID, Acronym From Historian Where Enabled = @enabled Order By LoadOrder";
+					command.Parameters.Add(AddWithValue(command, "@enabled", true));
+				}
+				else
+					command.CommandText = "Select ID, Acronym From Historian Order By LoadOrder";
+
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+				foreach (DataRow row in resultTable.Rows)
+				{
+					if (!historianList.ContainsKey(Convert.ToInt32(row["ID"])))
+						historianList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
+				}
+				return historianList;
 			}
-			else
-				command.CommandText = "Select ID, Acronym From Historian Order By LoadOrder";
-			
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-			foreach (DataRow row in resultTable.Rows)
+			catch (Exception ex)
 			{
-				if (!historianList.ContainsKey(Convert.ToInt32(row["ID"])))
-					historianList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
+				LogException("GetHistorians", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Historians", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
-			connection.Dispose();
-			return historianList;
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static string SaveHistorian(Historian historian, bool isNew)
@@ -1350,11 +1564,13 @@ namespace openPDCManager.Web.Data
 					command.Parameters.Add(AddWithValue(command, "@id", historian.ID));
 
 				command.ExecuteNonQuery();
-				return GetReturnMessage("SaveHistorian()", "Historian Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Historian Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveHistorian()", "Failed to Save Historian Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveHistorian", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Node List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -1368,61 +1584,84 @@ namespace openPDCManager.Web.Data
 		
 		public static List<Node> GetNodeList()
 		{
-			List<Node> nodeList = new List<Node>();			
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select * From NodeDetail Order By LoadOrder";
-			
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-			nodeList = (from item in resultTable.AsEnumerable()
-						select new Node()
-						{
-							ID = item.Field<object>("ID").ToString(),
-							Name = item.Field<string>("Name"),
-							CompanyID = item.Field<int?>("CompanyID"),
-							Longitude = item.Field<decimal?>("Longitude"),
-							Latitude = item.Field<decimal?>("Latitude"),
-							Description = item.Field<string>("Description"),
-							Image = item.Field<string>("ImagePath"),
-							Master = Convert.ToBoolean(item.Field<object>("Master")),
-							LoadOrder = item.Field<int>("LoadOrder"),
-							Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-							CompanyName = item.Field<string>("CompanyName")
-						}).ToList();
+			try
+			{
+				List<Node> nodeList = new List<Node>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select * From NodeDetail Order By LoadOrder";
 
-			connection.Dispose();
-			return nodeList;
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+				nodeList = (from item in resultTable.AsEnumerable()
+							select new Node()
+							{
+								ID = item.Field<object>("ID").ToString(),
+								Name = item.Field<string>("Name"),
+								CompanyID = item.Field<int?>("CompanyID"),
+								Longitude = item.Field<decimal?>("Longitude"),
+								Latitude = item.Field<decimal?>("Latitude"),
+								Description = item.Field<string>("Description"),
+								Image = item.Field<string>("ImagePath"),
+								Master = Convert.ToBoolean(item.Field<object>("Master")),
+								LoadOrder = item.Field<int>("LoadOrder"),
+								Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+								CompanyName = item.Field<string>("CompanyName")
+							}).ToList();
+				return nodeList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetNodeList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Node List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 		
 		public static Dictionary<string, string> GetNodes(bool enabledOnly, bool isOptional)
 		{
-			Dictionary<string, string> nodeList = new Dictionary<string, string>();
-			if (isOptional)
-				nodeList.Add(string.Empty, "Select Node");
-								
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (enabledOnly)
+			try
 			{
-				command.CommandText = "Select ID, Name From Node Where Enabled = @enabled Order By LoadOrder";
-				command.Parameters.Add(AddWithValue(command, "@enabled", true));
-			}
-			else
-				command.CommandText = "Select ID, Name From Node Order By LoadOrder";
-			
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
+				Dictionary<string, string> nodeList = new Dictionary<string, string>();
+				if (isOptional)
+					nodeList.Add(string.Empty, "Select Node");
 
-			foreach (DataRow row in resultTable.Rows)
-			{
-				if (!nodeList.ContainsKey(row["ID"].ToString()))
-					nodeList.Add(row["ID"].ToString(), row["Name"].ToString());
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (enabledOnly)
+				{
+					command.CommandText = "Select ID, Name From Node Where Enabled = @enabled Order By LoadOrder";
+					command.Parameters.Add(AddWithValue(command, "@enabled", true));
+				}
+				else
+					command.CommandText = "Select ID, Name From Node Order By LoadOrder";
+
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+
+				foreach (DataRow row in resultTable.Rows)
+				{
+					if (!nodeList.ContainsKey(row["ID"].ToString()))
+						nodeList.Add(row["ID"].ToString(), row["Name"].ToString());
+				}
+				return nodeList;
 			}
-			connection.Dispose();
-			return nodeList;
+			catch (Exception ex)
+			{
+				LogException("GetNodes", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 		
 		public static string SaveNode(Node node, bool isNew)
@@ -1457,11 +1696,13 @@ namespace openPDCManager.Web.Data
 				}
 
 				command.ExecuteNonQuery();
-				return GetReturnMessage("SaveNode", "Node Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Node Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveNode()", "Failed to Save Node Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveNode", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Node Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -1475,49 +1716,73 @@ namespace openPDCManager.Web.Data
 		
 		public static List<Vendor> GetVendorList()
 		{
-			List<Vendor> vendorList = new List<Vendor>();			
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select * FROM VendorDetail Order By Name";
-			
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-			vendorList = (from item in resultTable.AsEnumerable()
-						  select new Vendor()
-						  {
-							  ID = item.Field<int>("ID"),
-							  Acronym = item.Field<string>("Acronym"),
-							  Name = item.Field<string>("Name"),
-							  PhoneNumber = item.Field<string>("PhoneNumber"),
-							  ContactEmail = item.Field<string>("ContactEmail"),
-							  URL = item.Field<string>("URL")
-						  }).ToList();
+			try
+			{
+				List<Vendor> vendorList = new List<Vendor>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select * FROM VendorDetail Order By Name";
 
-			connection.Dispose();
-			return vendorList;
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+				vendorList = (from item in resultTable.AsEnumerable()
+							  select new Vendor()
+							  {
+								  ID = item.Field<int>("ID"),
+								  Acronym = item.Field<string>("Acronym"),
+								  Name = item.Field<string>("Name"),
+								  PhoneNumber = item.Field<string>("PhoneNumber"),
+								  ContactEmail = item.Field<string>("ContactEmail"),
+								  URL = item.Field<string>("URL")
+							  }).ToList();
+				return vendorList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetVendorList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Vendor List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 		
 		public static Dictionary<int, string> GetVendors(bool isOptional)
 		{
-			Dictionary<int, string> vendorList = new Dictionary<int, string>();
-			if (isOptional)
-				vendorList.Add(0, "Select Vendor");
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select ID, Name From Vendor Order By Name";
-
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-
-			foreach (DataRow row in resultTable.Rows)
+			try
 			{
-				if (!vendorList.ContainsKey(Convert.ToInt32(row["ID"])))
-					vendorList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+				Dictionary<int, string> vendorList = new Dictionary<int, string>();
+				if (isOptional)
+					vendorList.Add(0, "Select Vendor");
+
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select ID, Name From Vendor Order By Name";
+
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+
+				foreach (DataRow row in resultTable.Rows)
+				{
+					if (!vendorList.ContainsKey(Convert.ToInt32(row["ID"])))
+						vendorList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+				}
+				return vendorList;
 			}
-			connection.Dispose();
-			return vendorList;
+			catch (Exception ex)
+			{
+				LogException("GetVendors", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Vendors", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 		
 		public static string SaveVendor(Vendor vendor, bool isNew)
@@ -1542,11 +1807,13 @@ namespace openPDCManager.Web.Data
 					command.Parameters.Add(AddWithValue(command, "@id", vendor.ID));
 
 				command.ExecuteNonQuery();
-				return GetReturnMessage("SaveVendor()", "Vendor Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Vendor Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveVendor()", "Failed to Save Vendor Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveVendor", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Vendor Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -1560,26 +1827,38 @@ namespace openPDCManager.Web.Data
 		
 		public static List<VendorDevice> GetVendorDeviceList()
 		{
-			List<VendorDevice> vendorDeviceList = new List<VendorDevice>();			
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select * From VendorDeviceDetail Order By Name";
+			try
+			{
+				List<VendorDevice> vendorDeviceList = new List<VendorDevice>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select * From VendorDeviceDetail Order By Name";
 
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-			vendorDeviceList = (from item in resultTable.AsEnumerable()
-								select new VendorDevice()
-								{
-									ID = item.Field<int>("ID"),
-									VendorID = item.Field<int>("VendorID"),
-									Name = item.Field<string>("Name"),
-									Description = item.Field<string>("Description"),
-									URL = item.Field<string>("URL"),
-									VendorName = item.Field<string>("VendorName")
-								}).ToList();
-			connection.Dispose();
-			return vendorDeviceList;
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+				vendorDeviceList = (from item in resultTable.AsEnumerable()
+									select new VendorDevice()
+									{
+										ID = item.Field<int>("ID"),
+										VendorID = item.Field<int>("VendorID"),
+										Name = item.Field<string>("Name"),
+										Description = item.Field<string>("Description"),
+										URL = item.Field<string>("URL"),
+										VendorName = item.Field<string>("VendorName")
+									}).ToList();
+				return vendorDeviceList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetVendorDeviceList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Vendor Device List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 		
 		public static string SaveVendorDevice(VendorDevice vendorDevice, bool isNew)
@@ -1604,11 +1883,13 @@ namespace openPDCManager.Web.Data
 
 				command.ExecuteNonQuery();
 
-				return GetReturnMessage("SaveVendorDevice()", "Vendor Device Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Vendor Device Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveVendorDevice()", "Failed to Save Vendor Device Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveVendorDevice", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Vendor Device Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);				
 			}
 			finally
 			{
@@ -1618,25 +1899,37 @@ namespace openPDCManager.Web.Data
 
 		public static Dictionary<int, string> GetVendorDevices(bool isOptional)
 		{
-			Dictionary<int, string> vendorDeviceList = new Dictionary<int, string>();
-			if (isOptional)
-				vendorDeviceList.Add(0, "Select Vendor Device");
-			
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select ID, Name From VendorDevice Order By Name";
-
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-
-			foreach (DataRow row in resultTable.Rows)
+			try
 			{
-				if (!vendorDeviceList.ContainsKey(Convert.ToInt32(row["ID"])))
-					vendorDeviceList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+				Dictionary<int, string> vendorDeviceList = new Dictionary<int, string>();
+				if (isOptional)
+					vendorDeviceList.Add(0, "Select Vendor Device");
+
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select ID, Name From VendorDevice Order By Name";
+
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+
+				foreach (DataRow row in resultTable.Rows)
+				{
+					if (!vendorDeviceList.ContainsKey(Convert.ToInt32(row["ID"])))
+						vendorDeviceList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+				}
+				return vendorDeviceList;
 			}
-			connection.Dispose();
-			return vendorDeviceList;
+			catch (Exception ex)
+			{
+				LogException("GetVendorDevices", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 		
 		#endregion
@@ -1645,64 +1938,83 @@ namespace openPDCManager.Web.Data
 
 		public static List<Device> GetDeviceList(string nodeID)
 		{
-			List<Device> deviceList = new List<Device>();
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;	
-			if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
-				command.CommandText = "Select * From DeviceDetail Order By LoadOrder";										
-			else
+			try
 			{
-				command.CommandText = "Select * From DeviceDetail Where NodeID = @nodeID Order By LoadOrder";				
-				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				List<Device> deviceList = new List<Device>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
+					command.CommandText = "Select * From DeviceDetail Order By LoadOrder";
+				else
+				{
+					command.CommandText = "Select * From DeviceDetail Where NodeID = @nodeID Order By LoadOrder";
+					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				}
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+				deviceList = (from item in resultTable.AsEnumerable()
+							  select new Device()
+							  {
+								  NodeID = item.Field<object>("NodeID").ToString(),
+								  ID = item.Field<int>("ID"),
+								  ParentID = item.Field<int?>("ParentID"),
+								  Acronym = item.Field<string>("Acronym"),
+								  Name = item.Field<string>("Name"),
+								  IsConcentrator = Convert.ToBoolean(item.Field<object>("IsConcentrator")),
+								  CompanyID = item.Field<int?>("CompanyID"),
+								  HistorianID = item.Field<int?>("HistorianID"),
+								  AccessID = item.Field<int>("AccessID"),
+								  VendorDeviceID = item.Field<int?>("VendorDeviceID"),
+								  ProtocolID = item.Field<int?>("ProtocolID"),
+								  Longitude = item.Field<decimal?>("Longitude"),
+								  Latitude = item.Field<decimal?>("Latitude"),
+								  InterconnectionID = item.Field<int?>("InterconnectionID"),
+								  ConnectionString = item.Field<string>("ConnectionString"),
+								  TimeZone = item.Field<string>("TimeZone"),
+								  TimeAdjustmentTicks = Convert.ToInt64(item.Field<object>("TimeAdjustmentTicks")),
+								  DataLossInterval = item.Field<double>("DataLossInterval"),
+								  ContactList = item.Field<string>("ContactList"),
+								  MeasuredLines = item.Field<int?>("MeasuredLines"),
+								  LoadOrder = item.Field<int>("LoadOrder"),
+								  Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+								  CompanyName = item.Field<string>("CompanyName"),
+								  CompanyAcronym = item.Field<string>("CompanyAcronym"),
+								  HistorianAcronym = item.Field<string>("HistorianAcronym"),
+								  VendorDeviceName = item.Field<string>("VendorDeviceName"),
+								  VendorAcronym = item.Field<string>("VendorAcronym"),
+								  ProtocolName = item.Field<string>("ProtocolName"),
+								  InterconnectionName = item.Field<string>("InterconnectionName"),
+								  NodeName = item.Field<string>("NodeName"),
+								  ParentAcronym = item.Field<string>("ParentAcronym")
+							  }).ToList();
+				return deviceList;
 			}
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());			
-			deviceList = (from item in resultTable.AsEnumerable()
-						  select new Device()
-						  {
-							  NodeID =	item.Field<object>("NodeID").ToString(),
-							  ID = item.Field<int>("ID"),
-							  ParentID = item.Field<int?>("ParentID"),
-							  Acronym = item.Field<string>("Acronym"),
-							  Name = item.Field<string>("Name"),
-							  IsConcentrator = Convert.ToBoolean(item.Field<object>("IsConcentrator")),
-							  CompanyID = item.Field<int?>("CompanyID"),
-							  HistorianID = item.Field<int?>("HistorianID"),
-							  AccessID = item.Field<int>("AccessID"),
-							  VendorDeviceID = item.Field<int?>("VendorDeviceID"),
-							  ProtocolID = item.Field<int?>("ProtocolID"),
-							  Longitude = item.Field<decimal?>("Longitude"),
-							  Latitude = item.Field<decimal?>("Latitude"),
-							  InterconnectionID = item.Field<int?>("InterconnectionID"),
-							  ConnectionString = item.Field<string>("ConnectionString"),
-							  TimeZone = item.Field<string>("TimeZone"),
-							  TimeAdjustmentTicks = Convert.ToInt64(item.Field<object>("TimeAdjustmentTicks")),	
-							  DataLossInterval = item.Field<double>("DataLossInterval"),
-							  ContactList = item.Field<string>("ContactList"),
-							  MeasuredLines = item.Field<int?>("MeasuredLines"),
-							  LoadOrder = item.Field<int>("LoadOrder"),
-							  Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-							  CompanyName = item.Field<string>("CompanyName"),
-							  CompanyAcronym = item.Field<string>("CompanyAcronym"),
-							  HistorianAcronym = item.Field<string>("HistorianAcronym"),
-							  VendorDeviceName = item.Field<string>("VendorDeviceName"),
-							  VendorAcronym = item.Field<string>("VendorAcronym"),
-							  ProtocolName = item.Field<string>("ProtocolName"),
-							  InterconnectionName = item.Field<string>("InterconnectionName"),
-							  NodeName = item.Field<string>("NodeName"),
-							  ParentAcronym = item.Field<string>("ParentAcronym")
-						  }).ToList();
-			connection.Dispose();
-			return deviceList;
+			catch (Exception ex)
+			{
+				LogException("GetDeviceList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Device List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static List<Device> GetDeviceListByParentID(int parentID)
 		{
 			List<Device> deviceList = new List<Device>();
-			deviceList = (from item in GetDeviceList(string.Empty)
-						  where item.ParentID == parentID
-						  select item).ToList();
+			try
+			{				
+				deviceList = (from item in GetDeviceList(string.Empty)
+							  where item.ParentID == parentID
+							  select item).ToList();				
+			}
+			catch (Exception ex)
+			{
+				LogException("GetDeviceListByParentID", ex);
+			}
 			return deviceList;
 		}
 
@@ -1804,11 +2116,13 @@ namespace openPDCManager.Web.Data
 					}
 				}
 
-				return GetReturnMessage("SaveDevice()", "Device Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Device Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveDevice()", "Failed to Save Device Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveDevice", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Device Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -1818,91 +2132,139 @@ namespace openPDCManager.Web.Data
 
 		public static Dictionary<int, string> GetDevices(DeviceType deviceType, bool isOptional)
 		{
-			Dictionary<int, string> deviceList = new Dictionary<int, string>();
-			if (isOptional)
-				deviceList.Add(0, "Select Device");
-
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (deviceType == DeviceType.Concentrator)
+			try
 			{
-				command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator Order By LoadOrder";
-				command.Parameters.Add(AddWithValue(command, "@isConcentrator", true));
-			}
-			else if (deviceType == DeviceType.NonConcentrator)
-			{
-				command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator Order By LoadOrder";
-				command.Parameters.Add(AddWithValue(command, "@isConcentrator", false));
-			}
-			else
-				command.CommandText = "Select ID, Acronym From Device Order By LoadOrder";
+				Dictionary<int, string> deviceList = new Dictionary<int, string>();
+				if (isOptional)
+					deviceList.Add(0, "Select Device");
 
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (deviceType == DeviceType.Concentrator)
+				{
+					command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator Order By LoadOrder";
+					command.Parameters.Add(AddWithValue(command, "@isConcentrator", true));
+				}
+				else if (deviceType == DeviceType.NonConcentrator)
+				{
+					command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator Order By LoadOrder";
+					command.Parameters.Add(AddWithValue(command, "@isConcentrator", false));
+				}
+				else
+					command.CommandText = "Select ID, Acronym From Device Order By LoadOrder";
 
-			foreach (DataRow row in resultTable.Rows)
-			{
-				if (!deviceList.ContainsKey(Convert.ToInt32(row["ID"])))
-					deviceList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+
+				foreach (DataRow row in resultTable.Rows)
+				{
+					if (!deviceList.ContainsKey(Convert.ToInt32(row["ID"])))
+						deviceList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
+				}
+				return deviceList;
 			}
-			connection.Dispose();
-			return deviceList;
+			catch (Exception ex)
+			{
+				LogException("GetDevices", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Devices", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static Device GetDeviceByDeviceID(int deviceID)
-		{			
-			List<Device> deviceList = new List<Device>();
-			deviceList = (from item in GetDeviceList(string.Empty)
-					  where item.ID == deviceID
-					  select item).ToList();
-			if (deviceList.Count > 0)
-				return deviceList[0];
-			else
+		{
+			try
+			{
+				List<Device> deviceList = new List<Device>();
+				deviceList = (from item in GetDeviceList(string.Empty)
+							  where item.ID == deviceID
+							  select item).ToList();
+				if (deviceList.Count > 0)
+					return deviceList[0];
+				else
+					return null;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetDeviceByDeviceID", ex);
 				return null;
+			}
 		}
 
 		public static Device GetDeviceByAcronym(string acronym)
 		{
-			List<Device> deviceList = new List<Device>();
-			deviceList = (from item in GetDeviceList(string.Empty)
-					  where item.Acronym == acronym
-					  select item).ToList();
-			if (deviceList.Count > 0)
-				return deviceList[0];
-			else
+			try
+			{
+				List<Device> deviceList = new List<Device>();
+				deviceList = (from item in GetDeviceList(string.Empty)
+							  where item.Acronym == acronym
+							  select item).ToList();
+				if (deviceList.Count > 0)
+					return deviceList[0];
+				else
+					return null;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetDeviceByAcronym", ex);
 				return null;
+			}
 		}
 
 		public static Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID)
 		{
-			Dictionary<int, string> deviceList = new Dictionary<int, string>();
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator AND Acronym NOT IN (Select Acronym From OutputStreamDevice Where AdapterID = @adapterID)";
-			command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));	//this has to be the first paramter for MS Access to succeed because it evaluates subquery first.
-			command.Parameters.Add(AddWithValue(command, "@isConcentrator", false));			
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-
-			foreach (DataRow row in resultTable.Rows)
+			try
 			{
-				if (!deviceList.ContainsKey(Convert.ToInt32(row["ID"])))
-					deviceList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
+				Dictionary<int, string> deviceList = new Dictionary<int, string>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator AND Acronym NOT IN (Select Acronym From OutputStreamDevice Where AdapterID = @adapterID)";
+				command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));	//this has to be the first paramter for MS Access to succeed because it evaluates subquery first.
+				command.Parameters.Add(AddWithValue(command, "@isConcentrator", false));
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+
+				foreach (DataRow row in resultTable.Rows)
+				{
+					if (!deviceList.ContainsKey(Convert.ToInt32(row["ID"])))
+						deviceList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
+				}
+				return deviceList;
 			}
-			connection.Dispose();
-			return deviceList;
+			catch (Exception ex)
+			{
+				LogException("GetDevicesForOutputStream", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Devices For Output Stream", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static Device GetConcentratorDevice(int deviceID)
 		{
-			Device device = new Device();
-			device = GetDeviceByDeviceID(deviceID);
-			if (device.IsConcentrator)
-				return device;
-			else
+			try
+			{
+				Device device = new Device();
+				device = GetDeviceByDeviceID(deviceID);
+				if (device.IsConcentrator)
+					return device;
+				else
+					return null;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetConcentratorDevice", ex);
 				return null;
+			}
 		}
 
 		#endregion
@@ -1911,57 +2273,78 @@ namespace openPDCManager.Web.Data
 
 		public static List<Phasor> GetPhasorList(int deviceID)
 		{
-			List<Phasor> phasorList = new List<Phasor>();
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select * From PhasorDetail Where DeviceID = @deviceID Order By SourceIndex";
-			command.Parameters.Add(AddWithValue(command, "@deviceID", deviceID));
-						
-			phasorList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
-						  select new Phasor()
-						  {
-							  ID = item.Field<int>("ID"),
-							  DeviceID = item.Field<int>("DeviceID"),
-							  Label = item.Field<string>("Label"),
-							  Type = item.Field<string>("Type"),
-							  Phase = item.Field<string>("Phase"),
-							  DestinationPhasorID = item.Field<int?>("DestinationPhasorID"),
-							  SourceIndex = item.Field<int>("SourceIndex"),
-							  DestinationPhasorLabel = item.Field<string>("DestinationPhasorLabel"),
-							  DeviceAcronym = item.Field<string>("DeviceAcronym"),
-							  PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
-							  PhaseType = item.Field<string>("Phase") == "+" ? "Positive" : item.Field<string>("Phase") == "-" ? "Negative" :
-										  item.Field<string>("Phase") == "A" ? "Phase A" : item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
-						  }).ToList();
+			try
+			{
+				List<Phasor> phasorList = new List<Phasor>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select * From PhasorDetail Where DeviceID = @deviceID Order By SourceIndex";
+				command.Parameters.Add(AddWithValue(command, "@deviceID", deviceID));
 
-			connection.Dispose();
-			return phasorList;
+				phasorList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
+							  select new Phasor()
+							  {
+								  ID = item.Field<int>("ID"),
+								  DeviceID = item.Field<int>("DeviceID"),
+								  Label = item.Field<string>("Label"),
+								  Type = item.Field<string>("Type"),
+								  Phase = item.Field<string>("Phase"),
+								  DestinationPhasorID = item.Field<int?>("DestinationPhasorID"),
+								  SourceIndex = item.Field<int>("SourceIndex"),
+								  DestinationPhasorLabel = item.Field<string>("DestinationPhasorLabel"),
+								  DeviceAcronym = item.Field<string>("DeviceAcronym"),
+								  PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
+								  PhaseType = item.Field<string>("Phase") == "+" ? "Positive" : item.Field<string>("Phase") == "-" ? "Negative" :
+											  item.Field<string>("Phase") == "A" ? "Phase A" : item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
+							  }).ToList();
+				return phasorList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetPhasorList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Phasor List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}						
 		}
 
 		public static Dictionary<int, string> GetPhasors(int deviceID, bool isOptional)
 		{
-			Dictionary<int, string> phasorList = new Dictionary<int, string>();
-			if (isOptional)
-				phasorList.Add(0, "Select Phasor");
-
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select ID, Label From Phasor Where DeviceID = @deviceID Order By SourceIndex";
-			command.Parameters.Add(AddWithValue(command, "@deviceID", deviceID));
-
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-
-			foreach (DataRow row in resultTable.Rows)
+			try
 			{
-				if (!phasorList.ContainsKey(Convert.ToInt32(row["ID"])))
-					phasorList.Add(Convert.ToInt32(row["ID"]), row["Label"].ToString());
-			}
+				Dictionary<int, string> phasorList = new Dictionary<int, string>();
+				if (isOptional)
+					phasorList.Add(0, "Select Phasor");
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select ID, Label From Phasor Where DeviceID = @deviceID Order By SourceIndex";
+				command.Parameters.Add(AddWithValue(command, "@deviceID", deviceID));
 
-			connection.Dispose();
-			return phasorList;
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+
+				foreach (DataRow row in resultTable.Rows)
+				{
+					if (!phasorList.ContainsKey(Convert.ToInt32(row["ID"])))
+						phasorList.Add(Convert.ToInt32(row["ID"]), row["Label"].ToString());
+				}
+				return phasorList;
+			}
+			catch (Exception ex)
+			{
+				LogException("SavePhasor", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Phasors", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		public static string SavePhasor(Phasor phasor, bool isNew)
@@ -2034,11 +2417,13 @@ namespace openPDCManager.Web.Data
 					}
 				}
 
-				return GetReturnMessage("SavePhasor()", "Phasor Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Phasor Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SavePhasor()", "Failed to Save Phasor Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SavePhasor", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Phasor Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -2047,39 +2432,63 @@ namespace openPDCManager.Web.Data
 		}
 
 		static Phasor GetPhasorByLabel(int deviceID, string label)
-		{			
-			List<Phasor> phasorList = new List<Phasor>();
-			phasorList = (from item in GetPhasorList(deviceID)
-					  where item.Label == label
-					  select item).ToList();
-			if (phasorList.Count > 0)
-				return phasorList[0];
-			else
+		{
+			try
+			{
+				List<Phasor> phasorList = new List<Phasor>();
+				phasorList = (from item in GetPhasorList(deviceID)
+							  where item.Label == label
+							  select item).ToList();
+				if (phasorList.Count > 0)
+					return phasorList[0];
+				else
+					return null;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetPhasorByLabel", ex);
 				return null;
+			}
 		}
 
 		static Phasor GetPhasorByID(int deviceID, int phasorID)
 		{
-			List<Phasor> phasorList = new List<Phasor>();
-			phasorList = (from item in GetPhasorList(deviceID)
-					  where item.ID == phasorID
-					  select item).ToList();
-			if (phasorList.Count > 0)
-				return phasorList[0];
-			else
+			try
+			{
+				List<Phasor> phasorList = new List<Phasor>();
+				phasorList = (from item in GetPhasorList(deviceID)
+							  where item.ID == phasorID
+							  select item).ToList();
+				if (phasorList.Count > 0)
+					return phasorList[0];
+				else
+					return null;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetPhasorByID", ex);
 				return null;
+			}
 		}
 
 		static Phasor GetPhasorBySourceIndex(int deviceID, int sourceIndex)
 		{
-			List<Phasor> phasorList = new List<Phasor>();
-			phasorList = (from item in GetPhasorList(deviceID)
-						  where item.SourceIndex == sourceIndex
-						  select item).ToList();
-			if (phasorList.Count > 0)
-				return phasorList[0];
-			else
+			try
+			{
+				List<Phasor> phasorList = new List<Phasor>();
+				phasorList = (from item in GetPhasorList(deviceID)
+							  where item.SourceIndex == sourceIndex
+							  select item).ToList();
+				if (phasorList.Count > 0)
+					return phasorList[0];
+				else
+					return null;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetPhasorBySourceIndex", ex);
 				return null;
+			}
 		}
 
 		#endregion
@@ -2088,85 +2497,105 @@ namespace openPDCManager.Web.Data
 
 		public static List<Measurement> GetMeasurementList(string nodeID)
 		{
-			List<Measurement> measurementList = new List<Measurement>();
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
-				command.CommandText = "Select SignalID, HistorianID, PointID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, " +
-					"Adder, Multiplier, Description, Enabled, HistorianAcronym, DeviceAcronym, SignalName, SignalAcronym, SignalTypeSuffix, PhasorLabel From MeasurementDetail Order By PointTag";
-			else
+			try
 			{
-				command.CommandText = "Select SignalID, HistorianID, PointID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, " +
-					"Adder, Multiplier, Description, Enabled, HistorianAcronym, DeviceAcronym, SignalName, SignalAcronym, SignalTypeSuffix, PhasorLabel From MeasurementDetail Where NodeID = @nodeID Order By PointTag";
-				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				List<Measurement> measurementList = new List<Measurement>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
+					command.CommandText = "Select SignalID, HistorianID, PointID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, " +
+						"Adder, Multiplier, Description, Enabled, HistorianAcronym, DeviceAcronym, SignalName, SignalAcronym, SignalTypeSuffix, PhasorLabel From MeasurementDetail Order By PointTag";
+				else
+				{
+					command.CommandText = "Select SignalID, HistorianID, PointID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, " +
+						"Adder, Multiplier, Description, Enabled, HistorianAcronym, DeviceAcronym, SignalName, SignalAcronym, SignalTypeSuffix, PhasorLabel From MeasurementDetail Where NodeID = @nodeID Order By PointTag";
+					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				}
+				
+				measurementList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
+								   select new Measurement()
+								   {
+									   SignalID = item.Field<object>("SignalID").ToString(),
+									   HistorianID = item.Field<int?>("HistorianID"),
+									   PointID = item.Field<int>("PointID"),
+									   DeviceID = item.Field<int>("DeviceID"),
+									   PointTag = item.Field<string>("PointTag"),
+									   AlternateTag = item.Field<string>("AlternateTag"),
+									   SignalTypeID = item.Field<int>("SignalTypeID"),
+									   PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+									   SignalReference = item.Field<string>("SignalReference"),
+									   Adder = item.Field<double>("Adder"),
+									   Multiplier = item.Field<double>("Multiplier"),
+									   Description = item.Field<string>("Description"),
+									   Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+									   HistorianAcronym = item.Field<string>("HistorianAcronym"),
+									   DeviceAcronym = item.Field<string>("DeviceAcronym"),
+									   SignalName = item.Field<string>("SignalName"),
+									   SignalAcronym = item.Field<string>("SignalAcronym"),
+									   SignalSuffix = item.Field<string>("SignalTypeSuffix"),
+									   PhasorLabel = item.Field<string>("PhasorLabel")
+								   }).ToList();
+				return measurementList;
 			}
-			//DataTable resultTable = new DataTable();
-			//resultTable.Load(command.ExecuteReader());
-
-			measurementList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
-							   select new Measurement()
-							   {
-								   SignalID = item.Field<object>("SignalID").ToString(),
-								   HistorianID = item.Field<int?>("HistorianID"),
-								   PointID = item.Field<int>("PointID"),
-								   DeviceID = item.Field<int>("DeviceID"),
-								   PointTag = item.Field<string>("PointTag"),
-								   AlternateTag = item.Field<string>("AlternateTag"),
-								   SignalTypeID = item.Field<int>("SignalTypeID"),
-								   PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
-								   SignalReference = item.Field<string>("SignalReference"),
-								   Adder = item.Field<double>("Adder"),
-								   Multiplier = item.Field<double>("Multiplier"),
-								   Description = item.Field<string>("Description"),
-								   Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-								   HistorianAcronym = item.Field<string>("HistorianAcronym"),
-								   DeviceAcronym = item.Field<string>("DeviceAcronym"),
-								   SignalName = item.Field<string>("SignalName"),
-								   SignalAcronym = item.Field<string>("SignalAcronym"),
-								   SignalSuffix = item.Field<string>("SignalTypeSuffix"),
-								   PhasorLabel = item.Field<string>("PhasorLabel")
-							   }).ToList();
-
-			connection.Dispose();
-			return measurementList;
+			catch (Exception ex)
+			{
+				LogException("GetMeasurementList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Measurement List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}						
 		}
 
 		public static List<Measurement> GetMeasurementsByDevice(int deviceID)
 		{
-			List<Measurement> measurementList = new List<Measurement>();
 			DataConnection connection = new DataConnection();
-			IDbCommand commnad = connection.Connection.CreateCommand();
-			commnad.CommandType = CommandType.Text;
-			commnad.CommandText = "Select * From MeasurementDetail Where DeviceID = @deviceID Order By PointTag";
-			commnad.Parameters.Add(AddWithValue(commnad, "@deviceID", deviceID));
-			
-			measurementList = (from item in GetResultSet(commnad).Tables[0].AsEnumerable()
-							   select new Measurement()
-							   {
-								   SignalID = item.Field<object>("SignalID").ToString(),
-								   HistorianID = item.Field<int?>("HistorianID"),
-								   PointID = item.Field<int>("PointID"),
-								   DeviceID = item.Field<int>("DeviceID"),
-								   PointTag = item.Field<string>("PointTag"),
-								   AlternateTag = item.Field<string>("AlternateTag"),
-								   SignalTypeID = item.Field<int>("SignalTypeID"),
-								   PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
-								   SignalReference = item.Field<string>("SignalReference"),
-								   Adder = item.Field<double>("Adder"),
-								   Multiplier = item.Field<double>("Multiplier"),
-								   Description = item.Field<string>("Description"),
-								   Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-								   HistorianAcronym = item.Field<string>("HistorianAcronym"),
-								   DeviceAcronym = item.Field<string>("DeviceAcronym"),
-								   SignalName = item.Field<string>("SignalName"),
-								   SignalAcronym = item.Field<string>("SignalAcronym"),
-								   SignalSuffix = item.Field<string>("SignalTypeSuffix"),
-								   PhasorLabel = item.Field<string>("PhasorLabel")
-							   }).ToList();
+			try
+			{
+				List<Measurement> measurementList = new List<Measurement>();
+				IDbCommand commnad = connection.Connection.CreateCommand();
+				commnad.CommandType = CommandType.Text;
+				commnad.CommandText = "Select * From MeasurementDetail Where DeviceID = @deviceID Order By PointTag";
+				commnad.Parameters.Add(AddWithValue(commnad, "@deviceID", deviceID));
 
-			connection.Dispose();
-			return measurementList;
+				measurementList = (from item in GetResultSet(commnad).Tables[0].AsEnumerable()
+								   select new Measurement()
+								   {
+									   SignalID = item.Field<object>("SignalID").ToString(),
+									   HistorianID = item.Field<int?>("HistorianID"),
+									   PointID = item.Field<int>("PointID"),
+									   DeviceID = item.Field<int>("DeviceID"),
+									   PointTag = item.Field<string>("PointTag"),
+									   AlternateTag = item.Field<string>("AlternateTag"),
+									   SignalTypeID = item.Field<int>("SignalTypeID"),
+									   PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+									   SignalReference = item.Field<string>("SignalReference"),
+									   Adder = item.Field<double>("Adder"),
+									   Multiplier = item.Field<double>("Multiplier"),
+									   Description = item.Field<string>("Description"),
+									   Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+									   HistorianAcronym = item.Field<string>("HistorianAcronym"),
+									   DeviceAcronym = item.Field<string>("DeviceAcronym"),
+									   SignalName = item.Field<string>("SignalName"),
+									   SignalAcronym = item.Field<string>("SignalAcronym"),
+									   SignalSuffix = item.Field<string>("SignalTypeSuffix"),
+									   PhasorLabel = item.Field<string>("PhasorLabel")
+								   }).ToList();
+				return measurementList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetMeasurementsByDevice", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Measurements By Device", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static string SaveMeasurement(Measurement measurement, bool isNew)
@@ -2204,11 +2633,13 @@ namespace openPDCManager.Web.Data
 				}
 				
 				command.ExecuteNonQuery();
-				return GetReturnMessage("SaveMeasurement()", "Measurement Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Measurement Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveMeasurement()", "Failed to Save Measurement Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveMeasurement", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Measurement Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -2218,56 +2649,76 @@ namespace openPDCManager.Web.Data
 
 		public static List<Measurement> GetMeasurementsForOutputStream(string nodeID, int outputStreamID)
 		{
-			List<Measurement> measurementList = new List<Measurement>();
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
-				command.CommandText = "Select * From MeasurementDetail Where PointID Not In (Select PointID From OutputStreamMeasurement Where AdapterID = @outputStreamID)";
-			else
+			try
 			{
-				command.CommandText = "Select * From MeasurementDetail Where NodeID = @nodeID AND PointID Not In (Select PointID From OutputStreamMeasurement Where AdapterID = @outputStreamID)";
-				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				List<Measurement> measurementList = new List<Measurement>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
+					command.CommandText = "Select * From MeasurementDetail Where PointID Not In (Select PointID From OutputStreamMeasurement Where AdapterID = @outputStreamID)";
+				else
+				{
+					command.CommandText = "Select * From MeasurementDetail Where NodeID = @nodeID AND PointID Not In (Select PointID From OutputStreamMeasurement Where AdapterID = @outputStreamID)";
+					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				}
+				command.Parameters.Add(AddWithValue(command, "@outputStreamID", outputStreamID));
+
+				measurementList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
+								   select new Measurement()
+								   {
+									   SignalID = item.Field<object>("SignalID").ToString(),
+									   HistorianID = item.Field<int?>("HistorianID"),
+									   PointID = item.Field<int>("PointID"),
+									   DeviceID = item.Field<int>("DeviceID"),
+									   PointTag = item.Field<string>("PointTag"),
+									   AlternateTag = item.Field<string>("AlternateTag"),
+									   SignalTypeID = item.Field<int>("SignalTypeID"),
+									   PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+									   SignalReference = item.Field<string>("SignalReference"),
+									   Adder = item.Field<double>("Adder"),
+									   Multiplier = item.Field<double>("Multiplier"),
+									   Description = item.Field<string>("Description"),
+									   Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+									   HistorianAcronym = item.Field<string>("HistorianAcronym"),
+									   DeviceAcronym = item.Field<string>("DeviceAcronym"),
+									   SignalName = item.Field<string>("SignalName"),
+									   SignalAcronym = item.Field<string>("SignalAcronym"),
+									   SignalSuffix = item.Field<string>("SignalTypeSuffix"),
+									   PhasorLabel = item.Field<string>("PhasorLabel")
+								   }).ToList();				
+				return measurementList;
 			}
-			command.Parameters.Add(AddWithValue(command, "@outputStreamID", outputStreamID));
-						
-			measurementList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
-							   select new Measurement()
-							   {
-								   SignalID = item.Field<object>("SignalID").ToString(),
-								   HistorianID = item.Field<int?>("HistorianID"),
-								   PointID = item.Field<int>("PointID"),
-								   DeviceID = item.Field<int>("DeviceID"),
-								   PointTag = item.Field<string>("PointTag"),
-								   AlternateTag = item.Field<string>("AlternateTag"),
-								   SignalTypeID = item.Field<int>("SignalTypeID"),
-								   PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
-								   SignalReference = item.Field<string>("SignalReference"),
-								   Adder = item.Field<double>("Adder"),
-								   Multiplier = item.Field<double>("Multiplier"),
-								   Description = item.Field<string>("Description"),
-								   Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-								   HistorianAcronym = item.Field<string>("HistorianAcronym"),
-								   DeviceAcronym = item.Field<string>("DeviceAcronym"),
-								   SignalName = item.Field<string>("SignalName"),
-								   SignalAcronym = item.Field<string>("SignalAcronym"),
-								   SignalSuffix = item.Field<string>("SignalTypeSuffix"),
-								   PhasorLabel = item.Field<string>("PhasorLabel")
-							   }).ToList();
-			connection.Dispose();
-			return measurementList;
+			catch (Exception ex)
+			{
+				LogException("GetMeasurementsForOutputStream", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Measurements For Output Stream", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		public static Measurement GetMeasurementInfo(int? deviceID, string signalSuffix, int? phasorSourceIndex)	//we are using signal suffix because it remains same if phasor is current or voltage which helps in modifying existing measurement if phasor changes from voltage to current.
 		{
-			List<Measurement> measurementList = new List<Measurement>();
-			measurementList = (from item in GetMeasurementsByDevice((int)deviceID)
-							   where item.SignalSuffix == signalSuffix && item.PhasorSourceIndex == phasorSourceIndex 
-							   select item).ToList();
-			if (measurementList.Count > 0)
-				return measurementList[0];
-			else
+			try
+			{
+				List<Measurement> measurementList = new List<Measurement>();
+				measurementList = (from item in GetMeasurementsByDevice((int)deviceID)
+								   where item.SignalSuffix == signalSuffix && item.PhasorSourceIndex == phasorSourceIndex
+								   select item).ToList();
+				if (measurementList.Count > 0)
+					return measurementList[0];
+				else
+					return null;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetMeasurementsForOutputStream", ex);
 				return null;
+			}
 		}		
 		
 		#endregion
@@ -2276,35 +2727,47 @@ namespace openPDCManager.Web.Data
 
 		public static List<OtherDevice> GetOtherDeviceList()
 		{
-			List<OtherDevice> otherDeviceList = new List<OtherDevice>();
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select * From OtherDeviceDetail Order By Acronym, Name";
+			try
+			{
+				List<OtherDevice> otherDeviceList = new List<OtherDevice>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select * From OtherDeviceDetail Order By Acronym, Name";
 
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-			otherDeviceList = (from item in resultTable.AsEnumerable()
-							   select new OtherDevice()
-							   {
-									ID = item.Field<int>("ID"),
-									Acronym = item.Field<string>("Acronym"),
-									Name = item.Field<string>("Name"),
-									IsConcentrator = Convert.ToBoolean(item.Field<object>("IsConcentrator")),
-									CompanyID = item.Field<int?>("CompanyID"),
-									VendorDeviceID = item.Field<int?>("VendorDeviceID"),
-									Longitude = item.Field<decimal?>("Longitude"),
-									Latitude = item.Field<decimal?>("Latitude"),
-									InterconnectionID = item.Field<int?>("InterconnectionID"),
-									Planned = Convert.ToBoolean(item.Field<object>("Planned")),
-									Desired = Convert.ToBoolean(item.Field<object>("Desired")),
-									InProgress = Convert.ToBoolean(item.Field<object>("InProgress")),
-									CompanyName = item.Field<string>("CompanyName"),
-									VendorDeviceName = item.Field<string>("VendorDeviceName"),
-									InterconnectionName = item.Field<string>("InterconnectionName")
-							   }).ToList();
-			connection.Dispose();
-			return otherDeviceList;
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+				otherDeviceList = (from item in resultTable.AsEnumerable()
+								   select new OtherDevice()
+								   {
+									   ID = item.Field<int>("ID"),
+									   Acronym = item.Field<string>("Acronym"),
+									   Name = item.Field<string>("Name"),
+									   IsConcentrator = Convert.ToBoolean(item.Field<object>("IsConcentrator")),
+									   CompanyID = item.Field<int?>("CompanyID"),
+									   VendorDeviceID = item.Field<int?>("VendorDeviceID"),
+									   Longitude = item.Field<decimal?>("Longitude"),
+									   Latitude = item.Field<decimal?>("Latitude"),
+									   InterconnectionID = item.Field<int?>("InterconnectionID"),
+									   Planned = Convert.ToBoolean(item.Field<object>("Planned")),
+									   Desired = Convert.ToBoolean(item.Field<object>("Desired")),
+									   InProgress = Convert.ToBoolean(item.Field<object>("InProgress")),
+									   CompanyName = item.Field<string>("CompanyName"),
+									   VendorDeviceName = item.Field<string>("VendorDeviceName"),
+									   InterconnectionName = item.Field<string>("InterconnectionName")
+								   }).ToList();				
+				return otherDeviceList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetOtherDeviceList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Other Device List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		public static string SaveOtherDevice(OtherDevice otherDevice, bool isNew)
@@ -2337,11 +2800,13 @@ namespace openPDCManager.Web.Data
 					command.Parameters.Add(AddWithValue(command, "@id", otherDevice.ID));
 
 				command.ExecuteScalar();
-				return GetReturnMessage("SaveOtherDevice()", "Other Device Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Other Device Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveOtherDevice()", "Failed to Save Other Device Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveOtherDevice", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Other Device Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -2351,14 +2816,22 @@ namespace openPDCManager.Web.Data
 
 		public static OtherDevice GetOtherDeviceByDeviceID(int deviceID)
 		{
-			List<OtherDevice> otherDeviceList = new List<OtherDevice>();
-			otherDeviceList = (from item in GetOtherDeviceList()
-						   where item.ID == deviceID
-						   select item).ToList();
-			if (otherDeviceList.Count > 0)
-				return otherDeviceList[0];
-			else
+			try
+			{
+				List<OtherDevice> otherDeviceList = new List<OtherDevice>();
+				otherDeviceList = (from item in GetOtherDeviceList()
+								   where item.ID == deviceID
+								   select item).ToList();
+				if (otherDeviceList.Count > 0)
+					return otherDeviceList[0];
+				else
+					return null;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetOtherDeviceByDeviceID", ex);
 				return null;
+			}
 		}
 
 		#endregion
@@ -2367,25 +2840,37 @@ namespace openPDCManager.Web.Data
 
 		public static Dictionary<int, string> GetInterconnections(bool isOptional)
 		{
-			Dictionary<int, string> interconnectionList = new Dictionary<int, string>();
-			if (isOptional)
-				interconnectionList.Add(0, "Select Interconnection");
-						
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select ID, Name From Interconnection Order By LoadOrder";
-			
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-
-			foreach (DataRow row in resultTable.Rows)
+			try
 			{
-				if (!interconnectionList.ContainsKey(Convert.ToInt32(row["ID"])))
-					interconnectionList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+				Dictionary<int, string> interconnectionList = new Dictionary<int, string>();
+				if (isOptional)
+					interconnectionList.Add(0, "Select Interconnection");
+
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select ID, Name From Interconnection Order By LoadOrder";
+
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+
+				foreach (DataRow row in resultTable.Rows)
+				{
+					if (!interconnectionList.ContainsKey(Convert.ToInt32(row["ID"])))
+						interconnectionList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+				}				
+				return interconnectionList;
 			}
-			connection.Dispose();
-			return interconnectionList;
+			catch (Exception ex)
+			{
+				LogException("GetInterconnections", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		#endregion
@@ -2394,41 +2879,64 @@ namespace openPDCManager.Web.Data
 
 		public static Dictionary<int, string> GetProtocols(bool isOptional)
 		{
-			Dictionary<int, string> protocolList = new Dictionary<int, string>();
-			if (isOptional)
-				protocolList.Add(0, "Select Protocol");
-			
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select ID, Name From Protocol Order By LoadOrder";
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-
-			foreach (DataRow row in resultTable.Rows)
+			try
 			{
-				if (!protocolList.ContainsKey(Convert.ToInt32(row["ID"])))
-					protocolList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
-			}
+				Dictionary<int, string> protocolList = new Dictionary<int, string>();
+				if (isOptional)
+					protocolList.Add(0, "Select Protocol");
 
-			connection.Dispose();
-			return protocolList;
+
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select ID, Name From Protocol Order By LoadOrder";
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+
+				foreach (DataRow row in resultTable.Rows)
+				{
+					if (!protocolList.ContainsKey(Convert.ToInt32(row["ID"])))
+						protocolList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+				}								
+				return protocolList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetProtocols", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Protocols", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		public static int GetProtocolIDByAcronym(string acronym)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select ID From Protocol Where Acronym = @acronym";
-			command.Parameters.Add(AddWithValue(command, "@acronym", acronym));
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-			connection.Dispose();
-			if (resultTable.Rows.Count > 0)
-				return Convert.ToInt32(resultTable.Rows[0]["ID"]);
-			else
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select ID From Protocol Where Acronym = @acronym";
+				command.Parameters.Add(AddWithValue(command, "@acronym", acronym));
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());				
+				if (resultTable.Rows.Count > 0)
+					return Convert.ToInt32(resultTable.Rows[0]["ID"]);
+				else
+					return 0;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetProtocolIDByAcronym", ex);
 				return 0;
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		#endregion
@@ -2436,52 +2944,87 @@ namespace openPDCManager.Web.Data
 		#region " Manage Signal Types Code"
 
 		public static Dictionary<int, string> GetSignalTypes(bool isOptional)
-		{
-			Dictionary<int, string> signalTypeList = new Dictionary<int, string>();
-			if (isOptional)
-				signalTypeList.Add(0, "Select Signal Type");
-
+		{	
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select ID, Name From SignalType Order By Name";
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-
-			foreach (DataRow row in resultTable.Rows)
+			try
 			{
-				if (!signalTypeList.ContainsKey(Convert.ToInt32(row["ID"])))
-					signalTypeList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
-			}
+				Dictionary<int, string> signalTypeList = new Dictionary<int, string>();
+				if (isOptional)
+					signalTypeList.Add(0, "Select Signal Type");
 
-			connection.Dispose();
-			return signalTypeList;
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select ID, Name From SignalType Order By Name";
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+
+				foreach (DataRow row in resultTable.Rows)
+				{
+					if (!signalTypeList.ContainsKey(Convert.ToInt32(row["ID"])))
+						signalTypeList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
+				}
+								
+				return signalTypeList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetSignalTypes", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Signal Types", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		static DataTable GetPmuSignalTypes()	//Do not use this method in WCF call or silverlight. It is for internal use only.
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select * From SignalType Where Source = 'PMU' AND Suffix IN ('FQ', 'DF', 'SF')";
 			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-			connection.Dispose();
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select * From SignalType Where Source = 'PMU' AND Suffix IN ('FQ', 'DF', 'SF')";
+
+				resultTable.Load(command.ExecuteReader());
+			}
+			catch (Exception ex)
+			{
+				LogException("GetPmuSignalTypes", ex);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 			return resultTable;
 		}
 
 		static DataTable GetPhasorSignalTypes(string phasorType)
 		{
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (phasorType == "V")
-				command.CommandText = "Select * From SignalType Where Source = 'Phasor' AND Acronym LIKE 'V%'";
-			else
-				command.CommandText = "Select * From SignalType Where Source = 'Phasor' AND Acronym LIKE 'I%'";
 			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-			connection.Dispose();
+			try
+			{
+
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (phasorType == "V")
+					command.CommandText = "Select * From SignalType Where Source = 'Phasor' AND Acronym LIKE 'V%'";
+				else
+					command.CommandText = "Select * From SignalType Where Source = 'Phasor' AND Acronym LIKE 'I%'";
+				
+				resultTable.Load(command.ExecuteReader());								
+			}
+			catch (Exception ex)
+			{
+				LogException("GetPhasorSignalTypes", ex);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 			return resultTable;
 		}
 
@@ -2490,47 +3033,59 @@ namespace openPDCManager.Web.Data
 		#region " Manage Calculated Measurements"
 
 		public static List<CalculatedMeasurement> GetCalculatedMeasurementList(string nodeID)
-		{
-			List<CalculatedMeasurement> calculatedMeasurementList = new List<CalculatedMeasurement>();
+		{			
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
-				command.CommandText = "Select * From CalculatedMeasurementDetail Order By LoadOrder";
-			else
+			try
 			{
-				command.CommandText = "Select * From CalculatedMeasurementDetail Where NodeID = @nodeID Order By LoadOrder";				
-				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				List<CalculatedMeasurement> calculatedMeasurementList = new List<CalculatedMeasurement>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
+					command.CommandText = "Select * From CalculatedMeasurementDetail Order By LoadOrder";
+				else
+				{
+					command.CommandText = "Select * From CalculatedMeasurementDetail Where NodeID = @nodeID Order By LoadOrder";
+					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				}
+
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+				calculatedMeasurementList = (from item in resultTable.AsEnumerable()
+											 select new CalculatedMeasurement()
+											 {
+												 NodeId = item.Field<object>("NodeID").ToString(),
+												 ID = item.Field<int>("ID"),
+												 Acronym = item.Field<string>("Acronym"),
+												 Name = item.Field<string>("Name"),
+												 AssemblyName = item.Field<string>("AssemblyName"),
+												 TypeName = item.Field<string>("TypeName"),
+												 ConnectionString = item.Field<string>("ConnectionString"),
+												 ConfigSection = item.Field<string>("ConfigSection"),
+												 InputMeasurements = item.Field<string>("InputMeasurements"),
+												 OutputMeasurements = item.Field<string>("OutputMeasurements"),
+												 MinimumMeasurementsToUse = item.Field<int>("MinimumMeasurementsToUse"),
+												 FramesPerSecond = item.Field<int>("FramesPerSecond"),
+												 LagTime = item.Field<double>("LagTime"),
+												 LeadTime = item.Field<double>("LeadTime"),
+												 UseLocalClockAsRealTime = Convert.ToBoolean(item.Field<object>("UseLocalClockAsRealTime")),
+												 AllowSortsByArrival = Convert.ToBoolean(item.Field<object>("AllowSortsByArrival")),
+												 LoadOrder = item.Field<int>("LoadOrder"),
+												 Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+												 NodeName = item.Field<string>("NodeName")
+											 }).ToList();
+								
+				return calculatedMeasurementList;
 			}
-
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-			calculatedMeasurementList = (from item in resultTable.AsEnumerable()
-										 select new CalculatedMeasurement()
-										 {
-											 NodeId = item.Field<object>("NodeID").ToString(),
-											 ID = item.Field<int>("ID"),
-											 Acronym = item.Field<string>("Acronym"),
-											 Name = item.Field<string>("Name"),
-											 AssemblyName = item.Field<string>("AssemblyName"),
-											 TypeName = item.Field<string>("TypeName"),
-											 ConnectionString = item.Field<string>("ConnectionString"),
-											 ConfigSection = item.Field<string>("ConfigSection"),
-											 InputMeasurements = item.Field<string>("InputMeasurements"),
-											 OutputMeasurements = item.Field<string>("OutputMeasurements"),
-											 MinimumMeasurementsToUse = item.Field<int>("MinimumMeasurementsToUse"),
-											 FramesPerSecond = item.Field<int>("FramesPerSecond"),
-											 LagTime = item.Field<double>("LagTime"),
-											 LeadTime = item.Field<double>("LeadTime"),
-											 UseLocalClockAsRealTime = Convert.ToBoolean(item.Field<object>("UseLocalClockAsRealTime")),
-											 AllowSortsByArrival = Convert.ToBoolean(item.Field<object>("AllowSortsByArrival")),
-											 LoadOrder = item.Field<int>("LoadOrder"),
-											 Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-											 NodeName = item.Field<string>("NodeName")
-										 }).ToList();
-
-			connection.Dispose();
-			return calculatedMeasurementList;
+			catch (Exception ex)
+			{
+				LogException("GetCalculatedMeasurementList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Calculated Measurement List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		public static string SaveCalculatedMeasurement(CalculatedMeasurement calculatedMeasurement, bool isNew)
@@ -2573,11 +3128,13 @@ namespace openPDCManager.Web.Data
 
 				command.ExecuteNonQuery();
 
-				return GetReturnMessage("SaveCalculatedMeasurement()", "Calculated Measurement Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Calculated Measurement Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveCalculatedMeasurement()", "Failed to Save Calculated Measurement Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveCalculatedMeasurement", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Calculated Measurement Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -2591,44 +3148,57 @@ namespace openPDCManager.Web.Data
 
 		public static List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType, string nodeID)
 		{
-			List<Adapter> adapterList = new List<Adapter>();
-			string viewName;
-			if (adapterType == AdapterType.Action)
-				viewName = "CustomActionAdapterDetail";
-			else if (adapterType == AdapterType.Input)
-				viewName = "CustomInputAdapterDetail";
-			else
-				viewName = "CustomOutputAdapterDetail";
-
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
-				command.CommandText = "Select * From " + viewName + " Order By LoadOrder";
-			else
+			try
 			{
-				command.CommandText = "Select * From " + viewName + " Where NodeID = @nodeID Order By LoadOrder";				
-				command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
-			}
+				List<Adapter> adapterList = new List<Adapter>();
+				string viewName;
+				if (adapterType == AdapterType.Action)
+					viewName = "CustomActionAdapterDetail";
+				else if (adapterType == AdapterType.Input)
+					viewName = "CustomInputAdapterDetail";
+				else
+					viewName = "CustomOutputAdapterDetail";
 
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
-			adapterList = (from item in resultTable.AsEnumerable()
-						   select new Adapter()
-						   {
-							   NodeID = item.Field<object>("NodeID").ToString(),
-							   ID = item.Field<int>("ID"),
-							   AdapterName = item.Field<string>("AdapterName"),
-							   AssemblyName = item.Field<string>("AssemblyName"),
-							   TypeName = item.Field<string>("TypeName"),
-							   ConnectionString = item.Field<string>("ConnectionString"),
-							   LoadOrder = item.Field<int>("LoadOrder"),
-							   Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-							   NodeName = item.Field<string>("NodeName"),
-							   adapterType = adapterType
-						   }).ToList();
-			connection.Dispose();
-			return adapterList;
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
+					command.CommandText = "Select * From " + viewName + " Order By LoadOrder";
+				else
+				{
+					command.CommandText = "Select * From " + viewName + " Where NodeID = @nodeID Order By LoadOrder";
+					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				}
+
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+				adapterList = (from item in resultTable.AsEnumerable()
+							   select new Adapter()
+							   {
+								   NodeID = item.Field<object>("NodeID").ToString(),
+								   ID = item.Field<int>("ID"),
+								   AdapterName = item.Field<string>("AdapterName"),
+								   AssemblyName = item.Field<string>("AssemblyName"),
+								   TypeName = item.Field<string>("TypeName"),
+								   ConnectionString = item.Field<string>("ConnectionString"),
+								   LoadOrder = item.Field<int>("LoadOrder"),
+								   Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+								   NodeName = item.Field<string>("NodeName"),
+								   adapterType = adapterType
+							   }).ToList();
+				
+				return adapterList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetAdapterList", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Adapter List", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		public static string SaveAdapter(Adapter adapter, bool isNew)
@@ -2669,11 +3239,13 @@ namespace openPDCManager.Web.Data
 
 				command.ExecuteNonQuery();
 
-				return GetReturnMessage("SaveAdapter()", "Adapter Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);
+				return "Adapter Information Saved Successfully";
 			}
 			catch (Exception ex)
 			{
-				return GetReturnMessage("SaveAdapter()", "Failed to Save Adapter Information", ex.Message, ex.ToString(), MessageType.Error);
+				LogException("SaveAdapter", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Adapter Information", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -2683,56 +3255,68 @@ namespace openPDCManager.Web.Data
 
 		public static List<IaonTree> GetIaonTreeData()
 		{
-			List<IaonTree> iaonTreeList = new List<IaonTree>();
-			DataTable rootNodesTable = new DataTable();			
-			rootNodesTable.Columns.Add(new DataColumn("AdapterType", Type.GetType("System.String")));
-
-			DataRow row;			
-			row = rootNodesTable.NewRow();
-			row["AdapterType"] = "Input Adapters";
-			rootNodesTable.Rows.Add(row);
-
-			row = rootNodesTable.NewRow();
-			row["AdapterType"] = "Action Adapters";
-			rootNodesTable.Rows.Add(row);
-
-			row = rootNodesTable.NewRow();
-			row["AdapterType"] = "Output Adapters";
-			rootNodesTable.Rows.Add(row);
-
-			DataSet resultSet = new DataSet();
-			resultSet.Tables.Add(rootNodesTable);
-
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select * From IaonTreeView";
-			DataTable resultTable = new DataTable();			
-			resultSet.EnforceConstraints = false;	//this is needed to make it work against mySQL.
-			resultSet.Tables.Add(resultTable);
-			resultTable.Load(command.ExecuteReader());                        						
-			resultSet.Tables[0].TableName = "RootNodesTable";
-			resultSet.Tables[1].TableName = "AdapterData";
-					
-			iaonTreeList = (from item in resultSet.Tables["RootNodesTable"].AsEnumerable()
-							select new IaonTree()
-							{
-								AdapterType = item.Field<string>("AdapterType"),
-								AdapterList = (from obj in resultSet.Tables["AdapterData"].AsEnumerable()
-											   where obj.Field<string>("AdapterType") == item.Field<string>("AdapterType")
-											   select new Adapter()
-											   {
-												   NodeID = obj.Field<object>("NodeID").ToString(),
-												   ID = obj.Field<int>("ID"),
-												   AdapterName = obj.Field<string>("AdapterName"),
-												   AssemblyName = obj.Field<string>("AssemblyName"),
-												   TypeName = obj.Field<string>("TypeName"),
-												   ConnectionString = obj.Field<string>("ConnectionString")
-											   }).ToList()
-							}).ToList();
-			
-			connection.Dispose();
-			return iaonTreeList;
+			try
+			{
+				List<IaonTree> iaonTreeList = new List<IaonTree>();
+				DataTable rootNodesTable = new DataTable();
+				rootNodesTable.Columns.Add(new DataColumn("AdapterType", Type.GetType("System.String")));
+
+				DataRow row;
+				row = rootNodesTable.NewRow();
+				row["AdapterType"] = "Input Adapters";
+				rootNodesTable.Rows.Add(row);
+
+				row = rootNodesTable.NewRow();
+				row["AdapterType"] = "Action Adapters";
+				rootNodesTable.Rows.Add(row);
+
+				row = rootNodesTable.NewRow();
+				row["AdapterType"] = "Output Adapters";
+				rootNodesTable.Rows.Add(row);
+
+				DataSet resultSet = new DataSet();
+				resultSet.Tables.Add(rootNodesTable);
+								
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select * From IaonTreeView";
+				DataTable resultTable = new DataTable();
+				resultSet.EnforceConstraints = false;	//this is needed to make it work against mySQL.
+				resultSet.Tables.Add(resultTable);
+				resultTable.Load(command.ExecuteReader());
+				resultSet.Tables[0].TableName = "RootNodesTable";
+				resultSet.Tables[1].TableName = "AdapterData";
+
+				iaonTreeList = (from item in resultSet.Tables["RootNodesTable"].AsEnumerable()
+								select new IaonTree()
+								{
+									AdapterType = item.Field<string>("AdapterType"),
+									AdapterList = (from obj in resultSet.Tables["AdapterData"].AsEnumerable()
+												   where obj.Field<string>("AdapterType") == item.Field<string>("AdapterType")
+												   select new Adapter()
+												   {
+													   NodeID = obj.Field<object>("NodeID").ToString(),
+													   ID = obj.Field<int>("ID"),
+													   AdapterName = obj.Field<string>("AdapterName"),
+													   AssemblyName = obj.Field<string>("AssemblyName"),
+													   TypeName = obj.Field<string>("TypeName"),
+													   ConnectionString = obj.Field<string>("ConnectionString")
+												   }).ToList()
+								}).ToList();
+				
+				return iaonTreeList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetIaonTreeData", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Iaon Tree Data", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		#endregion
@@ -2740,55 +3324,67 @@ namespace openPDCManager.Web.Data
 		#region " Manage Map Data"
 
 		public static List<MapData> GetMapData(MapType mapType)
-		{
-			List<MapData> mapDataList = new List<MapData>();			
+		{						
 			DataConnection connection = new DataConnection();
-			IDbCommand command = connection.Connection.CreateCommand();
-			command.CommandType = CommandType.Text;
-			command.CommandText = "Select * From MapData";
+			try
+			{
+				List<MapData> mapDataList = new List<MapData>();
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select * From MapData";
 
-			if (mapType == MapType.Active)
-				command.CommandText = "Select * From MapData Where DeviceType = 'Device'";
-			
-			DataTable resultTable = new DataTable();
-			resultTable.Load(command.ExecuteReader());
+				if (mapType == MapType.Active)
+					command.CommandText = "Select * From MapData Where DeviceType = 'Device'";
 
-			if (mapType == MapType.Active)
-				mapDataList = (from item in resultTable.AsEnumerable()
-							   select new MapData()
-							   {
-								   NodeID = item.Field<object>("NodeID").ToString(),
-								   ID = item.Field<int>("ID"),
-								   Acronym = item.Field<string>("Acronym"),
-								   Name = item.Field<string>("Name"),
-								   CompanyMapAcronym = item.Field<string>("CompanyMapAcronym"),
-								   CompanyName = item.Field<string>("CompanyName"),
-								   VendorDeviceName = item.Field<string>("VendorDeviceName"),
-								   Longitude = item.Field<decimal?>("Longitude"),
-								   Latitude = item.Field<decimal?>("Latitude"),
-								   Reporting = Convert.ToBoolean(item.Field<object>("Reporting"))
-							   }).ToList();
-			else
-				mapDataList = (from item in resultTable.AsEnumerable()
-							   select new MapData()
-							   {
-								   DeviceType = item.Field<string>("DeviceType"),
-								   ID = item.Field<int>("ID"),
-								   Acronym = item.Field<string>("Acronym"),
-								   Name = item.Field<string>("Name"),
-								   CompanyMapAcronym = item.Field<string>("CompanyMapAcronym"),
-								   CompanyName = item.Field<string>("CompanyName"),
-								   VendorDeviceName = item.Field<string>("VendorDeviceName"),
-								   Longitude = item.Field<decimal?>("Longitude"),
-								   Latitude = item.Field<decimal?>("Latitude"),
-								   Reporting = Convert.ToBoolean(item.Field<object>("Reporting")),
-								   InProgress = Convert.ToBoolean(item.Field<object>("InProgress")),
-								   Planned = Convert.ToBoolean(item.Field<object>("Planned")),
-								   Desired = Convert.ToBoolean(item.Field<object>("Desired"))
-							   }).ToList();
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
 
-			connection.Dispose();
-			return mapDataList;
+				if (mapType == MapType.Active)
+					mapDataList = (from item in resultTable.AsEnumerable()
+								   select new MapData()
+								   {
+									   NodeID = item.Field<object>("NodeID").ToString(),
+									   ID = item.Field<int>("ID"),
+									   Acronym = item.Field<string>("Acronym"),
+									   Name = item.Field<string>("Name"),
+									   CompanyMapAcronym = item.Field<string>("CompanyMapAcronym"),
+									   CompanyName = item.Field<string>("CompanyName"),
+									   VendorDeviceName = item.Field<string>("VendorDeviceName"),
+									   Longitude = item.Field<decimal?>("Longitude"),
+									   Latitude = item.Field<decimal?>("Latitude"),
+									   Reporting = Convert.ToBoolean(item.Field<object>("Reporting"))
+								   }).ToList();
+				else
+					mapDataList = (from item in resultTable.AsEnumerable()
+								   select new MapData()
+								   {
+									   DeviceType = item.Field<string>("DeviceType"),
+									   ID = item.Field<int>("ID"),
+									   Acronym = item.Field<string>("Acronym"),
+									   Name = item.Field<string>("Name"),
+									   CompanyMapAcronym = item.Field<string>("CompanyMapAcronym"),
+									   CompanyName = item.Field<string>("CompanyName"),
+									   VendorDeviceName = item.Field<string>("VendorDeviceName"),
+									   Longitude = item.Field<decimal?>("Longitude"),
+									   Latitude = item.Field<decimal?>("Latitude"),
+									   Reporting = Convert.ToBoolean(item.Field<object>("Reporting")),
+									   InProgress = Convert.ToBoolean(item.Field<object>("InProgress")),
+									   Planned = Convert.ToBoolean(item.Field<object>("Planned")),
+									   Desired = Convert.ToBoolean(item.Field<object>("Desired"))
+								   }).ToList();
+								
+				return mapDataList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetMapData", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Map Data", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
 		}
 
 		#endregion			
