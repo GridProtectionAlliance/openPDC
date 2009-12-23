@@ -23,6 +23,8 @@
 **       Enabled archiving of binaries and installs.
 **  10/20/2009 - Pinal C. Patel
 **       Made deployment of archives to public locations switchable.
+**  12/23/2009 - Pinal C. Patel
+**       Updated to exclude openPDCManager projects from versioning.
 **
 *******************************************************************************************************
 -->
@@ -51,13 +53,15 @@
       <!-- List of installs to build. -->
       <InstallsToBuild Include="$(LocalFolder)\Source\**\*.vdproj"/>
       <!-- List of files to be versioned. -->
-      <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*">
+      <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*" Exclude="$(LocalFolder)\Source\Applications\openPDCManager\**\AssemblyInfo.*">
         <VersionRegex>(?'BeforeVersion'AssemblyVersion\(%22)(?'CoreVersion'(\*|\d+)\.)+(\*|\d+)(?'AfterVersion'%22\))</VersionRegex>
       </FilesToVersion>
-      <!--<FilesToVersion Include="$(LocalFolder)\Source\**\*.vdproj">
+      <!--
+      <FilesToVersion Include="$(LocalFolder)\Source\**\*.vdproj">
         <VersionRegex>(?'BeforeVersion'%22ProductVersion%22\s=\s%228:)(?'CoreVersion'(\d+)\.)+(\d+)(?'AfterVersion'%22)</VersionRegex>
         <VersionPrecision>3</VersionPrecision>
-      </FilesToVersion>-->
+      </FilesToVersion>
+      -->
     </ItemGroup>
   </Target>
 
