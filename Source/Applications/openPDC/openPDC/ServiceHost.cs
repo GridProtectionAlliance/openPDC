@@ -18,6 +18,8 @@
 //  12/21/2009 - Pinal C. Patel
 //       Removed code used for preventing flooding of status update messages since this functionality
 //       is now part of the ServiceHelper component.
+//  12/23/2009 - Pinal C. Patel
+//       Removed code that updated an obsolete setting in the config file.
 //
 //*******************************************************************************************************
 
@@ -419,9 +421,6 @@ namespace openPDC
                     {
                         settings["Data Source"] = FilePath.GetAbsolutePath(setting);
                         m_connectionString = settings.JoinKeyValuePairs();
-
-                        // Update the connection string used by metadata provider also.
-                        configFile.Settings["AdoMetadataProvider"]["ConnectionString", true].Value = m_connectionString;
                     }
                 }
             }
