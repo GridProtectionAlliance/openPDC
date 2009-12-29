@@ -431,7 +431,7 @@ AS
 SELECT Historian.NodeID, Runtime.ID, Historian.Acronym AS AdapterName,
  COALESCE(TRIM(Historian.AssemblyName), N'HistorianAdapters.dll') AS AssemblyName, 
  COALESCE(TRIM(Historian.TypeName), IF(IsLocal = 1, N'HistorianAdapters.LocalOutputAdapter', N'HistorianAdapters.RemoteOutputAdapter')) AS TypeName, 
- CONCAT_WS(';', Historian.ConnectionString, CONCAT(N'instanceName=', Historian.Acronym)) AS ConnectionString
+ CONCAT_WS(';', Historian.ConnectionString, CONCAT(N'instanceName=', Historian.Acronym), CONCAT(N'sourceids=', Historian.Acronym)) AS ConnectionString
 FROM Historian LEFT OUTER JOIN
  Runtime ON Historian.ID = Runtime.SourceID AND Runtime.SourceTable = N'Historian'
 WHERE (Historian.Enabled <> 0)
