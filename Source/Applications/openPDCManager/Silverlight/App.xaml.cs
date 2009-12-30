@@ -236,6 +236,7 @@ using System.ServiceModel.Channels;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
 using System.Windows.Browser;
+using Microsoft.Maps.MapControl;
 
 namespace openPDCManager.Silverlight
 {
@@ -243,7 +244,7 @@ namespace openPDCManager.Silverlight
     {
 		public string NodeValue { get; set; }
 		public string NodeName { get; set; }
-		
+		public ApplicationIdCredentialsProvider Credentials { get; set; }
         public App()
         {
             this.Startup += this.Application_Startup;
@@ -256,7 +257,13 @@ namespace openPDCManager.Silverlight
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             if ((e.InitParams != null) && (e.InitParams.ContainsKey("BaseServiceUrl")))
-                Resources.Add("BaseServiceUrl", e.InitParams["BaseServiceUrl"]);            						
+                Resources.Add("BaseServiceUrl", e.InitParams["BaseServiceUrl"]);
+
+			ApplicationIdCredentialsProvider credentialsProvider = new ApplicationIdCredentialsProvider();
+			if ((e.InitParams != null) && (e.InitParams.ContainsKey("BingMapsKey")))
+				credentialsProvider.ApplicationId = e.InitParams["BingMapsKey"];
+
+			this.Credentials = credentialsProvider;
 			this.RootVisual = new MasterLayoutControl();
         }
         private void Application_Exit(object sender, EventArgs e)

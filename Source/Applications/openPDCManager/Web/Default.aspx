@@ -74,7 +74,7 @@
 		        <param name="onload" value="onSilverlightLoad" />
 		        <param name="minRuntimeVersion" value="3.0.40624.0" />
 		        <param name="autoUpgrade" value="true" />
-		        <param name="initParams" value="BaseServiceUrl=<%=GetBaseServiceUrl %>" />		       
+		        <param name="initParams" value="BaseServiceUrl=<%=GetBaseServiceUrl %>,BingMapsKey=<%=GetBingMapsKey %>" />			        
 		        <div id="SilverlightMessage">		  
 		            <p align='center'>
 		                <br />

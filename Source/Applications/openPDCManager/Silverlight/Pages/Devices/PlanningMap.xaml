@@ -5,19 +5,22 @@
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            mc:Ignorable="d"
            xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"
-           xmlns:VirtualEarth="clr-namespace:Microsoft.VirtualEarth.MapControl;assembly=Microsoft.VirtualEarth.MapControl"
+           xmlns:m="clr-namespace:Microsoft.Maps.MapControl;assembly=Microsoft.Maps.MapControl"
            Title="Planning Map">
     <Grid x:Name="GridPlanningMap">
         <Border Style="{StaticResource PortletBorderStyle}">
             <StackPanel Orientation="Vertical">
                 <TextBlock Text="Planning Map" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
                 <Border Style="{StaticResource HeaderRowBorderStyle}" Width="1170" Height="765">
-                    <VirtualEarth:Map x:Name="VirtualEarthPlanningMap" Mode="AerialWithLabels"  ZoomLevel="4">
-                        <VirtualEarth:Map.Children>
-                            <VirtualEarth:MapLayer x:Name="PushpinLayer">
-                            </VirtualEarth:MapLayer>
-                        </VirtualEarth:Map.Children>
-                    </VirtualEarth:Map>
+                    <m:Map x:Name="VirtualEarthPlanningMap" ZoomLevel="4">
+                        <m:Map.Mode>
+                            <m:AerialMode Labels="True" FadingLabels="True" />
+                        </m:Map.Mode>
+                        <m:Map.Children>
+                            <m:MapLayer x:Name="PushpinLayer">
+                            </m:MapLayer>
+                        </m:Map.Children>
+                    </m:Map>
                 </Border>
             </StackPanel>
         </Border>

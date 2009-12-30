@@ -237,9 +237,9 @@ using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using System.Collections.ObjectModel;
 using System;
 using System.Linq;
-using Microsoft.VirtualEarth.MapControl;
 using openPDCManager.Silverlight.Utilities;
 using openPDCManager.Silverlight.ModalDialogs;
+using Microsoft.Maps.MapControl;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
@@ -257,6 +257,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetOtherDeviceListCompleted += new System.EventHandler<GetOtherDeviceListCompletedEventArgs>(client_GetOtherDeviceListCompleted);
 			client.GetMapDataCompleted += new EventHandler<GetMapDataCompletedEventArgs>(client_GetMapDataCompleted);
+			VirtualEarthPlanningMap.CredentialsProvider = (Application.Current as App).Credentials;
 			Loaded += new RoutedEventHandler(PlanningMap_Loaded);
 		}
 
@@ -283,9 +284,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 						pushPinButton.Template = Application.Current.Resources["YellowPushPinButtonTemplate"] as ControlTemplate;
 					else
 						pushPinButton.Template = Application.Current.Resources["WhitePushPinButtonTemplate"] as ControlTemplate;
-					pushPinButton.SetValue(MapLayer.MapPositionProperty, new Location(Convert.ToDouble(mapData.Latitude), Convert.ToDouble(mapData.Longitude)));
-					pushPinButton.SetValue(MapLayer.MapPositionMethodProperty, PositionMethod.Center);
-					(VirtualEarthPlanningMap.FindName("PushpinLayer") as MapLayer).AddChild(pushPinButton);
+					//pushPinButton.SetValue(MapLayer.MapPositionProperty, new Location(Convert.ToDouble(mapData.Latitude), Convert.ToDouble(mapData.Longitude)));
+					//pushPinButton.SetValue(MapLayer.MapPositionMethodProperty, PositionMethod.Center);
+					(VirtualEarthPlanningMap.FindName("PushpinLayer") as MapLayer).AddChild(pushPinButton, new Location(Convert.ToDouble(mapData.Latitude), Convert.ToDouble(mapData.Longitude)));
 				}
 				VirtualEarthPlanningMap.Center = new Location(avgLatitude, avgLongitude);
 			}
@@ -324,9 +325,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					pushPinButton.Content = device.Acronym;
 					
 					pushPinButton.Template = Application.Current.Resources["BluePushPinButtonTemplate"] as ControlTemplate;
-					pushPinButton.SetValue(MapLayer.MapPositionProperty, new Location(Convert.ToDouble(device.Latitude), Convert.ToDouble(device.Longitude)));
-					pushPinButton.SetValue(MapLayer.MapPositionMethodProperty, PositionMethod.Center);
-					(VirtualEarthPlanningMap.FindName("PushpinLayer") as MapLayer).AddChild(pushPinButton);
+					//pushPinButton.SetValue(MapLayer.MapPositionProperty, new Location(Convert.ToDouble(device.Latitude), Convert.ToDouble(device.Longitude)));
+					//pushPinButton.SetValue(MapLayer.MapPositionMethodProperty, PositionMethod.Center);
+					(VirtualEarthPlanningMap.FindName("PushpinLayer") as MapLayer).AddChild(pushPinButton, new Location(Convert.ToDouble(device.Latitude), Convert.ToDouble(device.Longitude)));
 				}
 				VirtualEarthPlanningMap.Center = new Location(avgLatitude, avgLongitude);	
 				
