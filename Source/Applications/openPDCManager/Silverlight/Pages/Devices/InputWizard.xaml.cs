@@ -253,6 +253,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		ConnectionSettings connectionSettings;
 		ObservableCollection<WizardDeviceInfo> wizardDeviceInfoList;
 		Dictionary<int, string> vendorDeviceList;
+		ActivityWindow activityWindow;
 		int? parentID = null;
 		string iniFileName = string.Empty;
 		string iniFilePath = string.Empty;
@@ -527,7 +528,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Configuration Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 			}
-			sm.Show();	
+			sm.Show();
+			if (activityWindow != null)
+				activityWindow.Close();	
 		}
 		void client_GetDeviceByAcronymCompleted(object sender, GetDeviceByAcronymCompletedEventArgs e)
 		{
@@ -748,6 +751,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 			if (AccordianWizard.SelectedIndex == AccordianWizard.Items.Count - 1)
 			{
+				activityWindow = new ActivityWindow("Processing Request... Please Wait...");
+				activityWindow.Show();
+
 				App app = (App)Application.Current;
 				int? protocolID = ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key;
 				int? companyID = ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key;

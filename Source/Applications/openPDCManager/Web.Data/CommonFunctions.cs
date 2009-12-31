@@ -2065,12 +2065,21 @@ namespace openPDCManager.Web.Data
 				if (device.IsConcentrator)
 					return GetReturnMessage("SaveDevice()", "Concentrator Device Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);		//As we do not add measurements for PDC device or device which is concentrator.
 
-				Device addedDevice = new Device();
-				addedDevice = GetDeviceByAcronym(device.Acronym);
 				DataTable pmuSignalTypes = new DataTable();
 				pmuSignalTypes = GetPmuSignalTypes();
 
-				Measurement measurement;
+				Measurement measurement;				
+
+				Device addedDevice = new Device();
+				addedDevice = GetDeviceByAcronym(device.Acronym);
+
+				//We will try again in a while if addedDevice is NULL. This is done because MS Access is very slow and was returning NULL.
+				if (addedDevice == null)
+				{
+					System.Threading.Thread.Sleep(500);
+					addedDevice = GetDeviceByAcronym(device.Acronym);
+				}
+							
 				foreach (DataRow row in pmuSignalTypes.Rows)	//This will only create or update PMU related measurements and not phasor related.
 				{
 					measurement = new Measurement();
@@ -2373,8 +2382,7 @@ namespace openPDCManager.Web.Data
 
 				command.ExecuteNonQuery();
 				
-				Phasor addedPhasor = new Phasor();
-				addedPhasor = GetPhasorByLabel(phasor.DeviceID, phasor.Label);
+				
 
 				Device device = new Device();
 				device = GetDeviceByDeviceID(phasor.DeviceID);
@@ -2383,6 +2391,16 @@ namespace openPDCManager.Web.Data
 
 				DataTable phasorSignalTypes = new DataTable();
 				phasorSignalTypes = GetPhasorSignalTypes(phasor.Type);
+				
+				Phasor addedPhasor = new Phasor();				
+				addedPhasor = GetPhasorByLabel(phasor.DeviceID, phasor.Label);
+
+				//we will try again just to make sure we get information back about the added phasor. As MS Access is very slow and sometimes fails to retrieve data.
+				if (addedPhasor == null)
+				{
+					System.Threading.Thread.Sleep(500);
+					addedPhasor = GetPhasorByLabel(phasor.DeviceID, phasor.Label);
+				}
 
 				foreach (DataRow row in phasorSignalTypes.Rows)
 				{
