@@ -58,7 +58,6 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ClientBin\openPDCManager.Silverlight.xap" />
     <Content Include="Default.aspx" />
     <Content Include="Images\Background.png" />
     <Content Include="Images\EIPPOverview.jpg" />
@@ -80,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="ClientBin\" />
     <Folder Include="IniFiles\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
