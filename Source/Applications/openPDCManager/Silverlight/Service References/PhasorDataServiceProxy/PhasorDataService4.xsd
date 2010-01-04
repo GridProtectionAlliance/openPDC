@@ -267,6 +267,20 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="DeleteOutputStreamMeasurement">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="outputStreamMeasurementID" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteOutputStreamMeasurementResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="DeleteOutputStreamMeasurementResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="GetOutputStreamDevicePhasorList">
     <xs:complexType>
       <xs:sequence>

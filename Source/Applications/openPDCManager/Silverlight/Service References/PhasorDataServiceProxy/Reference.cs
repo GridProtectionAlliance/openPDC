@@ -4289,6 +4289,13 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         string EndSaveOutputStreamMeasurement(System.IAsyncResult result);
         
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/DeleteOutputStreamMeasurement", ReplyAction="http://tempuri.org/IPhasorDataService/DeleteOutputStreamMeasurementResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/DeleteOutputStreamMeasurementCustomServiceF" +
+            "aultFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+        System.IAsyncResult BeginDeleteOutputStreamMeasurement(int outputStreamMeasurementID, System.AsyncCallback callback, object asyncState);
+        
+        string EndDeleteOutputStreamMeasurement(System.IAsyncResult result);
+        
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetOutputStreamDevicePhasorList", ReplyAction="http://tempuri.org/IPhasorDataService/GetOutputStreamDevicePhasorListResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/GetOutputStreamDevicePhasorListCustomServic" +
             "eFaultFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
@@ -4909,6 +4916,25 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         private object[] results;
         
         public SaveOutputStreamMeasurementCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public string Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class DeleteOutputStreamMeasurementCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public DeleteOutputStreamMeasurementCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -5888,6 +5914,12 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.Threading.SendOrPostCallback onSaveOutputStreamMeasurementCompletedDelegate;
         
+        private BeginOperationDelegate onBeginDeleteOutputStreamMeasurementDelegate;
+        
+        private EndOperationDelegate onEndDeleteOutputStreamMeasurementDelegate;
+        
+        private System.Threading.SendOrPostCallback onDeleteOutputStreamMeasurementCompletedDelegate;
+        
         private BeginOperationDelegate onBeginGetOutputStreamDevicePhasorListDelegate;
         
         private EndOperationDelegate onEndGetOutputStreamDevicePhasorListDelegate;
@@ -6246,6 +6278,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         public event System.EventHandler<GetOutputStreamMeasurementListCompletedEventArgs> GetOutputStreamMeasurementListCompleted;
         
         public event System.EventHandler<SaveOutputStreamMeasurementCompletedEventArgs> SaveOutputStreamMeasurementCompleted;
+        
+        public event System.EventHandler<DeleteOutputStreamMeasurementCompletedEventArgs> DeleteOutputStreamMeasurementCompleted;
         
         public event System.EventHandler<GetOutputStreamDevicePhasorListCompletedEventArgs> GetOutputStreamDevicePhasorListCompleted;
         
@@ -7191,6 +7225,52 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             base.InvokeAsync(this.onBeginSaveOutputStreamMeasurementDelegate, new object[] {
                         outputStreamMeasurement,
                         isNew}, this.onEndSaveOutputStreamMeasurementDelegate, this.onSaveOutputStreamMeasurementCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginDeleteOutputStreamMeasurement(int outputStreamMeasurementID, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginDeleteOutputStreamMeasurement(outputStreamMeasurementID, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        string openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndDeleteOutputStreamMeasurement(System.IAsyncResult result) {
+            return base.Channel.EndDeleteOutputStreamMeasurement(result);
+        }
+        
+        private System.IAsyncResult OnBeginDeleteOutputStreamMeasurement(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            int outputStreamMeasurementID = ((int)(inValues[0]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginDeleteOutputStreamMeasurement(outputStreamMeasurementID, callback, asyncState);
+        }
+        
+        private object[] OnEndDeleteOutputStreamMeasurement(System.IAsyncResult result) {
+            string retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndDeleteOutputStreamMeasurement(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnDeleteOutputStreamMeasurementCompleted(object state) {
+            if ((this.DeleteOutputStreamMeasurementCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.DeleteOutputStreamMeasurementCompleted(this, new DeleteOutputStreamMeasurementCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void DeleteOutputStreamMeasurementAsync(int outputStreamMeasurementID) {
+            this.DeleteOutputStreamMeasurementAsync(outputStreamMeasurementID, null);
+        }
+        
+        public void DeleteOutputStreamMeasurementAsync(int outputStreamMeasurementID, object userState) {
+            if ((this.onBeginDeleteOutputStreamMeasurementDelegate == null)) {
+                this.onBeginDeleteOutputStreamMeasurementDelegate = new BeginOperationDelegate(this.OnBeginDeleteOutputStreamMeasurement);
+            }
+            if ((this.onEndDeleteOutputStreamMeasurementDelegate == null)) {
+                this.onEndDeleteOutputStreamMeasurementDelegate = new EndOperationDelegate(this.OnEndDeleteOutputStreamMeasurement);
+            }
+            if ((this.onDeleteOutputStreamMeasurementCompletedDelegate == null)) {
+                this.onDeleteOutputStreamMeasurementCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnDeleteOutputStreamMeasurementCompleted);
+            }
+            base.InvokeAsync(this.onBeginDeleteOutputStreamMeasurementDelegate, new object[] {
+                        outputStreamMeasurementID}, this.onEndDeleteOutputStreamMeasurementDelegate, this.onDeleteOutputStreamMeasurementCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -9618,6 +9698,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             public string EndSaveOutputStreamMeasurement(System.IAsyncResult result) {
                 object[] _args = new object[0];
                 string _result = ((string)(base.EndInvoke("SaveOutputStreamMeasurement", _args, result)));
+                return _result;
+            }
+            
+            public System.IAsyncResult BeginDeleteOutputStreamMeasurement(int outputStreamMeasurementID, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[1];
+                _args[0] = outputStreamMeasurementID;
+                System.IAsyncResult _result = base.BeginInvoke("DeleteOutputStreamMeasurement", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public string EndDeleteOutputStreamMeasurement(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                string _result = ((string)(base.EndInvoke("DeleteOutputStreamMeasurement", _args, result)));
                 return _result;
             }
             

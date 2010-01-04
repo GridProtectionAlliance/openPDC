@@ -261,7 +261,33 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ListBoxOutputStreamMeasurementList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamMeasurementList_SelectionChanged);
 			client = Common.GetPhasorDataServiceProxyClient();
 			client.GetOutputStreamMeasurementListCompleted += new EventHandler<GetOutputStreamMeasurementListCompletedEventArgs>(client_GetOutputStreamMeasurementListCompleted);
-			client.SaveOutputStreamMeasurementCompleted += new EventHandler<SaveOutputStreamMeasurementCompletedEventArgs>(client_SaveOutputStreamMeasurementCompleted);		
+			client.SaveOutputStreamMeasurementCompleted += new EventHandler<SaveOutputStreamMeasurementCompletedEventArgs>(client_SaveOutputStreamMeasurementCompleted);
+			client.DeleteOutputStreamMeasurementCompleted += new EventHandler<DeleteOutputStreamMeasurementCompletedEventArgs>(client_DeleteOutputStreamMeasurementCompleted);
+		}
+
+		void client_DeleteOutputStreamMeasurementCompleted(object sender, DeleteOutputStreamMeasurementCompletedEventArgs e)
+		{
+			SystemMessages sm;
+			if (e.Error == null)
+			{
+				ClearForm();
+				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						ButtonType.OkOnly);
+			}
+			else
+			{
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Output Stream Measurement", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+			}
+			sm.Show();
+			client.GetOutputStreamMeasurementListAsync(sourceOutputStreamID);
 		}
 				
 		void ButtonSourceMeasurement_Click(object sender, RoutedEventArgs e)
@@ -373,6 +399,12 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			inEditMode = false;
 			outputStreamMeasurementID = 0;
 			ListBoxOutputStreamMeasurementList.SelectedIndex = -1;
+		}
+
+		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+		{
+			int outputStreamMeasurementId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			client.DeleteOutputStreamMeasurementAsync(outputStreamMeasurementId);
 		}
 		
 	}

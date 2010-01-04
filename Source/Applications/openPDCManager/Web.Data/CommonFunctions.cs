@@ -952,6 +952,31 @@ namespace openPDCManager.Web.Data
 			}
 		}
 
+		public static string DeleteOutputStreamMeasurement(int outputStreamMeasurementID)	// we can just use ID column in the database for delete as it is auto increament.
+		{
+			DataConnection connection = new DataConnection();
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Delete From OutputStreamMeasurement Where ID = @id";
+				command.Parameters.Add(AddWithValue(command, "@id", outputStreamMeasurementID));				
+				command.ExecuteNonQuery();
+
+				return "Output Stream Measurement Deleted Successfully";
+			}
+			catch (Exception ex)
+			{
+				LogException("DeleteOutputStreamMeasurement", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Delete Output Stream Measurement", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
+		}
+
 		#endregion
 
 		#region " Manage Output Stream Devices Code"

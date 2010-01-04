@@ -55,12 +55,15 @@
                             <TextBlock Text="Point ID" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Signal Reference" Width="{StaticResource XLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <TextBlock Text="Signal Reference" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Source PointTag" Width="{StaticResource XLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <TextBlock Text="Source PointTag" Width="{StaticResource LargerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
-                        <TextBlock Text="Historian" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Historian" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <TextBlock Text="Delete" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource SmallerTextSize}" FontWeight="Bold"/>
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
@@ -74,13 +77,16 @@
                                                 <TextBlock Text="{Binding Path=PointID}" Width="{StaticResource SmallItemSize}" TextAlignment="Center" Padding="1"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=SignalReference}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                                <TextBlock Text="{Binding Path=SignalReference}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=SourcePointTag}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                                <TextBlock Text="{Binding Path=SourcePointTag}" Width="{StaticResource LargerItemSize}" TextAlignment="Left" Padding="1"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <TextBlock Text="{Binding Path=HistorianName}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <HyperlinkButton Content="Delete" HorizontalContentAlignment="Center" Name="{Binding Path=ID}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource SmallerItemSize}" Click="HyperlinkButton_Click" />
                                             </Border>
                                         </StackPanel>
                                     </DataTemplate>

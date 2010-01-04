@@ -523,6 +523,11 @@ namespace PCS.Services.Service
 			return CommonFunctions.SaveOutputStreamMeasurement(outputStreamMeasurement, isNew);
 		}
 
+		public string DeleteOutputStreamMeasurement(int outputStreamMeasurementID)
+		{
+			return CommonFunctions.DeleteOutputStreamMeasurement(outputStreamMeasurementID);
+		}
+
 		#endregion
 
 		#region " Manage Output Stream Device Phasor Code"

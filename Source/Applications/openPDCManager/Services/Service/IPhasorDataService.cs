@@ -514,6 +514,10 @@ namespace PCS.Services.Service
 		[FaultContract(typeof(CustomServiceFault))]
 		string SaveOutputStreamMeasurement(OutputStreamMeasurement outputStreamMeasurement, bool isNew);
 
+		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
+		string DeleteOutputStreamMeasurement(int outputStreamMeasurementID);
+
 		#endregion
 
 		#region " Manage Output Stream Device Phasor Code"
