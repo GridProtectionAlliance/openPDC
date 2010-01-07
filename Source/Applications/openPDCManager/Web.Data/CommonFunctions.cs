@@ -2405,9 +2405,7 @@ namespace openPDCManager.Web.Data
 				if (!isNew)
 					command.Parameters.Add(AddWithValue(command, "@id", phasor.ID));
 
-				command.ExecuteNonQuery();
-				
-				
+				command.ExecuteNonQuery();							
 
 				Device device = new Device();
 				device = GetDeviceByDeviceID(phasor.DeviceID);
@@ -2418,13 +2416,15 @@ namespace openPDCManager.Web.Data
 				phasorSignalTypes = GetPhasorSignalTypes(phasor.Type);
 				
 				Phasor addedPhasor = new Phasor();				
-				addedPhasor = GetPhasorByLabel(phasor.DeviceID, phasor.Label);
+				//addedPhasor = GetPhasorByLabel(phasor.DeviceID, phasor.Label);
+				addedPhasor = GetPhasorBySourceIndex(phasor.DeviceID, phasor.SourceIndex);
 
 				//we will try again just to make sure we get information back about the added phasor. As MS Access is very slow and sometimes fails to retrieve data.
 				if (addedPhasor == null)
 				{
 					System.Threading.Thread.Sleep(500);
-					addedPhasor = GetPhasorByLabel(phasor.DeviceID, phasor.Label);
+					//addedPhasor = GetPhasorByLabel(phasor.DeviceID, phasor.Label);
+					addedPhasor = GetPhasorBySourceIndex(phasor.DeviceID, phasor.SourceIndex);
 				}
 
 				foreach (DataRow row in phasorSignalTypes.Rows)
@@ -2665,7 +2665,7 @@ namespace openPDCManager.Web.Data
 				command.Parameters.Add(AddWithValue(command, "@adder", measurement.Adder));
 				command.Parameters.Add(AddWithValue(command, "@multiplier", measurement.Multiplier));
 				command.Parameters.Add(AddWithValue(command, "@description", measurement.Description));
-				command.Parameters.Add(AddWithValue(command, "@enabled", measurement.Enabled));
+				command.Parameters.Add(AddWithValue(command, "@enabled", measurement.Enabled));							
 
 				if (!isNew)
 				{
@@ -2674,7 +2674,7 @@ namespace openPDCManager.Web.Data
 					else
 						command.Parameters.Add(AddWithValue(command, "@signalID", measurement.SignalID));
 				}
-				
+
 				command.ExecuteNonQuery();
 				return "Measurement Information Saved Successfully";
 			}

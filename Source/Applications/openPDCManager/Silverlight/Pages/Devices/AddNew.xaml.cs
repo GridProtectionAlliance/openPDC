@@ -318,7 +318,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			Device deviceToEdit = new Device();
 			if (e.Error == null)
 			{
-				System.Threading.Thread.Sleep(500);
+				System.Threading.Thread.Sleep(1000);
 				deviceToEdit = e.Result;
 				GridDeviceDetail.DataContext = deviceToEdit;
 				ComboboxNode.SelectedItem = new KeyValuePair<string, string>(deviceToEdit.NodeID, deviceToEdit.NodeName);
