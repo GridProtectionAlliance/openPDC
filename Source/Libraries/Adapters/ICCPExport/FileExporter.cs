@@ -357,8 +357,8 @@ namespace ICCPExport
                 m_companyTagPrefix += "_";
 
             // Define a default export location - user can override and add multiple locations in config later...
-            ExportDestination[] defaultDestinations = new ExportDestination[] { new ExportDestination("C:\\ICCPData.txt", true, "", "", "") };
-            m_dataExporter = new MultipleDestinationExporter("DataExporter", m_exportInterval * 1000);
+            ExportDestination[] defaultDestinations = new ExportDestination[] { new ExportDestination(string.Format("C:\\{0}.txt", Name), true, "", "", "") };
+            m_dataExporter = new MultipleDestinationExporter(Name, m_exportInterval * 1000);
             m_dataExporter.Initialize(defaultDestinations);
 
             // Create new measurement tag name dictionary
