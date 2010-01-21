@@ -246,9 +246,9 @@ namespace openPDCManager.Silverlight.Pages
 {
     public partial class HomePage : Page
     {
-		DuplexServiceClient duplexClient;
-		bool connected = false;
-		ActivityWindow activityWindow;
+		DuplexServiceClient m_duplexClient;
+		bool m_connected = false;
+		ActivityWindow m_activityWindow;
 
 		//ObservableCollection<PmuDistribution> pmuDistributionList = new ObservableCollection<PmuDistribution>();
 		ObservableCollection<InterconnectionStatus> interconnectionStatusList = new ObservableCollection<InterconnectionStatus>();
@@ -256,17 +256,17 @@ namespace openPDCManager.Silverlight.Pages
 
         public HomePage()
         {
-			duplexClient = Common.GetDuplexServiceProxyClient();
-			duplexClient.SendToServiceCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(duplexClient_SendToServiceCompleted);
-			duplexClient.SendToClientReceived += new EventHandler<SendToClientReceivedEventArgs>(duplexClient_SendToClientReceived);
-			duplexClient.SendToServiceAsync(new ConnectMessage());
+			m_duplexClient = Common.GetDuplexServiceProxyClient();
+			m_duplexClient.SendToServiceCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(duplexClient_SendToServiceCompleted);
+			m_duplexClient.SendToClientReceived += new EventHandler<SendToClientReceivedEventArgs>(duplexClient_SendToClientReceived);
+			m_duplexClient.SendToServiceAsync(new ConnectMessage());
 
             InitializeComponent();
 
 			ButtonShowMessage.Click += new RoutedEventHandler(ButtonShowMessage_Click);
 			ButtonShowMessage.Visibility = Visibility.Collapsed;
-			activityWindow = new ActivityWindow("Loading Data... Please Wait...");
-			activityWindow.Show();
+			m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+			m_activityWindow.Show();
         }
 
 		void ButtonShowMessage_Click(object sender, RoutedEventArgs e)
@@ -277,7 +277,7 @@ namespace openPDCManager.Silverlight.Pages
 		void duplexClient_SendToServiceCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
 		{            
 		    if (e.Error == null)
-		        connected = true;
+		        m_connected = true;
 		}
 		void duplexClient_SendToClientReceived(object sender, SendToClientReceivedEventArgs e)
 		{
@@ -292,14 +292,14 @@ namespace openPDCManager.Silverlight.Pages
 		        ChartDeviceDistribution.DataContext = deviceDistributionList;
 		        ItemControlInterconnectionStatus.ItemsSource = interconnectionStatusList;                
 		    }
-			if (activityWindow != null)
-				activityWindow.Close();
+			if (m_activityWindow != null)
+				m_activityWindow.Close();
 		}
 		//// Executes just before a page is no longer the active page in a frame.
 		protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
 		{
-		    if (connected) 
-		        duplexClient.SendToServiceAsync(new DisconnectMessage());
+		    if (m_connected) 
+		        m_duplexClient.SendToServiceAsync(new DisconnectMessage());
 		    base.OnNavigatingFrom(e);
 		}
         // Executes when the user navigates to this page.

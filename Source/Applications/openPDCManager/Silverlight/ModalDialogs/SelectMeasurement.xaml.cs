@@ -243,32 +243,32 @@ namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class SelectMeasurement : ChildWindow
 	{
-		int sourceOutputStreamID;
-		string sourceOutputStreamAcronym;
-		PhasorDataServiceClient client;
-		ObservableCollection<Measurement> measurementList;		
-		List<string[]> measurementsToBeAdded;
+		int m_sourceOutputStreamID;
+		string m_sourceOutputStreamAcronym;
+		PhasorDataServiceClient m_client;
+		ObservableCollection<Measurement> m_measurementList;		
+		List<string[]> m_measurementsToBeAdded;
 
 		public SelectMeasurement(int outputStreamID, string outputStreamAcronym)
 		{
 			InitializeComponent();
-			sourceOutputStreamID = outputStreamID;
-			sourceOutputStreamAcronym = outputStreamAcronym;
-			this.Title = "Add Measurements For Output Stream: " + sourceOutputStreamAcronym;
+			m_sourceOutputStreamID = outputStreamID;
+			m_sourceOutputStreamAcronym = outputStreamAcronym;
+			this.Title = "Add Measurements For Output Stream: " + m_sourceOutputStreamAcronym;
 			Loaded += new RoutedEventHandler(SelectMeasurement_Loaded);
 			ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
 			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetMeasurementsForOutputStreamCompleted += new EventHandler<GetMeasurementsForOutputStreamCompletedEventArgs>(client_GetMeasurementsForOutputStreamCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetMeasurementsForOutputStreamCompleted += new EventHandler<GetMeasurementsForOutputStreamCompletedEventArgs>(client_GetMeasurementsForOutputStreamCompleted);
 		}
 
 		void client_GetMeasurementsForOutputStreamCompleted(object sender, GetMeasurementsForOutputStreamCompletedEventArgs e)
 		{
 			if (e.Error == null)
 			{
-				measurementList = e.Result;
-				ListBoxMeasurementList.ItemsSource = measurementList;
+				m_measurementList = e.Result;
+				ListBoxMeasurementList.ItemsSource = m_measurementList;
 			}
 			else
 			{
@@ -287,35 +287,35 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		}		
 		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
 		{
-			ListBoxMeasurementList.ItemsSource = measurementList;
+			ListBoxMeasurementList.ItemsSource = m_measurementList;
 		}
 		void ButtonSearch_Click(object sender, RoutedEventArgs e)
 		{
 			string searchText = TextBoxSearch.Text.ToUpper();
-			ListBoxMeasurementList.ItemsSource = (from item in measurementList
+			ListBoxMeasurementList.ItemsSource = (from item in m_measurementList
 												  where item.PointTag.ToUpper().Contains(searchText) || item.SignalReference.ToUpper().Contains(searchText)
 												  select item).ToList();			
 		}
 		void ButtonAdd_Click(object sender, RoutedEventArgs e)
 		{
-			if (measurementsToBeAdded.Count > 0)
+			if (m_measurementsToBeAdded.Count > 0)
 			{
 				App app = (App)Application.Current;
 				//string[] format is {Name=PointID, Tooltip=SignalReference, Tag=HistorianID}
-				foreach (string[] measurement in measurementsToBeAdded)
+				foreach (string[] measurement in m_measurementsToBeAdded)
 				{
 					OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
 					outputStreamMeasurement.NodeID = app.NodeValue;
-					outputStreamMeasurement.AdapterID = sourceOutputStreamID;
+					outputStreamMeasurement.AdapterID = m_sourceOutputStreamID;
 					outputStreamMeasurement.HistorianID = string.IsNullOrEmpty(measurement[2]) ? (int?)null : Convert.ToInt32(measurement[2]);
 					outputStreamMeasurement.PointID = Convert.ToInt32(measurement[0]);
 					outputStreamMeasurement.SignalReference = measurement[1].Replace(measurement[1].Substring(0, measurement[1].LastIndexOf("-")), "<UNASSIGNED>");
-					client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, true);
+					m_client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, true);
 				}
 				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Output Stream Measurements Added Successfully", SystemMessage = string.Empty, UserMessageType = MessageType.Success },
 						 ButtonType.OkOnly);
 				sm.Show();
-				client.GetMeasurementsForOutputStreamAsync(app.NodeValue, sourceOutputStreamID);
+				m_client.GetMeasurementsForOutputStreamAsync(app.NodeValue, m_sourceOutputStreamID);
 			}
 			else
 			{
@@ -326,10 +326,10 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		}
 		void SelectMeasurement_Loaded(object sender, RoutedEventArgs e)
 		{
-			measurementList = new ObservableCollection<Measurement>();			
-			measurementsToBeAdded = new List<string[]>();
+			m_measurementList = new ObservableCollection<Measurement>();			
+			m_measurementsToBeAdded = new List<string[]>();
 			App app = (App)Application.Current;			
-			client.GetMeasurementsForOutputStreamAsync(app.NodeValue, sourceOutputStreamID);
+			m_client.GetMeasurementsForOutputStreamAsync(app.NodeValue, m_sourceOutputStreamID);
 		}						
 		private void CheckBox_Checked(object sender, RoutedEventArgs e)
 		{
@@ -337,7 +337,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ToolTip tooltip = new ToolTip();
 			tooltip = ToolTipService.GetToolTip(checkedBox) as ToolTip;
 			//string[] format is {Name=PointID, Tooltip=SignalReference, Tag=HistorianID}
-			measurementsToBeAdded.Add(new string[] { checkedBox.Name, ToolTipService.GetToolTip(checkedBox).ToString(), checkedBox.Tag == null ? string.Empty : checkedBox.Tag.ToString() });			
+			m_measurementsToBeAdded.Add(new string[] { checkedBox.Name, ToolTipService.GetToolTip(checkedBox).ToString(), checkedBox.Tag == null ? string.Empty : checkedBox.Tag.ToString() });			
 		}
 		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
 		{
@@ -345,7 +345,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ToolTip tooltip = new ToolTip();
 			tooltip = ToolTipService.GetToolTip(checkedBox) as ToolTip;
 			//string[] format is {Name=PointID, Tooltip=SignalReference, Tag=HistorianID}
-			measurementsToBeAdded.Remove(new string[] { checkedBox.Name, ToolTipService.GetToolTip(checkedBox).ToString(), checkedBox.Tag.ToString() });			
+			m_measurementsToBeAdded.Remove(new string[] { checkedBox.Name, ToolTipService.GetToolTip(checkedBox).ToString(), checkedBox.Tag.ToString() });			
 		}
 	}
 }

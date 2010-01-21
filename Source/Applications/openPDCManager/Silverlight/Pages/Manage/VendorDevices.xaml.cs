@@ -244,17 +244,17 @@ namespace openPDCManager.Silverlight.Pages.Manage
 {
 	public partial class VendorDevices : Page
 	{
-		PhasorDataServiceClient client;
-		bool inEditMode = false;
-		int vendorDeviceID = 0;
+		PhasorDataServiceClient m_client;
+		bool m_inEditMode = false;
+		int m_vendorDeviceID = 0;
 
 		public VendorDevices()
 		{
 			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetVendorDeviceListCompleted += new EventHandler<GetVendorDeviceListCompletedEventArgs>(client_GetVendorDeviceListCompleted);
-			client.GetVendorsCompleted += new EventHandler<GetVendorsCompletedEventArgs>(client_GetVendorsCompleted);
-			client.SaveVendorDeviceCompleted += new EventHandler<SaveVendorDeviceCompletedEventArgs>(client_SaveVendorDeviceCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetVendorDeviceListCompleted += new EventHandler<GetVendorDeviceListCompletedEventArgs>(client_GetVendorDeviceListCompleted);
+			m_client.GetVendorsCompleted += new EventHandler<GetVendorsCompletedEventArgs>(client_GetVendorsCompleted);
+			m_client.SaveVendorDeviceCompleted += new EventHandler<SaveVendorDeviceCompletedEventArgs>(client_SaveVendorDeviceCompleted);
 			Loaded += new RoutedEventHandler(VendorDevices_Loaded);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
@@ -283,7 +283,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			}
 			sm.Show();
 			
-			client.GetVendorDeviceListAsync(); //Refresh data to reflect changes on the current screen.
+			m_client.GetVendorDeviceListAsync(); //Refresh data to reflect changes on the current screen.
 		}
 		void ListBoxVendorDeviceList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -292,8 +292,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 				VendorDevice selectedVendorDevice = ListBoxVendorDeviceList.SelectedItem as VendorDevice;
 				GridVendorDeviceDetail.DataContext = selectedVendorDevice;
 				ComboBoxVendor.SelectedItem = new KeyValuePair<int, string>(selectedVendorDevice.VendorID, selectedVendorDevice.VendorName);
-				vendorDeviceID = selectedVendorDevice.ID;
-				inEditMode = true;
+				m_vendorDeviceID = selectedVendorDevice.ID;
+				m_inEditMode = true;
 			}
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
@@ -320,13 +320,13 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			vendorDevice.Description = TextBoxDescription.Text;
 			vendorDevice.URL = TextBoxUrl.Text;
 
-			if (vendorDeviceID != 0 && inEditMode == true)
+			if (m_vendorDeviceID != 0 && m_inEditMode == true)
 			{
-				vendorDevice.ID = vendorDeviceID;
-				client.SaveVendorDeviceAsync(vendorDevice, false);
+				vendorDevice.ID = m_vendorDeviceID;
+				m_client.SaveVendorDeviceAsync(vendorDevice, false);
 			}
 			else
-				client.SaveVendorDeviceAsync(vendorDevice, true);
+				m_client.SaveVendorDeviceAsync(vendorDevice, true);
 		}
 		void VendorDevices_Loaded(object sender, RoutedEventArgs e)
 		{
@@ -379,16 +379,16 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			if (ComboBoxVendor.Items.Count > 0)
 				ComboBoxVendor.SelectedIndex = 0;
 			GridVendorDeviceDetail.DataContext = new VendorDevice();	//Bind an empty element.	
-			inEditMode = false;
-			vendorDeviceID = 0;
+			m_inEditMode = false;
+			m_vendorDeviceID = 0;
 			ListBoxVendorDeviceList.SelectedIndex = -1;
 		}
 
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			client.GetVendorsAsync(false);
-			client.GetVendorDeviceListAsync();
+			m_client.GetVendorsAsync(false);
+			m_client.GetVendorDeviceListAsync();
 		}
 
 	}

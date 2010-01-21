@@ -242,25 +242,25 @@ namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class Phasors : ChildWindow
 	{
-		int sourceDeviceID;
-		string sourceDeviceAcronym;
-		bool inEditMode = false;
-		int phasorID = 0;
-		PhasorDataServiceClient client;
+		int m_sourceDeviceID;
+		string m_sourceDeviceAcronym;
+		bool m_inEditMode = false;
+		int m_phasorID = 0;
+		PhasorDataServiceClient m_client;
 
 		public Phasors(int deviceID, string deviceAcronym)
 		{
 			InitializeComponent();
-			sourceDeviceID = deviceID;
-			sourceDeviceAcronym = deviceAcronym;
-			this.Title = "Manage Phasors For Device: " + sourceDeviceAcronym;
+			m_sourceDeviceID = deviceID;
+			m_sourceDeviceAcronym = deviceAcronym;
+			this.Title = "Manage Phasors For Device: " + m_sourceDeviceAcronym;
 			Loaded += new RoutedEventHandler(Phasors_Loaded);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetPhasorListCompleted += new EventHandler<GetPhasorListCompletedEventArgs>(client_GetPhasorListCompleted);
-			client.GetPhasorsCompleted += new EventHandler<GetPhasorsCompletedEventArgs>(client_GetPhasorsCompleted);
-			client.SavePhasorCompleted += new EventHandler<SavePhasorCompletedEventArgs>(client_SavePhasorCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetPhasorListCompleted += new EventHandler<GetPhasorListCompletedEventArgs>(client_GetPhasorListCompleted);
+			m_client.GetPhasorsCompleted += new EventHandler<GetPhasorsCompletedEventArgs>(client_GetPhasorsCompleted);
+			m_client.SavePhasorCompleted += new EventHandler<SavePhasorCompletedEventArgs>(client_SavePhasorCompleted);
 			ListBoxPhasorList.SelectionChanged += new SelectionChangedEventHandler(ListBoxPhasorList_SelectionChanged);
 		}
 
@@ -286,8 +286,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			client.GetPhasorListAsync(sourceDeviceID);
-			client.GetPhasorsAsync(sourceDeviceID, true);
+			m_client.GetPhasorListAsync(m_sourceDeviceID);
+			m_client.GetPhasorsAsync(m_sourceDeviceID, true);
 		}
 		void client_GetPhasorsCompleted(object sender, GetPhasorsCompletedEventArgs e)
 		{
@@ -323,8 +323,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				ComboboxPhase.SelectedItem = new KeyValuePair<string, string>(selectedPhasor.Phase, selectedPhasor.PhaseType);
 				ComboboxType.SelectedItem = new KeyValuePair<string, string>(selectedPhasor.Type, selectedPhasor.PhasorType);
 
-				inEditMode = true;
-				phasorID = selectedPhasor.ID;
+				m_inEditMode = true;
+				m_phasorID = selectedPhasor.ID;
 			}
 		}
 		void client_GetPhasorListCompleted(object sender, GetPhasorListCompletedEventArgs e)
@@ -364,25 +364,25 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			sb.Begin();
 
 			Phasor phasor = new Phasor();
-			phasor.DeviceID = sourceDeviceID;
+			phasor.DeviceID = m_sourceDeviceID;
 			phasor.Label = TextBoxLabel.Text;
 			phasor.Type = ((KeyValuePair<string, string>)ComboboxType.SelectedItem).Key;
 			phasor.Phase = ((KeyValuePair<string, string>)ComboboxPhase.SelectedItem).Key;
 			phasor.DestinationPhasorID = ((KeyValuePair<int, string>)ComboboxDestinationPhasor.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxDestinationPhasor.SelectedItem).Key;
 			phasor.SourceIndex = Convert.ToInt32(TextBoxSourceIndex.Text);
 
-			if (inEditMode == true && phasorID > 0)
+			if (m_inEditMode == true && m_phasorID > 0)
 			{
-				phasor.ID = phasorID;
-				client.SavePhasorAsync(phasor, false);
+				phasor.ID = m_phasorID;
+				m_client.SavePhasorAsync(phasor, false);
 			}
 			else
-				client.SavePhasorAsync(phasor, true);
+				m_client.SavePhasorAsync(phasor, true);
 		}
 		void Phasors_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetPhasorListAsync(sourceDeviceID);
-			client.GetPhasorsAsync(sourceDeviceID, true);
+			m_client.GetPhasorListAsync(m_sourceDeviceID);
+			m_client.GetPhasorsAsync(m_sourceDeviceID, true);
 			ComboboxPhase.Items.Add(new KeyValuePair<string, string>("+", "Positive"));
 			ComboboxPhase.Items.Add(new KeyValuePair<string, string>("-", "Negative"));
 			ComboboxPhase.Items.Add(new KeyValuePair<string, string>("A", "Phase A"));
@@ -401,8 +401,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ComboboxType.SelectedIndex = 0;
 			ComboboxDestinationPhasor.SelectedIndex = 0;
 			ListBoxPhasorList.SelectedIndex = -1;
-			inEditMode = false;
-			phasorID = 0;
+			m_inEditMode = false;
+			m_phasorID = 0;
 		}
 		
 	}

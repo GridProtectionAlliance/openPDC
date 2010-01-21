@@ -241,11 +241,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class SystemMessages : ChildWindow
 	{
-		Message systemMessage = new Message();
+		Message m_systemMessage = new Message();
 		public SystemMessages(Message message, ButtonType buttonType)
 		{
 			InitializeComponent();
-			systemMessage = message;
+			m_systemMessage = message;
 			Loaded += new RoutedEventHandler(SystemMessages_Loaded);
 			ButtonOk.Click += new RoutedEventHandler(ButtonOk_Click);
 			if (message.UserMessageType == MessageType.Success)
@@ -315,7 +315,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 		void SystemMessages_Loaded(object sender, RoutedEventArgs e)
 		{
-			GridSystemMessageDetail.DataContext = systemMessage;
+			GridSystemMessageDetail.DataContext = m_systemMessage;
 		}		
 	}
 }

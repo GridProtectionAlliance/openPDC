@@ -229,58 +229,58 @@
 */
 #endregion
 
-using System.Windows.Controls;
-using System.Windows.Navigation;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.ServiceModel;
 using System.Windows;
-using System.Collections.ObjectModel;
-using System;
-using System.Linq;
-using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
+using System.Windows.Controls;
+using System.Windows.Navigation;
 using Microsoft.Maps.MapControl;
+using openPDCManager.Silverlight.ModalDialogs;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class ActiveMap : Page
 	{	
-		PhasorDataServiceClient client;
-		Button pushPinButton;		
-		ToolTip toolTip;		
-		ObservableCollection<MapData> mapDataList;
+		PhasorDataServiceClient m_client;
+		Button m_pushPinButton;		
+		ToolTip m_toolTip;		
+		ObservableCollection<MapData> m_mapDataList;
 
 		public ActiveMap()
 		{
 			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
+			m_client = Common.GetPhasorDataServiceProxyClient();
 			VirtualEarthActiveMap.CredentialsProvider = (Application.Current as App).Credentials;
 			Loaded += new RoutedEventHandler(ActiveMap_Loaded);
-			client.GetMapDataCompleted += new EventHandler<GetMapDataCompletedEventArgs>(client_GetMapDataCompleted);		
+			m_client.GetMapDataCompleted += new EventHandler<GetMapDataCompletedEventArgs>(client_GetMapDataCompleted);		
 		}
 		void client_GetMapDataCompleted(object sender, GetMapDataCompletedEventArgs e)
 		{
 			if (e.Error == null)
 			{
-				mapDataList = new ObservableCollection<MapData>();
-				mapDataList = e.Result;
-				double avgLongitude = Convert.ToDouble(mapDataList.Average(m => m.Longitude));
-				double avgLatitude = Convert.ToDouble(mapDataList.Average(m => m.Latitude));
-				foreach (MapData mapData in mapDataList)
+				m_mapDataList = new ObservableCollection<MapData>();
+				m_mapDataList = e.Result;
+				double avgLongitude = Convert.ToDouble(m_mapDataList.Average(m => m.Longitude));
+				double avgLatitude = Convert.ToDouble(m_mapDataList.Average(m => m.Latitude));
+				foreach (MapData mapData in m_mapDataList)
 				{
-					pushPinButton = new Button();
-					toolTip = new ToolTip();
-					toolTip.DataContext = mapData;
-					toolTip.Template = Application.Current.Resources["MapToolTipTemplate"] as ControlTemplate;
-					ToolTipService.SetToolTip(pushPinButton, toolTip);
-					pushPinButton.Content = mapData.CompanyMapAcronym;
+					m_pushPinButton = new Button();
+					m_toolTip = new ToolTip();
+					m_toolTip.DataContext = mapData;
+					m_toolTip.Template = Application.Current.Resources["MapToolTipTemplate"] as ControlTemplate;
+					ToolTipService.SetToolTip(m_pushPinButton, m_toolTip);
+					m_pushPinButton.Content = mapData.CompanyMapAcronym;
 					if (mapData.Reporting)
-						pushPinButton.Template = Application.Current.Resources["GreenPushPinButtonTemplate"] as ControlTemplate;
+						m_pushPinButton.Template = Application.Current.Resources["GreenPushPinButtonTemplate"] as ControlTemplate;
 					else
-						pushPinButton.Template = Application.Current.Resources["RedPushPinButtonTemplate"] as ControlTemplate;
+						m_pushPinButton.Template = Application.Current.Resources["RedPushPinButtonTemplate"] as ControlTemplate;
 					//pushPinButton.SetValue(MapLayer.MapPositionProperty, new Location(Convert.ToDouble(mapData.Latitude), Convert.ToDouble(mapData.Longitude)));
 					//pushPinButton.SetValue(MapLayer.MapPositionMethodProperty, PositionMethod.Center);
-					(VirtualEarthActiveMap.FindName("PushpinLayer") as MapLayer).AddChild(pushPinButton, new Location(Convert.ToDouble(mapData.Latitude), Convert.ToDouble(mapData.Longitude)));
+					(VirtualEarthActiveMap.FindName("PushpinLayer") as MapLayer).AddChild(m_pushPinButton, new Location(Convert.ToDouble(mapData.Latitude), Convert.ToDouble(mapData.Longitude)));
 				}
 				VirtualEarthActiveMap.Center = new Location(avgLatitude, avgLongitude);
 			}
@@ -307,7 +307,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			client.GetMapDataAsync(MapType.Active);
+			App app = (App)Application.Current;
+			m_client.GetMapDataAsync(MapType.Active, app.NodeValue);
 		}
 
 	}

@@ -283,6 +283,7 @@ namespace openPDCManager.Silverlight
 			if (App.Current.IsRunningOutOfBrowser)
 			{
 				TextBlockExecutionMode.Text = "Out of Browser";
+				//Application.Current.Resources["BaseServiceUrl"] = "http://localhost:1068/";
 			}
 			else
 			{
@@ -300,7 +301,8 @@ namespace openPDCManager.Silverlight
 			}			
 		}
 		void Content_Resized(object sender, EventArgs e)
-		{			
+		{		
+			
 			ScaleContent(Application.Current.Host.Content.ActualHeight, Application.Current.Host.Content.ActualWidth);
 		}
 		void ScaleContent(double height, double width)

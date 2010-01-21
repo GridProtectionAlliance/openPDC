@@ -245,14 +245,14 @@ namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class OtherDevices : Page
 	{
-		PhasorDataServiceClient client;
-		ObservableCollection<OtherDevice> otherDeviceList = new ObservableCollection<OtherDevice>();
+		PhasorDataServiceClient m_client;
+		ObservableCollection<OtherDevice> m_otherDeviceList = new ObservableCollection<OtherDevice>();
 		
 		public OtherDevices()
 		{
 			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetOtherDeviceListCompleted += new EventHandler<GetOtherDeviceListCompletedEventArgs>(client_GetOtherDeviceListCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetOtherDeviceListCompleted += new EventHandler<GetOtherDeviceListCompletedEventArgs>(client_GetOtherDeviceListCompleted);
 			Loaded += new RoutedEventHandler(OtherDevices_Loaded);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
 			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
@@ -265,7 +265,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			Storyboard.SetTarget(sb, ButtonShowAllTransform);
 			sb.Begin();
 
-			ListBoxOtherDeviceList.ItemsSource = otherDeviceList;
+			ListBoxOtherDeviceList.ItemsSource = m_otherDeviceList;
 		}
 		void ButtonSearch_Click(object sender, RoutedEventArgs e)
 		{
@@ -276,7 +276,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			sb.Begin();
 
 			string searchText = TextBoxSearch.Text.ToUpper();
-			ListBoxOtherDeviceList.ItemsSource = (from item in otherDeviceList
+			ListBoxOtherDeviceList.ItemsSource = (from item in m_otherDeviceList
 											 where item.Acronym.ToUpper().Contains(searchText) || item.Name.ToUpper().Contains(searchText) || item.InterconnectionName.ToUpper().Contains(searchText) 
 													|| item.CompanyName.ToUpper().Contains(searchText) || item.VendorDeviceName.ToUpper().Contains(searchText)
 											 select item).ToList();
@@ -289,8 +289,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			if (e.Error == null)
 			{
-				otherDeviceList = e.Result;
-				ListBoxOtherDeviceList.ItemsSource = otherDeviceList;
+				m_otherDeviceList = e.Result;
+				ListBoxOtherDeviceList.ItemsSource = m_otherDeviceList;
 			}
 			else
 			{
@@ -312,7 +312,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			client.GetOtherDeviceListAsync();	
+			m_client.GetOtherDeviceListAsync();	
 		}
 
 		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)

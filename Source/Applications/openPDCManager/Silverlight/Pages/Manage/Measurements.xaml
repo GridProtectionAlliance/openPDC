@@ -92,7 +92,7 @@
                             <ListBox x:Name="ListBoxMeasurementList" Margin="0" Padding="0">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal" ToolTipService.ToolTip="{Binding Path=Description}">
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <TextBlock Text="{Binding Path=PointID}" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" Padding="1"/>
                                             </Border>

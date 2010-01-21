@@ -245,15 +245,15 @@ namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class Browse : Page
 	{		
-		PhasorDataServiceClient client;
-		ObservableCollection<Device> deviceList = new ObservableCollection<Device>();
-		ActivityWindow activityWindow;
+		PhasorDataServiceClient m_client;
+		ObservableCollection<Device> m_deviceList = new ObservableCollection<Device>();
+		ActivityWindow m_activityWindow;
 		
 		public Browse()
 		{
 			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetDeviceListCompleted += new EventHandler<GetDeviceListCompletedEventArgs>(client_GetDeviceListCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetDeviceListCompleted += new EventHandler<GetDeviceListCompletedEventArgs>(client_GetDeviceListCompleted);
 			Loaded += new RoutedEventHandler(Browse_Loaded);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
 			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);	
@@ -266,7 +266,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			Storyboard.SetTarget(sb, ButtonShowAllTransform);
 			sb.Begin();
 
-			ListBoxDeviceList.ItemsSource = deviceList;			
+			ListBoxDeviceList.ItemsSource = m_deviceList;			
 		}
 		void ButtonSearch_Click(object sender, RoutedEventArgs e)
 		{
@@ -277,22 +277,22 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			sb.Begin();
 
 			string searchText = TextBoxSearch.Text.ToUpper();			
-			ListBoxDeviceList.ItemsSource = (from item in deviceList
+			ListBoxDeviceList.ItemsSource = (from item in m_deviceList
 											 where item.Acronym.ToUpper().Contains(searchText) || item.Name.ToUpper().Contains(searchText) || item.ProtocolName.ToUpper().Contains(searchText)
 												|| item.InterconnectionName.ToUpper().Contains(searchText) || item.CompanyName.ToUpper().Contains(searchText) || item.VendorDeviceName.ToUpper().Contains(searchText)
 											 select item).ToList();
 		}
 		void Browse_Loaded(object sender, RoutedEventArgs e)
 		{
-			activityWindow = new ActivityWindow("Loading Data... Please Wait...");
-			activityWindow.Show();			
+			m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+			m_activityWindow.Show();			
 		}
 		void client_GetDeviceListCompleted(object sender, GetDeviceListCompletedEventArgs e)
 		{
 			if (e.Error == null)
 			{
-				deviceList = e.Result;
-				ListBoxDeviceList.ItemsSource = deviceList;
+				m_deviceList = e.Result;
+				ListBoxDeviceList.ItemsSource = m_deviceList;
 			}
 			else
 			{
@@ -309,8 +309,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 				sm.Show();
 			}
-			if (activityWindow != null)
-				activityWindow.Close();
+			if (m_activityWindow != null)
+				m_activityWindow.Close();
 		}
 
 		// Executes when the user navigates to this page.
@@ -318,7 +318,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			App app = (App)Application.Current;
 			string nodeID = app.NodeValue;
-			client.GetDeviceListAsync(nodeID);	
+			m_client.GetDeviceListAsync(nodeID);	
 		}
 
 		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)

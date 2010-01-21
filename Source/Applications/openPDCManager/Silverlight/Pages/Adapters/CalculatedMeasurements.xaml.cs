@@ -234,28 +234,28 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
+using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
-using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Adapters
 {
 	public partial class CalculatedMeasurements : Page
 	{
-		PhasorDataServiceClient client;
-		bool inEditMode = false;
-		int calculatedMeasurementID = 0;
-		string nodeID;
+		PhasorDataServiceClient m_client;
+		bool m_inEditMode = false;
+		int m_calculatedMeasurementID = 0;
+		string m_nodeID;
 
 		public CalculatedMeasurements()
 		{
 			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetCalculatedMeasurementListCompleted += new EventHandler<GetCalculatedMeasurementListCompletedEventArgs>(client_GetCalculatedMeasurementListCompleted);
-			client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
-			client.SaveCalculatedMeasurementCompleted += new EventHandler<SaveCalculatedMeasurementCompletedEventArgs>(client_SaveCalculatedMeasurementCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetCalculatedMeasurementListCompleted += new EventHandler<GetCalculatedMeasurementListCompletedEventArgs>(client_GetCalculatedMeasurementListCompleted);
+			m_client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
+			m_client.SaveCalculatedMeasurementCompleted += new EventHandler<SaveCalculatedMeasurementCompletedEventArgs>(client_SaveCalculatedMeasurementCompleted);
 			Loaded += new RoutedEventHandler(CalculatedMeasurements_Loaded);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
@@ -283,7 +283,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			client.GetCalculatedMeasurementListAsync(nodeID);
+			m_client.GetCalculatedMeasurementListAsync(m_nodeID);
 		}
 		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
 		{
@@ -314,8 +314,8 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 				CalculatedMeasurement selectedCalculatedMeasurement = ListBoxCalculatedMeasurementList.SelectedItem as CalculatedMeasurement;
 				GridCalculatedMeasurementDetail.DataContext = selectedCalculatedMeasurement;
 				ComboBoxNode.SelectedItem = new KeyValuePair<string, string>(selectedCalculatedMeasurement.NodeId, selectedCalculatedMeasurement.NodeName);
-				calculatedMeasurementID = selectedCalculatedMeasurement.ID;
-				inEditMode = true;
+				m_calculatedMeasurementID = selectedCalculatedMeasurement.ID;
+				m_inEditMode = true;
 			}
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
@@ -355,13 +355,13 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			calculatedMeasurement.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
 			calculatedMeasurement.Enabled = (bool)CheckBoxEnabled.IsChecked;
 
-			if (inEditMode == true && calculatedMeasurementID > 0)
+			if (m_inEditMode == true && m_calculatedMeasurementID > 0)
 			{
-				calculatedMeasurement.ID = calculatedMeasurementID;
-				client.SaveCalculatedMeasurementAsync(calculatedMeasurement, false);
+				calculatedMeasurement.ID = m_calculatedMeasurementID;
+				m_client.SaveCalculatedMeasurementAsync(calculatedMeasurement, false);
 			}
 			else
-				client.SaveCalculatedMeasurementAsync(calculatedMeasurement, true);
+				m_client.SaveCalculatedMeasurementAsync(calculatedMeasurement, true);
 		}
 		void CalculatedMeasurements_Loaded(object sender, RoutedEventArgs e)
 		{			
@@ -391,8 +391,8 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			GridCalculatedMeasurementDetail.DataContext = new CalculatedMeasurement();
 			if (ComboBoxNode.Items.Count > 0)
 				ComboBoxNode.SelectedIndex = 0;
-			inEditMode = false;
-			calculatedMeasurementID = 0;
+			m_inEditMode = false;
+			m_calculatedMeasurementID = 0;
 			ListBoxCalculatedMeasurementList.SelectedIndex = -1;
 		}
 
@@ -400,9 +400,9 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
 			App app = (App)Application.Current;
-			nodeID = app.NodeValue;
-			client.GetCalculatedMeasurementListAsync(nodeID);
-			client.GetNodesAsync(true, false);
+			m_nodeID = app.NodeValue;
+			m_client.GetCalculatedMeasurementListAsync(m_nodeID);
+			m_client.GetNodesAsync(true, false);
 		}
 
 	}

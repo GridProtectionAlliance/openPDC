@@ -245,18 +245,18 @@ namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class PlanningMap : Page
 	{		
-		PhasorDataServiceClient client;
-		Button pushPinButton;
-		ObservableCollection<OtherDevice> deviceList;
-		ObservableCollection<MapData> mapDataList;
-		ToolTip toolTip;
+		PhasorDataServiceClient m_client;
+		Button m_pushPinButton;
+		ObservableCollection<OtherDevice> m_deviceList;
+		ObservableCollection<MapData> m_mapDataList;
+		ToolTip m_toolTip;
 
 		public PlanningMap()
 		{
 			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetOtherDeviceListCompleted += new System.EventHandler<GetOtherDeviceListCompletedEventArgs>(client_GetOtherDeviceListCompleted);
-			client.GetMapDataCompleted += new EventHandler<GetMapDataCompletedEventArgs>(client_GetMapDataCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetOtherDeviceListCompleted += new System.EventHandler<GetOtherDeviceListCompletedEventArgs>(client_GetOtherDeviceListCompleted);
+			m_client.GetMapDataCompleted += new EventHandler<GetMapDataCompletedEventArgs>(client_GetMapDataCompleted);
 			VirtualEarthPlanningMap.CredentialsProvider = (Application.Current as App).Credentials;
 			Loaded += new RoutedEventHandler(PlanningMap_Loaded);
 		}
@@ -265,28 +265,28 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			if (e.Error == null)
 			{
-				mapDataList = new ObservableCollection<MapData>();
-				mapDataList = e.Result;
-				double avgLongitude = Convert.ToDouble(mapDataList.Average(m => m.Longitude));
-				double avgLatitude = Convert.ToDouble(mapDataList.Average(m => m.Latitude));
+				m_mapDataList = new ObservableCollection<MapData>();
+				m_mapDataList = e.Result;
+				double avgLongitude = Convert.ToDouble(m_mapDataList.Average(m => m.Longitude));
+				double avgLatitude = Convert.ToDouble(m_mapDataList.Average(m => m.Latitude));
 
-				foreach (MapData mapData in mapDataList)
+				foreach (MapData mapData in m_mapDataList)
 				{
-					pushPinButton = new Button();
-					toolTip = new ToolTip();
-					toolTip.DataContext = mapData;
-					toolTip.Template = Application.Current.Resources["MapToolTipTemplate"] as ControlTemplate;
-					ToolTipService.SetToolTip(pushPinButton, toolTip);
-					pushPinButton.Content = mapData.CompanyMapAcronym;
+					m_pushPinButton = new Button();
+					m_toolTip = new ToolTip();
+					m_toolTip.DataContext = mapData;
+					m_toolTip.Template = Application.Current.Resources["MapToolTipTemplate"] as ControlTemplate;
+					ToolTipService.SetToolTip(m_pushPinButton, m_toolTip);
+					m_pushPinButton.Content = mapData.CompanyMapAcronym;
 					if (mapData.DeviceType == "Device")
-						pushPinButton.Template = Application.Current.Resources["BluePushPinButtonTemplate"] as ControlTemplate;
+						m_pushPinButton.Template = Application.Current.Resources["BluePushPinButtonTemplate"] as ControlTemplate;
 					else if (mapData.Desired == true)
-						pushPinButton.Template = Application.Current.Resources["YellowPushPinButtonTemplate"] as ControlTemplate;
+						m_pushPinButton.Template = Application.Current.Resources["YellowPushPinButtonTemplate"] as ControlTemplate;
 					else
-						pushPinButton.Template = Application.Current.Resources["WhitePushPinButtonTemplate"] as ControlTemplate;
+						m_pushPinButton.Template = Application.Current.Resources["WhitePushPinButtonTemplate"] as ControlTemplate;
 					//pushPinButton.SetValue(MapLayer.MapPositionProperty, new Location(Convert.ToDouble(mapData.Latitude), Convert.ToDouble(mapData.Longitude)));
 					//pushPinButton.SetValue(MapLayer.MapPositionMethodProperty, PositionMethod.Center);
-					(VirtualEarthPlanningMap.FindName("PushpinLayer") as MapLayer).AddChild(pushPinButton, new Location(Convert.ToDouble(mapData.Latitude), Convert.ToDouble(mapData.Longitude)));
+					(VirtualEarthPlanningMap.FindName("PushpinLayer") as MapLayer).AddChild(m_pushPinButton, new Location(Convert.ToDouble(mapData.Latitude), Convert.ToDouble(mapData.Longitude)));
 				}
 				VirtualEarthPlanningMap.Center = new Location(avgLatitude, avgLongitude);
 			}
@@ -310,24 +310,24 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			if (e.Error == null)
 		    {
-				deviceList = new ObservableCollection<OtherDevice>();
-				deviceList = e.Result;
-				double avgLongitude = Convert.ToDouble(deviceList.Average(d => d.Longitude));
-				double avgLatitude = Convert.ToDouble(deviceList.Average(d => d.Latitude));
+				m_deviceList = new ObservableCollection<OtherDevice>();
+				m_deviceList = e.Result;
+				double avgLongitude = Convert.ToDouble(m_deviceList.Average(d => d.Longitude));
+				double avgLatitude = Convert.ToDouble(m_deviceList.Average(d => d.Latitude));
 
-				foreach (OtherDevice device in deviceList)
+				foreach (OtherDevice device in m_deviceList)
 				{
-					pushPinButton = new Button();
-					toolTip = new ToolTip();
-					toolTip.DataContext = device;
-					toolTip.Template = Application.Current.Resources["MapToolTipTemplate"] as ControlTemplate;
-					ToolTipService.SetToolTip(pushPinButton, toolTip);
-					pushPinButton.Content = device.Acronym;
+					m_pushPinButton = new Button();
+					m_toolTip = new ToolTip();
+					m_toolTip.DataContext = device;
+					m_toolTip.Template = Application.Current.Resources["MapToolTipTemplate"] as ControlTemplate;
+					ToolTipService.SetToolTip(m_pushPinButton, m_toolTip);
+					m_pushPinButton.Content = device.Acronym;
 					
-					pushPinButton.Template = Application.Current.Resources["BluePushPinButtonTemplate"] as ControlTemplate;
+					m_pushPinButton.Template = Application.Current.Resources["BluePushPinButtonTemplate"] as ControlTemplate;
 					//pushPinButton.SetValue(MapLayer.MapPositionProperty, new Location(Convert.ToDouble(device.Latitude), Convert.ToDouble(device.Longitude)));
 					//pushPinButton.SetValue(MapLayer.MapPositionMethodProperty, PositionMethod.Center);
-					(VirtualEarthPlanningMap.FindName("PushpinLayer") as MapLayer).AddChild(pushPinButton, new Location(Convert.ToDouble(device.Latitude), Convert.ToDouble(device.Longitude)));
+					(VirtualEarthPlanningMap.FindName("PushpinLayer") as MapLayer).AddChild(m_pushPinButton, new Location(Convert.ToDouble(device.Latitude), Convert.ToDouble(device.Longitude)));
 				}
 				VirtualEarthPlanningMap.Center = new Location(avgLatitude, avgLongitude);	
 				
@@ -361,7 +361,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			client.GetMapDataAsync(MapType.Planning);
+			App app = (App)Application.Current;
+			m_client.GetMapDataAsync(MapType.Planning, app.NodeValue);
 		}
 
 	}

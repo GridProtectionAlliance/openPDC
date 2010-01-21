@@ -242,27 +242,27 @@ namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class OutputStreamMeasurements : ChildWindow
 	{
-		int sourceOutputStreamID;
-		string sourceOutputStreamAcronym;		
-		bool inEditMode = false;
-		int outputStreamMeasurementID = 0;
-		PhasorDataServiceClient client;
+		int m_sourceOutputStreamID;
+		string m_sourceOutputStreamAcronym;		
+		bool m_inEditMode = false;
+		int m_outputStreamMeasurementID = 0;
+		PhasorDataServiceClient m_client;
 
 		public OutputStreamMeasurements(int outputStreamID, string outputStreamAcronym)
 		{
 			InitializeComponent();
-			sourceOutputStreamID = outputStreamID;
-			sourceOutputStreamAcronym = outputStreamAcronym;
-			this.Title = "Manage Measurements For Output Stream: " + sourceOutputStreamAcronym;
+			m_sourceOutputStreamID = outputStreamID;
+			m_sourceOutputStreamAcronym = outputStreamAcronym;
+			this.Title = "Manage Measurements For Output Stream: " + m_sourceOutputStreamAcronym;
 			Loaded += new RoutedEventHandler(OutputStreamMeasurements_Loaded);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSourceMeasurement.Click += new RoutedEventHandler(ButtonSourceMeasurement_Click);
 			ListBoxOutputStreamMeasurementList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamMeasurementList_SelectionChanged);
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetOutputStreamMeasurementListCompleted += new EventHandler<GetOutputStreamMeasurementListCompletedEventArgs>(client_GetOutputStreamMeasurementListCompleted);
-			client.SaveOutputStreamMeasurementCompleted += new EventHandler<SaveOutputStreamMeasurementCompletedEventArgs>(client_SaveOutputStreamMeasurementCompleted);
-			client.DeleteOutputStreamMeasurementCompleted += new EventHandler<DeleteOutputStreamMeasurementCompletedEventArgs>(client_DeleteOutputStreamMeasurementCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetOutputStreamMeasurementListCompleted += new EventHandler<GetOutputStreamMeasurementListCompletedEventArgs>(client_GetOutputStreamMeasurementListCompleted);
+			m_client.SaveOutputStreamMeasurementCompleted += new EventHandler<SaveOutputStreamMeasurementCompletedEventArgs>(client_SaveOutputStreamMeasurementCompleted);
+			m_client.DeleteOutputStreamMeasurementCompleted += new EventHandler<DeleteOutputStreamMeasurementCompletedEventArgs>(client_DeleteOutputStreamMeasurementCompleted);
 		}
 
 		void client_DeleteOutputStreamMeasurementCompleted(object sender, DeleteOutputStreamMeasurementCompletedEventArgs e)
@@ -287,18 +287,18 @@ namespace openPDCManager.Silverlight.ModalDialogs
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			client.GetOutputStreamMeasurementListAsync(sourceOutputStreamID);
+			m_client.GetOutputStreamMeasurementListAsync(m_sourceOutputStreamID);
 		}
 				
 		void ButtonSourceMeasurement_Click(object sender, RoutedEventArgs e)
 		{
-			SelectMeasurement selectMeasurement = new SelectMeasurement(sourceOutputStreamID, sourceOutputStreamAcronym);
+			SelectMeasurement selectMeasurement = new SelectMeasurement(m_sourceOutputStreamID, m_sourceOutputStreamAcronym);
 			selectMeasurement.Closed += new EventHandler(selectMeasurement_Closed);
 			selectMeasurement.Show();
 		}
 		void selectMeasurement_Closed(object sender, EventArgs e)
 		{
-			client.GetOutputStreamMeasurementListAsync(sourceOutputStreamID);
+			m_client.GetOutputStreamMeasurementListAsync(m_sourceOutputStreamID);
 		}		
 		void client_SaveOutputStreamMeasurementCompleted(object sender, SaveOutputStreamMeasurementCompletedEventArgs e)
 		{
@@ -322,7 +322,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			client.GetOutputStreamMeasurementListAsync(sourceOutputStreamID);
+			m_client.GetOutputStreamMeasurementListAsync(m_sourceOutputStreamID);
 		}
 		void client_GetOutputStreamMeasurementListCompleted(object sender, GetOutputStreamMeasurementListCompletedEventArgs e)
 		{
@@ -350,8 +350,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			{
 				OutputStreamMeasurement selectedOutputStreamMeasurement = ListBoxOutputStreamMeasurementList.SelectedItem as OutputStreamMeasurement;
 				GridOutputStreamMeasurementDetail.DataContext = selectedOutputStreamMeasurement;
-				inEditMode = true;
-				outputStreamMeasurementID = selectedOutputStreamMeasurement.ID;
+				m_inEditMode = true;
+				m_outputStreamMeasurementID = selectedOutputStreamMeasurement.ID;
 			}
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
@@ -376,35 +376,35 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			App app = (App)Application.Current;
 
 			outputStreamMeasurement.NodeID = app.NodeValue;
-			outputStreamMeasurement.AdapterID = sourceOutputStreamID;
+			outputStreamMeasurement.AdapterID = m_sourceOutputStreamID;
 			outputStreamMeasurement.HistorianID = string.IsNullOrEmpty(TextBlockHistorian.Text) ? (int?)null : Convert.ToInt32(TextBlockHistorian.Text);
 			outputStreamMeasurement.PointID = Convert.ToInt32(TextBlockPointID.Text);
 			outputStreamMeasurement.SignalReference = TextBoxSignalReference.Text;
 
-			if (inEditMode == true && outputStreamMeasurementID > 0)
+			if (m_inEditMode == true && m_outputStreamMeasurementID > 0)
 			{
-				outputStreamMeasurement.ID = outputStreamMeasurementID;
-				client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, false);
+				outputStreamMeasurement.ID = m_outputStreamMeasurementID;
+				m_client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, false);
 			}
 			else
-				client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, true);
+				m_client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, true);
 		}
 		void OutputStreamMeasurements_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetOutputStreamMeasurementListAsync(sourceOutputStreamID);			
+			m_client.GetOutputStreamMeasurementListAsync(m_sourceOutputStreamID);			
 		}
 		void ClearForm()
 		{
 			GridOutputStreamMeasurementDetail.DataContext = new OutputStreamMeasurement();
-			inEditMode = false;
-			outputStreamMeasurementID = 0;
+			m_inEditMode = false;
+			m_outputStreamMeasurementID = 0;
 			ListBoxOutputStreamMeasurementList.SelectedIndex = -1;
 		}
 
 		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
 		{
 			int outputStreamMeasurementId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
-			client.DeleteOutputStreamMeasurementAsync(outputStreamMeasurementId);
+			m_client.DeleteOutputStreamMeasurementAsync(outputStreamMeasurementId);
 		}
 		
 	}

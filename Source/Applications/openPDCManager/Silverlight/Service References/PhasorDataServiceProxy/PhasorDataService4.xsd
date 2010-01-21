@@ -136,7 +136,9 @@
   </xs:element>
   <xs:element name="GetIaonTreeData">
     <xs:complexType>
-      <xs:sequence />
+      <xs:sequence>
+        <xs:element minOccurs="0" name="nodeID" nillable="true" type="xs:string" />
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetIaonTreeDataResponse">
@@ -150,6 +152,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="enabledOnly" type="xs:boolean" />
+        <xs:element minOccurs="0" name="nodeID" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -378,7 +381,7 @@
   <xs:element name="GetTimeZonesResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q25="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetTimeZonesResult" nillable="true" type="q25:ArrayOfstring" />
+        <xs:element xmlns:q25="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetTimeZonesResult" nillable="true" type="q25:ArrayOfKeyValueOfstringstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -386,6 +389,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" minOccurs="0" name="mapType" type="q26:MapType" />
+        <xs:element minOccurs="0" name="nodeID" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -770,6 +774,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="outputStreamID" type="xs:int" />
+        <xs:element minOccurs="0" name="nodeID" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

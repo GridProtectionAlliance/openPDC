@@ -243,16 +243,16 @@ namespace openPDCManager.Silverlight.Pages.Manage
 {
 	public partial class Vendors : Page
 	{
-		PhasorDataServiceClient client;
-		bool inEditMode = false;
-		int vendorID = 0;
+		PhasorDataServiceClient m_client;
+		bool m_inEditMode = false;
+		int m_vendorID = 0;
 
 		public Vendors()
 		{
 			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetVendorListCompleted += new EventHandler<GetVendorListCompletedEventArgs>(client_GetVendorListCompleted);
-			client.SaveVendorCompleted += new EventHandler<SaveVendorCompletedEventArgs>(client_SaveVendorCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetVendorListCompleted += new EventHandler<GetVendorListCompletedEventArgs>(client_GetVendorListCompleted);
+			m_client.SaveVendorCompleted += new EventHandler<SaveVendorCompletedEventArgs>(client_SaveVendorCompleted);
 			Loaded += new RoutedEventHandler(Vendors_Loaded);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
@@ -281,7 +281,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			}
 			sm.Show();
 						
-			client.GetVendorListAsync();	//Refresh data to reflect changes on the current screen.
+			m_client.GetVendorListAsync();	//Refresh data to reflect changes on the current screen.
 		}
 		void ListBoxVendorList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -289,8 +289,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			{
 				Vendor selectedVendor = ListBoxVendorList.SelectedItem as Vendor;
 				GridVendorDetail.DataContext = selectedVendor;
-				inEditMode = true;
-				vendorID = selectedVendor.ID;
+				m_inEditMode = true;
+				m_vendorID = selectedVendor.ID;
 			}
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -308,13 +308,13 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			vendor.ContactEmail = TextBoxContactEmail.Text;
 			vendor.URL = TextBoxUrl.Text;
 
-			if (vendorID != 0 && inEditMode == true)		//i.e. It is an update to existing item.
+			if (m_vendorID != 0 && m_inEditMode == true)		//i.e. It is an update to existing item.
 			{
-				vendor.ID = vendorID;
-				client.SaveVendorAsync(vendor, false);
+				vendor.ID = m_vendorID;
+				m_client.SaveVendorAsync(vendor, false);
 			}
 			else	//i.e. It is a new item			
-				client.SaveVendorAsync(vendor, true);			
+				m_client.SaveVendorAsync(vendor, true);			
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -352,15 +352,15 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		void ClearForm()
 		{
 			GridVendorDetail.DataContext = new Vendor();		//this is done to clear all the textboxes and to retain binding information. Please do not set empty strings as textboxes' vaues.
-			inEditMode = false;
-			vendorID = 0;
+			m_inEditMode = false;
+			m_vendorID = 0;
 			ListBoxVendorList.SelectedIndex = -1;
 		}
 
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			client.GetVendorListAsync();
+			m_client.GetVendorListAsync();
 		}
 
 	}

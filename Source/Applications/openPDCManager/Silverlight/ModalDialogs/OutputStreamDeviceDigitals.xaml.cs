@@ -241,24 +241,24 @@ namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class OutputStreamDeviceDigitals : ChildWindow
 	{
-		int sourceOutputStreamDeviceID;
-		string sourceOutputStreamDeviceAcronym;				
-		bool inEditMode = false;
-		int outputStreamDeviceDigitalID = 0;
-		PhasorDataServiceClient client;
+		int m_sourceOutputStreamDeviceID;
+		string m_sourceOutputStreamDeviceAcronym;				
+		bool m_inEditMode = false;
+		int m_outputStreamDeviceDigitalID = 0;
+		PhasorDataServiceClient m_client;
 
 		public OutputStreamDeviceDigitals(int outputStreamDeviceID, string outputStreamDeviceAcronym)
 		{
 			InitializeComponent();
-			sourceOutputStreamDeviceID = outputStreamDeviceID;
-			sourceOutputStreamDeviceAcronym = outputStreamDeviceAcronym;
-			this.Title = "Manage Digitals For Output Stream Device: " + sourceOutputStreamDeviceAcronym;
+			m_sourceOutputStreamDeviceID = outputStreamDeviceID;
+			m_sourceOutputStreamDeviceAcronym = outputStreamDeviceAcronym;
+			this.Title = "Manage Digitals For Output Stream Device: " + m_sourceOutputStreamDeviceAcronym;
 			Loaded += new RoutedEventHandler(OutputStreamDeviceDigitals_Loaded);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetOutputStreamDeviceDigitalListCompleted += new EventHandler<GetOutputStreamDeviceDigitalListCompletedEventArgs>(client_GetOutputStreamDeviceDigitalListCompleted);
-			client.SaveOutputStreamDeviceDigitalCompleted += new EventHandler<SaveOutputStreamDeviceDigitalCompletedEventArgs>(client_SaveOutputStreamDeviceDigitalCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetOutputStreamDeviceDigitalListCompleted += new EventHandler<GetOutputStreamDeviceDigitalListCompletedEventArgs>(client_GetOutputStreamDeviceDigitalListCompleted);
+			m_client.SaveOutputStreamDeviceDigitalCompleted += new EventHandler<SaveOutputStreamDeviceDigitalCompletedEventArgs>(client_SaveOutputStreamDeviceDigitalCompleted);
 			ListBoxOutputStreamDeviceDigitalList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDeviceDigitalList_SelectionChanged);
 		}
 		void ListBoxOutputStreamDeviceDigitalList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -267,8 +267,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			{
 				OutputStreamDeviceDigital selectedOutputStreamDeviceDigital = ListBoxOutputStreamDeviceDigitalList.SelectedItem as OutputStreamDeviceDigital;
 				GridOutputStreamDeviceDigitalDetail.DataContext = selectedOutputStreamDeviceDigital;
-				inEditMode = true;
-				outputStreamDeviceDigitalID = selectedOutputStreamDeviceDigital.ID;
+				m_inEditMode = true;
+				m_outputStreamDeviceDigitalID = selectedOutputStreamDeviceDigital.ID;
 			}
 		}
 		void client_SaveOutputStreamDeviceDigitalCompleted(object sender, SaveOutputStreamDeviceDigitalCompletedEventArgs e)
@@ -293,7 +293,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			client.GetOutputStreamDeviceDigitalListAsync(sourceOutputStreamDeviceID);	
+			m_client.GetOutputStreamDeviceDigitalListAsync(m_sourceOutputStreamDeviceID);	
 		}
 		void client_GetOutputStreamDeviceDigitalListCompleted(object sender, GetOutputStreamDeviceDigitalListCompletedEventArgs e)
 		{
@@ -327,16 +327,16 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			App app = (App)Application.Current;
 
 			outputStreamDeviceDigital.NodeID = app.NodeValue;
-			outputStreamDeviceDigital.OutputStreamDeviceID = sourceOutputStreamDeviceID;
+			outputStreamDeviceDigital.OutputStreamDeviceID = m_sourceOutputStreamDeviceID;
 			outputStreamDeviceDigital.Label = TextBoxLabel.Text;
 			outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
-			if (inEditMode == true && outputStreamDeviceDigitalID > 0)
+			if (m_inEditMode == true && m_outputStreamDeviceDigitalID > 0)
 			{
-				outputStreamDeviceDigital.ID = outputStreamDeviceDigitalID;
-				client.SaveOutputStreamDeviceDigitalAsync(outputStreamDeviceDigital, false);
+				outputStreamDeviceDigital.ID = m_outputStreamDeviceDigitalID;
+				m_client.SaveOutputStreamDeviceDigitalAsync(outputStreamDeviceDigital, false);
 			}
 			else
-				client.SaveOutputStreamDeviceDigitalAsync(outputStreamDeviceDigital, true);
+				m_client.SaveOutputStreamDeviceDigitalAsync(outputStreamDeviceDigital, true);
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -350,13 +350,13 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		}
 		void OutputStreamDeviceDigitals_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetOutputStreamDeviceDigitalListAsync(sourceOutputStreamDeviceID);	
+			m_client.GetOutputStreamDeviceDigitalListAsync(m_sourceOutputStreamDeviceID);	
 		}
 		void ClearForm()
 		{
 			GridOutputStreamDeviceDigitalDetail.DataContext = new OutputStreamDeviceDigital();
-			inEditMode = false;
-			outputStreamDeviceDigitalID = 0;
+			m_inEditMode = false;
+			m_outputStreamDeviceDigitalID = 0;
 			ListBoxOutputStreamDeviceDigitalList.SelectedIndex = -1;
 		}
 	}

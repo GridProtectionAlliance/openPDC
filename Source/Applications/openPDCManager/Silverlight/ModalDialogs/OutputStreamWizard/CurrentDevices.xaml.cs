@@ -242,21 +242,21 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 {
 	public partial class CurrentDevices : ChildWindow
 	{
-		int sourceOutputStreamID;
-		string sourceOutputStreamAcronym;		
-		ObservableCollection<string> devicesToBeDeleted;		
-		PhasorDataServiceClient client;
+		int m_sourceOutputStreamID;
+		string m_sourceOutputStreamAcronym;		
+		ObservableCollection<string> m_devicesToBeDeleted;		
+		PhasorDataServiceClient m_client;
 
 		public CurrentDevices(int outputStreamID, string outputStreamAcronym)
 		{
 			InitializeComponent();
-			sourceOutputStreamAcronym = outputStreamAcronym;
-			sourceOutputStreamID = outputStreamID;
-			this.Title = "Current Devices For Output Stream: " + sourceOutputStreamAcronym;
+			m_sourceOutputStreamAcronym = outputStreamAcronym;
+			m_sourceOutputStreamID = outputStreamID;
+			this.Title = "Current Devices For Output Stream: " + m_sourceOutputStreamAcronym;
 			Loaded += new RoutedEventHandler(CurrentDevices_Loaded);
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetOutputStreamDeviceListCompleted += new EventHandler<GetOutputStreamDeviceListCompletedEventArgs>(client_GetOutputStreamDeviceListCompleted);
-			client.DeleteOutputStreamDeviceCompleted += new EventHandler<DeleteOutputStreamDeviceCompletedEventArgs>(client_DeleteOutputStreamDeviceCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetOutputStreamDeviceListCompleted += new EventHandler<GetOutputStreamDeviceListCompletedEventArgs>(client_GetOutputStreamDeviceListCompleted);
+			m_client.DeleteOutputStreamDeviceCompleted += new EventHandler<DeleteOutputStreamDeviceCompletedEventArgs>(client_DeleteOutputStreamDeviceCompleted);
 			ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);
 			ButtonDelete.Click += new RoutedEventHandler(ButtonDelete_Click);
 		}
@@ -282,7 +282,7 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			client.GetOutputStreamDeviceListAsync(sourceOutputStreamID, true);
+			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, true);
 		}
 		void ButtonDelete_Click(object sender, RoutedEventArgs e)
 		{
@@ -292,8 +292,8 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			Storyboard.SetTarget(sb, ButtonDeleteTransform);
 			sb.Begin();
 
-			if (devicesToBeDeleted.Count > 0)
-				client.DeleteOutputStreamDeviceAsync(sourceOutputStreamID, devicesToBeDeleted);
+			if (m_devicesToBeDeleted.Count > 0)
+				m_client.DeleteOutputStreamDeviceAsync(m_sourceOutputStreamID, m_devicesToBeDeleted);
 			else
 			{
 				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please select device(s) to delete", SystemMessage = string.Empty, UserMessageType = MessageType.Information }, ButtonType.OkOnly);
@@ -308,13 +308,13 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			Storyboard.SetTarget(sb, ButtonAddTransform);
 			sb.Begin();
 
-			AddDevices addDevices = new AddDevices(sourceOutputStreamID, sourceOutputStreamAcronym);
+			AddDevices addDevices = new AddDevices(m_sourceOutputStreamID, m_sourceOutputStreamAcronym);
 			addDevices.Closed += new EventHandler(addDevices_Closed);
 			addDevices.Show();
 		}
 		void addDevices_Closed(object sender, EventArgs e)
 		{
-			client.GetOutputStreamDeviceListAsync(sourceOutputStreamID, true);
+			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, true);
 		}
 		void client_GetOutputStreamDeviceListCompleted(object sender, GetOutputStreamDeviceListCompletedEventArgs e)
 		{
@@ -338,20 +338,20 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 		}
 		void CurrentDevices_Loaded(object sender, RoutedEventArgs e)
 		{
-			devicesToBeDeleted = new ObservableCollection<string>();
-			client.GetOutputStreamDeviceListAsync(sourceOutputStreamID, true);
+			m_devicesToBeDeleted = new ObservableCollection<string>();
+			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, true);
 		}
 		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
 		{
 			string deviceAcronym = ((CheckBox)sender).Content.ToString();
-			if (devicesToBeDeleted.Contains(deviceAcronym))
-				devicesToBeDeleted.Remove(deviceAcronym);
+			if (m_devicesToBeDeleted.Contains(deviceAcronym))
+				m_devicesToBeDeleted.Remove(deviceAcronym);
 		}
 		private void CheckBox_Checked(object sender, RoutedEventArgs e)
 		{
 			string deviceAcronym = ((CheckBox)sender).Content.ToString();
-			if (!devicesToBeDeleted.Contains(deviceAcronym))
-				devicesToBeDeleted.Add(deviceAcronym);
+			if (!m_devicesToBeDeleted.Contains(deviceAcronym))
+				m_devicesToBeDeleted.Add(deviceAcronym);
 		}		
 		
 	}

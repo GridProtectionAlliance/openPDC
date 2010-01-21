@@ -244,27 +244,27 @@ namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class AddNew : Page
 	{
-		PhasorDataServiceClient client;
-		bool inEditMode = false;
-		int deviceID = 0;
+		PhasorDataServiceClient m_client;
+		bool m_inEditMode = false;
+		int m_deviceID = 0;
 
 		public AddNew()
 		{
 			InitializeComponent();
 			Loaded += new RoutedEventHandler(AddNew_Loaded);
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetDevicesCompleted += new EventHandler<GetDevicesCompletedEventArgs>(client_GetDevicesCompleted);
-			client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);
-			client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
-			client.GetHistoriansCompleted += new EventHandler<GetHistoriansCompletedEventArgs>(client_GetHistoriansCompleted);
-			client.GetInterconnectionsCompleted += new EventHandler<GetInterconnectionsCompletedEventArgs>(client_GetInterconnectionsCompleted);
-			client.GetVendorDevicesCompleted += new EventHandler<GetVendorDevicesCompletedEventArgs>(client_GetVendorDevicesCompleted);
-			client.GetProtocolsCompleted += new EventHandler<GetProtocolsCompletedEventArgs>(client_GetProtocolsCompleted);
-			client.GetTimeZonesCompleted += new EventHandler<GetTimeZonesCompletedEventArgs>(client_GetTimeZonesCompleted);
-			client.SaveDeviceCompleted += new EventHandler<SaveDeviceCompletedEventArgs>(client_SaveDeviceCompleted);
-			client.GetDeviceByDeviceIDCompleted += new EventHandler<GetDeviceByDeviceIDCompletedEventArgs>(client_GetDeviceByDeviceIDCompleted);
-			client.GetConcentratorDeviceCompleted += new EventHandler<GetConcentratorDeviceCompletedEventArgs>(client_GetConcentratorDeviceCompleted);
-			client.GetDeviceListByParentIDCompleted += new EventHandler<GetDeviceListByParentIDCompletedEventArgs>(client_GetDeviceListByParentIDCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetDevicesCompleted += new EventHandler<GetDevicesCompletedEventArgs>(client_GetDevicesCompleted);
+			m_client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);
+			m_client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
+			m_client.GetHistoriansCompleted += new EventHandler<GetHistoriansCompletedEventArgs>(client_GetHistoriansCompleted);
+			m_client.GetInterconnectionsCompleted += new EventHandler<GetInterconnectionsCompletedEventArgs>(client_GetInterconnectionsCompleted);
+			m_client.GetVendorDevicesCompleted += new EventHandler<GetVendorDevicesCompletedEventArgs>(client_GetVendorDevicesCompleted);
+			m_client.GetProtocolsCompleted += new EventHandler<GetProtocolsCompletedEventArgs>(client_GetProtocolsCompleted);
+			m_client.GetTimeZonesCompleted += new EventHandler<GetTimeZonesCompletedEventArgs>(client_GetTimeZonesCompleted);
+			m_client.SaveDeviceCompleted += new EventHandler<SaveDeviceCompletedEventArgs>(client_SaveDeviceCompleted);
+			m_client.GetDeviceByDeviceIDCompleted += new EventHandler<GetDeviceByDeviceIDCompletedEventArgs>(client_GetDeviceByDeviceIDCompleted);
+			m_client.GetConcentratorDeviceCompleted += new EventHandler<GetConcentratorDeviceCompletedEventArgs>(client_GetConcentratorDeviceCompleted);
+			m_client.GetDeviceListByParentIDCompleted += new EventHandler<GetDeviceListByParentIDCompletedEventArgs>(client_GetDeviceListByParentIDCompleted);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonView.Click += new RoutedEventHandler(ButtonView_Click);
@@ -311,7 +311,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		void ComboboxParent_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key != 0)
-				client.GetConcentratorDeviceAsync(((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key);			
+				m_client.GetConcentratorDeviceAsync(((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key);			
 		}
 		void client_GetDeviceByDeviceIDCompleted(object sender, GetDeviceByDeviceIDCompletedEventArgs e)
 		{
@@ -353,7 +353,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 				if (deviceToEdit.IsConcentrator)	//then display list of devices.
 				{
-					client.GetDeviceListByParentIDAsync(deviceToEdit.ID);
+					m_client.GetDeviceListByParentIDAsync(deviceToEdit.ID);
 					StackPanelDeviceList.Visibility = Visibility.Visible;
 					StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
 					TextBlockTitle.Text = "Devices For Concentrator: " + deviceToEdit.Acronym;
@@ -436,19 +436,19 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			device.Latitude = string.IsNullOrEmpty(TextBoxLatitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLatitude.Text);
 			device.InterconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
 			device.ConnectionString = TextBoxConnectionString.Text;
-			device.TimeZone = ComboboxTimeZone.SelectedIndex == 0 ? string.Empty : ComboboxTimeZone.SelectedItem.ToString();
+			device.TimeZone = ((KeyValuePair<string, string>)ComboboxTimeZone.SelectedItem).Key;
 			device.TimeAdjustmentTicks = Convert.ToInt64(TextBoxTimeAdjustmentTicks.Text);
 			device.DataLossInterval = Convert.ToDouble(TextBoxDataLossInterval.Text);
 			device.ContactList = TextBoxContactList.Text;
 			device.MeasuredLines = string.IsNullOrEmpty(TextBoxMeasuredLines.Text) ? (int?)null : Convert.ToInt32(TextBoxMeasuredLines.Text);
 			device.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
 			device.Enabled = (bool)CheckboxEnabled.IsChecked;
-			if (inEditMode == false && deviceID == 0)
-				client.SaveDeviceAsync(device, true);
+			if (m_inEditMode == false && m_deviceID == 0)
+				m_client.SaveDeviceAsync(device, true);
 			else
 			{
-				device.ID = deviceID;
-				client.SaveDeviceAsync(device, false);
+				device.ID = m_deviceID;
+				m_client.SaveDeviceAsync(device, false);
 			}
 		}
 		void client_GetTimeZonesCompleted(object sender, GetTimeZonesCompletedEventArgs e)
@@ -631,9 +631,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			if (this.NavigationContext.QueryString.ContainsKey("did"))
 			{
-				deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
-				inEditMode = true;				
-				client.GetDeviceByDeviceIDAsync(deviceID);
+				m_deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
+				m_inEditMode = true;				
+				m_client.GetDeviceByDeviceIDAsync(m_deviceID);
 			}
 		}
 		void ClearForm()
@@ -647,22 +647,22 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			ComboboxProtocol.SelectedIndex = 0;
 			ComboboxTimeZone.SelectedIndex = 0;
 			ComboboxVendorDevice.SelectedIndex = 0;
-			inEditMode = false;
-			deviceID = 0;
+			m_inEditMode = false;
+			m_deviceID = 0;
 		}
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
 			StackPanelDeviceList.Visibility = Visibility.Collapsed;
 			StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
-			client.GetDevicesAsync(DeviceType.Concentrator, true);
-			client.GetCompaniesAsync(true);
-			client.GetNodesAsync(true, false);
-			client.GetHistoriansAsync(true, true);
-			client.GetInterconnectionsAsync(true);
-			client.GetVendorDevicesAsync(true);
-			client.GetProtocolsAsync(true);
-			client.GetTimeZonesAsync(true);			
+			m_client.GetDevicesAsync(DeviceType.Concentrator, true);
+			m_client.GetCompaniesAsync(true);
+			m_client.GetNodesAsync(true, false);
+			m_client.GetHistoriansAsync(true, true);
+			m_client.GetInterconnectionsAsync(true);
+			m_client.GetVendorDevicesAsync(true);
+			m_client.GetProtocolsAsync(true);
+			m_client.GetTimeZonesAsync(true);			
 		}
 
 		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)

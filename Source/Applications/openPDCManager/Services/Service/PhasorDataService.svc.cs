@@ -343,9 +343,9 @@ namespace PCS.Services.Service
 		{
 			return CommonFunctions.GetDeviceByAcronym(acronym);
 		}
-		public Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID)
+		public Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID, string nodeID)
 		{
-			return CommonFunctions.GetDevicesForOutputStream(outputStreamID);
+			return CommonFunctions.GetDevicesForOutputStream(outputStreamID, nodeID);
 		}
 		public Device GetConcentratorDevice(int deviceID)
 		{
@@ -468,17 +468,17 @@ namespace PCS.Services.Service
 			return CommonFunctions.SaveAdapter(adapter, isNew);
 		}
 
-		public List<IaonTree> GetIaonTreeData()
+		public List<IaonTree> GetIaonTreeData(string nodeID)
 		{
-			return CommonFunctions.GetIaonTreeData();
+			return CommonFunctions.GetIaonTreeData(nodeID);
 		}
 		#endregion
 
 		#region "Manage Output Stream Code"
 
-		public List<OutputStream> GetOutputStreamList(bool enabledOnly)
+		public List<OutputStream> GetOutputStreamList(bool enabledOnly, string nodeID)
 		{
-			return CommonFunctions.GetOutputStreamList(enabledOnly);
+			return CommonFunctions.GetOutputStreamList(enabledOnly, nodeID);
 		}
 
 		public string SaveOutputStream(OutputStream outputStream, bool isNew)
@@ -572,14 +572,14 @@ namespace PCS.Services.Service
 
 		#endregion
 
-		public List<string> GetTimeZones(bool isOptional)
+		public Dictionary<string, string> GetTimeZones(bool isOptional)
 		{
 			return CommonFunctions.GetTimeZones(isOptional);
 		}
 
-		public List<MapData> GetMapData(MapType mapType)
+		public List<MapData> GetMapData(MapType mapType, string nodeID)
 		{
-			return CommonFunctions.GetMapData(mapType);
+			return CommonFunctions.GetMapData(mapType, nodeID);
 		}
 
 		public ConnectionSettings GetConnectionSettings(Stream inputStream)

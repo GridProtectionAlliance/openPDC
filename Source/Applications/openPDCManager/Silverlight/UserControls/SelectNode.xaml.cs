@@ -242,29 +242,29 @@ namespace openPDCManager.Silverlight.UserControls
 {
 	public partial class SelectNode : UserControl
 	{		
-		PhasorDataServiceClient client = new PhasorDataServiceClient();
+		PhasorDataServiceClient m_client = new PhasorDataServiceClient();
 
 		public delegate void OnNodesChanged(object sender, RoutedEventArgs e);
 		public event OnNodesChanged NodeCollectionChanged;
-		bool raiseNodesCollectionChanged = false;
+		bool m_raiseNodesCollectionChanged = false;
 
 		public SelectNode()
 		{
 			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
 			ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
 			Loaded += new RoutedEventHandler(SelectNode_Loaded);
 		}
 
 		void SelectNode_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetNodesAsync(true, false);
+			m_client.GetNodesAsync(true, false);
 		}
 
 		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (!raiseNodesCollectionChanged)
+			if (!m_raiseNodesCollectionChanged)
 			{
 				App app = (App)Application.Current;
 				app.NodeValue = ((KeyValuePair<string, string>)ComboboxNode.SelectedItem).Key;
@@ -315,18 +315,18 @@ namespace openPDCManager.Silverlight.UserControls
 
 				sm.Show();
 			}
-			raiseNodesCollectionChanged = false;
+			m_raiseNodesCollectionChanged = false;
 		}
 
 		public void RefreshNodeList()
 		{				
-			client.GetNodesAsync(true, false);			
+			m_client.GetNodesAsync(true, false);			
 		}
 
 		public void RaiseNotification()
 		{
-			raiseNodesCollectionChanged = true;
-			if (NodeCollectionChanged != null && raiseNodesCollectionChanged)
+			m_raiseNodesCollectionChanged = true;
+			if (NodeCollectionChanged != null && m_raiseNodesCollectionChanged)
 				NodeCollectionChanged(this, null);
 						
 		}

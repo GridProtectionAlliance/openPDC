@@ -242,25 +242,24 @@ namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class OutputStreamDeviceAnalogs : ChildWindow
 	{
-		int sourceOutputStreamDeviceID;
-		string sourceOutputStreamDeviceAcronym;		
-		PhasorDataServiceClient client;
-
-		bool inEditMode = false;
-		int outputStreamDeviceAnalogID = 0;
+		int m_sourceOutputStreamDeviceID;
+		string m_sourceOutputStreamDeviceAcronym;				
+		bool m_inEditMode = false;
+		int m_outputStreamDeviceAnalogID = 0;
+		PhasorDataServiceClient m_client;
 
 		public OutputStreamDeviceAnalogs(int outputStreamDeviceID, string outputStreamDeviceAcronym)
 		{
 			InitializeComponent();
-			sourceOutputStreamDeviceAcronym = outputStreamDeviceAcronym;
-			sourceOutputStreamDeviceID = outputStreamDeviceID;
-			this.Title = "Manage Analogs For Output Stream Device: " + sourceOutputStreamDeviceAcronym;
+			m_sourceOutputStreamDeviceAcronym = outputStreamDeviceAcronym;
+			m_sourceOutputStreamDeviceID = outputStreamDeviceID;
+			this.Title = "Manage Analogs For Output Stream Device: " + m_sourceOutputStreamDeviceAcronym;
 			Loaded += new RoutedEventHandler(OutputStreamDeviceAnalogs_Loaded);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetOutputStreamDeviceAnalogListCompleted += new EventHandler<GetOutputStreamDeviceAnalogListCompletedEventArgs>(client_GetOutputStreamDeviceAnalogListCompleted);
-			client.SaveOutputStreamDeviceAnalogCompleted += new EventHandler<SaveOutputStreamDeviceAnalogCompletedEventArgs>(client_SaveOutputStreamDeviceAnalogCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetOutputStreamDeviceAnalogListCompleted += new EventHandler<GetOutputStreamDeviceAnalogListCompletedEventArgs>(client_GetOutputStreamDeviceAnalogListCompleted);
+			m_client.SaveOutputStreamDeviceAnalogCompleted += new EventHandler<SaveOutputStreamDeviceAnalogCompletedEventArgs>(client_SaveOutputStreamDeviceAnalogCompleted);
 			ListBoxOutputStreamDeviceAnalogList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDeviceAnalogList_SelectionChanged);
 		}
 		void ListBoxOutputStreamDeviceAnalogList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -270,8 +269,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				OutputStreamDeviceAnalog selectedOutputStreamDeviceAnalog = ListBoxOutputStreamDeviceAnalogList.SelectedItem as OutputStreamDeviceAnalog;
 				GridOutputStreamDeviceAnalogDetail.DataContext = selectedOutputStreamDeviceAnalog;
 				ComboBoxType.SelectedItem = new KeyValuePair<int, string>(selectedOutputStreamDeviceAnalog.Type, selectedOutputStreamDeviceAnalog.TypeName);
-				inEditMode = true;
-				outputStreamDeviceAnalogID = selectedOutputStreamDeviceAnalog.ID;
+				m_inEditMode = true;
+				m_outputStreamDeviceAnalogID = selectedOutputStreamDeviceAnalog.ID;
 			}
 		}
 		void client_SaveOutputStreamDeviceAnalogCompleted(object sender, SaveOutputStreamDeviceAnalogCompletedEventArgs e)
@@ -296,7 +295,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			client.GetOutputStreamDeviceAnalogListAsync(sourceOutputStreamDeviceID);
+			m_client.GetOutputStreamDeviceAnalogListAsync(m_sourceOutputStreamDeviceID);
 		}
 		void client_GetOutputStreamDeviceAnalogListCompleted(object sender, GetOutputStreamDeviceAnalogListCompletedEventArgs e)
 		{
@@ -330,17 +329,17 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			App app = (App)Application.Current;
 
 			outputStreamDeviceAnalog.NodeID = app.NodeValue;
-			outputStreamDeviceAnalog.OutputStreamDeviceID = sourceOutputStreamDeviceID;
+			outputStreamDeviceAnalog.OutputStreamDeviceID = m_sourceOutputStreamDeviceID;
 			outputStreamDeviceAnalog.Type = ((KeyValuePair<int, string>)ComboBoxType.SelectedItem).Key;
 			outputStreamDeviceAnalog.Label = TextBoxLabel.Text;
 			outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
-			if (inEditMode == true && outputStreamDeviceAnalogID > 0)
+			if (m_inEditMode == true && m_outputStreamDeviceAnalogID > 0)
 			{
-				outputStreamDeviceAnalog.ID = outputStreamDeviceAnalogID;
-				client.SaveOutputStreamDeviceAnalogAsync(outputStreamDeviceAnalog, false);
+				outputStreamDeviceAnalog.ID = m_outputStreamDeviceAnalogID;
+				m_client.SaveOutputStreamDeviceAnalogAsync(outputStreamDeviceAnalog, false);
 			}
 			else
-				client.SaveOutputStreamDeviceAnalogAsync(outputStreamDeviceAnalog, true);
+				m_client.SaveOutputStreamDeviceAnalogAsync(outputStreamDeviceAnalog, true);
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -354,7 +353,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		}
 		void OutputStreamDeviceAnalogs_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetOutputStreamDeviceAnalogListAsync(sourceOutputStreamDeviceID);
+			m_client.GetOutputStreamDeviceAnalogListAsync(m_sourceOutputStreamDeviceID);
 			ComboBoxType.Items.Add(new KeyValuePair<int, string>(0, "Single point-on-wave"));
 			ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "RMS of analog input"));
 			ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "Peak of analog input"));
@@ -364,8 +363,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		{
 			GridOutputStreamDeviceAnalogDetail.DataContext = new OutputStreamDeviceAnalog();
 			ComboBoxType.SelectedIndex = 0;
-			inEditMode = false;
-			outputStreamDeviceAnalogID = 0;
+			m_inEditMode = false;
+			m_outputStreamDeviceAnalogID = 0;
 			ListBoxOutputStreamDeviceAnalogList.SelectedIndex = -1;
 		}
 

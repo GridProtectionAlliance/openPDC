@@ -32,11 +32,11 @@
                         <TextBlock Grid.Row="0" Grid.Column="2" Text="Name" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                         <TextBox x:Name="TextBoxName" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />                        
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Company" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                        <ComboBox x:Name="ComboboxCompany" Grid.Row="1" Grid.Column="1" Margin="5" DisplayMemberPath="Value"/>                        
+                        <ComboBox x:Name="ComboboxCompany" Grid.Row="1" Grid.Column="1" Margin="5" DisplayMemberPath="Value" Width="{StaticResource XLargeItemSize}"/>                        
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="Interconnection" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                         <ComboBox x:Name="ComboboxInterconnection" Grid.Row="1" Grid.Column="3" Margin="5" DisplayMemberPath="Value"/>                        
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Device Vendor" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                        <ComboBox x:Name="ComboboxVendorDevice" Grid.Row="2" Grid.Column="1" Margin="5" DisplayMemberPath="Value"/>
+                        <ComboBox x:Name="ComboboxVendorDevice" Grid.Row="2" Grid.Column="1" Margin="5" DisplayMemberPath="Value" Width="{StaticResource XLargeItemSize}"/>
                         <CheckBox x:Name="CheckboxConcentrator" Grid.Row="2" Grid.Column="3" IsChecked="{Binding Path=IsConcentrator}" Content="Concentrator" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="Longitude" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                         <TextBox x:Name="TextBoxLongitude" Grid.Row="3" Grid.Column="1" Text="{Binding Path=Longitude}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />

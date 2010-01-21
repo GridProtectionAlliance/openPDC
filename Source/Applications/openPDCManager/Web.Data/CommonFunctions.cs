@@ -239,13 +239,13 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Soap;
+using System.ServiceModel;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using openPDCManager.Web.Data.BusinessObjects;
 using openPDCManager.Web.Data.Entities;
 using TVA.PhasorProtocols;
-using System.ServiceModel;
 
 namespace openPDCManager.Web.Data
 {
@@ -536,18 +536,18 @@ namespace openPDCManager.Web.Data
 			return isMaster;
 		}
 
-		public static List<string> GetTimeZones(bool isOptional)
+		public static Dictionary<string, string> GetTimeZones(bool isOptional)
 		{
 			try
 			{
-				List<string> timeZonesList = new List<string>();
+				Dictionary<string, string> timeZonesList = new Dictionary<string, string>();
 				if (isOptional)
-					timeZonesList.Add("Select Timezone");
+					timeZonesList.Add("", "Select Timezone");
 
 				foreach (TimeZoneInfo tzi in TimeZoneInfo.GetSystemTimeZones())
-				{
-					if (!timeZonesList.Contains(tzi.StandardName))
-						timeZonesList.Add(tzi.StandardName);
+				{					
+					if (!timeZonesList.ContainsKey(tzi.StandardName))
+						timeZonesList.Add(tzi.StandardName, tzi.DisplayName);					
 				}
 				return timeZonesList;
 			}
@@ -756,7 +756,7 @@ namespace openPDCManager.Web.Data
 
 		#region " Manage Output Streams Code"
 
-		public static List<OutputStream> GetOutputStreamList(bool enabledOnly)
+		public static List<OutputStream> GetOutputStreamList(bool enabledOnly, string nodeID)
 		{
 			DataConnection connection = new DataConnection();
 			try
@@ -766,11 +766,17 @@ namespace openPDCManager.Web.Data
 				command.CommandType = CommandType.Text;
 				if (enabledOnly)
 				{
-					command.CommandText = "SELECT * FROM OutputStreamDetail Where Enabled = @enabled ORDER BY LoadOrder";
+					command.CommandText = "SELECT * FROM OutputStreamDetail Where NodeID = @nodeID AND Enabled = @enabled ORDER BY LoadOrder";
 					command.Parameters.Add(AddWithValue(command, "@enabled", true));
 				}
 				else
-					command.CommandText = "SELECT * FROM OutputStreamDetail ORDER BY LoadOrder";
+					command.CommandText = "SELECT * FROM OutputStreamDetail Where NodeID = @nodeID ORDER BY LoadOrder";
+
+				//command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+					command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+				else
+					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 
 				DataTable resultTable = new DataTable();
 				resultTable.Load(command.ExecuteReader());
@@ -1487,7 +1493,11 @@ namespace openPDCManager.Web.Data
 				else
 				{
 					command.CommandText = "Select * From HistorianDetail Where NodeID = @nodeID Order By LoadOrder";
-					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+					//command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+					if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+						command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+					else
+						command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 				}
 
 				DataTable resultTable = new DataTable();
@@ -1501,7 +1511,9 @@ namespace openPDCManager.Web.Data
 									 Name = item.Field<string>("Name"),
 									 ConnectionString = item.Field<string>("ConnectionString"),
 									 Description = item.Field<string>("Description"),
+									 IsLocal = Convert.ToBoolean(item.Field<object>("IsLocal")),
 									 Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+									 LoadOrder = item.Field<int>("LoadOrder"),
 									 TypeName = item.Field<string>("TypeName"),
 									 AssemblyName = item.Field<string>("AssemblyName"),
 									 NodeName = item.Field<string>("NodeName")
@@ -1715,7 +1727,7 @@ namespace openPDCManager.Web.Data
 				if (!isNew)
 				{
 					if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
-						command.Parameters.Add(AddWithValue(command, "@signalID", "{" + node.ID + "}"));						
+						command.Parameters.Add(AddWithValue(command, "@id", "{" + node.ID + "}"));						
 					else
 						command.Parameters.Add(AddWithValue(command, "@id", node.ID));
 				}
@@ -1974,7 +1986,11 @@ namespace openPDCManager.Web.Data
 				else
 				{
 					command.CommandText = "Select * From DeviceDetail Where NodeID = @nodeID Order By LoadOrder";
-					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+					//command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+					if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+						command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+					else
+						command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 				}
 				DataTable resultTable = new DataTable();
 				resultTable.Load(command.ExecuteReader());
@@ -2250,7 +2266,7 @@ namespace openPDCManager.Web.Data
 			}
 		}
 
-		public static Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID)
+		public static Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID, string nodeID)
 		{
 			DataConnection connection = new DataConnection();
 			try
@@ -2258,8 +2274,13 @@ namespace openPDCManager.Web.Data
 				Dictionary<int, string> deviceList = new Dictionary<int, string>();
 				IDbCommand command = connection.Connection.CreateCommand();
 				command.CommandType = CommandType.Text;
-				command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator AND Acronym NOT IN (Select Acronym From OutputStreamDevice Where AdapterID = @adapterID)";
+				command.CommandText = "Select ID, Acronym From Device Where NodeID = @nodeID AND IsConcentrator = @isConcentrator AND Acronym NOT IN (Select Acronym From OutputStreamDevice Where AdapterID = @adapterID)";				
 				command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));	//this has to be the first paramter for MS Access to succeed because it evaluates subquery first.
+				//command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+					command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+				else
+					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 				command.Parameters.Add(AddWithValue(command, "@isConcentrator", false));
 				DataTable resultTable = new DataTable();
 				resultTable.Load(command.ExecuteReader());
@@ -2553,7 +2574,14 @@ namespace openPDCManager.Web.Data
 				{
 					command.CommandText = "Select SignalID, HistorianID, PointID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, " +
 						"Adder, Multiplier, Description, Enabled, HistorianAcronym, DeviceAcronym, SignalName, SignalAcronym, SignalTypeSuffix, PhasorLabel From MeasurementDetail Where NodeID = @nodeID Order By PointTag";
-					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+					//command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+
+					if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+						command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+					else
+						command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+
+
 				}
 				
 				measurementList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
@@ -2703,7 +2731,11 @@ namespace openPDCManager.Web.Data
 				else
 				{
 					command.CommandText = "Select * From MeasurementDetail Where NodeID = @nodeID AND PointID Not In (Select PointID From OutputStreamMeasurement Where AdapterID = @outputStreamID)";
-					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+					//command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+					if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+						command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+					else
+						command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 				}
 				command.Parameters.Add(AddWithValue(command, "@outputStreamID", outputStreamID));
 
@@ -3088,7 +3120,11 @@ namespace openPDCManager.Web.Data
 				else
 				{
 					command.CommandText = "Select * From CalculatedMeasurementDetail Where NodeID = @nodeID Order By LoadOrder";
-					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+					//command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+					if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+						command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+					else
+						command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 				}
 
 				DataTable resultTable = new DataTable();
@@ -3210,7 +3246,11 @@ namespace openPDCManager.Web.Data
 				else
 				{
 					command.CommandText = "Select * From " + viewName + " Where NodeID = @nodeID Order By LoadOrder";
-					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+					//command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+					if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+						command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+					else
+						command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 				}
 
 				DataTable resultTable = new DataTable();
@@ -3296,7 +3336,7 @@ namespace openPDCManager.Web.Data
 			}
 		}
 
-		public static List<IaonTree> GetIaonTreeData()
+		public static List<IaonTree> GetIaonTreeData(string nodeID)
 		{
 			DataConnection connection = new DataConnection();
 			try
@@ -3323,7 +3363,13 @@ namespace openPDCManager.Web.Data
 								
 				IDbCommand command = connection.Connection.CreateCommand();
 				command.CommandType = CommandType.Text;
-				command.CommandText = "Select * From IaonTreeView";
+				command.CommandText = "Select * From IaonTreeView Where NodeID = @nodeID";
+				//command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+					command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+				else
+					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+
 				DataTable resultTable = new DataTable();
 				resultSet.EnforceConstraints = false;	//this is needed to make it work against mySQL.
 				resultSet.Tables.Add(resultTable);
@@ -3366,7 +3412,7 @@ namespace openPDCManager.Web.Data
 
 		#region " Manage Map Data"
 
-		public static List<MapData> GetMapData(MapType mapType)
+		public static List<MapData> GetMapData(MapType mapType, string nodeID)
 		{						
 			DataConnection connection = new DataConnection();
 			try
@@ -3374,10 +3420,17 @@ namespace openPDCManager.Web.Data
 				List<MapData> mapDataList = new List<MapData>();
 				IDbCommand command = connection.Connection.CreateCommand();
 				command.CommandType = CommandType.Text;
-				command.CommandText = "Select * From MapData";
 
-				if (mapType == MapType.Active)
-					command.CommandText = "Select * From MapData Where DeviceType = 'Device'";
+				if (mapType == MapType.Active)				
+					command.CommandText = "Select * From MapData Where NodeID = @nodeID and DeviceType = 'Device'";									
+				else
+					command.CommandText = "Select * From MapData Where NodeID = @nodeID UNION ALL Select * From MapData Where NodeID IS NULL";
+
+				//command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+					command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+				else
+					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 
 				DataTable resultTable = new DataTable();
 				resultTable.Load(command.ExecuteReader());

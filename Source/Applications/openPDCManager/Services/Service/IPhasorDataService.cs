@@ -356,7 +356,7 @@ namespace PCS.Services.Service
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID);
+		Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID, string nodeID);
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
@@ -468,7 +468,7 @@ namespace PCS.Services.Service
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
-		List<IaonTree> GetIaonTreeData();
+		List<IaonTree> GetIaonTreeData(string nodeID);
 
 		#endregion
 
@@ -476,7 +476,7 @@ namespace PCS.Services.Service
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
-		List<OutputStream> GetOutputStreamList(bool enabledOnly);
+		List<OutputStream> GetOutputStreamList(bool enabledOnly, string nodeID);
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
@@ -558,11 +558,11 @@ namespace PCS.Services.Service
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
-		List<string> GetTimeZones(bool isOptional);
+		Dictionary<string, string> GetTimeZones(bool isOptional);
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
-		List<MapData> GetMapData(MapType mapType);
+		List<MapData> GetMapData(MapType mapType, string nodeID);
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]

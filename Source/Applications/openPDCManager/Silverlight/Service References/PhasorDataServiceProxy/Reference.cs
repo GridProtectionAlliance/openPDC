@@ -4232,13 +4232,13 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetIaonTreeData", ReplyAction="http://tempuri.org/IPhasorDataService/GetIaonTreeDataResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/GetIaonTreeDataCustomServiceFaultFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
-        System.IAsyncResult BeginGetIaonTreeData(System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginGetIaonTreeData(string nodeID, System.AsyncCallback callback, object asyncState);
         
         System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.IaonTree> EndGetIaonTreeData(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetOutputStreamList", ReplyAction="http://tempuri.org/IPhasorDataService/GetOutputStreamListResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/GetOutputStreamListCustomServiceFaultFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
-        System.IAsyncResult BeginGetOutputStreamList(bool enabledOnly, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginGetOutputStreamList(bool enabledOnly, string nodeID, System.AsyncCallback callback, object asyncState);
         
         System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.OutputStream> EndGetOutputStreamList(System.IAsyncResult result);
         
@@ -4342,11 +4342,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/GetTimeZonesCustomServiceFaultFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
         System.IAsyncResult BeginGetTimeZones(bool isOptional, System.AsyncCallback callback, object asyncState);
         
-        System.Collections.ObjectModel.ObservableCollection<string> EndGetTimeZones(System.IAsyncResult result);
+        System.Collections.Generic.Dictionary<string, string> EndGetTimeZones(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetMapData", ReplyAction="http://tempuri.org/IPhasorDataService/GetMapDataResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/GetMapDataCustomServiceFaultFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
-        System.IAsyncResult BeginGetMapData(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginGetMapData(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType, string nodeID, System.AsyncCallback callback, object asyncState);
         
         System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.MapData> EndGetMapData(System.IAsyncResult result);
         
@@ -4514,7 +4514,7 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetDevicesForOutputStream", ReplyAction="http://tempuri.org/IPhasorDataService/GetDevicesForOutputStreamResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/GetDevicesForOutputStreamCustomServiceFault" +
             "Fault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
-        System.IAsyncResult BeginGetDevicesForOutputStream(int outputStreamID, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginGetDevicesForOutputStream(int outputStreamID, string nodeID, System.AsyncCallback callback, object asyncState);
         
         System.Collections.Generic.Dictionary<int, string> EndGetDevicesForOutputStream(System.IAsyncResult result);
         
@@ -5072,10 +5072,10 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             this.results = results;
         }
         
-        public System.Collections.ObjectModel.ObservableCollection<string> Result {
+        public System.Collections.Generic.Dictionary<string, string> Result {
             get {
                 base.RaiseExceptionIfNecessary();
-                return ((System.Collections.ObjectModel.ObservableCollection<string>)(this.results[0]));
+                return ((System.Collections.Generic.Dictionary<string, string>)(this.results[0]));
             }
         }
     }
@@ -6798,8 +6798,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetIaonTreeData(System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetIaonTreeData(callback, asyncState);
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetIaonTreeData(string nodeID, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetIaonTreeData(nodeID, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -6808,7 +6808,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         private System.IAsyncResult OnBeginGetIaonTreeData(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetIaonTreeData(callback, asyncState);
+            string nodeID = ((string)(inValues[0]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetIaonTreeData(nodeID, callback, asyncState);
         }
         
         private object[] OnEndGetIaonTreeData(System.IAsyncResult result) {
@@ -6824,11 +6825,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             }
         }
         
-        public void GetIaonTreeDataAsync() {
-            this.GetIaonTreeDataAsync(null);
+        public void GetIaonTreeDataAsync(string nodeID) {
+            this.GetIaonTreeDataAsync(nodeID, null);
         }
         
-        public void GetIaonTreeDataAsync(object userState) {
+        public void GetIaonTreeDataAsync(string nodeID, object userState) {
             if ((this.onBeginGetIaonTreeDataDelegate == null)) {
                 this.onBeginGetIaonTreeDataDelegate = new BeginOperationDelegate(this.OnBeginGetIaonTreeData);
             }
@@ -6838,12 +6839,13 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             if ((this.onGetIaonTreeDataCompletedDelegate == null)) {
                 this.onGetIaonTreeDataCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetIaonTreeDataCompleted);
             }
-            base.InvokeAsync(this.onBeginGetIaonTreeDataDelegate, null, this.onEndGetIaonTreeDataDelegate, this.onGetIaonTreeDataCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginGetIaonTreeDataDelegate, new object[] {
+                        nodeID}, this.onEndGetIaonTreeDataDelegate, this.onGetIaonTreeDataCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetOutputStreamList(bool enabledOnly, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetOutputStreamList(enabledOnly, callback, asyncState);
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetOutputStreamList(bool enabledOnly, string nodeID, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetOutputStreamList(enabledOnly, nodeID, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -6853,7 +6855,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.IAsyncResult OnBeginGetOutputStreamList(object[] inValues, System.AsyncCallback callback, object asyncState) {
             bool enabledOnly = ((bool)(inValues[0]));
-            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetOutputStreamList(enabledOnly, callback, asyncState);
+            string nodeID = ((string)(inValues[1]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetOutputStreamList(enabledOnly, nodeID, callback, asyncState);
         }
         
         private object[] OnEndGetOutputStreamList(System.IAsyncResult result) {
@@ -6869,11 +6872,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             }
         }
         
-        public void GetOutputStreamListAsync(bool enabledOnly) {
-            this.GetOutputStreamListAsync(enabledOnly, null);
+        public void GetOutputStreamListAsync(bool enabledOnly, string nodeID) {
+            this.GetOutputStreamListAsync(enabledOnly, nodeID, null);
         }
         
-        public void GetOutputStreamListAsync(bool enabledOnly, object userState) {
+        public void GetOutputStreamListAsync(bool enabledOnly, string nodeID, object userState) {
             if ((this.onBeginGetOutputStreamListDelegate == null)) {
                 this.onBeginGetOutputStreamListDelegate = new BeginOperationDelegate(this.OnBeginGetOutputStreamList);
             }
@@ -6884,7 +6887,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 this.onGetOutputStreamListCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetOutputStreamListCompleted);
             }
             base.InvokeAsync(this.onBeginGetOutputStreamListDelegate, new object[] {
-                        enabledOnly}, this.onEndGetOutputStreamListDelegate, this.onGetOutputStreamListCompletedDelegate, userState);
+                        enabledOnly,
+                        nodeID}, this.onEndGetOutputStreamListDelegate, this.onGetOutputStreamListCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -7561,7 +7565,7 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Collections.ObjectModel.ObservableCollection<string> openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndGetTimeZones(System.IAsyncResult result) {
+        System.Collections.Generic.Dictionary<string, string> openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndGetTimeZones(System.IAsyncResult result) {
             return base.Channel.EndGetTimeZones(result);
         }
         
@@ -7571,7 +7575,7 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         private object[] OnEndGetTimeZones(System.IAsyncResult result) {
-            System.Collections.ObjectModel.ObservableCollection<string> retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndGetTimeZones(result);
+            System.Collections.Generic.Dictionary<string, string> retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndGetTimeZones(result);
             return new object[] {
                     retVal};
         }
@@ -7602,8 +7606,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetMapData(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetMapData(mapType, callback, asyncState);
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetMapData(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType, string nodeID, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetMapData(mapType, nodeID, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -7613,7 +7617,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.IAsyncResult OnBeginGetMapData(object[] inValues, System.AsyncCallback callback, object asyncState) {
             openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType = ((openPDCManager.Silverlight.PhasorDataServiceProxy.MapType)(inValues[0]));
-            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetMapData(mapType, callback, asyncState);
+            string nodeID = ((string)(inValues[1]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetMapData(mapType, nodeID, callback, asyncState);
         }
         
         private object[] OnEndGetMapData(System.IAsyncResult result) {
@@ -7629,11 +7634,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             }
         }
         
-        public void GetMapDataAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType) {
-            this.GetMapDataAsync(mapType, null);
+        public void GetMapDataAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType, string nodeID) {
+            this.GetMapDataAsync(mapType, nodeID, null);
         }
         
-        public void GetMapDataAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType, object userState) {
+        public void GetMapDataAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType, string nodeID, object userState) {
             if ((this.onBeginGetMapDataDelegate == null)) {
                 this.onBeginGetMapDataDelegate = new BeginOperationDelegate(this.OnBeginGetMapData);
             }
@@ -7644,7 +7649,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 this.onGetMapDataCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetMapDataCompleted);
             }
             base.InvokeAsync(this.onBeginGetMapDataDelegate, new object[] {
-                        mapType}, this.onEndGetMapDataDelegate, this.onGetMapDataCompletedDelegate, userState);
+                        mapType,
+                        nodeID}, this.onEndGetMapDataDelegate, this.onGetMapDataCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -8866,8 +8872,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetDevicesForOutputStream(int outputStreamID, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetDevicesForOutputStream(outputStreamID, callback, asyncState);
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetDevicesForOutputStream(int outputStreamID, string nodeID, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetDevicesForOutputStream(outputStreamID, nodeID, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -8877,7 +8883,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.IAsyncResult OnBeginGetDevicesForOutputStream(object[] inValues, System.AsyncCallback callback, object asyncState) {
             int outputStreamID = ((int)(inValues[0]));
-            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetDevicesForOutputStream(outputStreamID, callback, asyncState);
+            string nodeID = ((string)(inValues[1]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetDevicesForOutputStream(outputStreamID, nodeID, callback, asyncState);
         }
         
         private object[] OnEndGetDevicesForOutputStream(System.IAsyncResult result) {
@@ -8893,11 +8900,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             }
         }
         
-        public void GetDevicesForOutputStreamAsync(int outputStreamID) {
-            this.GetDevicesForOutputStreamAsync(outputStreamID, null);
+        public void GetDevicesForOutputStreamAsync(int outputStreamID, string nodeID) {
+            this.GetDevicesForOutputStreamAsync(outputStreamID, nodeID, null);
         }
         
-        public void GetDevicesForOutputStreamAsync(int outputStreamID, object userState) {
+        public void GetDevicesForOutputStreamAsync(int outputStreamID, string nodeID, object userState) {
             if ((this.onBeginGetDevicesForOutputStreamDelegate == null)) {
                 this.onBeginGetDevicesForOutputStreamDelegate = new BeginOperationDelegate(this.OnBeginGetDevicesForOutputStream);
             }
@@ -8908,7 +8915,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 this.onGetDevicesForOutputStreamCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetDevicesForOutputStreamCompleted);
             }
             base.InvokeAsync(this.onBeginGetDevicesForOutputStreamDelegate, new object[] {
-                        outputStreamID}, this.onEndGetDevicesForOutputStreamDelegate, this.onGetDevicesForOutputStreamCompletedDelegate, userState);
+                        outputStreamID,
+                        nodeID}, this.onEndGetDevicesForOutputStreamDelegate, this.onGetDevicesForOutputStreamCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -9576,8 +9584,9 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 return _result;
             }
             
-            public System.IAsyncResult BeginGetIaonTreeData(System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[0];
+            public System.IAsyncResult BeginGetIaonTreeData(string nodeID, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[1];
+                _args[0] = nodeID;
                 System.IAsyncResult _result = base.BeginInvoke("GetIaonTreeData", _args, callback, asyncState);
                 return _result;
             }
@@ -9588,9 +9597,10 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 return _result;
             }
             
-            public System.IAsyncResult BeginGetOutputStreamList(bool enabledOnly, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[1];
+            public System.IAsyncResult BeginGetOutputStreamList(bool enabledOnly, string nodeID, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[2];
                 _args[0] = enabledOnly;
+                _args[1] = nodeID;
                 System.IAsyncResult _result = base.BeginInvoke("GetOutputStreamList", _args, callback, asyncState);
                 return _result;
             }
@@ -9802,15 +9812,16 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 return _result;
             }
             
-            public System.Collections.ObjectModel.ObservableCollection<string> EndGetTimeZones(System.IAsyncResult result) {
+            public System.Collections.Generic.Dictionary<string, string> EndGetTimeZones(System.IAsyncResult result) {
                 object[] _args = new object[0];
-                System.Collections.ObjectModel.ObservableCollection<string> _result = ((System.Collections.ObjectModel.ObservableCollection<string>)(base.EndInvoke("GetTimeZones", _args, result)));
+                System.Collections.Generic.Dictionary<string, string> _result = ((System.Collections.Generic.Dictionary<string, string>)(base.EndInvoke("GetTimeZones", _args, result)));
                 return _result;
             }
             
-            public System.IAsyncResult BeginGetMapData(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[1];
+            public System.IAsyncResult BeginGetMapData(openPDCManager.Silverlight.PhasorDataServiceProxy.MapType mapType, string nodeID, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[2];
                 _args[0] = mapType;
+                _args[1] = nodeID;
                 System.IAsyncResult _result = base.BeginInvoke("GetMapData", _args, callback, asyncState);
                 return _result;
             }
@@ -10170,9 +10181,10 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 return _result;
             }
             
-            public System.IAsyncResult BeginGetDevicesForOutputStream(int outputStreamID, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[1];
+            public System.IAsyncResult BeginGetDevicesForOutputStream(int outputStreamID, string nodeID, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[2];
                 _args[0] = outputStreamID;
+                _args[1] = nodeID;
                 System.IAsyncResult _result = base.BeginInvoke("GetDevicesForOutputStream", _args, callback, asyncState);
                 return _result;
             }

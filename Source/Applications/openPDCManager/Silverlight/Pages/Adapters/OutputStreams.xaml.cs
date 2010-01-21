@@ -234,28 +234,29 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
 using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Adapters
 {
 	public partial class OutputStreams : Page
 	{
-		PhasorDataServiceClient client;
-		bool inEditMode = false;
-		int outputStreamID = 0;		
+		PhasorDataServiceClient m_client;
+		bool m_inEditMode = false;
+		int m_outputStreamID = 0;
+		string m_nodeValue;
 
 		public OutputStreams()
 		{
 			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
-			client.GetOutputStreamListCompleted += new EventHandler<GetOutputStreamListCompletedEventArgs>(client_GetOutputStreamListCompleted);
-			client.SaveOutputStreamCompleted += new EventHandler<SaveOutputStreamCompletedEventArgs>(client_SaveOutputStreamCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
+			m_client.GetOutputStreamListCompleted += new EventHandler<GetOutputStreamListCompletedEventArgs>(client_GetOutputStreamListCompleted);
+			m_client.SaveOutputStreamCompleted += new EventHandler<SaveOutputStreamCompletedEventArgs>(client_SaveOutputStreamCompleted);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ListBoxOutputStreamList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamList_SelectionChanged);
@@ -284,7 +285,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			client.GetOutputStreamListAsync(false);
+			m_client.GetOutputStreamListAsync(false, m_nodeValue);
 		}
 		void client_GetOutputStreamListCompleted(object sender, GetOutputStreamListCompletedEventArgs e)
 		{
@@ -326,8 +327,8 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 				CheckBoxAutoStartDataChannel.IsChecked = selectedOutputStream.AutoStartDataChannel;
 				CheckBoxEnabled.IsChecked = selectedOutputStream.Enabled;
 				CheckBoxUseLocalClockAsRealTime.IsChecked = selectedOutputStream.UseLocalClockAsRealTime;
-				outputStreamID = selectedOutputStream.ID;
-				inEditMode = true;
+				m_outputStreamID = selectedOutputStream.ID;
+				m_inEditMode = true;
 			}
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -358,13 +359,13 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			outputStream.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
 			outputStream.Enabled = (bool)CheckBoxEnabled.IsChecked;
 
-			if (inEditMode == true && outputStreamID > 0)
+			if (m_inEditMode == true && m_outputStreamID > 0)
 			{
-				outputStream.ID = outputStreamID;
-				client.SaveOutputStreamAsync(outputStream, false);
+				outputStream.ID = m_outputStreamID;
+				m_client.SaveOutputStreamAsync(outputStream, false);
 			}
 			else
-				client.SaveOutputStreamAsync(outputStream, true);
+				m_client.SaveOutputStreamAsync(outputStream, true);
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -410,19 +411,20 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			CheckBoxAutoStartDataChannel.IsChecked = false;
 			CheckBoxEnabled.IsChecked = false;
 			CheckBoxUseLocalClockAsRealTime.IsChecked = false;
-			inEditMode = false;
-			outputStreamID = 0;
+			m_inEditMode = false;
+			m_outputStreamID = 0;
 			ListBoxOutputStreamList.SelectedIndex = -1;
 		}
 
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			client.GetNodesAsync(true, false);
+			m_nodeValue = ((App)Application.Current).NodeValue;
+			m_client.GetNodesAsync(true, false);
 			ComboBoxType.Items.Add(new KeyValuePair<int, string>(0, "IEEE C37.118"));
 			ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "BPA"));
 			ComboBoxType.SelectedIndex = 0;
-			client.GetOutputStreamListAsync(false);
+			m_client.GetOutputStreamListAsync(false, m_nodeValue);
 		}
 		private void HyperlinkButtonDevices_Click(object sender, RoutedEventArgs e)
 		{	

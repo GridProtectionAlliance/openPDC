@@ -244,17 +244,17 @@ namespace openPDCManager.Silverlight.Pages.Manage
 {
 	public partial class Nodes : Page
 	{
-		PhasorDataServiceClient client;
-		bool inEditMode = false;
-		string nodeID = string.Empty;
+		PhasorDataServiceClient m_client;
+		bool m_inEditMode = false;
+		string m_nodeID = string.Empty;
 
 		public Nodes()
 		{
 			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetNodeListCompleted += new EventHandler<GetNodeListCompletedEventArgs>(client_GetNodeListCompleted);
-			client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);
-			client.SaveNodeCompleted += new EventHandler<SaveNodeCompletedEventArgs>(client_SaveNodeCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetNodeListCompleted += new EventHandler<GetNodeListCompletedEventArgs>(client_GetNodeListCompleted);
+			m_client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);
+			m_client.SaveNodeCompleted += new EventHandler<SaveNodeCompletedEventArgs>(client_SaveNodeCompleted);
 			Loaded += new RoutedEventHandler(Nodes_Loaded);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
@@ -284,7 +284,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			client.GetNodeListAsync();								
+			m_client.GetNodeListAsync();								
 		}
 
 		void ListBoxNodeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -297,8 +297,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					ComboBoxCompany.SelectedItem = new KeyValuePair<int, string>((int)selectedNode.CompanyID, selectedNode.CompanyName);
 				else
 					ComboBoxCompany.SelectedIndex = 0;
-				inEditMode = true;
-				nodeID = selectedNode.ID;
+				m_inEditMode = true;
+				m_nodeID = selectedNode.ID;
 			}
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -320,13 +320,13 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			node.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
 			node.Enabled = (bool)CheckboxEnabled.IsChecked;
 
-			if (inEditMode == true && !string.IsNullOrEmpty(nodeID))
+			if (m_inEditMode == true && !string.IsNullOrEmpty(m_nodeID))
 			{
-				node.ID = nodeID;
-				client.SaveNodeAsync(node, false);
+				node.ID = m_nodeID;
+				m_client.SaveNodeAsync(node, false);
 			}
 			else
-				client.SaveNodeAsync(node, true);
+				m_client.SaveNodeAsync(node, true);
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -388,16 +388,16 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		{
 			GridNodeDetail.DataContext = new Node();
 			ComboBoxCompany.SelectedIndex = 0;
-			inEditMode = false;
-			nodeID = string.Empty;
+			m_inEditMode = false;
+			m_nodeID = string.Empty;
 			ListBoxNodeList.SelectedIndex = -1;
 		}
 
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			client.GetNodeListAsync();
-			client.GetCompaniesAsync(true);
+			m_client.GetNodeListAsync();
+			m_client.GetCompaniesAsync(true);
 		}
 
 	}

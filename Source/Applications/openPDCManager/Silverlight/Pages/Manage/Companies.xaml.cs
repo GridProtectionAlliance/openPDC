@@ -243,16 +243,16 @@ namespace openPDCManager.Silverlight.Pages.Manage
 {
 	public partial class Companies : Page
 	{
-		PhasorDataServiceClient client;
-		bool inEditMode = false;
-		int companyID = 0;
+		PhasorDataServiceClient m_client;
+		bool m_inEditMode = false;
+		int m_companyID = 0;
 
 		public Companies()
 		{
 			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetCompanyListCompleted += new EventHandler<GetCompanyListCompletedEventArgs>(client_GetCompanyListCompleted);
-			client.SaveCompanyCompleted += new EventHandler<SaveCompanyCompletedEventArgs>(client_SaveCompanyCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetCompanyListCompleted += new EventHandler<GetCompanyListCompletedEventArgs>(client_GetCompanyListCompleted);
+			m_client.SaveCompanyCompleted += new EventHandler<SaveCompanyCompletedEventArgs>(client_SaveCompanyCompleted);
 			Loaded += new RoutedEventHandler(Companies_Loaded);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
@@ -281,7 +281,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 						ButtonType.OkOnly);
 			}
 			sm.Show();						
-			client.GetCompanyListAsync();	//refresh data to reflect changes.
+			m_client.GetCompanyListAsync();	//refresh data to reflect changes.
 		}
 		void Companies_Loaded(object sender, RoutedEventArgs e)
 		{
@@ -293,8 +293,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			{
 				Company selectedCompany = ListBoxCompanyList.SelectedItem as Company;
 				GridCompanyDetail.DataContext = selectedCompany;
-				inEditMode = true;
-				companyID = selectedCompany.ID;
+				m_inEditMode = true;
+				m_companyID = selectedCompany.ID;
 			}
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
@@ -321,13 +321,13 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			company.URL = TextBoxURL.Text;
 			company.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
 
-			if (inEditMode == true && companyID != 0)
+			if (m_inEditMode == true && m_companyID != 0)
 			{
-				company.ID = companyID;
-				client.SaveCompanyAsync(company, false);
+				company.ID = m_companyID;
+				m_client.SaveCompanyAsync(company, false);
 			}
 			else
-				client.SaveCompanyAsync(company, true);
+				m_client.SaveCompanyAsync(company, true);
 		}
 		void client_GetCompanyListCompleted(object sender, GetCompanyListCompletedEventArgs e)
 		{
@@ -352,15 +352,15 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		void ClearForm()
 		{
 			GridCompanyDetail.DataContext = new Company();	//bind an empty object
-			inEditMode = false;
-			companyID = 0;
+			m_inEditMode = false;
+			m_companyID = 0;
 			ListBoxCompanyList.SelectedIndex = -1;
 		}
 
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			client.GetCompanyListAsync();	
+			m_client.GetCompanyListAsync();	
 		}
 
 	}

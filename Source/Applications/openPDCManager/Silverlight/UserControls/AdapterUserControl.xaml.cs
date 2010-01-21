@@ -243,19 +243,19 @@ namespace openPDCManager.Silverlight.UserControls
 {
 	public partial class AdapterUserControl : UserControl
 	{
-		PhasorDataServiceClient client;
-		bool inEditMode = false;
-		int adapterID = 0;
-		AdapterType adapterType;
-		string nodeID;
+		PhasorDataServiceClient m_client;
+		bool m_inEditMode = false;
+		int m_adapterID = 0;
+		AdapterType m_adapterType;
+		string m_nodeID;
 
 		public AdapterUserControl()
 		{
 			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetAdapterListCompleted += new EventHandler<GetAdapterListCompletedEventArgs>(client_GetAdapterListCompleted);
-			client.SaveAdapterCompleted += new EventHandler<SaveAdapterCompletedEventArgs>(client_SaveAdapterCompleted);
-			client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetAdapterListCompleted += new EventHandler<GetAdapterListCompletedEventArgs>(client_GetAdapterListCompleted);
+			m_client.SaveAdapterCompleted += new EventHandler<SaveAdapterCompletedEventArgs>(client_SaveAdapterCompleted);
+			m_client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
 			Loaded += new RoutedEventHandler(AdaptersUserControl_Loaded);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
@@ -306,7 +306,7 @@ namespace openPDCManager.Silverlight.UserControls
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			client.GetAdapterListAsync(false, adapterType, nodeID);
+			m_client.GetAdapterListAsync(false, m_adapterType, m_nodeID);
 		}
 		void ListBoxAdapterList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -315,8 +315,8 @@ namespace openPDCManager.Silverlight.UserControls
 				Adapter selectedAdapter = ListBoxAdapterList.SelectedItem as Adapter;
 				GridAdapterDetail.DataContext = selectedAdapter;
 				ComboboxNode.SelectedItem = new KeyValuePair<string, string>(selectedAdapter.NodeID, selectedAdapter.NodeName);
-				inEditMode = true;
-				adapterID = selectedAdapter.ID;
+				m_inEditMode = true;
+				m_adapterID = selectedAdapter.ID;
 			}
 		}
 		void client_GetAdapterListCompleted(object sender, GetAdapterListCompletedEventArgs e)
@@ -356,7 +356,7 @@ namespace openPDCManager.Silverlight.UserControls
 			Storyboard.SetTarget(sb, ButtonSaveTransform);
 			sb.Begin();
 			Adapter adapter = new Adapter();
-			adapter.adapterType = adapterType;
+			adapter.adapterType = m_adapterType;
 			adapter.NodeID = ((KeyValuePair<string, string>)ComboboxNode.SelectedItem).Key;
 			adapter.AdapterName = TextBoxAdapterName.Text;
 			adapter.AssemblyName = TextBoxAssemblyName.Text;
@@ -365,33 +365,33 @@ namespace openPDCManager.Silverlight.UserControls
 			adapter.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
 			adapter.Enabled = (bool)CheckboxEnabled.IsChecked;
 
-			if (inEditMode == true && adapterID > 0)
+			if (m_inEditMode == true && m_adapterID > 0)
 			{
-				adapter.ID = adapterID;
-				client.SaveAdapterAsync(adapter, false);
+				adapter.ID = m_adapterID;
+				m_client.SaveAdapterAsync(adapter, false);
 			}
 			else
-				client.SaveAdapterAsync(adapter, true);
+				m_client.SaveAdapterAsync(adapter, true);
 		}
 		void AdaptersUserControl_Loaded(object sender, RoutedEventArgs e)
 		{
 			App app = (App)Application.Current;
-			nodeID = app.NodeValue;
-			client.GetNodesAsync(true, false);
-			client.GetAdapterListAsync(false, adapterType, nodeID);
+			m_nodeID = app.NodeValue;
+			m_client.GetNodesAsync(true, false);
+			m_client.GetAdapterListAsync(false, m_adapterType, m_nodeID);
 		}
 		void ClearForm()
 		{
 			GridAdapterDetail.DataContext = new Adapter();
 			if (ComboboxNode.Items.Count > 0)
 				ComboboxNode.SelectedIndex = 0;
-			inEditMode = false;
-			adapterID = 0;
+			m_inEditMode = false;
+			m_adapterID = 0;
 			ListBoxAdapterList.SelectedIndex = -1;
 		}
 		public void SetAdapterType(AdapterType adpType)
 		{
-			adapterType = adpType;
+			m_adapterType = adpType;
 		}
 	}
 }

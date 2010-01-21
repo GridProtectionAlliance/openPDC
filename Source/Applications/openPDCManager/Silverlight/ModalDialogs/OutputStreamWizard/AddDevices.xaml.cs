@@ -243,25 +243,26 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 {
 	public partial class AddDevices : ChildWindow
 	{
-		int sourceOutputStreamID;
-		string sourceOutputStreamAcronym;
-		Dictionary<int, string> devicesToBeAdded;
-		PhasorDataServiceClient client;
-		Dictionary<int, string> deviceList;
+		int m_sourceOutputStreamID;
+		string m_sourceOutputStreamAcronym;
+		Dictionary<int, string> m_devicesToBeAdded;
+		PhasorDataServiceClient m_client;
+		Dictionary<int, string> m_deviceList;
+		string m_nodeValue;
 
 		public AddDevices(int outputStreamID, string outputStreamAcronym)
 		{
 			InitializeComponent();
-			sourceOutputStreamID = outputStreamID;
-			sourceOutputStreamAcronym = outputStreamAcronym;
-			this.Title = "Add New Devices For Output Stream: " + sourceOutputStreamAcronym;
+			m_sourceOutputStreamID = outputStreamID;
+			m_sourceOutputStreamAcronym = outputStreamAcronym;
+			this.Title = "Add New Devices For Output Stream: " + m_sourceOutputStreamAcronym;
 			Loaded += new RoutedEventHandler(AddDevices_Loaded);
 			ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
 			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
-			client = Common.GetPhasorDataServiceProxyClient();	
-			client.GetDevicesForOutputStreamCompleted += new EventHandler<GetDevicesForOutputStreamCompletedEventArgs>(client_GetDevicesForOutputStreamCompleted);
-			client.AddDevicesCompleted += new EventHandler<AddDevicesCompletedEventArgs>(client_AddDevicesCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();	
+			m_client.GetDevicesForOutputStreamCompleted += new EventHandler<GetDevicesForOutputStreamCompletedEventArgs>(client_GetDevicesForOutputStreamCompleted);
+			m_client.AddDevicesCompleted += new EventHandler<AddDevicesCompletedEventArgs>(client_AddDevicesCompleted);
 		}
 
 		void client_AddDevicesCompleted(object sender, AddDevicesCompletedEventArgs e)
@@ -285,7 +286,7 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			client.GetDevicesForOutputStreamAsync(sourceOutputStreamID);
+			m_client.GetDevicesForOutputStreamAsync(m_sourceOutputStreamID, m_nodeValue);
 		}
 		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
 		{
@@ -295,7 +296,7 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			Storyboard.SetTarget(sb, ButtonShowAllTransform);
 			sb.Begin();
 
-			ListBoxDeviceList.ItemsSource = deviceList;
+			ListBoxDeviceList.ItemsSource = m_deviceList;
 		}
 		void ButtonSearch_Click(object sender, RoutedEventArgs e)
 		{
@@ -306,7 +307,7 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			sb.Begin();
 
 			string searchText = TextBoxSearch.Text.ToUpper();
-			ListBoxDeviceList.ItemsSource = (from item in deviceList.AsEnumerable()
+			ListBoxDeviceList.ItemsSource = (from item in m_deviceList.AsEnumerable()
 											 where item.Value.ToUpper().Contains(searchText)
 											 select item).ToList();
 		}
@@ -315,7 +316,7 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			if (e.Error == null)
 			{
 				ListBoxDeviceList.ItemsSource = e.Result;
-				deviceList = e.Result;
+				m_deviceList = e.Result;
 			}
 			else
 			{
@@ -341,8 +342,8 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			Storyboard.SetTarget(sb, ButtonAddTransform);
 			sb.Begin();
 
-			if (devicesToBeAdded.Count > 0)
-				client.AddDevicesAsync(sourceOutputStreamID, devicesToBeAdded, (bool)CheckAddDigitals.IsChecked, (bool)CheckAddAnalog.IsChecked);
+			if (m_devicesToBeAdded.Count > 0)
+				m_client.AddDevicesAsync(m_sourceOutputStreamID, m_devicesToBeAdded, (bool)CheckAddDigitals.IsChecked, (bool)CheckAddAnalog.IsChecked);
 			else
 			{
 				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please Select Device(s) to Add", SystemMessage = string.Empty, UserMessageType = MessageType.Information },
@@ -352,23 +353,24 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 		}
 		void AddDevices_Loaded(object sender, RoutedEventArgs e)
 		{
-			devicesToBeAdded = new Dictionary<int, string>();
-			deviceList = new Dictionary<int, string>();
-			client.GetDevicesForOutputStreamAsync(sourceOutputStreamID);
+			m_devicesToBeAdded = new Dictionary<int, string>();
+			m_deviceList = new Dictionary<int, string>();
+			m_nodeValue = ((App)Application.Current).NodeValue;
+			m_client.GetDevicesForOutputStreamAsync(m_sourceOutputStreamID, m_nodeValue);
 		}
 		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
 		{
 			string deviceAcronym = ((CheckBox)sender).Content.ToString();
 			int deviceID = Convert.ToInt32(((CheckBox)sender).Tag.ToString());
-			if (devicesToBeAdded.ContainsKey(deviceID))
-			    devicesToBeAdded.Remove(deviceID);
+			if (m_devicesToBeAdded.ContainsKey(deviceID))
+			    m_devicesToBeAdded.Remove(deviceID);
 		}
 		private void CheckBox_Checked(object sender, RoutedEventArgs e)
 		{
 			string deviceAcronym = ((CheckBox)sender).Content.ToString();
 			int deviceID = Convert.ToInt32(((CheckBox)sender).Tag.ToString());
-			if (!devicesToBeAdded.ContainsKey(deviceID))
-				devicesToBeAdded.Add(deviceID, deviceAcronym);
+			if (!m_devicesToBeAdded.ContainsKey(deviceID))
+				m_devicesToBeAdded.Add(deviceID, deviceAcronym);
 		}	
 		
 	}

@@ -242,24 +242,24 @@ namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class OutputStreamDevicePhasors : ChildWindow
 	{
-		int sourceOutputStreamDeviceID;
-		string sourceOutputStreamDeviceAcronym;		
-		bool inEditMode = false;
-		int outputStreamDevicePhasorID = 0;
-		PhasorDataServiceClient client;
+		int m_sourceOutputStreamDeviceID;
+		string m_sourceOutputStreamDeviceAcronym;		
+		bool m_inEditMode = false;
+		int m_outputStreamDevicePhasorID = 0;
+		PhasorDataServiceClient m_client;
 
 		public OutputStreamDevicePhasors(int outputStreamDeviceID, string outputStreamDeviceAcronym)
 		{
 			InitializeComponent();
-			sourceOutputStreamDeviceID = outputStreamDeviceID;
-			sourceOutputStreamDeviceAcronym = outputStreamDeviceAcronym;
-			this.Title = "Manage Phasors For Output Stream Device: " + sourceOutputStreamDeviceAcronym;
+			m_sourceOutputStreamDeviceID = outputStreamDeviceID;
+			m_sourceOutputStreamDeviceAcronym = outputStreamDeviceAcronym;
+			this.Title = "Manage Phasors For Output Stream Device: " + m_sourceOutputStreamDeviceAcronym;
 			Loaded += new RoutedEventHandler(OutputStreamDevicePhasors_Loaded);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetOutputStreamDevicePhasorListCompleted += new EventHandler<GetOutputStreamDevicePhasorListCompletedEventArgs>(client_GetOutputStreamDevicePhasorListCompleted);
-			client.SaveOutputStreamDevicePhasorCompleted += new EventHandler<SaveOutputStreamDevicePhasorCompletedEventArgs>(client_SaveOutputStreamDevicePhasorCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetOutputStreamDevicePhasorListCompleted += new EventHandler<GetOutputStreamDevicePhasorListCompletedEventArgs>(client_GetOutputStreamDevicePhasorListCompleted);
+			m_client.SaveOutputStreamDevicePhasorCompleted += new EventHandler<SaveOutputStreamDevicePhasorCompletedEventArgs>(client_SaveOutputStreamDevicePhasorCompleted);
 			ListBoxOutputStreamDevicePhasorList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDevicePhasorList_SelectionChanged);
 		}
 
@@ -271,8 +271,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				GridOutputStreamDevicePhasorDetail.DataContext = selectedOutputStreamDevicePhasor;
 				ComboboxPhase.SelectedItem = new KeyValuePair<string, string>(selectedOutputStreamDevicePhasor.Phase, selectedOutputStreamDevicePhasor.PhaseType);
 				ComboboxType.SelectedItem = new KeyValuePair<string, string>(selectedOutputStreamDevicePhasor.Type, selectedOutputStreamDevicePhasor.PhasorType);
-				inEditMode = true;
-				outputStreamDevicePhasorID = selectedOutputStreamDevicePhasor.ID;
+				m_inEditMode = true;
+				m_outputStreamDevicePhasorID = selectedOutputStreamDevicePhasor.ID;
 			}
 		}
 		void client_SaveOutputStreamDevicePhasorCompleted(object sender, SaveOutputStreamDevicePhasorCompletedEventArgs e)
@@ -297,7 +297,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			client.GetOutputStreamDevicePhasorListAsync(sourceOutputStreamDeviceID);
+			m_client.GetOutputStreamDevicePhasorListAsync(m_sourceOutputStreamDeviceID);
 		}
 		void client_GetOutputStreamDevicePhasorListCompleted(object sender, GetOutputStreamDevicePhasorListCompletedEventArgs e)
 		{
@@ -330,19 +330,19 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			OutputStreamDevicePhasor outputStreamDevicePhasor = new OutputStreamDevicePhasor();
 			App app = (App)Application.Current;
 			outputStreamDevicePhasor.NodeID = app.NodeValue;
-			outputStreamDevicePhasor.OutputStreamDeviceID = sourceOutputStreamDeviceID;
+			outputStreamDevicePhasor.OutputStreamDeviceID = m_sourceOutputStreamDeviceID;
 			outputStreamDevicePhasor.Label = TextBoxLabel.Text;
 			outputStreamDevicePhasor.Type = ((KeyValuePair<string, string>)ComboboxType.SelectedItem).Key;
 			outputStreamDevicePhasor.Phase = ((KeyValuePair<string, string>)ComboboxPhase.SelectedItem).Key;
 			outputStreamDevicePhasor.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
 
-			if (inEditMode == true && outputStreamDevicePhasorID > 0)
+			if (m_inEditMode == true && m_outputStreamDevicePhasorID > 0)
 			{
-				outputStreamDevicePhasor.ID = outputStreamDevicePhasorID;
-				client.SaveOutputStreamDevicePhasorAsync(outputStreamDevicePhasor, false);
+				outputStreamDevicePhasor.ID = m_outputStreamDevicePhasorID;
+				m_client.SaveOutputStreamDevicePhasorAsync(outputStreamDevicePhasor, false);
 			}
 			else
-				client.SaveOutputStreamDevicePhasorAsync(outputStreamDevicePhasor, true);
+				m_client.SaveOutputStreamDevicePhasorAsync(outputStreamDevicePhasor, true);
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -356,7 +356,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		}
 		void OutputStreamDevicePhasors_Loaded(object sender, RoutedEventArgs e)
 		{
-			client.GetOutputStreamDevicePhasorListAsync(sourceOutputStreamDeviceID);
+			m_client.GetOutputStreamDevicePhasorListAsync(m_sourceOutputStreamDeviceID);
 			ComboboxPhase.Items.Add(new KeyValuePair<string, string>("+", "Positive"));
 			ComboboxPhase.Items.Add(new KeyValuePair<string, string>("-", "Negative"));
 			ComboboxPhase.Items.Add(new KeyValuePair<string, string>("A", "Phase A"));
@@ -374,8 +374,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			GridOutputStreamDevicePhasorDetail.DataContext = new OutputStreamDevicePhasor();
 			ComboboxPhase.SelectedIndex = 0;
 			ComboboxType.SelectedIndex = 0;
-			inEditMode = false;
-			outputStreamDevicePhasorID = 0;
+			m_inEditMode = false;
+			m_outputStreamDevicePhasorID = 0;
 			ListBoxOutputStreamDevicePhasorList.SelectedIndex = -1;
 		}
 			

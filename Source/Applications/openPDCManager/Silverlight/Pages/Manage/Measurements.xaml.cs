@@ -246,25 +246,25 @@ namespace openPDCManager.Silverlight.Pages.Manage
 {
 	public partial class Measurements : Page
 	{
-		PhasorDataServiceClient client;
-		bool inEditMode = false;
-		string signalID = string.Empty;
-		int deviceID = 0;
-		ActivityWindow activityWindow;
+		PhasorDataServiceClient m_client;
+		bool m_inEditMode = false;
+		string m_signalID = string.Empty;
+		int m_deviceID = 0;
+		ActivityWindow m_activityWindow;
 		
 		public Measurements()
 		{
 			InitializeComponent();
 			Loaded += new RoutedEventHandler(Measurements_Loaded);
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetHistoriansCompleted += new EventHandler<GetHistoriansCompletedEventArgs>(client_GetHistoriansCompleted);
-			client.GetDevicesCompleted += new EventHandler<GetDevicesCompletedEventArgs>(client_GetDevicesCompleted);
-			client.GetSignalTypesCompleted += new EventHandler<GetSignalTypesCompletedEventArgs>(client_GetSignalTypesCompleted);
-			client.GetPhasorsCompleted += new EventHandler<GetPhasorsCompletedEventArgs>(client_GetPhasorsCompleted);
-			client.GetMeasurementListCompleted += new EventHandler<GetMeasurementListCompletedEventArgs>(client_GetMeasurementListCompleted);
-			client.SaveMeasurementCompleted += new EventHandler<SaveMeasurementCompletedEventArgs>(client_SaveMeasurementCompleted);
-			client.GetMeasurementsByDeviceCompleted += new EventHandler<GetMeasurementsByDeviceCompletedEventArgs>(client_GetMeasurementsByDeviceCompleted);
-			client.GetDeviceByDeviceIDCompleted += new EventHandler<GetDeviceByDeviceIDCompletedEventArgs>(client_GetDeviceByDeviceIDCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetHistoriansCompleted += new EventHandler<GetHistoriansCompletedEventArgs>(client_GetHistoriansCompleted);
+			m_client.GetDevicesCompleted += new EventHandler<GetDevicesCompletedEventArgs>(client_GetDevicesCompleted);
+			m_client.GetSignalTypesCompleted += new EventHandler<GetSignalTypesCompletedEventArgs>(client_GetSignalTypesCompleted);
+			m_client.GetPhasorsCompleted += new EventHandler<GetPhasorsCompletedEventArgs>(client_GetPhasorsCompleted);
+			m_client.GetMeasurementListCompleted += new EventHandler<GetMeasurementListCompletedEventArgs>(client_GetMeasurementListCompleted);
+			m_client.SaveMeasurementCompleted += new EventHandler<SaveMeasurementCompletedEventArgs>(client_SaveMeasurementCompleted);
+			m_client.GetMeasurementsByDeviceCompleted += new EventHandler<GetMeasurementsByDeviceCompletedEventArgs>(client_GetMeasurementsByDeviceCompleted);
+			m_client.GetDeviceByDeviceIDCompleted += new EventHandler<GetDeviceByDeviceIDCompletedEventArgs>(client_GetDeviceByDeviceIDCompleted);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ListBoxMeasurementList.SelectionChanged += new SelectionChangedEventHandler(ListBoxMeasurementList_SelectionChanged);
@@ -314,8 +314,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 
 				sm.Show();
 			}
-			if (activityWindow != null)
-				activityWindow.Close();	
+			if (m_activityWindow != null)
+				m_activityWindow.Close();	
 		}
 		void client_GetMeasurementListCompleted(object sender, GetMeasurementListCompletedEventArgs e)
 		{
@@ -336,8 +336,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 
 				sm.Show();
 			}
-			if (activityWindow != null)
-				activityWindow.Close();			
+			if (m_activityWindow != null)
+				m_activityWindow.Close();			
 		}
 		void client_SaveMeasurementCompleted(object sender, SaveMeasurementCompletedEventArgs e)
 		{
@@ -364,15 +364,15 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			sm.Show();
 
 			App app = (App)Application.Current;
-			if (deviceID > 0)
-				client.GetMeasurementsByDeviceAsync(deviceID);
+			if (m_deviceID > 0)
+				m_client.GetMeasurementsByDeviceAsync(m_deviceID);
 			else
-				client.GetMeasurementListAsync(app.NodeValue);
+				m_client.GetMeasurementListAsync(app.NodeValue);
 		}
 		void ComboBoxDevice_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			KeyValuePair<int, string> selectedDevice = (KeyValuePair<int, string>)ComboBoxDevice.SelectedItem;
-			client.GetPhasorsAsync(selectedDevice.Key, true);
+			m_client.GetPhasorsAsync(selectedDevice.Key, true);
 		}
 		void ListBoxMeasurementList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -394,8 +394,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					ComboBoxPhasorSource.SelectedIndex = 0;
 				ComboBoxSignalType.SelectedItem = new KeyValuePair<int, string>(selectedMeasurement.SignalTypeID, selectedMeasurement.SignalName);
 
-				inEditMode = true;
-				signalID = selectedMeasurement.SignalID;
+				m_inEditMode = true;
+				m_signalID = selectedMeasurement.SignalID;
 			}
 		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -419,13 +419,13 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			measurement.Description = TextBoxDescription.Text;
 			measurement.Enabled = (bool)CheckboxEnabled.IsChecked;
 
-			if (inEditMode == true && !string.IsNullOrEmpty(signalID))
+			if (m_inEditMode == true && !string.IsNullOrEmpty(m_signalID))
 			{
-				measurement.SignalID = signalID;
-				client.SaveMeasurementAsync(measurement, false);
+				measurement.SignalID = m_signalID;
+				m_client.SaveMeasurementAsync(measurement, false);
 			}
 			else
-				client.SaveMeasurementAsync(measurement, true);
+				m_client.SaveMeasurementAsync(measurement, true);
 		}
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -545,29 +545,29 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			ComboBoxHistorian.SelectedIndex = 0;
 			ComboBoxPhasorSource.SelectedIndex = 0;
 			ComboBoxSignalType.SelectedIndex = 0;
-			inEditMode = false;
-			signalID = string.Empty;
+			m_inEditMode = false;
+			m_signalID = string.Empty;
 			ListBoxMeasurementList.SelectedIndex = -1;
 		}
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			activityWindow = new ActivityWindow("Loading Data... Please Wait...");
-			activityWindow.Show();
-			client.GetHistoriansAsync(true, true);
-			client.GetDevicesAsync(DeviceType.NonConcentrator, true);
-			client.GetSignalTypesAsync(false);
+			m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+			m_activityWindow.Show();
+			m_client.GetHistoriansAsync(true, true);
+			m_client.GetDevicesAsync(DeviceType.NonConcentrator, true);
+			m_client.GetSignalTypesAsync(false);
 			App app = (App)Application.Current;
 
 			if (this.NavigationContext.QueryString.ContainsKey("did"))
 			{
-				deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
-				client.GetMeasurementsByDeviceAsync(deviceID);
-				client.GetDeviceByDeviceIDAsync(deviceID);
+				m_deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
+				m_client.GetMeasurementsByDeviceAsync(m_deviceID);
+				m_client.GetDeviceByDeviceIDAsync(m_deviceID);
 			}
 			else
 			{
-				client.GetMeasurementListAsync(app.NodeValue);
+				m_client.GetMeasurementListAsync(app.NodeValue);
 			}
 		}
 

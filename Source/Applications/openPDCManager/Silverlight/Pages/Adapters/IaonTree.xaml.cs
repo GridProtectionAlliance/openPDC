@@ -230,33 +230,25 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using System.Windows.Navigation;
-using System.ServiceModel;
+using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
 
 namespace openPDCManager.Silverlight.Pages.Adapters
 {
 	public partial class IaonTree : Page
 	{
-		PhasorDataServiceClient client;
+		PhasorDataServiceClient m_client;
 
 		public IaonTree()
 		{
 			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetIaonTreeDataCompleted += new EventHandler<GetIaonTreeDataCompletedEventArgs>(client_GetIaonTreeDataCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetIaonTreeDataCompleted += new EventHandler<GetIaonTreeDataCompletedEventArgs>(client_GetIaonTreeDataCompleted);
 			Loaded += new RoutedEventHandler(IaonTree_Loaded);			
 		}
 
@@ -287,7 +279,8 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			client.GetIaonTreeDataAsync();	
+			App app = (App)Application.Current;
+			m_client.GetIaonTreeDataAsync(app.NodeValue);	
 		}
 
 	}

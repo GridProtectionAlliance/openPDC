@@ -248,34 +248,34 @@ namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class InputWizard : Page
 	{		
-		PhasorDataServiceClient client;
-		Stream configFileData, connectionFileData, iniFileData;
-		ConnectionSettings connectionSettings;
-		ObservableCollection<WizardDeviceInfo> wizardDeviceInfoList;
-		Dictionary<int, string> vendorDeviceList;
-		ActivityWindow activityWindow;
-		int? parentID = null;
-		string iniFileName = string.Empty;
-		string iniFilePath = string.Empty;
+		PhasorDataServiceClient m_client;
+		Stream m_configFileData, m_connectionFileData, m_iniFileData;
+		ConnectionSettings m_connectionSettings;
+		ObservableCollection<WizardDeviceInfo> m_wizardDeviceInfoList;
+		Dictionary<int, string> m_vendorDeviceList;
+		ActivityWindow m_activityWindow;
+		int? m_parentID = null;
+		string m_iniFileName = string.Empty;
+		string m_iniFilePath = string.Empty;
 		
 		public InputWizard()
 		{
 			InitializeComponent();
 			//Services Events			
-			client = Common.GetPhasorDataServiceProxyClient();
-			client.GetProtocolsCompleted += new EventHandler<GetProtocolsCompletedEventArgs>(client_GetProtocolsCompleted);
-			client.GetVendorDevicesCompleted += new EventHandler<GetVendorDevicesCompletedEventArgs>(client_GetVendorDevicesCompleted);
-			client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);
-			client.GetHistoriansCompleted += new EventHandler<GetHistoriansCompletedEventArgs>(client_GetHistoriansCompleted);
-			client.GetInterconnectionsCompleted += new EventHandler<GetInterconnectionsCompletedEventArgs>(client_GetInterconnectionsCompleted);
-			client.GetConnectionSettingsCompleted += new EventHandler<GetConnectionSettingsCompletedEventArgs>(client_GetConnectionSettingsCompleted);
-			client.GetWizardConfigurationInfoCompleted += new EventHandler<GetWizardConfigurationInfoCompletedEventArgs>(client_GetWizardConfigurationInfoCompleted);
-			client.SaveWizardConfigurationInfoCompleted += new EventHandler<SaveWizardConfigurationInfoCompletedEventArgs>(client_SaveWizardConfigurationInfoCompleted);
-			client.GetDeviceByAcronymCompleted += new EventHandler<GetDeviceByAcronymCompletedEventArgs>(client_GetDeviceByAcronymCompleted);
-			client.SaveDeviceCompleted += new EventHandler<SaveDeviceCompletedEventArgs>(client_SaveDeviceCompleted);
-			client.GetExecutingAssemblyPathCompleted += new EventHandler<GetExecutingAssemblyPathCompletedEventArgs>(client_GetExecutingAssemblyPathCompleted);
-			client.SaveIniFileCompleted += new EventHandler<SaveIniFileCompletedEventArgs>(client_SaveIniFileCompleted);
-			client.GetProtocolIDByAcronymCompleted += new EventHandler<GetProtocolIDByAcronymCompletedEventArgs>(client_GetProtocolIDByAcronymCompleted);
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetProtocolsCompleted += new EventHandler<GetProtocolsCompletedEventArgs>(client_GetProtocolsCompleted);
+			m_client.GetVendorDevicesCompleted += new EventHandler<GetVendorDevicesCompletedEventArgs>(client_GetVendorDevicesCompleted);
+			m_client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);
+			m_client.GetHistoriansCompleted += new EventHandler<GetHistoriansCompletedEventArgs>(client_GetHistoriansCompleted);
+			m_client.GetInterconnectionsCompleted += new EventHandler<GetInterconnectionsCompletedEventArgs>(client_GetInterconnectionsCompleted);
+			m_client.GetConnectionSettingsCompleted += new EventHandler<GetConnectionSettingsCompletedEventArgs>(client_GetConnectionSettingsCompleted);
+			m_client.GetWizardConfigurationInfoCompleted += new EventHandler<GetWizardConfigurationInfoCompletedEventArgs>(client_GetWizardConfigurationInfoCompleted);
+			m_client.SaveWizardConfigurationInfoCompleted += new EventHandler<SaveWizardConfigurationInfoCompletedEventArgs>(client_SaveWizardConfigurationInfoCompleted);
+			m_client.GetDeviceByAcronymCompleted += new EventHandler<GetDeviceByAcronymCompletedEventArgs>(client_GetDeviceByAcronymCompleted);
+			m_client.SaveDeviceCompleted += new EventHandler<SaveDeviceCompletedEventArgs>(client_SaveDeviceCompleted);
+			m_client.GetExecutingAssemblyPathCompleted += new EventHandler<GetExecutingAssemblyPathCompletedEventArgs>(client_GetExecutingAssemblyPathCompleted);
+			m_client.SaveIniFileCompleted += new EventHandler<SaveIniFileCompletedEventArgs>(client_SaveIniFileCompleted);
+			m_client.GetProtocolIDByAcronymCompleted += new EventHandler<GetProtocolIDByAcronymCompletedEventArgs>(client_GetProtocolIDByAcronymCompleted);
 			//Controls Events
 			Loaded += new RoutedEventHandler(InputWizard_Loaded);
 			ButtonBrowseConfigurationFile.Click += new RoutedEventHandler(ButtonBrowseConfigurationFile_Click);
@@ -308,7 +308,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		void client_SaveIniFileCompleted(object sender, SaveIniFileCompletedEventArgs e)
 		{
 			if (e.Error == null)
-				iniFileName = e.Result;
+				m_iniFileName = e.Result;
 			else
 			{
 				SystemMessages sm;
@@ -327,7 +327,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		void client_GetExecutingAssemblyPathCompleted(object sender, GetExecutingAssemblyPathCompletedEventArgs e)
 		{
 			if (e.Error == null)
-				iniFilePath = e.Result;
+				m_iniFilePath = e.Result;
 			else
 			{
 				SystemMessages sm;
@@ -414,8 +414,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			if (e.Error == null)
 			{
-				vendorDeviceList = e.Result;
-				ComboboxPDCVendor.ItemsSource = vendorDeviceList;
+				m_vendorDeviceList = e.Result;
+				ComboboxPDCVendor.ItemsSource = m_vendorDeviceList;
 			}
 			else
 			{
@@ -461,12 +461,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			if (e.Error == null)
 			{
-				connectionSettings = e.Result;
-				if (connectionSettings != null)
+				m_connectionSettings = e.Result;
+				if (m_connectionSettings != null)
 				{
-					TextBoxConnectionString.Text = "TransportProtocol=" + connectionSettings.TransportProtocol.ToString() + ";" + connectionSettings.ConnectionString;
+					TextBoxConnectionString.Text = "TransportProtocol=" + m_connectionSettings.TransportProtocol.ToString() + ";" + m_connectionSettings.ConnectionString;
 					//Select Phasor Protocol type in the combobox based on the protocol in the connection file.
-					client.GetProtocolIDByAcronymAsync(connectionSettings.PhasorProtocol.ToString());
+					m_client.GetProtocolIDByAcronymAsync(m_connectionSettings.PhasorProtocol.ToString());
 				}
 			}
 			else
@@ -489,8 +489,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			if (e.Error == null)
 			{
-				wizardDeviceInfoList = e.Result;
-				ItemControlDeviceList.ItemsSource = wizardDeviceInfoList;
+				m_wizardDeviceInfoList = e.Result;
+				ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
 			}
 			else
 			{
@@ -529,8 +529,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			if (activityWindow != null)
-				activityWindow.Close();	
+			if (m_activityWindow != null)
+				m_activityWindow.Close();	
 		}
 		void client_GetDeviceByAcronymCompleted(object sender, GetDeviceByAcronymCompletedEventArgs e)
 		{
@@ -539,7 +539,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				Device device = new Device();
 				device = e.Result;
 				if (device != null && device.IsConcentrator)
-					parentID = device.ID;
+					m_parentID = device.ID;
 				else	// means PDC does not exist. if (parentID == null)
 				{
 					App app = (App)Application.Current;
@@ -548,7 +548,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					device.Acronym = TextBoxPDCAcronym.Text;
 					device.IsConcentrator = true;
 					device.VendorDeviceID = ((KeyValuePair<int, string>)ComboboxPDCVendor.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxPDCVendor.SelectedItem).Key;
-					device.AccessID = wizardDeviceInfoList.Count > 0 ? wizardDeviceInfoList[0].ParentAccessID : 0;
+					device.AccessID = m_wizardDeviceInfoList.Count > 0 ? m_wizardDeviceInfoList[0].ParentAccessID : 0;
 					device.NodeID = app.NodeValue;
 					device.ParentID = null;
 					device.Longitude = 0;
@@ -561,11 +561,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					device.TimeZone = string.Empty;
 					device.TimeAdjustmentTicks = 0;
 					device.DataLossInterval = 35;
-					device.MeasuredLines = wizardDeviceInfoList.Count;
+					device.MeasuredLines = m_wizardDeviceInfoList.Count;
 					device.LoadOrder = 0;
 					device.ContactList = string.Empty;
 					device.Enabled = true;
-					client.SaveDeviceAsync(device, true);
+					m_client.SaveDeviceAsync(device, true);
 				}
 			}
 			else
@@ -587,7 +587,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		void client_SaveDeviceCompleted(object sender, SaveDeviceCompletedEventArgs e)
 		{
 			if (e.Error == null)
-				client.GetDeviceByAcronymAsync(TextBoxPDCAcronym.Text);	// calling this again would set parentID needed in the final step of the wizard.
+				m_client.GetDeviceByAcronymAsync(TextBoxPDCAcronym.Text);	// calling this again would set parentID needed in the final step of the wizard.
 			else
 			{
 				SystemMessages sm;
@@ -658,9 +658,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (result != null && result == true)
 			{
 				TextBoxIniFile.Text = openFileDialog.File.Name;
-				iniFileName = openFileDialog.File.Name;
-				iniFileData = openFileDialog.File.OpenRead();
-				client.SaveIniFileAsync(ReadFileBytes(iniFileData));
+				m_iniFileName = openFileDialog.File.Name;
+				m_iniFileData = openFileDialog.File.OpenRead();
+				m_client.SaveIniFileAsync(ReadFileBytes(m_iniFileData));
 				//UploadIniFile(iniFileName, iniFileData);
 			}
 		}
@@ -679,8 +679,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (result != null && result == true)
 			{
 				TextBoxConnectionFile.Text = openFileDialog.File.Name;
-				connectionFileData = openFileDialog.File.OpenRead();
-				client.GetConnectionSettingsAsync(ReadFileBytes(connectionFileData));
+				m_connectionFileData = openFileDialog.File.OpenRead();
+				m_client.GetConnectionSettingsAsync(ReadFileBytes(m_connectionFileData));
 			}
 		}
 		void ButtonBrowseConfigurationFile_Click(object sender, RoutedEventArgs e)
@@ -698,7 +698,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (result != null && result == true)
 			{
 				TextBoxConfigurationFile.Text = openFileDialog.File.Name;
-				configFileData = openFileDialog.File.OpenRead();
+				m_configFileData = openFileDialog.File.OpenRead();
 				//client.GetWizardConfigurationInfoAsync(ReadFileBytes(configFileData));
 			}
 		}
@@ -726,40 +726,39 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 			if (AccordianWizard.SelectedIndex == 0)	//we will wait till user clicks next on the first screen to read config file becuase INI file may play a role before we can read config file.
 			{
-				if ((((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Value.ToUpper().Contains("BPA")) && !string.IsNullOrEmpty(iniFileName))
+				if ((((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Value.ToUpper().Contains("BPA")) && !string.IsNullOrEmpty(m_iniFileName))
 				{
-					string configFileDataString = (new StreamReader(configFileData)).ReadToEnd();
-
+					string configFileDataString = (new StreamReader(m_configFileData)).ReadToEnd();
 					string leftPart = configFileDataString.Substring(0, configFileDataString.IndexOf("</configurationFileName>"));
 					string rightPart = configFileDataString.Substring(configFileDataString.IndexOf("</configurationFileName>"));
 					leftPart = leftPart.Substring(0, leftPart.LastIndexOf(">") + 1);
 
-					configFileDataString = leftPart + iniFilePath + "\\" + iniFileName + rightPart;
+					configFileDataString = leftPart + m_iniFilePath + "\\" + m_iniFileName + rightPart;
 
 					Byte[] fileData = Encoding.UTF8.GetBytes(configFileDataString);
 					MemoryStream ms = new MemoryStream();
 					ms.Write(fileData, 0, fileData.Length);
 					ms.Position = 0;
-					client.GetWizardConfigurationInfoAsync(ReadFileBytes(ms));
+					m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(ms));
 				}
 				else
-					client.GetWizardConfigurationInfoAsync(ReadFileBytes(configFileData));
+					m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(m_configFileData));
 			}
 
 			if (AccordianWizard.SelectedIndex == 1 && ((bool)CheckboxConnectToPDC.IsChecked))	//we'll check this on second screen instead of first because second screen will give us company information, historian etc.
-					client.GetDeviceByAcronymAsync(TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
+					m_client.GetDeviceByAcronymAsync(TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
 
 			if (AccordianWizard.SelectedIndex == AccordianWizard.Items.Count - 1)
 			{
-				activityWindow = new ActivityWindow("Processing Request... Please Wait...");
-				activityWindow.Show();
+				m_activityWindow = new ActivityWindow("Processing Request... Please Wait...");
+				m_activityWindow.Show();
 
 				App app = (App)Application.Current;
 				int? protocolID = ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key;
 				int? companyID = ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key;
 				int? historianID = ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key;
 				int? interconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
-				client.SaveWizardConfigurationInfoAsync(app.NodeValue, wizardDeviceInfoList, TextBoxConnectionString.Text, protocolID, companyID, historianID, interconnectionID, parentID);
+				m_client.SaveWizardConfigurationInfoAsync(app.NodeValue, m_wizardDeviceInfoList, TextBoxConnectionString.Text, protocolID, companyID, historianID, interconnectionID, m_parentID);
 			}
 
 			if (AccordianWizard.SelectedIndex < AccordianWizard.Items.Count - 1)
@@ -770,9 +769,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void ComboboxVendor_Loaded(object sender, RoutedEventArgs e)
 		{
-			if (vendorDeviceList.Count > 0)
+			if (m_vendorDeviceList.Count > 0)
 			{
-				((ComboBox)sender).ItemsSource = vendorDeviceList;
+				((ComboBox)sender).ItemsSource = m_vendorDeviceList;
 				((ComboBox)sender).SelectedIndex = 0;
 			}			
 		}
@@ -876,17 +875,17 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>();
-			vendorDeviceList = new Dictionary<int, string>();
-			client.GetProtocolsAsync(false);
-			client.GetVendorDevicesAsync(true);
+			m_wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>();
+			m_vendorDeviceList = new Dictionary<int, string>();
+			m_client.GetProtocolsAsync(false);
+			m_client.GetVendorDevicesAsync(true);
 			PdcInfoVisualization(Visibility.Collapsed);
 			if (AccordianWizard.SelectedIndex == 0)
 				ButtonPrevious.Visibility = Visibility.Collapsed;
-			client.GetCompaniesAsync(true);
-			client.GetHistoriansAsync(true, true);
-			client.GetInterconnectionsAsync(true);
-			client.GetExecutingAssemblyPathAsync();
+			m_client.GetCompaniesAsync(true);
+			m_client.GetHistoriansAsync(true, true);
+			m_client.GetInterconnectionsAsync(true);
+			m_client.GetExecutingAssemblyPathAsync();
 		}
 	}
 }

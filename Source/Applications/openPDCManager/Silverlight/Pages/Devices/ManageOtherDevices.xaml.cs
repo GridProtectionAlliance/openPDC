@@ -244,20 +244,20 @@ namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class ManageOtherDevices : Page
 	{
-		PhasorDataServiceClient client;
-		bool inEditMode = false;
-		int deviceID = 0;
+		PhasorDataServiceClient m_client;
+		bool m_inEditMode = false;
+		int m_deviceID = 0;
 
 		public ManageOtherDevices()
 		{
 			InitializeComponent();
-			client = Common.GetPhasorDataServiceProxyClient();
+			m_client = Common.GetPhasorDataServiceProxyClient();
 			Loaded += new RoutedEventHandler(ManageOtherDevices_Loaded);
-			client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);
-			client.GetVendorDevicesCompleted += new EventHandler<GetVendorDevicesCompletedEventArgs>(client_GetVendorDevicesCompleted);
-			client.GetInterconnectionsCompleted += new EventHandler<GetInterconnectionsCompletedEventArgs>(client_GetInterconnectionsCompleted);
-			client.SaveOtherDeviceCompleted += new EventHandler<SaveOtherDeviceCompletedEventArgs>(client_SaveOtherDeviceCompleted);
-			client.GetOtherDeviceByDeviceIDCompleted += new EventHandler<GetOtherDeviceByDeviceIDCompletedEventArgs>(client_GetOtherDeviceByDeviceIDCompleted);
+			m_client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);
+			m_client.GetVendorDevicesCompleted += new EventHandler<GetVendorDevicesCompletedEventArgs>(client_GetVendorDevicesCompleted);
+			m_client.GetInterconnectionsCompleted += new EventHandler<GetInterconnectionsCompletedEventArgs>(client_GetInterconnectionsCompleted);
+			m_client.SaveOtherDeviceCompleted += new EventHandler<SaveOtherDeviceCompletedEventArgs>(client_SaveOtherDeviceCompleted);
+			m_client.GetOtherDeviceByDeviceIDCompleted += new EventHandler<GetOtherDeviceByDeviceIDCompletedEventArgs>(client_GetOtherDeviceByDeviceIDCompleted);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 		}
@@ -351,12 +351,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			otherDevice.Planned = (bool)CheckboxPlanned.IsChecked;
 			otherDevice.Desired = (bool)CheckboxDesired.IsChecked;
 			otherDevice.InProgress = (bool)CheckboxInProgress.IsChecked;
-			if (inEditMode == false && deviceID == 0)
-				client.SaveOtherDeviceAsync(otherDevice, true);
+			if (m_inEditMode == false && m_deviceID == 0)
+				m_client.SaveOtherDeviceAsync(otherDevice, true);
 			else
 			{
-				otherDevice.ID = deviceID;
-				client.SaveOtherDeviceAsync(otherDevice, false);
+				otherDevice.ID = m_deviceID;
+				m_client.SaveOtherDeviceAsync(otherDevice, false);
 			}
 		}
 		void client_GetInterconnectionsCompleted(object sender, GetInterconnectionsCompletedEventArgs e)
@@ -429,9 +429,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			if (this.NavigationContext.QueryString.ContainsKey("did"))
 			{
-				deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
-				inEditMode = true;
-				client.GetOtherDeviceByDeviceIDAsync(deviceID);
+				m_deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
+				m_inEditMode = true;
+				m_client.GetOtherDeviceByDeviceIDAsync(m_deviceID);
 			}
 		}
 
@@ -441,15 +441,15 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			ComboboxCompany.SelectedIndex = 0;
 			ComboboxInterconnection.SelectedIndex = 0;
 			ComboboxVendorDevice.SelectedIndex = 0;
-			inEditMode = false;
-			deviceID = 0;
+			m_inEditMode = false;
+			m_deviceID = 0;
 		}
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			client.GetCompaniesAsync(true);
-			client.GetVendorDevicesAsync(true);
-			client.GetInterconnectionsAsync(true);			
+			m_client.GetCompaniesAsync(true);
+			m_client.GetVendorDevicesAsync(true);
+			m_client.GetInterconnectionsAsync(true);			
 		}
 
 	}
