@@ -640,8 +640,8 @@ CREATE VIEW NodeDetail
 AS
 SELECT N.ID, N.Name, N.CompanyID AS CompanyID, COALESCE(N.Longitude, 0) AS Longitude, COALESCE(N.Latitude, 0) AS Latitude, 
 		COALESCE(N.Description, '') AS Description, COALESCE(N.ImagePath, '') AS ImagePath, N.Master, N.LoadOrder, N.Enabled, COALESCE(C.Name, '') AS CompanyName
-FROM Node N, Company C 
-WHERE N.CompanyID = C.ID;
+FROM Node N LEFT JOIN Company C 
+ON N.CompanyID = C.ID;
 
 CREATE VIEW VendorDetail
 AS
