@@ -321,7 +321,7 @@ namespace ICCPExport
             string errorMessage = "{0} is missing from Settings - Example: exportInterval=5; useReferenceAngle=True; referenceAngleMeasurement=ArchiveA:121; companyTagPrefix=TVA; useNumericQuality=True; inputMeasurementKeys={FILTER ActiveMeasurements WHERE Device='SHELBY' AND SignalType='FREQ'}";
             string setting;
 
-            if (InputMeasurementKeys.Length == 0)
+            if (InputMeasurementKeys == null || InputMeasurementKeys.Length == 0)
                 throw new InvalidOperationException("There are no input measurements defined. You must define \"inputMeasurementKeys\" to define which measurements to export");
 
             // Load required parameters
