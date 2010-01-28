@@ -102,6 +102,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Access", "Access", "{F0072CE5-12A6-4713-BBD0-B57966ED2339}"
 	ProjectSection(SolutionItems) = preProject
+		Data\Access\openPDC-InitialDataSet.mdb = Data\Access\openPDC-InitialDataSet.mdb
 		Data\Access\openPDC-SampleDataSet.mdb = Data\Access\openPDC-SampleDataSet.mdb
 	EndProjectSection
 EndProject
