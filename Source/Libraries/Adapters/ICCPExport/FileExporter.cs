@@ -14,7 +14,8 @@
 //      Converted code to C# and corrected angle wrapping algorithm.
 //  01/15/2010 - J. Ritchie Carroll
 //      Abstracted code for general purpose use in the openPDC.
-//
+//  01/29/2010 - Jian R. Zuo
+//      Add default value to m_exportInterval avoid "Attempted to divide by zero" exception
 //*******************************************************************************************************
 
 #region [ TVA Open Source Agreement ]
@@ -321,14 +322,24 @@ namespace ICCPExport
             string errorMessage = "{0} is missing from Settings - Example: exportInterval=5; useReferenceAngle=True; referenceAngleMeasurement=ArchiveA:121; companyTagPrefix=TVA; useNumericQuality=True; inputMeasurementKeys={FILTER ActiveMeasurements WHERE Device='SHELBY' AND SignalType='FREQ'}";
             string setting;
 
+            // Load required parameters
+            if (!settings.TryGetValue("exportInterval", out setting))
+            {
+                m_exportInterval = 10;                                  //Default value
+                throw new ArgumentException(string.Format(errorMessage, "exportInterval"));
+            }
+            
+            m_exportInterval = int.Parse(setting);
+
+            if (m_exportInterval == 0)
+            {
+                m_exportInterval = 10;                                  //Default value
+                throw new ArgumentException(string.Format("{0} should not be ZERO - Example: exportInterval=5; useReferenceAngle=True; referenceAngleMeasurement=ArchiveA:121; companyTagPrefix=TVA; useNumericQuality=True; inputMeasurementKeys={FILTER ActiveMeasurements WHERE Device='SHELBY' AND SignalType='FREQ'}", "exportInterval"));
+            }
+
             if (InputMeasurementKeys == null || InputMeasurementKeys.Length == 0)
                 throw new InvalidOperationException("There are no input measurements defined. You must define \"inputMeasurementKeys\" to define which measurements to export");
 
-            // Load required parameters
-            if (!settings.TryGetValue("exportInterval", out setting))
-                throw new ArgumentException(string.Format(errorMessage, "exportInterval"));
-            
-            m_exportInterval = int.Parse(setting);
 
             if (!settings.TryGetValue("useReferenceAngle", out setting))
                 throw new ArgumentException(string.Format(errorMessage, "useReferenceAngle"));
