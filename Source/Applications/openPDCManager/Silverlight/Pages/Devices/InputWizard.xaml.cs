@@ -283,7 +283,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			ButtonBrowseIniFile.Click += new RoutedEventHandler(ButtonBrowseIniFile_Click);
 			ButtonNext.Click += new RoutedEventHandler(ButtonNext_Click);
 			ButtonPrevious.Click += new RoutedEventHandler(ButtonPrevious_Click);
-			AccordianWizard.SelectionChanged += new SelectionChangedEventHandler(AccordianWizard_SelectionChanged);
+			AccordianWizard.SelectionChanged += new SelectionChangedEventHandler(AccordianWizard_SelectionChanged);			
 			CheckboxConnectToPDC.Checked += new RoutedEventHandler(CheckboxConnectToPDC_Checked);
 			CheckboxConnectToPDC.Unchecked += new RoutedEventHandler(CheckboxConnectToPDC_Unchecked);
 			ComboboxProtocol.SelectionChanged += new SelectionChangedEventHandler(ComboboxProtocol_SelectionChanged);
@@ -627,6 +627,33 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void AccordianWizard_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (AccordianWizard.SelectedIndex == 1)
+			{
+				if (m_wizardDeviceInfoList.Count == 0) //this was added to fix issues with going back and forth on wizard steps.
+				{
+					if ((((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Value.ToUpper().Contains("BPA")) && !string.IsNullOrEmpty(m_iniFileName))
+					{
+						string configFileDataString = (new StreamReader(m_configFileData)).ReadToEnd();
+						string leftPart = configFileDataString.Substring(0, configFileDataString.IndexOf("</configurationFileName>"));
+						string rightPart = configFileDataString.Substring(configFileDataString.IndexOf("</configurationFileName>"));
+						leftPart = leftPart.Substring(0, leftPart.LastIndexOf(">") + 1);
+
+						configFileDataString = leftPart + m_iniFilePath + "\\" + m_iniFileName + rightPart;
+
+						Byte[] fileData = Encoding.UTF8.GetBytes(configFileDataString);
+						MemoryStream ms = new MemoryStream();
+						ms.Write(fileData, 0, fileData.Length);
+						ms.Position = 0;
+						m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(ms));
+					}
+					else
+						m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(m_configFileData));
+				}
+			}
+			
+			if (AccordianWizard.SelectedIndex == 2 && ((bool)CheckboxConnectToPDC.IsChecked))
+				m_client.GetDeviceByAcronymAsync(TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
+
 			if (AccordianWizard.SelectedIndex == 0)
 			{
 				ButtonPrevious.Visibility = Visibility.Collapsed;
@@ -724,29 +751,30 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			Storyboard.SetTarget(sb, ButtonNextTransform);
 			sb.Begin();
 
+			//Code here has been moved to AccordianWizard_SelectionChanged. Since SelectionChanged occurs after selection has been changed, this same code is implemented on index == 1
 			if (AccordianWizard.SelectedIndex == 0)	//we will wait till user clicks next on the first screen to read config file becuase INI file may play a role before we can read config file.
 			{
-				if ((((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Value.ToUpper().Contains("BPA")) && !string.IsNullOrEmpty(m_iniFileName))
-				{
-					string configFileDataString = (new StreamReader(m_configFileData)).ReadToEnd();
-					string leftPart = configFileDataString.Substring(0, configFileDataString.IndexOf("</configurationFileName>"));
-					string rightPart = configFileDataString.Substring(configFileDataString.IndexOf("</configurationFileName>"));
-					leftPart = leftPart.Substring(0, leftPart.LastIndexOf(">") + 1);
+				//if ((((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Value.ToUpper().Contains("BPA")) && !string.IsNullOrEmpty(m_iniFileName))
+				//{
+				//    string configFileDataString = (new StreamReader(m_configFileData)).ReadToEnd();
+				//    string leftPart = configFileDataString.Substring(0, configFileDataString.IndexOf("</configurationFileName>"));
+				//    string rightPart = configFileDataString.Substring(configFileDataString.IndexOf("</configurationFileName>"));
+				//    leftPart = leftPart.Substring(0, leftPart.LastIndexOf(">") + 1);
 
-					configFileDataString = leftPart + m_iniFilePath + "\\" + m_iniFileName + rightPart;
+				//    configFileDataString = leftPart + m_iniFilePath + "\\" + m_iniFileName + rightPart;
 
-					Byte[] fileData = Encoding.UTF8.GetBytes(configFileDataString);
-					MemoryStream ms = new MemoryStream();
-					ms.Write(fileData, 0, fileData.Length);
-					ms.Position = 0;
-					m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(ms));
-				}
-				else
-					m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(m_configFileData));
+				//    Byte[] fileData = Encoding.UTF8.GetBytes(configFileDataString);
+				//    MemoryStream ms = new MemoryStream();
+				//    ms.Write(fileData, 0, fileData.Length);
+				//    ms.Position = 0;
+				//    m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(ms));
+				//}
+				//else
+				//    m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(m_configFileData));
 			}
 
-			if (AccordianWizard.SelectedIndex == 1 && ((bool)CheckboxConnectToPDC.IsChecked))	//we'll check this on second screen instead of first because second screen will give us company information, historian etc.
-					m_client.GetDeviceByAcronymAsync(TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
+			//if (AccordianWizard.SelectedIndex == 1 && ((bool)CheckboxConnectToPDC.IsChecked))	//we'll check this on second screen instead of first because second screen will give us company information, historian etc.
+			//        m_client.GetDeviceByAcronymAsync(TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
 
 			if (AccordianWizard.SelectedIndex == AccordianWizard.Items.Count - 1)
 			{

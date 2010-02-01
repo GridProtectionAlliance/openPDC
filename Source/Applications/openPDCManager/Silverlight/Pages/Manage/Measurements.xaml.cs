@@ -317,6 +317,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			if (m_activityWindow != null)
 				m_activityWindow.Close();	
 		}
+		
 		void client_GetMeasurementListCompleted(object sender, GetMeasurementListCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -339,6 +340,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			if (m_activityWindow != null)
 				m_activityWindow.Close();			
 		}
+		
 		void client_SaveMeasurementCompleted(object sender, SaveMeasurementCompletedEventArgs e)
 		{
 			SystemMessages sm;
@@ -369,11 +371,13 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			else
 				m_client.GetMeasurementListAsync(app.NodeValue);
 		}
+		
 		void ComboBoxDevice_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			KeyValuePair<int, string> selectedDevice = (KeyValuePair<int, string>)ComboBoxDevice.SelectedItem;
 			m_client.GetPhasorsAsync(selectedDevice.Key, true);
 		}
+		
 		void ListBoxMeasurementList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (ListBoxMeasurementList.SelectedIndex >= 0)
@@ -388,10 +392,19 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					ComboBoxDevice.SelectedItem = new KeyValuePair<int, string>((int)selectedMeasurement.DeviceID, selectedMeasurement.DeviceAcronym);
 				else
 					ComboBoxDevice.SelectedIndex = 0;
-				if (selectedMeasurement.PhasorSourceIndex.HasValue)
-					ComboBoxPhasorSource.SelectedItem = new KeyValuePair<int, string>((int)selectedMeasurement.PhasorSourceIndex, selectedMeasurement.PhasorLabel);
-				else
-					ComboBoxPhasorSource.SelectedIndex = 0;
+
+				if (ComboBoxPhasorSource.Items.Count > 0 && selectedMeasurement.PhasorSourceIndex.HasValue)
+				{
+					foreach (KeyValuePair<int, string> item in ComboBoxPhasorSource.Items)
+					{
+						if (item.Value == selectedMeasurement.PhasorLabel)
+						{
+							ComboBoxPhasorSource.SelectedItem = item;
+							break;
+						}
+					}
+				}
+
 				ComboBoxSignalType.SelectedItem = new KeyValuePair<int, string>(selectedMeasurement.SignalTypeID, selectedMeasurement.SignalName);
 
 				m_inEditMode = true;
@@ -448,7 +461,26 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			{
 				ComboBoxPhasorSource.ItemsSource = e.Result;
 				if (ComboBoxPhasorSource.Items.Count > 0)
+				{
 					ComboBoxPhasorSource.SelectedIndex = 0;
+					if (ListBoxMeasurementList.SelectedIndex >= 0)
+					{
+						Measurement selectedMeasurement = ListBoxMeasurementList.SelectedItem as Measurement;
+						if (selectedMeasurement.PhasorSourceIndex.HasValue)
+						{
+							foreach (KeyValuePair<int, string> item in ComboBoxPhasorSource.Items)
+							{
+								if (item.Value == selectedMeasurement.PhasorLabel)
+								{
+									ComboBoxPhasorSource.SelectedItem = item;
+									break;
+								}
+							}
+						}
+						else
+							ComboBoxPhasorSource.SelectedIndex = 0;
+					}
+				}
 			}
 			else
 			{

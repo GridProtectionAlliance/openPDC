@@ -25,7 +25,7 @@
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Source Measurement" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                         <Button Grid.Row="0" Grid.Column="1" Content="..." x:Name="ButtonSourceMeasurement" Margin="5" Width="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left"/>                        
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Historian" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>                        
-                        <TextBlock x:Name="TextBlockHistorian" Grid.Row="1" Grid.Column="1" Text="{Binding Path=HistorianID}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>
+                        <TextBlock x:Name="TextBlockHistorian" Grid.Row="1" Grid.Column="1" Text="{Binding Path=HistorianAcronym}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="Point ID" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                         <TextBlock x:Name="TextBlockPointID" Grid.Row="1" Grid.Column="3" Text="{Binding Path=PointID}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>                        
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Signal Reference" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>

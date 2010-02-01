@@ -248,6 +248,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		PhasorDataServiceClient m_client;
 		ObservableCollection<Measurement> m_measurementList;		
 		List<string[]> m_measurementsToBeAdded;
+		ActivityWindow m_activityWindow;
 
 		public SelectMeasurement(int outputStreamID, string outputStreamAcronym)
 		{
@@ -284,6 +285,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 						ButtonType.OkOnly);
 				sm.Show();
 			}
+			if (m_activityWindow != null)
+				m_activityWindow.Close();
 		}		
 		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
 		{
@@ -326,6 +329,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		}
 		void SelectMeasurement_Loaded(object sender, RoutedEventArgs e)
 		{
+			m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+			m_activityWindow.Show();
 			m_measurementList = new ObservableCollection<Measurement>();			
 			m_measurementsToBeAdded = new List<string[]>();
 			App app = (App)Application.Current;			

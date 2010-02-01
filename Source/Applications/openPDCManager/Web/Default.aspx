@@ -7,6 +7,7 @@
     <title>TVA NERC Phasor Concentration System</title>
     <link href="Styles/WebStyle.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="Silverlight.js"></script>
+    
     <script type="text/javascript">
         var PromptUpgrade = "<p align='center'><br /><b>To view this web application you need to upgrade to a new version of <i>Microsoft Silverlight</i> by<br />" +
 		                    "clicking the button below.</b><br /><br /><a href='http://go.microsoft.com/fwlink/?LinkID=149156&v=3.0.40624.0' " +
@@ -64,10 +65,35 @@
         };
     </script>
     
+    <script type="text/javascript">
+        window.onresize = resizeContent;
+        function resizeContent() {
+            var e = new Object();
+
+            if (window.self && self.innerWidth) {
+                e.width = self.innerWidth;
+                e.height = self.innerHeight;
+            }
+            else if (document.documentElement && document.documentElement.clientHeight) {
+                e.width = document.documentElement.clientWidth;
+                e.height = document.documentElement.clientHeight;
+            }
+            else {
+                e.width = document.body.clientWidth;
+                e.height = document.body.clientHeight;
+            }
+
+            //alert(e.height.toString() + "px");
+            document.getElementById("form1").style.width = e.width.toString() + "px";
+            document.getElementById("form1").style.height = e.height.toString() + "px";
+        }
+        
+    </script>
+        
 </head>
-<body>
-    <form id="form1" runat="server" style="width:100%; height:100%;">
-        <div id="silverlightControlHost">
+<body onload="javascript:resizeContent();">
+    <form id="form1" runat="server">        <!-- style="width:100%; height:100%;"> -->
+        <div id="silverlightControlHost" style="height: 100%; width: 100%;">
             <object id="PcsSilverlightApp" data="data:application/x-silverlight-2," type="application/x-silverlight-2" width="100%" height="100%">            
 		        <param name="source" value="ClientBin/openPDCManager.Silverlight.xap"/>
 		        <param name="onError" value="onSilverlightError" />		        

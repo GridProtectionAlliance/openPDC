@@ -245,6 +245,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 	public partial class AddNew : Page
 	{
 		PhasorDataServiceClient m_client;
+		ActivityWindow m_activityWindow;
 		bool m_inEditMode = false;
 		int m_deviceID = 0;
 
@@ -318,7 +319,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			Device deviceToEdit = new Device();
 			if (e.Error == null)
 			{
-				System.Threading.Thread.Sleep(1000);
+				System.Threading.Thread.Sleep(3000);
 				deviceToEdit = e.Result;
 				GridDeviceDetail.DataContext = deviceToEdit;
 				ComboboxNode.SelectedItem = new KeyValuePair<string, string>(deviceToEdit.NodeID, deviceToEdit.NodeName);
@@ -379,6 +380,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 				sm.Show();
 			}
+			if (m_activityWindow != null)
+				m_activityWindow.Close();
 		}
 		void client_SaveDeviceCompleted(object sender, SaveDeviceCompletedEventArgs e)
 		{
@@ -631,6 +634,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			if (this.NavigationContext.QueryString.ContainsKey("did"))
 			{
+				m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+				m_activityWindow.Show();
 				m_deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
 				m_inEditMode = true;				
 				m_client.GetDeviceByDeviceIDAsync(m_deviceID);

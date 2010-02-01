@@ -14,7 +14,7 @@
                     <Grid x:Name="GridSystemMessageDetail" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" Height="{StaticResource LargeItemSize}" Width="{StaticResource XXXLargeItemSize}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
+                            <RowDefinition Height="3*" />
                             <RowDefinition Height="*" />                            
                         </Grid.RowDefinitions>                        
                                                 
@@ -25,8 +25,7 @@
                             <Button x:Name="ButtonOk" Visibility="Visible" Content="../../Images/Ok.png" Tag="Ok" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10,5,10,5" Cursor="Hand"/>
                             <Button x:Name="ButtonNo" Visibility="Collapsed" Content="../../Images/Cancel.png" Tag="No" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10,5,10,5" Cursor="Hand"/>
                             <Button x:Name="ButtonYes" Visibility="Collapsed" Content="../../Images/Ok.png" Tag="Yes" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10,5,10,5" Cursor="Hand"/>
-                        </StackPanel>
-                        
+                        </StackPanel>                        
                     </Grid>
                 </Border>                            
             </StackPanel>

@@ -414,13 +414,38 @@ namespace openPDCManager.Web.Data
 			try
 			{
 				//Before we start saving information into database make sure all the device acronyms are unique in the collection.
-				List<string> acronymList = new List<string>();
-				acronymList = (from item in wizardDeviceInfoList
-							   select item.Acronym).Distinct().ToList();
+				//We will compare only those devices which are checked to be added to the database.
+				//List<string> acronymList = new List<string>();
+				//acronymList = (from item in wizardDeviceInfoList
+				//               where item.Include == true
+				//               select item.Acronym).ToList();
+				
+				//List<string> distinctAcronymList = new List<string>();
+				//distinctAcronymList = (from item in wizardDeviceInfoList
+				//                       where item.Include == true
+				//                       select item.Acronym).Distinct().ToList();
 
-				if (acronymList.Count != wizardDeviceInfoList.Count)	//i.e. there are duplicate acronyms.
-					throw new ArgumentException("Duplicate Acronyms Exists!");
+				//if (acronymList.Count != distinctAcronymList.Count)	//i.e. there are duplicate acronyms.
+				//	throw new ArgumentException("Duplicate Acronyms Exists!");
 
+				List<string> nondistinctAcronymList = new List<string>();
+				nondistinctAcronymList = (from item in wizardDeviceInfoList
+										  where item.Include == true
+										  group item by item.Acronym into grouped
+										  where grouped.Count() > 1
+										  select grouped.Key).ToList();
+
+				if (nondistinctAcronymList.Count > 0)
+				{
+					StringBuilder sb = new StringBuilder("Duplicate Acronyms Exist");
+					foreach (string item in nondistinctAcronymList)
+					{
+						sb.AppendLine();
+						sb.Append(item);
+					}
+					throw new ArgumentException(sb.ToString());
+				}
+				
 				int loadOrder = 1;
 				foreach (WizardDeviceInfo info in wizardDeviceInfoList)
 				{
@@ -2104,7 +2129,7 @@ namespace openPDCManager.Web.Data
 				command.ExecuteNonQuery();
 
 				if (device.IsConcentrator)
-					return GetReturnMessage("SaveDevice()", "Concentrator Device Information Saved Successfully", string.Empty, string.Empty, MessageType.Success);		//As we do not add measurements for PDC device or device which is concentrator.
+					return "Concentrator Device Information Saved Successfully";		//As we do not add measurements for PDC device or device which is concentrator.
 
 				DataTable pmuSignalTypes = new DataTable();
 				pmuSignalTypes = GetPmuSignalTypes();
@@ -2590,7 +2615,7 @@ namespace openPDCManager.Web.Data
 									   SignalID = item.Field<object>("SignalID").ToString(),
 									   HistorianID = item.Field<int?>("HistorianID"),
 									   PointID = item.Field<int>("PointID"),
-									   DeviceID = item.Field<int>("DeviceID"),
+									   DeviceID = item.Field<int?>("DeviceID"),
 									   PointTag = item.Field<string>("PointTag"),
 									   AlternateTag = item.Field<string>("AlternateTag"),
 									   SignalTypeID = item.Field<int>("SignalTypeID"),
@@ -2745,7 +2770,7 @@ namespace openPDCManager.Web.Data
 									   SignalID = item.Field<object>("SignalID").ToString(),
 									   HistorianID = item.Field<int?>("HistorianID"),
 									   PointID = item.Field<int>("PointID"),
-									   DeviceID = item.Field<int>("DeviceID"),
+									   DeviceID = item.Field<int?>("DeviceID"),
 									   PointTag = item.Field<string>("PointTag"),
 									   AlternateTag = item.Field<string>("AlternateTag"),
 									   SignalTypeID = item.Field<int>("SignalTypeID"),
