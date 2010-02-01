@@ -16,6 +16,8 @@
 //      Abstracted code for general purpose use in the openPDC.
 //  01/29/2010 - Jian R. Zuo
 //      Add default value to m_exportInterval avoid "Attempted to divide by zero" exception
+//  02/01/2010 - Jian R. Zuo
+//      Change "return Status.ToString();" to "return status.ToString();"
 //*******************************************************************************************************
 
 #region [ TVA Open Source Agreement ]
@@ -303,7 +305,7 @@ namespace ICCPExport
 
                 status.Append(base.Status);
 
-                return Status.ToString();
+                return status.ToString();
             }
         }
 
