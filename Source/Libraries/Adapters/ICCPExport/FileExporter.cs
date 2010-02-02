@@ -438,7 +438,7 @@ namespace ICCPExport
                 //   B) Timestamp falls within first frame of data in the second
                 //   C) This is a defined input measurement for this adapter
                 bool sort = ((DateTime)timestamp).Second % m_exportInterval == 0 &&
-                        timestamp.DistanceBeyondSecond() < TicksPerFrame &&
+                        timestamp.DistanceBeyondSecond() < (TicksPerFrame/2) &&
                         IsInputMeasurement(measurement.Key);
 
                 if (sort)
