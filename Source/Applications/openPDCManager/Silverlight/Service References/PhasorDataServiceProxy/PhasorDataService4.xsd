@@ -732,6 +732,8 @@
       <xs:sequence>
         <xs:element xmlns:q53="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities" minOccurs="0" name="device" nillable="true" type="q53:Device" />
         <xs:element minOccurs="0" name="isNew" type="xs:boolean" />
+        <xs:element minOccurs="0" name="digitalCount" type="xs:int" />
+        <xs:element minOccurs="0" name="analogCount" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

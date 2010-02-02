@@ -386,6 +386,10 @@ namespace openPDCManager.Web.Data
 												AccessID = cell.IDCode,
 												ParentAccessID = parentAccessID,
 												Include = true,
+												DigitalCount = cell.DigitalDefinitions.Count(),
+												AnalogCount = cell.AnalogDefinitions.Count(),
+												AddDigitals = false,
+												AddAnalogs = false,
 												PhasorList = (from phasor in cell.PhasorDefinitions
 															  select new PhasorInfo()
 															  {
@@ -475,14 +479,33 @@ namespace openPDCManager.Web.Data
 						device.LoadOrder = loadOrder;
 						device.ContactList = string.Empty;
 
+						//If Add Digitals and Add Analogs is checked for the device then, if digitals and analogs are available i.e. count>0 then add them as measurements.		
+						int digitalCount = 0;
+						if (info.AddDigitals && info.DigitalCount > 0)
+						{
+							digitalCount = info.DigitalCount;
+						}
+						int analogCount = 0;
+						if (info.AddAnalogs && info.AnalogCount > 0)
+						{
+							analogCount = info.AnalogCount;
+						}
+
 						Device existingDevice = GetDeviceByAcronym(info.Acronym);
 						if (existingDevice != null)
 						{
 							device.ID = existingDevice.ID;
-							SaveDevice(device, false);
+							device.TimeZone = existingDevice.TimeZone;
+							device.TimeAdjustmentTicks = existingDevice.TimeAdjustmentTicks;
+							device.DataLossInterval = existingDevice.DataLossInterval;
+							device.MeasuredLines = existingDevice.MeasuredLines;
+							device.ContactList = existingDevice.ContactList;
+							SaveDevice(device, false, digitalCount, analogCount);
 						}
 						else
-							SaveDevice(device, true);
+							SaveDevice(device, true, digitalCount, analogCount);
+
+						
 
 						Device addedDevice = GetDeviceByAcronym(info.Acronym);
 						int count = 1;
@@ -2084,7 +2107,7 @@ namespace openPDCManager.Web.Data
 			return deviceList;
 		}
 
-		public static string SaveDevice(Device device, bool isNew)
+		public static string SaveDevice(Device device, bool isNew, int digitalCount, int analogCount)
 		{
 			DataConnection connection = new DataConnection();
 			try
@@ -2173,6 +2196,75 @@ namespace openPDCManager.Web.Data
 						{
 							measurement.SignalID = existingMeasurement.SignalID;
 							SaveMeasurement(measurement, false);
+						}
+					}
+				}
+
+				if (digitalCount > 0)
+				{
+					for (int i = 0; i < digitalCount; i++)
+					{
+						measurement = new Measurement();
+						measurement.HistorianID = addedDevice.HistorianID;
+						measurement.DeviceID = addedDevice.ID;
+						measurement.PointTag = addedDevice.CompanyAcronym + "_" + addedDevice.Acronym + ":" + addedDevice.VendorAcronym + "D" + i.ToString();
+						measurement.AlternateTag = string.Empty;
+						measurement.SignalTypeID = GetSignalTypeID("DV");
+						measurement.PhasorSourceIndex = (int?)null;
+						measurement.SignalReference = addedDevice.Acronym + "-DV" + i.ToString();
+						measurement.Adder = 0.0d;
+						measurement.Multiplier = 1.0d;
+						measurement.Description = addedDevice.Name + " " + addedDevice.VendorDeviceName + " Digital Value " + i.ToString();
+						measurement.Enabled = true;
+						if (isNew)	//if it is a new device then measurements are new too. So don't worry about updating them.
+							SaveMeasurement(measurement, true);
+						else	//if device is existing one, then check and see if its measusremnts exist, if so then update measurements.
+						{
+							Measurement existingMeasurement = new Measurement();
+							//we will compare using signal reference as signal suffix doesn't provide uniqueness.
+							existingMeasurement = GetMeasurementInfoBySignalReference(measurement.DeviceID, measurement.SignalReference, measurement.PhasorSourceIndex);
+
+							if (existingMeasurement == null)	//measurement does not exist for this device and signal type then add as a new measurement otherwise update.
+								SaveMeasurement(measurement, true);
+							else
+							{
+								measurement.SignalID = existingMeasurement.SignalID;
+								SaveMeasurement(measurement, false);
+							}
+						}
+					}
+				}
+
+				if (analogCount > 0)
+				{
+					for (int i = 0; i < analogCount; i++)
+					{
+						measurement = new Measurement();
+						measurement.HistorianID = addedDevice.HistorianID;
+						measurement.DeviceID = addedDevice.ID;
+						measurement.PointTag = addedDevice.CompanyAcronym + "_" + addedDevice.Acronym + ":" + addedDevice.VendorAcronym + "A" + i.ToString();
+						measurement.AlternateTag = string.Empty;
+						measurement.SignalTypeID = GetSignalTypeID("AV");
+						measurement.PhasorSourceIndex = (int?)null;
+						measurement.SignalReference = addedDevice.Acronym + "-AV" + i.ToString();
+						measurement.Adder = 0.0d;
+						measurement.Multiplier = 1.0d;
+						measurement.Description = addedDevice.Name + " " + addedDevice.VendorDeviceName + " Analog Value " + i.ToString();
+						measurement.Enabled = true;
+						if (isNew)	//if it is a new device then measurements are new too. So don't worry about updating them.
+							SaveMeasurement(measurement, true);
+						else	//if device is existing one, then check and see if its measusremnts exist, if so then update measurements.
+						{
+							Measurement existingMeasurement = new Measurement();
+							existingMeasurement = GetMeasurementInfoBySignalReference(measurement.DeviceID, measurement.SignalReference, measurement.PhasorSourceIndex);
+
+							if (existingMeasurement == null)	//measurement does not exist for this device and signal type then add as a new measurement otherwise update.
+								SaveMeasurement(measurement, true);
+							else
+							{
+								measurement.SignalID = existingMeasurement.SignalID;
+								SaveMeasurement(measurement, false);
+							}
 						}
 					}
 				}
@@ -2821,6 +2913,26 @@ namespace openPDCManager.Web.Data
 			}
 		}		
 		
+		private static Measurement GetMeasurementInfoBySignalReference(int? deviceID, string signalReference, int? phasorSourceIndex)
+		{
+			try
+			{
+				List<Measurement> measurementList = new List<Measurement>();
+				measurementList = (from item in GetMeasurementsByDevice((int)deviceID)
+								   where item.SignalReference == signalReference && item.PhasorSourceIndex == phasorSourceIndex
+								   select item).ToList();
+				if (measurementList.Count > 0)
+					return measurementList[0];
+				else
+					return null;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetMeasurementsForOutputStream", ex);
+				return null;
+			}
+		}
+
 		#endregion
 
 		#region " Manage Other Devices"
@@ -3126,6 +3238,29 @@ namespace openPDCManager.Web.Data
 				connection.Dispose();
 			}
 			return resultTable;
+		}
+
+		static int GetSignalTypeID(string suffix)
+		{
+			int signalTypeID = 0;
+			DataConnection connection = new DataConnection();			
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select ID From SignalType Where Suffix = @suffix";
+				command.Parameters.Add(AddWithValue(command, "@suffix", suffix));
+				signalTypeID = (int)command.ExecuteScalar();
+			}
+			catch (Exception ex)
+			{
+				LogException("GetSignalTypeID", ex);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
+			return signalTypeID;
 		}
 
 		#endregion

@@ -253,6 +253,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		ConnectionSettings m_connectionSettings;
 		ObservableCollection<WizardDeviceInfo> m_wizardDeviceInfoList;
 		Dictionary<int, string> m_vendorDeviceList;
+		Dictionary<string, string> m_phasorTypes;
+		Dictionary<string, string> m_phaseTypes;
 		ActivityWindow m_activityWindow;
 		int? m_parentID = null;
 		string m_iniFileName = string.Empty;
@@ -565,7 +567,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					device.LoadOrder = 0;
 					device.ContactList = string.Empty;
 					device.Enabled = true;
-					m_client.SaveDeviceAsync(device, true);
+					m_client.SaveDeviceAsync(device, true, 0, 0);
 				}
 			}
 			else
@@ -805,18 +807,48 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		void ComboboxType_Loaded(object sender, RoutedEventArgs e)
 		{
-			((ComboBox)sender).Items.Add(new KeyValuePair<string, string>("V", "Voltage"));
-			((ComboBox)sender).Items.Add(new KeyValuePair<string, string>("I", "Current"));
-			((ComboBox)sender).SelectedIndex = 0;
+			ComboBox phasorTypes = (ComboBox)sender;
+			phasorTypes.ItemsSource = m_phasorTypes;
+			try
+			{
+			    PhasorInfo dataContext = new PhasorInfo();
+			    dataContext = phasorTypes.DataContext  as PhasorInfo;
+			    foreach (KeyValuePair<string, string> item in m_phasorTypes)
+			    {
+					if (item.Key == dataContext.Type)
+					{
+						phasorTypes.SelectedItem = item;
+						break;
+					}
+			    }
+			}
+			catch
+			{
+			    //we don't care
+			}
+
 		}
 		void ComboboxPhase_Loaded(object sender, RoutedEventArgs e)
 		{
-			((ComboBox)sender).Items.Add(new KeyValuePair<string, string>("+", "Positive"));
-			((ComboBox)sender).Items.Add(new KeyValuePair<string, string>("-", "Negative"));
-			((ComboBox)sender).Items.Add(new KeyValuePair<string, string>("A", "Phase A"));
-			((ComboBox)sender).Items.Add(new KeyValuePair<string, string>("B", "Phase B"));
-			((ComboBox)sender).Items.Add(new KeyValuePair<string, string>("C", "Phase C"));
-			((ComboBox)sender).SelectedIndex = 0;
+			ComboBox phaseTypes = (ComboBox)sender;
+			phaseTypes.ItemsSource = m_phaseTypes;
+			try
+			{
+				PhasorInfo dataContext = new PhasorInfo();
+				dataContext = phaseTypes.DataContext as PhasorInfo;
+				foreach (KeyValuePair<string, string> item in m_phaseTypes)
+				{
+					if (item.Key == dataContext.Phase)
+					{
+						phaseTypes.SelectedItem = item;
+						break;
+					}
+				}
+			}
+			catch
+			{
+				//we don't care
+			}
 		}
 		
 		#endregion
@@ -914,6 +946,17 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			m_client.GetHistoriansAsync(true, true);
 			m_client.GetInterconnectionsAsync(true);
 			m_client.GetExecutingAssemblyPathAsync();
+
+			m_phaseTypes = new Dictionary<string, string>();
+			m_phaseTypes.Add("+", "Positive");
+			m_phaseTypes.Add("-", "Negative");
+			m_phaseTypes.Add("A", "Phase A");
+			m_phaseTypes.Add("B", "Phase B");
+			m_phaseTypes.Add("C", "Phase C");
+
+			m_phasorTypes = new Dictionary<string, string>();
+			m_phasorTypes.Add("V", "Voltage"); 
+			m_phasorTypes.Add("I", "Current");
 		}
 	}
 }

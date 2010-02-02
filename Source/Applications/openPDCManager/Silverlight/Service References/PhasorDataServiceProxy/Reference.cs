@@ -2256,6 +2256,14 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private string AcronymField;
         
+        private bool AddAnalogsField;
+        
+        private bool AddDigitalsField;
+        
+        private int AnalogCountField;
+        
+        private int DigitalCountField;
+        
         private bool IncludeField;
         
         private decimal LatitudeField;
@@ -2292,6 +2300,58 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((object.ReferenceEquals(this.AcronymField, value) != true)) {
                     this.AcronymField = value;
                     this.RaisePropertyChanged("Acronym");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool AddAnalogs {
+            get {
+                return this.AddAnalogsField;
+            }
+            set {
+                if ((this.AddAnalogsField.Equals(value) != true)) {
+                    this.AddAnalogsField = value;
+                    this.RaisePropertyChanged("AddAnalogs");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool AddDigitals {
+            get {
+                return this.AddDigitalsField;
+            }
+            set {
+                if ((this.AddDigitalsField.Equals(value) != true)) {
+                    this.AddDigitalsField = value;
+                    this.RaisePropertyChanged("AddDigitals");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int AnalogCount {
+            get {
+                return this.AnalogCountField;
+            }
+            set {
+                if ((this.AnalogCountField.Equals(value) != true)) {
+                    this.AnalogCountField = value;
+                    this.RaisePropertyChanged("AnalogCount");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int DigitalCount {
+            get {
+                return this.DigitalCountField;
+            }
+            set {
+                if ((this.DigitalCountField.Equals(value) != true)) {
+                    this.DigitalCountField = value;
+                    this.RaisePropertyChanged("DigitalCount");
                 }
             }
         }
@@ -4495,7 +4555,7 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/SaveDevice", ReplyAction="http://tempuri.org/IPhasorDataService/SaveDeviceResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/SaveDeviceCustomServiceFaultFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
-        System.IAsyncResult BeginSaveDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.Device device, bool isNew, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginSaveDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.Device device, bool isNew, int digitalCount, int analogCount, System.AsyncCallback callback, object asyncState);
         
         string EndSaveDevice(System.IAsyncResult result);
         
@@ -8732,8 +8792,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginSaveDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.Device device, bool isNew, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginSaveDevice(device, isNew, callback, asyncState);
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginSaveDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.Device device, bool isNew, int digitalCount, int analogCount, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginSaveDevice(device, isNew, digitalCount, analogCount, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -8744,7 +8804,9 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         private System.IAsyncResult OnBeginSaveDevice(object[] inValues, System.AsyncCallback callback, object asyncState) {
             openPDCManager.Silverlight.PhasorDataServiceProxy.Device device = ((openPDCManager.Silverlight.PhasorDataServiceProxy.Device)(inValues[0]));
             bool isNew = ((bool)(inValues[1]));
-            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginSaveDevice(device, isNew, callback, asyncState);
+            int digitalCount = ((int)(inValues[2]));
+            int analogCount = ((int)(inValues[3]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginSaveDevice(device, isNew, digitalCount, analogCount, callback, asyncState);
         }
         
         private object[] OnEndSaveDevice(System.IAsyncResult result) {
@@ -8760,11 +8822,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             }
         }
         
-        public void SaveDeviceAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.Device device, bool isNew) {
-            this.SaveDeviceAsync(device, isNew, null);
+        public void SaveDeviceAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.Device device, bool isNew, int digitalCount, int analogCount) {
+            this.SaveDeviceAsync(device, isNew, digitalCount, analogCount, null);
         }
         
-        public void SaveDeviceAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.Device device, bool isNew, object userState) {
+        public void SaveDeviceAsync(openPDCManager.Silverlight.PhasorDataServiceProxy.Device device, bool isNew, int digitalCount, int analogCount, object userState) {
             if ((this.onBeginSaveDeviceDelegate == null)) {
                 this.onBeginSaveDeviceDelegate = new BeginOperationDelegate(this.OnBeginSaveDevice);
             }
@@ -8776,7 +8838,9 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             }
             base.InvokeAsync(this.onBeginSaveDeviceDelegate, new object[] {
                         device,
-                        isNew}, this.onEndSaveDeviceDelegate, this.onSaveDeviceCompletedDelegate, userState);
+                        isNew,
+                        digitalCount,
+                        analogCount}, this.onEndSaveDeviceDelegate, this.onSaveDeviceCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -10141,10 +10205,12 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 return _result;
             }
             
-            public System.IAsyncResult BeginSaveDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.Device device, bool isNew, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[2];
+            public System.IAsyncResult BeginSaveDevice(openPDCManager.Silverlight.PhasorDataServiceProxy.Device device, bool isNew, int digitalCount, int analogCount, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[4];
                 _args[0] = device;
                 _args[1] = isNew;
+                _args[2] = digitalCount;
+                _args[3] = analogCount;
                 System.IAsyncResult _result = base.BeginInvoke("SaveDevice", _args, callback, asyncState);
                 return _result;
             }

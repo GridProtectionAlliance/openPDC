@@ -344,7 +344,7 @@ namespace PCS.Services.Service
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
-		string SaveDevice(Device device, bool isNew);
+		string SaveDevice(Device device, bool isNew, int digitalCount, int analogCount);
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]

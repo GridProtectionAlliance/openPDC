@@ -18,7 +18,7 @@
                                             SelectionMode="One" ItemContainerStyle="{StaticResource AccordionItemStyle}" AccordionButtonStyle="{StaticResource AccordionButtonStyle}">
                         <layoutToolkit:AccordionItem Header="Step 1: Upload Configuration">
                             <layoutToolkit:AccordionItem.Content>
-                                <Grid HorizontalAlignment="Center" Width="{StaticResource LayoutColumnWidth}" Height="{StaticResource XXXLargeItemSize}" Margin="5">
+                                <Grid HorizontalAlignment="Center" Width="{StaticResource ApplicationStartupHeight}" Height="{StaticResource XXXLargeItemSize}" Margin="5">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="3*" />
@@ -79,7 +79,7 @@
                         </layoutToolkit:AccordionItem>
                         <layoutToolkit:AccordionItem Header="Step 2: Configure Connection Settings">
                             <layoutToolkit:AccordionItem.Content>
-                                <Grid Width="{StaticResource LayoutColumnWidth}" Height="{StaticResource XXXLargeItemSize}" Margin="5" HorizontalAlignment="Center">
+                                <Grid Width="{StaticResource ApplicationStartupHeight}" Height="{StaticResource XXXLargeItemSize}" Margin="5" HorizontalAlignment="Center">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="4*" />
@@ -89,6 +89,8 @@
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />                                                                              
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Company" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
@@ -105,7 +107,7 @@
                         </layoutToolkit:AccordionItem>
                         <layoutToolkit:AccordionItem Header="Step 3: Select Devices to Configure">
                             <layoutToolkit:AccordionItem.Content>
-                                <StackPanel Orientation="Vertical" Width="{StaticResource LayoutColumnWidth}" Margin="5">
+                                <StackPanel Orientation="Vertical" Width="{StaticResource ApplicationStartupHeight}" Margin="5">
                                     <Border Style="{StaticResource HeaderRowBorderStyle}">
                                         <StackPanel Orientation="Horizontal">
                                             <Border Style="{StaticResource HeaderRowCellBorderStyle}">
@@ -115,15 +117,21 @@
                                                 <TextBlock Text="Acronym" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                                             </Border>
                                             <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                                                <TextBlock Text="Name" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                <TextBlock Text="Name" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                                             </Border>
                                             <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                                                <TextBlock Text="Vendor" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                <TextBlock Text="Vendor" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                                             </Border>
                                             <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                                                 <TextBlock Text="Longitude" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
-                                            </Border>                                            
-                                            <TextBlock Text="Latitude" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>                                            
+                                            </Border>
+                                            <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                                                <TextBlock Text="Latitude" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                            </Border>
+                                            <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                                                <TextBlock Text="Digitals" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                            </Border>
+                                            <TextBlock Text="Analogs" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>                                            
                                         </StackPanel>
                                     </Border>
                                     <ScrollViewer BorderThickness="0" Padding="0" Height="{StaticResource XXXLargeItemSize}" Width="Auto">
@@ -142,16 +150,32 @@
                                                                 <TextBox Text="{Binding Path=Acronym, Mode=TwoWay}" Width="{StaticResource SmallerItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
                                                             </Border>
                                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                                <TextBox Text="{Binding Path=Name, Mode=TwoWay}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center" />
+                                                                <TextBox Text="{Binding Path=Name, Mode=TwoWay}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center" />
                                                             </Border>
                                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                                <ComboBox x:Name="ComboboxVendor" DisplayMemberPath="Value" SelectedItem="{Binding Path=VendorDeviceID, Mode=TwoWay, Converter={StaticResource stringToDictionaryConverter}}" Width="{StaticResource SmallItemSize}" Loaded="ComboboxVendor_Loaded" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
+                                                                <ComboBox x:Name="ComboboxVendor" DisplayMemberPath="Value" SelectedItem="{Binding Path=VendorDeviceID, Mode=TwoWay, Converter={StaticResource stringToDictionaryConverter}}" Width="{StaticResource LargeItemSize}" Loaded="ComboboxVendor_Loaded" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
                                                             </Border>
                                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                                 <TextBox Text="{Binding Path=Longitude, Mode=TwoWay}" Width="{StaticResource XSmallItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
                                                             </Border>
                                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                                 <TextBox Text="{Binding Path=Latitude, Mode=TwoWay}" Width="{StaticResource XSmallItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                                <StackPanel Orientation="Horizontal"  Width="{StaticResource LargeItemSize}" HorizontalAlignment="Center" VerticalAlignment="Center" >                                                                    
+                                                                    <CheckBox x:Name="CheckboxAddDigitals" IsChecked="{Binding Path=AddDigitals, Mode=TwoWay}" Content="Add Digitals"/>
+                                                                    <TextBlock Text="["/>
+                                                                    <TextBlock Text="{Binding Path=DigitalCount}" />
+                                                                    <TextBlock Text="]"/>
+                                                                </StackPanel>
+                                                            </Border>
+                                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                                <StackPanel Orientation="Horizontal" Width="{StaticResource LargeItemSize}" HorizontalAlignment="Center" VerticalAlignment="Center" >                                                                    
+                                                                    <CheckBox x:Name="CheckboxAddAnalogs" IsChecked="{Binding Path=AddAnalogs, Mode=TwoWay}" Content="Add Analogs"/>
+                                                                    <TextBlock Text="[" />
+                                                                    <TextBlock Text="{Binding Path=AnalogCount}" />
+                                                                    <TextBlock Text="]" />
+                                                                </StackPanel>
                                                             </Border>
                                                         </StackPanel>
                                                         <StackPanel Orientation="Horizontal">                                                            
@@ -160,7 +184,7 @@
                                                                 <TextBlock Text="" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                                                             </Border>
                                                             <Border Style="{StaticResource HeaderRowBorderStyle}">
-                                                                <TextBlock Text="Label" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                                <TextBlock Text="Label" Width="{StaticResource XLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                                                             </Border>
                                                             <Border Style="{StaticResource HeaderRowBorderStyle}">
                                                                 <TextBlock Text="Type" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
@@ -169,7 +193,7 @@
                                                                 <TextBlock Text="Phase" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                                                             </Border>
                                                             <Border Style="{StaticResource HeaderRowBorderStyle}">
-                                                                <TextBlock Text="Destination" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                                <TextBlock Text="Destination" Width="{StaticResource XLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                                                             </Border>
                                                         </StackPanel>
                                                         <ItemsControl x:Name="ItemControlPhasorList" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding Path=PhasorList}">
@@ -185,7 +209,7 @@
                                                                             <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Include, Mode=TwoWay }" />
                                                                         </Border>
                                                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                                            <TextBox Text="{Binding Path=Label, Mode=TwoWay}" Width="{StaticResource SmallerItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
+                                                                            <TextBox Text="{Binding Path=Label, Mode=TwoWay}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
                                                                         </Border>
                                                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                                             <ComboBox x:Name="ComboboxType" DisplayMemberPath="Value" SelectedItem="{Binding Path=Type, Mode=TwoWay, Converter={StaticResource stringToPhasorTypeConverter}}" Width="{StaticResource SmallItemSize}" Loaded="ComboboxType_Loaded" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
@@ -194,7 +218,7 @@
                                                                             <ComboBox x:Name="ComboboxPhase" DisplayMemberPath="Value" SelectedItem="{Binding Path=Phase, Mode=TwoWay, Converter={StaticResource stringToPhaseConverter}}" Width="{StaticResource SmallItemSize}" Loaded="ComboboxPhase_Loaded" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
                                                                         </Border>
                                                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                                            <TextBox Text="{Binding Path=Destination, Mode=TwoWay}" Width="{StaticResource XSmallItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
+                                                                            <TextBox Text="{Binding Path=Destination, Mode=TwoWay}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
                                                                         </Border>
                                                                     </StackPanel>
                                                                 </DataTemplate>
@@ -211,7 +235,7 @@
                     </layoutToolkit:Accordion>                    
                 </Border>
                 <Border Style="{StaticResource HeaderRowBorderStyle}">
-                    <Grid HorizontalAlignment="Center" Width="{StaticResource LayoutColumnWidth}" Margin="5">
+                    <Grid HorizontalAlignment="Center" Width="{StaticResource ApplicationStartupHeight}" Margin="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />

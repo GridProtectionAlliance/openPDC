@@ -78,6 +78,10 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="AccessID" type="xs:int" />
       <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AddAnalogs" type="xs:boolean" />
+      <xs:element minOccurs="0" name="AddDigitals" type="xs:boolean" />
+      <xs:element minOccurs="0" name="AnalogCount" type="xs:int" />
+      <xs:element minOccurs="0" name="DigitalCount" type="xs:int" />
       <xs:element minOccurs="0" name="Include" type="xs:boolean" />
       <xs:element minOccurs="0" name="Latitude" type="xs:decimal" />
       <xs:element minOccurs="0" name="Longitude" type="xs:decimal" />

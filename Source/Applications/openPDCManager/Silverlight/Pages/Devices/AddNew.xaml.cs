@@ -346,7 +346,16 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				if (string.IsNullOrEmpty(deviceToEdit.TimeZone))
 					ComboboxTimeZone.SelectedIndex = 0;
 				else
-					ComboboxTimeZone.SelectedItem = deviceToEdit.TimeZone;
+				{
+					foreach (KeyValuePair<string, string> item in ComboboxTimeZone.Items)
+					{
+						if (item.Key ==deviceToEdit.TimeZone)
+						{
+							ComboboxTimeZone.SelectedItem = item;
+							break;
+						}
+					}
+				}
 				if (deviceToEdit.VendorDeviceID.HasValue)
 					ComboboxVendorDevice.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.VendorDeviceID, deviceToEdit.VendorDeviceName);
 				else
@@ -447,11 +456,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			device.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
 			device.Enabled = (bool)CheckboxEnabled.IsChecked;
 			if (m_inEditMode == false && m_deviceID == 0)
-				m_client.SaveDeviceAsync(device, true);
+				m_client.SaveDeviceAsync(device, true, 0, 0);
 			else
 			{
 				device.ID = m_deviceID;
-				m_client.SaveDeviceAsync(device, false);
+				m_client.SaveDeviceAsync(device, false, 0, 0);
 			}
 		}
 		void client_GetTimeZonesCompleted(object sender, GetTimeZonesCompletedEventArgs e)

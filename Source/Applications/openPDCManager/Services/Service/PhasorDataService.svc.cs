@@ -331,9 +331,9 @@ namespace PCS.Services.Service
 		{
 			return CommonFunctions.GetDevices(deviceType, isOptional);
 		}
-		public string SaveDevice(Device device, bool isNew)
+		public string SaveDevice(Device device, bool isNew, int digitalCount, int analogCount)
 		{
-			return CommonFunctions.SaveDevice(device, isNew);
+			return CommonFunctions.SaveDevice(device, isNew, digitalCount, analogCount);
 		}
 		public Device GetDeviceByDeviceID(int deviceID)
 		{
