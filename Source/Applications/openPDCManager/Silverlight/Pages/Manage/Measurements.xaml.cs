@@ -241,6 +241,7 @@ using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.UserControls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
+using System.Windows.Data;
 
 namespace openPDCManager.Silverlight.Pages.Manage
 {
@@ -321,7 +322,13 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		void client_GetMeasurementListCompleted(object sender, GetMeasurementListCompletedEventArgs e)
 		{
 			if (e.Error == null)
-				ListBoxMeasurementList.ItemsSource = e.Result;
+			{
+				PagedCollectionView measurementList = new PagedCollectionView(e.Result);
+				ListBoxMeasurementList.ItemsSource = measurementList;
+				DataPagerMeasurements.Source = measurementList;
+				ListBoxMeasurementList.SelectedIndex = -1;
+				ClearForm();
+			}
 			else
 			{
 				SystemMessages sm;

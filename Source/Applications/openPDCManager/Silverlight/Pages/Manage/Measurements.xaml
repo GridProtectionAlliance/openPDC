@@ -4,7 +4,8 @@
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            mc:Ignorable="d"
-           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"              
+           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"     
+           xmlns:data="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data"
            Title="Manage Measurements">
     <Grid x:Name="GridManageMeasurements">
         <Border Style="{StaticResource PortletBorderStyle}">
@@ -87,26 +88,26 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ScrollViewer BorderThickness="0" Padding="0" Height="510">
+                    <ScrollViewer BorderThickness="0" Padding="0" Height="492">
                         <ScrollViewer.Content>                            
                             <ListBox x:Name="ListBoxMeasurementList" Margin="0" Padding="0">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" ToolTipService.ToolTip="{Binding Path=Description}">
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=PointID}" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" Padding="1"/>
+                                                <TextBlock Text="{Binding Path=PointID}" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=HistorianAcronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                                <TextBlock Text="{Binding Path=HistorianAcronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=DeviceAcronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                                <TextBlock Text="{Binding Path=DeviceAcronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=PointTag}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                                <TextBlock Text="{Binding Path=PointTag}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=SignalReference}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                                <TextBlock Text="{Binding Path=SignalReference}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallItemSize}">
                                                 <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Enabled}" IsEnabled="False" />
@@ -118,6 +119,7 @@
                         </ScrollViewer.Content>
                     </ScrollViewer>
                 </Border>
+                <data:DataPager x:Name="DataPagerMeasurements" PageSize="21" AutoEllipsis="True" NumericButtonCount="3" DisplayMode="FirstLastPreviousNext"/>
             </StackPanel>
         </Border>
     </Grid>

@@ -102,10 +102,10 @@
                     <Border Style="{StaticResource HeaderRowBorderStyle}">
                         <StackPanel Orientation="Horizontal" Margin="2">
                             <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                                <TextBlock Text="Acronym" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                <TextBlock Text="Acronym" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                             </Border>
                             <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                                <TextBlock Text="Name" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                <TextBlock Text="Name" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                             </Border>                        
                             <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                                 <TextBlock Text="Protocol" Width="{StaticResource LargerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
@@ -120,17 +120,17 @@
                         </StackPanel>
                     </Border>
                     <Border Background="{StaticResource PortletBackgroundBrush}">                    
-                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0" Height="300">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0" Height="350">
                             <ScrollViewer.Content>
                                 <ListBox x:Name="ListBoxDeviceList" Margin="0" Padding="0">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
                                                 <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                    <HyperlinkButton Content="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" Click="HyperlinkButton_Click"/>
+                                                    <HyperlinkButton Content="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource LargeItemSize}" Click="HyperlinkButton_Click"/>
                                                 </Border>
                                                 <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                    <TextBlock Text="{Binding Path=Name}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="1"/>
+                                                    <TextBlock Text="{Binding Path=Name}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
                                                 </Border>                                               
                                                 <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                     <TextBlock Text="{Binding Path=ProtocolName}" Width="{StaticResource LargerItemSize}" TextAlignment="Left" Padding="1"/>

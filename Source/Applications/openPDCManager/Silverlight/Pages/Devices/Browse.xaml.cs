@@ -240,6 +240,7 @@ using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.Utilities;
 using System.Windows.Media.Animation;
+using System.Windows.Data;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
@@ -292,7 +293,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 			{
 				m_deviceList = e.Result;
-				ListBoxDeviceList.ItemsSource = m_deviceList;
+				PagedCollectionView devicesList = new PagedCollectionView(m_deviceList);
+				ListBoxDeviceList.ItemsSource = devicesList;
+				DataPagerDevices.Source = devicesList;
 			}
 			else
 			{

@@ -4,22 +4,22 @@
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            mc:Ignorable="d"
-           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"           
-           Title="Browse Devices">
-    
+           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"      
+           xmlns:data="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data"
+           Title="Browse Devices">    
     <Grid x:Name="GridBrowseDevices">
         <Border Style="{StaticResource PortletBorderStyle}">
             <StackPanel Orientation="Vertical">
                 <TextBlock Text="Browse Devices" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
                 <Border Style="{StaticResource HeaderRowBorderStyle}">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <TextBox x:Name="TextBoxSearch" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Margin="5" />
-                        <Button x:Name="ButtonSearch" Content="../../Images/Search.png" Tag="Search" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="5" Cursor="Hand">
+                        <TextBox x:Name="TextBoxSearch" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Margin="2" />
+                        <Button x:Name="ButtonSearch" Content="../../Images/Search.png" Tag="Search" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="2" Cursor="Hand">
                             <Button.RenderTransform>
                                 <ScaleTransform x:Name="ButtonSearchTransform" ScaleX="1" ScaleY="1" />
                             </Button.RenderTransform>
                         </Button>
-                        <Button x:Name="ButtonShowAll" Content="../../Images/CancelSearch.png" Tag="Show All" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="5" Cursor="Hand">
+                        <Button x:Name="ButtonShowAll" Content="../../Images/CancelSearch.png" Tag="Show All" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="2" Cursor="Hand">
                             <Button.RenderTransform>
                                 <ScaleTransform x:Name="ButtonShowAllTransform" ScaleX="1" ScaleY="1" />
                             </Button.RenderTransform>
@@ -56,7 +56,7 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0" Height="715">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0" Height="700">
                         <ScrollViewer.Content>
                             <ListBox x:Name="ListBoxDeviceList" Margin="0" Padding="0">
                                 <ListBox.ItemTemplate>
@@ -66,19 +66,19 @@
                                                 <HyperlinkButton Content="{Binding Path=Acronym}" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" Click="HyperlinkButton_Click"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=Name}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                                <TextBlock Text="{Binding Path=Name}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallerItemSize}">
                                                 <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=IsConcentrator}" IsEnabled="False" />
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=ProtocolName}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                                <TextBlock Text="{Binding Path=ProtocolName}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=CompanyName}" Width="{StaticResource LargerItemSize}" TextAlignment="Left" Padding="1"/>
+                                                <TextBlock Text="{Binding Path=CompanyName}" Width="{StaticResource LargerItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=VendorDeviceName}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="1"/>
+                                                <TextBlock Text="{Binding Path=VendorDeviceName}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <HyperlinkButton Content="Phasors" HorizontalContentAlignment="Center" Name="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" Click="HyperlinkButtonPhasors_Click"/>
@@ -96,7 +96,7 @@
                         </ScrollViewer.Content>
                     </ScrollViewer>
                 </Border>
-
+                <data:DataPager x:Name="DataPagerDevices" PageSize="30" AutoEllipsis="True" NumericButtonCount="3" DisplayMode="FirstLastPreviousNext"/>
             </StackPanel>            
         </Border>
     </Grid>
