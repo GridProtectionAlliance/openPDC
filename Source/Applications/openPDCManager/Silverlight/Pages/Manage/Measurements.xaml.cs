@@ -580,10 +580,14 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		void ClearForm()
 		{
 			GridMeasurementDetail.DataContext = new Measurement();
-			ComboBoxDevice.SelectedIndex = 0;
-			ComboBoxHistorian.SelectedIndex = 0;
-			ComboBoxPhasorSource.SelectedIndex = 0;
-			ComboBoxSignalType.SelectedIndex = 0;
+			if (ComboBoxDevice.Items.Count > 0)
+				ComboBoxDevice.SelectedIndex = 0;
+			if (ComboBoxHistorian.Items.Count > 0)
+				ComboBoxHistorian.SelectedIndex = 0;
+			if (ComboBoxPhasorSource.Items.Count > 0)
+				ComboBoxPhasorSource.SelectedIndex = 0;
+			if (ComboBoxSignalType.Items.Count > 0)
+				ComboBoxSignalType.SelectedIndex = 0;
 			m_inEditMode = false;
 			m_signalID = string.Empty;
 			ListBoxMeasurementList.SelectedIndex = -1;

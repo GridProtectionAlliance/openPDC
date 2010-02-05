@@ -262,7 +262,9 @@ namespace openPDCManager.Silverlight
 		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (UserControlSelectNode.ComboboxNode.SelectedItem != null)
-				TextBlockNode.Text = ((KeyValuePair<string, string>)UserControlSelectNode.ComboboxNode.SelectedItem).Value;
+				TextBlockNode.Text = ((Node)UserControlSelectNode.ComboboxNode.SelectedItem).Name;
+				
+				//TextBlockNode.Text = ((KeyValuePair<string, string>)UserControlSelectNode.ComboboxNode.SelectedItem).Value;
 
 			Uri homeUri = new Uri("/Pages/HomePage.xaml", UriKind.Relative);
 			ContentFrame.Navigate(homeUri);			

@@ -304,9 +304,9 @@ namespace PCS.Services.Service
 		#endregion
 
 		#region " Manage Node Code"
-		public List<Node> GetNodeList()
+		public List<Node> GetNodeList(bool enabledOnly)
 		{
-			return CommonFunctions.GetNodeList();
+			return CommonFunctions.GetNodeList(enabledOnly);
 		}
 		public Dictionary<string, string> GetNodes(bool enabledOnly, bool isOptional)
 		{
@@ -315,6 +315,10 @@ namespace PCS.Services.Service
 		public string SaveNode(Node node, bool isNew)
 		{
 			return CommonFunctions.SaveNode(node, isNew);
+		}
+		public Node GetNodeByID(string id)
+		{
+			return CommonFunctions.GetNodeByID(id);
 		}
 		#endregion
 

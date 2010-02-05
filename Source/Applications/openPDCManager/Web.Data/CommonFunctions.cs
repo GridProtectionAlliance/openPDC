@@ -1667,7 +1667,7 @@ namespace openPDCManager.Web.Data
 
         #region " Manage Nodes Code"
 		
-		public static List<Node> GetNodeList()
+		public static List<Node> GetNodeList(bool enabledOnly)
 		{
 			DataConnection connection = new DataConnection();
 			try
@@ -1675,7 +1675,13 @@ namespace openPDCManager.Web.Data
 				List<Node> nodeList = new List<Node>();
 				IDbCommand command = connection.Connection.CreateCommand();
 				command.CommandType = CommandType.Text;
-				command.CommandText = "Select * From NodeDetail Order By LoadOrder";
+				if (enabledOnly)
+				{
+					command.CommandText = "Select * From NodeDetail Where Enabled = @enabled Order By LoadOrder";
+					command.Parameters.Add(AddWithValue(command, "@enabled", true));
+				}
+				else
+					command.CommandText = "Select * From NodeDetail Order By LoadOrder";
 
 				DataTable resultTable = new DataTable();
 				resultTable.Load(command.ExecuteReader());
@@ -1692,6 +1698,8 @@ namespace openPDCManager.Web.Data
 								Master = Convert.ToBoolean(item.Field<object>("Master")),
 								LoadOrder = item.Field<int>("LoadOrder"),
 								Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+								TimeSeriesDataServiceUrl = item.Field<string>("TimeSeriesDataServiceUrl"),
+								RemoteStatusServiceUrl = item.Field<string>("RemoteStatusServiceUrl"),
 								CompanyName = item.Field<string>("CompanyName")
 							}).ToList();
 				return nodeList;
@@ -1758,9 +1766,11 @@ namespace openPDCManager.Web.Data
 				command.CommandType = CommandType.Text;
 
 				if (isNew)
-					command.CommandText = "Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, ImagePath, Master, LoadOrder, Enabled) Values (@name, @companyID, @longitude, @latitude, @description, @image, @master, @loadOrder, @enabled)";
+					command.CommandText = "Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, ImagePath, Master, LoadOrder, Enabled, TimeSeriesDataServiceUrl, RemoteStatusServiceUrl) " +
+						"Values (@name, @companyID, @longitude, @latitude, @description, @image, @master, @loadOrder, @enabled, @timeSeriesDataServiceUrl, @remoteStatusServiceUrl)";
 				else
-					command.CommandText = "Update Node Set Name = @name, CompanyID = @companyID, Longitude = @longitude, Latitude = @latitude, Description = @description, ImagePath = @image, Master = @master, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+					command.CommandText = "Update Node Set Name = @name, CompanyID = @companyID, Longitude = @longitude, Latitude = @latitude, Description = @description, ImagePath = @image, " + 
+						"Master = @master, LoadOrder = @loadOrder, Enabled = @enabled, TimeSeriesDataServiceUrl = @timeSeriesDataServiceUrl, RemoteStatusServiceUrl = @remoteStatusServiceUrl Where ID = @id";
 
 				command.Parameters.Add(AddWithValue(command, "@name", node.Name));
 				command.Parameters.Add(AddWithValue(command, "@companyID", node.CompanyID ?? (object)DBNull.Value));
@@ -1771,6 +1781,8 @@ namespace openPDCManager.Web.Data
 				command.Parameters.Add(AddWithValue(command, "@master", node.Master));
 				command.Parameters.Add(AddWithValue(command, "@loadOrder", node.LoadOrder));
 				command.Parameters.Add(AddWithValue(command, "@enabled", node.Enabled));
+				command.Parameters.Add(AddWithValue(command, "@timeSeriesDataServiceUrl", node.TimeSeriesDataServiceUrl));
+				command.Parameters.Add(AddWithValue(command, "@remoteStatusServiceUrl", node.RemoteStatusServiceUrl));
 							
 				if (!isNew)
 				{
@@ -1794,7 +1806,27 @@ namespace openPDCManager.Web.Data
 				connection.Dispose();
 			}
 		}
-        
+
+		public static Node GetNodeByID(string id)
+		{			
+			try
+			{
+				List<Node> nodeList = new List<Node>();
+				nodeList = (from item in GetNodeList(false)
+							where item.ID == id
+							select item).ToList();
+				if (nodeList.Count > 0)
+					return nodeList[0];
+				else
+					return null;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetNodeByID", ex);
+				return null;
+			}
+		}
+
 		#endregion
 		
         #region " Manage Vendors Code"

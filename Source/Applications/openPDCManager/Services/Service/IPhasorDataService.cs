@@ -252,7 +252,7 @@ namespace PCS.Services.Service
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
-		List<Node> GetNodeList();
+		List<Node> GetNodeList(bool enabledOnly);
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
@@ -261,6 +261,10 @@ namespace PCS.Services.Service
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
 		string SaveNode(Node node, bool isNew);
+
+		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
+		Node GetNodeByID(string id);
 
 		#endregion
 

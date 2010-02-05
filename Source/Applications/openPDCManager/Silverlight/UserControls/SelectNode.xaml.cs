@@ -243,7 +243,6 @@ namespace openPDCManager.Silverlight.UserControls
 	public partial class SelectNode : UserControl
 	{		
 		PhasorDataServiceClient m_client = new PhasorDataServiceClient();
-
 		public delegate void OnNodesChanged(object sender, RoutedEventArgs e);
 		public event OnNodesChanged NodeCollectionChanged;
 		bool m_raiseNodesCollectionChanged = false;
@@ -253,26 +252,12 @@ namespace openPDCManager.Silverlight.UserControls
 			InitializeComponent();
 			m_client = Common.GetPhasorDataServiceProxyClient();
 			m_client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
+			m_client.GetNodeListCompleted += new EventHandler<GetNodeListCompletedEventArgs>(m_client_GetNodeListCompleted);
 			ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
 			Loaded += new RoutedEventHandler(SelectNode_Loaded);
 		}
 
-		void SelectNode_Loaded(object sender, RoutedEventArgs e)
-		{
-			m_client.GetNodesAsync(true, false);
-		}
-
-		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (!m_raiseNodesCollectionChanged)
-			{
-				App app = (App)Application.Current;
-				app.NodeValue = ((KeyValuePair<string, string>)ComboboxNode.SelectedItem).Key;
-				app.NodeName = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Value;
-			}
-		}
-
-		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
+		void m_client_GetNodeListCompleted(object sender, GetNodeListCompletedEventArgs e)
 		{
 			if (e.Error == null)
 			{
@@ -282,9 +267,9 @@ namespace openPDCManager.Silverlight.UserControls
 				{
 					if (!string.IsNullOrEmpty(app.NodeValue))
 					{
-						foreach (KeyValuePair<string, string> item in ComboboxNode.Items)
+						foreach (Node item in ComboboxNode.Items)
 						{
-							if (item.Key == app.NodeValue)
+							if (item.ID == app.NodeValue)
 							{
 								ComboboxNode.SelectedItem = item;
 								break;
@@ -294,8 +279,12 @@ namespace openPDCManager.Silverlight.UserControls
 					}
 					else
 						ComboboxNode.SelectedIndex = 0;
-					app.NodeValue = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Key;
-					app.NodeName = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Value;
+
+					Node node = (Node)ComboboxNode.SelectedItem;
+					app.NodeValue = node.ID;
+					app.NodeName = node.Name;
+					app.TimeSeriesDataServiceUrl = node.TimeSeriesDataServiceUrl;
+					app.RemoteStatusServiceUrl = node.RemoteStatusServiceUrl;
 				}
 				else
 					app.NodeValue = string.Empty;
@@ -316,6 +305,73 @@ namespace openPDCManager.Silverlight.UserControls
 				sm.Show();
 			}
 			m_raiseNodesCollectionChanged = false;
+		}
+
+		void SelectNode_Loaded(object sender, RoutedEventArgs e)
+		{
+			//m_client.GetNodesAsync(true, false);
+			m_client.GetNodeListAsync(true);
+		}
+
+		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (!m_raiseNodesCollectionChanged)
+			{
+				App app = (App)Application.Current;
+				Node node = (Node)ComboboxNode.SelectedItem;
+				app.NodeValue = node.ID;
+				app.NodeName = node.Name;
+				app.TimeSeriesDataServiceUrl = node.TimeSeriesDataServiceUrl;
+				app.RemoteStatusServiceUrl = node.RemoteStatusServiceUrl;
+				//app.NodeValue = ((KeyValuePair<string, string>)ComboboxNode.SelectedItem).Key;
+				//app.NodeName = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Value;
+			}
+		}
+
+		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
+		{
+			//if (e.Error == null)
+			//{
+			//    ComboboxNode.ItemsSource = e.Result;
+			//    App app = (App)Application.Current;
+			//    if (ComboboxNode.Items.Count > 0)
+			//    {
+			//        if (!string.IsNullOrEmpty(app.NodeValue))
+			//        {
+			//            foreach (KeyValuePair<string, string> item in ComboboxNode.Items)
+			//            {
+			//                if (item.Key == app.NodeValue)
+			//                {
+			//                    ComboboxNode.SelectedItem = item;
+			//                    break;
+			//                }
+
+			//            }
+			//        }
+			//        else
+			//            ComboboxNode.SelectedIndex = 0;
+			//        app.NodeValue = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Key;
+			//        app.NodeName = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Value;
+			//    }
+			//    else
+			//        app.NodeValue = string.Empty;
+			//}
+			//else
+			//{
+			//    SystemMessages sm;
+			//    if (e.Error is FaultException<CustomServiceFault>)
+			//    {
+			//        FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+			//        sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+			//            ButtonType.OkOnly);
+			//    }
+			//    else
+			//        sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+			//            ButtonType.OkOnly);
+
+			//    sm.Show();
+			//}
+			//m_raiseNodesCollectionChanged = false;
 		}
 
 		public void RefreshNodeList()

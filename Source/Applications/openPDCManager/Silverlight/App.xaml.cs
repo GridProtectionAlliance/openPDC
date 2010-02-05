@@ -244,6 +244,8 @@ namespace openPDCManager.Silverlight
     {
 		public string NodeValue { get; set; }
 		public string NodeName { get; set; }
+		public string TimeSeriesDataServiceUrl { get; set; }
+		public string RemoteStatusServiceUrl { get; set; }
 		public ApplicationIdCredentialsProvider Credentials { get; set; }
         public App()
         {

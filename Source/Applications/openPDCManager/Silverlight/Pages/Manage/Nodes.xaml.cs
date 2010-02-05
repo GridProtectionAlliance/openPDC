@@ -284,7 +284,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			m_client.GetNodeListAsync();								
+			m_client.GetNodeListAsync(false);								
 		}
 
 		void ListBoxNodeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -319,6 +319,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			node.Master = (bool)CheckboxMaster.IsChecked;
 			node.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
 			node.Enabled = (bool)CheckboxEnabled.IsChecked;
+			node.TimeSeriesDataServiceUrl = TextBoxTimeSeriesDataServiceUrl.Text;
+			node.RemoteStatusServiceUrl = TextBoxRemoteStatusServiceUrl.Text;
 
 			if (m_inEditMode == true && !string.IsNullOrEmpty(m_nodeID))
 			{
@@ -387,7 +389,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		void ClearForm()
 		{
 			GridNodeDetail.DataContext = new Node();
-			ComboBoxCompany.SelectedIndex = 0;
+			if (ComboBoxCompany.Items.Count > 0)
+				ComboBoxCompany.SelectedIndex = 0;
 			m_inEditMode = false;
 			m_nodeID = string.Empty;
 			ListBoxNodeList.SelectedIndex = -1;
@@ -396,7 +399,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			m_client.GetNodeListAsync();
+			m_client.GetNodeListAsync(false);
 			m_client.GetCompaniesAsync(true);
 		}
 
