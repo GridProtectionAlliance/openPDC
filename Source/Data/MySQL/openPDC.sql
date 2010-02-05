@@ -106,6 +106,8 @@ CREATE TABLE Node(
 	Master TINYINT NOT NULL DEFAULT 0,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled TINYINT NOT NULL DEFAULT 0,
+	TimeSeriesDataServiceUrl LONGTEXT NULL,
+	RemoteStatusServiceUrl LONGTEXT NULL,
 	CONSTRAINT PK_Node PRIMARY KEY (ID ASC)
 );
 
@@ -639,7 +641,9 @@ FROM Historian AS H INNER JOIN
 CREATE VIEW NodeDetail
 AS
 SELECT N.ID, N.Name, N.CompanyID AS CompanyID, COALESCE(N.Longitude, 0) AS Longitude, COALESCE(N.Latitude, 0) AS Latitude, 
-		COALESCE(N.Description, '') AS Description, COALESCE(N.ImagePath, '') AS ImagePath, N.Master, N.LoadOrder, N.Enabled, COALESCE(C.Name, '') AS CompanyName
+		COALESCE(N.Description, '') AS Description, COALESCE(N.ImagePath, '') AS ImagePath, N.Master, N.LoadOrder, N.Enabled, 
+		COALESCE(N.TimeSeriesDataServiceUrl, '') AS TimeSeriesDataServiceUrl, COALESCE(N.RemoteStatusServiceUrl, '') AS RemoteStatusServiceUrl,	
+		COALESCE(C.Name, '') AS CompanyName
 FROM Node N LEFT JOIN Company C 
 ON N.CompanyID = C.ID;
 
