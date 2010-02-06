@@ -103,11 +103,11 @@ CREATE TABLE Node(
 	Latitude DECIMAL(9, 6) NULL,
 	Description LONGTEXT NULL,
 	ImagePath LONGTEXT NULL,
+	TimeSeriesDataServiceUrl LONGTEXT NULL,
+	RemoteStatusServiceUrl LONGTEXT NULL,
 	Master TINYINT NOT NULL DEFAULT 0,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled TINYINT NOT NULL DEFAULT 0,
-	TimeSeriesDataServiceUrl LONGTEXT NULL,
-	RemoteStatusServiceUrl LONGTEXT NULL,
 	CONSTRAINT PK_Node PRIMARY KEY (ID ASC)
 );
 
