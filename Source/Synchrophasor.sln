@@ -104,6 +104,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Access", "Access", "{F0072C
 	ProjectSection(SolutionItems) = preProject
 		Data\Access\openPDC-InitialDataSet.mdb = Data\Access\openPDC-InitialDataSet.mdb
 		Data\Access\openPDC-SampleDataSet.mdb = Data\Access\openPDC-SampleDataSet.mdb
+		Data\Access\openPDC.mdb = Data\Access\openPDC.mdb
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySQL", "MySQL", "{41F2680B-D656-47F5-9A0D-3605BF886774}"
