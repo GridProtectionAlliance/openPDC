@@ -242,7 +242,7 @@ namespace TVA.PhasorProtocols.Macrodyne
     /// Represents the common header for all Macrodyne frames of data.
     /// </summary>
     [Serializable()]
-    public class CommonFrameHeader : CommonHeaderBase<int>, ISerializable
+    public class CommonFrameHeader : CommonHeaderBase<FrameType>, ISerializable
     {
         #region [ Members ]
 
@@ -255,6 +255,7 @@ namespace TVA.PhasorProtocols.Macrodyne
 
         // Fields
         private StatusFlags m_statusFlags;
+        private ConfigurationFrame m_configurationFrame;
 
         #endregion
 
@@ -272,14 +273,41 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// </summary>
         /// <param name="binaryImage">Buffer that contains data to parse.</param>
         /// <param name="startIndex">Start index into buffer where valid data begins.</param>
-        public CommonFrameHeader(byte[] binaryImage, int startIndex)
+        /// <param name="configurationFrame">Configuration frame, if available.</param>
+        public CommonFrameHeader(byte[] binaryImage, int startIndex, ConfigurationFrame configurationFrame)
         {
+            byte firstByte = binaryImage[startIndex];
+
             // Validate Macrodyne data image
-            if (binaryImage[startIndex] != PhasorProtocols.Common.SyncByte)
-                throw new InvalidOperationException("Bad data stream, expected sync byte 0xAA as first byte in Macrodyne ON-LINE data frame, got 0x" + binaryImage[startIndex].ToString("X").PadLeft(2, '0'));
+            if (firstByte != 0xAA && firstByte != 0xBB)
+                throw new InvalidOperationException("Bad data stream, expected 0xAA or 0xBB as first byte in Macrodyne ON-LINE data frame or configuration frame request response, got 0x" + binaryImage[startIndex].ToString("X").PadLeft(2, '0'));
+
+            // Determine frame type (it's either the sync byte of a data frame or the repsonse by from a command request)
+            if (firstByte == 0xAA)
+            {
+                TypeID = Macrodyne.FrameType.DataFrame;
+            }
+            else
+            {
+                switch (EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex))
+                {
+                    case (ushort)DeviceCommand.RequestOnlineDataFormat:
+                        TypeID = Macrodyne.FrameType.ConfigurationFrame;
+                        break;
+                    case (ushort)DeviceCommand.RequestUnitIDBufferValue:
+                        TypeID = Macrodyne.FrameType.HeaderFrame;
+                        break;
+                    default:
+                        throw new InvalidOperationException("Bad data stream, expected 0xBB24 or 0xBB48 in response to Macrodyne device command , got 0xBB" + binaryImage[startIndex + 1].ToString("X").PadLeft(2, '0'));
+                }
+            }
+
+            // Cache config frame, if defined, for future use
+            m_configurationFrame = configurationFrame;
 
             // Parse relevant common header values
-            m_statusFlags = (StatusFlags)binaryImage[startIndex + 1];
+            if (TypeID == Macrodyne.FrameType.DataFrame)
+                m_statusFlags = (StatusFlags)binaryImage[startIndex + 1];
         }
 
         /// <summary>
@@ -313,6 +341,65 @@ namespace TVA.PhasorProtocols.Macrodyne
         }
 
         /// <summary>
+        /// Gets the fundamental frame type of this frame.
+        /// </summary>
+        /// <remarks>
+        /// Frames are generally classified as data, configuration or header frames. This returns the general frame classification.
+        /// </remarks>
+        public FundamentalFrameType FrameType
+        {
+            get
+            {
+                // Translate Macrodyne specific frame type to fundamental frame type
+                switch (TypeID)
+                {
+                    case Macrodyne.FrameType.DataFrame:
+                        return FundamentalFrameType.DataFrame;
+                    case Macrodyne.FrameType.ConfigurationFrame:
+                        return FundamentalFrameType.ConfigurationFrame;
+                    case Macrodyne.FrameType.HeaderFrame:
+                        return FundamentalFrameType.HeaderFrame;
+                }
+
+                return FundamentalFrameType.Undetermined;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Macrodyne data length.
+        /// </summary>
+        public ushort DataLength
+        {
+            get
+            {
+                return (ushort)(FrameLength - FixedLength - 1);
+            }
+        }
+
+        /// <summary>
+        /// Gets the Macrodyne frame length.
+        /// </summary>
+        public ushort FrameLength
+        {
+            get
+            {
+                switch (TypeID)
+                {
+                    case Macrodyne.FrameType.DataFrame:
+                        if (m_configurationFrame != null)
+                            return m_configurationFrame.DataFrameLength;
+                        break;
+                    case Macrodyne.FrameType.ConfigurationFrame:
+                        return FixedLength + 3;
+                    case Macrodyne.FrameType.HeaderFrame:
+                        return FixedLength + 9;
+                }
+
+                return FixedLength;
+            }
+        }
+
+        /// <summary>
         /// Gets the binary image of the common header portion of this <see cref="CommonFrameHeader"/>.
         /// </summary>
         public byte[] BinaryImage
@@ -321,8 +408,19 @@ namespace TVA.PhasorProtocols.Macrodyne
             {
                 byte[] buffer = new byte[FixedLength];
 
-                buffer[0] = PhasorProtocols.Common.SyncByte;
-                buffer[1] = (byte)m_statusFlags;
+                switch (TypeID)
+                {
+                    case Macrodyne.FrameType.DataFrame:
+                        buffer[0] = PhasorProtocols.Common.SyncByte;
+                        buffer[1] = (byte)m_statusFlags;
+                        break;
+                    case Macrodyne.FrameType.ConfigurationFrame:
+                        EndianOrder.BigEndian.CopyBytes((ushort)DeviceCommand.RequestOnlineDataFormat, buffer, 0);
+                        break;
+                    case Macrodyne.FrameType.HeaderFrame:
+                        EndianOrder.BigEndian.CopyBytes((ushort)DeviceCommand.RequestUnitIDBufferValue, buffer, 0);
+                        break;
+                }
 
                 return buffer;
             }

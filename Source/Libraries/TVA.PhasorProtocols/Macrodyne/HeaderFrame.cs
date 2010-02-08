@@ -1,19 +1,15 @@
 //*******************************************************************************************************
-//  ConfigurationFrame.cs - Gbtc
+//  HeaderFrame.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  04/30/2009 - J. Ritchie Carroll
+//  02/08/2010 - James R. Carroll
 //       Generated original version of source code.
-//  08/07/2009 - Josh L. Patterson
-//       Edited Comments.
-//  09/15/2009 - Stephen C. Wills
-//       Added new header and license agreement.
 //
 //*******************************************************************************************************
 
@@ -235,7 +231,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 using TVA.IO.Checksums;
@@ -244,81 +239,57 @@ using TVA.Parsing;
 namespace TVA.PhasorProtocols.Macrodyne
 {
     /// <summary>
-    /// Represents the Macrodyne implementation of a <see cref="IConfigurationFrame"/> that can be sent or received.
+    /// Represents the Macrodyne implementation of a <see cref="IHeaderFrame"/> that can be sent or received.
     /// </summary>
     [Serializable()]
-    public class ConfigurationFrame : ConfigurationFrameBase, ISupportFrameImage<FrameType>
+    public class HeaderFrame : HeaderFrameBase, ISupportFrameImage<FrameType>
     {
         #region [ Members ]
 
         // Fields
         private CommonFrameHeader m_frameHeader;
-        private OnlineDataFormatFlags m_onlineDataFormatFlags;
-        private string m_stationName;
 
         #endregion
 
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new <see cref="ConfigurationFrame"/>.
+        /// Creates a new <see cref="HeaderFrame"/>.
         /// </summary>
         /// <remarks>
-        /// This constructor is used by <see cref="FrameImageParserBase{TTypeIdentifier,TOutputType}"/> to parse a Macrodyne configuration frame.
+        /// This constructor is used by a consumer or by <see cref="FrameImageParserBase{TTypeIdentifier,TOutputType}"/> to generate or parse a Macrodyne header frame.
         /// </remarks>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public ConfigurationFrame()
-            : base(0, new ConfigurationCellCollection(), 0, 0)
-        {            
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="ConfigurationFrame"/>.
-        /// </summary>
-        /// <param name="onlineDataFormatFlags">Online data format flags to use in this Macrodyne <see cref="ConfigurationFrame"/>.</param>
-        /// <param name="unitID">8 character unit ID to use in this Macrodyne <see cref="ConfigurationFrame"/>.</param>
-        /// <remarks>
-        /// This constructor is used by a consumer to generate a Macrodyne configuration frame.
-        /// </remarks>
-        public ConfigurationFrame(OnlineDataFormatFlags onlineDataFormatFlags, string unitID)
-            : base(0, new ConfigurationCellCollection(), 0, 0)
+        public HeaderFrame()
+            : base(new HeaderCellCollection(10))
         {
-            m_onlineDataFormatFlags = onlineDataFormatFlags;
-            m_stationName = unitID;
-
-            ConfigurationCell configCell = new ConfigurationCell(this);
-
-            // Macrodyne protocol sends data for one device
-            Cells.Add(configCell);
         }
 
         /// <summary>
-        /// Creates a new <see cref="ConfigurationFrame"/> from serialization parameters.
+        /// Creates a new <see cref="HeaderFrame"/>.
+        /// </summary>
+        /// <param name="headerData"><see cref="string"/> based data to include in this <see cref="HeaderFrame"/>.</param>
+        /// <remarks>
+        /// This constructor is used by a consumer to generate a Macrodyne header frame.
+        /// </remarks>
+        public HeaderFrame(string headerData)
+            : this()
+        {
+            base.HeaderData = headerData;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="HeaderFrame"/> from serialization parameters.
         /// </summary>
         /// <param name="info">The <see cref="SerializationInfo"/> with populated with data.</param>
         /// <param name="context">The source <see cref="StreamingContext"/> for this deserialization.</param>
-        protected ConfigurationFrame(SerializationInfo info, StreamingContext context)
+        protected HeaderFrame(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            // Deserialize configuration frame
-            m_frameHeader = (CommonFrameHeader)info.GetValue("frameHeader", typeof(CommonFrameHeader));
-            m_onlineDataFormatFlags = (OnlineDataFormatFlags)info.GetValue("onlineDataFormatFlags", typeof(OnlineDataFormatFlags));
         }
 
         #endregion
 
         #region [ Properties ]
-
-        /// <summary>
-        /// Gets reference to the <see cref="ConfigurationCellCollection"/> for this <see cref="ConfigurationFrame"/>.
-        /// </summary>
-        public new ConfigurationCellCollection Cells
-        {
-            get
-            {
-                return base.Cells as ConfigurationCellCollection;
-            }
-        }
 
         /// <summary>
         /// Gets the identifier that is used to identify the Macrodyne frame.
@@ -327,7 +298,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         {
             get
             {
-                return Macrodyne.FrameType.ConfigurationFrame;
+                return Macrodyne.FrameType.HeaderFrame;
             }
         }
 
@@ -338,7 +309,8 @@ namespace TVA.PhasorProtocols.Macrodyne
         {
             get
             {
-                // Make sure frame header exists
+                // Make sure frame header exists - using base class timestamp to
+                // prevent recursion (m_frameHeader doesn't exist yet)
                 if (m_frameHeader == null)
                     m_frameHeader = new CommonFrameHeader();
 
@@ -347,23 +319,13 @@ namespace TVA.PhasorProtocols.Macrodyne
             set
             {
                 m_frameHeader = value;
-                
+
                 if (m_frameHeader != null)
-                {
-                    ConfigurationFrameParsingState parsingState = m_frameHeader.State as ConfigurationFrameParsingState;
-
-                    if (parsingState != null)
-                    {
-                        State = parsingState;
-
-                        // Cache station name for use when cell gets parsed
-                        m_stationName = parsingState.HeaderFrame.HeaderData;
-                    }
-                }
+                    State = m_frameHeader.State as IHeaderFrameParsingState;
             }
         }
 
-        // This interface implementation satisfies ISupportFrameImage<int>.CommonHeader
+        // This interface implementation satisfies ISupportFrameImage<FrameType>.CommonHeader
         ICommonHeader<FrameType> ISupportFrameImage<FrameType>.CommonHeader
         {
             get
@@ -373,136 +335,6 @@ namespace TVA.PhasorProtocols.Macrodyne
             set
             {
                 CommonHeader = value as CommonFrameHeader;
-            }
-        }
-
-        /// <summary>
-        /// Gets station name retrieved from header frame.
-        /// </summary>
-        public string StationName
-        {
-            get
-            {
-                return m_stationName;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the Macrodyne <see cref="Macrodyne.OnlineDataFormatFlags"/> of this <see cref="ConfigurationFrame"/>.
-        /// </summary>
-        public OnlineDataFormatFlags OnlineDataFormatFlags
-        {
-            get
-            {
-                return m_onlineDataFormatFlags;
-            }
-            set
-            {
-                m_onlineDataFormatFlags = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets phasor count derived from <see cref="OnlineDataFormatFlags"/> of this <see cref="ConfigurationFrame"/>.
-        /// </summary>
-        public int PhasorCount
-        {
-            get
-            {
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor10Enabled) > 0)
-                    return 10;
-                
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor9Enabled) > 0)
-                    return 9;
-
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor8Enabled) > 0)
-                    return 8;
-
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor7Enabled) > 0)
-                    return 7;
-
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor6Enabled) > 0)
-                    return 6;
-
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor5Enabled) > 0)
-                    return 5;
-
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor4Enabled) > 0)
-                    return 4;
-
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor3Enabled) > 0)
-                    return 3;
-
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor2Enabled) > 0)
-                    return 2;
-
-                return 1;
-            }
-        }
-
-        /// <summary>
-        /// Gets flag that determines if status 2 flags are included in ON-LINE data.
-        /// </summary>
-        public bool Status2Included
-        {
-            get
-            {
-                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Status2ByteEnabled) > 0;
-            }
-        }
-
-        /// <summary>
-        /// Gets flag that determines if timestamp is included in ON-LINE data.
-        /// </summary>
-        public bool TimestampIncluded
-        {
-            get
-            {
-                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.TimestampEnabled) > 0;
-            }
-        }
-
-        /// <summary>
-        /// Gets flag that determines if reference phasor is included in ON-LINE data.
-        /// </summary>
-        public bool ReferenceIncluded
-        {
-            get
-            {
-                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.ReferenceEnabled) > 0;
-            }
-        }
-
-        /// <summary>
-        /// Gets flag that determines if Digital 1 is included in ON-LINE data.
-        /// </summary>
-        public bool Digital1Included
-        {
-            get
-            {
-                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Digital1Enabled) > 0;
-            }
-        }
-
-        /// <summary>
-        /// Gets flag that determines if Digital 2 is included in ON-LINE data.
-        /// </summary>
-        public bool Digital2Included
-        {
-            get
-            {
-                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Digital2Enabled) > 0;
-            }
-        }
-
-        /// <summary>
-        /// Gets length of data frame based on enabled streaming data.
-        /// </summary>
-        public ushort DataFrameLength
-        {
-            get
-            {
-                return (ushort)(7 + PhasorCount * 4 + (Status2Included ? 1 : 0) + (TimestampIncluded ? 6 : 0) + (ReferenceIncluded ? 6 : 0) + (Digital1Included ? 2 : 0) + (Digital2Included ? 2 : 0));
             }
         }
 
@@ -534,8 +366,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         {
             get
             {
-                // Common header plus two bytes for on-line data format flags
-                return CommonFrameHeader.FixedLength + 2;
+                return CommonFrameHeader.FixedLength;
             }
         }
 
@@ -546,27 +377,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         {
             get
             {
-                byte[] buffer = new byte[HeaderLength];
-
-                buffer.BlockCopy(0, CommonFrameHeader.FixedLength);
-                EndianOrder.BigEndian.CopyBytes((ushort)m_onlineDataFormatFlags, buffer, 2);
-
-                return buffer;
-            }
-        }
-
-        /// <summary>
-        /// <see cref="Dictionary{TKey,TValue}"/> of string based property names and values for the <see cref="ConfigurationFrame"/> object.
-        /// </summary>
-        public override Dictionary<string, string> Attributes
-        {
-            get
-            {
-                Dictionary<string, string> baseAttributes = base.Attributes;
-
-                baseAttributes.Add("ON-LINE Data Format Flags", (byte)OnlineDataFormatFlags + ": " + OnlineDataFormatFlags);
-
-                return baseAttributes;
+                return CommonHeader.BinaryImage;
             }
         }
 
@@ -598,12 +409,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
         {
             // We already parsed the frame header, so we just skip past it...
-            startIndex += CommonFrameHeader.FixedLength;
-
-            // Parse on -line data format
-            m_onlineDataFormatFlags = (OnlineDataFormatFlags)EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex);
-
-            return CommonFrameHeader.FixedLength + 2;
+            return CommonFrameHeader.FixedLength;
         }
 
         /// <summary>
@@ -658,10 +464,6 @@ namespace TVA.PhasorProtocols.Macrodyne
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
-            
-            // Serialize configuration frame
-            info.AddValue("frameHeader", m_frameHeader, typeof(CommonFrameHeader));
-            info.AddValue("onlineDataFormatFlags", m_onlineDataFormatFlags, typeof(OnlineDataFormatFlags));
         }
 
         #endregion

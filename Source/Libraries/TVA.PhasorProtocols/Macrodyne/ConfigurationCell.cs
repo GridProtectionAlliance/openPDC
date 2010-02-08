@@ -255,6 +255,17 @@ namespace TVA.PhasorProtocols.Macrodyne
         public ConfigurationCell(ConfigurationFrame parent)
             : base(parent, 0, Common.MaximumPhasorValues, Common.MaximumAnalogValues, Common.MaximumDigitalValues)
         {
+            // Assign station name that came in from header frame
+            StationName = parent.StationName;
+
+            // Add a single frequency definition
+            FrequencyDefinition = new FrequencyDefinition(this, "Line frequency");
+
+            // Add phasors based on online format flags
+            for (int i = 0; i < parent.PhasorCount; i++)
+            {
+                PhasorDefinitions.Add(new PhasorDefinition(this, "Phasor " + (i + 1), PhasorType.Voltage, null));
+            }
         }
 
         /// <summary>
@@ -409,6 +420,19 @@ namespace TVA.PhasorProtocols.Macrodyne
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
+        }
+
+        #endregion
+
+        #region [ Static ]
+
+        // Static Methods
+
+        // Delegate handler to create a new Macrodyne configuration cell
+        internal static IConfigurationCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IConfigurationCell> state, int index, byte[] binaryImage, int startIndex, out int parsedLength)
+        {
+            parsedLength = 0;
+            return new ConfigurationCell(parent as ConfigurationFrame);
         }
 
         #endregion

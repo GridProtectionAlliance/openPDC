@@ -1561,7 +1561,7 @@ namespace TVA.PhasorProtocols
             {
                 ICommandFrame commandFrame;
 
-                // Only the IEEE and SEL Fast Message protocols support commands
+                // Only the IEEE, SEL Fast Message and Macrodyne protocols support commands
                 switch (m_phasorProtocol)
                 {
                     case PhasorProtocols.PhasorProtocol.IeeeC37_118V1:
@@ -1580,6 +1580,9 @@ namespace TVA.PhasorProtocols
                             messagePeriod = connectionParameters.MessagePeriod;
 
                         commandFrame = new SelFastMessage.CommandFrame(command, messagePeriod);
+                        break;
+                    case PhasorProtocols.PhasorProtocol.Macrodyne:
+                        commandFrame = new Macrodyne.CommandFrame(command);
                         break;
                     default:
                         commandFrame = null;
@@ -1673,7 +1676,7 @@ namespace TVA.PhasorProtocols
         protected virtual bool DeriveCommandSupport()
         {
             // Command support is based on phasor protocol, transport protocol and connection style
-            if (IsIEEEProtocol || m_phasorProtocol == PhasorProtocol.SelFastMessage)
+            if (IsIEEEProtocol || m_phasorProtocol == PhasorProtocol.SelFastMessage || m_phasorProtocol == PhasorProtocol.Macrodyne)
             {
                 // IEEE protocols using TCP or Serial connection support device commands
                 if (m_transportProtocol == TransportProtocol.Tcp || m_transportProtocol == TransportProtocol.Serial)
@@ -1734,8 +1737,27 @@ namespace TVA.PhasorProtocols
                 m_initiatingDataStream = false;
             }
 
-            // Request configuration frame once real-time data has been disabled. Note that SEL Fast Message
-            // doesn't define a binary configuration frame so skip requesting one...
+            // Request configuration frame once real-time data has been disabled. Data stream will be enabled
+            // when we receive a configuration frame. Note that 
+            switch (m_phasorProtocol)
+            {
+                case PhasorProtocol.SelFastMessage:
+                    // SEL Fast Message doesn't define a binary configuration frame so we skip
+                    // requesting one and jump straight to enabling the data stream.
+                    SendDeviceCommand(DeviceCommand.EnableRealTimeData);
+                    break;
+                case PhasorProtocol.Macrodyne:
+                    // We collect the station name (i.e. the unit ID) from the Macrodyne
+                    // protocol as a header frame before get the configuration frame
+                    SendDeviceCommand(DeviceCommand.SendHeaderFrame);
+                    break;
+                default:
+                    // Otherwise we just rquest the configuration frame
+                    SendDeviceCommand(DeviceCommand.SendConfigurationFrame2);
+                    break;
+            }
+
+
             if (m_phasorProtocol != PhasorProtocol.SelFastMessage)
                 SendDeviceCommand(DeviceCommand.SendConfigurationFrame2);
             else
@@ -1951,6 +1973,10 @@ namespace TVA.PhasorProtocols
 
         private void m_frameParser_ReceivedHeaderFrame(object sender, EventArgs<IHeaderFrame> e)
         {
+            // Macrodyne receives header frame which contains station name before configuration frame
+            if (m_configurationFrame == null && m_phasorProtocol == PhasorProtocol.Macrodyne)
+                SendDeviceCommand(DeviceCommand.SendConfigurationFrame2);
+
             m_frameRateTotal++;
 
             // We don't stop parsing for exceptions thrown in consumer event handlers

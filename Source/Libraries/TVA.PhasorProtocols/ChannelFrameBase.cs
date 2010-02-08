@@ -525,6 +525,17 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Gets the parsed binary length derived from the parsing state, if any.
+        /// </summary>
+        protected virtual int ParsedBinaryLength
+        {
+            get
+            {
+                return m_parsedBinaryLength;
+            }
+        }
+
+        /// <summary>
         /// <see cref="Dictionary{TKey,TValue}"/> of string based property names and values for the <see cref="ChannelFrameBase{T}"/> object.
         /// </summary>
         public override Dictionary<string, string> Attributes

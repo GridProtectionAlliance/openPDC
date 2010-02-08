@@ -176,6 +176,8 @@
     <Compile Include="IHeaderFrameParsingState.cs" />
     <Compile Include="IPhasorDefinition.cs" />
     <Compile Include="IPhasorValue.cs" />
+    <Compile Include="Macrodyne\ConfigurationFrameParsingState.cs" />
+    <Compile Include="Macrodyne\HeaderFrame.cs" />
     <Compile Include="Macrodyne\NamespaceDoc.cs" />
     <Compile Include="MultiProtocolFrameParser.cs" />
     <Compile Include="NamespaceDoc.cs" />

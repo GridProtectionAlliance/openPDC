@@ -238,6 +238,29 @@ namespace TVA.PhasorProtocols.Macrodyne
     #region [ Enumerations ]
 
     /// <summary>
+    /// Macrodyne frame types enumeration.
+    /// </summary>
+    [Serializable()]
+    public enum FrameType : byte
+    {
+        /// <summary>
+        /// Data frame.
+        /// </summary>
+        DataFrame,
+        /// <summary>
+        /// Configuration frame.
+        /// </summary>
+        ConfigurationFrame,
+        /// <summary>
+        /// Header frame.
+        /// </summary>
+        /// <remarks>
+        /// This frame is used to request the string based unit ID (i.e., the station name).
+        /// </remarks>
+        HeaderFrame
+    }
+
+    /// <summary>
     /// Macrodyne clock status flags enumeration (from byte 1 in time string).
     /// </summary>
     [Flags(), Serializable()]

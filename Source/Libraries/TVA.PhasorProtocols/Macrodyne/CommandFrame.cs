@@ -250,12 +250,6 @@ namespace TVA.PhasorProtocols.Macrodyne
     [Serializable()]
     public class CommandFrame : CommandFrameBase
     {
-        #region [ Members ]
-
-        // Fields
-
-        #endregion
-
         #region [ Constructors ]
 
         /// <summary>
@@ -268,7 +262,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         public CommandFrame(PhasorProtocols.DeviceCommand command)
             : base(new CommandCellCollection(0), command)
         {
-            if (command != PhasorProtocols.DeviceCommand.EnableRealTimeData && command != PhasorProtocols.DeviceCommand.DisableRealTimeData)
+            if (command != PhasorProtocols.DeviceCommand.EnableRealTimeData && command != PhasorProtocols.DeviceCommand.DisableRealTimeData && command != PhasorProtocols.DeviceCommand.SendConfigurationFrame1 && command != PhasorProtocols.DeviceCommand.SendConfigurationFrame2 && command != PhasorProtocols.DeviceCommand.SendHeaderFrame)
                 throw new ArgumentException("Macrodyne does not support " + command + " device command.", "command");
         }
 
@@ -280,8 +274,6 @@ namespace TVA.PhasorProtocols.Macrodyne
         protected CommandFrame(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            // Deserialize command frame
-            //m_messagePeriod = (MessagePeriod)info.GetValue("messagePeriod", typeof(MessagePeriod));
         }
 
         #endregion
@@ -305,6 +297,8 @@ namespace TVA.PhasorProtocols.Macrodyne
                     case PhasorProtocols.DeviceCommand.SendConfigurationFrame1:
                     case PhasorProtocols.DeviceCommand.SendConfigurationFrame2:
                         return DeviceCommand.RequestOnlineDataFormat;
+                    case PhasorProtocols.DeviceCommand.SendHeaderFrame:
+                        return DeviceCommand.RequestUnitIDBufferValue;
                     default:
                         return DeviceCommand.Undefined;
                 }
@@ -322,6 +316,9 @@ namespace TVA.PhasorProtocols.Macrodyne
                     case DeviceCommand.RequestOnlineDataFormat:
                         base.Command = PhasorProtocols.DeviceCommand.SendConfigurationFrame2;
                         break;
+                    case DeviceCommand.RequestUnitIDBufferValue:
+                        base.Command = PhasorProtocols.DeviceCommand.SendHeaderFrame;
+                        break;
                     default:
                         base.Command = PhasorProtocols.DeviceCommand.ReservedBits;
                         break;
@@ -330,84 +327,31 @@ namespace TVA.PhasorProtocols.Macrodyne
         }
 
         /// <summary>
-        /// Gets the length of the <see cref="HeaderImage"/>.
+        /// Gets the length of the <see cref="BinaryImage"/>.
         /// </summary>
-        protected override int HeaderLength
+        public override int BinaryLength
         {
             get
             {
-                return 9;
-            }
-        }
-
-        /// <summary>
-        /// Gets the binary header image of the <see cref="DataFrame"/> object.
-        /// </summary>
-        protected override byte[] HeaderImage
-        {
-            get
-            {
-                byte[] buffer = new byte[9];
-
-                //buffer[0] = Common.HeaderByte1;
-                //buffer[1] = Common.HeaderByte2;
-                //buffer[2] = FrameSize;
-
-                return buffer;
-            }
-        }
-
-        /// <summary>
-        /// Gets the length of the <see cref="BodyImage"/>.
-        /// </summary>
-        protected override int BodyLength
-        {
-            get
-            {
-                // Total frame size - header length - crc value length
-                return 0; //FrameSize - HeaderLength - 2;
+                // Total frame size
+                return 2;
             }
         }
 
         /// <summary>
         /// Gets the binary body image of this <see cref="CommandFrame"/>.
         /// </summary>
-        protected override byte[] BodyImage
+        public override byte[] BinaryImage
         {
             get
             {
-                byte[] buffer = new byte[BodyLength];
+                byte[] buffer = new byte[BinaryLength];
 
-                buffer[0] = (byte)Command;
-                buffer[1] = 0xC0;
-                buffer[3] = 0x20;
-                
-                // Only add desired message rate for enable command
-                //if (Command == DeviceCommand.EnableUnsolicitedMessages)
-                //    EndianOrder.BigEndian.CopyBytes((ushort)m_messagePeriod, buffer, 5);
+                EndianOrder.BigEndian.CopyBytes((ushort)Command, buffer, 0);
 
                 return buffer;
             }
         }
-
-        /// <summary>
-        /// <see cref="Dictionary{TKey,TValue}"/> of string based property names and values for the <see cref="DataFrame"/> object.
-        /// </summary>
-        public override Dictionary<string, string> Attributes
-        {
-            get
-            {
-                Dictionary<string, string> baseAttributes = base.Attributes;
-
-                //baseAttributes.Add("Defined Message Period", (ushort)MessagePeriod + ": " + MessagePeriod);
-
-                return baseAttributes;
-            }
-        }
-
-        #endregion
-
-        #region [ Methods ]
 
         /// <summary>
         /// Calculates checksum of given <paramref name="buffer"/>.
@@ -416,24 +360,12 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// <param name="offset">Start index into <paramref name="buffer"/> to calculate checksum.</param>
         /// <param name="length">Length of data within <paramref name="buffer"/> to calculate checksum.</param>
         /// <returns>Checksum over specified portion of <paramref name="buffer"/>.</returns>
+        /// <remarks>
+        /// The Macrodyne does not use checksums for sending commands.
+        /// </remarks>
         protected override ushort CalculateChecksum(byte[] buffer, int offset, int length)
         {
-            // Macrodyne uses 8-bit Xor checksum for frames
-            return buffer.Xor8CheckSum(offset, length);
-        }
-
-        /// <summary>
-        /// Populates a <see cref="SerializationInfo"/> with the data needed to serialize the target object.
-        /// </summary>
-        /// <param name="info">The <see cref="SerializationInfo"/> to populate with data.</param>
-        /// <param name="context">The destination <see cref="StreamingContext"/> for this serialization.</param>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-        public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-
-            // Serialize command frame
-            //info.AddValue("messagePeriod", m_messagePeriod, typeof(MessagePeriod));
+            throw new NotImplementedException();
         }
 
         #endregion

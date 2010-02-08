@@ -244,7 +244,7 @@ namespace TVA.PhasorProtocols.Macrodyne
     /// Represents the Macrodyne implementation of a <see cref="IDataFrame"/> that can be sent or received.
     /// </summary>
     [Serializable()]
-    public class DataFrame : DataFrameBase, ISupportFrameImage<int>
+    public class DataFrame : DataFrameBase, ISupportFrameImage<FrameType>
     {
         #region [ Members ]
 
@@ -324,12 +324,11 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// <summary>
         /// Gets the identifier that is used to identify the Macrodyne frame.
         /// </summary>
-        public int TypeID
+        public FrameType TypeID
         {
             get
             {
-                // Macrodyne only defines a single frame type...
-                return 0;
+                return Macrodyne.FrameType.DataFrame;
             }
         }
 
@@ -356,7 +355,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         }
 
         // This interface implementation satisfies ISupportFrameImage<int>.CommonHeader
-        ICommonHeader<int> ISupportFrameImage<int>.CommonHeader
+        ICommonHeader<FrameType> ISupportFrameImage<FrameType>.CommonHeader
         {
             get
             {
@@ -365,6 +364,27 @@ namespace TVA.PhasorProtocols.Macrodyne
             set
             {
                 CommonHeader = value as CommonFrameHeader;
+            }
+        }
+
+        /// <summary>
+        /// Gets the length of the <see cref="BinaryImageBase.BinaryImage"/>.
+        /// </summary>
+        /// <remarks>
+        /// This property is overriden so the length can be extended to include a 1-byte checksum.
+        /// </remarks>
+        public override int BinaryLength
+        {
+            get
+            {
+                // We override normal binary length so we can extend length to include checksum.
+                // Also, if frame length was parsed from stream header - we use that length
+                // instead of the calculated length...
+                if (ParsedBinaryLength > 0)
+                    return ParsedBinaryLength;
+                else
+                    // Subtract one byte for Macrodyne 1-byte CRC
+                    return base.BinaryLength - 1;
             }
         }
 
@@ -395,6 +415,20 @@ namespace TVA.PhasorProtocols.Macrodyne
         #region [ Methods ]
 
         /// <summary>
+        /// Parses the binary image.
+        /// </summary>
+        /// <param name="binaryImage">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <returns>The length of the data that was parsed.</returns>
+        /// <exception cref="InvalidOperationException">Invalid binary image detected - check sum did not match.</exception>
+        public override int Initialize(byte[] binaryImage, int startIndex, int length)
+        {
+            // Subtract one byte for Macrodyne 1-byte CRC
+            return base.Initialize(binaryImage, startIndex, length) - 1;
+        }
+
+        /// <summary>
         /// Parses the binary header image.
         /// </summary>
         /// <param name="binaryImage">Binary image to parse.</param>
@@ -405,6 +439,36 @@ namespace TVA.PhasorProtocols.Macrodyne
         {
             // We already parsed the frame header, so we just skip past it...
             return CommonFrameHeader.FixedLength;
+        }
+
+        /// <summary>
+        /// Determines if checksum in the <paramref name="buffer"/> is valid.
+        /// </summary>
+        /// <param name="buffer">Buffer image to validate.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to perform checksum.</param>
+        /// <returns>Flag that determines if checksum over <paramref name="buffer"/> is valid.</returns>
+        /// <remarks>
+        /// Default implementation expects 2-byte big-endian ordered checksum. So we override method since checksum
+        /// in Macrodyne is a single byte.
+        /// </remarks>
+        protected override bool ChecksumIsValid(byte[] buffer, int startIndex)
+        {
+            int sumLength = BinaryLength - 2;
+            return buffer[startIndex + BinaryLength - 1] == CalculateChecksum(buffer, startIndex + 1, sumLength);
+        }
+
+        /// <summary>
+        /// Appends checksum onto <paramref name="buffer"/> starting at <paramref name="startIndex"/>.
+        /// </summary>
+        /// <param name="buffer">Buffer image on which to append checksum.</param>
+        /// <param name="startIndex">Index into <paramref name="buffer"/> where checksum should be appended.</param>
+        /// <remarks>
+        /// Default implementation encodes checksum in big-endian order and expects buffer size large enough to accomodate
+        /// 2-byte checksum representation. We override this method since checksum in Macrodyne is a single byte.
+        /// </remarks>
+        protected override void AppendChecksum(byte[] buffer, int startIndex)
+        {
+            buffer[startIndex] = (byte)CalculateChecksum(buffer, 1, startIndex);
         }
 
         /// <summary>

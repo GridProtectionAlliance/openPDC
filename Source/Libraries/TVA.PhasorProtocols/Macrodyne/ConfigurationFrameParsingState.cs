@@ -1,17 +1,15 @@
-//*******************************************************************************************************
-//  PhasorDefinition.cs - Gbtc
+﻿//*******************************************************************************************************
+//  ConfigurationFrameParsingState.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  04/30/2009 - J. Ritchie Carroll
+//  02/08/2010 - James R. Carroll
 //       Generated original version of source code.
-//  09/15/2009 - Stephen C. Wills
-//       Added new header and license agreement.
 //
 //*******************************************************************************************************
 
@@ -231,48 +229,32 @@
 */
 #endregion
 
-using System;
-using System.Runtime.Serialization;
-
 namespace TVA.PhasorProtocols.Macrodyne
 {
     /// <summary>
-    /// Represents the Macrodyne implementation of a <see cref="IPhasorDefinition"/>.
+    /// Represents the Macrodyne implementation of the parsing state used by a <see cref="ConfigurationFrame"/>.
     /// </summary>
-    [Serializable()]
-    public class PhasorDefinition : PhasorDefinitionBase
+    public class ConfigurationFrameParsingState : PhasorProtocols.ConfigurationFrameParsingState
     {
+        #region [ Members ]
+
+        // Fields
+        private HeaderFrame m_headerFrame;
+
+        #endregion
+
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new <see cref="PhasorDefinition"/> from specified parameters.
+        /// Creates a new <see cref="ConfigurationFrameParsingState"/> from specified parameters.
         /// </summary>
-        /// <param name="parent">The <see cref="IConfigurationCell"/> parent of this <see cref="PhasorDefinition"/>.</param>
-        public PhasorDefinition(IConfigurationCell parent)
-            : base(parent)
+        /// <param name="parsedBinaryLength">Binary length of the <see cref="ConfigurationFrame"/> being parsed.</param>
+        /// <param name="headerFrame">Previously parsed header frame that contains needed station name.</param>
+        /// <param name="createNewCellFunction">Reference to delegate to create new <see cref="ConfigurationCell"/> instances.</param>
+        public ConfigurationFrameParsingState(int parsedBinaryLength, HeaderFrame headerFrame, CreateNewCellFunction<IConfigurationCell> createNewCellFunction)
+            : base(parsedBinaryLength, createNewCellFunction, 1)
         {
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="PhasorDefinition"/> from specified parameters.
-        /// </summary>
-        /// <param name="parent">The <see cref="ConfigurationCell"/> parent of this <see cref="PhasorDefinition"/>.</param>
-        /// <param name="label">The label of this <see cref="PhasorDefinition"/>.</param>
-        /// <param name="type">The <see cref="PhasorType"/> of this <see cref="PhasorDefinition"/>.</param>
-        /// <param name="voltageReference">The associated <see cref="IPhasorDefinition"/> that represents the voltage reference (if any).</param>
-        public PhasorDefinition(ConfigurationCell parent, string label, PhasorType type, PhasorDefinition voltageReference)
-            : base(parent, label, 1, 0.0D, type, voltageReference)
-        {
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="PhasorDefinition"/> from serialization parameters.
-        /// </summary>
-        /// <param name="info">The <see cref="SerializationInfo"/> with populated with data.</param>
-        /// <param name="context">The source <see cref="StreamingContext"/> for this deserialization.</param>
-        protected PhasorDefinition(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
+            m_headerFrame = headerFrame;
         }
 
         #endregion
@@ -280,17 +262,17 @@ namespace TVA.PhasorProtocols.Macrodyne
         #region [ Properties ]
 
         /// <summary>
-        /// Gets or sets the <see cref="ConfigurationCell"/> parent of this <see cref="PhasorDefinition"/>.
+        /// Gets or sets the header frame, which contains the unit ID (i.e., station name), of the device.
         /// </summary>
-        public virtual new ConfigurationCell Parent
+        public HeaderFrame HeaderFrame
         {
             get
             {
-                return base.Parent as ConfigurationCell;
+                return m_headerFrame;
             }
             set
             {
-                base.Parent = value;
+                m_headerFrame = value;
             }
         }
 

@@ -242,11 +242,19 @@ namespace TVA.PhasorProtocols.Macrodyne
     /// <remarks>
     /// Frame parser is implemented as a write-only stream - this way data can come from any source.
     /// </remarks>
-    public class FrameParser : FrameParserBase<int>
+    public class FrameParser : FrameParserBase<FrameType>
     {
         #region [ Members ]
 
         // Events
+
+        /// <summary>
+        /// Occurs when a Macrodyne <see cref="HeaderFrame"/> that contains the UnitID (i.e., station name) has been received.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="EventArgs{T}.Argument"/> is the <see cref="HeaderFrame"/> that was received.
+        /// </remarks>
+        public new event EventHandler<EventArgs<HeaderFrame>> ReceivedHeaderFrame;
 
         /// <summary>
         /// Occurs when a Macrodyne <see cref="ConfigurationFrame"/> has been received.
@@ -265,20 +273,8 @@ namespace TVA.PhasorProtocols.Macrodyne
         public new event EventHandler<EventArgs<DataFrame>> ReceivedDataFrame;
 
         // Fields
+        private HeaderFrame m_headerFrame;
         private ConfigurationFrame m_configurationFrame;
-
-        #endregion
-
-        #region [ Constructors ]
-
-        /// <summary>
-        /// Creates a new <see cref="FrameParser"/>.
-        /// </summary>
-        public FrameParser()
-        {
-            // Initialize protocol synchronization bytes for this frame parser
-            base.ProtocolSyncBytes = new byte[] { PhasorProtocols.Common.SyncByte };
-        }
 
         #endregion
 
@@ -308,9 +304,10 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// </summary>
         public override bool ProtocolUsesSyncBytes
         {
-	        get
+            get
             {
-                return true;
+                // Even though all data frames begin with 0xAA, the command responses do not. Do to this inconsistency, we don't enable sync bytes.
+                return false;
             }
         }
 
@@ -324,7 +321,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         public override void Start()
         {
             // We narrow down parsing types to just those needed...
-            base.Start(new Type[] { typeof(DataFrame) });
+            base.Start(new Type[] { typeof(DataFrame), typeof(HeaderFrame), typeof(ConfigurationFrame) });
         }
 
         /// <summary>
@@ -348,39 +345,75 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// the entire frame, it will be optimal to prevent further parsing by returning null.
         /// </para>
         /// </remarks>
-        protected override ICommonHeader<int> ParseCommonHeader(byte[] buffer, int offset, int length)
+        protected override ICommonHeader<FrameType> ParseCommonHeader(byte[] buffer, int offset, int length)
         {
             // See if there is enough data in the buffer to parse the common frame header.
             if (length >= CommonFrameHeader.FixedLength)
             {
                 // Parse common frame header
-                CommonFrameHeader parsedFrameHeader = new CommonFrameHeader(buffer, offset);
+                CommonFrameHeader parsedFrameHeader = new CommonFrameHeader(buffer, offset, m_configurationFrame);
 
-                // TODO: Make sure there is enough buffer available to parse entire data frame - otherwise return null...
-
-                //// Create configuration frame if it doesn't exist or frame size has changed
-                //if (m_configurationFrame == null)
-                //{
-                //    // Create virtual configuration frame
-                //    m_configurationFrame = new ConfigurationFrame(OnlineDataFormatFlags.parsedFrameHeader.FrameSize, m_messagePeriod, parsedFrameHeader.IDCode);
-
-                //    // Notify clients of new configuration frame
-                //    OnReceivedChannelFrame(m_configurationFrame);
-                //}
-
-                if (m_configurationFrame != null)
+                // As an optimization, we also make sure entire frame buffer image is available to be parsed - by doing this
+                // we eliminate the need to validate length on all subsequent data elements that comprise the frame
+                if (length >= parsedFrameHeader.FrameLength)
                 {
-                    // Assign common header and data frame parsing state
-                    parsedFrameHeader.State = new DataFrameParsingState(0, m_configurationFrame, DataCell.CreateNewCell);
-
                     // Expose the frame buffer image in case client needs this data for any reason
-                    OnReceivedFrameBufferImage(FundamentalFrameType.DataFrame, buffer, offset, length);
+                    OnReceivedFrameBufferImage(parsedFrameHeader.FrameType, buffer, offset, length);
+
+                    // Handle special parsing states
+                    switch (parsedFrameHeader.TypeID)
+                    {
+                        case FrameType.DataFrame:
+                            // Assign data frame parsing state
+                            parsedFrameHeader.State = new DataFrameParsingState(parsedFrameHeader.FrameLength, m_configurationFrame, DataCell.CreateNewCell);
+                            break;
+                        case FrameType.HeaderFrame:
+                            // Assign header frame parsing state
+                            parsedFrameHeader.State = new HeaderFrameParsingState(parsedFrameHeader.FrameLength, parsedFrameHeader.DataLength);
+                            break;
+                        case FrameType.ConfigurationFrame:
+                            // Assign configuration frame parsing state
+                            parsedFrameHeader.State = new ConfigurationFrameParsingState(parsedFrameHeader.FrameLength, m_headerFrame, ConfigurationCell.CreateNewCell);
+                            break;
+                    }
 
                     return parsedFrameHeader;
                 }
             }
-            
+
             return null;
+        }
+
+        /// <summary>
+        /// Raises the <see cref="FrameParserBase{TypeIndentifier}.ReceivedConfigurationFrame"/> event.
+        /// </summary>
+        /// <param name="frame"><see cref="IConfigurationFrame"/> to send to <see cref="FrameParserBase{TypeIndentifier}.ReceivedConfigurationFrame"/> event.</param>
+        protected override void OnReceivedConfigurationFrame(IConfigurationFrame frame)
+        {
+            // We override this method so we can cache configuration frame when it's received
+            base.OnReceivedConfigurationFrame(frame);
+
+            // Cache new configuration frame for parsing subsequent data frames...
+            ConfigurationFrame configurationFrame = frame as ConfigurationFrame;
+
+            if (configurationFrame != null)
+                m_configurationFrame = configurationFrame;
+        }
+
+        /// <summary>
+        /// Raises the <see cref="FrameParserBase{TypeIndentifier}.ReceivedHeaderFrame"/> event.
+        /// </summary>
+        /// <param name="frame"><see cref="IHeaderFrame"/> to send to <see cref="FrameParserBase{TypeIndentifier}.ReceivedHeaderFrame"/> event.</param>
+        protected override void OnReceivedHeaderFrame(IHeaderFrame frame)
+        {
+            // We override this method so we can cache header frame when it's received
+            base.OnReceivedHeaderFrame(frame);
+
+            //// Cache new header frame for parsing subsequent configuration frame...
+            HeaderFrame headerFrame = frame as HeaderFrame;
+
+            if (headerFrame != null)
+                m_headerFrame = headerFrame;
         }
 
         /// <summary>
@@ -393,7 +426,7 @@ namespace TVA.PhasorProtocols.Macrodyne
             base.OnReceivedChannelFrame(frame);
 
             // Raise Macrodyne specific channel frame events, if any have been subscribed
-            if (frame != null && (ReceivedDataFrame != null || ReceivedConfigurationFrame != null))
+            if (frame != null && (ReceivedDataFrame != null || ReceivedConfigurationFrame != null || ReceivedHeaderFrame != null))
             {
                 DataFrame dataFrame = frame as DataFrame;
 
@@ -404,12 +437,22 @@ namespace TVA.PhasorProtocols.Macrodyne
                 }
                 else
                 {
-                    ConfigurationFrame configFrame = frame as ConfigurationFrame;
+                    HeaderFrame headerFrame = frame as HeaderFrame;
 
-                    if (configFrame != null)
+                    if (headerFrame != null)
                     {
-                        if (ReceivedConfigurationFrame != null)
-                            ReceivedConfigurationFrame(this, new EventArgs<ConfigurationFrame>(configFrame));
+                        if (ReceivedHeaderFrame != null)
+                            ReceivedHeaderFrame(this, new EventArgs<HeaderFrame>(headerFrame));
+                    }
+                    else
+                    {
+                        ConfigurationFrame configFrame = frame as ConfigurationFrame;
+
+                        if (configFrame != null)
+                        {
+                            if (ReceivedConfigurationFrame != null)
+                                ReceivedConfigurationFrame(this, new EventArgs<ConfigurationFrame>(configFrame));
+                        }
                     }
                 }
             }
@@ -432,10 +475,12 @@ namespace TVA.PhasorProtocols.Macrodyne
                 if (sourceFrame.Cells.Count > 0)
                 {
                     IConfigurationCell sourceCell = sourceFrame.Cells[0];
-                    string stationName = sourceCell.StationName.TruncateLeft(8);
+                    string stationName = sourceCell.StationName;
 
                     if (string.IsNullOrEmpty(stationName))
                         stationName = "Unit " + sourceCell.IDCode.ToString();
+
+                    stationName = stationName.TruncateLeft(8);
 
                     switch (sourceFrame.Cells[0].PhasorDefinitions.Count)
                     {
@@ -472,7 +517,7 @@ namespace TVA.PhasorProtocols.Macrodyne
                     }
 
                     derivedFrame.IDCode = sourceFrame.IDCode;
-                    
+
                     // Create new derived configuration cell
                     ConfigurationCell derivedCell = new ConfigurationCell(derivedFrame);
                     IFrequencyDefinition sourceFrequency;
