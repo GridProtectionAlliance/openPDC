@@ -357,12 +357,12 @@ namespace TVA.PhasorProtocols.Ieee1344
 
                     if (definition.FrequencyIsAvailable)
                     {
-                        EndianOrder.BigEndian.CopyBytes(UnscaledFrequency, buffer, startIndex);
+                        EndianOrder.BigEndian.CopyBytes((short)UnscaledFrequency, buffer, startIndex);
                         startIndex += 2;
                     }
 
                     if (definition.DfDtIsAvailable)
-                        EndianOrder.BigEndian.CopyBytes(UnscaledDfDt, buffer, startIndex);
+                        EndianOrder.BigEndian.CopyBytes((short)UnscaledDfDt, buffer, startIndex);
                 }
 
                 return buffer;
