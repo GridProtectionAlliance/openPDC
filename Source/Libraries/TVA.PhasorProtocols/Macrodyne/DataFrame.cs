@@ -453,8 +453,9 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// </remarks>
         protected override bool ChecksumIsValid(byte[] buffer, int startIndex)
         {
-            int sumLength = BinaryLength - 2;
-            return buffer[startIndex + BinaryLength - 1] == CalculateChecksum(buffer, startIndex + 1, sumLength);
+            int sumLength = BinaryLength;
+
+            return buffer[startIndex + 1 + BinaryLength] == CalculateChecksum(buffer, startIndex + 1, sumLength);
         }
 
         /// <summary>
@@ -481,7 +482,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         protected override ushort CalculateChecksum(byte[] buffer, int offset, int length)
         {
             // Macrodyne uses 8-bit Xor checksum for frames
-            return buffer.Xor8CheckSum(offset, length);
+            return (ushort) buffer.Xor8CheckSum(offset, length);
         }
 
         /// <summary>
