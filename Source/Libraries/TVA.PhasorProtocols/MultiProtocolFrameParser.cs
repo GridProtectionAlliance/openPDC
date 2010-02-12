@@ -39,6 +39,8 @@
 //       Edited Comments.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
+//  02/12/2010 - Pinal C. Patel
+//       Modified to start the IFrameParser object in InitializeFrameParser() instead of Start().
 //
 //*******************************************************************************************************
 
@@ -1245,9 +1247,6 @@ namespace TVA.PhasorProtocols
                 // Establish data channel connection - must be defined.
                 InitializeDataChannel(settings);
 
-                // Start parsing engine
-                m_frameParser.Start();
-
                 m_rateCalcTimer.Enabled = true;
                 m_enabled = true;
             }
@@ -1352,6 +1351,9 @@ namespace TVA.PhasorProtocols
             m_frameParser.ReceivedFrameBufferImage += m_frameParser_ReceivedFrameBufferImage;
             m_frameParser.ConfigurationChanged += m_frameParser_ConfigurationChanged;
             m_frameParser.ParsingException += m_frameParser_ParsingException;
+
+            // Start parsing engine
+            m_frameParser.Start();
         }
 
         /// <summary>
