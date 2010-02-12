@@ -453,6 +453,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// </remarks>
         protected override bool ChecksumIsValid(byte[] buffer, int startIndex)
         {
+
             int sumLength = BinaryLength;
 
             return buffer[startIndex + 1 + BinaryLength] == CalculateChecksum(buffer, startIndex + 1, sumLength);
