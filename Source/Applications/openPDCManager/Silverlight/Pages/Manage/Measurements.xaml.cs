@@ -595,13 +595,13 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			App app = (App)Application.Current;
 			m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
 			m_activityWindow.Show();
 			m_client.GetHistoriansAsync(true, true);
-			m_client.GetDevicesAsync(DeviceType.NonConcentrator, true);
+			m_client.GetDevicesAsync(DeviceType.NonConcentrator, app.NodeValue, true);
 			m_client.GetSignalTypesAsync(false);
-			App app = (App)Application.Current;
-
+			
 			if (this.NavigationContext.QueryString.ContainsKey("did"))
 			{
 				m_deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);

@@ -233,7 +233,7 @@
 
 using System.ServiceModel;
 
-namespace PCS.Services.DuplexService
+namespace openPDCManager.Services.DuplexService
 {
     /// <summary>
     /// "Regular" part of Duplex contract:  From Silverlight to the Service

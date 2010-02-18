@@ -236,8 +236,21 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using openPDCManager.Web.Data;
 
-namespace PCS.Services.DuplexService
-{    
+namespace openPDCManager.Services.DuplexService
+{
+
+	public enum MessageType
+	{
+		LivePhasorDataMessage,
+		TimeSeriesDataMessage,
+		ServiceStatusMessage
+	}
+
+	public enum DisplayType
+	{
+		Home,
+		ServiceClient
+	}
     /// <summary>
     /// Derive your own Duplex service from this class
     /// </summary>
@@ -245,7 +258,8 @@ namespace PCS.Services.DuplexService
     public abstract class DuplexService : IUniversalDuplexContract
     {    
         object syncRoot = new object();
-        Dictionary<string, IUniversalDuplexCallbackContract> clients = new Dictionary<string, IUniversalDuplexCallbackContract>();
+        //Dictionary<string, IUniversalDuplexCallbackContract> clients = new Dictionary<string, IUniversalDuplexCallbackContract>();
+		Dictionary<string, Client> clients = new Dictionary<string, Client>();
         
         /// <summary>
         /// This will be called when a new client is connected
@@ -270,32 +284,61 @@ namespace PCS.Services.DuplexService
         /// Pushes a message to all connected clients
         /// </summary>
         /// <param name="message">The message to push</param>
-        protected void PushToAllClients(DuplexMessage message)
-        {
-            lock (syncRoot)
-            {
-                foreach (string session in clients.Keys)
-                {
-                    PushMessageToClient(session, message);
-                }
-            }
-        }
+		//protected void PushToAllClients(DuplexMessage message)
+		//{
+		//    lock (syncRoot)
+		//    {
+		//        foreach (string session in clients.Keys)
+		//        {
+		//            PushMessageToClient(session, message);
+		//        }
+		//    }
+		//}
+
+		protected void PushToAllClients(MessageType messageType)
+		{
+			lock (syncRoot)
+			{
+				foreach (string session in clients.Keys)
+				{
+					if (messageType == MessageType.LivePhasorDataMessage)
+					{
+						LivePhasorDataMessage message = new LivePhasorDataMessage()
+						{
+							//PmuDistributionList = CommonFunctions.GetPmuDistribution(),
+							DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(clients[session].NodeID),
+							InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus(clients[session].NodeID)
+						};
+						PushMessageToClient(session, message);
+					}
+					else if (messageType == MessageType.TimeSeriesDataMessage)
+					{
+						TimeSeriesDataMessage message = new TimeSeriesDataMessage()
+						{
+							TimeSeriesData = CommonFunctions.GetTimeSeriesData(clients[session].TimeSeriesDataRootUrl + "current/" + clients[session].DataPointID.ToString() + "/XML")
+							//TimeSeriesData = CommonFunctions.GetTimeSeriesData(clients[session].TimeSeriesDataRootUrl + "historic/" + clients[session].DataPointID.ToString() + "/*-5S/*/XML")
+						};
+						PushMessageToClient(session, message);
+					}
+				}
+			}
+		}
 
         /// <summary>
         /// Pushes a message to one specific client
         /// </summary>
         /// <param name="clientSessionId">Session ID of the client that should receive the message</param>
         /// <param name="message">The message to push</param>
-        protected void PushMessageToClient(string clientSessionId, DuplexMessage message)
-        {
-            IUniversalDuplexCallbackContract ch = clients[clientSessionId];
+		protected void PushMessageToClient(string clientSessionId, DuplexMessage message)
+		{
+			IUniversalDuplexCallbackContract ch = (clients[clientSessionId]).Channel;
 
-            IAsyncResult iar = ch.BeginSendToClient(message, new AsyncCallback(OnPushMessageComplete), new PushMessageState(ch, clientSessionId));
-            if (iar.CompletedSynchronously)
-            {
-                CompletePushMessage(iar);
-            }    
-        }
+			IAsyncResult iar = ch.BeginSendToClient(message, new AsyncCallback(OnPushMessageComplete), new PushMessageState(ch, clientSessionId));
+			if (iar.CompletedSynchronously)
+			{
+				CompletePushMessage(iar);
+			}
+		}		
 
         void OnPushMessageComplete(IAsyncResult iar)
         {
@@ -325,44 +368,63 @@ namespace PCS.Services.DuplexService
             }
         }
 
-
         void IUniversalDuplexContract.SendToService(DuplexMessage msg)
         {
             //We get here when we receive a message from a client
             IUniversalDuplexCallbackContract ch = OperationContext.Current.GetCallbackChannel<IUniversalDuplexCallbackContract>();
             string session = OperationContext.Current.Channel.SessionId;
 
-            //Any message from a client we haven't seen before causes the new client to be added to our list
-            //(Basically, treated as a "Connect" message)
-
-
-			lock (syncRoot)
+			if (msg is ConnectMessage)
 			{
-				if (!clients.ContainsKey(session))
+				lock (syncRoot)
 				{
-					clients.Add(session, ch);
-					OperationContext.Current.Channel.Closing += new EventHandler(Channel_Closing);
-					OperationContext.Current.Channel.Faulted += new EventHandler(Channel_Faulted);
-					OnConnected(session);
-
-					PushMessageToClient(session, new LivePhasorDataMessage()
+					if (!clients.ContainsKey(session))	// new client
 					{
-						//PmuDistributionList = CommonFunctions.GetPmuDistribution(),
-						DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(),
-						InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus()
+						Client client = new Client();
+						client.Channel = ch;
+						client.NodeID = (msg as ConnectMessage).NodeID;
+						client.TimeSeriesDataRootUrl = (msg as ConnectMessage).TimeSeriesDataRootUrl;
+						client.DataPointID = (msg as ConnectMessage).DataPointID;
+						clients.Add(session, client);
+						OperationContext.Current.Channel.Closing += new EventHandler(Channel_Closing);
+						OperationContext.Current.Channel.Faulted += new EventHandler(Channel_Faulted);
+						OnConnected(session);
+
+						
 					}
-					);
-
+					else	//existing connected client. Just trying to update its settings.
+					{
+						clients[session] = new Client()
+											{
+												Channel = ch,
+												NodeID = (msg as ConnectMessage).NodeID,
+												DataPointID = (msg as ConnectMessage).DataPointID,
+												TimeSeriesDataRootUrl = (msg as ConnectMessage).TimeSeriesDataRootUrl
+											};
+					}
 				}
-			}
 
-            //If it's a Disconnect message, treat as disconnection
-            if (msg is DisconnectMessage)
+				Client currentClient = clients[session];
+				PushMessageToClient(session, new LivePhasorDataMessage()
+							{
+								//PmuDistributionList = CommonFunctions.GetPmuDistribution(),
+								DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(currentClient.NodeID),
+								InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus(currentClient.NodeID)
+							}
+						);
+
+				PushMessageToClient(session, new TimeSeriesDataMessage()
+							{
+								TimeSeriesData = CommonFunctions.GetTimeSeriesData(currentClient.TimeSeriesDataRootUrl + "historic/" + currentClient.DataPointID.ToString() + "/*-30S/*/XML")
+								//TimeSeriesData = CommonFunctions.GetTimeSeriesData(currentClient.TimeSeriesDataRootUrl + "current/" + currentClient.DataPointID.ToString() + "/XML")
+							}
+						);
+			}
+			else if (msg is DisconnectMessage) //If it's a Disconnect message, treat as disconnection
             {
                 ClientDisconnected(session);
             }
-            //Otherwise, if it's a payload-carrying message (and not just a simple "Connect"), process it
-            else if (!(msg is ConnectMessage))
+			else		//if (!(msg is ConnectMessage)) //Otherwise, if it's a payload-carrying message (and not just a simple "Connect"), process it
             {
                 OnMessage(session, msg);
             }

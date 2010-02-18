@@ -252,6 +252,7 @@ namespace openPDCManager.Web.Data.Entities
 		public int? InterconnectionID { get; set; }
 		public string ConnectionString { get; set; }
 		public string TimeZone { get; set; }
+		public int? FramesPerSecond { get; set; }
 		public long TimeAdjustmentTicks { get; set; }
 		public double DataLossInterval { get; set; }
 		public string ContactList { get; set; }

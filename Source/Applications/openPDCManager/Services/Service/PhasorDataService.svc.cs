@@ -237,7 +237,7 @@ using openPDCManager.Web.Data.BusinessObjects;
 using System.IO;
 using System.ServiceModel;
 
-namespace PCS.Services.Service
+namespace openPDCManager.Services.Service
 {
     // NOTE: If you change the class name "PhasorDataService" here, you must also update the reference to "PhasorDataService" in Web.config.	
 	[ServiceBehavior(AddressFilterMode = AddressFilterMode.Any)]
@@ -331,9 +331,9 @@ namespace PCS.Services.Service
 		{
 			return CommonFunctions.GetDeviceListByParentID(parentID);
 		}
-		public Dictionary<int, string> GetDevices(DeviceType deviceType, bool isOptional)
+		public Dictionary<int, string> GetDevices(DeviceType deviceType, string nodeID, bool isOptional)
 		{
-			return CommonFunctions.GetDevices(deviceType, isOptional);
+			return CommonFunctions.GetDevices(deviceType, nodeID, isOptional);
 		}
 		public string SaveDevice(Device device, bool isNew, int digitalCount, int analogCount)
 		{
@@ -381,6 +381,11 @@ namespace PCS.Services.Service
 		public List<Measurement> GetMeasurementList(string nodeID)
 		{
 			return CommonFunctions.GetMeasurementList(nodeID);
+		}
+
+		public List<Measurement> GetFilteredMeasurementsByDevice(int deviceID)
+		{
+			return CommonFunctions.GetFilteredMeasurementsByDevice(deviceID);
 		}
 
 		public string SaveMeasurement(Measurement measurement, bool isNew)

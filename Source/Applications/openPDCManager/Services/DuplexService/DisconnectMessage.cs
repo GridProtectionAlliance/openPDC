@@ -233,7 +233,7 @@
 
 using System.Runtime.Serialization;
 
-namespace PCS.Services.DuplexService
+namespace openPDCManager.Services.DuplexService
 {
     /// <summary>
     /// Standard "Disconnect" message - clients must use this message to disconnect

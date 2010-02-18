@@ -232,9 +232,8 @@
 #endregion
 
 using System.Threading;
-using openPDCManager.Web.Data;
 
-namespace PCS.Services.DuplexService
+namespace openPDCManager.Services.DuplexService
 {   
     /// <summary>
     /// This class actually does all the work for the duplex service. It is being referenced in the .svc file.
@@ -242,24 +241,22 @@ namespace PCS.Services.DuplexService
     public class LivePhasorDataService : DuplexService
     {
         // This timer will be used to retrieve fresh data from the database and then push to all clients.
-        Timer liveDataTimer;
+        Timer livePhasorDataTimer, timeSeriesDataTimer;
 				
 		public LivePhasorDataService()
 		{
-		    liveDataTimer = new Timer(new TimerCallback(LivePhasorDataUpdate), null, 0, 600000);            			
+		    livePhasorDataTimer = new Timer(new TimerCallback(LivePhasorDataUpdate), null, 0, 30000);
+			timeSeriesDataTimer = new Timer(new TimerCallback(TimeSeriesDataUpdate), null, 0, 1000);
 		}
 
 		void LivePhasorDataUpdate(object obj)
-		{
-			LivePhasorDataMessage pList = new LivePhasorDataMessage()
-			{
-				//PmuDistributionList = CommonFunctions.GetPmuDistribution(),
-				DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(),
-				InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus()
-			};
+		{			
+			PushToAllClients(MessageType.LivePhasorDataMessage);
+		}
 
-			// push refreshed data to all the connected clients.
-			PushToAllClients(pList);
+		void TimeSeriesDataUpdate(object obj)
+		{
+			PushToAllClients(MessageType.TimeSeriesDataMessage);
 		}
     }
 }

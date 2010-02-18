@@ -422,6 +422,7 @@
     <Resource Include="Images\Ok.png" />
     <Resource Include="Images\Success.png" />
     <Resource Include="Images\Warning.png" />
+    <Resource Include="Images\RequestData.png" />
     <Content Include="ServiceReferences.ClientConfig" />
   </ItemGroup>
   <ItemGroup>
@@ -434,8 +435,8 @@
   <ItemGroup>
     <None Include="Service References\LivePhasorDataServiceProxy\Arrays.xsd" />
     <None Include="Service References\LivePhasorDataServiceProxy\duplex.xsd" />
+    <None Include="Service References\LivePhasorDataServiceProxy\openPDCManager.Services.DuplexService.xsd" />
     <None Include="Service References\LivePhasorDataServiceProxy\openPDCManager.Web.Data.BusinessObjects.xsd" />
-    <None Include="Service References\LivePhasorDataServiceProxy\PCS.Services.DuplexService.xsd" />
     <None Include="Service References\LivePhasorDataServiceProxy\service.wsdl" />
     <None Include="Service References\LivePhasorDataServiceProxy\service.xsd" />
     <None Include="Service References\LivePhasorDataServiceProxy\service1.xsd" />

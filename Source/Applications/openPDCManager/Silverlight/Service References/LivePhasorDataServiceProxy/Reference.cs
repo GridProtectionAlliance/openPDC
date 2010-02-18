@@ -20,6 +20,7 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     [System.Runtime.Serialization.DataContractAttribute(Name="DuplexMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.ConnectMessage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.DisconnectMessage))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.TimeSeriesDataMessage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.LivePhasorDataMessage))]
     public partial class DuplexMessage : object, System.ComponentModel.INotifyPropertyChanged {
         
@@ -37,6 +38,51 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="ConnectMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
     public partial class ConnectMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
+        
+        private int DataPointIDField;
+        
+        private string NodeIDField;
+        
+        private string TimeSeriesDataRootUrlField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int DataPointID {
+            get {
+                return this.DataPointIDField;
+            }
+            set {
+                if ((this.DataPointIDField.Equals(value) != true)) {
+                    this.DataPointIDField = value;
+                    this.RaisePropertyChanged("DataPointID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string NodeID {
+            get {
+                return this.NodeIDField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NodeIDField, value) != true)) {
+                    this.NodeIDField = value;
+                    this.RaisePropertyChanged("NodeID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TimeSeriesDataRootUrl {
+            get {
+                return this.TimeSeriesDataRootUrlField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TimeSeriesDataRootUrlField, value) != true)) {
+                    this.TimeSeriesDataRootUrlField = value;
+                    this.RaisePropertyChanged("TimeSeriesDataRootUrl");
+                }
+            }
+        }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -47,7 +93,28 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="LivePhasorDataMessage", Namespace="http://schemas.datacontract.org/2004/07/PCS.Services.DuplexService")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="TimeSeriesDataMessage", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Services.DuplexService")]
+    public partial class TimeSeriesDataMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
+        
+        private System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.LivePhasorDataServiceProxy.TimeSeriesDataPoint> TimeSeriesDataField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.LivePhasorDataServiceProxy.TimeSeriesDataPoint> TimeSeriesData {
+            get {
+                return this.TimeSeriesDataField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TimeSeriesDataField, value) != true)) {
+                    this.TimeSeriesDataField = value;
+                    this.RaisePropertyChanged("TimeSeriesData");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="LivePhasorDataMessage", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Services.DuplexService")]
     public partial class LivePhasorDataMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
         
         private System.Collections.Generic.Dictionary<string, int> DeviceDistributionListField;
@@ -77,6 +144,51 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
                     this.InterconnectionStatusListField = value;
                     this.RaisePropertyChanged("InterconnectionStatusList");
                 }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="TimeSeriesDataPoint", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+    public partial class TimeSeriesDataPoint : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private long IndexField;
+        
+        private double ValueField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public long Index {
+            get {
+                return this.IndexField;
+            }
+            set {
+                if ((this.IndexField.Equals(value) != true)) {
+                    this.IndexField = value;
+                    this.RaisePropertyChanged("Index");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double Value {
+            get {
+                return this.ValueField;
+            }
+            set {
+                if ((this.ValueField.Equals(value) != true)) {
+                    this.ValueField = value;
+                    this.RaisePropertyChanged("Value");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }

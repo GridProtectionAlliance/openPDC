@@ -7,7 +7,11 @@
   <xs:complexType name="ConnectMessage">
     <xs:complexContent mixed="false">
       <xs:extension base="tns:DuplexMessage">
-        <xs:sequence />
+        <xs:sequence>
+          <xs:element minOccurs="0" name="DataPointID" type="xs:int" />
+          <xs:element minOccurs="0" name="NodeID" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="TimeSeriesDataRootUrl" nillable="true" type="xs:string" />
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

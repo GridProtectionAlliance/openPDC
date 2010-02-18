@@ -235,7 +235,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using openPDCManager.Web.Data.BusinessObjects;
 
-namespace PCS.Services.DuplexService
+namespace openPDCManager.Services.DuplexService
 {
     /// <summary>
     /// This is the actual message containing live phasor data being sent to all clients connected.

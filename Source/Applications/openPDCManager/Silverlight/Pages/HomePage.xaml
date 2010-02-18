@@ -8,7 +8,7 @@
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            mc:Ignorable="d"
            xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"               
-           Title="HomePage Page">
+           Title="Home Page">
 
     <UserControl.Resources>
         <converter:StringToSymbolConverter x:Key="ConvertStringToSymbol"/>
@@ -28,7 +28,7 @@
         
         <Border x:Name="BorderInterconnectionStatus" Style="{StaticResource ContentBorderStyle}" CornerRadius="5" Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" VerticalAlignment="Stretch">
             <StackPanel Orientation="Vertical" Margin="0" >
-                <Button x:Name="ButtonShowMessage" Content="Show Message" />
+                <!--<Button x:Name="ButtonShowMessage" Content="Show Message" />-->
                 <TextBlock Text="Currently processing PMU data from the following companies" Style="{StaticResource LargeWhiteTextStyle}" Padding="5"/>
                 <ScrollViewer BorderThickness="0" Padding="0" Height="765">
                     <ScrollViewer.Content>                        
@@ -73,19 +73,74 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                        </Border>
-                        
+                        </Border>                        
                     </ScrollViewer.Content>
                 </ScrollViewer>
             </StackPanel>
         </Border>
 
-        <!--<Border x:Name="BorderLiveData" Grid.Row="1" Grid.Column="1" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Stretch" Margin="5,5,0,5">
-            <StackPanel Orientation="Vertical" Margin="0">
-                <TextBlock Text="Real-Time Data" Style="{StaticResource LargeWhiteTextStyle}" HorizontalAlignment="Center" Padding="5" />
+        <Border x:Name="BorderLiveData" Grid.Row="0" Grid.Column="1" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Top" Margin="5,0,0,5">
+            <StackPanel Orientation="Vertical" Margin="0" VerticalAlignment="Top">                
+                <TextBlock Text="Real-Time Data" Style="{StaticResource LargeWhiteTextStyle}" HorizontalAlignment="Center" Padding="5" />   
+                <StackPanel Orientation="Horizontal" Margin="1,0,1,0" Background="{StaticResource PortletBackgroundBrush}" VerticalAlignment="Top" >
+                    <ComboBox x:Name="ComboBoxDevice" Padding="5" Width="{StaticResource LargeItemSize}" DisplayMemberPath="Value"/>
+                    <ComboBox x:Name="ComboBoxMeasurements" Padding="5" Width="{StaticResource LargerItemSize}" DisplayMemberPath="PointTag" />
+                    <Button x:Name="ButtonGetData" Content="../../Images/RequestData.png" Tag="Get Data" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
+                        <Button.RenderTransform>
+                            <ScaleTransform x:Name="ButtonGetDataTransform" ScaleX="1" ScaleY="1" />
+                        </Button.RenderTransform>
+                    </Button>
+                </StackPanel>
+                <chartingToolkit:Chart x:Name="ChartRealTimeData" Foreground="Black" Background="{StaticResource PortletBackgroundBrush}" VerticalAlignment="Top" Height="{StaticResource XLargeItemSize}">                    
+                    <chartingToolkit:Chart.LegendStyle>
+                        <Style TargetType="Control">
+                            <Setter Property="Width" Value="0"/>
+                            <Setter Property="Height" Value="0"/>
+                        </Style>
+                    </chartingToolkit:Chart.LegendStyle>
+                    <chartingToolkit:Chart.Axes>
+                        <chartingToolkit:LinearAxis Orientation="X">
+                            <chartingToolkit:LinearAxis.MajorTickMarkStyle>
+                                <Style TargetType="Line">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </Style>
+                            </chartingToolkit:LinearAxis.MajorTickMarkStyle>
+                            <chartingToolkit:LinearAxis.AxisLabelStyle>
+                                <Style TargetType="chartingToolkit:AxisLabel">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </Style>
+                            </chartingToolkit:LinearAxis.AxisLabelStyle>
+                        </chartingToolkit:LinearAxis>
+                        <chartingToolkit:LinearAxis Orientation="Y" ShowGridLines="True"/>                               
+                    </chartingToolkit:Chart.Axes>                    
+                    <chartingToolkit:LineSeries ItemsSource="{Binding}" IndependentValuePath="Index" DependentValuePath="Value" Title="Real-Time Data" IsSelectionEnabled="False">
+                        <chartingToolkit:LineSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:DataPoint">
+                                <Setter Property="Background" Value="Blue"/>
+                                <Setter Property="Visibility" Value="Collapsed"/>                                
+                            </Style>
+                        </chartingToolkit:LineSeries.DataPointStyle>
+                        <chartingToolkit:LineSeries.PolylineStyle>
+                            <Style TargetType="Polyline">
+                                <Setter Property="StrokeThickness" Value="1"/>
+                            </Style>
+                        </chartingToolkit:LineSeries.PolylineStyle>
+                    </chartingToolkit:LineSeries>
+                </chartingToolkit:Chart>                
+            </StackPanel>
+        </Border>
+
+        <Border x:Name="BorderDeviceDistribution" Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Top" Margin="5,5,0,5">
+            <StackPanel Orientation="Vertical" Margin="0" VerticalAlignment="Top">
+                <TextBlock Text="Vendor Device Distribution" Style="{StaticResource LargeWhiteTextStyle}" HorizontalAlignment="Center" Padding="5" />
+                <chartingToolkit:Chart x:Name="ChartDeviceDistribution" Style="{StaticResource PieChartStyle}" Foreground="Black" Background="{StaticResource PortletBackgroundBrush}" VerticalAlignment="Top" Height="{StaticResource XLargeItemSize}">
+                    <chartingToolkit:PieSeries ItemsSource="{Binding}" DependentValuePath="Value" IndependentValuePath="Key" Title="Device Distribution" 
+                        IsSelectionEnabled="False" />
+                </chartingToolkit:Chart>
             </StackPanel>
         </Border>
         
+        <!--
         <Border x:Name="BorderPMUDistribution" Grid.Row="2" Grid.Column="1" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Stretch" Margin="5,5,0,5">
             <StackPanel Orientation="Vertical" Margin="0">
                 <TextBlock Text="PMUs Distribution" HorizontalAlignment="Center" Style="{StaticResource LargeWhiteTextStyle}" Padding="5" />
@@ -121,16 +176,6 @@
                 </Border>
             </StackPanel>
         </Border>-->
-
-        <Border x:Name="BorderDeviceDistribution" Grid.Row="0" Grid.Column="1" Grid.RowSpan="4" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Stretch" Margin="5,5,0,5">
-            <StackPanel Orientation="Vertical" Margin="0" VerticalAlignment="Top">
-                <TextBlock Text="Vendor Device Distribution" Style="{StaticResource LargeWhiteTextStyle}" HorizontalAlignment="Center" Padding="5" />
-                <chartingToolkit:Chart x:Name="ChartDeviceDistribution" Style="{StaticResource PieChartStyle}" Foreground="Black" Background="{StaticResource PortletBackgroundBrush}" VerticalAlignment="Stretch" Height="{StaticResource XLargeItemSize}">
-                    <chartingToolkit:PieSeries ItemsSource="{Binding}" DependentValuePath="Value" IndependentValuePath="Key" Title="Device Distribution" 
-                        IsSelectionEnabled="True"/>
-                </chartingToolkit:Chart>                
-            </StackPanel>
-        </Border>
 
     </Grid>
     

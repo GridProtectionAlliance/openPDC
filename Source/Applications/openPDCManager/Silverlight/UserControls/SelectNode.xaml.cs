@@ -251,7 +251,7 @@ namespace openPDCManager.Silverlight.UserControls
 		{
 			InitializeComponent();
 			m_client = Common.GetPhasorDataServiceProxyClient();
-			m_client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
+			//m_client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
 			m_client.GetNodeListCompleted += new EventHandler<GetNodeListCompletedEventArgs>(m_client_GetNodeListCompleted);
 			ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
 			Loaded += new RoutedEventHandler(SelectNode_Loaded);
@@ -328,55 +328,56 @@ namespace openPDCManager.Silverlight.UserControls
 			}
 		}
 
-		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
-		{
-			//if (e.Error == null)
-			//{
-			//    ComboboxNode.ItemsSource = e.Result;
-			//    App app = (App)Application.Current;
-			//    if (ComboboxNode.Items.Count > 0)
-			//    {
-			//        if (!string.IsNullOrEmpty(app.NodeValue))
-			//        {
-			//            foreach (KeyValuePair<string, string> item in ComboboxNode.Items)
-			//            {
-			//                if (item.Key == app.NodeValue)
-			//                {
-			//                    ComboboxNode.SelectedItem = item;
-			//                    break;
-			//                }
+		//void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
+		//{
+		//    if (e.Error == null)
+		//    {
+		//        ComboboxNode.ItemsSource = e.Result;
+		//        App app = (App)Application.Current;
+		//        if (ComboboxNode.Items.Count > 0)
+		//        {
+		//            if (!string.IsNullOrEmpty(app.NodeValue))
+		//            {
+		//                foreach (KeyValuePair<string, string> item in ComboboxNode.Items)
+		//                {
+		//                    if (item.Key == app.NodeValue)
+		//                    {
+		//                        ComboboxNode.SelectedItem = item;
+		//                        break;
+		//                    }
 
-			//            }
-			//        }
-			//        else
-			//            ComboboxNode.SelectedIndex = 0;
-			//        app.NodeValue = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Key;
-			//        app.NodeName = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Value;
-			//    }
-			//    else
-			//        app.NodeValue = string.Empty;
-			//}
-			//else
-			//{
-			//    SystemMessages sm;
-			//    if (e.Error is FaultException<CustomServiceFault>)
-			//    {
-			//        FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-			//        sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-			//            ButtonType.OkOnly);
-			//    }
-			//    else
-			//        sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-			//            ButtonType.OkOnly);
+		//                }
+		//            }
+		//            else
+		//                ComboboxNode.SelectedIndex = 0;
+		//    //        app.NodeValue = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Key;
+		//    //        app.NodeName = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Value;
+		//        }
+		//        else
+		//            app.NodeValue = string.Empty;
+		//    }
+		//    else
+		//    {
+		//    //    SystemMessages sm;
+		//    //    if (e.Error is FaultException<CustomServiceFault>)
+		//    //    {
+		//    //        FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+		//    //        sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+		//    //            ButtonType.OkOnly);
+		//    //    }
+		//    //    else
+		//    //        sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+		//    //            ButtonType.OkOnly);
 
-			//    sm.Show();
-			//}
-			//m_raiseNodesCollectionChanged = false;
-		}
+		//    //    sm.Show();
+		//    }
+		//    m_raiseNodesCollectionChanged = false;
+		//}
 
 		public void RefreshNodeList()
 		{				
-			m_client.GetNodesAsync(true, false);			
+			//m_client.GetNodesAsync(true, false);	
+			m_client.GetNodeListAsync(true);
 		}
 
 		public void RaiseNotification()

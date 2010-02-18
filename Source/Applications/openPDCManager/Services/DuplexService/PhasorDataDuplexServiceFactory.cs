@@ -231,7 +231,7 @@
 */
 #endregion
 
-namespace PCS.Services.DuplexService
+namespace openPDCManager.Services.DuplexService
 {
     public class PhasorDataDuplexServiceFactory : DuplexServiceFactory<LivePhasorDataService> { }
 }

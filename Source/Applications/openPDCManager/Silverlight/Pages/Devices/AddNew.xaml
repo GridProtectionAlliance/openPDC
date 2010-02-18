@@ -24,8 +24,8 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="2*" />
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="2*" />                            
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -70,19 +70,23 @@
                         <TextBox x:Name="TextBoxConnectionString" Grid.Row="7" Grid.Column="1" Text="{Binding Path=ConnectionString}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                         <TextBlock Grid.Row="7" Grid.Column="2" Text="Time Zone" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>                        
                         <ComboBox x:Name="ComboboxTimeZone" Grid.Row="7" Grid.Column="3" DisplayMemberPath="Value" Margin="5" Width="{StaticResource XLargeItemSize}" HorizontalAlignment="Left"/>
-                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Time Adjustment Ticks" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                        <TextBox x:Name="TextBoxTimeAdjustmentTicks" Grid.Row="8" Grid.Column="1" Text="{Binding Path=TimeAdjustmentTicks}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="8" Grid.Column="2" Text="Data Loss Interval" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                        <TextBox x:Name="TextBoxDataLossInterval" Grid.Row="8" Grid.Column="3" Text="{Binding Path=DataLossInterval}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="9" Grid.Column="0" Text="Measured Lines" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                        <TextBox x:Name="TextBoxMeasuredLines" Grid.Row="9" Grid.Column="1" Text="{Binding Path=MeasuredLines}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="9" Grid.Column="2" Text="Load Order" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                        <TextBox x:Name="TextBoxLoadOrder" Grid.Row="9" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="10" Grid.Column="0" Text="Contact List" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                        <TextBox x:Name="TextBoxContactList" Grid.Row="10" Grid.Column="1" Text="{Binding Path=ContactList}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <CheckBox x:Name="CheckboxConcentrator" Grid.Row="10" Grid.Column="2" IsChecked="{Binding Path=IsConcentrator}" Content="Concentrator" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
-                        <CheckBox x:Name="CheckboxEnabled" Grid.Row="10" Grid.Column="3" IsChecked="{Binding Path=Enabled}" Content="Enabled" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>                        
-                        <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        
+                        <TextBlock Grid.Row="8" Grid.Column="0" Text="FramesPerSecond" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBox x:Name="TextBoxFramesPerSecond" Grid.Row="8" Grid.Column="1" Text="{Binding Path=FramesPerSecond}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        
+                        <TextBlock Grid.Row="8" Grid.Column="2" Text="Time Adjustment Ticks" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBox x:Name="TextBoxTimeAdjustmentTicks" Grid.Row="8" Grid.Column="3" Text="{Binding Path=TimeAdjustmentTicks}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBlock Grid.Row="9" Grid.Column="0" Text="Data Loss Interval" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBox x:Name="TextBoxDataLossInterval" Grid.Row="9" Grid.Column="1" Text="{Binding Path=DataLossInterval}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBlock Grid.Row="9" Grid.Column="2" Text="Measured Lines" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBox x:Name="TextBoxMeasuredLines" Grid.Row="9" Grid.Column="3" Text="{Binding Path=MeasuredLines}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBlock Grid.Row="10" Grid.Column="0" Text="Load Order" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBox x:Name="TextBoxLoadOrder" Grid.Row="10" Grid.Column="1" Text="{Binding Path=LoadOrder}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBlock Grid.Row="10" Grid.Column="2" Text="Contact List" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBox x:Name="TextBoxContactList" Grid.Row="10" Grid.Column="3" Text="{Binding Path=ContactList}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <CheckBox x:Name="CheckboxConcentrator" Grid.Row="11" Grid.Column="2" IsChecked="{Binding Path=IsConcentrator}" Content="Concentrator" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                        <CheckBox x:Name="CheckboxEnabled" Grid.Row="11" Grid.Column="3" IsChecked="{Binding Path=Enabled}" Content="Enabled" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>                        
+                        <StackPanel Orientation="Horizontal" Grid.Row="12" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
                                 <Button.RenderTransform>
                                     <ScaleTransform x:Name="ButtonClearTransform" ScaleX="1" ScaleY="1" />

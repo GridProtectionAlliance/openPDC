@@ -246,6 +246,8 @@ using System.Xml.Serialization;
 using openPDCManager.Web.Data.BusinessObjects;
 using openPDCManager.Web.Data.Entities;
 using TVA.PhasorProtocols;
+using System.Net;
+using System.Xml.Linq;
 
 namespace openPDCManager.Web.Data
 {
@@ -607,7 +609,7 @@ namespace openPDCManager.Web.Data
 			}
 		}
 
-		public static Dictionary<string, int> GetVendorDeviceDistribution()
+		public static Dictionary<string, int> GetVendorDeviceDistribution(string nodeID)
 		{
 			DataConnection connection = new DataConnection();
 			Dictionary<string, int> deviceDistribution = new Dictionary<string, int>();
@@ -615,7 +617,11 @@ namespace openPDCManager.Web.Data
 			{
 				IDbCommand command = connection.Connection.CreateCommand();
 				command.CommandType = CommandType.Text;
-				command.CommandText = "Select * From VendorDeviceDistribution Order By VendorName";
+				command.CommandText = "Select * From VendorDeviceDistribution WHERE NodeID = @nodeID Order By VendorName";
+				if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+					command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+				else
+					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 
 				DataTable resultTable = new DataTable();
 				resultTable.Load(command.ExecuteReader());
@@ -638,7 +644,7 @@ namespace openPDCManager.Web.Data
 			return deviceDistribution;
 		}
 
-		public static List<InterconnectionStatus> GetInterconnectionStatus()
+		public static List<InterconnectionStatus> GetInterconnectionStatus(string nodeID)
 		{
 			DataConnection connection = new DataConnection();
 			List<InterconnectionStatus> interConnectionStatusList = new List<InterconnectionStatus>();				
@@ -648,14 +654,24 @@ namespace openPDCManager.Web.Data
 				resultSet.Tables.Add(new DataTable("InterconnectionSummary"));
 				resultSet.Tables.Add(new DataTable("MemberSummary"));
 
-				IDbCommand command = connection.Connection.CreateCommand();
-				command.CommandType = CommandType.Text;
-				command.CommandText = "Select InterconnectionName, Count(*) AS DeviceCount From DeviceDetail Group By InterconnectionName";
-				resultSet.Tables["InterconnectionSummary"].Load(command.ExecuteReader());
+				IDbCommand command1 = connection.Connection.CreateCommand();
+				command1.CommandType = CommandType.Text;
+				command1.CommandText = "Select InterconnectionName, Count(*) AS DeviceCount From DeviceDetail WHERE NodeID = @nodeID Group By InterconnectionName";
+				if (command1.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+					command1.Parameters.Add(AddWithValue(command1, "@nodeID", "{" + nodeID + "}"));
+				else
+					command1.Parameters.Add(AddWithValue(command1, "@nodeID", nodeID));
+				resultSet.Tables["InterconnectionSummary"].Load(command1.ExecuteReader());
 
-				command.CommandText = "Select CompanyAcronym, CompanyName, InterconnectionName, Count(*) AS DeviceCount, Sum(MeasuredLines) AS MeasuredLines " +
-										"From DeviceDetail Group By CompanyAcronym, CompanyName, InterconnectionName";
-				resultSet.Tables["MemberSummary"].Load(command.ExecuteReader());
+				IDbCommand command2 = connection.Connection.CreateCommand();
+				command2.CommandType = CommandType.Text;
+				command2.CommandText = "Select CompanyAcronym, CompanyName, InterconnectionName, Count(*) AS DeviceCount, Sum(MeasuredLines) AS MeasuredLines " +
+										"From DeviceDetail WHERE NodeID = @nodeID Group By CompanyAcronym, CompanyName, InterconnectionName";
+				if (command2.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+					command2.Parameters.Add(AddWithValue(command2, "@nodeID", "{" + nodeID + "}"));
+				else
+					command2.Parameters.Add(AddWithValue(command2, "@nodeID", nodeID));
+				resultSet.Tables["MemberSummary"].Load(command2.ExecuteReader());
 
 				interConnectionStatusList = (from item in resultSet.Tables["InterconnectionSummary"].AsEnumerable()
 											 select new InterconnectionStatus()
@@ -685,7 +701,42 @@ namespace openPDCManager.Web.Data
 			}
 			return interConnectionStatusList;
 		}
-			
+
+		public static List<TimeSeriesDataPoint> GetTimeSeriesData(string timeSeriesDataUrl)
+		{				
+			List<TimeSeriesDataPoint> timeSeriesData = new List<TimeSeriesDataPoint>();
+			try
+			{				
+				HttpWebRequest request = WebRequest.Create(timeSeriesDataUrl) as HttpWebRequest;
+				using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+				{
+					if (response.StatusCode == HttpStatusCode.OK)
+					{
+						StreamReader reader = new StreamReader(response.GetResponseStream());						
+						XElement timeSeriesDataPoints = XElement.Parse(reader.ReadToEnd());
+						long index = 0;
+
+						foreach (XElement element in timeSeriesDataPoints.Element("TimeSeriesDataPoints").Elements("TimeSeriesDataPoint"))
+						{
+							timeSeriesData.Add(new TimeSeriesDataPoint()
+								{
+									Index = index,
+									Value = Convert.ToDouble(element.Element("Value").Value)
+								});
+							index = index + 1;
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				LogException("GetRealTimeData", ex);
+			}
+
+			return timeSeriesData;
+		}
+
+
 		#region " Manage Companies Code"
 
 		public static List<Company> GetCompanyList()
@@ -2093,6 +2144,7 @@ namespace openPDCManager.Web.Data
 								  InterconnectionID = item.Field<int?>("InterconnectionID"),
 								  ConnectionString = item.Field<string>("ConnectionString"),
 								  TimeZone = item.Field<string>("TimeZone"),
+								  FramesPerSecond = item.Field<int?>("FramesPerSecond"),
 								  TimeAdjustmentTicks = Convert.ToInt64(item.Field<object>("TimeAdjustmentTicks")),
 								  DataLossInterval = item.Field<double>("DataLossInterval"),
 								  ContactList = item.Field<string>("ContactList"),
@@ -2147,12 +2199,12 @@ namespace openPDCManager.Web.Data
 				IDbCommand command = connection.Connection.CreateCommand();
 
 				if (isNew)
-					command.CommandText = "Insert Into Device (NodeID, ParentID, Acronym, Name, IsConcentrator, CompanyID, HistorianID, AccessID, VendorDeviceID, ProtocolID, Longitude, Latitude, InterconnectionID, ConnectionString, TimeZone, TimeAdjustmentTicks, " +
+					command.CommandText = "Insert Into Device (NodeID, ParentID, Acronym, Name, IsConcentrator, CompanyID, HistorianID, AccessID, VendorDeviceID, ProtocolID, Longitude, Latitude, InterconnectionID, ConnectionString, TimeZone, FramesPerSecond, TimeAdjustmentTicks, " +
 						"DataLossInterval, ContactList, MeasuredLines, LoadOrder, Enabled) Values (@nodeID, @parentID, @acronym, @name, @isConcentrator, @companyID, @historianID, @accessID, @vendorDeviceID, @protocolID, @longitude, @latitude, @interconnectionID, " +
-						"@connectionString, @timezone, @timeAdjustmentTicks, @dataLossInterval, @contactList, @measuredLines, @loadOrder, @enabled)";
+						"@connectionString, @timezone, @framesPerSecond, @timeAdjustmentTicks, @dataLossInterval, @contactList, @measuredLines, @loadOrder, @enabled)";
 				else
 					command.CommandText = "Update Device Set NodeID = @nodeID, ParentID = @parentID, Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, CompanyID = @companyID, HistorianID = @historianID, AccessID = @accessID, VendorDeviceID = @vendorDeviceID, " +
-						"ProtocolID = @protocolID, Longitude = @longitude, Latitude = @latitude, InterconnectionID = @interconnectionID, ConnectionString = @connectionString, TimeZone = @timezone, TimeAdjustmentTicks = @timeAdjustmentTicks, DataLossInterval = @dataLossInterval, " +
+						"ProtocolID = @protocolID, Longitude = @longitude, Latitude = @latitude, InterconnectionID = @interconnectionID, ConnectionString = @connectionString, TimeZone = @timezone, FramesPerSecond = @framesPerSecond, TimeAdjustmentTicks = @timeAdjustmentTicks, DataLossInterval = @dataLossInterval, " +
 						"ContactList = @contactList, MeasuredLines = @measuredLines, LoadOrder = @loadOrder, Enabled = @enabled WHERE ID = @id";
 
 				command.CommandType = CommandType.Text;
@@ -2171,6 +2223,7 @@ namespace openPDCManager.Web.Data
 				command.Parameters.Add(AddWithValue(command, "@interconnectionID", device.InterconnectionID ?? (object)DBNull.Value));
 				command.Parameters.Add(AddWithValue(command, "@connectionString", device.ConnectionString));
 				command.Parameters.Add(AddWithValue(command, "@timezone", device.TimeZone));
+				command.Parameters.Add(AddWithValue(command, "@framesPerSecond", device.FramesPerSecond ?? 30));
 				command.Parameters.Add(AddWithValue(command, "@timeAdjustmentTicks", device.TimeAdjustmentTicks));
 				command.Parameters.Add(AddWithValue(command, "@dataLossInterval", device.DataLossInterval));
 				command.Parameters.Add(AddWithValue(command, "@contactList", device.ContactList));
@@ -2329,7 +2382,7 @@ namespace openPDCManager.Web.Data
 			}
 		}
 
-		public static Dictionary<int, string> GetDevices(DeviceType deviceType, bool isOptional)
+		public static Dictionary<int, string> GetDevices(DeviceType deviceType, string nodeID, bool isOptional)
 		{
 			DataConnection connection = new DataConnection();
 			try
@@ -2342,16 +2395,22 @@ namespace openPDCManager.Web.Data
 				command.CommandType = CommandType.Text;
 				if (deviceType == DeviceType.Concentrator)
 				{
-					command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator Order By LoadOrder";
+					command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator AND NodeID = @nodeID Order By LoadOrder";
 					command.Parameters.Add(AddWithValue(command, "@isConcentrator", true));
 				}
 				else if (deviceType == DeviceType.NonConcentrator)
 				{
-					command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator Order By LoadOrder";
+					command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator AND NodeID = @nodeID Order By LoadOrder";
 					command.Parameters.Add(AddWithValue(command, "@isConcentrator", false));
 				}
 				else
-					command.CommandText = "Select ID, Acronym From Device Order By LoadOrder";
+					command.CommandText = "Select ID, Acronym From Device Where NodeID = @nodeID Order By LoadOrder";
+
+
+				if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+					command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+				else
+					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 
 				DataTable resultTable = new DataTable();
 				resultTable.Load(command.ExecuteReader());
@@ -2817,7 +2876,7 @@ namespace openPDCManager.Web.Data
 				connection.Dispose();
 			}			
 		}
-
+		
 		public static string SaveMeasurement(Measurement measurement, bool isNew)
 		{
 			DataConnection connection = new DataConnection();
@@ -2963,6 +3022,55 @@ namespace openPDCManager.Web.Data
 				LogException("GetMeasurementsForOutputStream", ex);
 				return null;
 			}
+		}
+
+		public static List<Measurement> GetFilteredMeasurementsByDevice(int deviceID)
+		{
+			DataConnection connection = new DataConnection();
+			try
+			{
+				List<Measurement> measurementList = new List<Measurement>();
+				IDbCommand commnad = connection.Connection.CreateCommand();
+				commnad.CommandType = CommandType.Text;
+				commnad.CommandText = "Select * From MeasurementDetail Where DeviceID = @deviceID AND SignalTypeSuffix IN ('PA', 'FQ') Order By PointTag";
+				commnad.Parameters.Add(AddWithValue(commnad, "@deviceID", deviceID));
+
+				measurementList = (from item in GetResultSet(commnad).Tables[0].AsEnumerable()
+								   select new Measurement()
+								   {
+									   SignalID = item.Field<object>("SignalID").ToString(),
+									   HistorianID = item.Field<int?>("HistorianID"),
+									   PointID = item.Field<int>("PointID"),
+									   DeviceID = item.Field<int>("DeviceID"),
+									   PointTag = item.Field<string>("PointTag"),
+									   AlternateTag = item.Field<string>("AlternateTag"),
+									   SignalTypeID = item.Field<int>("SignalTypeID"),
+									   PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+									   SignalReference = item.Field<string>("SignalReference"),
+									   Adder = item.Field<double>("Adder"),
+									   Multiplier = item.Field<double>("Multiplier"),
+									   Description = item.Field<string>("Description"),
+									   Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+									   HistorianAcronym = item.Field<string>("HistorianAcronym"),
+									   DeviceAcronym = item.Field<string>("DeviceAcronym"),
+									   FramesPerSecond = item.Field<int?>("FramesPerSecond"),
+									   SignalName = item.Field<string>("SignalName"),
+									   SignalAcronym = item.Field<string>("SignalAcronym"),
+									   SignalSuffix = item.Field<string>("SignalTypeSuffix"),
+									   PhasorLabel = item.Field<string>("PhasorLabel")
+								   }).ToList();
+				return measurementList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetFilteredMeasurementsByDevice", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Filtered Measurements By Device", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}			
 		}
 
 		#endregion

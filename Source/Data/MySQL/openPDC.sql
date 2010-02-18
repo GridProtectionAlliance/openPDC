@@ -690,11 +690,11 @@ FROM         OtherDevice AS OD LEFT OUTER JOIN
                       Interconnection AS I ON OD.InterconnectionID = I.ID;
  
 CREATE VIEW VendorDeviceDistribution AS
-SELECT Vendor.Name AS VendorName, COUNT(*) AS DeviceCount 
+SELECT Device.NodeID, Vendor.Name AS VendorName, COUNT(*) AS DeviceCount 
 FROM Device 
       LEFT OUTER JOIN VendorDevice ON Device.VendorDeviceID = VendorDevice.ID
       INNER JOIN Vendor ON VendorDevice.VendorID = Vendor.ID
-      GROUP BY Vendor.Name;
+      GROUP BY Device.NodeID, Vendor.Name;
 
 CREATE VIEW VendorDeviceDetail
 AS

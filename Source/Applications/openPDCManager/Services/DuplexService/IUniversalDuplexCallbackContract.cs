@@ -233,9 +233,8 @@
 
 using System;
 using System.ServiceModel;
-using openPDCManager.Web.Data.BusinessObjects;
 
-namespace PCS.Services.DuplexService
+namespace openPDCManager.Services.DuplexService
 {
     /// <summary>
     /// "Callback" part of Duplex contract: From the Service to Silverlight

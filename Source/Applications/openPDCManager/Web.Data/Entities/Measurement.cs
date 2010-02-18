@@ -250,6 +250,7 @@ namespace openPDCManager.Web.Data.Entities
 		public bool Enabled { get; set; }
 		public string HistorianAcronym { get; set; }
 		public string DeviceAcronym { get; set; }
+		public int? FramesPerSecond { get; set; }
 		public string SignalName { get; set; }
 		public string SignalAcronym { get; set; }
 		public string SignalSuffix { get; set; }

@@ -238,7 +238,7 @@ using openPDCManager.Web.Data.Entities;
 using openPDCManager.Web.Data.BusinessObjects;
 using System.IO;
 
-namespace PCS.Services.Service
+namespace openPDCManager.Services.Service
 {
     // NOTE: If you change the interface name "IPhasorDataService" here, you must also update the reference to "IPhasorDataService" in Web.config.
 	/// <summary>
@@ -344,7 +344,7 @@ namespace PCS.Services.Service
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<int, string> GetDevices(DeviceType deviceType, bool isOptional);
+		Dictionary<int, string> GetDevices(DeviceType deviceType, string nodeID, bool isOptional);
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
@@ -389,6 +389,10 @@ namespace PCS.Services.Service
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
 		List<Measurement> GetMeasurementList(string nodeID);
+
+		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
+		List<Measurement> GetFilteredMeasurementsByDevice(int deviceID);
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]

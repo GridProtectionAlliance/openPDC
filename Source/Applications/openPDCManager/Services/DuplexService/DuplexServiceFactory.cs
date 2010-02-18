@@ -237,7 +237,7 @@ using System.ServiceModel.Activation;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 
-namespace PCS.Services.DuplexService
+namespace openPDCManager.Services.DuplexService
 {
     /// <summary>
     /// Derive from this class to create a duplex Service Factory to use in an .svc file

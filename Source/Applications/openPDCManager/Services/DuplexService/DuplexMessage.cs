@@ -233,7 +233,7 @@
 
 using System.Runtime.Serialization;
 
-namespace PCS.Services.DuplexService
+namespace openPDCManager.Services.DuplexService
 {
     /// <summary>
     /// Base message class. Please add [KnownType] attributes as necessary for every 
@@ -243,5 +243,6 @@ namespace PCS.Services.DuplexService
     [KnownType(typeof(ConnectMessage))]
     [KnownType(typeof(DisconnectMessage))]
     [KnownType(typeof(LivePhasorDataMessage))]
+	[KnownType(typeof(TimeSeriesDataMessage))]
     public class DuplexMessage { }
 }

@@ -342,7 +342,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		}
 		void Nodes_Loaded(object sender, RoutedEventArgs e)
 		{
-			
+			//m_client.GetRealTimeDataAsync(((App)Application.Current).TimeSeriesDataServiceUrl);
 		}
 		void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
 		{

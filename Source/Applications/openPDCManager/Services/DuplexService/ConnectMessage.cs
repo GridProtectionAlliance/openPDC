@@ -233,11 +233,21 @@
 
 using System.Runtime.Serialization;
 
-namespace PCS.Services.DuplexService
+namespace openPDCManager.Services.DuplexService
 {
     /// <summary>
     /// Standard "Connect" message - clients may use this message to connect, when no other payload is required
     /// </summary>
     [DataContract(Namespace = "http://samples.microsoft.com/silverlight2/duplex")]
-    public class ConnectMessage : DuplexMessage { }
+    public class ConnectMessage : DuplexMessage 
+	{
+		[DataMember]
+		public string NodeID {get; set;}
+
+		[DataMember]
+		public string TimeSeriesDataRootUrl {get; set;}
+
+		[DataMember]
+		public int DataPointID { get; set; }
+	}	
 }

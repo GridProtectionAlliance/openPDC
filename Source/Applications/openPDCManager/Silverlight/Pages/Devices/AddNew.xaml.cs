@@ -449,6 +449,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			device.InterconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
 			device.ConnectionString = TextBoxConnectionString.Text;
 			device.TimeZone = ((KeyValuePair<string, string>)ComboboxTimeZone.SelectedItem).Key;
+			device.FramesPerSecond = string.IsNullOrEmpty(TextBoxFramesPerSecond.Text) ? 30 : Convert.ToInt32(TextBoxFramesPerSecond.Text);
 			device.TimeAdjustmentTicks = Convert.ToInt64(TextBoxTimeAdjustmentTicks.Text);
 			device.DataLossInterval = Convert.ToDouble(TextBoxDataLossInterval.Text);
 			device.ContactList = TextBoxContactList.Text;
@@ -669,7 +670,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			StackPanelDeviceList.Visibility = Visibility.Collapsed;
 			StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
-			m_client.GetDevicesAsync(DeviceType.Concentrator, true);
+			m_client.GetDevicesAsync(DeviceType.Concentrator, ((App)Application.Current).NodeValue, true);
 			m_client.GetCompaniesAsync(true);
 			m_client.GetNodesAsync(true, false);
 			m_client.GetHistoriansAsync(true, true);
