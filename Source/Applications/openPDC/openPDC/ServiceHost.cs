@@ -20,6 +20,8 @@
 //       is now part of the ServiceHelper component.
 //  12/23/2009 - Pinal C. Patel
 //       Removed code that updated an obsolete setting in the config file.
+//  01/08/2010 - Pinal C. Patel
+//       Modified ProcessExceptionHandler() to log the exception before updating client status.
 //
 //*******************************************************************************************************
 
@@ -244,6 +246,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Reflection;
@@ -258,7 +261,6 @@ using TVA.Measurements;
 using TVA.Measurements.Routing;
 using TVA.Reflection;
 using TVA.Services;
-using System.Diagnostics;
 
 namespace openPDC
 {
@@ -870,8 +872,8 @@ namespace openPDC
         {
             Exception ex = e.Argument;
 
-            DisplayStatusMessage("[{0}] {1}", UpdateType.Alarm, GetDerivedName(sender), ex.Message);
             m_serviceHelper.ErrorLogger.Log(ex, false);
+            DisplayStatusMessage("[{0}] {1}", UpdateType.Alarm, GetDerivedName(sender), ex.Message);
         }
 
         // Handle health monitoring processing
@@ -1565,7 +1567,15 @@ namespace openPDC
         // Display status messages (broadcast to all clients)
         private void DisplayStatusMessage(string status, UpdateType type)
         {
-            m_serviceHelper.UpdateStatus(type, string.Format("{0}\r\n\r\n", status));
+            try
+            {
+                m_serviceHelper.UpdateStatus(type, string.Format("{0}\r\n\r\n", status));
+            }
+            catch (Exception ex)
+            {
+                m_serviceHelper.ErrorLogger.Log(ex);
+                m_serviceHelper.UpdateStatus(UpdateType.Alarm, "Failed to update client status due to an exception.\r\n\r\n");
+            }
         }
 
         private void DisplayStatusMessage(string status, UpdateType type, params object[] args)
