@@ -5,7 +5,7 @@
     <script language="javascript" type="text/javascript">
 	<!--
         var dataID = 2;
-		var rootURL = "http://localhost:8700/Historian/TimeSeriesData/Read";
+		var rootURL = "http://localhost:6152/Historian/TimeSeriesData/Read";
         var liveData = [$.gchart.series('Frequency', [], 'green')]
 
         $(document).ready(
@@ -30,7 +30,7 @@
             }
 
             $('#liveChart').gchart({ title: 'Real-time Data for point ID ' + dataID, type: 'line', minValue: 59.9, maxValue: 60.1, series: liveData });
-            setInterval(refreshChart, 250);
+            setInterval(refreshChart, 1000);
         }
 
         function refreshChart()
@@ -48,7 +48,7 @@
 		
 		function refreshFrame()
 		{
-			document.getElementById("metaData").src = "http://localhost:8600/historian/metadata/read/" + dataID + "/xml";
+			document.getElementById("metaData").src = "http://localhost:6151/historian/metadata/read/" + dataID + "/xml";
 		}
 	// -->
     </script>
