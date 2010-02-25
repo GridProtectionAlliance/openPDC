@@ -51,11 +51,11 @@
                 </StackPanel.Resources>
                 
                 <TextBlock Text="View Iaon Tree" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
-                <ScrollViewer BorderThickness="0" Padding="0">
-                    <ScrollViewer.Content>
-                        <controls:TreeView x:Name="TreeViewIaon" Background="{StaticResource PortletBackgroundBrush}" ItemTemplate="{StaticResource RootNodeTemplate}" Height="755" ItemContainerStyle="{StaticResource ExpandedItemStyle}" />
-                    </ScrollViewer.Content>
-                </ScrollViewer>
+                <!--<ScrollViewer BorderThickness="0" Padding="0">
+                    <ScrollViewer.Content>-->
+                        <controls:TreeView x:Name="TreeViewIaon" Background="{StaticResource PortletBackgroundBrush}" ItemTemplate="{StaticResource RootNodeTemplate}" Height="772" ItemContainerStyle="{StaticResource ExpandedItemStyle}" />
+                    <!--</ScrollViewer.Content>
+                </ScrollViewer>-->
                 
             </StackPanel>
         </Border>

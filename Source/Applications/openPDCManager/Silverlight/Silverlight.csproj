@@ -203,6 +203,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Common.cs" />
+    <Compile Include="Utilities\DefaultButtonService.cs" />
     <Compile Include="Utilities\Message.cs" />
     <Compile Include="Service References\LivePhasorDataServiceProxy\Reference.cs">
       <AutoGen>True</AutoGen>

@@ -60,6 +60,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
     </Reference>
+    <Reference Include="TVA.Services, Version=1.0.68.40799, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\TVA\TVA.Services.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessObjects\ConnectionSettings.cs" />
@@ -91,6 +95,7 @@
     <Compile Include="Entities\Vendor.cs" />
     <Compile Include="Entities\VendorDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceCommunication\WindowsServiceClient.cs" />
     <Compile Include="SilverlightFaultBehavior.cs" />
     <Compile Include="VersionConfigToNamespaceAssemblyObjectBinder.cs" />
   </ItemGroup>

@@ -1,17 +1,15 @@
 ﻿//*******************************************************************************************************
-//  LivePhasorDataService.cs - Gbtc
+//  DefaultButtonService.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  07/05/2009 - Mehulbhai Thakkar
+//  02/24/2010 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
-//  09/15/2009 - Stephen C. Wills
-//       Added new header and license agreement.
 //
 //*******************************************************************************************************
 
@@ -231,34 +229,47 @@
 */
 #endregion
 
-using System.Threading;
+using System.Windows;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
+using System.Windows.Controls;
+using System.Windows.Input;
 
-namespace openPDCManager.Services.DuplexService
-{   
-    /// <summary>
-    /// This class actually does all the work for the duplex service. It is being referenced in the .svc file.
-    /// </summary>
-    public class LivePhasorDataService : DuplexService
-    {
-        // This timer will be used to retrieve fresh data from the database and then push to all clients.
-        Timer livePhasorDataTimer, timeSeriesDataTimer;
-				
-		public LivePhasorDataService()
+namespace openPDCManager.Silverlight.Utilities
+{
+	public static class DefaultButtonService
+	{
+		public static DependencyProperty DefaultButtonProperty = DependencyProperty.RegisterAttached("DefaultButton", typeof(Button), typeof(DefaultButtonService),
+																	new PropertyMetadata(null, DefaultButtonChanged));
+
+		private static void DefaultButtonChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-		    livePhasorDataTimer = new Timer(new TimerCallback(LivePhasorDataUpdate), null, 0, 30000);
-			timeSeriesDataTimer = new Timer(new TimerCallback(TimeSeriesDataUpdate), null, 0, 1000);
-
-			//For each node defined in the database, we need to have a TCP client created to listen to the events.
+			var uiElement = d as UIElement;
+			var button = e.NewValue as Button;
+			if (uiElement != null && button != null)
+			{
+				uiElement.KeyUp += (sender, arg) =>
+				{
+					if (arg.Key == Key.Enter)
+					{
+						var peer = new ButtonAutomationPeer(button);
+						var invokeProv = peer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
+						if (invokeProv != null)
+							invokeProv.Invoke();
+					}
+				};
+			}
 		}
 
-		void LivePhasorDataUpdate(object obj)
-		{			
-			PushToAllClients(MessageType.LivePhasorDataMessage);
-		}
-
-		void TimeSeriesDataUpdate(object obj)
+		public static void SetDefaultButton(UIElement obj, Button button)
 		{
-			PushToAllClients(MessageType.TimeSeriesDataMessage);
+			obj.SetValue(DefaultButtonProperty, button);
 		}
-    }
+
+		public static void GetDefaultButton(UIElement obj)
+		{
+			obj.GetValue(DefaultButtonProperty);
+		}
+
+	}
 }

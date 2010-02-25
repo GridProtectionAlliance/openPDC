@@ -11,7 +11,7 @@
         <Border Style="{StaticResource PortletBorderStyle}">
             <StackPanel Orientation="Vertical">
                 <TextBlock Text="Active Map" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
-                <Border Style="{StaticResource HeaderRowBorderStyle}" Width="1170" Height="765">
+                <Border Style="{StaticResource HeaderRowBorderStyle}" Width="1170" Height="768">
                     <m:Map x:Name="VirtualEarthActiveMap" ZoomLevel="4">
                         <m:Map.Mode>
                             <m:AerialMode Labels="True" FadingLabels="True" />

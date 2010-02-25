@@ -5,7 +5,8 @@
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            mc:Ignorable="d"
            xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"      
-           xmlns:data="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data"
+           xmlns:data="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data" 
+           xmlns:DefaultButton="clr-namespace:openPDCManager.Silverlight.Utilities" 
            Title="Browse Devices">    
     <Grid x:Name="GridBrowseDevices">
         <Border Style="{StaticResource PortletBorderStyle}">
@@ -13,7 +14,7 @@
                 <TextBlock Text="Browse Devices" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
                 <Border Style="{StaticResource HeaderRowBorderStyle}">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <TextBox x:Name="TextBoxSearch" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Margin="2" />
+                        <TextBox x:Name="TextBoxSearch" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Margin="2"  DefaultButton:DefaultButtonService.DefaultButton="{Binding ElementName=ButtonSearch}"/>
                         <Button x:Name="ButtonSearch" Content="../../Images/Search.png" Tag="Search" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="2" Cursor="Hand">
                             <Button.RenderTransform>
                                 <ScaleTransform x:Name="ButtonSearchTransform" ScaleX="1" ScaleY="1" />

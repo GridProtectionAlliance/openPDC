@@ -1,17 +1,15 @@
 ﻿//*******************************************************************************************************
-//  LivePhasorDataService.cs - Gbtc
+//  WindowsServiceClient.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  07/05/2009 - Mehulbhai Thakkar
+//  02/18/2010 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
-//  09/15/2009 - Stephen C. Wills
-//       Added new header and license agreement.
 //
 //*******************************************************************************************************
 
@@ -231,34 +229,34 @@
 */
 #endregion
 
-using System.Threading;
+using TVA.Communication;
+using TVA.Services;
 
-namespace openPDCManager.Services.DuplexService
-{   
-    /// <summary>
-    /// This class actually does all the work for the duplex service. It is being referenced in the .svc file.
-    /// </summary>
-    public class LivePhasorDataService : DuplexService
-    {
-        // This timer will be used to retrieve fresh data from the database and then push to all clients.
-        Timer livePhasorDataTimer, timeSeriesDataTimer;
-				
-		public LivePhasorDataService()
+namespace openPDCManager.Web.Data.ServiceCommunication
+{
+	public class WindowsServiceClient
+	{
+		private TcpClient m_remotingClient;
+		private ClientHelper m_clientHelper;
+
+		public WindowsServiceClient(string connectionString)
 		{
-		    livePhasorDataTimer = new Timer(new TimerCallback(LivePhasorDataUpdate), null, 0, 30000);
-			timeSeriesDataTimer = new Timer(new TimerCallback(TimeSeriesDataUpdate), null, 0, 1000);
-
-			//For each node defined in the database, we need to have a TCP client created to listen to the events.
+			m_remotingClient = new TcpClient();
+			m_remotingClient.ConnectionString = connectionString;
+			m_remotingClient.SharedSecret = "openPDC";
+			m_remotingClient.Handshake = true;
+			m_remotingClient.PayloadAware = true;
+			m_clientHelper = new ClientHelper();
+			m_clientHelper.RemotingClient = m_remotingClient;
 		}
 
-		void LivePhasorDataUpdate(object obj)
-		{			
-			PushToAllClients(MessageType.LivePhasorDataMessage);
-		}
-
-		void TimeSeriesDataUpdate(object obj)
+		public ClientHelper Helper
 		{
-			PushToAllClients(MessageType.TimeSeriesDataMessage);
+			get
+			{
+				return m_clientHelper;
+			}
 		}
-    }
+
+	}
 }
