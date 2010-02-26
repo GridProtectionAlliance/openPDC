@@ -232,6 +232,8 @@
 #endregion
 
 using System.Threading;
+using openPDCManager.Web.Data.ServiceCommunication;
+using TVA.Services;
 
 namespace openPDCManager.Services.DuplexService
 {   
@@ -249,6 +251,21 @@ namespace openPDCManager.Services.DuplexService
 			timeSeriesDataTimer = new Timer(new TimerCallback(TimeSeriesDataUpdate), null, 0, 1000);
 
 			//For each node defined in the database, we need to have a TCP client created to listen to the events.
+			WindowsServiceClient serviceClient = new WindowsServiceClient("server=localhost:8500");
+			ClientHelper clientHelper = serviceClient.Helper;
+			clientHelper.ReceivedServiceUpdate += new System.EventHandler<TVA.EventArgs<UpdateType, string>>(clientHelper_ReceivedServiceUpdate);
+			clientHelper.RemotingClient.ConnectionAttempt += new System.EventHandler(RemotingClient_ConnectionAttempt);
+			clientHelper.Connect();
+		}
+
+		void RemotingClient_ConnectionAttempt(object sender, System.EventArgs e)
+		{
+			System.Diagnostics.Debug.WriteLine("Trying to connect...");
+		}
+
+		void clientHelper_ReceivedServiceUpdate(object sender, TVA.EventArgs<UpdateType, string> e)
+		{
+			System.Diagnostics.Debug.WriteLine(e.Argument2);
 		}
 
 		void LivePhasorDataUpdate(object obj)
@@ -260,5 +277,6 @@ namespace openPDCManager.Services.DuplexService
 		{
 			PushToAllClients(MessageType.TimeSeriesDataMessage);
 		}
+
     }
 }
