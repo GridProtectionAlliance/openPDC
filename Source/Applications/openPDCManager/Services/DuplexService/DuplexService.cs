@@ -235,10 +235,10 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using openPDCManager.Web.Data;
+using openPDCManager.Web.Data.Entities;
 
 namespace openPDCManager.Services.DuplexService
 {
-
 	public enum MessageType
 	{
 		LivePhasorDataMessage,
@@ -260,7 +260,13 @@ namespace openPDCManager.Services.DuplexService
         object syncRoot = new object();
         //Dictionary<string, IUniversalDuplexCallbackContract> clients = new Dictionary<string, IUniversalDuplexCallbackContract>();
 		Dictionary<string, Client> clients = new Dictionary<string, Client>();
-        
+
+		//Will also maintain list of Nodes
+		List<Node> nodesInDatabase = new List<Node>();
+
+		//Will maintain data for each node in a dictionary to serve to any number of clients. This would eliminate database hit for each client.
+		Dictionary<string, LivePhasorDataMessage> dataPerNode = new Dictionary<string, LivePhasorDataMessage>();
+		        
         /// <summary>
         /// This will be called when a new client is connected
         /// </summary>
@@ -279,6 +285,28 @@ namespace openPDCManager.Services.DuplexService
         /// <param name="sessionId">Session ID of the client sending the message</param>
         /// <param name="message">The message that was received</param>
         protected virtual void OnMessage(string sessionId, DuplexMessage message) { }
+
+		protected void RefreshDataPerNode()
+		{
+			lock (syncRoot)
+			{
+				nodesInDatabase = CommonFunctions.GetNodeList(true);
+				foreach (Node node in nodesInDatabase)
+				{
+					LivePhasorDataMessage message = new LivePhasorDataMessage()
+					{
+						//PmuDistributionList = CommonFunctions.GetPmuDistribution(),
+						DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(node.ID),
+						InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus(node.ID)
+					};
+
+					if (dataPerNode.ContainsKey(node.ID))
+						dataPerNode[node.ID] = message;
+					else
+						dataPerNode.Add(node.ID, message);
+				}
+			}
+		}
 
         /// <summary>
         /// Pushes a message to all connected clients
@@ -303,20 +331,24 @@ namespace openPDCManager.Services.DuplexService
 				{
 					if (messageType == MessageType.LivePhasorDataMessage)
 					{
-						LivePhasorDataMessage message = new LivePhasorDataMessage()
-						{
-							//PmuDistributionList = CommonFunctions.GetPmuDistribution(),
-							DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(clients[session].NodeID),
-							InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus(clients[session].NodeID)
-						};
-						PushMessageToClient(session, message);
+						//LivePhasorDataMessage message = new LivePhasorDataMessage()
+						//{
+						//    //PmuDistributionList = CommonFunctions.GetPmuDistribution(),
+						//    DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(clients[session].NodeID),
+						//    InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus(clients[session].NodeID)
+						//};
+						//PushMessageToClient(session, message);
+
+						if (dataPerNode.ContainsKey(clients[session].NodeID))
+							PushMessageToClient(session, dataPerNode[clients[session].NodeID]);
+						else
+							PushMessageToClient(session, new LivePhasorDataMessage());
 					}
 					else if (messageType == MessageType.TimeSeriesDataMessage)
 					{
 						TimeSeriesDataMessage message = new TimeSeriesDataMessage()
 						{
-							TimeSeriesData = CommonFunctions.GetTimeSeriesData(clients[session].TimeSeriesDataRootUrl + "current/" + clients[session].DataPointID.ToString() + "/XML")
-							//TimeSeriesData = CommonFunctions.GetTimeSeriesData(clients[session].TimeSeriesDataRootUrl + "historic/" + clients[session].DataPointID.ToString() + "/*-5S/*/XML")
+							TimeSeriesData = CommonFunctions.GetTimeSeriesData(clients[session].TimeSeriesDataRootUrl + "/timeseriesdata/read/current/" + clients[session].DataPointID.ToString() + "/XML")							
 						};
 						PushMessageToClient(session, message);
 					}
@@ -388,9 +420,7 @@ namespace openPDCManager.Services.DuplexService
 						clients.Add(session, client);
 						OperationContext.Current.Channel.Closing += new EventHandler(Channel_Closing);
 						OperationContext.Current.Channel.Faulted += new EventHandler(Channel_Faulted);
-						OnConnected(session);
-
-						
+						OnConnected(session);						
 					}
 					else	//existing connected client. Just trying to update its settings.
 					{
@@ -415,7 +445,7 @@ namespace openPDCManager.Services.DuplexService
 
 				PushMessageToClient(session, new TimeSeriesDataMessage()
 							{
-								TimeSeriesData = CommonFunctions.GetTimeSeriesData(currentClient.TimeSeriesDataRootUrl + "historic/" + currentClient.DataPointID.ToString() + "/*-30S/*/XML")
+								TimeSeriesData = CommonFunctions.GetTimeSeriesData(currentClient.TimeSeriesDataRootUrl + "/timeseriesdata/read/historic/" + currentClient.DataPointID.ToString() + "/*-30S/*/XML")
 								//TimeSeriesData = CommonFunctions.GetTimeSeriesData(currentClient.TimeSeriesDataRootUrl + "current/" + currentClient.DataPointID.ToString() + "/XML")
 							}
 						);

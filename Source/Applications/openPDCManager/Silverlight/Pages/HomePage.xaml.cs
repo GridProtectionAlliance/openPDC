@@ -403,9 +403,12 @@ namespace openPDCManager.Silverlight.Pages
 		    if (e.msg is LivePhasorDataMessage)
 		    {
 		        LivePhasorDataMessage livePhasorData = (LivePhasorDataMessage)e.msg;
+
 				//pmuDistributionList = livePhasorData.PmuDistributionList;
-		        interconnectionStatusList = livePhasorData.InterconnectionStatusList;
-		        deviceDistributionList = livePhasorData.DeviceDistributionList;
+		        				
+				interconnectionStatusList = livePhasorData.InterconnectionStatusList;
+		        
+				deviceDistributionList = livePhasorData.DeviceDistributionList;
 
 				//ItemsControlPmuDistribution.ItemsSource = pmuDistributionList;
 		        ChartDeviceDistribution.DataContext = deviceDistributionList;

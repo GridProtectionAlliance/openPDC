@@ -259,7 +259,8 @@ namespace openPDCManager.Services.DuplexService
 		}
 
 		private void LivePhasorDataUpdate(object obj)
-		{			
+		{
+			RefreshDataPerNode();
 			PushToAllClients(MessageType.LivePhasorDataMessage);
 		}
 
