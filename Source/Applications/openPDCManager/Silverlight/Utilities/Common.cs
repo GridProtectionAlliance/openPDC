@@ -265,7 +265,7 @@ namespace openPDCManager.Silverlight.Utilities
 			if (HtmlPage.Document.DocumentUri.Scheme.ToLower().StartsWith("https"))
 			{
 				HttpsTransportBindingElement httpsTransportBindingElement = new HttpsTransportBindingElement();
-				httpsTransportBindingElement.MaxReceivedMessageSize = 65536 * 50;
+				httpsTransportBindingElement.MaxReceivedMessageSize = int.MaxValue;		// 65536 * 50;
 				binding = new CustomBinding(
 									new BinaryMessageEncodingBindingElement(),
 									httpsTransportBindingElement
@@ -302,7 +302,7 @@ namespace openPDCManager.Silverlight.Utilities
 			else
 			{
 				HttpTransportBindingElement httpTransportBindingElement = new HttpTransportBindingElement();
-				httpTransportBindingElement.MaxReceivedMessageSize = 65536 * 50;
+				httpTransportBindingElement.MaxReceivedMessageSize = int.MaxValue;	// 65536 * 50;
 				binding = new CustomBinding(
 									new PollingDuplexBindingElement(),
 									new BinaryMessageEncodingBindingElement(),
