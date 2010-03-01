@@ -233,6 +233,7 @@
 
 using System.Threading;
 using openPDCManager.Web.Data.ServiceCommunication;
+using TVA;
 using TVA.Services;
 
 namespace openPDCManager.Services.DuplexService
@@ -253,30 +254,24 @@ namespace openPDCManager.Services.DuplexService
 			//For each node defined in the database, we need to have a TCP client created to listen to the events.
 			WindowsServiceClient serviceClient = new WindowsServiceClient("server=localhost:8500");
 			ClientHelper clientHelper = serviceClient.Helper;
-			clientHelper.ReceivedServiceUpdate += new System.EventHandler<TVA.EventArgs<UpdateType, string>>(clientHelper_ReceivedServiceUpdate);
-			clientHelper.RemotingClient.ConnectionAttempt += new System.EventHandler(RemotingClient_ConnectionAttempt);
-			clientHelper.Connect();
+			clientHelper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;
+            ThreadPool.QueueUserWorkItem(delegate(object state) { clientHelper.Connect(); });
 		}
 
-		void RemotingClient_ConnectionAttempt(object sender, System.EventArgs e)
-		{
-			System.Diagnostics.Debug.WriteLine("Trying to connect...");
-		}
-
-		void clientHelper_ReceivedServiceUpdate(object sender, TVA.EventArgs<UpdateType, string> e)
-		{
-			System.Diagnostics.Debug.WriteLine(e.Argument2);
-		}
-
-		void LivePhasorDataUpdate(object obj)
+		private void LivePhasorDataUpdate(object obj)
 		{			
 			PushToAllClients(MessageType.LivePhasorDataMessage);
 		}
 
-		void TimeSeriesDataUpdate(object obj)
+		private void TimeSeriesDataUpdate(object obj)
 		{
 			PushToAllClients(MessageType.TimeSeriesDataMessage);
 		}
 
+        private void ClientHelper_ReceivedServiceUpdate(object sender, EventArgs<UpdateType, string> e)
+        {
+            // TODO: Publish to all connected clients.
+            System.Diagnostics.Debug.Write(e.Argument2);
+        }
     }
 }
