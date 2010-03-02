@@ -231,6 +231,7 @@
 */
 #endregion
 
+using System;
 using System.ServiceModel;
 
 namespace openPDCManager.Services.DuplexService
@@ -239,10 +240,9 @@ namespace openPDCManager.Services.DuplexService
     /// "Regular" part of Duplex contract:  From Silverlight to the Service
     /// </summary>
     [ServiceContract(Name = "DuplexService", CallbackContract = typeof(IUniversalDuplexCallbackContract))]
-    public interface IUniversalDuplexContract
+    public interface IUniversalDuplexContract : IDisposable
     {
         [OperationContract(IsOneWay = true)]
         void SendToService(DuplexMessage msg);
-
     }
 }

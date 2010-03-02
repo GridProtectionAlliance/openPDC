@@ -10,6 +10,8 @@
 //  -----------------------------------------------------------------------------------------------------
 //  02/18/2010 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
+//  03/02/2010 - Pinal C. Patel
+//       Implemented IDisposable interface and added code regions.
 //
 //*******************************************************************************************************
 
@@ -229,34 +231,94 @@
 */
 #endregion
 
+using System;
 using TVA.Communication;
 using TVA.Services;
 
 namespace openPDCManager.Web.Data.ServiceCommunication
 {
-	public class WindowsServiceClient
+	public class WindowsServiceClient : IDisposable
 	{
-		private TcpClient m_remotingClient;
-		private ClientHelper m_clientHelper;
+        #region [ Members ]
 
-		public WindowsServiceClient(string connectionString)
-		{
-			m_remotingClient = new TcpClient();
-			m_remotingClient.ConnectionString = connectionString;
-			m_remotingClient.SharedSecret = "openPDC";
-			m_remotingClient.Handshake = true;
-			m_remotingClient.PayloadAware = true;
-			m_clientHelper = new ClientHelper();
-			m_clientHelper.RemotingClient = m_remotingClient;
-		}
+        // Fields
+        private TcpClient m_remotingClient;
+        private ClientHelper m_clientHelper;
+        private bool m_disposed;
 
-		public ClientHelper Helper
-		{
-			get
-			{
-				return m_clientHelper;
-			}
-		}
+        #endregion
 
+        #region [ Constructors ]
+
+        public WindowsServiceClient(string connectionString)
+        {
+            m_remotingClient = new TcpClient();
+            m_remotingClient.ConnectionString = connectionString;
+            m_remotingClient.SharedSecret = "openPDC";
+            m_remotingClient.Handshake = true;
+            m_remotingClient.PayloadAware = true;
+            m_clientHelper = new ClientHelper();
+            m_clientHelper.RemotingClient = m_remotingClient;
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources before the <see cref="WindowsServiceClient"/> object is reclaimed by <see cref="GC"/>.
+        /// </summary>
+        ~WindowsServiceClient()
+        {
+            Dispose(false);
+        }
+
+        #endregion
+
+        #region [ Properties ]
+
+        public ClientHelper Helper
+        {
+            get
+            {
+                return m_clientHelper;
+            }
+        }
+
+        #endregion
+
+        #region [ Methods ]
+                
+        /// <summary>
+        /// Releases all the resources used by the <see cref="WindowsServiceClient"/> object.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="WindowsServiceClient"/> object and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!m_disposed)
+            {
+                try
+                {
+                    // This will be done regardless of whether the object is finalized or disposed.
+                    if (disposing)
+                    {
+                        // This will be done only when the object is disposed by calling Dispose().
+                        m_clientHelper.Dispose();
+                        m_remotingClient.Dispose();
+                    }
+                }
+                finally
+                {
+                    m_disposed = true;  // Prevent duplicate dispose.
+                }
+            }
+        }
+
+        #endregion
 	}
 }

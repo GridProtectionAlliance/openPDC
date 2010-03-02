@@ -12,6 +12,8 @@
 //       Generated original version of source code.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
+//  03/02/2010 - Pinal C. Patel
+//       Implemented IDisposable interface and added code regions.
 //
 //*******************************************************************************************************
 
@@ -243,36 +245,81 @@ namespace openPDCManager.Services.DuplexService
     /// </summary>
     public class LivePhasorDataService : DuplexService
     {
+        #region [ Members ]
+
+        // Fields
         // This timer will be used to retrieve fresh data from the database and then push to all clients.
-        Timer livePhasorDataTimer, timeSeriesDataTimer;
-				
-		public LivePhasorDataService()
-		{
-		    livePhasorDataTimer = new Timer(new TimerCallback(LivePhasorDataUpdate), null, 0, 30000);
-			timeSeriesDataTimer = new Timer(new TimerCallback(TimeSeriesDataUpdate), null, 0, 1000);
+        Timer livePhasorDataTimer;
+        Timer timeSeriesDataTimer;
+        WindowsServiceClient serviceClient;
+        private bool m_disposed;
 
-			//For each node defined in the database, we need to have a TCP client created to listen to the events.
-			WindowsServiceClient serviceClient = new WindowsServiceClient("server=localhost:8500");
-			ClientHelper clientHelper = serviceClient.Helper;
-			clientHelper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;
-            ThreadPool.QueueUserWorkItem(delegate(object state) { clientHelper.Connect(); });
-		}
+        #endregion
 
-		private void LivePhasorDataUpdate(object obj)
-		{
-			RefreshDataPerNode();
-			PushToAllClients(MessageType.LivePhasorDataMessage);
-		}
+        #region [ Constructors ]
 
-		private void TimeSeriesDataUpdate(object obj)
-		{
-			PushToAllClients(MessageType.TimeSeriesDataMessage);
-		}
+        public LivePhasorDataService()
+            : base()
+        {
+            livePhasorDataTimer = new Timer(LivePhasorDataUpdate, null, 0, 30000);
+            timeSeriesDataTimer = new Timer(TimeSeriesDataUpdate, null, 0, 1000);
+
+            //For each node defined in the database, we need to have a TCP client created to listen to the events.
+            serviceClient = new WindowsServiceClient("server=localhost:8500");
+            serviceClient.Helper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;
+            ThreadPool.QueueUserWorkItem(delegate(object state) { serviceClient.Helper.Connect(); });
+        }
+
+        #endregion
+
+        #region [ Methods ]
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="LivePhasorDataService"/> object and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (!m_disposed)
+            {
+                try
+                {
+                    // This will be done regardless of whether the object is finalized or disposed.
+                    if (disposing)
+                    {
+                        // This will be done only when the object is disposed by calling Dispose().
+                        livePhasorDataTimer.Dispose();
+                        timeSeriesDataTimer.Dispose();
+
+                        serviceClient.Helper.ReceivedServiceUpdate -= ClientHelper_ReceivedServiceUpdate;
+                        serviceClient.Dispose();
+                    }
+                }
+                finally
+                {
+                    base.Dispose(disposing);    // Call base class Dispose().
+                    m_disposed = true;          // Prevent duplicate dispose.
+                }
+            }
+        }
+
+        private void LivePhasorDataUpdate(object obj)
+        {
+            RefreshDataPerNode();
+            PushToAllClients(MessageType.LivePhasorDataMessage);
+        }
+
+        private void TimeSeriesDataUpdate(object obj)
+        {
+            PushToAllClients(MessageType.TimeSeriesDataMessage);
+        }
 
         private void ClientHelper_ReceivedServiceUpdate(object sender, EventArgs<UpdateType, string> e)
         {
             // TODO: Publish to all connected clients.
             System.Diagnostics.Debug.Write(e.Argument2);
         }
+
+        #endregion
     }
 }
