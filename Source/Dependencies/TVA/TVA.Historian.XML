@@ -2208,6 +2208,11 @@
             Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.ArchiveOffloadThreshold"/> property.
             </summary>
         </member>
+        <member name="F:TVA.Historian.Files.ArchiveFile.DefaultMaxHistoricArchiveFiles">
+            <summary>
+            Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.MaxHistoricArchiveFiles"/> property.
+            </summary>
+        </member>
         <member name="F:TVA.Historian.Files.ArchiveFile.DefaultLeadTimeTolerance">
             <summary>
             Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.LeadTimeTolerance"/> property.
@@ -2726,6 +2731,14 @@
             Gets or sets the free disk space (in %) of the primary archive location that triggers the offload of historic <see cref="T:TVA.Historian.Files.ArchiveFile"/>s.
             </summary>
             <exception cref="T:System.ArgumentOutOfRangeException">The value being assigned is not between 1 and 99.</exception>
+        </member>
+        <member name="P:TVA.Historian.Files.ArchiveFile.MaxHistoricArchiveFiles">
+            <summary>
+            Gets or sets the maximum number of historic <see cref="T:TVA.Historian.Files.ArchiveFile"/>s to be kept at both the primary and offload locations combined.
+            </summary>
+            <remarks>
+            Set <see cref="P:TVA.Historian.Files.ArchiveFile.MaxHistoricArchiveFiles"/> to -1 to keep historic <see cref="T:TVA.Historian.Files.ArchiveFile"/>s indefinately.
+            </remarks>
         </member>
         <member name="P:TVA.Historian.Files.ArchiveFile.LeadTimeTolerance">
             <summary>
