@@ -16,6 +16,10 @@
 //       Re-wrote the adapter to utilize new components.
 //  09/23/2009 - Pinal C. Patel
 //       Fixed the handling of socket disconnect.
+//  03/04/2010 - Pinal C. Patel
+//       Added outputIsForArchive and throttleTransmission setting parameters for more control over 
+//       the adapter.
+//       Switched to ManualResetEvent for waiting on historian acknowledgement for efficiency.
 //
 //*******************************************************************************************************
 
@@ -257,18 +261,22 @@ namespace HistorianAdapters
         // Constants
         private const int DefaultHistorianPort = 1003;
         private const bool DefaultPayloadAware = true;
-        private const int DefaultMaximumSamples = 100000;
         private const bool DefaultConserveBandwidth = true;
-        private const double PubliserWaitTime = 10.0;
+        private const bool DefaultOutputIsForArchive = true;
+        private const bool DefaultThrottleTransmission = true;
+        private const int DefaultSamplesPerTransmission = 100000;
+        private const int PubliserWaitTime = 5000;
 
         // Fields
+        private bool m_outputIsForArchive;
+        private bool m_throttleTransmission;
+        private int m_samplesPerTransmission;
         private TcpClient m_historianPublisher;
-        private Action<IMeasurement[], int, int> m_publisherDelegate;
         private byte[] m_publisherBuffer;
-        private bool m_publisherReady;
+        private ManualResetEvent m_publisherWaitHandle;
+        private Action<IMeasurement[], int, int> m_publisherDelegate;
         private bool m_publisherDisconnecting;
-        private long m_publishedMeasurements;
-        private int m_maximumSamples;
+        private long m_measurementsPublished;
         private bool m_disposed;
 
         #endregion
@@ -282,6 +290,7 @@ namespace HistorianAdapters
             : base()
         {
             m_historianPublisher = new TcpClient();
+            m_publisherWaitHandle = new ManualResetEvent(false);
         }
 
         #endregion
@@ -311,7 +320,7 @@ namespace HistorianAdapters
         {
             get 
             {
-                return true; 
+                return m_outputIsForArchive; 
             }
         }
 
@@ -341,9 +350,11 @@ namespace HistorianAdapters
             string server;
             string port;
             string payloadAware;
-            string maximumSamples;
             string conserveBandwidth;
-            string errorMessage = "{0} is missing from Settings - Example: server=localhost;port=1003;payloadAware=True;maximumSamples=100000;conserveBandwidth=True";
+            string outputIsForArchive;
+            string throttleTransmission;
+            string samplesPerTransmission;
+            string errorMessage = "{0} is missing from Settings - Example: server=localhost;port=1003;payloadAware=True;conserveBandwidth=True;outputIsForArchive=True;throttleTransmission=True;samplesPerTransmission=100000";
             Dictionary<string, string> settings = Settings;
 
             // Validate settings.
@@ -356,14 +367,24 @@ namespace HistorianAdapters
             if (!settings.TryGetValue("payloadaware", out payloadAware))
                 payloadAware = DefaultPayloadAware.ToString();
 
-            if (!settings.TryGetValue("maximumsamples", out maximumSamples))
-                maximumSamples = DefaultMaximumSamples.ToString();
-
             if (!settings.TryGetValue("conservebandwidth", out conserveBandwidth))
                 conserveBandwidth = DefaultConserveBandwidth.ToString();
 
+            if (!settings.TryGetValue("outputisforarchive", out outputIsForArchive))
+                outputIsForArchive = DefaultOutputIsForArchive.ToString();
+
+            if (!settings.TryGetValue("throttletransmission", out throttleTransmission))
+                throttleTransmission = DefaultThrottleTransmission.ToString();
+
+            if (!settings.TryGetValue("samplespertransmission", out samplesPerTransmission))
+                samplesPerTransmission = DefaultSamplesPerTransmission.ToString();
+
+            // Initialize member variables.
+            m_outputIsForArchive = outputIsForArchive.ParseBoolean();
+            m_throttleTransmission = throttleTransmission.ParseBoolean();
+            m_samplesPerTransmission = int.Parse(samplesPerTransmission);
+
             // Initialize publisher delegates.
-            m_maximumSamples = int.Parse(maximumSamples);
             if (conserveBandwidth.ParseBoolean())
             {
                 m_publisherDelegate = TransmitPacketType101;
@@ -371,7 +392,7 @@ namespace HistorianAdapters
             else
             {
                 m_publisherDelegate = TransmitPacketType1;
-                m_publisherBuffer = new byte[m_maximumSamples * PacketType1.ByteCount];
+                m_publisherBuffer = new byte[m_samplesPerTransmission * PacketType1.ByteCount];
             }
             
             // Initialize publiser socket.
@@ -393,7 +414,10 @@ namespace HistorianAdapters
         /// <returns>Text of the status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return string.Format("Published {0} measurements for archival.", m_publishedMeasurements).TruncateRight(maxLength);
+            if (m_outputIsForArchive)
+                return string.Format("Published {0} measurements for archival.", m_measurementsPublished).TruncateRight(maxLength);
+            else
+                return string.Format("Published {0} measurements for processing.", m_measurementsPublished).TruncateRight(maxLength);
         }
 
         /// <summary>
@@ -461,27 +485,24 @@ namespace HistorianAdapters
 
             try
             {
-                double publishTime = Common.SystemTimer;
-                for (int i = 0; i < measurements.Length; i += m_maximumSamples)
+                for (int i = 0; i < measurements.Length; i += m_samplesPerTransmission)
                 {
                     // Wait for historian acknowledgement.
-                    while (!m_publisherReady)
+                    if (m_throttleTransmission)
                     {
-                        Thread.Sleep(100);
-                        if (Common.SystemTimer - publishTime > PubliserWaitTime)
+                        if (!m_publisherWaitHandle.WaitOne(PubliserWaitTime))
                             throw new OperationCanceledException("Timeout waiting for acknowledgement from historian");
                     }
 
                     // Publish measurements to historian.
-                    m_publisherReady = false;
-                    m_publisherDelegate(measurements, i, (measurements.Length - i < m_maximumSamples ? measurements.Length : i + m_maximumSamples) - 1);
-                    publishTime = Common.SystemTimer;
+                    m_publisherWaitHandle.Reset();
+                    m_publisherDelegate(measurements, i, (measurements.Length - i < m_samplesPerTransmission ? measurements.Length : i + m_samplesPerTransmission) - 1);
                 }
-                m_publishedMeasurements += measurements.Length;
+                m_measurementsPublished += measurements.Length;
             }
             catch
             {
-                m_publisherReady = true;
+                m_publisherWaitHandle.Set();
                 throw;
             }
         }
@@ -494,13 +515,13 @@ namespace HistorianAdapters
         private void HistorianPublisher_ConnectionEstablished(object sender, EventArgs e)
         {
             OnConnected();
-            m_publisherReady = true;
+            m_publisherWaitHandle.Set();
         }
 
         private void HistorianPublisher_ConnectionTerminated(object sender, EventArgs e)
         {
-            m_publisherReady = false;
-            m_publishedMeasurements = 0;
+            m_measurementsPublished = 0;
+            m_publisherWaitHandle.Reset();
 
             if (!m_publisherDisconnecting)
                 Start();
@@ -508,7 +529,7 @@ namespace HistorianAdapters
 
         private void HistorianPublisher_SendDataException(object sender, EventArgs<Exception> e)
         {
-            m_publisherReady = true;
+            m_publisherWaitHandle.Set();
             OnProcessException(e.Argument);
         }
 
@@ -517,12 +538,12 @@ namespace HistorianAdapters
             // Check for acknowledgement from historian.
             string reply = Encoding.ASCII.GetString(e.Argument1, 0, e.Argument2);
             if (reply == "ACK")
-                m_publisherReady = true;
+                m_publisherWaitHandle.Set();
         }
 
         private void HistorianPublisher_ReceiveDataException(object sender, EventArgs<Exception> e)
         {
-            m_publisherReady = true;
+            m_publisherWaitHandle.Set();
             OnProcessException(e.Argument);
         }
 
