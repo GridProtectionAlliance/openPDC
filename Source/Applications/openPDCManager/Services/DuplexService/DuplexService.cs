@@ -239,6 +239,7 @@ using System.ServiceModel;
 using openPDCManager.Web.Data;
 using openPDCManager.Web.Data.Entities;
 using System.Collections;
+using openPDCManager.Web.Data.ServiceCommunication;
 
 namespace openPDCManager.Services.DuplexService
 {
@@ -287,7 +288,8 @@ namespace openPDCManager.Services.DuplexService
         object syncRoot = new object();
         Dictionary<string, Client> clients;
         //Will also maintain list of Nodes
-        List<Node> nodesInDatabase;
+		protected List<Node> nodesInDatabase;
+		protected Dictionary<string, WindowsServiceClient> serviceClientList;
         //Will maintain data for each node in a dictionary to serve to any number of clients. This would eliminate database hit for each client.
         Dictionary<string, LivePhasorDataMessage> dataPerNode;
         private bool m_disposed;
@@ -341,6 +343,7 @@ namespace openPDCManager.Services.DuplexService
                         client.NodeID = (msg as ConnectMessage).NodeID;
                         client.TimeSeriesDataRootUrl = (msg as ConnectMessage).TimeSeriesDataRootUrl;
                         client.DataPointID = (msg as ConnectMessage).DataPointID;
+						client.CurrentDisplayType = (msg as ConnectMessage).CurrentDisplayType;
                         clients.Add(session, client);
                         OperationContext.Current.Channel.Closing += Channel_Closing;
                         OperationContext.Current.Channel.Faulted += Channel_Faulted;
@@ -353,36 +356,59 @@ namespace openPDCManager.Services.DuplexService
                             Channel = ch,
                             NodeID = (msg as ConnectMessage).NodeID,
                             DataPointID = (msg as ConnectMessage).DataPointID,
-                            TimeSeriesDataRootUrl = (msg as ConnectMessage).TimeSeriesDataRootUrl
+                            TimeSeriesDataRootUrl = (msg as ConnectMessage).TimeSeriesDataRootUrl,
+							CurrentDisplayType = (msg as ConnectMessage).CurrentDisplayType
                         };
                     }
                 }
 
                 Client currentClient = clients[session];
-                PushMessageToClient(session, new LivePhasorDataMessage()
-                {
-                    //PmuDistributionList = CommonFunctions.GetPmuDistribution(),
-                    DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(currentClient.NodeID),
-                    InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus(currentClient.NodeID)
-                }
-                        );
+				// Initially when client is connected, we will send them data only if client is connected from home page of the openPDCManager.
+				if (currentClient.CurrentDisplayType == DisplayType.Home)
+				{
+					PushMessageToClient(session, new LivePhasorDataMessage()
+											{
+												//PmuDistributionList = CommonFunctions.GetPmuDistribution(),
+												DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(currentClient.NodeID),
+												InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus(currentClient.NodeID)
+											}
+										);
 
-                PushMessageToClient(session, new TimeSeriesDataMessage()
-                {
-                    TimeSeriesData = CommonFunctions.GetTimeSeriesData(currentClient.TimeSeriesDataRootUrl + "/timeseriesdata/read/historic/" + currentClient.DataPointID.ToString() + "/*-30S/*/XML")
-                    //TimeSeriesData = CommonFunctions.GetTimeSeriesData(currentClient.TimeSeriesDataRootUrl + "current/" + currentClient.DataPointID.ToString() + "/XML")
-                }
-                        );
+					PushMessageToClient(session, new TimeSeriesDataMessage()
+												{
+													TimeSeriesData = CommonFunctions.GetTimeSeriesData(currentClient.TimeSeriesDataRootUrl + "/timeseriesdata/read/historic/" + currentClient.DataPointID.ToString() + "/*-30S/*/XML")
+													//TimeSeriesData = CommonFunctions.GetTimeSeriesData(currentClient.TimeSeriesDataRootUrl + "current/" + currentClient.DataPointID.ToString() + "/XML")
+												}
+											);
+				}
+				else if (currentClient.CurrentDisplayType == DisplayType.ServiceClient)
+				{
+					PushMessageToClient(session, new ServiceUpdateMessage()
+												{
+													 ServiceUpdateType = TVA.Services.UpdateType.Information,
+													 ServiceUpdate = serviceClientList[clients[session].NodeID].CachedStatus
+												});
+				}
             }
-            else if (msg is DisconnectMessage) //If it's a Disconnect message, treat as disconnection
-            {
-                ClientDisconnected(session);
-            }
-            else		//if (!(msg is ConnectMessage)) //Otherwise, if it's a payload-carrying message (and not just a simple "Connect"), process it
-            {
-                OnMessage(session, msg);
-            }
+			else if (msg is ServiceRequestMessage)
+			{
+				SendServiceRequest(clients[session].NodeID, (msg as ServiceRequestMessage).Request);
+			}
+			else if (msg is DisconnectMessage) //If it's a Disconnect message, treat as disconnection
+			{
+				ClientDisconnected(session);
+
+			}
+			else		//if (!(msg is ConnectMessage)) //Otherwise, if it's a payload-carrying message (and not just a simple "Connect"), process it
+			{
+				OnMessage(session, msg);
+			}
         }
+
+		private void SendServiceRequest(string nodeID, string request)
+		{
+			serviceClientList[nodeID].Helper.SendRequest(request);
+		}
 
         protected void RefreshDataPerNode()
         {
@@ -406,20 +432,17 @@ namespace openPDCManager.Services.DuplexService
             }
         }
 
-        /// <summary>
-        /// Pushes a message to all connected clients
-        /// </summary>
-        /// <param name="message">The message to push</param>
-        //protected void PushToAllClients(DuplexMessage message)
-        //{
-        //    lock (syncRoot)
-        //    {
-        //        foreach (string session in clients.Keys)
-        //        {
-        //            PushMessageToClient(session, message);
-        //        }
-        //    }
-        //}
+		protected void PushServiceStatusToClients(string nodeID, DuplexMessage message)
+		{
+			lock (syncRoot)
+			{
+				foreach (string session in clients.Keys)
+				{
+					if (clients[session].CurrentDisplayType == DisplayType.ServiceClient && clients[session].NodeID == nodeID)
+						PushMessageToClient(session, message);
+				}
+			}
+		}
 
         protected void PushToAllClients(MessageType messageType)
         {
@@ -427,29 +450,24 @@ namespace openPDCManager.Services.DuplexService
             {
                 foreach (string session in clients.Keys)
                 {
-                    if (messageType == MessageType.LivePhasorDataMessage)
-                    {
-                        //LivePhasorDataMessage message = new LivePhasorDataMessage()
-                        //{
-                        //    //PmuDistributionList = CommonFunctions.GetPmuDistribution(),
-                        //    DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(clients[session].NodeID),
-                        //    InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus(clients[session].NodeID)
-                        //};
-                        //PushMessageToClient(session, message);
-
-                        if (dataPerNode.ContainsKey(clients[session].NodeID))
-                            PushMessageToClient(session, dataPerNode[clients[session].NodeID]);
-                        else
-                            PushMessageToClient(session, new LivePhasorDataMessage());
-                    }
-                    else if (messageType == MessageType.TimeSeriesDataMessage)
-                    {
-                        TimeSeriesDataMessage message = new TimeSeriesDataMessage()
-                        {
-                            TimeSeriesData = CommonFunctions.GetTimeSeriesData(clients[session].TimeSeriesDataRootUrl + "/timeseriesdata/read/current/" + clients[session].DataPointID.ToString() + "/XML")
-                        };
-                        PushMessageToClient(session, message);
-                    }
+					if (clients[session].CurrentDisplayType == DisplayType.Home)
+					{
+						if (messageType == MessageType.LivePhasorDataMessage)
+						{
+							if (dataPerNode.ContainsKey(clients[session].NodeID))
+								PushMessageToClient(session, dataPerNode[clients[session].NodeID]);
+							else
+								PushMessageToClient(session, new LivePhasorDataMessage());
+						}
+						else if (messageType == MessageType.TimeSeriesDataMessage && !string.IsNullOrEmpty(clients[session].TimeSeriesDataRootUrl))
+						{
+							TimeSeriesDataMessage message = new TimeSeriesDataMessage()
+							{
+								TimeSeriesData = CommonFunctions.GetTimeSeriesData(clients[session].TimeSeriesDataRootUrl + "/timeseriesdata/read/current/" + clients[session].DataPointID.ToString() + "/XML")
+							};
+							PushMessageToClient(session, message);
+						}
+					}
                 }
             }
         }

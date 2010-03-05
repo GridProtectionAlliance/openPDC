@@ -65,6 +65,9 @@
       <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/TVA.PhasorProtocols" name="PhasorProtocol" type="q2:PhasorProtocol" />
       <xs:element name="PmuID" type="xs:int" />
       <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/TVA.Communication" name="TransportProtocol" type="q3:TransportProtocol" />
+      <xs:element name="configurationFileName" nillable="true" type="xs:string" />
+      <xs:element name="parseWordCountFromByte" type="xs:boolean" />
+      <xs:element name="refreshConfigurationFileOnChange" type="xs:boolean" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ConnectionSettings" nillable="true" type="tns:ConnectionSettings" />

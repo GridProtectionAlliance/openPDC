@@ -249,5 +249,8 @@ namespace openPDCManager.Services.DuplexService
 
 		[DataMember]
 		public int DataPointID { get; set; }
+
+		[DataMember]
+		public DisplayType CurrentDisplayType { get; set; }
 	}	
 }

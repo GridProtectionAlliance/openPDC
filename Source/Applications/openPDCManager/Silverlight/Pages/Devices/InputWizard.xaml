@@ -100,7 +100,7 @@
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Interconnection" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
                                     <ComboBox x:Name="ComboboxInterconnection" Grid.Row="2" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
                                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Connection String" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
-                                    <TextBox Grid.Row="3" Grid.Column="1" x:Name="TextBoxConnectionString" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" 
+                                    <TextBox Grid.Row="3" Grid.Column="1" x:Name="TextBoxConnectionString" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource LargeItemSize}" HorizontalAlignment="Left" 
                                              TextAlignment="Left" VerticalAlignment="Center" Margin="2" TextWrapping="Wrap" />
                                 </Grid>
                             </layoutToolkit:AccordionItem.Content>

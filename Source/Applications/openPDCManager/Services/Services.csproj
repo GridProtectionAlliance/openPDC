@@ -87,6 +87,8 @@
     <Compile Include="DuplexService\LivePhasorDataService.cs" />
     <Compile Include="DuplexService\PhasorDataDuplexServiceFactory.cs" />
     <Compile Include="DuplexService\LivePhasorDataMessage.cs" />
+    <Compile Include="DuplexService\ServiceRequestMessage.cs" />
+    <Compile Include="DuplexService\ServiceUpdateMessage.cs" />
     <Compile Include="DuplexService\TimeSeriesDataMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\IPhasorDataService.cs" />

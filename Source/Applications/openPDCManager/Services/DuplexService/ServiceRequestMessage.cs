@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  Client.cs - Gbtc
+//  ServiceRequestMessage.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  02/10/2010 - Mehulbhai P. Thakkar
+//  03/05/2010 - Mehulbhi P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -229,15 +229,14 @@
 */
 #endregion
 
+using System.Runtime.Serialization;
 
 namespace openPDCManager.Services.DuplexService
 {
-	public class Client
+	[DataContract]
+	public class ServiceRequestMessage : DuplexMessage
 	{
-		public string NodeID { get; set; }
-		public string TimeSeriesDataRootUrl { get; set; }
-		public int DataPointID { get; set; }
-		public DisplayType CurrentDisplayType { get; set; }
-		public IUniversalDuplexCallbackContract Channel { get; set; }
+		[DataMember]
+		public string Request { get; set; }
 	}
 }

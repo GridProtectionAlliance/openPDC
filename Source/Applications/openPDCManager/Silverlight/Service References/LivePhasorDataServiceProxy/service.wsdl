@@ -14,6 +14,7 @@
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import namespace="http://samples.microsoft.com/silverlight2/duplex" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Services.DuplexService" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/TVA.Services" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>

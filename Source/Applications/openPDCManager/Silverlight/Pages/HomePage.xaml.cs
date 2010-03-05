@@ -296,7 +296,11 @@ namespace openPDCManager.Silverlight.Pages
 			}
 
 			if (ComboBoxMeasurements.Items.Count > 0)
+			{
 				ComboBoxMeasurements.SelectedIndex = 0;
+				
+			}
+			ReconnectToService();
 		}
 
 		void ComboBoxDevice_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -331,6 +335,8 @@ namespace openPDCManager.Silverlight.Pages
 
 			if (ComboBoxDevice.Items.Count > 0)
 				ComboBoxDevice.SelectedIndex = 0;
+			else	//If devices are not available then we will send connect message to service as device selection changed and measurements received events dont fire.
+				ReconnectToService();
 		}
 
 		void ButtonGetData_Click(object sender, RoutedEventArgs e)
@@ -339,19 +345,7 @@ namespace openPDCManager.Silverlight.Pages
 			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
 			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
 			Storyboard.SetTarget(sb, ButtonGetDataTransform);
-			sb.Begin();
-
-			LinearAxis yAxis = (LinearAxis)ChartRealTimeData.Axes[1];
-			if (((Measurement)ComboBoxMeasurements.SelectedItem).SignalSuffix == "PA")
-			{
-				yAxis.Minimum = -180;
-				yAxis.Maximum = 180;
-			}
-			else
-			{
-				yAxis.Minimum = 59.95;
-				yAxis.Maximum = 60.05;
-			}
+			sb.Begin();			
 			ReconnectToService();
 		}
 
@@ -363,10 +357,24 @@ namespace openPDCManager.Silverlight.Pages
 			ConnectMessage msg = new ConnectMessage();
 			msg.NodeID = ((App)Application.Current).NodeValue;
 			msg.TimeSeriesDataRootUrl = ((App)Application.Current).TimeSeriesDataServiceUrl;	// "http://localhost:6152/historian/timeseriesdata/read/";			
+			msg.CurrentDisplayType = DisplayType.Home;
 			if (ComboBoxMeasurements.Items.Count > 0)
 			{
 				msg.DataPointID = ((Measurement)ComboBoxMeasurements.SelectedItem).PointID;
 				framesPerSecond = (int)((Measurement)ComboBoxMeasurements.SelectedItem).FramesPerSecond;
+				LinearAxis yAxis = (LinearAxis)ChartRealTimeData.Axes[1];
+				if (((Measurement)ComboBoxMeasurements.SelectedItem).SignalSuffix == "PA")
+				{
+					yAxis.Minimum = -180;
+					yAxis.Maximum = 180;
+					yAxis.Interval = 60;
+				}
+				else
+				{
+					yAxis.Minimum = 59.95;
+					yAxis.Maximum = 60.05;
+					yAxis.Interval = 0.02;
+				}
 			}
 			else
 				msg.DataPointID = 0;
@@ -379,16 +387,16 @@ namespace openPDCManager.Silverlight.Pages
 
 		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			ReconnectToService();
-			m_client.GetDevicesAsync(DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, true);
+			//ReconnectToService();
+			m_client.GetDevicesAsync(DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, false);
 		}
 
 		void HomePage_Loaded(object sender, RoutedEventArgs e)
 		{
 			if (!string.IsNullOrEmpty(((App)Application.Current).NodeValue))
 			{
-				ReconnectToService();
-				m_client.GetDevicesAsync(DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, true);
+				//ReconnectToService();
+				m_client.GetDevicesAsync(DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, false);
 			}						
 		}
 		
@@ -404,10 +412,8 @@ namespace openPDCManager.Silverlight.Pages
 		    {
 		        LivePhasorDataMessage livePhasorData = (LivePhasorDataMessage)e.msg;
 
-				//pmuDistributionList = livePhasorData.PmuDistributionList;
-		        				
-				interconnectionStatusList = livePhasorData.InterconnectionStatusList;
-		        
+				//pmuDistributionList = livePhasorData.PmuDistributionList;		        				
+				interconnectionStatusList = livePhasorData.InterconnectionStatusList;		        
 				deviceDistributionList = livePhasorData.DeviceDistributionList;
 
 				//ItemsControlPmuDistribution.ItemsSource = pmuDistributionList;

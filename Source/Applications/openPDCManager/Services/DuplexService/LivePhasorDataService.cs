@@ -237,6 +237,9 @@ using System.Threading;
 using openPDCManager.Web.Data.ServiceCommunication;
 using TVA;
 using TVA.Services;
+using openPDCManager.Web.Data.Entities;
+using System.Collections.Generic;
+using openPDCManager.Web.Data;
 
 namespace openPDCManager.Services.DuplexService
 {   
@@ -245,14 +248,14 @@ namespace openPDCManager.Services.DuplexService
     /// </summary>
     public class LivePhasorDataService : DuplexService
     {
-        #region [ Members ]
-
-        // Fields
+        #region [ Members ]		      
         // This timer will be used to retrieve fresh data from the database and then push to all clients.
         Timer livePhasorDataTimer;
         Timer timeSeriesDataTimer;
+		Timer serviceClientListTimer;
         WindowsServiceClient serviceClient;
-        private bool m_disposed;
+        bool m_disposed;		
+		List<Node> nodeList;
 
         #endregion
 
@@ -261,19 +264,18 @@ namespace openPDCManager.Services.DuplexService
         public LivePhasorDataService()
             : base()
         {
+			serviceClientList = new Dictionary<string, WindowsServiceClient>();
+			List<Node> nodeList = new List<Node>();
             livePhasorDataTimer = new Timer(LivePhasorDataUpdate, null, 0, 30000);
-            timeSeriesDataTimer = new Timer(TimeSeriesDataUpdate, null, 0, 1000);
-
-            //For each node defined in the database, we need to have a TCP client created to listen to the events.
-            serviceClient = new WindowsServiceClient("server=localhost:8500");
-            serviceClient.Helper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;
-            ThreadPool.QueueUserWorkItem(delegate(object state) { serviceClient.Helper.Connect(); });
+            timeSeriesDataTimer = new Timer(TimeSeriesDataUpdate, null, 0, 1000);			
+			serviceClientListTimer = new Timer(RefreshServiceClientList, null, 0, 60000);
+			nodeList = CommonFunctions.GetNodeList(true);
         }
 
         #endregion
 
         #region [ Methods ]
-
+		
         /// <summary>
         /// Releases the unmanaged resources used by the <see cref="LivePhasorDataService"/> object and optionally releases the managed resources.
         /// </summary>
@@ -290,9 +292,14 @@ namespace openPDCManager.Services.DuplexService
                         // This will be done only when the object is disposed by calling Dispose().
                         livePhasorDataTimer.Dispose();
                         timeSeriesDataTimer.Dispose();
-
-                        serviceClient.Helper.ReceivedServiceUpdate -= ClientHelper_ReceivedServiceUpdate;
-                        serviceClient.Dispose();
+						lock (serviceClientList)
+						{
+							foreach (KeyValuePair<string, WindowsServiceClient> item in serviceClientList)
+							{
+								item.Value.Helper.ReceivedServiceUpdate -= ClientHelper_ReceivedServiceUpdate;
+								item.Value.Dispose();
+							}
+						}
                     }
                 }
                 finally
@@ -314,11 +321,122 @@ namespace openPDCManager.Services.DuplexService
             PushToAllClients(MessageType.TimeSeriesDataMessage);
         }
 
+		private void RefreshServiceClientList(object obj)
+		{
+			nodeList = CommonFunctions.GetNodeList(true);
+			
+			//For each node defined in the database, we need to have a TCP client created to listen to the events.
+			foreach (Node node in nodeList)
+			{
+				lock (serviceClientList)
+				{
+					if (serviceClientList.ContainsKey(node.ID))
+					{
+						if (node.RemoteStatusServiceUrl != serviceClientList[node.ID].Helper.RemotingClient.ConnectionString)
+							serviceClientList[node.ID].Helper.RemotingClient.ConnectionString = node.RemoteStatusServiceUrl;
+					}
+					else
+					{
+						if (!string.IsNullOrEmpty(node.RemoteStatusServiceUrl))
+						{
+							serviceClient = new WindowsServiceClient(node.RemoteStatusServiceUrl);
+							serviceClientList.Add(node.ID, serviceClient);
+							serviceClient.Helper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;
+							serviceClient.Helper.ReceivedServiceResponse += ClientHelper_ReceivedServiceResponse;
+							ThreadPool.QueueUserWorkItem(ConnectWindowsServiceClient, serviceClient);
+						}
+					}
+				}
+			}
+		}
+
+		private void ConnectWindowsServiceClient(object state)
+		{
+			((WindowsServiceClient)state).Helper.Connect();
+		}
+
         private void ClientHelper_ReceivedServiceUpdate(object sender, EventArgs<UpdateType, string> e)
         {
-            // TODO: Publish to all connected clients.
-            System.Diagnostics.Debug.Write(e.Argument2);
+			string connectionString = ((ClientHelper)sender).RemotingClient.ConnectionString;
+			string nodeID = string.Empty;
+			foreach (Node node in nodeList)
+			{
+				if (node.RemoteStatusServiceUrl == connectionString)
+				{
+					nodeID = node.ID;
+					break;
+				}
+			}			
+			ServiceUpdateMessage message = new ServiceUpdateMessage() 
+												{ 
+													ServiceUpdateType = e.Argument1, 
+													ServiceUpdate = e.Argument2 
+												};
+			PushServiceStatusToClients(nodeID, message);            
         }
+
+		private void ClientHelper_ReceivedServiceResponse(object sender, EventArgs<ServiceResponse> e)
+		{
+			string response = e.Argument.Type;
+			string message = e.Argument.Message;
+			string responseToClient = string.Empty;
+			UpdateType responseType = UpdateType.Information;
+			string connectionString = ((ClientHelper)sender).RemotingClient.ConnectionString;
+			string nodeID = string.Empty;
+
+			if (!string.IsNullOrEmpty(response))
+			{
+				// Reponse types are formatted as "Command:Success" or "Command:Failure"
+				string[] parts = response.Split(':');
+				string action;
+				bool success;
+
+				if (parts.Length > 1)
+				{
+					action = parts[0].Trim().ToTitleCase();
+					success = (string.Compare(parts[1].Trim(), "Success", true) == 0);
+				}
+				else
+				{
+					action = response;
+					success = true;
+				}
+
+				if (success)
+				{
+					if (string.IsNullOrEmpty(message))
+						responseToClient = string.Format("{0} command processed successfully.\r\n\r\n", action);
+					else
+						responseToClient = string.Format("{0}\r\n\r\n", message);
+				}
+				else
+				{
+					responseType = UpdateType.Alarm;
+					if (string.IsNullOrEmpty(message))
+						responseToClient = string.Format("{0} failure.\r\n\r\n", action);
+					else
+						responseToClient = string.Format("{0} failure: {1}\r\n\r\n", action, message);
+				}
+
+
+				foreach (Node node in nodeList)
+				{
+					if (node.RemoteStatusServiceUrl == connectionString)
+					{
+						nodeID = node.ID;
+						break;
+					}
+				}
+
+				ServiceUpdateMessage msg = new ServiceUpdateMessage()
+												{
+													ServiceUpdateType = responseType,
+													ServiceUpdate = responseToClient
+												};
+				PushServiceStatusToClients(nodeID, msg); 
+			}
+
+		}
 
         #endregion
     }

@@ -244,7 +244,10 @@ namespace openPDCManager.Web.Data.BusinessObjects
 		public int PmuID;
 		public int FrameRate;
 		public bool AutoRepeatPlayback;
-		public int ByteEncodingDisplayFormat;
-		public IConnectionParameters ConnectionParameters;
-	}
+		public int ByteEncodingDisplayFormat;				
+		public object ConnectionParameters;
+		public string configurationFileName;
+		public bool refreshConfigurationFileOnChange;
+		public bool parseWordCountFromByte;
+	}	
 }

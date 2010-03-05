@@ -19,7 +19,7 @@
                         </Grid.RowDefinitions>                        
                                                 
                         <TextBlock Grid.Row="0" x:Name="TextBlockUserMessage" Text="{Binding Path=UserMessage}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" FontWeight="Bold"/>                        
-                        <TextBlock Grid.Row="1" x:Name="TextBlockSystemMessage" Text="{Binding Path=SystemMessage}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" Height="75"/>
+                        <TextBlock Grid.Row="1" x:Name="TextBlockSystemMessage" Text="{Binding Path=SystemMessage}" VerticalAlignment="Top" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="5" Height="75"/>
                         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                             <Button x:Name="ButtonCancel" Visibility="Collapsed" Content="../../Images/Cancel.png" Tag="Cancel" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10,5,10,5" Cursor="Hand"/>                            
                             <Button x:Name="ButtonOk" Visibility="Visible" Content="../../Images/Ok.png" Tag="Ok" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10,5,10,5" Cursor="Hand"/>

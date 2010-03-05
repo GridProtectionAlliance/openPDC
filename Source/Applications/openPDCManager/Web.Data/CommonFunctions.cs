@@ -248,6 +248,7 @@ using openPDCManager.Web.Data.Entities;
 using TVA.PhasorProtocols;
 using System.Net;
 using System.Xml.Linq;
+using TVA.PhasorProtocols.BpaPdcStream;
 
 namespace openPDCManager.Web.Data
 {
@@ -355,6 +356,16 @@ namespace openPDCManager.Web.Data
 				sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
 				sf.Binder = new VersionConfigToNamespaceAssemblyObjectBinder();
 				connectionSettings = sf.Deserialize(inputStream) as ConnectionSettings;
+
+				if (connectionSettings.ConnectionParameters != null)
+				{
+					ConnectionSettings cs = new ConnectionSettings();
+					cs = (ConnectionSettings)connectionSettings.ConnectionParameters;
+					connectionSettings.configurationFileName = cs.configurationFileName;
+					connectionSettings.refreshConfigurationFileOnChange = cs.refreshConfigurationFileOnChange;
+					connectionSettings.parseWordCountFromByte = cs.parseWordCountFromByte;
+				}
+
 				return connectionSettings;
 			}
 			catch (Exception ex)

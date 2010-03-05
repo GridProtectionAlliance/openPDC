@@ -201,6 +201,9 @@
     <Compile Include="Pages\Manage\Vendors.xaml.cs">
       <DependentUpon>Vendors.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Monitor.xaml.cs">
+      <DependentUpon>Monitor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Common.cs" />
     <Compile Include="Utilities\DefaultButtonService.cs" />
@@ -355,6 +358,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
+    <Page Include="Pages\Monitor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
     <Page Include="Resources\ResourceAccordianStyle.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
@@ -441,6 +448,7 @@
     <None Include="Service References\LivePhasorDataServiceProxy\service.wsdl" />
     <None Include="Service References\LivePhasorDataServiceProxy\service.xsd" />
     <None Include="Service References\LivePhasorDataServiceProxy\service1.xsd" />
+    <None Include="Service References\LivePhasorDataServiceProxy\TVA.Services.xsd" />
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Adapter.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

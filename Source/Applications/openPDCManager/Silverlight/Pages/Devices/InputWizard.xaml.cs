@@ -467,6 +467,13 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				if (m_connectionSettings != null)
 				{
 					TextBoxConnectionString.Text = "TransportProtocol=" + m_connectionSettings.TransportProtocol.ToString() + ";" + m_connectionSettings.ConnectionString;
+
+					if (m_connectionSettings.ConnectionParameters != null)
+					{
+						TextBoxConnectionString.Text += ";iniFileName=" + m_connectionSettings.configurationFileName + ";refreshConfigFileOnChange=" + m_connectionSettings.refreshConfigurationFileOnChange.ToString() +
+									";parseWordCountFromByte=" + m_connectionSettings.parseWordCountFromByte;
+					}
+
 					//Select Phasor Protocol type in the combobox based on the protocol in the connection file.
 					m_client.GetProtocolIDByAcronymAsync(m_connectionSettings.PhasorProtocol.ToString());
 				}

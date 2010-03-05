@@ -346,6 +346,11 @@ namespace openPDCManager.Silverlight
 		{
 			System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration"), "_blank");
 		}
+
+		private void HyperlinkButtonMonitor_Click(object sender, RoutedEventArgs e)
+		{
+			ContentFrame.Navigate(new Uri("/Pages/Monitor.xaml", UriKind.Relative));
+		}
 		
 	}
 }

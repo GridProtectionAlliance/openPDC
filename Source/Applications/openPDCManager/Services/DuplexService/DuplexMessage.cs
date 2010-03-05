@@ -244,5 +244,7 @@ namespace openPDCManager.Services.DuplexService
     [KnownType(typeof(DisconnectMessage))]
     [KnownType(typeof(LivePhasorDataMessage))]
 	[KnownType(typeof(TimeSeriesDataMessage))]
+	[KnownType(typeof(ServiceUpdateMessage))]
+	[KnownType(typeof(ServiceRequestMessage))]
     public class DuplexMessage { }
 }

@@ -19,7 +19,7 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
                 
                 <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Background="{StaticResource HeaderBackgroundBrush}">                    
@@ -38,7 +38,7 @@
                             <TextBlock Text="Connectivity: " Style="{StaticResource SmallWhiteTextStyle}"/>
                             <TextBlock x:Name="TextBlockConnectivity" Style="{StaticResource SmallWhiteTextWithEffectStyle}"/>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <igMenu:XamWebMenu x:Name="MenuMain" Style="{StaticResource XamWebMenuStyle}" NavigationElement="{Binding ElementName=ContentFrame}">
                                 <igMenu:XamWebMenuItem Header="Home" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/HomePage.xaml"/>
                                 <igMenu:XamWebMenuItem Header="Devices" Style="{StaticResource XamWebMenuItemStyleMainMenu}">
@@ -150,7 +150,8 @@
                     </igMenu:XamWebMenu>
                             <TextBlock Text="" Width="{StaticResource XXXSmallItemSize}" />
                             <TextBlock Text="Node: " FontWeight="Bold" Margin="5" Foreground="#FFFFFFFF" />
-                            <nodesControl:SelectNode x:Name="UserControlSelectNode" Background="Transparent" />                   
+                            <nodesControl:SelectNode x:Name="UserControlSelectNode" Background="Transparent" />                                               
+                            <HyperlinkButton Content="Monitor" Name="HyperlinkButtonMonitor" Foreground="#FFFFFFFF" VerticalAlignment="Center" Margin="5" Click="HyperlinkButtonMonitor_Click"/>
                 </StackPanel>
                     </StackPanel>
                 

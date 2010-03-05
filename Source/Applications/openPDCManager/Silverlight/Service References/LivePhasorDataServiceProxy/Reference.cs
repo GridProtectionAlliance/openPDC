@@ -20,8 +20,10 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     [System.Runtime.Serialization.DataContractAttribute(Name="DuplexMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.ConnectMessage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.DisconnectMessage))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.ServiceUpdateMessage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.TimeSeriesDataMessage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.LivePhasorDataMessage))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.ServiceRequestMessage))]
     public partial class DuplexMessage : object, System.ComponentModel.INotifyPropertyChanged {
         
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -39,11 +41,26 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     [System.Runtime.Serialization.DataContractAttribute(Name="ConnectMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
     public partial class ConnectMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
         
+        private openPDCManager.Silverlight.LivePhasorDataServiceProxy.DisplayType CurrentDisplayTypeField;
+        
         private int DataPointIDField;
         
         private string NodeIDField;
         
         private string TimeSeriesDataRootUrlField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public openPDCManager.Silverlight.LivePhasorDataServiceProxy.DisplayType CurrentDisplayType {
+            get {
+                return this.CurrentDisplayTypeField;
+            }
+            set {
+                if ((this.CurrentDisplayTypeField.Equals(value) != true)) {
+                    this.CurrentDisplayTypeField = value;
+                    this.RaisePropertyChanged("CurrentDisplayType");
+                }
+            }
+        }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public int DataPointID {
@@ -89,6 +106,42 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="DisconnectMessage", Namespace="http://samples.microsoft.com/silverlight2/duplex")]
     public partial class DisconnectMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ServiceUpdateMessage", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Services.DuplexService")]
+    public partial class ServiceUpdateMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
+        
+        private string ServiceUpdateField;
+        
+        private openPDCManager.Silverlight.LivePhasorDataServiceProxy.UpdateType ServiceUpdateTypeField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ServiceUpdate {
+            get {
+                return this.ServiceUpdateField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ServiceUpdateField, value) != true)) {
+                    this.ServiceUpdateField = value;
+                    this.RaisePropertyChanged("ServiceUpdate");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public openPDCManager.Silverlight.LivePhasorDataServiceProxy.UpdateType ServiceUpdateType {
+            get {
+                return this.ServiceUpdateTypeField;
+            }
+            set {
+                if ((this.ServiceUpdateTypeField.Equals(value) != true)) {
+                    this.ServiceUpdateTypeField = value;
+                    this.RaisePropertyChanged("ServiceUpdateType");
+                }
+            }
+        }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -146,6 +199,52 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
                 }
             }
         }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ServiceRequestMessage", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Services.DuplexService")]
+    public partial class ServiceRequestMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
+        
+        private string RequestField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Request {
+            get {
+                return this.RequestField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.RequestField, value) != true)) {
+                    this.RequestField = value;
+                    this.RaisePropertyChanged("Request");
+                }
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="DisplayType", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Services.DuplexService")]
+    public enum DisplayType : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Home = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        ServiceClient = 1,
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="UpdateType", Namespace="http://schemas.datacontract.org/2004/07/TVA.Services")]
+    public enum UpdateType : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Information = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Warning = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Alarm = 2,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]

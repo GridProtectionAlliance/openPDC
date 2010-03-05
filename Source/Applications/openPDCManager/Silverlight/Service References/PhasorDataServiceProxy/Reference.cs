@@ -2062,6 +2062,12 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private openPDCManager.Silverlight.PhasorDataServiceProxy.TransportProtocol TransportProtocolField;
         
+        private string configurationFileNameField;
+        
+        private bool parseWordCountFromByteField;
+        
+        private bool refreshConfigurationFileOnChangeField;
+        
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
         public bool AutoRepeatPlayback {
             get {
@@ -2162,6 +2168,45 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((this.TransportProtocolField.Equals(value) != true)) {
                     this.TransportProtocolField = value;
                     this.RaisePropertyChanged("TransportProtocol");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public string configurationFileName {
+            get {
+                return this.configurationFileNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.configurationFileNameField, value) != true)) {
+                    this.configurationFileNameField = value;
+                    this.RaisePropertyChanged("configurationFileName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public bool parseWordCountFromByte {
+            get {
+                return this.parseWordCountFromByteField;
+            }
+            set {
+                if ((this.parseWordCountFromByteField.Equals(value) != true)) {
+                    this.parseWordCountFromByteField = value;
+                    this.RaisePropertyChanged("parseWordCountFromByte");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public bool refreshConfigurationFileOnChange {
+            get {
+                return this.refreshConfigurationFileOnChangeField;
+            }
+            set {
+                if ((this.refreshConfigurationFileOnChangeField.Equals(value) != true)) {
+                    this.refreshConfigurationFileOnChangeField = value;
+                    this.RaisePropertyChanged("refreshConfigurationFileOnChange");
                 }
             }
         }
