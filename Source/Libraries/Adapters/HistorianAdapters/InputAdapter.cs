@@ -16,6 +16,8 @@
 //       Re-wrote the adapter to utilize existing historian components.
 //  11/18/2009 - Pinal C. Patel
 //       Removed the need for HistorianID in Settings by using adapter Name instead.
+//  03/05/2010 - Pinal C. Patel
+//       Added status updates for when the parser is having trouble parsing data.
 //
 //*******************************************************************************************************
 
@@ -344,6 +346,9 @@ namespace HistorianAdapters
             m_historianDataListener.SocketConnecting += HistorianDataListener_SocketConnecting;
             m_historianDataListener.SocketConnected += HistorianDataListener_SocketConnected;
             m_historianDataListener.SocketDisconnected += HistorianDataListener_SocketDisconnected;
+            m_historianDataListener.Parser.OutputTypeNotFound += HistorianDataListener_OutputTypeNotFound;
+            m_historianDataListener.Parser.DataDiscarded += HistorianDataListener_DataDiscarded;
+            m_historianDataListener.Parser.ParsingException += HistorianDataListener_ParsingException;
             m_historianDataListener.Initialize();
         }
 
@@ -377,6 +382,9 @@ namespace HistorianAdapters
                             m_historianDataListener.SocketConnecting -= HistorianDataListener_SocketConnecting;
                             m_historianDataListener.SocketConnected -= HistorianDataListener_SocketConnected;
                             m_historianDataListener.SocketDisconnected -= HistorianDataListener_SocketDisconnected;
+                            m_historianDataListener.Parser.OutputTypeNotFound -= HistorianDataListener_OutputTypeNotFound;
+                            m_historianDataListener.Parser.DataDiscarded -= HistorianDataListener_DataDiscarded;
+                            m_historianDataListener.Parser.ParsingException -= HistorianDataListener_ParsingException;
                             m_historianDataListener.Dispose();
                         }
                     }
@@ -435,6 +443,21 @@ namespace HistorianAdapters
         private void HistorianDataListener_SocketDisconnected(object sender, EventArgs e)
         {
             OnDisconnected();
+        }
+
+        private void HistorianDataListener_OutputTypeNotFound(object sender, EventArgs<short> e)
+        {
+            OnStatusMessage(string.Format("Unable to parse data for packet type {0}.", e.Argument));
+        }
+
+        private void HistorianDataListener_DataDiscarded(object sender, EventArgs<byte[]> e)
+        {
+            OnStatusMessage(string.Format("Unable to parse data: {0} bytes discarded.", e.Argument.Length));
+        }
+
+        private void HistorianDataListener_ParsingException(object sender, EventArgs<Exception> e)
+        {
+            OnProcessException(e.Argument);
         }
 
         #endregion
