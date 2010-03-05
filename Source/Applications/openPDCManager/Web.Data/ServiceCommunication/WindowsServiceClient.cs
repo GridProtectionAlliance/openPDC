@@ -12,6 +12,8 @@
 //       Generated original version of source code.
 //  03/02/2010 - Pinal C. Patel
 //       Implemented IDisposable interface and added code regions.
+//  03/05/2010 - Pinal C. Patel
+//       Added caching feature for updates received from windows service.
 //
 //*******************************************************************************************************
 
@@ -232,6 +234,7 @@
 #endregion
 
 using System;
+using TVA;
 using TVA.Communication;
 using TVA.Services;
 
@@ -244,6 +247,8 @@ namespace openPDCManager.Web.Data.ServiceCommunication
         // Fields
         private TcpClient m_remotingClient;
         private ClientHelper m_clientHelper;
+        private string m_cachedStatus;
+        private int m_statusBufferSize;
         private bool m_disposed;
 
         #endregion
@@ -252,13 +257,23 @@ namespace openPDCManager.Web.Data.ServiceCommunication
 
         public WindowsServiceClient(string connectionString)
         {
+            // Initialize status cache members.
+            string statusBufferSize;
+            if (connectionString.ParseKeyValuePairs().TryGetValue("statusBufferSize", out statusBufferSize))
+                m_statusBufferSize = int.Parse(statusBufferSize);
+            else
+                m_statusBufferSize = 8192;
+            m_cachedStatus = string.Empty;
+            // Initialize remoting client socket.
             m_remotingClient = new TcpClient();
             m_remotingClient.ConnectionString = connectionString;
             m_remotingClient.SharedSecret = "openPDC";
             m_remotingClient.Handshake = true;
             m_remotingClient.PayloadAware = true;
+            // Initialize windows service client.
             m_clientHelper = new ClientHelper();
             m_clientHelper.RemotingClient = m_remotingClient;
+            m_clientHelper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;
         }
 
         /// <summary>
@@ -278,6 +293,14 @@ namespace openPDCManager.Web.Data.ServiceCommunication
             get
             {
                 return m_clientHelper;
+            }
+        }
+
+        public string CachedStatus 
+        {
+            get
+            {
+                return m_cachedStatus;
             }
         }
 
@@ -308,6 +331,7 @@ namespace openPDCManager.Web.Data.ServiceCommunication
                     if (disposing)
                     {
                         // This will be done only when the object is disposed by calling Dispose().
+                        m_clientHelper.ReceivedServiceUpdate -= ClientHelper_ReceivedServiceUpdate;
                         m_clientHelper.Dispose();
                         m_remotingClient.Dispose();
                     }
@@ -317,6 +341,11 @@ namespace openPDCManager.Web.Data.ServiceCommunication
                     m_disposed = true;  // Prevent duplicate dispose.
                 }
             }
+        }
+
+        private void ClientHelper_ReceivedServiceUpdate(object sender, EventArgs<UpdateType, string> e)
+        {
+            m_cachedStatus = (m_cachedStatus + e.Argument2).TruncateLeft(m_statusBufferSize);
         }
 
         #endregion
