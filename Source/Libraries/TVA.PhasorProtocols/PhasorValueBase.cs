@@ -584,9 +584,9 @@ namespace TVA.PhasorProtocols
             switch (index)
             {
                 case (int)CompositePhasorValue.Angle:
-                    return m_phasor.Angle.ToDegrees();
+                    return Angle.ToDegrees();
                 case (int)CompositePhasorValue.Magnitude:
-                    return m_phasor.Magnitude;
+                    return Magnitude;
                 default:
                     throw new ArgumentOutOfRangeException("index", "Invalid composite index requested");
             }
