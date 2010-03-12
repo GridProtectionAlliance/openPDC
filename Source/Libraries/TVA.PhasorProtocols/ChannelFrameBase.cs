@@ -577,8 +577,13 @@ namespace TVA.PhasorProtocols
             m_parsedBinaryLength = State.ParsedBinaryLength;
             
             // Normal binary image parsing is overriden for a frame so that checksum can be validated
-            if (!ChecksumIsValid(binaryImage, startIndex))
-                throw new InvalidOperationException("Invalid binary image detected - check sum of " + this.GetType().Name + " did not match");
+           
+            if (!ChecksumIsValid(binaryImage, startIndex) )
+            {
+                byte[] binaryImageErr = binaryImage.BlockCopy(startIndex, m_parsedBinaryLength);
+                throw new InvalidOperationException("Invalid binary image detected - check sum of " + this.GetType().Name + " did not match:"+BitConverter.ToString (binaryImageErr ));
+            }
+            
 
             // Include 2 bytes for CRC in returned parsed length
             return base.Initialize(binaryImage, startIndex, length) + 2;
