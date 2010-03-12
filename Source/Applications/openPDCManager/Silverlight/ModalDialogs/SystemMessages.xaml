@@ -27,8 +27,6 @@
                             </ScrollViewer.Content>
                         </ScrollViewer>
 
-
-
                         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                             <Button x:Name="ButtonCancel" Visibility="Collapsed" Content="../../Images/Cancel.png" Tag="Cancel" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10,5,10,5" Cursor="Hand"/>                            
                             <Button x:Name="ButtonOk" Visibility="Visible" Content="../../Images/Ok.png" Tag="Ok" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10,5,10,5" Cursor="Hand"/>

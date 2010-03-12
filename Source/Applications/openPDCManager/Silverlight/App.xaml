@@ -38,9 +38,9 @@
 
             <Storyboard x:Key="ButtonPressAnimation">
                 <DoubleAnimation Storyboard.TargetProperty="ScaleX" 
-                    From="1.0" To="0.9" Duration="0:0:0.1" AutoReverse="True" />
+                    From="1.0" To="0.8" Duration="0:0:0.1" AutoReverse="True" />
                 <DoubleAnimation Storyboard.TargetProperty="ScaleY" 
-                    From="1.0" To="0.9" Duration="0:0:0.1" AutoReverse="True" />
+                    From="1.0" To="0.8" Duration="0:0:0.1" AutoReverse="True" />                
             </Storyboard>
 
             <ControlTemplate x:Key="SmallImageButtonTemplate" TargetType="Button">

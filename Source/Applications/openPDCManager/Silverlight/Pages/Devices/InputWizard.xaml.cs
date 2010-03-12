@@ -516,6 +516,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 				sm.Show();
 			}
+			if (m_activityWindow != null)
+				m_activityWindow.Close();
 		}		
 		void client_SaveWizardConfigurationInfoCompleted(object sender, SaveWizardConfigurationInfoCompletedEventArgs e)
 		{
@@ -638,6 +640,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			if (AccordianWizard.SelectedIndex == 1)
 			{
+				m_activityWindow = new ActivityWindow("Validating Configuration File... Please Wait...");
+				m_activityWindow.Show();
+
 				if (m_wizardDeviceInfoList.Count == 0) //this was added to fix issues with going back and forth on wizard steps.
 				{
 					if ((((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Value.ToUpper().Contains("BPA")) && !string.IsNullOrEmpty(m_iniFileName))
@@ -910,26 +915,30 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		byte[] ReadFileBytes(Stream inputStream)
 		{
 			byte[] bytes;
-			//using (FileStream fileStream = file.OpenRead())
-			//{
-				// Read the source file into a byte array.
 			bytes = new byte[inputStream.Length];
-			int numBytesToRead = (int)inputStream.Length;
-			int numBytesRead = 0;
-			while (numBytesToRead > 0)
-			{
-				// Read may return anything from 0 to numBytesToRead.
-				int n = inputStream.Read(bytes, numBytesRead, numBytesToRead);
+			try
+			{				
+				int numBytesToRead = (int)inputStream.Length;
+				int numBytesRead = 0;
+				while (numBytesToRead > 0)
+				{
+					// Read may return anything from 0 to numBytesToRead.
+					int n = inputStream.Read(bytes, numBytesRead, numBytesToRead);
 
-				// Break when the end of the file is reached.
-				if (n == 0)
-					break;
+					// Break when the end of the file is reached.
+					if (n == 0)
+						break;
 
-				numBytesRead += n;
-				numBytesToRead -= n;
+					numBytesRead += n;
+					numBytesToRead -= n;
+				}
+				numBytesToRead = bytes.Length;
 			}
-			numBytesToRead = bytes.Length;
-			//}
+			catch (Exception ex)
+			{
+				if (m_activityWindow != null)
+					m_activityWindow.Close();
+			}
 			return bytes;
 		}
 		T Deserialize<T>(Stream inputStream)

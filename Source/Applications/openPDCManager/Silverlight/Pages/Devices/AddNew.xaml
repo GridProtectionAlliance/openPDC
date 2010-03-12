@@ -87,10 +87,10 @@
                         <CheckBox x:Name="CheckboxConcentrator" Grid.Row="11" Grid.Column="2" IsChecked="{Binding Path=IsConcentrator}" Content="Concentrator" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                         <CheckBox x:Name="CheckboxEnabled" Grid.Row="11" Grid.Column="3" IsChecked="{Binding Path=Enabled}" Content="Enabled" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>                        
                         <StackPanel Orientation="Horizontal" Grid.Row="12" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
-                            <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                            <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand" >
                                 <Button.RenderTransform>
-                                    <ScaleTransform x:Name="ButtonClearTransform" ScaleX="1" ScaleY="1" />
-                                </Button.RenderTransform>
+                                    <ScaleTransform x:Name="ButtonClearTransform" ScaleX="1" ScaleY="1" />                                    
+                                </Button.RenderTransform>                                
                             </Button>
                             <TextBlock Text="     "/>
                             <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="Save" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">

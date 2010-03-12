@@ -281,6 +281,11 @@ namespace openPDCManager.Silverlight.Utilities
 									);
 			}
 
+			binding.CloseTimeout = new TimeSpan(0, 20, 0);
+			binding.OpenTimeout = new TimeSpan(0, 20, 0);
+			binding.ReceiveTimeout = new TimeSpan(0, 20, 0);
+			binding.SendTimeout = new TimeSpan(0, 20, 0);
+
 			return new PhasorDataServiceClient(binding, address);
 		}
 
@@ -308,7 +313,13 @@ namespace openPDCManager.Silverlight.Utilities
 									new BinaryMessageEncodingBindingElement(),
 									httpTransportBindingElement
 									);
-			}	
+			}
+			
+			binding.CloseTimeout = new TimeSpan(0, 20, 0);
+			binding.OpenTimeout = new TimeSpan(0, 20, 0);
+			binding.ReceiveTimeout = new TimeSpan(0, 20, 0);
+			binding.SendTimeout = new TimeSpan(0, 20, 0);
+
 			return new DuplexServiceClient(binding, address);
 		}
 	}
