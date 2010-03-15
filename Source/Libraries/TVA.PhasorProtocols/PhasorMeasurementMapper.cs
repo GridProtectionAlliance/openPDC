@@ -696,7 +696,7 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Send the specified <see cref="DeviceCommand"/> to the current device connection.
+        /// Sends the specified <see cref="DeviceCommand"/> to the current device connection.
         /// </summary>
         /// <param name="command"><see cref="DeviceCommand"/> to send to connected device.</param>
         [AdapterCommand("Sends the specified command to connected phasor device.")]
@@ -709,6 +709,45 @@ namespace TVA.PhasorProtocols
             }
             else
                 OnStatusMessage("Failed to send device command \"{0}\", no frame parser is defined.");
+        }
+
+        /// <summary>
+        /// Resets the statistics of all devices associated with this connection.
+        /// </summary>
+        [AdapterCommand("Resets the statistics of all devices associated with this connection.")]
+        public void ResetStatistics()
+        {
+            foreach (ConfigurationCell definedDevice in m_definedDevices.Values)
+            {
+                definedDevice.TotalDataQualityErrors = 0;
+                definedDevice.TotalDeviceErrors = 0;
+                definedDevice.TotalFrames = 0;
+                definedDevice.TotalTimeQualityErrors = 0;
+            }
+            
+            OnStatusMessage("Statistics reset for all devices associated with this connection.");
+        }
+
+        /// <summary>
+        /// Resets the statistics of the specified device associated with this connection.
+        /// </summary>
+        /// <param name="idCode">Integer ID code of device on which to reset statistics.</param>
+        [AdapterCommand("Resets the statistics of the specified device associated with this connection.")]
+        public void ResetDeviceStatistics(ushort idCode)
+        {
+            ConfigurationCell definedDevice;
+
+            if (m_definedDevices.TryGetValue(idCode, out definedDevice))
+            {
+                definedDevice.TotalDataQualityErrors = 0;
+                definedDevice.TotalDeviceErrors = 0;
+                definedDevice.TotalFrames = 0;
+                definedDevice.TotalTimeQualityErrors = 0;
+
+                OnStatusMessage("Statistics reset for device with ID code \"{0}\" associated with this connection.", idCode);
+            }
+            else
+                OnStatusMessage("WARNING: Failed to find device with ID code \"{0}\" associated with this connection.", idCode);
         }
 
         /// <summary>
@@ -1021,6 +1060,8 @@ namespace TVA.PhasorProtocols
         private void m_frameParser_ConnectionEstablished(object sender, EventArgs e)
         {
             OnConnected();
+
+            ResetStatistics();
 
             // Enable data stream monitor for connections that support commands
             m_dataStreamMonitor.Enabled = m_frameParser.DeviceSupportsCommands;
