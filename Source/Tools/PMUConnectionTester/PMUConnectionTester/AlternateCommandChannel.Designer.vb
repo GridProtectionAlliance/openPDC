@@ -182,6 +182,9 @@ Partial Class AlternateCommandChannel
         Me.ComboBoxSerialStopBits.Name = "ComboBoxSerialStopBits"
         Me.ComboBoxSerialStopBits.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialStopBits.TabIndex = 7
+        Me.ComboBoxSerialStopBits.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialStopBits.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxSerialStopBits.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'ComboBoxSerialParities
         '
@@ -189,6 +192,9 @@ Partial Class AlternateCommandChannel
         Me.ComboBoxSerialParities.Name = "ComboBoxSerialParities"
         Me.ComboBoxSerialParities.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialParities.TabIndex = 5
+        Me.ComboBoxSerialParities.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialParities.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxSerialParities.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelSerialParity
         '
@@ -207,6 +213,9 @@ Partial Class AlternateCommandChannel
         Me.ComboBoxSerialBaudRates.Name = "ComboBoxSerialBaudRates"
         Me.ComboBoxSerialBaudRates.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialBaudRates.TabIndex = 3
+        Me.ComboBoxSerialBaudRates.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialBaudRates.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxSerialBaudRates.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelSerialBaudRate
         '
@@ -224,6 +233,9 @@ Partial Class AlternateCommandChannel
         Me.ComboBoxSerialPorts.Name = "ComboBoxSerialPorts"
         Me.ComboBoxSerialPorts.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialPorts.TabIndex = 1
+        Me.ComboBoxSerialPorts.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialPorts.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxSerialPorts.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelSerialPort
         '

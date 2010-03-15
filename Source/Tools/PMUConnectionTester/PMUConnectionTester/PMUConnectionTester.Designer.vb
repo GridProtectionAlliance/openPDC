@@ -369,6 +369,9 @@ Partial Class PMUConnectionTester
         Me.ComboBoxCommands.Name = "ComboBoxCommands"
         Me.ComboBoxCommands.Size = New System.Drawing.Size(154, 21)
         Me.ComboBoxCommands.TabIndex = 13
+        Me.ComboBoxCommands.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxCommands.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxCommands.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelCommand
         '
@@ -416,6 +419,9 @@ Partial Class PMUConnectionTester
         Me.ComboBoxProtocols.Name = "ComboBoxProtocols"
         Me.ComboBoxProtocols.Size = New System.Drawing.Size(224, 21)
         Me.ComboBoxProtocols.TabIndex = 9
+        Me.ComboBoxProtocols.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxProtocols.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxProtocols.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'TabPageControl10
         '
@@ -649,6 +655,9 @@ Partial Class PMUConnectionTester
         Me.ComboBoxSerialStopBits.Name = "ComboBoxSerialStopBits"
         Me.ComboBoxSerialStopBits.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialStopBits.TabIndex = 7
+        Me.ComboBoxSerialStopBits.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialStopBits.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxSerialStopBits.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'ComboBoxSerialParities
         '
@@ -656,6 +665,9 @@ Partial Class PMUConnectionTester
         Me.ComboBoxSerialParities.Name = "ComboBoxSerialParities"
         Me.ComboBoxSerialParities.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialParities.TabIndex = 5
+        Me.ComboBoxSerialParities.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialParities.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxSerialParities.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelSerialParity
         '
@@ -674,6 +686,9 @@ Partial Class PMUConnectionTester
         Me.ComboBoxSerialBaudRates.Name = "ComboBoxSerialBaudRates"
         Me.ComboBoxSerialBaudRates.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialBaudRates.TabIndex = 3
+        Me.ComboBoxSerialBaudRates.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialBaudRates.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxSerialBaudRates.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelSerialBaudRate
         '
@@ -691,6 +706,9 @@ Partial Class PMUConnectionTester
         Me.ComboBoxSerialPorts.Name = "ComboBoxSerialPorts"
         Me.ComboBoxSerialPorts.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialPorts.TabIndex = 1
+        Me.ComboBoxSerialPorts.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialPorts.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxSerialPorts.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelSerialPort
         '
@@ -979,6 +997,9 @@ Partial Class PMUConnectionTester
         Me.ComboBoxCurrentPhasors.Name = "ComboBoxCurrentPhasors"
         Me.ComboBoxCurrentPhasors.Size = New System.Drawing.Size(135, 21)
         Me.ComboBoxCurrentPhasors.TabIndex = 3
+        Me.ComboBoxCurrentPhasors.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxCurrentPhasors.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxCurrentPhasors.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelCurrentPhasor
         '
@@ -995,6 +1016,9 @@ Partial Class PMUConnectionTester
         Me.ComboBoxVoltagePhasors.Name = "ComboBoxVoltagePhasors"
         Me.ComboBoxVoltagePhasors.Size = New System.Drawing.Size(135, 21)
         Me.ComboBoxVoltagePhasors.TabIndex = 1
+        Me.ComboBoxVoltagePhasors.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxVoltagePhasors.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxVoltagePhasors.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelVoltagePhasor
         '
@@ -1253,6 +1277,9 @@ Partial Class PMUConnectionTester
         Me.ComboBoxByteEncodingDisplayFormats.Name = "ComboBoxByteEncodingDisplayFormats"
         Me.ComboBoxByteEncodingDisplayFormats.Size = New System.Drawing.Size(130, 21)
         Me.ComboBoxByteEncodingDisplayFormats.TabIndex = 11
+        Me.ComboBoxByteEncodingDisplayFormats.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxByteEncodingDisplayFormats.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxByteEncodingDisplayFormats.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelFrameType
         '
@@ -1623,6 +1650,9 @@ Partial Class PMUConnectionTester
         Me.ComboBoxPmus.Name = "ComboBoxPmus"
         Me.ComboBoxPmus.Size = New System.Drawing.Size(158, 21)
         Me.ComboBoxPmus.TabIndex = 1
+        Me.ComboBoxPmus.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxPmus.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxPmus.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelIDCode
         '
@@ -1648,6 +1678,9 @@ Partial Class PMUConnectionTester
         Me.ComboBoxPhasors.Name = "ComboBoxPhasors"
         Me.ComboBoxPhasors.Size = New System.Drawing.Size(158, 21)
         Me.ComboBoxPhasors.TabIndex = 3
+        Me.ComboBoxPhasors.AutoCompleteMode = AutoCompleteMode.SuggestAppend
+        Me.ComboBoxPhasors.AutoCompleteSource = AutoCompleteSource.ListItems
+        Me.ComboBoxPhasors.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelPmuList
         '
