@@ -587,7 +587,7 @@ CREATE VIEW MeasurementDetail
 AS
 SELECT     Device.CompanyID, Company.Acronym AS CompanyAcronym, Company.Name AS CompanyName, Measurement.SignalID, 
                       Measurement.HistorianID, Historian.Acronym AS HistorianAcronym, Historian.ConnectionString AS HistorianConnectionString, 
-                      Measurement.PointID, Measurement.PointTag, Measurement.AlternateTag, Measurement.DeviceID, Device.NodeID, 
+                      Measurement.PointID, Measurement.PointTag, Measurement.AlternateTag, Measurement.DeviceID, Historian.NodeID, 
                       Device.Acronym AS DeviceAcronym, Device.Name AS DeviceName, COALESCE(Device.FramesPerSecond, 30) AS FramesPerSecond, Device.Enabled AS DeviceEnabled, Device.ContactList, 
                       Device.VendorDeviceID, VendorDevice.Name AS VendorDeviceName, VendorDevice.Description AS VendorDeviceDescription, 
                       Device.ProtocolID, Protocol.Acronym AS ProtocolAcronym, Protocol.Name AS ProtocolName, Measurement.SignalTypeID, 
