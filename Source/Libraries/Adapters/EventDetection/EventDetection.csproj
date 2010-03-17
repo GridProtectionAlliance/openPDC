@@ -73,4 +73,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>COPY "$(TargetPath)" "$(OutDir)..\Applications\openPDC\$(TargetFileName)"
+COPY "$(TargetDir)EventDetection.dll" ""$(OutDir)..\Applications\openPDC\EventDetection.dll"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
