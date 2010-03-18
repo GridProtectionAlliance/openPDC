@@ -231,10 +231,12 @@
 
 Imports Infragistics.Win
 Imports Infragistics.Win.UltraWinTree
+Imports Infragistics.Win.UltraWinMaskedEdit
 Imports Infragistics.UltraChart.Shared.Styles
 Imports Infragistics.UltraChart.Resources.Appearance
 Imports Infragistics.UltraChart.Core.Layers
 Imports System.IO
+Imports System.Net
 Imports System.Text
 Imports System.Runtime.Serialization.Formatters
 Imports System.Runtime.Serialization.Formatters.Soap
@@ -310,7 +312,7 @@ Public Class PMUConnectionTester
     Private m_sqrtOf3 As Single = Convert.ToSingle(System.Math.Sqrt(3))
 
     ' Application variables
-    Private WithEvents m_applicationSettings As ApplicationSettings
+    Friend WithEvents m_applicationSettings As ApplicationSettings
     Private m_applicationName As String
     Private m_lastFileName As String
 
@@ -408,6 +410,9 @@ Public Class PMUConnectionTester
         ' Adjust size of comments area and label column ratio of application settings properties grid
         PropertyGridApplicationSettings.AdjustCommentAreaHeight(4)
         PropertyGridApplicationSettings.AdjustLabelRatio(1.62)
+
+        ' Setup IP mode
+        ForceIPv4 = m_applicationSettings.ForceIPv4
 
         InitializeChart()
         ComboBoxProtocols.SelectedIndex = 0
@@ -721,6 +726,50 @@ Public Class PMUConnectionTester
             AlternateCommandChannel.ConnectionString = connectionString
         End If
 
+        UpdateAlternateCommandChannelLabel()
+
+    End Sub
+
+    Private Sub LabelAlternateCommandChannelState_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LabelAlternateCommandChannelState.Click
+
+        ' Assume user simply wants to change defined state when clicking on label
+        AlternateCommandChannel.CheckBoxUndefined.Checked = AlternateCommandChannel.IsDefined
+        UpdateAlternateCommandChannelLabel()
+
+    End Sub
+
+    Private Sub TextBox_GotFocus(ByVal sender As Object, ByVal e As System.EventArgs) Handles _
+        TextBoxDeviceID.GotFocus, TextBoxFileCaptureName.GotFocus, TextBoxFileFrameRate.GotFocus, _
+        TextBoxSerialDataBits.GotFocus, TextBoxTcpHostIP.GotFocus, TextBoxTcpPort.GotFocus, _
+        TextBoxUdpHostIP.GotFocus, TextBoxUdpLocalPort.GotFocus, TextBoxUdpRemotePort.GotFocus
+
+        ' Select all text box contents upon focus or selection
+        Dim maskedEdit As UltraMaskedEdit = TryCast(sender, UltraMaskedEdit)
+
+        If maskedEdit IsNot Nothing Then
+            If maskedEdit.EditAs = EditAsType.UseSpecifiedMask Then
+                maskedEdit.SelectAll()
+            Else
+                maskedEdit.SelectionStart = 0
+                maskedEdit.SelectionLength = maskedEdit.Text.Length
+            End If
+        Else
+            Dim windowsTextBox As TextBox = TryCast(sender, TextBox)
+
+            If windowsTextBox IsNot Nothing Then
+                windowsTextBox.SelectAll()
+            End If
+        End If
+
+    End Sub
+
+    Private Sub TextBox_MouseClick(ByVal sender As Object, ByVal e As MouseEventArgs) Handles _
+        TextBoxDeviceID.MouseClick, TextBoxFileCaptureName.MouseClick, TextBoxFileFrameRate.MouseClick, _
+        TextBoxSerialDataBits.MouseClick, TextBoxTcpHostIP.MouseClick, TextBoxTcpPort.MouseClick, _
+        TextBoxUdpHostIP.MouseClick, TextBoxUdpLocalPort.MouseClick, TextBoxUdpRemotePort.MouseClick
+
+        TextBox_GotFocus(sender, e)
+
     End Sub
 
     Private Sub PropertyGridApplicationSettings_PropertyValueChanged(ByVal s As Object, ByVal e As System.Windows.Forms.PropertyValueChangedEventArgs) Handles PropertyGridApplicationSettings.PropertyValueChanged
@@ -736,6 +785,9 @@ Public Class PMUConnectionTester
 
                         ' Change in ExecuteParseOnSeparateThread may not be allowed based on connection settings, so we restore accepted state to application settings
                         m_applicationSettings.ExecuteParseOnSeparateThread = m_frameParser.ExecuteParseOnSeparateThread
+                    ElseIf String.Compare(.Name, "ForceIPv4", True) = 0 Then
+                        ' Apply change in IP mode
+                        ForceIPv4 = m_applicationSettings.ForceIPv4
                     End If
                 Case ApplicationSettings.ChartSettingsCategory, ApplicationSettings.PhaseAngleGraphCategory, ApplicationSettings.FrequencyGraphCategory
                     If String.Compare(.Name, "PhaseAngleGraphStyle", True) = 0 Then
@@ -936,15 +988,15 @@ Public Class PMUConnectionTester
 
     End Sub
 
-    Private Sub MenuItemNASPITools_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuItemNASPITools.Click
+    Private Sub MenuItemLocalHelp_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuItemLocalHelp.Click
 
-        Process.Start("http://www.naspi.org/resources/tools/tools.stm")
+        Help.ShowHelp(Me, GetAbsolutePath("PMUConnectionTester.chm"))
 
     End Sub
 
-    Private Sub MenuItemContents_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuItemContents.Click
+    Private Sub MenuItemOnlineHelp_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuItemOnlineHelp.Click
 
-        Help.ShowHelp(Me, EntryAssembly.Location & "PMUConnectionTester.chm")
+        Process.Start("http://openpdc.codeplex.com/wikipage?title=Connection%20Tester&referringTitle=Documentation")
 
     End Sub
 
@@ -1652,7 +1704,7 @@ Public Class PMUConnectionTester
             m_lastFileName = filename
         End If
 
-        If String.IsNullOrEmpty(m_applicationName) Then m_applicationName = EntryAssembly.Title
+        If String.IsNullOrEmpty(m_applicationName) Then m_applicationName = EntryAssembly.Description
 
         If Not String.IsNullOrEmpty(filename) AndAlso String.Compare(filename, m_lastConnectionFileName, True) <> 0 Then
             Text = m_applicationName & " - " & TrimFileName(filename, Convert.ToInt32((Width - Offset) / 10))
@@ -1674,7 +1726,7 @@ Public Class PMUConnectionTester
                         .ConnectionString = _
                             "server=" & TextBoxTcpHostIP.Text & _
                             "; port=" & TextBoxTcpPort.Text & _
-                            "; interface=0.0.0.0" & _
+                            IIf(m_applicationSettings.ForceIPv4, "; interface=0.0.0.0", "") & _
                             "; islistener=" & CheckBoxEstablishTcpServer.Checked.ToString()
                     Case TransportProtocol.Udp
                         .TransportProtocol = TransportProtocol.Udp
@@ -1683,11 +1735,11 @@ Public Class PMUConnectionTester
                                 "localport=" & TextBoxUdpLocalPort.Text & _
                                 "; server=" & TextBoxUdpHostIP.Text & _
                                 "; remoteport=" & TextBoxUdpRemotePort.Text & _
-                                "; interface=0.0.0.0"
+                                IIf(m_applicationSettings.ForceIPv4, "; interface=0.0.0.0", "")
                         Else
                             .ConnectionString = _
                                 "localport=" & TextBoxUdpLocalPort.Text & _
-                                "; interface=0.0.0.0"
+                                IIf(m_applicationSettings.ForceIPv4, "; interface=0.0.0.0", "")
                         End If
                     Case TransportProtocol.Serial
                         .TransportProtocol = TransportProtocol.Serial
@@ -1749,13 +1801,13 @@ Public Class PMUConnectionTester
                         TextBoxTcpHostIP.Text = "127.0.0.1"
                         CheckBoxEstablishTcpServer.Checked = True
                     Else
-                        TextBoxTcpHostIP.Text = connectionData("server")
+                        AssignHostIP(TextBoxTcpHostIP, connectionData("server"))
                         CheckBoxEstablishTcpServer.Checked = False
                     End If
                 Case TransportProtocol.Udp
                     If connectionData.ContainsKey("server") Then
                         TextBoxUdpLocalPort.Text = connectionData("localport")
-                        TextBoxUdpHostIP.Text = connectionData("server")
+                        AssignHostIP(TextBoxUdpHostIP, connectionData("server"))
                         TextBoxUdpRemotePort.Text = connectionData("remoteport")
                         CheckBoxRemoteUdpServer.Checked = True
                     Else
@@ -1778,12 +1830,83 @@ Public Class PMUConnectionTester
 
             ' Apply alternate command channel settings (if any)
             AlternateCommandChannel.ConnectionString = .ConnectionString
+            UpdateAlternateCommandChannelLabel()
 
             TextBoxDeviceID.Text = .PmuID.ToString()
             TextBoxFileFrameRate.Text = .FrameRate.ToString()
             CheckBoxAutoRepeatPlayback.Checked = .AutoRepeatPlayback
             ComboBoxByteEncodingDisplayFormats.SelectedIndex = .ByteEncodingDisplayFormat
         End With
+
+    End Sub
+
+    Friend Sub AssignHostIP(ByVal maskedEditControl As UltraMaskedEdit, ByVal ipValue As String)
+
+        If m_applicationSettings.ForceIPv4 Then
+            Try
+                ' When forcing IPv4, an input mask is applied and may cause assignment of IPv6 or DNS values loaded
+                ' from a saved connection string to fail
+                For Each address As IPAddress In Dns.GetHostEntry(ipValue).AddressList
+                    ' Check to see if address has an IPv4 style address
+                    If address.AddressFamily = Sockets.AddressFamily.InterNetwork Then
+                        ' Attempt to assign IP address
+                        maskedEditControl.Text = address.ToString()
+                        Exit For
+                    End If
+                Next
+            Catch
+                ' If all else fails, just assign a loopback address
+                maskedEditControl.Text = "127.0.0.1"
+            End Try
+        Else
+            maskedEditControl.Text = ipValue
+        End If
+
+        If String.IsNullOrEmpty(maskedEditControl.Text) Then maskedEditControl.Text = "127.0.0.1"
+
+    End Sub
+
+    Private WriteOnly Property ForceIPv4() As Boolean
+        Set(ByVal value As Boolean)
+            If value Then
+                ' Attempt to coerce address into IPv4 format then enable IPv4 masks
+                AssignHostIP(TextBoxTcpHostIP, TextBoxTcpHostIP.Text)
+                TextBoxTcpHostIP.InputMask = "nnn\.nnn\.nnn\.nnn"
+                TextBoxTcpHostIP.EditAs = EditAsType.UseSpecifiedMask
+
+                AssignHostIP(TextBoxUdpHostIP, TextBoxUdpHostIP.Text)
+                TextBoxUdpHostIP.InputMask = "nnn\.nnn\.nnn\.nnn"
+                TextBoxUdpHostIP.EditAs = EditAsType.UseSpecifiedMask
+
+                AssignHostIP(AlternateCommandChannel.TextBoxTcpHostIP, AlternateCommandChannel.TextBoxTcpHostIP.Text)
+                AlternateCommandChannel.TextBoxTcpHostIP.InputMask = "nnn\.nnn\.nnn\.nnn"
+                AlternateCommandChannel.TextBoxTcpHostIP.EditAs = EditAsType.UseSpecifiedMask
+            Else
+                ' We remove input mask if we're not forcing IPv4, this allows for free form DNS and IPv6 entry
+                TextBoxTcpHostIP.InputMask = ""
+                TextBoxTcpHostIP.EditAs = EditAsType.String
+
+                TextBoxUdpHostIP.InputMask = ""
+                TextBoxUdpHostIP.EditAs = EditAsType.String
+
+                AlternateCommandChannel.TextBoxTcpHostIP.InputMask = ""
+                AlternateCommandChannel.TextBoxTcpHostIP.EditAs = EditAsType.String
+            End If
+        End Set
+    End Property
+
+    Friend Sub UpdateAlternateCommandChannelLabel()
+
+        ' We update the alternate command channel label to indicate if the alternate channel is defined
+        If AlternateCommandChannel.IsDefined Then
+            LabelAlternateCommandChannelState.BorderStyleOuter = UIElementBorderStyle.InsetSoft
+            LabelAlternateCommandChannelState.Appearance.BackColor2 = Color.LightGreen
+            LabelAlternateCommandChannelState.Text = "Defined"
+        Else
+            LabelAlternateCommandChannelState.BorderStyleOuter = UIElementBorderStyle.RaisedSoft
+            LabelAlternateCommandChannelState.Appearance.BackColor2 = Color.LightGray
+            LabelAlternateCommandChannelState.Text = "Not Defined"
+        End If
 
     End Sub
 
@@ -1856,6 +1979,7 @@ Public Class PMUConnectionTester
 
                     ComboBoxProtocols.Enabled = False
                     LabelAlternateCommandChannel.Enabled = False
+                    LabelAlternateCommandChannelState.Enabled = False
                     GroupBoxStatus.Expanded = True
 
                     ' Assign pre-loaded configuration frame (if any)
@@ -1890,6 +2014,7 @@ Public Class PMUConnectionTester
         ButtonListen.Text = "&Connect"
         ComboBoxProtocols.Enabled = True
         LabelAlternateCommandChannel.Enabled = True
+        LabelAlternateCommandChannelState.Enabled = True
         ChartDataDisplay.Series.Clear()
         ChartDataDisplay.DataBind()
         ChartDataDisplay.TitleTop.Text = ""

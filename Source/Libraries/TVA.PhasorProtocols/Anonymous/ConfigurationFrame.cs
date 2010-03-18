@@ -236,6 +236,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Soap;
+using TVA.Configuration;
 using TVA.IO;
 using TVA.IO.Checksums;
 
@@ -306,6 +307,42 @@ namespace TVA.PhasorProtocols.Anonymous
 
         #region [ Static ]
 
+        // Static Fields
+        private static string s_configurationCachePath;
+
+        // Static Properties
+
+        /// <summary>
+        /// Gets the path for storing serialized phasor protocol configurations.
+        /// </summary>
+        /// <returns>Path for storing serialized phasor protocol configurations.</returns>
+        public static string ConfigurationCachePath
+        {
+            get
+            {
+                // This property will not change during system life-cycle so we cache if for future use
+                if (string.IsNullOrEmpty(s_configurationCachePath))
+                {
+                    // Define default configuration cache directory relative to path of host application
+                    s_configurationCachePath = string.Format("{0}\\ConfigurationCache\\", FilePath.GetAbsolutePath(""));
+
+                    // Make sure configuration cache path setting exists within system settings section of config file
+                    ConfigurationFile configFile = ConfigurationFile.Current;
+                    CategorizedSettingsElementCollection systemSettings = configFile.Settings["systemSettings"];
+                    systemSettings.Add("ConfigurationCachePath", s_configurationCachePath, "Defines the path used to cache serialized phasor protocol configurations");
+
+                    // Retrieve configuration cache directory as defined in the config file
+                    s_configurationCachePath = systemSettings["ConfigurationCachePath"].Value;
+
+                    // Make sure configuration cache directory exists
+                    if (!Directory.Exists(s_configurationCachePath))
+                        Directory.CreateDirectory(s_configurationCachePath);
+                }
+
+                return s_configurationCachePath;
+            }
+        }
+
         // Static Methods
 
         /// <summary>
@@ -333,11 +370,7 @@ namespace TVA.PhasorProtocols.Anonymous
                 try
                 {
                     // Define configuration cache sub-directory
-                    string cachePath = string.Format("{0}\\ConfigurationCache\\", FilePath.GetAbsolutePath(""));
-
-                    // Make sure configuration cache directory exists
-                    if (!Directory.Exists(cachePath))
-                        Directory.CreateDirectory(cachePath);
+                    string cachePath = ConfigurationCachePath;
 
                     // Serialize configuration frame to a file
                     FileStream configFile = File.Create(string.Format("{0}{1}.configuration.xml", cachePath, name));

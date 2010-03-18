@@ -233,6 +233,7 @@ Imports System.Windows.Forms.DialogResult
 Imports TVA
 Imports TVA.Communication
 Imports TVA.Common
+Imports Infragistics.Win.UltraWinMaskedEdit
 
 Public Class AlternateCommandChannel
 
@@ -254,12 +255,18 @@ Public Class AlternateCommandChannel
             ComboBoxSerialStopBits.Items.Add(stopbit)
         Next
 
+        ' Default to TCP tab
+        TabControlCommunications.Tabs(TransportProtocol.Tcp).Selected = True
+
     End Sub
 
     Private Sub CheckBoxUndefined_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CheckBoxUndefined.CheckedChanged
 
         ' Enable or disable command channel settings tab
         TabControlCommunications.Enabled = Not CheckBoxUndefined.Checked
+
+        ' Automatically show change in link label text/format on parent for to cue user of defined state indicator
+        If Me.Visible Then PMUConnectionTester.UpdateAlternateCommandChannelLabel()
 
     End Sub
 
@@ -273,6 +280,36 @@ Public Class AlternateCommandChannel
                 TextBoxFileCaptureName.Text = .FileName()
             End If
         End With
+
+    End Sub
+
+    Private Sub TextBox_GotFocus(ByVal sender As Object, ByVal e As System.EventArgs) Handles _
+        TextBoxFileCaptureName.GotFocus, TextBoxSerialDataBits.GotFocus, TextBoxTcpHostIP.GotFocus, TextBoxTcpPort.GotFocus
+
+        ' Select all text box contents upon focus or selection
+        Dim maskedEdit As UltraMaskedEdit = TryCast(sender, UltraMaskedEdit)
+
+        If maskedEdit IsNot Nothing Then
+            If maskedEdit.EditAs = EditAsType.UseSpecifiedMask Then
+                maskedEdit.SelectAll()
+            Else
+                maskedEdit.SelectionStart = 0
+                maskedEdit.SelectionLength = maskedEdit.Text.Length
+            End If
+        Else
+            Dim windowsTextBox As TextBox = TryCast(sender, TextBox)
+
+            If windowsTextBox IsNot Nothing Then
+                windowsTextBox.SelectAll()
+            End If
+        End If
+
+    End Sub
+
+    Private Sub TextBox_MouseClick(ByVal sender As Object, ByVal e As MouseEventArgs) Handles _
+        TextBoxFileCaptureName.MouseClick, TextBoxSerialDataBits.MouseClick, TextBoxTcpHostIP.MouseClick, TextBoxTcpPort.MouseClick
+
+        TextBox_GotFocus(sender, e)
 
     End Sub
 
@@ -293,7 +330,7 @@ Public Class AlternateCommandChannel
                             "; commandchannel={protocol=Tcp" & _
                             "; server=" & TextBoxTcpHostIP.Text & _
                             "; port=" & TextBoxTcpPort.Text & _
-                            "; interface=0.0.0.0" & "}"
+                            IIf(PMUConnectionTester.m_applicationSettings.ForceIPv4, "; interface=0.0.0.0", "") & "}"
                     Case TransportProtocol.Serial - 1 ' UDP removed from tab set...
                         Return _
                             "; commandchannel={protocol=Serial" & _
@@ -329,7 +366,7 @@ Public Class AlternateCommandChannel
                 Select Case protocol
                     Case TransportProtocol.Tcp
                         TextBoxTcpPort.Text = connectionData("port")
-                        TextBoxTcpHostIP.Text = connectionData("server")
+                        PMUConnectionTester.AssignHostIP(TextBoxTcpHostIP, connectionData("server"))
                     Case TransportProtocol.Serial
                         ComboBoxSerialPorts.Text = connectionData("port")
                         ComboBoxSerialBaudRates.Text = connectionData("baudrate")

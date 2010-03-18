@@ -516,10 +516,6 @@ namespace openPDC
 
             // Start system initialization on an independent thread so that service responds in a timely fashion...
             ThreadPool.QueueUserWorkItem(InitializeSystem);
-
-            // If any settings were added to configuration file, we go ahead and save them now
-            m_serviceHelper.SaveSettings(true);
-            ConfigurationFile.Current.Save();
         }
 
         // As service is stopping we un-wire events and dispose of key classes
@@ -603,6 +599,10 @@ namespace openPDC
                 m_allAdapters.Start();
 
                 DisplayStatusMessage("System initialization complete.", UpdateType.Information);
+
+                // If any settings have been added to configuration file, we go ahead and save them now
+                m_serviceHelper.SaveSettings(true);
+                ConfigurationFile.Current.Save();
             }
             else
                 DisplayStatusMessage("System initialization failed due to unavailable configuration.", UpdateType.Alarm);

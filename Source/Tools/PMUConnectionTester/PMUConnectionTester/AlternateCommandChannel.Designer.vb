@@ -22,18 +22,19 @@ Partial Class AlternateCommandChannel
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim Appearance1 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance2 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance3 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance4 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance5 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance6 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance7 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance8 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance9 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance10 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AlternateCommandChannel))
+        Me.components = New System.ComponentModel.Container
         Dim Appearance11 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim UltraToolTipInfo2 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Enter host DNS name, IPv4 or IPv6 address", Infragistics.Win.ToolTipImage.[Default], Nothing, Infragistics.Win.DefaultableBoolean.[Default])
+        Dim Appearance12 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance13 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance14 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance15 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance16 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance17 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance18 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance19 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AlternateCommandChannel))
+        Dim Appearance2 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim UltraTab1 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
         Dim UltraTab2 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
         Dim UltraTab3 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
@@ -66,6 +67,7 @@ Partial Class AlternateCommandChannel
         Me.TabControlCommunications = New Infragistics.Win.UltraWinTabControl.UltraTabControl
         Me.TabSharedControlsPageCommunications = New Infragistics.Win.UltraWinTabControl.UltraTabSharedControlsPage
         Me.CheckBoxUndefined = New Infragistics.Win.UltraWinEditors.UltraCheckEditor
+        Me.ToolTipManager = New Infragistics.Win.UltraWinToolTip.UltraToolTipManager(Me.components)
         Me.TabPageControl1.SuspendLayout()
         Me.TabPageControl2.SuspendLayout()
         Me.TabPageControl3.SuspendLayout()
@@ -86,18 +88,18 @@ Partial Class AlternateCommandChannel
         '
         'LabelTcpHostIP
         '
-        Appearance1.TextHAlignAsString = "Right"
-        Me.LabelTcpHostIP.Appearance = Appearance1
+        Appearance11.TextHAlignAsString = "Right"
+        Me.LabelTcpHostIP.Appearance = Appearance11
         Me.LabelTcpHostIP.Location = New System.Drawing.Point(15, 25)
         Me.LabelTcpHostIP.Name = "LabelTcpHostIP"
         Me.LabelTcpHostIP.Size = New System.Drawing.Size(45, 23)
         Me.LabelTcpHostIP.TabIndex = 0
         Me.LabelTcpHostIP.Text = "Host &IP:"
+        UltraToolTipInfo2.ToolTipText = "Enter host DNS name, IPv4 or IPv6 address"
+        Me.ToolTipManager.SetUltraToolTip(Me.LabelTcpHostIP, UltraToolTipInfo2)
         '
         'TextBoxTcpHostIP
         '
-        Appearance2.TextHAlignAsString = "Center"
-        Me.TextBoxTcpHostIP.Appearance = Appearance2
         Me.TextBoxTcpHostIP.AutoSize = False
         Me.TextBoxTcpHostIP.EditAs = Infragistics.Win.UltraWinMaskedEdit.EditAsType.UseSpecifiedMask
         Me.TextBoxTcpHostIP.InputMask = "nnn\.nnn\.nnn\.nnn"
@@ -110,8 +112,8 @@ Partial Class AlternateCommandChannel
         '
         'LabelTcpPort
         '
-        Appearance3.TextHAlignAsString = "Right"
-        Me.LabelTcpPort.Appearance = Appearance3
+        Appearance12.TextHAlignAsString = "Right"
+        Me.LabelTcpPort.Appearance = Appearance12
         Me.LabelTcpPort.Location = New System.Drawing.Point(15, 51)
         Me.LabelTcpPort.Name = "LabelTcpPort"
         Me.LabelTcpPort.Size = New System.Drawing.Size(45, 23)
@@ -178,28 +180,28 @@ Partial Class AlternateCommandChannel
         '
         'ComboBoxSerialStopBits
         '
+        Me.ComboBoxSerialStopBits.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialStopBits.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxSerialStopBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxSerialStopBits.Location = New System.Drawing.Point(211, 10)
         Me.ComboBoxSerialStopBits.Name = "ComboBoxSerialStopBits"
         Me.ComboBoxSerialStopBits.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialStopBits.TabIndex = 7
-        Me.ComboBoxSerialStopBits.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxSerialStopBits.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxSerialStopBits.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'ComboBoxSerialParities
         '
+        Me.ComboBoxSerialParities.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialParities.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxSerialParities.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxSerialParities.Location = New System.Drawing.Point(66, 65)
         Me.ComboBoxSerialParities.Name = "ComboBoxSerialParities"
         Me.ComboBoxSerialParities.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialParities.TabIndex = 5
-        Me.ComboBoxSerialParities.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxSerialParities.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxSerialParities.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelSerialParity
         '
-        Appearance4.TextHAlignAsString = "Right"
-        Me.LabelSerialParity.Appearance = Appearance4
+        Appearance13.TextHAlignAsString = "Right"
+        Me.LabelSerialParity.Appearance = Appearance13
         Me.LabelSerialParity.Location = New System.Drawing.Point(-4, 68)
         Me.LabelSerialParity.Name = "LabelSerialParity"
         Me.LabelSerialParity.Size = New System.Drawing.Size(64, 23)
@@ -208,19 +210,19 @@ Partial Class AlternateCommandChannel
         '
         'ComboBoxSerialBaudRates
         '
+        Me.ComboBoxSerialBaudRates.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialBaudRates.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxSerialBaudRates.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxSerialBaudRates.Items.AddRange(New Object() {"115200", "57600", "38400", "19200", "9600", "4800", "2400", "1200"})
         Me.ComboBoxSerialBaudRates.Location = New System.Drawing.Point(66, 37)
         Me.ComboBoxSerialBaudRates.Name = "ComboBoxSerialBaudRates"
         Me.ComboBoxSerialBaudRates.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialBaudRates.TabIndex = 3
-        Me.ComboBoxSerialBaudRates.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxSerialBaudRates.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxSerialBaudRates.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelSerialBaudRate
         '
-        Appearance5.TextHAlignAsString = "Right"
-        Me.LabelSerialBaudRate.Appearance = Appearance5
+        Appearance14.TextHAlignAsString = "Right"
+        Me.LabelSerialBaudRate.Appearance = Appearance14
         Me.LabelSerialBaudRate.Location = New System.Drawing.Point(-4, 40)
         Me.LabelSerialBaudRate.Name = "LabelSerialBaudRate"
         Me.LabelSerialBaudRate.Size = New System.Drawing.Size(64, 23)
@@ -229,18 +231,18 @@ Partial Class AlternateCommandChannel
         '
         'ComboBoxSerialPorts
         '
+        Me.ComboBoxSerialPorts.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialPorts.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxSerialPorts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxSerialPorts.Location = New System.Drawing.Point(66, 10)
         Me.ComboBoxSerialPorts.Name = "ComboBoxSerialPorts"
         Me.ComboBoxSerialPorts.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialPorts.TabIndex = 1
-        Me.ComboBoxSerialPorts.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxSerialPorts.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxSerialPorts.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelSerialPort
         '
-        Appearance6.TextHAlignAsString = "Right"
-        Me.LabelSerialPort.Appearance = Appearance6
+        Appearance15.TextHAlignAsString = "Right"
+        Me.LabelSerialPort.Appearance = Appearance15
         Me.LabelSerialPort.Location = New System.Drawing.Point(-4, 13)
         Me.LabelSerialPort.Name = "LabelSerialPort"
         Me.LabelSerialPort.Size = New System.Drawing.Size(64, 23)
@@ -249,8 +251,8 @@ Partial Class AlternateCommandChannel
         '
         'LabelSerialStopBits
         '
-        Appearance7.TextHAlignAsString = "Right"
-        Me.LabelSerialStopBits.Appearance = Appearance7
+        Appearance16.TextHAlignAsString = "Right"
+        Me.LabelSerialStopBits.Appearance = Appearance16
         Me.LabelSerialStopBits.Location = New System.Drawing.Point(150, 13)
         Me.LabelSerialStopBits.Name = "LabelSerialStopBits"
         Me.LabelSerialStopBits.Size = New System.Drawing.Size(57, 23)
@@ -259,8 +261,8 @@ Partial Class AlternateCommandChannel
         '
         'LabelSerialDataBits
         '
-        Appearance8.TextHAlignAsString = "Right"
-        Me.LabelSerialDataBits.Appearance = Appearance8
+        Appearance17.TextHAlignAsString = "Right"
+        Me.LabelSerialDataBits.Appearance = Appearance17
         Me.LabelSerialDataBits.Location = New System.Drawing.Point(148, 40)
         Me.LabelSerialDataBits.Name = "LabelSerialDataBits"
         Me.LabelSerialDataBits.Size = New System.Drawing.Size(59, 23)
@@ -296,8 +298,8 @@ Partial Class AlternateCommandChannel
         '
         'LabelCaptureFile
         '
-        Appearance9.TextHAlignAsString = "Right"
-        Me.LabelCaptureFile.Appearance = Appearance9
+        Appearance18.TextHAlignAsString = "Right"
+        Me.LabelCaptureFile.Appearance = Appearance18
         Me.LabelCaptureFile.Location = New System.Drawing.Point(11, 42)
         Me.LabelCaptureFile.Name = "LabelCaptureFile"
         Me.LabelCaptureFile.Size = New System.Drawing.Size(54, 23)
@@ -306,8 +308,8 @@ Partial Class AlternateCommandChannel
         '
         'LabelReplayCapturedFile
         '
-        Appearance10.FontData.ItalicAsString = "True"
-        Me.LabelReplayCapturedFile.Appearance = Appearance10
+        Appearance19.FontData.ItalicAsString = "True"
+        Me.LabelReplayCapturedFile.Appearance = Appearance19
         Me.LabelReplayCapturedFile.Location = New System.Drawing.Point(191, 22)
         Me.LabelReplayCapturedFile.Name = "LabelReplayCapturedFile"
         Me.LabelReplayCapturedFile.Size = New System.Drawing.Size(120, 17)
@@ -346,8 +348,8 @@ Partial Class AlternateCommandChannel
         '
         'TabControlCommunications
         '
-        Appearance11.ForeColor = System.Drawing.Color.Black
-        Me.TabControlCommunications.Appearance = Appearance11
+        Appearance2.ForeColor = System.Drawing.Color.Black
+        Me.TabControlCommunications.Appearance = Appearance2
         Me.TabControlCommunications.Controls.Add(Me.TabSharedControlsPageCommunications)
         Me.TabControlCommunications.Controls.Add(Me.TabPageControl1)
         Me.TabControlCommunications.Controls.Add(Me.TabPageControl2)
@@ -384,6 +386,11 @@ Partial Class AlternateCommandChannel
         Me.CheckBoxUndefined.Size = New System.Drawing.Size(82, 26)
         Me.CheckBoxUndefined.TabIndex = 11
         Me.CheckBoxUndefined.Text = "Not defined"
+        '
+        'ToolTipManager
+        '
+        Me.ToolTipManager.ContainingControl = Me
+        Me.ToolTipManager.InitialDelay = 150
         '
         'AlternateCommandChannel
         '
@@ -447,4 +454,5 @@ Partial Class AlternateCommandChannel
     Friend WithEvents LabelCaptureFile As Infragistics.Win.Misc.UltraLabel
     Friend WithEvents LabelReplayCapturedFile As Infragistics.Win.Misc.UltraLabel
     Friend WithEvents CheckBoxUndefined As Infragistics.Win.UltraWinEditors.UltraCheckEditor
+    Friend WithEvents ToolTipManager As Infragistics.Win.UltraWinToolTip.UltraToolTipManager
 End Class

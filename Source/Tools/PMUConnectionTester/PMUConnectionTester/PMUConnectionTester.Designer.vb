@@ -22,18 +22,20 @@ Partial Class PMUConnectionTester
         Me.components = New System.ComponentModel.Container
         Dim Appearance1 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance2 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraToolTipInfo7 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[Default])
+        Dim Appearance3 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim UltraToolTipInfo9 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[Default])
+        Dim Appearance54 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance55 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance56 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance34 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance35 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim UltraToolTipInfo3 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Enter host DNS name, IPv4 or IPv6 address", Infragistics.Win.ToolTipImage.[Default], Nothing, Infragistics.Win.DefaultableBoolean.[Default])
         Dim Appearance36 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance37 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim UltraToolTipInfo4 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Enter host DNS name, IPv4 or IPv6 address", Infragistics.Win.ToolTipImage.[Default], Nothing, Infragistics.Win.DefaultableBoolean.[Default])
         Dim Appearance38 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance39 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim UltraToolTipInfo5 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("This enables the Request to Send (RTS) signal during serial communication.", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[Default])
+        Dim UltraToolTipInfo6 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("This enables the Data Terminal Ready (DTR) signal during serial communication.", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[Default])
         Dim Appearance40 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraToolTipInfo3 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("This enables the Request to Send (RTS) signal during serial communication.", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[Default])
-        Dim UltraToolTipInfo4 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("This enables the Data Terminal Ready (DTR) signal during serial communication.", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[Default])
         Dim Appearance41 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance42 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance43 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
@@ -42,72 +44,72 @@ Partial Class PMUConnectionTester
         Dim Appearance46 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance47 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance48 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance49 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim PaintElement1 As Infragistics.UltraChart.Resources.Appearance.PaintElement = New Infragistics.UltraChart.Resources.Appearance.PaintElement
-        Dim Appearance31 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance50 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance32 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance49 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance33 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim UltraTab5 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
         Dim UltraTab6 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
         Dim UltraToolTipInfo2 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("This protocol has additional connection parameters.  Click here to view.", Infragistics.Win.ToolTipImage.[Default], Nothing, Infragistics.Win.DefaultableBoolean.[False])
-        Dim Appearance33 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance34 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim UltraTab7 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
         Dim UltraTab8 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
         Dim UltraTab9 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
         Dim UltraTab10 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
-        Dim Appearance17 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance18 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim UltraToolTipInfo1 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Keeping this data window displayed may cause the graph to fall behind real-time", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[True])
-        Dim Appearance10 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance11 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance12 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance13 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance14 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance15 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance16 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance17 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim UltraStatusPanel1 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
         Dim UltraStatusPanel2 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
-        Dim Appearance27 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance28 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim UltraStatusPanel3 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
         Dim UltraStatusPanel4 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
-        Dim Appearance28 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance29 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim UltraStatusPanel5 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
         Dim UltraStatusPanel6 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
-        Dim Appearance29 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance30 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim UltraStatusPanel7 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
         Dim UltraStatusPanel8 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
         Dim UltraStatusPanel9 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
         Dim UltraStatusPanel10 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
-        Dim Appearance30 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance31 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance50 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance51 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim UltraToolTipInfo7 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Click link to change source voltage and current phasors for power / vars calculat" & _
+                "ions...", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[Default])
         Dim Appearance52 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraToolTipInfo5 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Click link to change source voltage and current phasors for power / vars calculat" & _
-                "ions...", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[Default])
         Dim Appearance53 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance54 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraToolTipInfo6 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Click link to change source voltage and current phasors for power / vars calculat" & _
+        Dim UltraToolTipInfo8 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Click link to change source voltage and current phasors for power / vars calculat" & _
                 "ions...", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[Default])
+        Dim Appearance27 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance26 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance25 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance18 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance19 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance20 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance21 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance22 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance23 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance24 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance5 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraTab1 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
+        Dim Appearance25 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance6 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim UltraTab1 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
+        Dim Appearance7 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(PMUConnectionTester))
         Dim UltraTab2 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
-        Dim Appearance7 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraTab3 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
         Dim Appearance8 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraTab4 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
+        Dim UltraTab3 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
         Dim Appearance9 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance3 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim UltraTab4 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
+        Dim Appearance10 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Dim Appearance4 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance5 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
         Me.TabPageControl9 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl
+        Me.LabelAlternateCommandChannelState = New Infragistics.Win.Misc.UltraLabel
         Me.LabelAlternateCommandChannel = New Infragistics.Win.Misc.UltraLabel
         Me.LabelVersion = New Infragistics.Win.Misc.UltraLabel
         Me.ButtonListen = New Infragistics.Win.Misc.UltraButton
@@ -234,17 +236,16 @@ Partial Class PMUConnectionTester
         Me.MenuItemStartCapture = New System.Windows.Forms.ToolStripMenuItem
         Me.MenuItemStopCapture = New System.Windows.Forms.ToolStripMenuItem
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator
-        Me.MenuItemCaptureSampleFrames = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemCancelSampleFrameCapture = New System.Windows.Forms.ToolStripMenuItem
-        Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator
         Me.MenuItemStartStreamDebugCapture = New System.Windows.Forms.ToolStripMenuItem
         Me.MenuItemStopStreamDebugCapture = New System.Windows.Forms.ToolStripMenuItem
+        Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator
+        Me.MenuItemCaptureSampleFrames = New System.Windows.Forms.ToolStripMenuItem
+        Me.MenuItemCancelSampleFrameCapture = New System.Windows.Forms.ToolStripMenuItem
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator
         Me.MenuItemExit = New System.Windows.Forms.ToolStripMenuItem
         Me.MenuItemHelp = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemNASPITools = New System.Windows.Forms.ToolStripMenuItem
-        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator
-        Me.MenuItemContents = New System.Windows.Forms.ToolStripMenuItem
+        Me.MenuItemLocalHelp = New System.Windows.Forms.ToolStripMenuItem
+        Me.MenuItemOnlineHelp = New System.Windows.Forms.ToolStripMenuItem
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator
         Me.MenuItemAbout = New System.Windows.Forms.ToolStripMenuItem
         Me.TabSharedControlsPageChart = New Infragistics.Win.UltraWinTabControl.UltraTabSharedControlsPage
@@ -303,6 +304,7 @@ Partial Class PMUConnectionTester
         '
         'TabPageControl9
         '
+        Me.TabPageControl9.Controls.Add(Me.LabelAlternateCommandChannelState)
         Me.TabPageControl9.Controls.Add(Me.LabelAlternateCommandChannel)
         Me.TabPageControl9.Controls.Add(Me.LabelVersion)
         Me.TabPageControl9.Controls.Add(Me.ButtonListen)
@@ -316,37 +318,52 @@ Partial Class PMUConnectionTester
         Me.TabPageControl9.Name = "TabPageControl9"
         Me.TabPageControl9.Size = New System.Drawing.Size(360, 96)
         '
+        'LabelAlternateCommandChannelState
+        '
+        Appearance1.BackColor = System.Drawing.SystemColors.Control
+        Appearance1.BackColor2 = System.Drawing.Color.LightGray
+        Appearance1.BackGradientStyle = Infragistics.Win.GradientStyle.Vertical
+        Appearance1.TextHAlignAsString = "Center"
+        Appearance1.TextVAlignAsString = "Middle"
+        Me.LabelAlternateCommandChannelState.Appearance = Appearance1
+        Me.LabelAlternateCommandChannelState.BorderStyleOuter = Infragistics.Win.UIElementBorderStyle.RaisedSoft
+        Me.LabelAlternateCommandChannelState.Location = New System.Drawing.Point(246, 79)
+        Me.LabelAlternateCommandChannelState.Name = "LabelAlternateCommandChannelState"
+        Me.LabelAlternateCommandChannelState.Size = New System.Drawing.Size(109, 14)
+        Me.LabelAlternateCommandChannelState.TabIndex = 19
+        Me.LabelAlternateCommandChannelState.Text = "Not Defined"
+        '
         'LabelAlternateCommandChannel
         '
         Me.LabelAlternateCommandChannel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Appearance1.FontData.UnderlineAsString = "False"
-        Appearance1.ForeColor = System.Drawing.SystemColors.HotTrack
-        Appearance1.TextHAlignAsString = "Center"
-        Appearance1.TextVAlignAsString = "Middle"
-        Me.LabelAlternateCommandChannel.Appearance = Appearance1
+        Appearance2.ForeColor = System.Drawing.SystemColors.HotTrack
+        Appearance2.TextHAlignAsString = "Center"
+        Appearance2.TextVAlignAsString = "Middle"
+        Me.LabelAlternateCommandChannel.Appearance = Appearance2
         Me.LabelAlternateCommandChannel.Cursor = System.Windows.Forms.Cursors.Hand
-        Appearance2.FontData.UnderlineAsString = "True"
-        Me.LabelAlternateCommandChannel.HotTrackAppearance = Appearance2
-        Me.LabelAlternateCommandChannel.Location = New System.Drawing.Point(246, 65)
+        Me.LabelAlternateCommandChannel.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Appearance3.FontData.UnderlineAsString = "True"
+        Me.LabelAlternateCommandChannel.HotTrackAppearance = Appearance3
+        Me.LabelAlternateCommandChannel.Location = New System.Drawing.Point(246, 49)
         Me.LabelAlternateCommandChannel.Name = "LabelAlternateCommandChannel"
-        Me.LabelAlternateCommandChannel.Size = New System.Drawing.Size(110, 28)
+        Me.LabelAlternateCommandChannel.Size = New System.Drawing.Size(109, 27)
         Me.LabelAlternateCommandChannel.TabIndex = 18
-        Me.LabelAlternateCommandChannel.Text = "Configure alternate command channel"
-        UltraToolTipInfo7.ToolTipImage = Infragistics.Win.ToolTipImage.Info
-        UltraToolTipInfo7.ToolTipTextFormatted = "This link allows configuration of an alternate communications channel for sending" & _
+        Me.LabelAlternateCommandChannel.Text = "Configure Alternate Command Channel"
+        UltraToolTipInfo9.ToolTipImage = Infragistics.Win.ToolTipImage.Info
+        UltraToolTipInfo9.ToolTipTextFormatted = "This link allows configuration of an alternate communications channel for sending" & _
             " commands.<br/>For example, this is used for implementing the UDP_T or UDP_U fea" & _
             "ture for SEL relays."
-        UltraToolTipInfo7.ToolTipTitle = "Note"
-        Me.ToolTipManager.SetUltraToolTip(Me.LabelAlternateCommandChannel, UltraToolTipInfo7)
+        UltraToolTipInfo9.ToolTipTitle = "Note"
+        Me.ToolTipManager.SetUltraToolTip(Me.LabelAlternateCommandChannel, UltraToolTipInfo9)
         Me.LabelAlternateCommandChannel.UseHotTracking = Infragistics.Win.DefaultableBoolean.[True]
         '
         'LabelVersion
         '
         Me.LabelVersion.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Appearance55.FontData.SizeInPoints = 7.25!
-        Appearance55.TextHAlignAsString = "Right"
-        Me.LabelVersion.Appearance = Appearance55
-        Me.LabelVersion.Location = New System.Drawing.Point(230, 35)
+        Appearance54.FontData.SizeInPoints = 7.25!
+        Appearance54.TextHAlignAsString = "Right"
+        Me.LabelVersion.Appearance = Appearance54
+        Me.LabelVersion.Location = New System.Drawing.Point(228, 30)
         Me.LabelVersion.Name = "LabelVersion"
         Me.LabelVersion.Size = New System.Drawing.Size(126, 15)
         Me.LabelVersion.TabIndex = 16
@@ -363,15 +380,15 @@ Partial Class PMUConnectionTester
         '
         'ComboBoxCommands
         '
+        Me.ComboBoxCommands.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxCommands.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxCommands.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxCommands.Enabled = False
         Me.ComboBoxCommands.Items.AddRange(New Object() {"Disable Real-time Data", "Enable Real-time Data", "Send Header Frame", "Send Config Frame 1", "Send Config Frame 2"})
         Me.ComboBoxCommands.Location = New System.Drawing.Point(6, 72)
         Me.ComboBoxCommands.Name = "ComboBoxCommands"
         Me.ComboBoxCommands.Size = New System.Drawing.Size(154, 21)
         Me.ComboBoxCommands.TabIndex = 13
-        Me.ComboBoxCommands.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxCommands.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxCommands.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelCommand
         '
@@ -384,8 +401,8 @@ Partial Class PMUConnectionTester
         '
         'LabelDeviceID
         '
-        Appearance56.TextHAlignAsString = "Right"
-        Me.LabelDeviceID.Appearance = Appearance56
+        Appearance55.TextHAlignAsString = "Right"
+        Me.LabelDeviceID.Appearance = Appearance55
         Me.LabelDeviceID.Location = New System.Drawing.Point(3, 37)
         Me.LabelDeviceID.Name = "LabelDeviceID"
         Me.LabelDeviceID.Size = New System.Drawing.Size(87, 23)
@@ -415,13 +432,13 @@ Partial Class PMUConnectionTester
         '
         'ComboBoxProtocols
         '
+        Me.ComboBoxProtocols.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxProtocols.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxProtocols.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxProtocols.Location = New System.Drawing.Point(6, 7)
         Me.ComboBoxProtocols.Name = "ComboBoxProtocols"
         Me.ComboBoxProtocols.Size = New System.Drawing.Size(224, 21)
         Me.ComboBoxProtocols.TabIndex = 9
-        Me.ComboBoxProtocols.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxProtocols.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxProtocols.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'TabPageControl10
         '
@@ -450,18 +467,18 @@ Partial Class PMUConnectionTester
         '
         'LabelTcpHostIP
         '
-        Appearance34.TextHAlignAsString = "Right"
-        Me.LabelTcpHostIP.Appearance = Appearance34
+        Appearance35.TextHAlignAsString = "Right"
+        Me.LabelTcpHostIP.Appearance = Appearance35
         Me.LabelTcpHostIP.Location = New System.Drawing.Point(15, 25)
         Me.LabelTcpHostIP.Name = "LabelTcpHostIP"
         Me.LabelTcpHostIP.Size = New System.Drawing.Size(45, 23)
         Me.LabelTcpHostIP.TabIndex = 0
         Me.LabelTcpHostIP.Text = "Host &IP:"
+        UltraToolTipInfo3.ToolTipText = "Enter host DNS name, IPv4 or IPv6 address"
+        Me.ToolTipManager.SetUltraToolTip(Me.LabelTcpHostIP, UltraToolTipInfo3)
         '
         'TextBoxTcpHostIP
         '
-        Appearance35.TextHAlignAsString = "Center"
-        Me.TextBoxTcpHostIP.Appearance = Appearance35
         Me.TextBoxTcpHostIP.AutoSize = False
         Me.TextBoxTcpHostIP.EditAs = Infragistics.Win.UltraWinMaskedEdit.EditAsType.UseSpecifiedMask
         Me.TextBoxTcpHostIP.InputMask = "nnn\.nnn\.nnn\.nnn"
@@ -525,11 +542,11 @@ Partial Class PMUConnectionTester
         Me.LabelUdpHostIP.Size = New System.Drawing.Size(45, 23)
         Me.LabelUdpHostIP.TabIndex = 1
         Me.LabelUdpHostIP.Text = "Host IP:"
+        UltraToolTipInfo4.ToolTipText = "Enter host DNS name, IPv4 or IPv6 address"
+        Me.ToolTipManager.SetUltraToolTip(Me.LabelUdpHostIP, UltraToolTipInfo4)
         '
         'TextBoxUdpHostIP
         '
-        Appearance38.TextHAlignAsString = "Center"
-        Me.TextBoxUdpHostIP.Appearance = Appearance38
         Me.TextBoxUdpHostIP.AutoSize = False
         Me.TextBoxUdpHostIP.EditAs = Infragistics.Win.UltraWinMaskedEdit.EditAsType.UseSpecifiedMask
         Me.TextBoxUdpHostIP.Enabled = False
@@ -543,8 +560,8 @@ Partial Class PMUConnectionTester
         '
         'LabelUdpRemotePort
         '
-        Appearance39.TextHAlignAsString = "Right"
-        Me.LabelUdpRemotePort.Appearance = Appearance39
+        Appearance38.TextHAlignAsString = "Right"
+        Me.LabelUdpRemotePort.Appearance = Appearance38
         Me.LabelUdpRemotePort.Enabled = False
         Me.LabelUdpRemotePort.Location = New System.Drawing.Point(4, 62)
         Me.LabelUdpRemotePort.Name = "LabelUdpRemotePort"
@@ -567,16 +584,16 @@ Partial Class PMUConnectionTester
         '
         'CheckBoxRemoteUdpServer
         '
-        Me.CheckBoxRemoteUdpServer.Location = New System.Drawing.Point(12, 4)
+        Me.CheckBoxRemoteUdpServer.Location = New System.Drawing.Point(8, 4)
         Me.CheckBoxRemoteUdpServer.Name = "CheckBoxRemoteUdpServer"
-        Me.CheckBoxRemoteUdpServer.Size = New System.Drawing.Size(175, 26)
+        Me.CheckBoxRemoteUdpServer.Size = New System.Drawing.Size(178, 26)
         Me.CheckBoxRemoteUdpServer.TabIndex = 0
-        Me.CheckBoxRemoteUdpServer.Text = "Remote device listens on Udp"
+        Me.CheckBoxRemoteUdpServer.Text = "Enable Multicast / Remote Udp"
         '
         'LabelUdpLocalPort
         '
-        Appearance40.TextHAlignAsString = "Right"
-        Me.LabelUdpLocalPort.Appearance = Appearance40
+        Appearance39.TextHAlignAsString = "Right"
+        Me.LabelUdpLocalPort.Appearance = Appearance39
         Me.LabelUdpLocalPort.Location = New System.Drawing.Point(-1, 36)
         Me.LabelUdpLocalPort.Name = "LabelUdpLocalPort"
         Me.LabelUdpLocalPort.Size = New System.Drawing.Size(63, 23)
@@ -620,10 +637,10 @@ Partial Class PMUConnectionTester
         Me.CheckBoxSerialRTS.Size = New System.Drawing.Size(50, 26)
         Me.CheckBoxSerialRTS.TabIndex = 11
         Me.CheckBoxSerialRTS.Text = "RTS"
-        UltraToolTipInfo3.ToolTipImage = Infragistics.Win.ToolTipImage.Info
-        UltraToolTipInfo3.ToolTipText = "This enables the Request to Send (RTS) signal during serial communication."
-        UltraToolTipInfo3.ToolTipTitle = "Note"
-        Me.ToolTipManager.SetUltraToolTip(Me.CheckBoxSerialRTS, UltraToolTipInfo3)
+        UltraToolTipInfo5.ToolTipImage = Infragistics.Win.ToolTipImage.Info
+        UltraToolTipInfo5.ToolTipText = "This enables the Request to Send (RTS) signal during serial communication."
+        UltraToolTipInfo5.ToolTipTitle = "Note"
+        Me.ToolTipManager.SetUltraToolTip(Me.CheckBoxSerialRTS, UltraToolTipInfo5)
         '
         'CheckBoxSerialDTR
         '
@@ -632,10 +649,10 @@ Partial Class PMUConnectionTester
         Me.CheckBoxSerialDTR.Size = New System.Drawing.Size(50, 26)
         Me.CheckBoxSerialDTR.TabIndex = 10
         Me.CheckBoxSerialDTR.Text = "DTR"
-        UltraToolTipInfo4.ToolTipImage = Infragistics.Win.ToolTipImage.Info
-        UltraToolTipInfo4.ToolTipText = "This enables the Data Terminal Ready (DTR) signal during serial communication."
-        UltraToolTipInfo4.ToolTipTitle = "Note"
-        Me.ToolTipManager.SetUltraToolTip(Me.CheckBoxSerialDTR, UltraToolTipInfo4)
+        UltraToolTipInfo6.ToolTipImage = Infragistics.Win.ToolTipImage.Info
+        UltraToolTipInfo6.ToolTipText = "This enables the Data Terminal Ready (DTR) signal during serial communication."
+        UltraToolTipInfo6.ToolTipTitle = "Note"
+        Me.ToolTipManager.SetUltraToolTip(Me.CheckBoxSerialDTR, UltraToolTipInfo6)
         '
         'TextBoxSerialDataBits
         '
@@ -651,28 +668,28 @@ Partial Class PMUConnectionTester
         '
         'ComboBoxSerialStopBits
         '
+        Me.ComboBoxSerialStopBits.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialStopBits.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxSerialStopBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxSerialStopBits.Location = New System.Drawing.Point(211, 10)
         Me.ComboBoxSerialStopBits.Name = "ComboBoxSerialStopBits"
         Me.ComboBoxSerialStopBits.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialStopBits.TabIndex = 7
-        Me.ComboBoxSerialStopBits.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxSerialStopBits.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxSerialStopBits.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'ComboBoxSerialParities
         '
+        Me.ComboBoxSerialParities.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialParities.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxSerialParities.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxSerialParities.Location = New System.Drawing.Point(66, 65)
         Me.ComboBoxSerialParities.Name = "ComboBoxSerialParities"
         Me.ComboBoxSerialParities.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialParities.TabIndex = 5
-        Me.ComboBoxSerialParities.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxSerialParities.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxSerialParities.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelSerialParity
         '
-        Appearance41.TextHAlignAsString = "Right"
-        Me.LabelSerialParity.Appearance = Appearance41
+        Appearance40.TextHAlignAsString = "Right"
+        Me.LabelSerialParity.Appearance = Appearance40
         Me.LabelSerialParity.Location = New System.Drawing.Point(-4, 68)
         Me.LabelSerialParity.Name = "LabelSerialParity"
         Me.LabelSerialParity.Size = New System.Drawing.Size(64, 23)
@@ -681,19 +698,19 @@ Partial Class PMUConnectionTester
         '
         'ComboBoxSerialBaudRates
         '
+        Me.ComboBoxSerialBaudRates.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialBaudRates.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxSerialBaudRates.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxSerialBaudRates.Items.AddRange(New Object() {"115200", "57600", "38400", "19200", "9600", "4800", "2400", "1200"})
         Me.ComboBoxSerialBaudRates.Location = New System.Drawing.Point(66, 37)
         Me.ComboBoxSerialBaudRates.Name = "ComboBoxSerialBaudRates"
         Me.ComboBoxSerialBaudRates.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialBaudRates.TabIndex = 3
-        Me.ComboBoxSerialBaudRates.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxSerialBaudRates.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxSerialBaudRates.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelSerialBaudRate
         '
-        Appearance42.TextHAlignAsString = "Right"
-        Me.LabelSerialBaudRate.Appearance = Appearance42
+        Appearance41.TextHAlignAsString = "Right"
+        Me.LabelSerialBaudRate.Appearance = Appearance41
         Me.LabelSerialBaudRate.Location = New System.Drawing.Point(-4, 40)
         Me.LabelSerialBaudRate.Name = "LabelSerialBaudRate"
         Me.LabelSerialBaudRate.Size = New System.Drawing.Size(64, 23)
@@ -702,18 +719,18 @@ Partial Class PMUConnectionTester
         '
         'ComboBoxSerialPorts
         '
+        Me.ComboBoxSerialPorts.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxSerialPorts.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxSerialPorts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxSerialPorts.Location = New System.Drawing.Point(66, 10)
         Me.ComboBoxSerialPorts.Name = "ComboBoxSerialPorts"
         Me.ComboBoxSerialPorts.Size = New System.Drawing.Size(85, 21)
         Me.ComboBoxSerialPorts.TabIndex = 1
-        Me.ComboBoxSerialPorts.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxSerialPorts.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxSerialPorts.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelSerialPort
         '
-        Appearance43.TextHAlignAsString = "Right"
-        Me.LabelSerialPort.Appearance = Appearance43
+        Appearance42.TextHAlignAsString = "Right"
+        Me.LabelSerialPort.Appearance = Appearance42
         Me.LabelSerialPort.Location = New System.Drawing.Point(-4, 13)
         Me.LabelSerialPort.Name = "LabelSerialPort"
         Me.LabelSerialPort.Size = New System.Drawing.Size(64, 23)
@@ -722,8 +739,8 @@ Partial Class PMUConnectionTester
         '
         'LabelSerialStopBits
         '
-        Appearance44.TextHAlignAsString = "Right"
-        Me.LabelSerialStopBits.Appearance = Appearance44
+        Appearance43.TextHAlignAsString = "Right"
+        Me.LabelSerialStopBits.Appearance = Appearance43
         Me.LabelSerialStopBits.Location = New System.Drawing.Point(150, 13)
         Me.LabelSerialStopBits.Name = "LabelSerialStopBits"
         Me.LabelSerialStopBits.Size = New System.Drawing.Size(57, 23)
@@ -732,8 +749,8 @@ Partial Class PMUConnectionTester
         '
         'LabelSerialDataBits
         '
-        Appearance45.TextHAlignAsString = "Right"
-        Me.LabelSerialDataBits.Appearance = Appearance45
+        Appearance44.TextHAlignAsString = "Right"
+        Me.LabelSerialDataBits.Appearance = Appearance44
         Me.LabelSerialDataBits.Location = New System.Drawing.Point(148, 40)
         Me.LabelSerialDataBits.Name = "LabelSerialDataBits"
         Me.LabelSerialDataBits.Size = New System.Drawing.Size(59, 23)
@@ -766,8 +783,8 @@ Partial Class PMUConnectionTester
         '
         'LabelFrameRate
         '
-        Appearance46.TextHAlignAsString = "Right"
-        Me.LabelFrameRate.Appearance = Appearance46
+        Appearance45.TextHAlignAsString = "Right"
+        Me.LabelFrameRate.Appearance = Appearance45
         Me.LabelFrameRate.Location = New System.Drawing.Point(-2, 53)
         Me.LabelFrameRate.Name = "LabelFrameRate"
         Me.LabelFrameRate.Size = New System.Drawing.Size(69, 23)
@@ -805,8 +822,8 @@ Partial Class PMUConnectionTester
         '
         'LabelCaptureFile
         '
-        Appearance47.TextHAlignAsString = "Right"
-        Me.LabelCaptureFile.Appearance = Appearance47
+        Appearance46.TextHAlignAsString = "Right"
+        Me.LabelCaptureFile.Appearance = Appearance46
         Me.LabelCaptureFile.Location = New System.Drawing.Point(13, 24)
         Me.LabelCaptureFile.Name = "LabelCaptureFile"
         Me.LabelCaptureFile.Size = New System.Drawing.Size(54, 23)
@@ -815,8 +832,8 @@ Partial Class PMUConnectionTester
         '
         'LabelFramesPerSecond
         '
-        Appearance48.TextHAlignAsString = "Right"
-        Me.LabelFramesPerSecond.Appearance = Appearance48
+        Appearance47.TextHAlignAsString = "Right"
+        Me.LabelFramesPerSecond.Appearance = Appearance47
         Me.LabelFramesPerSecond.Location = New System.Drawing.Point(95, 53)
         Me.LabelFramesPerSecond.Name = "LabelFramesPerSecond"
         Me.LabelFramesPerSecond.Size = New System.Drawing.Size(82, 17)
@@ -825,8 +842,8 @@ Partial Class PMUConnectionTester
         '
         'LabelReplayCapturedFile
         '
-        Appearance49.FontData.ItalicAsString = "True"
-        Me.LabelReplayCapturedFile.Appearance = Appearance49
+        Appearance48.FontData.ItalicAsString = "True"
+        Me.LabelReplayCapturedFile.Appearance = Appearance48
         Me.LabelReplayCapturedFile.Location = New System.Drawing.Point(193, 4)
         Me.LabelReplayCapturedFile.Name = "LabelReplayCapturedFile"
         Me.LabelReplayCapturedFile.Size = New System.Drawing.Size(120, 17)
@@ -992,14 +1009,14 @@ Partial Class PMUConnectionTester
         '
         'ComboBoxCurrentPhasors
         '
+        Me.ComboBoxCurrentPhasors.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxCurrentPhasors.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxCurrentPhasors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxCurrentPhasors.FormattingEnabled = True
         Me.ComboBoxCurrentPhasors.Location = New System.Drawing.Point(6, 84)
         Me.ComboBoxCurrentPhasors.Name = "ComboBoxCurrentPhasors"
         Me.ComboBoxCurrentPhasors.Size = New System.Drawing.Size(135, 21)
         Me.ComboBoxCurrentPhasors.TabIndex = 3
-        Me.ComboBoxCurrentPhasors.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxCurrentPhasors.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxCurrentPhasors.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelCurrentPhasor
         '
@@ -1011,14 +1028,14 @@ Partial Class PMUConnectionTester
         '
         'ComboBoxVoltagePhasors
         '
+        Me.ComboBoxVoltagePhasors.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxVoltagePhasors.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxVoltagePhasors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxVoltagePhasors.FormattingEnabled = True
         Me.ComboBoxVoltagePhasors.Location = New System.Drawing.Point(6, 40)
         Me.ComboBoxVoltagePhasors.Name = "ComboBoxVoltagePhasors"
         Me.ComboBoxVoltagePhasors.Size = New System.Drawing.Size(135, 21)
         Me.ComboBoxVoltagePhasors.TabIndex = 1
-        Me.ComboBoxVoltagePhasors.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxVoltagePhasors.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxVoltagePhasors.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelVoltagePhasor
         '
@@ -1121,12 +1138,12 @@ Partial Class PMUConnectionTester
         '
         Me.GroupBoxConnection.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Appearance31.ForeColor = System.Drawing.Color.Black
-        Me.GroupBoxConnection.Appearance = Appearance31
+        Appearance32.ForeColor = System.Drawing.Color.Black
+        Me.GroupBoxConnection.Appearance = Appearance32
         Me.GroupBoxConnection.Controls.Add(Me.GroupBoxPanelConnection)
         Me.GroupBoxConnection.ExpandedSize = New System.Drawing.Size(644, 94)
-        Appearance50.Image = CType(resources.GetObject("Appearance50.Image"), Object)
-        Me.GroupBoxConnection.HeaderAppearance = Appearance50
+        Appearance49.Image = CType(resources.GetObject("Appearance49.Image"), Object)
+        Me.GroupBoxConnection.HeaderAppearance = Appearance49
         Me.GroupBoxConnection.Location = New System.Drawing.Point(7, 26)
         Me.GroupBoxConnection.Name = "GroupBoxConnection"
         Me.GroupBoxConnection.Size = New System.Drawing.Size(686, 142)
@@ -1147,8 +1164,8 @@ Partial Class PMUConnectionTester
         '
         Me.TabControlProtocolParameters.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Appearance32.ForeColor = System.Drawing.Color.Black
-        Me.TabControlProtocolParameters.Appearance = Appearance32
+        Appearance33.ForeColor = System.Drawing.Color.Black
+        Me.TabControlProtocolParameters.Appearance = Appearance33
         Me.TabControlProtocolParameters.Controls.Add(Me.TabSharedControlsPageProtocolParameters)
         Me.TabControlProtocolParameters.Controls.Add(Me.TabPageControl9)
         Me.TabControlProtocolParameters.Controls.Add(Me.TabPageControl10)
@@ -1175,8 +1192,8 @@ Partial Class PMUConnectionTester
         '
         'TabControlCommunications
         '
-        Appearance33.ForeColor = System.Drawing.Color.Black
-        Me.TabControlCommunications.Appearance = Appearance33
+        Appearance34.ForeColor = System.Drawing.Color.Black
+        Me.TabControlCommunications.Appearance = Appearance34
         Me.TabControlCommunications.Controls.Add(Me.TabSharedControlsPageCommunications)
         Me.TabControlCommunications.Controls.Add(Me.TabPageControl1)
         Me.TabControlCommunications.Controls.Add(Me.TabPageControl2)
@@ -1212,8 +1229,8 @@ Partial Class PMUConnectionTester
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.GroupBoxStatus.Controls.Add(Me.GroupBoxPanelStatus)
         Me.GroupBoxStatus.ExpandedSize = New System.Drawing.Size(511, 85)
-        Appearance17.Image = CType(resources.GetObject("Appearance17.Image"), Object)
-        Me.GroupBoxStatus.HeaderAppearance = Appearance17
+        Appearance18.Image = CType(resources.GetObject("Appearance18.Image"), Object)
+        Me.GroupBoxStatus.HeaderAppearance = Appearance18
         Me.GroupBoxStatus.Location = New System.Drawing.Point(10, 421)
         Me.GroupBoxStatus.Name = "GroupBoxStatus"
         Me.GroupBoxStatus.Size = New System.Drawing.Size(683, 151)
@@ -1251,8 +1268,8 @@ Partial Class PMUConnectionTester
         Me.LabelBinaryFrameImage.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Appearance10.TextHAlignAsString = "Left"
-        Me.LabelBinaryFrameImage.Appearance = Appearance10
+        Appearance11.TextHAlignAsString = "Left"
+        Me.LabelBinaryFrameImage.Appearance = Appearance11
         Me.LabelBinaryFrameImage.Font = New System.Drawing.Font("Courier New", 9.75!, System.Drawing.FontStyle.Bold)
         Me.LabelBinaryFrameImage.Location = New System.Drawing.Point(206, 0)
         Me.LabelBinaryFrameImage.Name = "LabelBinaryFrameImage"
@@ -1262,8 +1279,8 @@ Partial Class PMUConnectionTester
         '
         'LabelDisplayFormat
         '
-        Appearance11.TextHAlignAsString = "Right"
-        Me.LabelDisplayFormat.Appearance = Appearance11
+        Appearance12.TextHAlignAsString = "Right"
+        Me.LabelDisplayFormat.Appearance = Appearance12
         Me.LabelDisplayFormat.Location = New System.Drawing.Point(-8, 105)
         Me.LabelDisplayFormat.Name = "LabelDisplayFormat"
         Me.LabelDisplayFormat.Size = New System.Drawing.Size(72, 20)
@@ -1272,14 +1289,14 @@ Partial Class PMUConnectionTester
         '
         'ComboBoxByteEncodingDisplayFormats
         '
+        Me.ComboBoxByteEncodingDisplayFormats.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxByteEncodingDisplayFormats.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxByteEncodingDisplayFormats.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxByteEncodingDisplayFormats.Items.AddRange(New Object() {"Hexadecimal", "Decimal", "Big Endian Binary", "Little Endian Binary", "Base64", "ASCII Extraction"})
         Me.ComboBoxByteEncodingDisplayFormats.Location = New System.Drawing.Point(70, 104)
         Me.ComboBoxByteEncodingDisplayFormats.Name = "ComboBoxByteEncodingDisplayFormats"
         Me.ComboBoxByteEncodingDisplayFormats.Size = New System.Drawing.Size(130, 21)
         Me.ComboBoxByteEncodingDisplayFormats.TabIndex = 11
-        Me.ComboBoxByteEncodingDisplayFormats.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxByteEncodingDisplayFormats.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxByteEncodingDisplayFormats.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelFrameType
         '
@@ -1292,8 +1309,8 @@ Partial Class PMUConnectionTester
         '
         'LabelFrameTypeLabel
         '
-        Appearance12.TextHAlignAsString = "Right"
-        Me.LabelFrameTypeLabel.Appearance = Appearance12
+        Appearance13.TextHAlignAsString = "Right"
+        Me.LabelFrameTypeLabel.Appearance = Appearance13
         Me.LabelFrameTypeLabel.Location = New System.Drawing.Point(-8, 3)
         Me.LabelFrameTypeLabel.Name = "LabelFrameTypeLabel"
         Me.LabelFrameTypeLabel.Size = New System.Drawing.Size(72, 20)
@@ -1311,8 +1328,8 @@ Partial Class PMUConnectionTester
         '
         'LabelFrequencyLabel
         '
-        Appearance13.TextHAlignAsString = "Right"
-        Me.LabelFrequencyLabel.Appearance = Appearance13
+        Appearance14.TextHAlignAsString = "Right"
+        Me.LabelFrequencyLabel.Appearance = Appearance14
         Me.LabelFrequencyLabel.Location = New System.Drawing.Point(-8, 44)
         Me.LabelFrequencyLabel.Name = "LabelFrequencyLabel"
         Me.LabelFrequencyLabel.Size = New System.Drawing.Size(72, 20)
@@ -1330,8 +1347,8 @@ Partial Class PMUConnectionTester
         '
         'LabelMagnitudeLabel
         '
-        Appearance14.TextHAlignAsString = "Right"
-        Me.LabelMagnitudeLabel.Appearance = Appearance14
+        Appearance15.TextHAlignAsString = "Right"
+        Me.LabelMagnitudeLabel.Appearance = Appearance15
         Me.LabelMagnitudeLabel.Location = New System.Drawing.Point(-8, 84)
         Me.LabelMagnitudeLabel.Name = "LabelMagnitudeLabel"
         Me.LabelMagnitudeLabel.Size = New System.Drawing.Size(72, 20)
@@ -1349,8 +1366,8 @@ Partial Class PMUConnectionTester
         '
         'LabelAngleLabel
         '
-        Appearance15.TextHAlignAsString = "Right"
-        Me.LabelAngleLabel.Appearance = Appearance15
+        Appearance16.TextHAlignAsString = "Right"
+        Me.LabelAngleLabel.Appearance = Appearance16
         Me.LabelAngleLabel.Location = New System.Drawing.Point(-8, 64)
         Me.LabelAngleLabel.Name = "LabelAngleLabel"
         Me.LabelAngleLabel.Size = New System.Drawing.Size(72, 20)
@@ -1368,8 +1385,8 @@ Partial Class PMUConnectionTester
         '
         'LabelTimeLabel
         '
-        Appearance16.TextHAlignAsString = "Right"
-        Me.LabelTimeLabel.Appearance = Appearance16
+        Appearance17.TextHAlignAsString = "Right"
+        Me.LabelTimeLabel.Appearance = Appearance17
         Me.LabelTimeLabel.Location = New System.Drawing.Point(-8, 24)
         Me.LabelTimeLabel.Name = "LabelTimeLabel"
         Me.LabelTimeLabel.Size = New System.Drawing.Size(72, 20)
@@ -1384,8 +1401,8 @@ Partial Class PMUConnectionTester
         UltraStatusPanel1.SizingMode = Infragistics.Win.UltraWinStatusBar.PanelSizingMode.Automatic
         UltraStatusPanel1.Text = "Total frames:"
         UltraStatusPanel1.WrapText = Infragistics.Win.DefaultableBoolean.[False]
-        Appearance27.TextHAlignAsString = "Left"
-        UltraStatusPanel2.Appearance = Appearance27
+        Appearance28.TextHAlignAsString = "Left"
+        UltraStatusPanel2.Appearance = Appearance28
         UltraStatusPanel2.MinWidth = 0
         UltraStatusPanel2.Padding = New System.Drawing.Size(2, 0)
         UltraStatusPanel2.SizingMode = Infragistics.Win.UltraWinStatusBar.PanelSizingMode.Automatic
@@ -1393,8 +1410,8 @@ Partial Class PMUConnectionTester
         UltraStatusPanel3.SizingMode = Infragistics.Win.UltraWinStatusBar.PanelSizingMode.Automatic
         UltraStatusPanel3.Text = "Frames/sec:"
         UltraStatusPanel3.WrapText = Infragistics.Win.DefaultableBoolean.[False]
-        Appearance28.TextHAlignAsString = "Left"
-        UltraStatusPanel4.Appearance = Appearance28
+        Appearance29.TextHAlignAsString = "Left"
+        UltraStatusPanel4.Appearance = Appearance29
         UltraStatusPanel4.MinWidth = 0
         UltraStatusPanel4.Padding = New System.Drawing.Size(2, 0)
         UltraStatusPanel4.SizingMode = Infragistics.Win.UltraWinStatusBar.PanelSizingMode.Automatic
@@ -1403,8 +1420,8 @@ Partial Class PMUConnectionTester
         UltraStatusPanel5.SizingMode = Infragistics.Win.UltraWinStatusBar.PanelSizingMode.Automatic
         UltraStatusPanel5.Text = "Total bytes:"
         UltraStatusPanel5.WrapText = Infragistics.Win.DefaultableBoolean.[False]
-        Appearance29.TextHAlignAsString = "Left"
-        UltraStatusPanel6.Appearance = Appearance29
+        Appearance30.TextHAlignAsString = "Left"
+        UltraStatusPanel6.Appearance = Appearance30
         UltraStatusPanel6.MinWidth = 0
         UltraStatusPanel6.Padding = New System.Drawing.Size(2, 0)
         UltraStatusPanel6.SizingMode = Infragistics.Win.UltraWinStatusBar.PanelSizingMode.Automatic
@@ -1418,8 +1435,8 @@ Partial Class PMUConnectionTester
         UltraStatusPanel8.Text = "0.0000"
         UltraStatusPanel9.SizingMode = Infragistics.Win.UltraWinStatusBar.PanelSizingMode.Automatic
         UltraStatusPanel9.Text = "Queued buffers:"
-        Appearance30.TextHAlignAsString = "Left"
-        UltraStatusPanel10.Appearance = Appearance30
+        Appearance31.TextHAlignAsString = "Left"
+        UltraStatusPanel10.Appearance = Appearance31
         UltraStatusPanel10.MinWidth = 0
         UltraStatusPanel10.Padding = New System.Drawing.Size(2, 0)
         UltraStatusPanel10.SizingMode = Infragistics.Win.UltraWinStatusBar.PanelSizingMode.Automatic
@@ -1435,44 +1452,44 @@ Partial Class PMUConnectionTester
         '
         'LabelVarsLabel
         '
-        Appearance51.FontData.UnderlineAsString = "False"
-        Appearance51.ForeColor = System.Drawing.SystemColors.HotTrack
-        Appearance51.TextHAlignAsString = "Right"
-        Me.LabelVarsLabel.Appearance = Appearance51
+        Appearance50.FontData.UnderlineAsString = "False"
+        Appearance50.ForeColor = System.Drawing.SystemColors.HotTrack
+        Appearance50.TextHAlignAsString = "Right"
+        Me.LabelVarsLabel.Appearance = Appearance50
         Me.LabelVarsLabel.Cursor = System.Windows.Forms.Cursors.Hand
-        Appearance52.FontData.UnderlineAsString = "True"
-        Me.LabelVarsLabel.HotTrackAppearance = Appearance52
+        Appearance51.FontData.UnderlineAsString = "True"
+        Me.LabelVarsLabel.HotTrackAppearance = Appearance51
         Me.LabelVarsLabel.Location = New System.Drawing.Point(9, 36)
         Me.LabelVarsLabel.Name = "LabelVarsLabel"
         Me.LabelVarsLabel.Size = New System.Drawing.Size(50, 16)
         Me.LabelVarsLabel.TabIndex = 16
         Me.LabelVarsLabel.Text = "Vars:"
-        UltraToolTipInfo5.ToolTipImage = Infragistics.Win.ToolTipImage.Info
-        UltraToolTipInfo5.ToolTipText = "Click link to change source voltage and current phasors for power / vars calculat" & _
+        UltraToolTipInfo7.ToolTipImage = Infragistics.Win.ToolTipImage.Info
+        UltraToolTipInfo7.ToolTipText = "Click link to change source voltage and current phasors for power / vars calculat" & _
             "ions..."
-        UltraToolTipInfo5.ToolTipTitle = "Note"
-        Me.ToolTipManager.SetUltraToolTip(Me.LabelVarsLabel, UltraToolTipInfo5)
+        UltraToolTipInfo7.ToolTipTitle = "Note"
+        Me.ToolTipManager.SetUltraToolTip(Me.LabelVarsLabel, UltraToolTipInfo7)
         Me.LabelVarsLabel.UseHotTracking = Infragistics.Win.DefaultableBoolean.[True]
         '
         'LabelPowerLabel
         '
-        Appearance53.FontData.UnderlineAsString = "False"
-        Appearance53.ForeColor = System.Drawing.SystemColors.HotTrack
-        Appearance53.TextHAlignAsString = "Right"
-        Me.LabelPowerLabel.Appearance = Appearance53
+        Appearance52.FontData.UnderlineAsString = "False"
+        Appearance52.ForeColor = System.Drawing.SystemColors.HotTrack
+        Appearance52.TextHAlignAsString = "Right"
+        Me.LabelPowerLabel.Appearance = Appearance52
         Me.LabelPowerLabel.Cursor = System.Windows.Forms.Cursors.Hand
-        Appearance54.FontData.UnderlineAsString = "True"
-        Me.LabelPowerLabel.HotTrackAppearance = Appearance54
+        Appearance53.FontData.UnderlineAsString = "True"
+        Me.LabelPowerLabel.HotTrackAppearance = Appearance53
         Me.LabelPowerLabel.Location = New System.Drawing.Point(9, 14)
         Me.LabelPowerLabel.Name = "LabelPowerLabel"
         Me.LabelPowerLabel.Size = New System.Drawing.Size(50, 20)
         Me.LabelPowerLabel.TabIndex = 14
         Me.LabelPowerLabel.Text = "Power:"
-        UltraToolTipInfo6.ToolTipImage = Infragistics.Win.ToolTipImage.Info
-        UltraToolTipInfo6.ToolTipText = "Click link to change source voltage and current phasors for power / vars calculat" & _
+        UltraToolTipInfo8.ToolTipImage = Infragistics.Win.ToolTipImage.Info
+        UltraToolTipInfo8.ToolTipText = "Click link to change source voltage and current phasors for power / vars calculat" & _
             "ions..."
-        UltraToolTipInfo6.ToolTipTitle = "Note"
-        Me.ToolTipManager.SetUltraToolTip(Me.LabelPowerLabel, UltraToolTipInfo6)
+        UltraToolTipInfo8.ToolTipTitle = "Note"
+        Me.ToolTipManager.SetUltraToolTip(Me.LabelPowerLabel, UltraToolTipInfo8)
         Me.LabelPowerLabel.UseHotTracking = Infragistics.Win.DefaultableBoolean.[True]
         '
         'OpenFileDialog
@@ -1486,8 +1503,8 @@ Partial Class PMUConnectionTester
         Me.GroupBoxHeaderFrame.Controls.Add(Me.GroupBoxPanelHeaderFrame)
         Me.GroupBoxHeaderFrame.ExpandedSize = New System.Drawing.Size(165, 209)
         Me.GroupBoxHeaderFrame.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Appearance26.Image = CType(resources.GetObject("Appearance26.Image"), Object)
-        Me.GroupBoxHeaderFrame.HeaderAppearance = Appearance26
+        Appearance27.Image = CType(resources.GetObject("Appearance27.Image"), Object)
+        Me.GroupBoxHeaderFrame.HeaderAppearance = Appearance27
         Me.GroupBoxHeaderFrame.HeaderPosition = Infragistics.Win.Misc.GroupBoxHeaderPosition.RightOnBorder
         Me.GroupBoxHeaderFrame.Location = New System.Drawing.Point(522, 171)
         Me.GroupBoxHeaderFrame.Name = "GroupBoxHeaderFrame"
@@ -1525,8 +1542,8 @@ Partial Class PMUConnectionTester
         '
         Me.GroupBoxConfigurationFrame.Controls.Add(Me.GroupBoxPanelConfigurationFrame)
         Me.GroupBoxConfigurationFrame.ExpandedSize = New System.Drawing.Size(187, 166)
-        Appearance25.Image = CType(resources.GetObject("Appearance25.Image"), Object)
-        Me.GroupBoxConfigurationFrame.HeaderAppearance = Appearance25
+        Appearance26.Image = CType(resources.GetObject("Appearance26.Image"), Object)
+        Me.GroupBoxConfigurationFrame.HeaderAppearance = Appearance26
         Me.GroupBoxConfigurationFrame.HeaderBorderStyle = Infragistics.Win.UIElementBorderStyle.None
         Me.GroupBoxConfigurationFrame.HeaderPosition = Infragistics.Win.Misc.GroupBoxHeaderPosition.RightOnBorder
         Me.GroupBoxConfigurationFrame.Location = New System.Drawing.Point(10, 174)
@@ -1570,8 +1587,8 @@ Partial Class PMUConnectionTester
         '
         'LabelPhasorCountLabel
         '
-        Appearance18.TextHAlignAsString = "Right"
-        Me.LabelPhasorCountLabel.Appearance = Appearance18
+        Appearance19.TextHAlignAsString = "Right"
+        Me.LabelPhasorCountLabel.Appearance = Appearance19
         Me.LabelPhasorCountLabel.Location = New System.Drawing.Point(3, 93)
         Me.LabelPhasorCountLabel.Name = "LabelPhasorCountLabel"
         Me.LabelPhasorCountLabel.Size = New System.Drawing.Size(50, 20)
@@ -1580,8 +1597,8 @@ Partial Class PMUConnectionTester
         '
         'LabelHz
         '
-        Appearance19.TextHAlignAsString = "Left"
-        Me.LabelHz.Appearance = Appearance19
+        Appearance20.TextHAlignAsString = "Left"
+        Me.LabelHz.Appearance = Appearance20
         Me.LabelHz.Location = New System.Drawing.Point(128, 124)
         Me.LabelHz.Name = "LabelHz"
         Me.LabelHz.Size = New System.Drawing.Size(18, 16)
@@ -1590,8 +1607,8 @@ Partial Class PMUConnectionTester
         '
         'LabelNominalFrequency
         '
-        Appearance20.TextHAlignAsString = "Center"
-        Me.LabelNominalFrequency.Appearance = Appearance20
+        Appearance21.TextHAlignAsString = "Center"
+        Me.LabelNominalFrequency.Appearance = Appearance21
         Me.LabelNominalFrequency.Location = New System.Drawing.Point(113, 124)
         Me.LabelNominalFrequency.Name = "LabelNominalFrequency"
         Me.LabelNominalFrequency.Size = New System.Drawing.Size(18, 16)
@@ -1600,8 +1617,8 @@ Partial Class PMUConnectionTester
         '
         'LabelNominalFrequencyLabel
         '
-        Appearance21.TextHAlignAsString = "Center"
-        Me.LabelNominalFrequencyLabel.Appearance = Appearance21
+        Appearance22.TextHAlignAsString = "Center"
+        Me.LabelNominalFrequencyLabel.Appearance = Appearance22
         Me.LabelNominalFrequencyLabel.Location = New System.Drawing.Point(99, 93)
         Me.LabelNominalFrequencyLabel.Name = "LabelNominalFrequencyLabel"
         Me.LabelNominalFrequencyLabel.Size = New System.Drawing.Size(62, 32)
@@ -1618,8 +1635,8 @@ Partial Class PMUConnectionTester
         '
         'LabelDigitalCountLabel
         '
-        Appearance22.TextHAlignAsString = "Right"
-        Me.LabelDigitalCountLabel.Appearance = Appearance22
+        Appearance23.TextHAlignAsString = "Right"
+        Me.LabelDigitalCountLabel.Appearance = Appearance23
         Me.LabelDigitalCountLabel.Location = New System.Drawing.Point(0, 137)
         Me.LabelDigitalCountLabel.Name = "LabelDigitalCountLabel"
         Me.LabelDigitalCountLabel.Size = New System.Drawing.Size(50, 20)
@@ -1636,8 +1653,8 @@ Partial Class PMUConnectionTester
         '
         'LabelAnalogCountLabel
         '
-        Appearance23.TextHAlignAsString = "Right"
-        Me.LabelAnalogCountLabel.Appearance = Appearance23
+        Appearance24.TextHAlignAsString = "Right"
+        Me.LabelAnalogCountLabel.Appearance = Appearance24
         Me.LabelAnalogCountLabel.Location = New System.Drawing.Point(3, 115)
         Me.LabelAnalogCountLabel.Name = "LabelAnalogCountLabel"
         Me.LabelAnalogCountLabel.Size = New System.Drawing.Size(50, 20)
@@ -1646,13 +1663,13 @@ Partial Class PMUConnectionTester
         '
         'ComboBoxPmus
         '
+        Me.ComboBoxPmus.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxPmus.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxPmus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxPmus.Location = New System.Drawing.Point(3, 23)
         Me.ComboBoxPmus.Name = "ComboBoxPmus"
         Me.ComboBoxPmus.Size = New System.Drawing.Size(158, 21)
         Me.ComboBoxPmus.TabIndex = 1
-        Me.ComboBoxPmus.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxPmus.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxPmus.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelIDCode
         '
@@ -1664,8 +1681,8 @@ Partial Class PMUConnectionTester
         '
         'LabelIDCodeLabel
         '
-        Appearance24.TextHAlignAsString = "Right"
-        Me.LabelIDCodeLabel.Appearance = Appearance24
+        Appearance25.TextHAlignAsString = "Right"
+        Me.LabelIDCodeLabel.Appearance = Appearance25
         Me.LabelIDCodeLabel.Location = New System.Drawing.Point(48, 8)
         Me.LabelIDCodeLabel.Name = "LabelIDCodeLabel"
         Me.LabelIDCodeLabel.Size = New System.Drawing.Size(49, 23)
@@ -1674,13 +1691,13 @@ Partial Class PMUConnectionTester
         '
         'ComboBoxPhasors
         '
+        Me.ComboBoxPhasors.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.ComboBoxPhasors.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.ComboBoxPhasors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBoxPhasors.Location = New System.Drawing.Point(3, 66)
         Me.ComboBoxPhasors.Name = "ComboBoxPhasors"
         Me.ComboBoxPhasors.Size = New System.Drawing.Size(158, 21)
         Me.ComboBoxPhasors.TabIndex = 3
-        Me.ComboBoxPhasors.AutoCompleteMode = AutoCompleteMode.SuggestAppend
-        Me.ComboBoxPhasors.AutoCompleteSource = AutoCompleteSource.ListItems
-        Me.ComboBoxPhasors.DropDownStyle = ComboBoxStyle.DropDownList
         '
         'LabelPmuList
         '
@@ -1767,7 +1784,7 @@ Partial Class PMUConnectionTester
         '
         'MenuItemCapture
         '
-        Me.MenuItemCapture.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuItemStartCapture, Me.MenuItemStopCapture, Me.ToolStripSeparator3, Me.MenuItemCaptureSampleFrames, Me.MenuItemCancelSampleFrameCapture, Me.ToolStripSeparator6, Me.MenuItemStartStreamDebugCapture, Me.MenuItemStopStreamDebugCapture})
+        Me.MenuItemCapture.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuItemStartCapture, Me.MenuItemStopCapture, Me.ToolStripSeparator3, Me.MenuItemStartStreamDebugCapture, Me.MenuItemStopStreamDebugCapture, Me.ToolStripSeparator6, Me.MenuItemCaptureSampleFrames, Me.MenuItemCancelSampleFrameCapture})
         Me.MenuItemCapture.Image = CType(resources.GetObject("MenuItemCapture.Image"), System.Drawing.Image)
         Me.MenuItemCapture.Name = "MenuItemCapture"
         Me.MenuItemCapture.Size = New System.Drawing.Size(139, 22)
@@ -1791,24 +1808,6 @@ Partial Class PMUConnectionTester
         Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
         Me.ToolStripSeparator3.Size = New System.Drawing.Size(231, 6)
         '
-        'MenuItemCaptureSampleFrames
-        '
-        Me.MenuItemCaptureSampleFrames.Name = "MenuItemCaptureSampleFrames"
-        Me.MenuItemCaptureSampleFrames.Size = New System.Drawing.Size(234, 22)
-        Me.MenuItemCaptureSampleFrames.Text = "&Capture Sample Frames..."
-        '
-        'MenuItemCancelSampleFrameCapture
-        '
-        Me.MenuItemCancelSampleFrameCapture.Enabled = False
-        Me.MenuItemCancelSampleFrameCapture.Name = "MenuItemCancelSampleFrameCapture"
-        Me.MenuItemCancelSampleFrameCapture.Size = New System.Drawing.Size(234, 22)
-        Me.MenuItemCancelSampleFrameCapture.Text = "C&ancel Sample Frame Capture"
-        '
-        'ToolStripSeparator6
-        '
-        Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
-        Me.ToolStripSeparator6.Size = New System.Drawing.Size(231, 6)
-        '
         'MenuItemStartStreamDebugCapture
         '
         Me.MenuItemStartStreamDebugCapture.Name = "MenuItemStartStreamDebugCapture"
@@ -1821,6 +1820,24 @@ Partial Class PMUConnectionTester
         Me.MenuItemStopStreamDebugCapture.Name = "MenuItemStopStreamDebugCapture"
         Me.MenuItemStopStreamDebugCapture.Size = New System.Drawing.Size(234, 22)
         Me.MenuItemStopStreamDebugCapture.Text = "Stop Stream D&ebug Capture"
+        '
+        'ToolStripSeparator6
+        '
+        Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
+        Me.ToolStripSeparator6.Size = New System.Drawing.Size(231, 6)
+        '
+        'MenuItemCaptureSampleFrames
+        '
+        Me.MenuItemCaptureSampleFrames.Name = "MenuItemCaptureSampleFrames"
+        Me.MenuItemCaptureSampleFrames.Size = New System.Drawing.Size(234, 22)
+        Me.MenuItemCaptureSampleFrames.Text = "&Capture Sample Frames..."
+        '
+        'MenuItemCancelSampleFrameCapture
+        '
+        Me.MenuItemCancelSampleFrameCapture.Enabled = False
+        Me.MenuItemCancelSampleFrameCapture.Name = "MenuItemCancelSampleFrameCapture"
+        Me.MenuItemCancelSampleFrameCapture.Size = New System.Drawing.Size(234, 22)
+        Me.MenuItemCancelSampleFrameCapture.Text = "C&ancel Sample Frame Capture"
         '
         'ToolStripSeparator1
         '
@@ -1835,39 +1852,34 @@ Partial Class PMUConnectionTester
         '
         'MenuItemHelp
         '
-        Me.MenuItemHelp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuItemNASPITools, Me.ToolStripSeparator4, Me.MenuItemContents, Me.ToolStripSeparator2, Me.MenuItemAbout})
+        Me.MenuItemHelp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuItemLocalHelp, Me.MenuItemOnlineHelp, Me.ToolStripSeparator2, Me.MenuItemAbout})
         Me.MenuItemHelp.Name = "MenuItemHelp"
         Me.MenuItemHelp.Size = New System.Drawing.Size(40, 20)
         Me.MenuItemHelp.Text = "&Help"
         '
-        'MenuItemNASPITools
+        'MenuItemLocalHelp
         '
-        Me.MenuItemNASPITools.Image = CType(resources.GetObject("MenuItemNASPITools.Image"), System.Drawing.Image)
-        Me.MenuItemNASPITools.Name = "MenuItemNASPITools"
-        Me.MenuItemNASPITools.Size = New System.Drawing.Size(155, 22)
-        Me.MenuItemNASPITools.Text = "NASPI &Tools..."
+        Me.MenuItemLocalHelp.Image = CType(resources.GetObject("MenuItemLocalHelp.Image"), System.Drawing.Image)
+        Me.MenuItemLocalHelp.Name = "MenuItemLocalHelp"
+        Me.MenuItemLocalHelp.Size = New System.Drawing.Size(151, 22)
+        Me.MenuItemLocalHelp.Text = "&Local Help..."
         '
-        'ToolStripSeparator4
+        'MenuItemOnlineHelp
         '
-        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(152, 6)
-        '
-        'MenuItemContents
-        '
-        Me.MenuItemContents.Image = CType(resources.GetObject("MenuItemContents.Image"), System.Drawing.Image)
-        Me.MenuItemContents.Name = "MenuItemContents"
-        Me.MenuItemContents.Size = New System.Drawing.Size(155, 22)
-        Me.MenuItemContents.Text = "&Contents..."
+        Me.MenuItemOnlineHelp.Image = CType(resources.GetObject("MenuItemOnlineHelp.Image"), System.Drawing.Image)
+        Me.MenuItemOnlineHelp.Name = "MenuItemOnlineHelp"
+        Me.MenuItemOnlineHelp.Size = New System.Drawing.Size(151, 22)
+        Me.MenuItemOnlineHelp.Text = "&Online Help..."
         '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(152, 6)
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(148, 6)
         '
         'MenuItemAbout
         '
         Me.MenuItemAbout.Name = "MenuItemAbout"
-        Me.MenuItemAbout.Size = New System.Drawing.Size(155, 22)
+        Me.MenuItemAbout.Size = New System.Drawing.Size(151, 22)
         Me.MenuItemAbout.Text = "&About..."
         '
         'TabSharedControlsPageChart
@@ -1881,8 +1893,8 @@ Partial Class PMUConnectionTester
         Me.TabControlChart.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Appearance5.ForeColor = System.Drawing.Color.Black
-        Me.TabControlChart.Appearance = Appearance5
+        Appearance6.ForeColor = System.Drawing.Color.Black
+        Me.TabControlChart.Appearance = Appearance6
         Me.TabControlChart.Controls.Add(Me.TabSharedControlsPageChart)
         Me.TabControlChart.Controls.Add(Me.TabPageControl5)
         Me.TabControlChart.Controls.Add(Me.TabPageControl6)
@@ -1896,20 +1908,20 @@ Partial Class PMUConnectionTester
         Me.TabControlChart.TabIndex = 4
         Me.TabControlChart.TabLayoutStyle = Infragistics.Win.UltraWinTabs.TabLayoutStyle.SingleRowFixed
         Me.TabControlChart.TabOrientation = Infragistics.Win.UltraWinTabs.TabOrientation.BottomLeft
-        Appearance6.Image = CType(resources.GetObject("Appearance6.Image"), Object)
-        UltraTab1.Appearance = Appearance6
+        Appearance7.Image = CType(resources.GetObject("Appearance7.Image"), Object)
+        UltraTab1.Appearance = Appearance7
         UltraTab1.TabPage = Me.TabPageControl5
         UltraTab1.Text = "&Graph"
-        Appearance7.Image = CType(resources.GetObject("Appearance7.Image"), Object)
-        UltraTab2.Appearance = Appearance7
+        Appearance8.Image = CType(resources.GetObject("Appearance8.Image"), Object)
+        UltraTab2.Appearance = Appearance8
         UltraTab2.TabPage = Me.TabPageControl6
         UltraTab2.Text = "S&ettings"
-        Appearance8.Image = CType(resources.GetObject("Appearance8.Image"), Object)
-        UltraTab3.Appearance = Appearance8
+        Appearance9.Image = CType(resources.GetObject("Appearance9.Image"), Object)
+        UltraTab3.Appearance = Appearance9
         UltraTab3.TabPage = Me.TabPageControl7
         UltraTab3.Text = "&Messages"
-        Appearance9.Image = CType(resources.GetObject("Appearance9.Image"), Object)
-        UltraTab4.Appearance = Appearance9
+        Appearance10.Image = CType(resources.GetObject("Appearance10.Image"), Object)
+        UltraTab4.Appearance = Appearance10
         UltraTab4.TabPage = Me.TabPageControl8
         UltraTab4.Text = "P&rotocol Specific"
         Me.TabControlChart.Tabs.AddRange(New Infragistics.Win.UltraWinTabControl.UltraTab() {UltraTab1, UltraTab2, UltraTab3, UltraTab4})
@@ -1955,8 +1967,8 @@ Partial Class PMUConnectionTester
                     Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.GroupBoxProtocolParameters.BorderStyle = Infragistics.Win.Misc.GroupBoxBorderStyle.RectangularSolid
-        Appearance3.BorderColor = System.Drawing.Color.Gray
-        Me.GroupBoxProtocolParameters.ContentAreaAppearance = Appearance3
+        Appearance4.BorderColor = System.Drawing.Color.Gray
+        Me.GroupBoxProtocolParameters.ContentAreaAppearance = Appearance4
         Me.GroupBoxProtocolParameters.Controls.Add(Me.LabelTabMask)
         Me.GroupBoxProtocolParameters.Controls.Add(Me.PropertyGridProtocolParameters)
         Me.GroupBoxProtocolParameters.Location = New System.Drawing.Point(555, 455)
@@ -1966,8 +1978,8 @@ Partial Class PMUConnectionTester
         '
         'LabelTabMask
         '
-        Appearance4.AlphaLevel = CType(255, Short)
-        Me.LabelTabMask.Appearance = Appearance4
+        Appearance5.AlphaLevel = CType(255, Short)
+        Me.LabelTabMask.Appearance = Appearance5
         Me.LabelTabMask.Location = New System.Drawing.Point(179, 0)
         Me.LabelTabMask.Name = "LabelTabMask"
         Me.LabelTabMask.Size = New System.Drawing.Size(96, 12)
@@ -2124,7 +2136,7 @@ Partial Class PMUConnectionTester
     Friend WithEvents MenuItemFile As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MenuItemExit As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MenuItemHelp As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents MenuItemNASPITools As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents MenuItemOnlineHelp As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripSeparator2 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents MenuItemAbout As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MenuItemConfigFile As System.Windows.Forms.ToolStripMenuItem
@@ -2142,7 +2154,6 @@ Partial Class PMUConnectionTester
     Friend WithEvents TabPageControl5 As Infragistics.Win.UltraWinTabControl.UltraTabPageControl
     Friend WithEvents TabSharedControlsPageChart As Infragistics.Win.UltraWinTabControl.UltraTabSharedControlsPage
     Friend WithEvents TabControlChart As Infragistics.Win.UltraWinTabControl.UltraTabControl
-    Private WithEvents ChartDataDisplay As Infragistics.Win.UltraWinChart.UltraChart
     Friend WithEvents TabPageControl7 As Infragistics.Win.UltraWinTabControl.UltraTabPageControl
     Friend WithEvents ToolStripSeparator3 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents MenuItemCaptureSampleFrames As System.Windows.Forms.ToolStripMenuItem
@@ -2173,8 +2184,7 @@ Partial Class PMUConnectionTester
     Friend WithEvents TextBoxMessages As System.Windows.Forms.TextBox
     Friend WithEvents CheckBoxSerialDTR As Infragistics.Win.UltraWinEditors.UltraCheckEditor
     Friend WithEvents CheckBoxSerialRTS As Infragistics.Win.UltraWinEditors.UltraCheckEditor
-    Friend WithEvents ToolStripSeparator4 As System.Windows.Forms.ToolStripSeparator
-    Friend WithEvents MenuItemContents As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents MenuItemLocalHelp As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents CheckBoxEstablishTcpServer As Infragistics.Win.UltraWinEditors.UltraCheckEditor
     Friend WithEvents TabPageControl8 As Infragistics.Win.UltraWinTabControl.UltraTabPageControl
     Friend WithEvents PropertyGridApplicationSettings As System.Windows.Forms.PropertyGrid
@@ -2216,5 +2226,7 @@ Partial Class PMUConnectionTester
     Friend WithEvents MenuItemStartStreamDebugCapture As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MenuItemStopStreamDebugCapture As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents LabelAlternateCommandChannel As Infragistics.Win.Misc.UltraLabel
+    Friend WithEvents LabelAlternateCommandChannelState As Infragistics.Win.Misc.UltraLabel
+    Friend WithEvents ChartDataDisplay As Infragistics.Win.UltraWinChart.UltraChart
 
 End Class

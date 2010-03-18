@@ -247,6 +247,7 @@ Public Class ApplicationSettings
     Private Const DefaultExecuteParseOnSeparateThread As Boolean = False
     Private Const DefaultMaximumFrameDisplayBytes As Integer = 128
     Private Const DefaultRestoreLastConnectionSettings As Boolean = True
+    Private Const DefaultForceIPv4 As Boolean = False
 
     ' Default attribute tree settings
     Private Const DefaultChannelNodeBackgroundColor As String = "Yellow"
@@ -385,6 +386,7 @@ Public Class ApplicationSettings
     Private m_executeParseOnSeparateThread As Boolean
     Private m_maximumFrameDisplayBytes As Integer
     Private m_restoreLastConnectionSettings As Boolean
+    Private m_forceIPv4 As Boolean
 
     ' Attribute tree settings
     Private m_channelNodeBackgroundColor As Color
@@ -504,6 +506,18 @@ Public Class ApplicationSettings
         End Get
         Set(ByVal value As Boolean)
             m_restoreLastConnectionSettings = value
+        End Set
+    End Property
+
+    <Category(ApplicationSettingsCategory), _
+    Description("Set to True to force use of IPv4."), _
+    DefaultValue(DefaultForceIPv4)> _
+    Public Property ForceIPv4() As Boolean
+        Get
+            Return m_forceIPv4
+        End Get
+        Set(ByVal value As Boolean)
+            m_forceIPv4 = value
         End Set
     End Property
 

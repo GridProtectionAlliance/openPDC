@@ -1602,7 +1602,12 @@ namespace TVA.PhasorProtocols
                     else if (m_dataChannel != null && m_dataChannel.CurrentState == ClientState.Connected)
                         handle = m_dataChannel.SendAsync(buffer, 0, buffer.Length);
                     else if (m_serverBasedDataChannel != null && m_serverBasedDataChannel.CurrentState == ServerState.Running)
-                        handle = m_serverBasedDataChannel.MulticastAsync(buffer, 0, buffer.Length)[0];
+                    {
+                        WaitHandle[] handles = m_serverBasedDataChannel.MulticastAsync(buffer, 0, buffer.Length);
+
+                        if (handles != null && handles.Length > 0)
+                            handle = handles[0];
+                    }
 
                     if (SentCommandFrame != null)
                         SentCommandFrame(this, new EventArgs<ICommandFrame>(commandFrame));
