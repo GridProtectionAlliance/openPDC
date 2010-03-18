@@ -581,6 +581,15 @@ namespace openPDCManager.Services.Service
 
 		#endregion
 
+		#region " Current Device Measurements Code"
+
+		public List<DeviceMeasurementData> GetDeviceMeasurementData(string nodeID)
+		{
+			return CommonFunctions.GetDeviceMeasurementData(nodeID);
+		}
+
+		#endregion
+
 		public Dictionary<string, string> GetTimeZones(bool isOptional)
 		{
 			return CommonFunctions.GetTimeZones(isOptional);

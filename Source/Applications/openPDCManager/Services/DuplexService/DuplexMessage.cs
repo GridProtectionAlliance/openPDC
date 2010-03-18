@@ -246,5 +246,6 @@ namespace openPDCManager.Services.DuplexService
 	[KnownType(typeof(TimeSeriesDataMessage))]
 	[KnownType(typeof(ServiceUpdateMessage))]
 	[KnownType(typeof(ServiceRequestMessage))]
+	[KnownType(typeof(TimeTaggedDataMessage))]
     public class DuplexMessage { }
 }

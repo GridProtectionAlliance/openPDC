@@ -249,13 +249,15 @@ namespace openPDCManager.Services.DuplexService
     {
         LivePhasorDataMessage,
         TimeSeriesDataMessage,
-        ServiceStatusMessage
+        ServiceStatusMessage,
+		TimeTaggedDataMessage
     }
 
     public enum DisplayType
     {
         Home,
-        ServiceClient
+        ServiceClient,
+		DeviceMeasurements
     }
 
     #endregion
@@ -291,7 +293,9 @@ namespace openPDCManager.Services.DuplexService
 		protected List<Node> nodesInDatabase;
 		protected Dictionary<string, WindowsServiceClient> serviceClientList;
         //Will maintain data for each node in a dictionary to serve to any number of clients. This would eliminate database hit for each client.
-        Dictionary<string, LivePhasorDataMessage> dataPerNode;
+        Dictionary<string, LivePhasorDataMessage> dataPerNode;	//stores vendor device distribution and interconnectionstatus per node.
+		Dictionary<string, TimeTaggedDataMessage> timeTaggedMeasurementsPerNode;	//stores current time series data for all the measurements per node.
+		Dictionary<string, KeyValuePair<int, int>> minMaxPointIDsPerNode;	//stores min and max values of point id in measurement table per node.
         private bool m_disposed;
 
         #endregion
@@ -303,6 +307,8 @@ namespace openPDCManager.Services.DuplexService
             clients = new Dictionary<string, Client>();
             nodesInDatabase = new List<Node>();
             dataPerNode = new Dictionary<string, LivePhasorDataMessage>();
+			timeTaggedMeasurementsPerNode = new Dictionary<string, TimeTaggedDataMessage>();
+			minMaxPointIDsPerNode = new Dictionary<string, KeyValuePair<int, int>>();
         }
 
         /// <summary>
@@ -389,6 +395,14 @@ namespace openPDCManager.Services.DuplexService
 													 ServiceUpdate = serviceClientList[clients[session].NodeID].CachedStatus
 												});
 				}
+				else if (currentClient.CurrentDisplayType == DisplayType.DeviceMeasurements)
+				{
+					KeyValuePair<int, int> minMaxPointID = minMaxPointIDsPerNode[currentClient.NodeID];
+					PushMessageToClient(session, new TimeTaggedDataMessage()
+												{
+													TimeTaggedMeasurements = CommonFunctions.GetTimeTaggedMeasurements(currentClient.TimeSeriesDataRootUrl + "/timeseriesdata/read/current/" + minMaxPointID.Key.ToString() + "-" + minMaxPointID.Value.ToString() + "/XML")
+												});
+				}
             }
 			else if (msg is ServiceRequestMessage)
 			{
@@ -432,6 +446,36 @@ namespace openPDCManager.Services.DuplexService
             }
         }
 
+		protected void RefreshTimeTaggedMeasurementsPerNode()
+		{
+			lock (syncRoot)
+			{
+				foreach (Node node in nodesInDatabase)
+				{
+					if (minMaxPointIDsPerNode.ContainsKey(node.ID))
+						minMaxPointIDsPerNode[node.ID] = CommonFunctions.GetMinMaxPointIDs(node.ID);
+					else
+						minMaxPointIDsPerNode.Add(node.ID, CommonFunctions.GetMinMaxPointIDs(node.ID));
+				}
+			}
+
+			lock (syncRoot)
+			{
+				foreach (Node node in nodesInDatabase)
+				{
+					KeyValuePair<int, int> minMaxPointID = minMaxPointIDsPerNode[node.ID];				
+					TimeTaggedDataMessage message = new TimeTaggedDataMessage()
+													{
+														TimeTaggedMeasurements = CommonFunctions.GetTimeTaggedMeasurements(node.TimeSeriesDataServiceUrl + "/timeseriesdata/read/current/" + minMaxPointID.Key.ToString() + "-" + minMaxPointID.Value.ToString() + "/XML")
+													};
+					if (timeTaggedMeasurementsPerNode.ContainsKey(node.ID))
+						timeTaggedMeasurementsPerNode[node.ID] = message;
+					else
+						timeTaggedMeasurementsPerNode.Add(node.ID, message);
+				}
+			}
+		}
+
 		protected void PushServiceStatusToClients(string nodeID, DuplexMessage message)
 		{
 			lock (syncRoot)
@@ -467,6 +511,13 @@ namespace openPDCManager.Services.DuplexService
 							};
 							PushMessageToClient(session, message);
 						}
+					}
+					else if (clients[session].CurrentDisplayType == DisplayType.DeviceMeasurements && messageType == MessageType.TimeTaggedDataMessage)
+					{
+						if (timeTaggedMeasurementsPerNode.ContainsKey(clients[session].NodeID))
+							PushMessageToClient(session, timeTaggedMeasurementsPerNode[clients[session].NodeID]);
+						else
+							PushMessageToClient(session, new TimeTaggedDataMessage());
 					}
                 }
             }

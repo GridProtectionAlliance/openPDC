@@ -21,8 +21,9 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.ConnectMessage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.DisconnectMessage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.ServiceUpdateMessage))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.TimeSeriesDataMessage))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.TimeTaggedDataMessage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.LivePhasorDataMessage))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.TimeSeriesDataMessage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.LivePhasorDataServiceProxy.ServiceRequestMessage))]
     public partial class DuplexMessage : object, System.ComponentModel.INotifyPropertyChanged {
         
@@ -146,20 +147,20 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="TimeSeriesDataMessage", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Services.DuplexService")]
-    public partial class TimeSeriesDataMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
+    [System.Runtime.Serialization.DataContractAttribute(Name="TimeTaggedDataMessage", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Services.DuplexService")]
+    public partial class TimeTaggedDataMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
         
-        private System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.LivePhasorDataServiceProxy.TimeSeriesDataPoint> TimeSeriesDataField;
+        private System.Collections.Generic.Dictionary<int, openPDCManager.Silverlight.LivePhasorDataServiceProxy.TimeTaggedMeasurement> TimeTaggedMeasurementsField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.LivePhasorDataServiceProxy.TimeSeriesDataPoint> TimeSeriesData {
+        public System.Collections.Generic.Dictionary<int, openPDCManager.Silverlight.LivePhasorDataServiceProxy.TimeTaggedMeasurement> TimeTaggedMeasurements {
             get {
-                return this.TimeSeriesDataField;
+                return this.TimeTaggedMeasurementsField;
             }
             set {
-                if ((object.ReferenceEquals(this.TimeSeriesDataField, value) != true)) {
-                    this.TimeSeriesDataField = value;
-                    this.RaisePropertyChanged("TimeSeriesData");
+                if ((object.ReferenceEquals(this.TimeTaggedMeasurementsField, value) != true)) {
+                    this.TimeTaggedMeasurementsField = value;
+                    this.RaisePropertyChanged("TimeTaggedMeasurements");
                 }
             }
         }
@@ -203,6 +204,27 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="TimeSeriesDataMessage", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Services.DuplexService")]
+    public partial class TimeSeriesDataMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
+        
+        private System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.LivePhasorDataServiceProxy.TimeSeriesDataPoint> TimeSeriesDataField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.LivePhasorDataServiceProxy.TimeSeriesDataPoint> TimeSeriesData {
+            get {
+                return this.TimeSeriesDataField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TimeSeriesDataField, value) != true)) {
+                    this.TimeSeriesDataField = value;
+                    this.RaisePropertyChanged("TimeSeriesData");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="ServiceRequestMessage", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Services.DuplexService")]
     public partial class ServiceRequestMessage : openPDCManager.Silverlight.LivePhasorDataServiceProxy.DuplexMessage {
         
@@ -231,6 +253,9 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ServiceClient = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DeviceMeasurements = 2,
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
@@ -249,35 +274,50 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="TimeSeriesDataPoint", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
-    public partial class TimeSeriesDataPoint : object, System.ComponentModel.INotifyPropertyChanged {
+    [System.Runtime.Serialization.DataContractAttribute(Name="TimeTaggedMeasurement", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+    public partial class TimeTaggedMeasurement : object, System.ComponentModel.INotifyPropertyChanged {
         
-        private long IndexField;
+        private string CurrentValueField;
         
-        private double ValueField;
+        private string QualityField;
+        
+        private string TimeTagField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public long Index {
+        public string CurrentValue {
             get {
-                return this.IndexField;
+                return this.CurrentValueField;
             }
             set {
-                if ((this.IndexField.Equals(value) != true)) {
-                    this.IndexField = value;
-                    this.RaisePropertyChanged("Index");
+                if ((object.ReferenceEquals(this.CurrentValueField, value) != true)) {
+                    this.CurrentValueField = value;
+                    this.RaisePropertyChanged("CurrentValue");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public double Value {
+        public string Quality {
             get {
-                return this.ValueField;
+                return this.QualityField;
             }
             set {
-                if ((this.ValueField.Equals(value) != true)) {
-                    this.ValueField = value;
-                    this.RaisePropertyChanged("Value");
+                if ((object.ReferenceEquals(this.QualityField, value) != true)) {
+                    this.QualityField = value;
+                    this.RaisePropertyChanged("Quality");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TimeTag {
+            get {
+                return this.TimeTagField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TimeTagField, value) != true)) {
+                    this.TimeTagField = value;
+                    this.RaisePropertyChanged("TimeTag");
                 }
             }
         }
@@ -413,6 +453,51 @@ namespace openPDCManager.Silverlight.LivePhasorDataServiceProxy {
                 if ((this.TotalDevicesField.Equals(value) != true)) {
                     this.TotalDevicesField = value;
                     this.RaisePropertyChanged("TotalDevices");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="TimeSeriesDataPoint", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+    public partial class TimeSeriesDataPoint : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private long IndexField;
+        
+        private double ValueField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public long Index {
+            get {
+                return this.IndexField;
+            }
+            set {
+                if ((this.IndexField.Equals(value) != true)) {
+                    this.IndexField = value;
+                    this.RaisePropertyChanged("Index");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double Value {
+            get {
+                return this.ValueField;
+            }
+            set {
+                if ((this.ValueField.Equals(value) != true)) {
+                    this.ValueField = value;
+                    this.RaisePropertyChanged("Value");
                 }
             }
         }

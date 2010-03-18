@@ -1,17 +1,15 @@
 ﻿//*******************************************************************************************************
-//  IPhasorDataService.cs - Gbtc
+//  DeviceMeasurements.xaml.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  07/05/2009 - Mehulbhai Thakkar
+//  03/15/2010 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
-//  09/15/2009 - Stephen C. Wills
-//       Added new header and license agreement.
 //
 //*******************************************************************************************************
 
@@ -232,373 +230,131 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.ServiceModel;
-using openPDCManager.Web.Data.Entities;
-using openPDCManager.Web.Data.BusinessObjects;
-using System.IO;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Navigation;
+using openPDCManager.Silverlight.ModalDialogs;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
+using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
 
-namespace openPDCManager.Services.Service
+namespace openPDCManager.Silverlight.Pages.Adapters
 {
-    // NOTE: If you change the interface name "IPhasorDataService" here, you must also update the reference to "IPhasorDataService" in Web.config.
-	/// <summary>
-	/// Interface defines service and operation contract between WCF service and its consumers.
-	/// </summary>
-	[ServiceContract]
-	public interface IPhasorDataService
+	public partial class DeviceMeasurements : Page
 	{
-
-		#region " Manage Node Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<Node> GetNodeList(bool enabledOnly);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<string, string> GetNodes(bool enabledOnly, bool isOptional);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveNode(Node node, bool isNew);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Node GetNodeByID(string id);
-
-		#endregion
-
-		#region " Manage Company Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<Company> GetCompanyList();
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<int, string> GetCompanies(bool isOptional);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveCompany(Company company, bool isNew);
-
-		#endregion
-
-		#region " Manage Historian Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<Historian> GetHistorianList(string nodeID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveHistorian(Historian historian, bool isNew);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<int, string> GetHistorians(bool enabledOnly, bool isOptional);
-
-		#endregion
-
-		#region " Manage Vendor Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<Vendor> GetVendorList();
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<int, string> GetVendors(bool isOptional);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveVendor(Vendor vendor, bool isNew);
-
-		#endregion
-
-		#region " Manage Vendor Device Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<VendorDevice> GetVendorDeviceList();
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveVendorDevice(VendorDevice vendorDevice, bool isNew);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<int, string> GetVendorDevices(bool isOptional);
-
-		#endregion
-
-		#region " Manage Device Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<Device> GetDeviceList(string nodeID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<Device> GetDeviceListByParentID(int parentID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<int, string> GetDevices(DeviceType deviceType, string nodeID, bool isOptional);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveDevice(Device device, bool isNew, int digitalCount, int analogCount);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Device GetDeviceByDeviceID(int deviceID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Device GetDeviceByAcronym(string acronym);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID, string nodeID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Device GetConcentratorDevice(int deviceID);
-
-		#endregion
-
-		#region " Manage Phasors Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<Phasor> GetPhasorList(int deviceID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<int, string> GetPhasors(int deviceID, bool isOptional);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SavePhasor(Phasor phasor, bool isNew);
-
-		#endregion
-
-		#region " Manage Measurements Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<Measurement> GetMeasurementList(string nodeID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<Measurement> GetFilteredMeasurementsByDevice(int deviceID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveMeasurement(Measurement measurement, bool isNew);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<Measurement> GetMeasurementsByDevice(int deviceID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<Measurement> GetMeasurementsForOutputStream(string nodeID, int outputStreamID);
-
-		#endregion
-
-		#region " Manage Other Device Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<OtherDevice> GetOtherDeviceList();
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveOtherDevice(OtherDevice otherDevice, bool isNew);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		OtherDevice GetOtherDeviceByDeviceID(int deviceID);
-
-		#endregion
-
-		#region " Manage Interconnection Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<int, string> GetInterconnections(bool isOptional);
-
-		#endregion
-
-		#region " Manage Protocols Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<int, string> GetProtocols(bool isOptional);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		int GetProtocolIDByAcronym(string acronym);
-
-		#endregion
-
-		#region " Manage Signal Types Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<int, string> GetSignalTypes(bool isOptional);
-
-		#endregion
-
-		#region " Manage Calculated Measurements Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<CalculatedMeasurement> GetCalculatedMeasurementList(string nodeID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveCalculatedMeasurement(CalculatedMeasurement calculatedMeasurement, bool isNew);
-
-		#endregion
-
-		#region " Manage Custom Adapters Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType, string nodeID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveAdapter(Adapter adapter, bool isNew);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<IaonTree> GetIaonTreeData(string nodeID);
-
-		#endregion
-
-		#region " Manage Output Stream Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<OutputStream> GetOutputStreamList(bool enabledOnly, string nodeID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveOutputStream(OutputStream outputStream, bool isNew);
-
-		#endregion
-
-		#region " Manage Output Stream Device Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<OutputStreamDevice> GetOutputStreamDeviceList(int outputStreamID, bool enabledOnly);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string DeleteOutputStreamDevice(int outputStreamID, List<string> devicesToBeDeleted);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string AddDevices(int outputStreamID, Dictionary<int, string> devicesToBeAdded, bool addDigitals, bool addAnalogs);
-
-		#endregion
-
-		#region " Manage Output Stream Measurements Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<OutputStreamMeasurement> GetOutputStreamMeasurementList(int outputStreamID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveOutputStreamMeasurement(OutputStreamMeasurement outputStreamMeasurement, bool isNew);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string DeleteOutputStreamMeasurement(int outputStreamMeasurementID);
-
-		#endregion
-
-		#region " Manage Output Stream Device Phasor Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<OutputStreamDevicePhasor> GetOutputStreamDevicePhasorList(int outputStreamDeviceID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveOutputStreamDevicePhasor(OutputStreamDevicePhasor outputStreamDevicePhasor, bool isNew);
-
-		#endregion
-
-		#region " Manage Output Stream Device Analog Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<OutputStreamDeviceAnalog> GetOutputStreamDeviceAnalogList(int outputStreamDeviceID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveOutputStreamDeviceAnalog(OutputStreamDeviceAnalog outputStreamDeviceAnalog, bool isNew);
-
-		#endregion
-
-		#region " Manage Output Stream Device Digital Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<OutputStreamDeviceDigital> GetOutputStreamDeviceDigitalList(int outputStreamDeviceID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveOutputStreamDeviceDigital(OutputStreamDeviceDigital outputStreamDeviceDigital, bool isNew);
-
-		#endregion
-
-		#region " Current Device Measurements Code"
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<DeviceMeasurementData> GetDeviceMeasurementData(string nodeID);
-
-		#endregion
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<string, string> GetTimeZones(bool isOptional);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<MapData> GetMapData(MapType mapType, string nodeID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		ConnectionSettings GetConnectionSettings(Stream inputStream);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		List<WizardDeviceInfo> GetWizardConfigurationInfo(Stream inputStream);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID);
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string GetExecutingAssemblyPath();
-
-		[OperationContract]
-		[FaultContract(typeof(CustomServiceFault))]
-		string SaveIniFile(Stream input);
+		PhasorDataServiceClient m_client;
+		DuplexServiceClient m_duplexClient;
+		ActivityWindow m_activityWindow;
+		ObservableCollection<DeviceMeasurementData> deviceMeasurementDataList;
+		bool m_connected = false;
+
+		public DeviceMeasurements()
+		{
+			InitializeComponent();
+			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client.GetDeviceMeasurementDataCompleted += new EventHandler<GetDeviceMeasurementDataCompletedEventArgs>(m_client_GetDeviceMeasurementDataCompleted);
+			this.Loaded += new RoutedEventHandler(DeviceMeasurements_Loaded);
+
+			m_duplexClient = Common.GetDuplexServiceProxyClient();
+			m_duplexClient.SendToServiceCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(m_duplexClient_SendToServiceCompleted);
+			m_duplexClient.SendToClientReceived += new EventHandler<SendToClientReceivedEventArgs>(m_duplexClient_SendToClientReceived);
+		}
+
+		void ReconnectToService()
+		{
+			ConnectMessage msg = new ConnectMessage();
+			msg.NodeID = ((App)Application.Current).NodeValue;
+			msg.TimeSeriesDataRootUrl = ((App)Application.Current).TimeSeriesDataServiceUrl;
+			msg.CurrentDisplayType = DisplayType.DeviceMeasurements;
+			msg.DataPointID = 0;
+			m_duplexClient.SendToServiceAsync(msg);
+		}
+
+		void m_duplexClient_SendToClientReceived(object sender, SendToClientReceivedEventArgs e)
+		{
+			if (e.msg is TimeTaggedDataMessage)
+			{
+				Dictionary<int, TimeTaggedMeasurement> timeTaggedMeasurements = new Dictionary<int, TimeTaggedMeasurement>();
+				timeTaggedMeasurements = (e.msg as TimeTaggedDataMessage).TimeTaggedMeasurements;
+
+				foreach (DeviceMeasurementData deviceMeasurement in deviceMeasurementDataList)
+				{
+					foreach (DeviceInfo device in deviceMeasurement.DeviceList)
+					{
+						foreach (MeasurementInfo measurement in device.MeasurementList)
+						{
+							TimeTaggedMeasurement timeTaggedMeasurement;
+							if (timeTaggedMeasurements.TryGetValue(measurement.PointID, out timeTaggedMeasurement))
+							{
+								measurement.CurrentValue = timeTaggedMeasurement.CurrentValue;
+								measurement.CurrentTimeTag = timeTaggedMeasurement.TimeTag;
+								measurement.CurrentQuality = timeTaggedMeasurement.Quality;
+							}
+						}
+					}
+				}
+				TreeViewDeviceMeasurements.ItemsSource = deviceMeasurementDataList;
+			}
+		}
+
+		void m_duplexClient_SendToServiceCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				m_connected = true;
+		}
+
+		void DeviceMeasurements_Loaded(object sender, RoutedEventArgs e)
+		{
+			ReconnectToService();
+		}
+
+		void m_client_GetDeviceMeasurementDataCompleted(object sender, GetDeviceMeasurementDataCompletedEventArgs e)
+		{
+			if (e.Error == null)
+			{
+				deviceMeasurementDataList = e.Result;
+				TreeViewDeviceMeasurements.ItemsSource = deviceMeasurementDataList;
+			}
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Current Device Measurements Tree Data", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+
+			if (m_activityWindow != null)
+				m_activityWindow.Close();
+		}
+
+		// Executes when the user navigates to this page.
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			deviceMeasurementDataList = new ObservableCollection<DeviceMeasurementData>();
+			m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+			m_activityWindow.Show();
+			App app = (App)Application.Current;
+			m_client.GetDeviceMeasurementDataAsync(app.NodeValue);
+		}
+
+		// Executes just before a page is no longer the active page in a frame.
+		protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+		{
+			if (m_connected)
+				m_duplexClient.SendToServiceAsync(new DisconnectMessage());
+			base.OnNavigatingFrom(e);
+		}
 
 	}
 }

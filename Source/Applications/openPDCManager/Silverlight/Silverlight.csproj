@@ -101,6 +101,7 @@
     </Compile>
     <Compile Include="Converters\BooleanToColorConverter.cs" />
     <Compile Include="Converters\InvertBooleanConverter.cs" />
+    <Compile Include="Converters\StringToColorConverter.cs" />
     <Compile Include="Converters\StringToDictionaryConverter.cs" />
     <Compile Include="Converters\StringToPhaseConverter.cs" />
     <Compile Include="Converters\StringToPhasorTypeConverter.cs" />
@@ -146,6 +147,9 @@
     </Compile>
     <Compile Include="Pages\Adapters\CalculatedMeasurements.xaml.cs">
       <DependentUpon>CalculatedMeasurements.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\DeviceMeasurements.xaml.cs">
+      <DependentUpon>DeviceMeasurements.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Adapters\Historians.xaml.cs">
       <DependentUpon>Historians.xaml</DependentUpon>
@@ -283,6 +287,10 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
     <Page Include="Pages\Adapters\CalculatedMeasurements.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="Pages\Adapters\DeviceMeasurements.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
@@ -462,6 +470,9 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Device.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.DeviceMeasurementData.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PhasorDataServiceProxy\openPDCManager.Silverlight.PhasorDataServiceProxy.Historian.datasource">

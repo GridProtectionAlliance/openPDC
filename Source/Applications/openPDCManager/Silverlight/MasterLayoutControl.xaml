@@ -117,8 +117,13 @@
                                         <igMenu:XamWebMenuItem.Icon>
                                             <Image Source="Images/Tree.png" />
                                         </igMenu:XamWebMenuItem.Icon>
+                                    </igMenu:XamWebMenuItem>                                    
+                                    <igMenu:XamWebMenuItem Header="Device Measurements Tree" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Adapters/DeviceMeasurements.xaml">
+                                        <igMenu:XamWebMenuItem.Icon>
+                                            <Image Source="Images/Tree.png" />
+                                        </igMenu:XamWebMenuItem.Icon>
                                     </igMenu:XamWebMenuItem>
-                                </igMenu:XamWebMenuItem>
+                            </igMenu:XamWebMenuItem>
                                 <igMenu:XamWebMenuItem Header="Manage" Style="{StaticResource XamWebMenuItemStyleMainMenu}">
                                     <igMenu:XamWebMenuItem Header="Nodes" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Manage/Nodes.xaml">
                                         <igMenu:XamWebMenuItem.Icon>

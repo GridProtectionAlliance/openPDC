@@ -68,12 +68,14 @@
   <ItemGroup>
     <Compile Include="BusinessObjects\ConnectionSettings.cs" />
     <Compile Include="BusinessObjects\CustomServiceFault.cs" />
+    <Compile Include="BusinessObjects\DeviceMeasurementData.cs" />
     <Compile Include="BusinessObjects\InterconnectionStatus.cs" />
     <Compile Include="BusinessObjects\IaonTree.cs" />
     <Compile Include="BusinessObjects\MapData.cs" />
     <Compile Include="BusinessObjects\Message.cs" />
     <Compile Include="BusinessObjects\PmuDistribution.cs" />
     <Compile Include="BusinessObjects\TimeSeriesDataPoint.cs" />
+    <Compile Include="BusinessObjects\TimeTaggedMeasurement.cs" />
     <Compile Include="BusinessObjects\WizardDeviceInfo.cs" />
     <Compile Include="CommonFunctions.cs" />
     <Compile Include="DataConnection.cs" />

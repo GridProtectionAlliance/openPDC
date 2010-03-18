@@ -747,6 +747,71 @@ namespace openPDCManager.Web.Data
 			return timeSeriesData;
 		}
 
+		public static Dictionary<int, TimeTaggedMeasurement> GetTimeTaggedMeasurements(string timeSeriesDataUrl)
+		{
+			Dictionary<int, TimeTaggedMeasurement> timeTaggedMeasurementList = new Dictionary<int, TimeTaggedMeasurement>();
+
+			try
+			{
+				HttpWebRequest request = WebRequest.Create(timeSeriesDataUrl) as HttpWebRequest;
+				using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+				{
+					if (response.StatusCode == HttpStatusCode.OK)
+					{
+						StreamReader reader = new StreamReader(response.GetResponseStream());
+						XElement timeSeriesDataPoints = XElement.Parse(reader.ReadToEnd());
+
+						foreach (XElement element in timeSeriesDataPoints.Element("TimeSeriesDataPoints").Elements("TimeSeriesDataPoint"))
+						{
+							timeTaggedMeasurementList.Add(Convert.ToInt32(element.Element("HistorianID").Value), new TimeTaggedMeasurement()
+							{
+								//PointID = Convert.ToInt32(element.Element("HistorianID").Value),
+								TimeTag = element.Element("Time").Value,
+								CurrentValue = element.Element("Value").Value,
+								Quality = element.Element("Quality").Value
+							});
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				LogException("GetTimeTaggedMeasurements", ex);
+			}
+
+			return timeTaggedMeasurementList;
+		}
+
+		public static KeyValuePair<int, int> GetMinMaxPointIDs(string nodeID)
+		{
+			KeyValuePair<int, int> minMaxPointIDs = new KeyValuePair<int, int>(1, 5000);
+			DataConnection connection = new DataConnection();
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select MIN(PointID) AS MinPointID, MAX(PointID) AS MaxPointID From MeasurementDetail Where NodeID = @nodeID";
+				if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+					command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+				else
+					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+				IDataReader reader = command.ExecuteReader();
+				while (reader.Read())
+				{
+					minMaxPointIDs = new KeyValuePair<int, int>(reader.GetInt32(0), reader.GetInt32(1));
+				}
+			}
+			catch (Exception ex)
+			{
+				LogException("GetMinMaxPointIDs", ex);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
+
+			return minMaxPointIDs;
+		}
 
 		#region " Manage Companies Code"
 
@@ -3795,5 +3860,131 @@ namespace openPDCManager.Web.Data
 		}
 
 		#endregion			
+	
+		#region " Current Device Measurements Code"
+
+		public static List<DeviceMeasurementData> GetDeviceMeasurementData(string nodeID)
+		{
+			DataConnection connection = new DataConnection();
+			try
+			{
+				List<DeviceMeasurementData> deviceMeasurementDataList = new List<DeviceMeasurementData>();
+				DataSet resultSet = new DataSet();
+				resultSet.EnforceConstraints = false;
+
+				DataTable resultTable;
+
+				IDbCommand commandPdc = connection.Connection.CreateCommand();
+				commandPdc.CommandType = CommandType.Text;				
+				//Get PDCs list
+				commandPdc.CommandText = "Select ID, Acronym, Name, CompanyName From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator";
+				if (commandPdc.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+					commandPdc.Parameters.Add(AddWithValue(commandPdc, "@nodeID", "{" + nodeID + "}"));
+				else
+					commandPdc.Parameters.Add(AddWithValue(commandPdc, "@nodeID", nodeID));
+
+				commandPdc.Parameters.Add(AddWithValue(commandPdc, "@isConcentrator", true));
+
+				resultTable = new DataTable();
+				resultSet.Tables.Add(resultTable);
+				resultTable.Load(commandPdc.ExecuteReader());
+				DataRow row = resultTable.NewRow();
+				row["ID"] = 0;
+				row["Acronym"] = string.Empty;
+				row["Name"] = "Devices Connected Directly";
+				row["CompanyName"] = string.Empty;
+				resultTable.Rows.Add(row);
+
+				//Get Non PDC Devices
+				IDbCommand commandDevices = connection.Connection.CreateCommand();
+				commandDevices.CommandType = CommandType.Text;
+				commandDevices.CommandText = "Select ID, Acronym, Name,CompanyName, ProtocolName, VendorDeviceName, ParentAcronym From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator";
+				if (commandDevices.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+					commandDevices.Parameters.Add(AddWithValue(commandDevices, "@nodeID", "{" + nodeID + "}"));
+				else
+					commandDevices.Parameters.Add(AddWithValue(commandDevices, "@nodeID", nodeID));
+
+				commandDevices.Parameters.Add(AddWithValue(commandDevices, "@isConcentrator", false));
+
+				resultTable = new DataTable();
+				resultSet.Tables.Add(resultTable);
+				resultTable.Load(commandDevices.ExecuteReader());
+				row = resultTable.NewRow();
+				row["ID"] = DBNull.Value;
+				row["Acronym"] = "OTHER";
+				row["Name"] = "OTHER MEASUREMENTS";
+				row["CompanyName"] = string.Empty;
+				row["ProtocolName"] = string.Empty;
+				row["VendorDeviceName"] = string.Empty;
+				row["ParentAcronym"] = string.Empty;
+				resultTable.Rows.Add(row);
+
+				//Get Measurements
+				IDbCommand commandMeasurements = connection.Connection.CreateCommand();
+				commandMeasurements.CommandType = CommandType.Text;
+				commandMeasurements.CommandText = "Select DeviceID, SignalID, PointID, PointTag, SignalAcronym From MeasurementDetail Where NodeID = @nodeID";
+				if (commandMeasurements.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+					commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", "{" + nodeID + "}"));
+				else
+					commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", nodeID));
+
+				resultTable = new DataTable();
+				resultSet.Tables.Add(resultTable);
+				resultTable.Load(commandMeasurements.ExecuteReader());
+								
+				resultSet.Tables[0].TableName = "PdcTable";
+				resultSet.Tables[1].TableName = "DeviceTable";
+				resultSet.Tables[2].TableName = "MeasurementTable";
+
+				deviceMeasurementDataList = (from pdc in resultSet.Tables["PdcTable"].AsEnumerable()
+											 select new DeviceMeasurementData()
+											 {
+												 ID = pdc.Field<int>("ID"),
+												 Acronym = string.IsNullOrEmpty(pdc.Field<string>("Acronym")) ? "DIRECT CONNECTED" : pdc.Field<string>("Acronym"),
+												 Name = pdc.Field<string>("Name"),
+												 CompanyName = pdc.Field<string>("CompanyName"),
+												 DeviceList = (from device in resultSet.Tables["DeviceTable"].AsEnumerable()
+															   where device.Field<string>("ParentAcronym") == pdc.Field<string>("Acronym")
+															   select new DeviceInfo()
+															   {
+																   ID = device.Field<int?>("ID"),
+																   Acronym = device.Field<string>("Acronym"),
+																   Name = device.Field<string>("Name"),
+																   CompanyName = device.Field<string>("CompanyName"),
+																   ProtocolName = device.Field<string>("ProtocolName"),
+																   VendorDeviceName = device.Field<string>("VendorDeviceName"),
+																   ParentAcronym = string.IsNullOrEmpty(device.Field<string>("ParentAcronym")) ? "DIRECT CONNECTED" : device.Field<string>("ParentAcronym"),
+																   MeasurementList = (from measurement in resultSet.Tables["MeasurementTable"].AsEnumerable()
+																					  where measurement.Field<int?>("DeviceID") == device.Field<int?>("ID")
+																					  select new MeasurementInfo()
+																					  {
+																						  DeviceID = measurement.Field<int?>("DeviceID"),
+																						  SignalID = measurement.Field<object>("SignalID").ToString(),
+																						  PointID = measurement.Field<int>("PointID"),
+																						  PointTag = measurement.Field<string>("PointTag"),
+																						  SignalAcronym = measurement.Field<string>("SignalAcronym"),
+																						  CurrentTimeTag = "N/A",
+																						  CurrentValue = "NaN",
+																						  CurrentQuality = "N/A"
+																					  }).ToList()
+															   }).ToList()
+											 }).ToList();
+
+				return deviceMeasurementDataList;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetDeviceMeasurementsData", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Current Device Measurement Data", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
+		}
+
+		#endregion
+
 	}
 }
