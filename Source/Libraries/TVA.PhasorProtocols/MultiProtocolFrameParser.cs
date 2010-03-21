@@ -41,6 +41,14 @@
 //       Added new header and license agreement.
 //  02/12/2010 - Pinal C. Patel
 //       Modified to start the IFrameParser object in InitializeFrameParser() instead of Start().
+//  03/20/2010 - J. Ritchie Carroll
+//       Added property "SkipDisableRealTimeData" to allow consumer to bypass sending the command to
+//       turn off the real-time data stream when automatically starting the data parsing sequence. This
+//       is useful when using UDP multicast that may have many listeners, in these cases you don't want
+//       to disable the stream on startup or shutdown since other applications may be subscribed to the
+//       real-time stream.
+//  03/21/2010 - J. Ritchie Carroll
+//       Added parsing exception threshold settings and consumer event to handle situation.
 //
 //*******************************************************************************************************
 
@@ -324,7 +332,7 @@ namespace TVA.PhasorProtocols
     /// (e.g., TCP, UDP, Serial, etc.) and hides the complexities of this connectivity and internally pushes all data received from
     /// the selected transport protocol to the selected phasor parsing protocol.
     /// </remarks>
-    public class MultiProtocolFrameParser : IFrameParser
+    public sealed class MultiProtocolFrameParser : IFrameParser
     {
         #region [ Members ]
 
@@ -349,6 +357,16 @@ namespace TVA.PhasorProtocols
         /// Specifies the default value for the <see cref="AutoStartDataParsingSequence"/> property.
         /// </summary>
         public const bool DefaultAutoStartDataParsingSequence = true;
+
+        /// <summary>
+        /// Specfies the default value for the <see cref="AllowedParsingExceptions"/> property.
+        /// </summary>
+        public const int DefaultAllowedParsingExceptions = 10;
+
+        /// <summary>
+        /// Specifies the default value for the <see cref="ParsingExceptionWindow"/> property.
+        /// </summary>
+        public const long DefaultParsingExceptionWindow = 100000000L;  // 10 seconds
 
         // Events
 
@@ -415,7 +433,12 @@ namespace TVA.PhasorProtocols
         /// <see cref="EventArgs{T}.Argument"/> is the <see cref="Exception"/> encountered while parsing the data stream.
         /// </remarks>
         public event EventHandler<EventArgs<Exception>> ParsingException;
-        
+
+        /// <summary>
+        /// Occurs when number of parsing exceptions exceed <see cref="AllowedParsingExceptions"/> during <see cref="ParsingExceptionWindow"/>.
+        /// </summary>
+        public event EventHandler ExceededParsingExceptionThreshold;
+
         /// <summary>
         /// Occurs when a <see cref="ICommandFrame"/> is sent to a device.
         /// </summary>
@@ -485,9 +508,14 @@ namespace TVA.PhasorProtocols
         private double m_definedFrameRate;
         private long m_lastFrameReceivedTime;
         private bool m_autoStartDataParsingSequence;
+        private bool m_skipDisableRealTimeData;
         private bool m_initiatingDataStream;
         private long m_initialBytesReceived;
         private bool m_deviceSupportsCommands;
+        private int m_parsingExceptionCount;
+        private long m_lastParsingExceptionTime;
+        private int m_allowedParsingExceptions;
+        private Ticks m_parsingExceptionWindow;
         private bool m_enabled;
         private IConnectionParameters m_connectionParameters;
         private int m_connectionAttempts;
@@ -512,6 +540,8 @@ namespace TVA.PhasorProtocols
             m_definedFrameRate = DefaultDefinedFrameRate;
             m_maximumConnectionAttempts = DefaultMaximumConnectionAttempts;
             m_autoStartDataParsingSequence = DefaultAutoStartDataParsingSequence;
+            m_allowedParsingExceptions = DefaultAllowedParsingExceptions;
+            m_parsingExceptionWindow = DefaultParsingExceptionWindow;
             m_rateCalcTimer = new System.Timers.Timer();
 
             m_phasorProtocol = PhasorProtocol.IeeeC37_118V1;
@@ -538,7 +568,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets or sets <see cref="PhasorProtocols.PhasorProtocol"/> to use with this <see cref="MultiProtocolFrameParser"/>.
         /// </summary>
-        public virtual PhasorProtocol PhasorProtocol
+        public PhasorProtocol PhasorProtocol
         {
             get
             {
@@ -571,7 +601,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets or sets <see cref="TransportProtocol"/> to use with this <see cref="MultiProtocolFrameParser"/>.
         /// </summary>
-        public virtual TransportProtocol TransportProtocol
+        public TransportProtocol TransportProtocol
         {
             get
             {
@@ -590,7 +620,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets or sets the key/value pair based connection information required by the <see cref="MultiProtocolFrameParser"/> to connect to a device.
         /// </summary>
-        public virtual string ConnectionString
+        public string ConnectionString
         {
             get
             {
@@ -702,6 +732,54 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_autoStartDataParsingSequence = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets flag to skip automatic disabling of the real-time data stream on shutdown or startup.
+        /// </summary>
+        /// <remarks>
+        /// This flag may important when using UDP multicast with several subscribed clients.
+        /// </remarks>
+        public bool SkipDisableRealTimeData
+        {
+            get
+            {
+                return m_skipDisableRealTimeData;
+            }
+            set
+            {
+                m_skipDisableRealTimeData = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets number of parsing exceptions allowed during <see cref="ParsingExceptionWindow"/> before connection is reset.
+        /// </summary>
+        public int AllowedParsingExceptions
+        {
+            get
+            {
+                return m_allowedParsingExceptions;
+            }
+            set
+            {
+                m_allowedParsingExceptions = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets time duration, in <see cref="Ticks"/>, to monitor parsing exceptions.
+        /// </summary>
+        public Ticks ParsingExceptionWindow
+        {
+            get
+            {
+                return m_parsingExceptionWindow;
+            }
+            set
+            {
+                m_parsingExceptionWindow = value;
             }
         }
 
@@ -833,7 +911,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets a flag that determines if the currently selected <see cref="PhasorProtocol"/> is an IEEE standard protocol.
         /// </summary>
-        public virtual bool IsIEEEProtocol
+        public bool IsIEEEProtocol
         {
             get
             {
@@ -846,7 +924,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets a flag that determines if the currently selected <see cref="TransportProtocol"/> is connected.
         /// </summary>
-        public virtual bool IsConnected
+        public bool IsConnected
         {
             get
             {
@@ -864,7 +942,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets total time connection has been active.
         /// </summary>
-        public virtual Time ConnectionTime
+        public Time ConnectionTime
         {
             get
             {
@@ -918,7 +996,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets a boolean value that determines if data channel is defined as a server based connection.
         /// </summary>
-        public virtual bool DataChannelIsServerBased
+        public bool DataChannelIsServerBased
         {
             get
             {
@@ -1013,66 +1091,6 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets or sets a reference to the active <see cref="IFrameParser"/>.
-        /// </summary>
-        protected IFrameParser FrameParser
-        {
-            get
-            {
-                return m_frameParser;
-            }
-            set
-            {
-                m_frameParser = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a reference to the <see cref="IClient"/> data channel.
-        /// </summary>
-        protected IClient DataChannel
-        {
-            get
-            {
-                return m_dataChannel;
-            }
-            set
-            {
-                m_dataChannel = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a reference to the <see cref="IServer"/> server based data channel.
-        /// </summary>
-        protected IServer ServerBasedDataChannel
-        {
-            get
-            {
-                return m_serverBasedDataChannel;
-            }
-            set
-            {
-                m_serverBasedDataChannel = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a reference to the <see cref="IClient"/> command channel.
-        /// </summary>
-        protected IClient CommandChannel
-        {
-            get
-            {
-                return m_commandChannel;
-            }
-            set
-            {
-                m_commandChannel = value;
-            }
-        }
-
-        /// <summary>
         /// Gets a descriptive name for a device connection that includes <see cref="SourceName"/>, if provided.
         /// </summary>
         public string Name
@@ -1109,6 +1127,10 @@ namespace TVA.PhasorProtocols
                 status.AppendFormat("     Calculated frame rate: {0}", m_frameRate);
                 status.AppendLine();
                 status.AppendFormat("      Calculated data rate: {0} bytes/sec, {1} Mbps", m_byteRate.ToString("0.0"), MegaBitRate.ToString("0.0000"));
+                status.AppendLine();
+                status.AppendFormat("Allowed parsing exceptions: {0}", m_allowedParsingExceptions);
+                status.AppendLine();
+                status.AppendFormat("  Parsing exception window: {0} seconds", m_parsingExceptionWindow.ToSeconds().ToString("0.00"));
                 status.AppendLine();
 
                 if (m_frameParser != null)
@@ -1169,6 +1191,66 @@ namespace TVA.PhasorProtocols
             }
         }
 
+        ///// <summary>
+        ///// Gets or sets a reference to the active <see cref="IFrameParser"/>.
+        ///// </summary>
+        //internal IFrameParser FrameParser
+        //{
+        //    get
+        //    {
+        //        return m_frameParser;
+        //    }
+        //    set
+        //    {
+        //        m_frameParser = value;
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Gets or sets a reference to the <see cref="IClient"/> data channel.
+        ///// </summary>
+        //internal IClient DataChannel
+        //{
+        //    get
+        //    {
+        //        return m_dataChannel;
+        //    }
+        //    set
+        //    {
+        //        m_dataChannel = value;
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Gets or sets a reference to the <see cref="IServer"/> server based data channel.
+        ///// </summary>
+        //internal IServer ServerBasedDataChannel
+        //{
+        //    get
+        //    {
+        //        return m_serverBasedDataChannel;
+        //    }
+        //    set
+        //    {
+        //        m_serverBasedDataChannel = value;
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Gets or sets a reference to the <see cref="IClient"/> command channel.
+        ///// </summary>
+        //internal IClient CommandChannel
+        //{
+        //    get
+        //    {
+        //        return m_commandChannel;
+        //    }
+        //    set
+        //    {
+        //        m_commandChannel = value;
+        //    }
+        //}
+
         #endregion
 
         #region [ Methods ]
@@ -1186,7 +1268,7 @@ namespace TVA.PhasorProtocols
         /// Releases the unmanaged resources used by the <see cref="MultiProtocolFrameParser"/> object and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!m_disposed)
             {
@@ -1214,19 +1296,21 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Starts the <see cref="MultiProtocolFrameParser"/>.
         /// </summary>
-        public virtual void Start()
+        public void Start()
         {
             // Stop parser if is already running - thus calling start after already started will have the effect
             // of "restarting" the parsing engine...
             Stop();
 
-            //Reset statistics...
+            // Reset statistics...
             m_totalFramesReceived = 0;
             m_frameRateTotal = 0;
             m_byteRateTotal = 0;
             m_totalBytesReceived = 0;
             m_frameRate = 0.0D;
             m_byteRate = 0.0D;
+            m_lastParsingExceptionTime = 0;
+            m_parsingExceptionCount = 0;
 
             try
             {
@@ -1261,7 +1345,7 @@ namespace TVA.PhasorProtocols
         /// Initialize frame parser.
         /// </summary>
         /// <param name="settings">Key/value pairs dictionary parsed from connection string.</param>
-        protected virtual void InitializeFrameParser(Dictionary<string, string> settings)
+        private void InitializeFrameParser(Dictionary<string, string> settings)
         {
             string setting;
 
@@ -1360,7 +1444,7 @@ namespace TVA.PhasorProtocols
         /// Initialize command channel.
         /// </summary>
         /// <param name="connectionString">Command channel connection string.</param>
-        protected virtual void InitializeCommandChannel(string connectionString)
+        private void InitializeCommandChannel(string connectionString)
         {
             // Parse command channel connection settings
             Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
@@ -1396,7 +1480,7 @@ namespace TVA.PhasorProtocols
         /// Initialize data channel.
         /// </summary>
         /// <param name="settings">Key/value pairs dictionary parsed from connection string.</param>
-        protected virtual void InitializeDataChannel(Dictionary<string, string> settings)
+        private void InitializeDataChannel(Dictionary<string, string> settings)
         {
             string setting;
 
@@ -1479,7 +1563,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Stops the <see cref="MultiProtocolFrameParser"/>.
         /// </summary>
-        public virtual void Stop()
+        public void Stop()
         {
             m_enabled = false;
             m_rateCalcTimer.Enabled = false;
@@ -1487,7 +1571,8 @@ namespace TVA.PhasorProtocols
             m_configurationFrame = null;
 
             // Make sure data stream is disabled
-            SendDeviceCommand(DeviceCommand.DisableRealTimeData);
+            if (!m_skipDisableRealTimeData)
+                SendDeviceCommand(DeviceCommand.DisableRealTimeData);
 
             if (m_dataChannel != null)
             {
@@ -1555,7 +1640,7 @@ namespace TVA.PhasorProtocols
         /// Command will only be sent if <see cref="DeviceSupportsCommands"/> is <c>true</c> and <see cref="MultiProtocolFrameParser"/>.
         /// </remarks>
         /// <returns>A <see cref="WaitHandle"/>.</returns>
-        public virtual WaitHandle SendDeviceCommand(DeviceCommand command)
+        public WaitHandle SendDeviceCommand(DeviceCommand command)
         {
             WaitHandle handle = null;
 
@@ -1626,7 +1711,7 @@ namespace TVA.PhasorProtocols
         /// <param name="buffer">Buffer containing data to be parsed.</param>
         /// <param name="offset">Offset into buffer where data begins.</param>
         /// <param name="count">Length of data in buffer to be parsed.</param>
-        public virtual void Write(byte[] buffer, int offset, int count)
+        public void Write(byte[] buffer, int offset, int count)
         {
             // This is the delegate implementation used by the communication source for reception
             // of data directly from the socket (i.e., ReceiveDataHandler) that is used for a
@@ -1658,10 +1743,27 @@ namespace TVA.PhasorProtocols
         /// Raises the <see cref="ParsingException"/> event.
         /// </summary>
         /// <param name="ex">Exception to send to <see cref="ParsingException"/> event.</param>
-        protected virtual void OnParsingException(Exception ex)
+        private void OnParsingException(Exception ex)
         {
             if (ParsingException != null && !(ex is ThreadAbortException))
                 ParsingException(this, new EventArgs<Exception>(ex));
+
+            if (DateTime.Now.Ticks - m_lastParsingExceptionTime > m_parsingExceptionWindow)
+            {
+                // Exception window has passed since last exception, so we reset counters
+                m_lastParsingExceptionTime = DateTime.Now.Ticks;
+                m_parsingExceptionCount = 0;
+            }
+
+            m_parsingExceptionCount++;
+
+            if (m_parsingExceptionCount > m_allowedParsingExceptions)
+            {
+                // Notify consumer of parsing exception threshold deviation
+                OnExceededParsingExceptionThreshold();
+                m_lastParsingExceptionTime = 0;
+                m_parsingExceptionCount = 0;
+            }
         }
 
         /// <summary>
@@ -1670,17 +1772,26 @@ namespace TVA.PhasorProtocols
         /// <param name="innerException">Actual exception to send as inner exception to <see cref="ParsingException"/> event.</param>
         /// <param name="message">Message of new exception to send to <see cref="ParsingException"/> event.</param>
         /// <param name="args">Arguments of message of new exception to send to <see cref="ParsingException"/> event.</param>
-        protected virtual void OnParsingException(Exception innerException, string message, params object[] args)
+        private void OnParsingException(Exception innerException, string message, params object[] args)
         {
             if (!(innerException is ThreadAbortException))
                 OnParsingException(new Exception(string.Format(message, args), innerException));
         }
 
         /// <summary>
+        /// Raises the <see cref="ExceededParsingExceptionThreshold"/> event.
+        /// </summary>
+        private void OnExceededParsingExceptionThreshold()
+        {
+            if (ExceededParsingExceptionThreshold != null)
+                ExceededParsingExceptionThreshold(this, EventArgs.Empty);
+        }
+
+        /// <summary>
         /// Derives a flag based on settings that determines if the current connection supports device commands.
         /// </summary>
         /// <returns>Derived flag that determines if the current connection supports device commands.</returns>
-        protected virtual bool DeriveCommandSupport()
+        private bool DeriveCommandSupport()
         {
             // Command support is based on phasor protocol, transport protocol and connection style
             if (IsIEEEProtocol || m_phasorProtocol == PhasorProtocol.SelFastMessage || m_phasorProtocol == PhasorProtocol.Macrodyne)
@@ -1720,23 +1831,26 @@ namespace TVA.PhasorProtocols
             // we use this code to disable real-time data and wait for data to stop streaming...
             try
             {
-                // Make sure data stream is disabled
-                WaitHandle handle = SendDeviceCommand(DeviceCommand.DisableRealTimeData);
-                if (handle != null)
-                    handle.WaitOne();
-
-                // Allow device time to receive and process command before sending another
-                Thread.Sleep(1000);
-
-                // Wait for real-time data stream to cease for up to two seconds
-                while (m_initialBytesReceived > 0)
+                if (!m_skipDisableRealTimeData)
                 {
-                    m_initialBytesReceived = 0;
-                    Thread.Sleep(100);
+                    // Make sure data stream is disabled
+                    WaitHandle handle = SendDeviceCommand(DeviceCommand.DisableRealTimeData);
+                    if (handle != null)
+                        handle.WaitOne();
 
-                    attempts++;
-                    if (attempts >= 20)
-                        break;
+                    // Allow device time to receive and process command before sending another
+                    Thread.Sleep(1000);
+
+                    // Wait for real-time data stream to cease for up to two seconds
+                    while (m_initialBytesReceived > 0)
+                    {
+                        m_initialBytesReceived = 0;
+                        Thread.Sleep(100);
+
+                        attempts++;
+                        if (attempts >= 20)
+                            break;
+                    }
                 }
             }
             finally
@@ -1763,7 +1877,6 @@ namespace TVA.PhasorProtocols
                     SendDeviceCommand(DeviceCommand.SendConfigurationFrame2);
                     break;
             }
-
 
             if (m_phasorProtocol != PhasorProtocol.SelFastMessage)
                 SendDeviceCommand(DeviceCommand.SendConfigurationFrame2);

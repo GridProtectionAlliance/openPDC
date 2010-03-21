@@ -1019,6 +1019,11 @@ namespace TVA.PhasorProtocols
 
             if ((object)signalMeasurement != null && dataFrame != null)
             {
+                // Since the frame's member collections accessed here will not change size prior to publication
+                // and signal reference assigns a signal possible source measurement - no locking is performed.
+                // This is an intentional optimization that exists only because of the nature of this data and
+                // its intended uses. If code changes are made that alter this behavior, access to this method
+                // may need to be synchronized.
                 PhasorValueCollection phasorValues;
                 DigitalValueCollection digitalValues;
                 AnalogValueCollection analogValues;

@@ -10,6 +10,8 @@
 //  -----------------------------------------------------------------------------------------------------
 //  05/18/2009 - J. Ritchie Carroll
 //       Generated original version of source code.
+//  03/21/2010 - J. Ritchie Carroll
+//       Added new connection string settings to accomodate new MultiProtocolFrameParser properties.
 //
 //*******************************************************************************************************
 
@@ -482,6 +484,7 @@ namespace TVA.PhasorProtocols
                     m_frameParser.ConnectionEstablished -= m_frameParser_ConnectionEstablished;
                     m_frameParser.ConnectionException -= m_frameParser_ConnectionException;
                     m_frameParser.ConnectionTerminated -= m_frameParser_ConnectionTerminated;
+                    m_frameParser.ExceededParsingExceptionThreshold -= m_frameParser_ExceededParsingExceptionThreshold;
                     m_frameParser.ParsingException -= m_frameParser_ParsingException;
                     m_frameParser.ReceivedConfigurationFrame -= m_frameParser_ReceivedConfigurationFrame;
                     m_frameParser.ReceivedDataFrame -= m_frameParser_ReceivedDataFrame;
@@ -500,6 +503,7 @@ namespace TVA.PhasorProtocols
                     m_frameParser.ConnectionEstablished += m_frameParser_ConnectionEstablished;
                     m_frameParser.ConnectionException += m_frameParser_ConnectionException;
                     m_frameParser.ConnectionTerminated += m_frameParser_ConnectionTerminated;
+                    m_frameParser.ExceededParsingExceptionThreshold += m_frameParser_ExceededParsingExceptionThreshold;
                     m_frameParser.ParsingException += m_frameParser_ParsingException;
                     m_frameParser.ReceivedConfigurationFrame += m_frameParser_ReceivedConfigurationFrame;
                     m_frameParser.ReceivedDataFrame += m_frameParser_ReceivedDataFrame;
@@ -605,6 +609,24 @@ namespace TVA.PhasorProtocols
                 else
                     frameParser.AutoRepeatCapturedPlayback = true;
             }
+
+            if (settings.TryGetValue("allowedParsingExceptions", out setting))
+                frameParser.AllowedParsingExceptions = int.Parse(setting);
+
+            if (settings.TryGetValue("parsingExceptionWindow", out setting))
+                frameParser.ParsingExceptionWindow = Ticks.FromSeconds(double.Parse(setting));
+
+            if (settings.TryGetValue("maximumConnectionAttempts", out setting))
+                frameParser.MaximumConnectionAttempts = int.Parse(setting);
+
+            if (settings.TryGetValue("autoStartDataParsingSequence", out setting))
+                frameParser.AutoStartDataParsingSequence = setting.ParseBoolean();
+
+            if (settings.TryGetValue("skipDisableRealTimeData", out setting))
+                frameParser.SkipDisableRealTimeData = setting.ParseBoolean();
+
+            if (settings.TryGetValue("executeParseOnSeparateThread", out setting))
+                frameParser.ExecuteParseOnSeparateThread = setting.ParseBoolean();
 
             // Provide access ID to frame parser as this may be necessary to make a phasor connection
             frameParser.DeviceID = m_accessID;
@@ -1076,6 +1098,12 @@ namespace TVA.PhasorProtocols
         private void m_frameParser_ParsingException(object sender, EventArgs<Exception> e)
         {
             OnProcessException(e.Argument);
+        }
+
+        private void m_frameParser_ExceededParsingExceptionThreshold(object sender, EventArgs e)
+        {
+            OnStatusMessage("\r\nConnection is being reset due to an excessive number of exceptions...\r\n");
+            Start();
         }
 
         private void m_frameParser_ConnectionAttempt(object sender, EventArgs e)
