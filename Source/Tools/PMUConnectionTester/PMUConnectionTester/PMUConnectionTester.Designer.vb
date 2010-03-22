@@ -320,6 +320,7 @@ Partial Class PMUConnectionTester
         '
         'LabelAlternateCommandChannelState
         '
+        Me.LabelAlternateCommandChannelState.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Appearance1.BackColor = System.Drawing.SystemColors.Control
         Appearance1.BackColor2 = System.Drawing.Color.LightGray
         Appearance1.BackGradientStyle = Infragistics.Win.GradientStyle.Vertical
@@ -327,9 +328,9 @@ Partial Class PMUConnectionTester
         Appearance1.TextVAlignAsString = "Middle"
         Me.LabelAlternateCommandChannelState.Appearance = Appearance1
         Me.LabelAlternateCommandChannelState.BorderStyleOuter = Infragistics.Win.UIElementBorderStyle.RaisedSoft
-        Me.LabelAlternateCommandChannelState.Location = New System.Drawing.Point(246, 79)
+        Me.LabelAlternateCommandChannelState.Location = New System.Drawing.Point(248, 79)
         Me.LabelAlternateCommandChannelState.Name = "LabelAlternateCommandChannelState"
-        Me.LabelAlternateCommandChannelState.Size = New System.Drawing.Size(109, 14)
+        Me.LabelAlternateCommandChannelState.Size = New System.Drawing.Size(108, 14)
         Me.LabelAlternateCommandChannelState.TabIndex = 19
         Me.LabelAlternateCommandChannelState.Text = "Not Defined"
         '

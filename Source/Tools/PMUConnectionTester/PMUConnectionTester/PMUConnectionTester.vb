@@ -310,6 +310,7 @@ Public Class PMUConnectionTester
     Private m_byteEncoding As ByteEncoding
     Private m_byteCount As Integer
     Private m_sqrtOf3 As Single = Convert.ToSingle(System.Math.Sqrt(3))
+    Private m_forcingDisconnect As Boolean
 
     ' Application variables
     Friend WithEvents m_applicationSettings As ApplicationSettings
@@ -778,6 +779,11 @@ Public Class PMUConnectionTester
         With e.ChangedItem.PropertyDescriptor
             Select Case .Category
                 Case ApplicationSettings.ApplicationSettingsCategory
+                    If String.Compare(.Name, "ForceIPv4", True) = 0 Then
+                        ' Apply change in IP mode
+                        ForceIPv4 = m_applicationSettings.ForceIPv4
+                    End If
+                Case ApplicationSettings.ConnectionSettingsCategory
                     ' We allow dynamic changes to the thread parsing state
                     If String.Compare(.Name, "ExecuteParseOnSeparateThread", True) = 0 Then
                         ' Attempt to apply new dynamic parsing state to frame parser
@@ -785,9 +791,6 @@ Public Class PMUConnectionTester
 
                         ' Change in ExecuteParseOnSeparateThread may not be allowed based on connection settings, so we restore accepted state to application settings
                         m_applicationSettings.ExecuteParseOnSeparateThread = m_frameParser.ExecuteParseOnSeparateThread
-                    ElseIf String.Compare(.Name, "ForceIPv4", True) = 0 Then
-                        ' Apply change in IP mode
-                        ForceIPv4 = m_applicationSettings.ForceIPv4
                     End If
                 Case ApplicationSettings.ChartSettingsCategory, ApplicationSettings.PhaseAngleGraphCategory, ApplicationSettings.FrequencyGraphCategory
                     If String.Compare(.Name, "PhaseAngleGraphStyle", True) = 0 Then
@@ -1203,6 +1206,12 @@ Public Class PMUConnectionTester
 
     End Sub
 
+    Private Sub m_frameParser_ExceededParsingExceptionThreshold(ByVal sender As Object, ByVal e As System.EventArgs) Handles m_frameParser.ExceededParsingExceptionThreshold
+
+        BeginInvoke(New EventHandler(AddressOf ExceededParsingExceptionThreshold), sender, e)
+
+    End Sub
+
     Private Sub m_frameParser_Disconnected() Handles m_frameParser.ConnectionTerminated
 
         BeginInvoke(New CrossAppDomainDelegate(AddressOf Disconnected))
@@ -1612,9 +1621,20 @@ Public Class PMUConnectionTester
 
     End Sub
 
+    Private Sub ExceededParsingExceptionThreshold(ByVal sender As Object, ByVal e As System.EventArgs)
+
+        m_forcingDisconnect = True
+        If m_frameParser.Enabled Then Disconnect()
+
+        If MsgBox("An excessive number of exceptions have occurred on this connection, you may want to make sure the correct protocol has been selected." & vbCrLf & "Do you want to reset connection and try again with current settings?", MsgBoxStyle.YesNo, "Exception Handling Threshold Exceeded") = MsgBoxResult.Yes Then
+            Connect()
+        End If
+
+    End Sub
+
     Private Sub Disconnected()
 
-        If m_frameParser.Enabled Then
+        If m_frameParser.Enabled And Not m_forcingDisconnect Then
             ' Communications layer closed connection (user didn't) - so we terminate gracefully...
             Disconnect()
             AppendStatusMessage("Connection closed by remote device.")
@@ -1759,6 +1779,13 @@ Public Class PMUConnectionTester
                 ' Append command channel settings
                 .ConnectionString &= AlternateCommandChannel.ConnectionString
 
+                ' Include connection specific settings in connection string if they are not set to their default values so that
+                ' these settings will ride with their serialized connection file
+                If m_applicationSettings.MaximumConnectionAttempts <> 1 Then .ConnectionString &= "; maximumConnectionAttempts = " & m_applicationSettings.MaximumConnectionAttempts
+                If Not m_applicationSettings.AutoStartDataParsingSequence Then .ConnectionString &= "; autoStartDataParsingSequence = false"
+                If m_applicationSettings.ExecuteParseOnSeparateThread Then .ConnectionString &= "; executeParseOnSeparateThread = true"
+                If m_applicationSettings.SkipDisableRealTimeData Then .ConnectionString &= "; skipDisableRealTimeData = true"
+
                 .PmuID = Convert.ToInt32(TextBoxDeviceID.Text)
                 .FrameRate = Convert.ToInt32(TextBoxFileFrameRate.Text)
                 .AutoRepeatPlayback = CheckBoxAutoRepeatPlayback.Checked
@@ -1791,6 +1818,7 @@ Public Class PMUConnectionTester
             TabControlCommunications.Tabs(.TransportProtocol).Selected = True
 
             Dim connectionData As Dictionary(Of String, String) = .ConnectionString.ParseKeyValuePairs()
+            Dim setting As String
 
             Select Case .TransportProtocol
                 Case TransportProtocol.Tcp
@@ -1831,6 +1859,12 @@ Public Class PMUConnectionTester
             ' Apply alternate command channel settings (if any)
             AlternateCommandChannel.ConnectionString = .ConnectionString
             UpdateAlternateCommandChannelLabel()
+
+            ' Check for connection specific settings that may have been serialized into the connection string
+            If connectionData.TryGetValue("maximumConnectionAttempts", setting) Then m_applicationSettings.MaximumConnectionAttempts = Integer.Parse(setting)
+            If connectionData.TryGetValue("autoStartDataParsingSequence", setting) Then m_applicationSettings.AutoStartDataParsingSequence = setting.ParseBoolean()
+            If connectionData.TryGetValue("executeParseOnSeparateThread", setting) Then m_applicationSettings.ExecuteParseOnSeparateThread = setting.ParseBoolean()
+            If connectionData.TryGetValue("skipDisableRealTimeData", setting) Then m_applicationSettings.SkipDisableRealTimeData = setting.ParseBoolean()
 
             TextBoxDeviceID.Text = .PmuID.ToString()
             TextBoxFileFrameRate.Text = .FrameRate.ToString()
@@ -1949,6 +1983,9 @@ Public Class PMUConnectionTester
                     .MaximumConnectionAttempts = m_applicationSettings.MaximumConnectionAttempts
                     .AutoStartDataParsingSequence = m_applicationSettings.AutoStartDataParsingSequence
                     .ExecuteParseOnSeparateThread = m_applicationSettings.ExecuteParseOnSeparateThread
+                    .SkipDisableRealTimeData = m_applicationSettings.SkipDisableRealTimeData
+                    .AllowedParsingExceptions = m_applicationSettings.AllowedParsingExceptions
+                    .ParsingExceptionWindow = Ticks.FromSeconds(m_applicationSettings.ParsingExceptionWindow)
                     .AutoRepeatCapturedPlayback = currentSettings.AutoRepeatPlayback
                     .DefinedFrameRate = 1 / Convert.ToInt32(TextBoxFileFrameRate.Text)
 
@@ -2009,6 +2046,7 @@ Public Class PMUConnectionTester
         m_lastRefresh = 0
         m_lastFrameType = FundamentalFrameType.Undetermined
         m_attributeFrames.Clear()
+        m_forcingDisconnect = False
 
         ' Restore all visual elements to their default state
         ButtonListen.Text = "&Connect"

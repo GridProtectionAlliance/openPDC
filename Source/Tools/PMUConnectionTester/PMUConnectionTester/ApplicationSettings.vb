@@ -242,12 +242,11 @@ Public Class ApplicationSettings
 #Region " Default Setting Values "
 
     ' Default application settings
-    Private Const DefaultMaximumConnectionAttempts As Integer = 1
-    Private Const DefaultAutoStartDataParsingSequence As Boolean = True
-    Private Const DefaultExecuteParseOnSeparateThread As Boolean = False
     Private Const DefaultMaximumFrameDisplayBytes As Integer = 128
     Private Const DefaultRestoreLastConnectionSettings As Boolean = True
     Private Const DefaultForceIPv4 As Boolean = False
+    Private Const DefaultAllowedParsingExceptions As Integer = 10
+    Private Const DefaultParsingExceptionWindow As Double = 10.0R
 
     ' Default attribute tree settings
     Private Const DefaultChannelNodeBackgroundColor As String = "Yellow"
@@ -261,6 +260,12 @@ Public Class ApplicationSettings
     Private Const DefaultForegroundColor As String = "Navy"
     Private Const DefaultTrendLineWidth As Integer = 4
     Private Const DefaultShowDataPointsOnGraphs As Boolean = False
+
+    ' Default connection settings
+    Private Const DefaultMaximumConnectionAttempts As Integer = 1
+    Private Const DefaultAutoStartDataParsingSequence As Boolean = True
+    Private Const DefaultExecuteParseOnSeparateThread As Boolean = False
+    Private Const DefaultSkipDisableRealTimeData As Boolean = False
 
     ' Default phase angle graph settings
     Private Const DefaultPhaseAngleGraphStyle As String = "Relative"
@@ -284,6 +289,7 @@ Public Class ApplicationSettings
     Public Const ApplicationSettingsCategory As String = "Application Settings"
     Public Const AttributeTreeCategory As String = "Attribute Tree"
     Public Const ChartSettingsCategory As String = "Chart Settings"
+    Public Const ConnectionSettingsCategory As String = "Connection Settings"
     Public Const PhaseAngleGraphCategory As String = "Phase Angle Graph"
     Public Const FrequencyGraphCategory As String = "Frequency Graph"
 
@@ -381,12 +387,11 @@ Public Class ApplicationSettings
 #Region " Private Member Declarations "
 
     ' Application settings
-    Private m_maximumConnectionAttempts As Integer
-    Private m_autoStartDataParsingSequence As Boolean
-    Private m_executeParseOnSeparateThread As Boolean
     Private m_maximumFrameDisplayBytes As Integer
     Private m_restoreLastConnectionSettings As Boolean
     Private m_forceIPv4 As Boolean
+    Private m_allowedParsingExceptions As Integer
+    Private m_parsingExceptionWindow As Double
 
     ' Attribute tree settings
     Private m_channelNodeBackgroundColor As Color
@@ -400,6 +405,12 @@ Public Class ApplicationSettings
     Private m_foregroundColor As Color
     Private m_trendLineWidth As Integer
     Private m_showDataPointsOnGraphs As Boolean
+
+    ' Connection settings
+    Private m_maximumConnectionAttempts As Integer
+    Private m_autoStartDataParsingSequence As Boolean
+    Private m_executeParseOnSeparateThread As Boolean
+    Private m_skipDisableRealTimeData As Boolean
 
     ' Phase angle graph settings
     Private m_phaseAngleGraphStyle As AngleGraphStyle
@@ -440,48 +451,6 @@ Public Class ApplicationSettings
 #Region " Application Settings "
 
     <Category(ApplicationSettingsCategory), _
-    Description("Maximum number of times to attempt connection before giving up; set to -1 to continue connection attempt indefinitely."), _
-    DefaultValue(DefaultMaximumConnectionAttempts)> _
-    Public Property MaximumConnectionAttempts() As Integer
-        Get
-            Return m_maximumConnectionAttempts
-        End Get
-        Set(ByVal value As Integer)
-            If value < 0 Then
-                m_maximumConnectionAttempts = -1
-            ElseIf value > 0 Then
-                m_maximumConnectionAttempts = value
-            Else
-                m_maximumConnectionAttempts = DefaultMaximumConnectionAttempts
-            End If
-        End Set
-    End Property
-
-    <Category(ApplicationSettingsCategory), _
-    Description("Set to True to automatically send commands for ConfigFrame2 and EnableRealTimeData."), _
-    DefaultValue(DefaultAutoStartDataParsingSequence)> _
-    Public Property AutoStartDataParsingSequence() As Boolean
-        Get
-            Return m_autoStartDataParsingSequence
-        End Get
-        Set(ByVal value As Boolean)
-            m_autoStartDataParsingSequence = value
-        End Set
-    End Property
-
-    <Category(ApplicationSettingsCategory), _
-    Description("Allows frame parsing to be executed on a separate thread (other than communications thread) - typically only needed when data frames are very large.  This change will happen dynamically, even if a connection is active."), _
-    DefaultValue(DefaultExecuteParseOnSeparateThread)> _
-    Public Property ExecuteParseOnSeparateThread() As Boolean
-        Get
-            Return m_executeParseOnSeparateThread
-        End Get
-        Set(ByVal value As Boolean)
-            m_executeParseOnSeparateThread = value
-        End Set
-    End Property
-
-    <Category(ApplicationSettingsCategory), _
     Description("Maximum encoded bytes to display for frames in the ""Real-time Frame Detail""."), _
     DefaultValue(DefaultMaximumFrameDisplayBytes)> _
     Public Property MaximumFrameDisplayBytes() As Integer
@@ -518,6 +487,30 @@ Public Class ApplicationSettings
         End Get
         Set(ByVal value As Boolean)
             m_forceIPv4 = value
+        End Set
+    End Property
+
+    <Category(ApplicationSettingsCategory), _
+    Description("Defines the number of parsing exceptions allowed during ParsingExceptionWindow before connection is reset."), _
+    DefaultValue(DefaultAllowedParsingExceptions)> _
+    Public Property AllowedParsingExceptions() As Integer
+        Get
+            Return m_allowedParsingExceptions
+        End Get
+        Set(ByVal value As Integer)
+            m_allowedParsingExceptions = value
+        End Set
+    End Property
+
+    <Category(ApplicationSettingsCategory), _
+    Description("Defines time duration, in seconds, to monitor parsing exceptions."), _
+    DefaultValue(DefaultParsingExceptionWindow)> _
+    Public Property ParsingExceptionWindow() As Double
+        Get
+            Return m_parsingExceptionWindow
+        End Get
+        Set(ByVal value As Double)
+            m_parsingExceptionWindow = value
         End Set
     End Property
 
@@ -642,6 +635,64 @@ Public Class ApplicationSettings
         End Get
         Set(ByVal value As Boolean)
             m_showDataPointsOnGraphs = value
+        End Set
+    End Property
+
+#End Region
+
+#Region " Connection Settings "
+
+    <Category(ConnectionSettingsCategory), _
+    Description("Maximum number of times to attempt connection before giving up; set to -1 to continue connection attempt indefinitely."), _
+    DefaultValue(DefaultMaximumConnectionAttempts)> _
+    Public Property MaximumConnectionAttempts() As Integer
+        Get
+            Return m_maximumConnectionAttempts
+        End Get
+        Set(ByVal value As Integer)
+            If value < 0 Then
+                m_maximumConnectionAttempts = -1
+            ElseIf value > 0 Then
+                m_maximumConnectionAttempts = value
+            Else
+                m_maximumConnectionAttempts = DefaultMaximumConnectionAttempts
+            End If
+        End Set
+    End Property
+
+    <Category(ConnectionSettingsCategory), _
+    Description("Set to True to automatically send commands for ConfigFrame2 and EnableRealTimeData."), _
+    DefaultValue(DefaultAutoStartDataParsingSequence)> _
+    Public Property AutoStartDataParsingSequence() As Boolean
+        Get
+            Return m_autoStartDataParsingSequence
+        End Get
+        Set(ByVal value As Boolean)
+            m_autoStartDataParsingSequence = value
+        End Set
+    End Property
+
+    <Category(ConnectionSettingsCategory), _
+    Description("Allows frame parsing to be executed on a separate thread (other than communications thread) - typically only needed when data frames are very large.  This change will happen dynamically, even if a connection is active."), _
+    DefaultValue(DefaultExecuteParseOnSeparateThread)> _
+    Public Property ExecuteParseOnSeparateThread() As Boolean
+        Get
+            Return m_executeParseOnSeparateThread
+        End Get
+        Set(ByVal value As Boolean)
+            m_executeParseOnSeparateThread = value
+        End Set
+    End Property
+
+    <Category(ConnectionSettingsCategory), _
+    Description("Defines flag to skip automatic disabling of the real-time data stream on shutdown or startup. Useful when using UDP multicast with several subscribed clients."), _
+    DefaultValue(DefaultSkipDisableRealTimeData)> _
+    Public Property SkipDisableRealTimeData() As Boolean
+        Get
+            Return m_skipDisableRealTimeData
+        End Get
+        Set(ByVal value As Boolean)
+            m_skipDisableRealTimeData = value
         End Set
     End Property
 
