@@ -1298,22 +1298,22 @@ namespace TVA.PhasorProtocols
         /// </summary>
         public void Start()
         {
-            // Stop parser if is already running - thus calling start after already started will have the effect
-            // of "restarting" the parsing engine...
-            Stop();
-
-            // Reset statistics...
-            m_totalFramesReceived = 0;
-            m_frameRateTotal = 0;
-            m_byteRateTotal = 0;
-            m_totalBytesReceived = 0;
-            m_frameRate = 0.0D;
-            m_byteRate = 0.0D;
-            m_lastParsingExceptionTime = 0;
-            m_parsingExceptionCount = 0;
-
             try
             {
+                // Stop parser if is already running - thus calling start after already started will have the effect
+                // of "restarting" the parsing engine...
+                Stop();
+
+                // Reset statistics...
+                m_totalFramesReceived = 0;
+                m_frameRateTotal = 0;
+                m_byteRateTotal = 0;
+                m_totalBytesReceived = 0;
+                m_frameRate = 0.0D;
+                m_byteRate = 0.0D;
+                m_lastParsingExceptionTime = 0;
+                m_parsingExceptionCount = 0;
+
                 // Parse connection string to check for special parameters
                 Dictionary<string, string> settings = m_connectionString.ParseKeyValuePairs();
                 string setting;
@@ -1334,10 +1334,20 @@ namespace TVA.PhasorProtocols
                 m_rateCalcTimer.Enabled = true;
                 m_enabled = true;
             }
-            catch
+            catch (System.Net.Sockets.SocketException ex)
             {
                 Stop();
-                throw;
+
+                // Check for common error when using an IPv4 address on an IPv6 stack
+                if (ex.ErrorCode == 10014)
+                    OnConnectionException(new ArgumentException(string.Format("Bad address format in \"{0}\": {1}", m_connectionString, ex.Message), ex), 1);
+                else
+                    OnConnectionException(new ArgumentException(string.Format("{0} in \"{1}\"", ex.Message, m_connectionString), ex), 1);
+            }
+            catch (Exception ex)
+            {
+                Stop();
+                OnConnectionException(new ArgumentException(string.Format("{0} in \"{1}\"", ex.Message, m_connectionString), ex), 1);
             }
         }
 
@@ -1576,52 +1586,92 @@ namespace TVA.PhasorProtocols
 
             if (m_dataChannel != null)
             {
-                m_dataChannel.Disconnect();
-                m_dataChannel.ReceiveDataHandler = null;
-                m_dataChannel.ConnectionEstablished -= m_dataChannel_ConnectionEstablished;
-                m_dataChannel.ConnectionAttempt -= m_dataChannel_ConnectionAttempt;
-                m_dataChannel.ConnectionException -= m_dataChannel_ConnectionException;
-                m_dataChannel.ConnectionTerminated -= m_dataChannel_ConnectionTerminated;
-                m_dataChannel.Dispose();
+                try
+                {
+                    m_dataChannel.Disconnect();
+                }
+                catch (Exception ex)
+                {
+                    OnParsingException(ex, "Failed to properly disconnect data channel: {0}", ex.Message);
+                }
+                finally
+                {
+                    m_dataChannel.ReceiveDataHandler = null;
+                    m_dataChannel.ConnectionEstablished -= m_dataChannel_ConnectionEstablished;
+                    m_dataChannel.ConnectionAttempt -= m_dataChannel_ConnectionAttempt;
+                    m_dataChannel.ConnectionException -= m_dataChannel_ConnectionException;
+                    m_dataChannel.ConnectionTerminated -= m_dataChannel_ConnectionTerminated;
+                    m_dataChannel.Dispose();
+                }
             }
             m_dataChannel = null;
 
             if (m_serverBasedDataChannel != null)
             {
-                m_serverBasedDataChannel.DisconnectAll();
-                m_serverBasedDataChannel.ReceiveClientDataHandler = null;
-                m_serverBasedDataChannel.ClientConnected -= m_serverBasedDataChannel_ClientConnected;
-                m_serverBasedDataChannel.ClientDisconnected -= m_serverBasedDataChannel_ClientDisconnected;
-                m_serverBasedDataChannel.ServerStarted -= m_serverBasedDataChannel_ServerStarted;
-                m_serverBasedDataChannel.ServerStopped -= m_serverBasedDataChannel_ServerStopped;
-                m_serverBasedDataChannel.Dispose();
+                try
+                {
+                    m_serverBasedDataChannel.DisconnectAll();
+                }
+                catch (Exception ex)
+                {
+                    OnParsingException(ex, "Failed to properly disconnect server based data channel: {0}", ex.Message);
+                }
+                finally
+                {
+                    m_serverBasedDataChannel.ReceiveClientDataHandler = null;
+                    m_serverBasedDataChannel.ClientConnected -= m_serverBasedDataChannel_ClientConnected;
+                    m_serverBasedDataChannel.ClientDisconnected -= m_serverBasedDataChannel_ClientDisconnected;
+                    m_serverBasedDataChannel.ServerStarted -= m_serverBasedDataChannel_ServerStarted;
+                    m_serverBasedDataChannel.ServerStopped -= m_serverBasedDataChannel_ServerStopped;
+                    m_serverBasedDataChannel.Dispose();
+                }
             }
             m_serverBasedDataChannel = null;
 
             if (m_commandChannel != null)
             {
-                m_commandChannel.Disconnect();
-                m_commandChannel.ReceiveDataHandler = null;
-                m_commandChannel.ConnectionEstablished -= m_commandChannel_ConnectionEstablished;
-                m_commandChannel.ConnectionAttempt -= m_commandChannel_ConnectionAttempt;
-                m_commandChannel.ConnectionException -= m_commandChannel_ConnectionException;
-                m_commandChannel.ConnectionTerminated -= m_commandChannel_ConnectionTerminated;
-                m_commandChannel.Dispose();
+                try
+                {
+                    m_commandChannel.Disconnect();
+                }
+                catch (Exception ex)
+                {
+                    OnParsingException(ex, "Failed to properly disconnect command channel: {0}", ex.Message);
+                }
+                finally
+                {
+                    m_commandChannel.ReceiveDataHandler = null;
+                    m_commandChannel.ConnectionEstablished -= m_commandChannel_ConnectionEstablished;
+                    m_commandChannel.ConnectionAttempt -= m_commandChannel_ConnectionAttempt;
+                    m_commandChannel.ConnectionException -= m_commandChannel_ConnectionException;
+                    m_commandChannel.ConnectionTerminated -= m_commandChannel_ConnectionTerminated;
+                    m_commandChannel.Dispose();
+                }
             }
             m_commandChannel = null;
 
             if (m_frameParser != null)
             {
-                m_frameParser.Stop();
-                m_frameParser.ReceivedCommandFrame -= m_frameParser_ReceivedCommandFrame;
-                m_frameParser.ReceivedConfigurationFrame -= m_frameParser_ReceivedConfigurationFrame;
-                m_frameParser.ReceivedDataFrame -= m_frameParser_ReceivedDataFrame;
-                m_frameParser.ReceivedHeaderFrame -= m_frameParser_ReceivedHeaderFrame;
-                m_frameParser.ReceivedUndeterminedFrame -= m_frameParser_ReceivedUndeterminedFrame;
-                m_frameParser.ReceivedFrameBufferImage -= m_frameParser_ReceivedFrameBufferImage;
-                m_frameParser.ConfigurationChanged -= m_frameParser_ConfigurationChanged;
-                m_frameParser.ParsingException -= m_frameParser_ParsingException;
-                m_frameParser.Dispose();
+                try
+                {
+                    m_frameParser.Stop();
+                }
+                catch (Exception ex)
+                {
+                    OnParsingException(ex, "Failed to properly stop frame parser: {0}", ex.Message);
+                }
+                finally
+                {
+                    m_frameParser.ReceivedCommandFrame -= m_frameParser_ReceivedCommandFrame;
+                    m_frameParser.ReceivedConfigurationFrame -= m_frameParser_ReceivedConfigurationFrame;
+                    m_frameParser.ReceivedDataFrame -= m_frameParser_ReceivedDataFrame;
+                    m_frameParser.ReceivedHeaderFrame -= m_frameParser_ReceivedHeaderFrame;
+                    m_frameParser.ReceivedUndeterminedFrame -= m_frameParser_ReceivedUndeterminedFrame;
+                    m_frameParser.ReceivedFrameBufferImage -= m_frameParser_ReceivedFrameBufferImage;
+                    m_frameParser.ConfigurationChanged -= m_frameParser_ConfigurationChanged;
+                    m_frameParser.ParsingException -= m_frameParser_ParsingException;
+                    m_frameParser.Dispose();
+                }
             }
             m_frameParser = null;
 
@@ -1644,59 +1694,66 @@ namespace TVA.PhasorProtocols
         {
             WaitHandle handle = null;
 
-            if (m_deviceSupportsCommands && (m_dataChannel != null || m_serverBasedDataChannel != null || m_commandChannel != null))
+            try
             {
-                ICommandFrame commandFrame;
-
-                // Only the IEEE, SEL Fast Message and Macrodyne protocols support commands
-                switch (m_phasorProtocol)
+                if (m_deviceSupportsCommands && (m_dataChannel != null || m_serverBasedDataChannel != null || m_commandChannel != null))
                 {
-                    case PhasorProtocols.PhasorProtocol.IeeeC37_118V1:
-                    case PhasorProtocols.PhasorProtocol.IeeeC37_118D6:
-                        commandFrame = new IeeeC37_118.CommandFrame(m_deviceID, command, 1);
-                        break;
-                    case PhasorProtocols.PhasorProtocol.Ieee1344:
-                        commandFrame = new Ieee1344.CommandFrame(m_deviceID, command);
-                        break;
-                    case PhasorProtocols.PhasorProtocol.SelFastMessage:
-                        // Get defined message period
-                        SelFastMessage.MessagePeriod messagePeriod = SelFastMessage.MessagePeriod.DefaultRate;
-                        SelFastMessage.ConnectionParameters connectionParameters = m_connectionParameters as SelFastMessage.ConnectionParameters;
+                    ICommandFrame commandFrame;
 
-                        if (connectionParameters != null)
-                            messagePeriod = connectionParameters.MessagePeriod;
-
-                        commandFrame = new SelFastMessage.CommandFrame(command, messagePeriod);
-                        break;
-                    case PhasorProtocols.PhasorProtocol.Macrodyne:
-                        commandFrame = new Macrodyne.CommandFrame(command);
-                        break;
-                    default:
-                        commandFrame = null;
-                        break;
-                }
-
-                if (commandFrame != null)
-                {
-                    byte[] buffer = commandFrame.BinaryImage;
-
-                    // Send command over appropriate communications channel - command channel, if defined,
-                    // will take precedence over other communications channels for command traffic...
-                    if (m_commandChannel != null && m_commandChannel.CurrentState == ClientState.Connected)
-                        handle = m_commandChannel.SendAsync(buffer, 0, buffer.Length);
-                    else if (m_dataChannel != null && m_dataChannel.CurrentState == ClientState.Connected)
-                        handle = m_dataChannel.SendAsync(buffer, 0, buffer.Length);
-                    else if (m_serverBasedDataChannel != null && m_serverBasedDataChannel.CurrentState == ServerState.Running)
+                    // Only the IEEE, SEL Fast Message and Macrodyne protocols support commands
+                    switch (m_phasorProtocol)
                     {
-                        WaitHandle[] handles = m_serverBasedDataChannel.MulticastAsync(buffer, 0, buffer.Length);
+                        case PhasorProtocols.PhasorProtocol.IeeeC37_118V1:
+                        case PhasorProtocols.PhasorProtocol.IeeeC37_118D6:
+                            commandFrame = new IeeeC37_118.CommandFrame(m_deviceID, command, 1);
+                            break;
+                        case PhasorProtocols.PhasorProtocol.Ieee1344:
+                            commandFrame = new Ieee1344.CommandFrame(m_deviceID, command);
+                            break;
+                        case PhasorProtocols.PhasorProtocol.SelFastMessage:
+                            // Get defined message period
+                            SelFastMessage.MessagePeriod messagePeriod = SelFastMessage.MessagePeriod.DefaultRate;
+                            SelFastMessage.ConnectionParameters connectionParameters = m_connectionParameters as SelFastMessage.ConnectionParameters;
 
-                        if (handles != null && handles.Length > 0)
-                            handle = handles[0];
+                            if (connectionParameters != null)
+                                messagePeriod = connectionParameters.MessagePeriod;
+
+                            commandFrame = new SelFastMessage.CommandFrame(command, messagePeriod);
+                            break;
+                        case PhasorProtocols.PhasorProtocol.Macrodyne:
+                            commandFrame = new Macrodyne.CommandFrame(command);
+                            break;
+                        default:
+                            commandFrame = null;
+                            break;
                     }
 
-                    if (SentCommandFrame != null)
-                        SentCommandFrame(this, new EventArgs<ICommandFrame>(commandFrame));
+                    if (commandFrame != null)
+                    {
+                        byte[] buffer = commandFrame.BinaryImage;
+
+                        // Send command over appropriate communications channel - command channel, if defined,
+                        // will take precedence over other communications channels for command traffic...
+                        if (m_commandChannel != null && m_commandChannel.CurrentState == ClientState.Connected)
+                            handle = m_commandChannel.SendAsync(buffer, 0, buffer.Length);
+                        else if (m_dataChannel != null && m_dataChannel.CurrentState == ClientState.Connected)
+                            handle = m_dataChannel.SendAsync(buffer, 0, buffer.Length);
+                        else if (m_serverBasedDataChannel != null && m_serverBasedDataChannel.CurrentState == ServerState.Running)
+                        {
+                            WaitHandle[] handles = m_serverBasedDataChannel.MulticastAsync(buffer, 0, buffer.Length);
+
+                            if (handles != null && handles.Length > 0)
+                                handle = handles[0];
+                        }
+
+                        if (SentCommandFrame != null)
+                            SentCommandFrame(this, new EventArgs<ICommandFrame>(commandFrame));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                OnParsingException(ex, "Failed to send device command \"{0}\": {1}", command, ex.Message);
             }
 
             return handle;
@@ -1759,10 +1816,18 @@ namespace TVA.PhasorProtocols
 
             if (m_parsingExceptionCount > m_allowedParsingExceptions)
             {
-                // Notify consumer of parsing exception threshold deviation
-                OnExceededParsingExceptionThreshold();
-                m_lastParsingExceptionTime = 0;
-                m_parsingExceptionCount = 0;
+                try
+                {
+                    // When the parsing exception threshold has been exceeded, connection is stopped
+                    Stop();
+                }
+                finally
+                {
+                    // Notify consumer of parsing exception threshold deviation
+                    OnExceededParsingExceptionThreshold();
+                    m_lastParsingExceptionTime = 0;
+                    m_parsingExceptionCount = 0;
+                }
             }
         }
 
@@ -1785,6 +1850,17 @@ namespace TVA.PhasorProtocols
         {
             if (ExceededParsingExceptionThreshold != null)
                 ExceededParsingExceptionThreshold(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Raises the <see cref="ConnectionException"/> event.
+        /// </summary>
+        /// <param name="ex">Exception to raise.</param>
+        /// <param name="connectionAttempts">Number of connection attempts to report.</param>
+        private void OnConnectionException(Exception ex, int connectionAttempts)
+        {
+            if (ConnectionException != null && !(ex is ThreadAbortException))
+                ConnectionException(this, new EventArgs<Exception, int>(ex, connectionAttempts));
         }
 
         /// <summary>
@@ -1949,8 +2025,7 @@ namespace TVA.PhasorProtocols
 
         private void m_dataChannel_ConnectionException(object sender, EventArgs<Exception> e)
         {
-            if (ConnectionException != null && !(e.Argument is ThreadAbortException))
-                ConnectionException(this, new EventArgs<Exception,int>(e.Argument, m_connectionAttempts));
+            OnConnectionException(e.Argument, m_connectionAttempts);
         }
 
         private void m_dataChannel_ConnectionTerminated(object sender, EventArgs e)
@@ -2005,8 +2080,7 @@ namespace TVA.PhasorProtocols
 
         private void m_commandChannel_ConnectionException(object sender, EventArgs<Exception> e)
         {
-            if (ConnectionException != null && !(e.Argument is ThreadAbortException))
-                ConnectionException(this, new EventArgs<Exception,int>(e.Argument, m_connectionAttempts));
+            OnConnectionException(e.Argument, m_connectionAttempts);
         }
 
         private void m_commandChannel_ConnectionTerminated(object sender, EventArgs e)

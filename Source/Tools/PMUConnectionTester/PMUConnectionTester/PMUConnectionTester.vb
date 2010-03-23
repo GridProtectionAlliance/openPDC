@@ -310,7 +310,6 @@ Public Class PMUConnectionTester
     Private m_byteEncoding As ByteEncoding
     Private m_byteCount As Integer
     Private m_sqrtOf3 As Single = Convert.ToSingle(System.Math.Sqrt(3))
-    Private m_forcingDisconnect As Boolean
 
     ' Application variables
     Friend WithEvents m_applicationSettings As ApplicationSettings
@@ -1623,10 +1622,12 @@ Public Class PMUConnectionTester
 
     Private Sub ExceededParsingExceptionThreshold(ByVal sender As Object, ByVal e As System.EventArgs)
 
-        m_forcingDisconnect = True
-        If m_frameParser.Enabled Then Disconnect()
+        ' Connection has been terminated, but we still need to clean up display...
+        Disconnect()
 
-        If MsgBox("An excessive number of exceptions have occurred on this connection, you may want to make sure the correct protocol has been selected." & vbCrLf & "Do you want to reset connection and try again with current settings?", MsgBoxStyle.YesNo, "Exception Handling Threshold Exceeded") = MsgBoxResult.Yes Then
+        If MsgBox("An excessive number of exceptions have occurred on this connection - please verify the correct protocol has been selected." & vbCrLf & vbCrLf & _
+                  "Do you want to try the connection again with current settings?", MsgBoxStyle.YesNo Or MsgBoxStyle.Question, _
+                  "Exception Threshold Exceeded") = MsgBoxResult.Yes Then
             Connect()
         End If
 
@@ -1634,7 +1635,7 @@ Public Class PMUConnectionTester
 
     Private Sub Disconnected()
 
-        If m_frameParser.Enabled And Not m_forcingDisconnect Then
+        If m_frameParser.Enabled Then
             ' Communications layer closed connection (user didn't) - so we terminate gracefully...
             Disconnect()
             AppendStatusMessage("Connection closed by remote device.")
@@ -2046,7 +2047,6 @@ Public Class PMUConnectionTester
         m_lastRefresh = 0
         m_lastFrameType = FundamentalFrameType.Undetermined
         m_attributeFrames.Clear()
-        m_forcingDisconnect = False
 
         ' Restore all visual elements to their default state
         ButtonListen.Text = "&Connect"

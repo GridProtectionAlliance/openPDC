@@ -258,6 +258,7 @@ namespace TVA.PhasorProtocols
         private Dictionary<ushort, ConfigurationCell> m_definedDevices;
         private Dictionary<string, long> m_undefinedDevices;
         private System.Timers.Timer m_dataStreamMonitor;
+        private System.Timers.Timer m_delayedConnection;
         private TimeZoneInfo m_timezone;
         private Ticks m_timeAdjustmentTicks;
         private Ticks m_lastReportTime;
@@ -280,6 +281,11 @@ namespace TVA.PhasorProtocols
             m_dataStreamMonitor.Elapsed += m_dataStreamMonitor_Elapsed;
             m_dataStreamMonitor.AutoReset = true;
             m_dataStreamMonitor.Enabled = false;
+
+            m_delayedConnection = new System.Timers.Timer();
+            m_delayedConnection.Elapsed += m_delayedConnection_Elapsed;
+            m_delayedConnection.AutoReset = false;
+            m_delayedConnection.Enabled = false;
 
             m_undefinedDevices = new Dictionary<string, long>();
         }
@@ -314,7 +320,7 @@ namespace TVA.PhasorProtocols
                 m_accessID = value;
             }
         }
-        
+
         /// <summary>
         /// Gets or sets time zone of this <see cref="PhasorMeasurementMapper"/>.
         /// </summary>
@@ -387,7 +393,7 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-				StringBuilder status = new StringBuilder();
+                StringBuilder status = new StringBuilder();
 
                 status.Append(base.Status);
                 status.AppendFormat("    Source is concentrator: {0}", m_isConcentrator);
@@ -396,7 +402,7 @@ namespace TVA.PhasorProtocols
                 status.AppendLine();
                 status.AppendFormat("    Manual time adjustment: {0} seconds", m_timeAdjustmentTicks.ToSeconds().ToString("0.000"));
                 status.AppendLine();
-                
+
                 if (m_frameParser != null)
                     status.Append(m_frameParser.Status);
 
@@ -443,8 +449,8 @@ namespace TVA.PhasorProtocols
                     status.Append(((DateTime)definedDevice.LastReportTime).ToString("HH:mm:ss.fff"));
                     status.AppendLine();
                 }
-				
-				status.AppendLine();
+
+                status.AppendLine();
                 status.AppendFormat("Undefined devices encountered: {0}", m_undefinedDevices.Count);
                 status.AppendLine();
 
@@ -460,8 +466,8 @@ namespace TVA.PhasorProtocols
                         status.AppendLine();
                     }
                 }
-				
-				return status.ToString();
+
+                return status.ToString();
             }
         }
 
@@ -537,6 +543,13 @@ namespace TVA.PhasorProtocols
                             m_dataStreamMonitor.Dispose();
                         }
                         m_dataStreamMonitor = null;
+
+                        if (m_delayedConnection != null)
+                        {
+                            m_delayedConnection.Elapsed -= m_delayedConnection_Elapsed;
+                            m_delayedConnection.Dispose();
+                        }
+                        m_delayedConnection = null;
                     }
                 }
                 finally
@@ -583,6 +596,11 @@ namespace TVA.PhasorProtocols
                 m_dataStreamMonitor.Interval = double.Parse(setting) * 1000.0D;
             else
                 m_dataStreamMonitor.Interval = 35000.0D;
+
+            if (settings.TryGetValue("delayedConnectionInterval", out setting))
+                m_delayedConnection.Interval = double.Parse(setting) * 1000.0D;
+            else
+                m_delayedConnection.Interval = 1500.0D;
 
             // Create a new phasor protocol frame parser for non-virtual connections
             MultiProtocolFrameParser frameParser = new MultiProtocolFrameParser();
@@ -746,7 +764,7 @@ namespace TVA.PhasorProtocols
                 definedDevice.TotalFrames = 0;
                 definedDevice.TotalTimeQualityErrors = 0;
             }
-            
+
             OnStatusMessage("Statistics reset for all devices associated with this connection.");
         }
 
@@ -850,7 +868,7 @@ namespace TVA.PhasorProtocols
         {
             m_lastReportTime = 0;
             m_bytesReceived = 0;
-         
+
             // Start frame parser
             if (m_frameParser != null)
                 m_frameParser.Start();
@@ -861,6 +879,9 @@ namespace TVA.PhasorProtocols
         /// </summary>
         protected override void AttemptDisconnection()
         {
+            // Stop the delayed connection timer, if active
+            m_delayedConnection.Enabled = false;
+
             // Stop data stream monitor
             m_dataStreamMonitor.Enabled = false;
 
@@ -1103,7 +1124,11 @@ namespace TVA.PhasorProtocols
         private void m_frameParser_ExceededParsingExceptionThreshold(object sender, EventArgs e)
         {
             OnStatusMessage("\r\nConnection is being reset due to an excessive number of exceptions...\r\n");
-            Start();
+            
+            // After exceeding exception threshold, connect only after short delay. If the wrong protocol
+            // has been selected for a data stream the exceptions can be fast and furious, this pause will
+            // help the system recover between connection attempts and keep the system responsive.
+            m_delayedConnection.Start();
         }
 
         private void m_frameParser_ConnectionAttempt(object sender, EventArgs e)
@@ -1129,6 +1154,18 @@ namespace TVA.PhasorProtocols
             }
 
             m_bytesReceived = 0;
+        }
+
+        private void m_delayedConnection_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            try 
+	        {	        
+                Start();
+	        }
+	        catch (Exception ex)
+	        {
+                OnProcessException(new InvalidOperationException(string.Format("Connection attempt failed: {0}", ex.Message), ex));
+            }
         }
 
         #endregion
