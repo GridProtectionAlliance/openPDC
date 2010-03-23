@@ -478,8 +478,7 @@ Public Class PMUConnectionTester
 
     Private Sub ButtonSendCommand_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonSendCommand.Click
 
-        m_frameParser.SendDeviceCommand(CType(ComboBoxCommands.SelectedIndex + 1, DeviceCommand))
-        AppendStatusMessage("Command """ & [Enum].GetName(GetType(DeviceCommand), ComboBoxCommands.SelectedIndex + 1) & """ requested at " & Date.Now)
+        SendDeviceCommand(CType(ComboBoxCommands.SelectedIndex + 1, DeviceCommand))
 
     End Sub
 
@@ -604,9 +603,9 @@ Public Class PMUConnectionTester
 
     Private Sub ComboBoxCommands_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ComboBoxCommands.SelectedIndexChanged
 
-        ' SEL Fast Message only supports enable and disable real-time data commands...
-        If ComboBoxProtocols.SelectedIndex = PhasorProtocol.SelFastMessage And ComboBoxCommands.SelectedIndex > 1 Then
-            MsgBox("SEL Fast Message only supports enable and disable real-time data commands.", MsgBoxStyle.Exclamation Or MsgBoxStyle.OkOnly, "Invalid Command Selection")
+        ' Some protocols only support enable and disable real-time data commands...
+        If ComboBoxProtocols.SelectedIndex >= 4 And ComboBoxCommands.SelectedIndex > 1 Then
+            MsgBox("This protocol only supports enable and disable real-time data commands.", MsgBoxStyle.Exclamation Or MsgBoxStyle.OkOnly, "Invalid Command Selection")
             ComboBoxCommands.SelectedIndex = 0
         End If
 
@@ -1595,6 +1594,13 @@ Public Class PMUConnectionTester
 
         AppendStatusMessage("NOTE: Data stream indicates that configuration in source device has changed")
 
+        If m_frameParser.DeviceSupportsCommands AndAlso _
+            MsgBox("Data stream indicates that configuration in source device has changed." & vbCrLf & vbCrLf & _
+                  "Do you want to request a new configuration frame?", MsgBoxStyle.YesNo Or MsgBoxStyle.Question, _
+                  "Device Configuration Changed") = MsgBoxResult.Yes Then
+            SendDeviceCommand(DeviceCommand.SendConfigurationFrame2)
+        End If
+
     End Sub
 
     Private Sub Connected()
@@ -1610,13 +1616,13 @@ Public Class PMUConnectionTester
         ChartDataDisplay.TitleTop.Text = "Connection attempt failed..."
         AppendStatusMessage("Device connection error: " & ex.Message)
 
-        If connectionAttempts = m_applicationSettings.MaximumConnectionAttempts Then
-            MsgBox(ex.Message, MsgBoxStyle.Exclamation Or MsgBoxStyle.OkOnly, "Device Connection Error")
+        If m_applicationSettings.MaximumConnectionAttempts > 0 And connectionAttempts >= m_applicationSettings.MaximumConnectionAttempts Then
+            Disconnect()
+            MsgBox(ex.Message & vbCrLf & connectionAttempts & IIf(connectionAttempts > 1, " connections ", " connection ") & "attempted.", _
+                   MsgBoxStyle.Exclamation Or MsgBoxStyle.OkOnly, "Device Connection Error")
         ElseIf connectionAttempts > 1 Then
             TabControlChart.Tabs(ChartTabs.Messages).Selected = True
         End If
-
-        Disconnect()
 
     End Sub
 
@@ -1930,6 +1936,13 @@ Public Class PMUConnectionTester
         End Set
     End Property
 
+    Private Sub SendDeviceCommand(ByVal command As DeviceCommand)
+
+        m_frameParser.SendDeviceCommand(command)
+        AppendStatusMessage("Command """ & [Enum].GetName(GetType(DeviceCommand), command) & """ requested at " & Date.Now)
+
+    End Sub
+
     Friend Sub UpdateAlternateCommandChannelLabel()
 
         ' We update the alternate command channel label to indicate if the alternate channel is defined
@@ -1981,7 +1994,6 @@ Public Class PMUConnectionTester
                     .TransportProtocol = currentSettings.TransportProtocol
                     .ConnectionString = currentSettings.ConnectionString
                     .DeviceID = CUShort(currentSettings.PmuID)
-                    .MaximumConnectionAttempts = m_applicationSettings.MaximumConnectionAttempts
                     .AutoStartDataParsingSequence = m_applicationSettings.AutoStartDataParsingSequence
                     .ExecuteParseOnSeparateThread = m_applicationSettings.ExecuteParseOnSeparateThread
                     .SkipDisableRealTimeData = m_applicationSettings.SkipDisableRealTimeData
@@ -1989,6 +2001,11 @@ Public Class PMUConnectionTester
                     .ParsingExceptionWindow = Ticks.FromSeconds(m_applicationSettings.ParsingExceptionWindow)
                     .AutoRepeatCapturedPlayback = currentSettings.AutoRepeatPlayback
                     .DefinedFrameRate = 1 / Convert.ToInt32(TextBoxFileFrameRate.Text)
+                    .MaximumConnectionAttempts = m_applicationSettings.MaximumConnectionAttempts
+
+                    ' Assignment of maximum connection attempts can be affected by other settings, update
+                    ' application settings to reflect possible change
+                    m_applicationSettings.MaximumConnectionAttempts = .MaximumConnectionAttempts
 
                     ' Connect to PMU...
                     .Start()

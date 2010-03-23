@@ -612,8 +612,15 @@ namespace TVA.PhasorProtocols
                 m_transportProtocol = value;
                 m_deviceSupportsCommands = DeriveCommandSupport();
 
-                if (m_transportProtocol == TransportProtocol.File && m_autoRepeatCapturedPlayback)
-                    ExecuteParseOnSeparateThread = false;
+                // File based input connections are handled more carefully
+                if (m_transportProtocol == TransportProtocol.File)
+                {
+                    if (m_autoRepeatCapturedPlayback)
+                        m_executeParseOnSeparateThread = false;
+
+                    if (m_maximumConnectionAttempts < 1)
+                        m_maximumConnectionAttempts = 1;
+                }
             }
         }
 
@@ -714,6 +721,16 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_maximumConnectionAttempts = value;
+
+                // All values below zero are assumed to mean infinite connection attempts
+                if (m_maximumConnectionAttempts < 1)
+                    m_maximumConnectionAttempts = -1;
+
+                // We don't allow maximum connection attempts set to infinite if using file based source since file based
+                // connection errors are like "file not found", "invalid path", etc. These connection exceptions are returned
+                // so quickly that they will queue up much faster than they will be reported.
+                if (m_transportProtocol == TransportProtocol.File && m_maximumConnectionAttempts < 1)
+                    m_maximumConnectionAttempts = 1;
             }
         }
 
