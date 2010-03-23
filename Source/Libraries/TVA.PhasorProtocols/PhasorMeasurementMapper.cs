@@ -845,7 +845,10 @@ namespace TVA.PhasorProtocols
                 // As soon as a configuration frame is made available to the frame parser, regardless of source,
                 // full parsing of data frames can begin...
                 if (configFrame != null)
+                {
                     m_frameParser.ConfigurationFrame = configFrame;
+                    m_receivedConfigFrame = true;
+                }
                 else
                     OnStatusMessage("NOTICE: Cannot load cached configuration, file \"{0}\" does not exist.", ConfigurationCacheFileName);
             }
