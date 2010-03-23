@@ -1298,22 +1298,22 @@ namespace TVA.PhasorProtocols
         /// </summary>
         public void Start()
         {
+            // Stop parser if it is already running - thus calling start after already started will have the effect
+            // of "restarting" the parsing engine...
+            Stop();
+
+            // Reset statistics...
+            m_totalFramesReceived = 0;
+            m_frameRateTotal = 0;
+            m_byteRateTotal = 0;
+            m_totalBytesReceived = 0;
+            m_frameRate = 0.0D;
+            m_byteRate = 0.0D;
+            m_lastParsingExceptionTime = 0;
+            m_parsingExceptionCount = 0;
+
             try
             {
-                // Stop parser if is already running - thus calling start after already started will have the effect
-                // of "restarting" the parsing engine...
-                Stop();
-
-                // Reset statistics...
-                m_totalFramesReceived = 0;
-                m_frameRateTotal = 0;
-                m_byteRateTotal = 0;
-                m_totalBytesReceived = 0;
-                m_frameRate = 0.0D;
-                m_byteRate = 0.0D;
-                m_lastParsingExceptionTime = 0;
-                m_parsingExceptionCount = 0;
-
                 // Parse connection string to check for special parameters
                 Dictionary<string, string> settings = m_connectionString.ParseKeyValuePairs();
                 string setting;
@@ -1340,14 +1340,14 @@ namespace TVA.PhasorProtocols
 
                 // Check for common error when using an IPv4 address on an IPv6 stack
                 if (ex.ErrorCode == 10014)
-                    OnConnectionException(new ArgumentException(string.Format("Bad address format in \"{0}\": {1}", m_connectionString, ex.Message), ex), 1);
+                    OnConnectionException(new InvalidOperationException(string.Format("Bad IP address format in \"{0}\": {1}", m_connectionString, ex.Message), ex), 1);
                 else
-                    OnConnectionException(new ArgumentException(string.Format("{0} in \"{1}\"", ex.Message, m_connectionString), ex), 1);
+                    OnConnectionException(new InvalidOperationException(string.Format("{0} in \"{1}\"", ex.Message, m_connectionString), ex), 1);
             }
             catch (Exception ex)
             {
                 Stop();
-                OnConnectionException(new ArgumentException(string.Format("{0} in \"{1}\"", ex.Message, m_connectionString), ex), 1);
+                OnConnectionException(new InvalidOperationException(string.Format("{0} in \"{1}\"", ex.Message, m_connectionString), ex), 1);
             }
         }
 

@@ -352,7 +352,7 @@ namespace TVA.PhasorProtocols.Anonymous
         /// Reference to a <see cref="EventArgs{T1, T2, T3}"/> instance containing the following:<br/>
         /// a reference to <see cref="IConfigurationFrame"/> (as T1),<br/>
         /// a <see cref="Action{T}"/> delegate to handle process exceptions (as T2),<br/>
-        /// and a <see cref="string"/> representing the file name (as T3).
+        /// and a <see cref="string"/> representing the configuration name (as T3).
         /// </param>
         /// <remarks>
         /// It is expected that this function will be called from the <see cref="System.Threading.ThreadPool"/>.
@@ -365,15 +365,12 @@ namespace TVA.PhasorProtocols.Anonymous
             {
                 IConfigurationFrame configurationFrame = e.Argument1;
                 Action<Exception> exceptionHandler = e.Argument2;
-                string name = e.Argument3;
+                string configurationName = e.Argument3;
 
                 try
                 {
-                    // Define configuration cache sub-directory
-                    string cachePath = ConfigurationCachePath;
-
                     // Serialize configuration frame to a file
-                    FileStream configFile = File.Create(string.Format("{0}{1}.configuration.xml", cachePath, name));
+                    FileStream configFile = File.Create(GetConfigurationCacheFileName(configurationName));
                     SoapFormatter xmlSerializer = new SoapFormatter();
 
                     xmlSerializer.AssemblyFormat = FormatterAssemblyStyle.Simple;
@@ -387,6 +384,48 @@ namespace TVA.PhasorProtocols.Anonymous
                     exceptionHandler(new InvalidOperationException(string.Format("Failed to serialize configuration frame: {0}", ex.Message), ex));
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the file name with path of the specified <paramref name="configurationName"/>.
+        /// </summary>
+        /// <param name="configurationName">Name of the configuration to get file name for.</param>
+        /// <returns>File name with path of the specified <paramref name="configurationName"/>.</returns>
+        public static string GetConfigurationCacheFileName(string configurationName)
+        {
+            return string.Format("{0}{1}.configuration.xml", ConfigurationCachePath, configurationName);
+        }
+
+        /// <summary>
+        /// Deserializes cached configuration, if available.
+        /// </summary>
+        /// <param name="configurationName">Name of the configuration to get file name for.</param>
+        /// <returns>Cached configuration frame, or null if not available.</returns>
+        public static IConfigurationFrame GetCachedConfiguration(string configurationName)
+        {
+            IConfigurationFrame configFrame = null;
+            string configFileName = GetConfigurationCacheFileName(configurationName);
+
+            if (File.Exists(configFileName))
+            {
+                FileStream configFile = null;
+                SoapFormatter xmlSerializer = new SoapFormatter();
+
+                try 
+	            {
+                    configFile = File.Open(configFileName, FileMode.Open);
+                    xmlSerializer.AssemblyFormat = FormatterAssemblyStyle.Simple;
+                    xmlSerializer.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
+                    configFrame = xmlSerializer.Deserialize(configFile) as IConfigurationFrame;
+                }
+	            finally
+	            {
+                    if (configFile != null)
+                        configFile.Close();
+	            }
+            }
+
+            return configFrame;
         }
 
         #endregion        

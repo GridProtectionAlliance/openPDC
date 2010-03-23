@@ -259,6 +259,8 @@ namespace TVA.PhasorProtocols
         private Dictionary<string, long> m_undefinedDevices;
         private System.Timers.Timer m_dataStreamMonitor;
         private System.Timers.Timer m_delayedConnection;
+        private bool m_allowUseOfCachedConfiguration;
+        private bool m_cachedConfigLoadAttempted;
         private TimeZoneInfo m_timezone;
         private Ticks m_timeAdjustmentTicks;
         private Ticks m_lastReportTime;
@@ -318,6 +320,32 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_accessID = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets flag that determines if use of cached configuration during initial connection is allowed when a configuration has not been received within the data loss interval.
+        /// </summary>
+        public bool AllowUseOfCachedConfiguration
+        {
+            get
+            {
+                return m_allowUseOfCachedConfiguration;
+            }
+            set
+            {
+                m_allowUseOfCachedConfiguration = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the configuration cache file name, with path.
+        /// </summary>
+        public string ConfigurationCacheFileName
+        {
+            get
+            {
+                return ConfigurationFrame.GetConfigurationCacheFileName(Name);
             }
         }
 
@@ -402,6 +430,14 @@ namespace TVA.PhasorProtocols
                 status.AppendLine();
                 status.AppendFormat("    Manual time adjustment: {0} seconds", m_timeAdjustmentTicks.ToSeconds().ToString("0.000"));
                 status.AppendLine();
+                status.AppendFormat("Allow use of cached config: {0}", m_allowUseOfCachedConfiguration);
+                status.AppendLine();
+
+                if (m_allowUseOfCachedConfiguration)
+                {
+                    status.AppendFormat("   Cached config file name: {0}", ConfigurationCacheFileName);
+                    status.AppendLine();
+                }
 
                 if (m_frameParser != null)
                     status.Append(m_frameParser.Status);
@@ -602,11 +638,16 @@ namespace TVA.PhasorProtocols
             else
                 m_delayedConnection.Interval = 1500.0D;
 
+            if (settings.TryGetValue("allowUseOfCachedConfiguration", out setting))
+                m_allowUseOfCachedConfiguration = setting.ParseBoolean();
+            else
+                m_allowUseOfCachedConfiguration = true;
+
             // Create a new phasor protocol frame parser for non-virtual connections
             MultiProtocolFrameParser frameParser = new MultiProtocolFrameParser();
 
-            // Most of the parameters in the connection string will be for the frame parser so we provide all of them,
-            // other parameters will simply be ignored
+            // Most of the parameters in the connection string will be for the data source in the frame parser
+            // so we provide all of them, other parameters will simply be ignored
             frameParser.ConnectionString = ConnectionString;
 
             // For captured data simulations we will inject a simulated timestamp and auto-repeat file stream...
@@ -628,6 +669,7 @@ namespace TVA.PhasorProtocols
                     frameParser.AutoRepeatCapturedPlayback = true;
             }
 
+            // Apply other settings as needed
             if (settings.TryGetValue("allowedParsingExceptions", out setting))
                 frameParser.AllowedParsingExceptions = int.Parse(setting);
 
@@ -791,6 +833,29 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Attempts to load the last known good configuration.
+        /// </summary>
+        [AdapterCommand("Attempts to load the last known good configuration.")]
+        public void LoadCachedConfiguration()
+        {
+            try
+            {
+                IConfigurationFrame configFrame = ConfigurationFrame.GetCachedConfiguration(Name);
+
+                // As soon as a configuration frame is made available to the frame parser, regardless of source,
+                // full parsing of data frames can begin...
+                if (configFrame != null)
+                    m_frameParser.ConfigurationFrame = configFrame;
+                else
+                    OnStatusMessage("NOTICE: Cannot load cached configuration, file \"{0}\" does not exist.", ConfigurationCacheFileName);
+            }
+            catch (Exception ex)
+            {
+                OnProcessException(new InvalidOperationException(string.Format("Failed to load cached configuration \"{0}\": {1}", ConfigurationCacheFileName, ex.Message), ex));
+            }
+        }
+
+        /// <summary>
         /// Gets a short one-line status of this <see cref="PhasorMeasurementMapper"/>.
         /// </summary>
         /// <param name="maxLength">Maximum number of available characters for display.</param>
@@ -868,6 +933,8 @@ namespace TVA.PhasorProtocols
         {
             m_lastReportTime = 0;
             m_bytesReceived = 0;
+            m_receivedConfigFrame = false;
+            m_cachedConfigLoadAttempted = false;
 
             // Start frame parser
             if (m_frameParser != null)
@@ -888,8 +955,6 @@ namespace TVA.PhasorProtocols
             // Stop frame parser
             if (m_frameParser != null)
                 m_frameParser.Stop();
-
-            m_receivedConfigFrame = false;
         }
 
         /// <summary>
@@ -1124,7 +1189,7 @@ namespace TVA.PhasorProtocols
         private void m_frameParser_ExceededParsingExceptionThreshold(object sender, EventArgs e)
         {
             OnStatusMessage("\r\nConnection is being reset due to an excessive number of exceptions...\r\n");
-            
+
             // After exceeding exception threshold, connect only after short delay. If the wrong protocol
             // has been selected for a data stream the exceptions can be fast and furious, this pause will
             // help the system recover between connection attempts and keep the system responsive.
@@ -1145,6 +1210,22 @@ namespace TVA.PhasorProtocols
 
         private void m_dataStreamMonitor_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            // If a configuration has yet to be loaded, attempt to load last known good configuration
+            if (!m_receivedConfigFrame && m_allowUseOfCachedConfiguration)
+            {
+                if (!m_cachedConfigLoadAttempted)
+                {
+                    OnStatusMessage("WARNING: Configuration frame has yet to be received, attempting to load cached configuration...");
+                    m_cachedConfigLoadAttempted = true;
+                    LoadCachedConfiguration();
+                }
+                else
+                {
+                    OnStatusMessage("\r\nConfiguration frame has yet to be received even after attempt to load from cache, restarting connect cycle...\r\n");
+                    Start();
+                }
+            }
+
             // If we've received no data in the last timespan, we restart connect cycle...
             if (m_bytesReceived == 0)
             {
@@ -1158,12 +1239,12 @@ namespace TVA.PhasorProtocols
 
         private void m_delayedConnection_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            try 
-	        {	        
+            try
+            {
                 Start();
-	        }
-	        catch (Exception ex)
-	        {
+            }
+            catch (Exception ex)
+            {
                 OnProcessException(new InvalidOperationException(string.Format("Connection attempt failed: {0}", ex.Message), ex));
             }
         }
