@@ -366,7 +366,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Specifies the default value for the <see cref="ParsingExceptionWindow"/> property.
         /// </summary>
-        public const long DefaultParsingExceptionWindow = 100000000L;  // 10 seconds
+        public const long DefaultParsingExceptionWindow = 50000000L; // 5 seconds
 
         // Events
 
@@ -729,7 +729,7 @@ namespace TVA.PhasorProtocols
                 // We don't allow maximum connection attempts set to infinite if using file based source since file based
                 // connection errors are like "file not found", "invalid path", etc. These connection exceptions are returned
                 // so quickly that they will queue up much faster than they will be reported.
-                if (m_transportProtocol == TransportProtocol.File && m_maximumConnectionAttempts < 1)
+                if (m_maximumConnectionAttempts < 1 && m_transportProtocol == TransportProtocol.File)
                     m_maximumConnectionAttempts = 1;
             }
         }

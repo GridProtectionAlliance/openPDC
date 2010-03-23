@@ -246,7 +246,7 @@ Public Class ApplicationSettings
     Private Const DefaultRestoreLastConnectionSettings As Boolean = True
     Private Const DefaultForceIPv4 As Boolean = False
     Private Const DefaultAllowedParsingExceptions As Integer = 10
-    Private Const DefaultParsingExceptionWindow As Double = 10.0R
+    Private Const DefaultParsingExceptionWindow As Double = 5.0R
 
     ' Default attribute tree settings
     Private Const DefaultChannelNodeBackgroundColor As String = "Yellow"

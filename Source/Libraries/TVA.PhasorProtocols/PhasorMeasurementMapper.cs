@@ -258,7 +258,6 @@ namespace TVA.PhasorProtocols
         private Dictionary<ushort, ConfigurationCell> m_definedDevices;
         private Dictionary<string, long> m_undefinedDevices;
         private System.Timers.Timer m_dataStreamMonitor;
-        private System.Timers.Timer m_delayedConnection;
         private bool m_allowUseOfCachedConfiguration;
         private bool m_cachedConfigLoadAttempted;
         private TimeZoneInfo m_timezone;
@@ -283,11 +282,6 @@ namespace TVA.PhasorProtocols
             m_dataStreamMonitor.Elapsed += m_dataStreamMonitor_Elapsed;
             m_dataStreamMonitor.AutoReset = true;
             m_dataStreamMonitor.Enabled = false;
-
-            m_delayedConnection = new System.Timers.Timer();
-            m_delayedConnection.Elapsed += m_delayedConnection_Elapsed;
-            m_delayedConnection.AutoReset = false;
-            m_delayedConnection.Enabled = false;
 
             m_undefinedDevices = new Dictionary<string, long>();
         }
@@ -579,13 +573,6 @@ namespace TVA.PhasorProtocols
                             m_dataStreamMonitor.Dispose();
                         }
                         m_dataStreamMonitor = null;
-
-                        if (m_delayedConnection != null)
-                        {
-                            m_delayedConnection.Elapsed -= m_delayedConnection_Elapsed;
-                            m_delayedConnection.Dispose();
-                        }
-                        m_delayedConnection = null;
                     }
                 }
                 finally
@@ -618,8 +605,18 @@ namespace TVA.PhasorProtocols
             else
                 m_accessID = 1;
 
-            if (settings.TryGetValue("timeZone", out setting) && !String.IsNullOrEmpty(setting))
-                m_timezone = TimeZoneInfo.FindSystemTimeZoneById(setting);
+            if (settings.TryGetValue("timeZone", out setting) && !string.IsNullOrEmpty(setting) && string.Compare(setting.Trim(), "UTC", true) != 0)
+            {
+                try
+                {
+                    m_timezone = TimeZoneInfo.FindSystemTimeZoneById(setting);
+                }
+                catch (Exception ex)
+                {
+                    OnProcessException(new InvalidOperationException(string.Format("Defaulting to UTC. Failed to find system time zone for ID \"{0}\": {1}", setting, ex.Message), ex));
+                    m_timezone = TimeZoneInfo.Utc;
+                }
+            }
             else
                 m_timezone = TimeZoneInfo.Utc;
 
@@ -631,12 +628,20 @@ namespace TVA.PhasorProtocols
             if (settings.TryGetValue("dataLossInterval", out setting))
                 m_dataStreamMonitor.Interval = double.Parse(setting) * 1000.0D;
             else
-                m_dataStreamMonitor.Interval = 35000.0D;
+                m_dataStreamMonitor.Interval = 5000.0D;
 
             if (settings.TryGetValue("delayedConnectionInterval", out setting))
-                m_delayedConnection.Interval = double.Parse(setting) * 1000.0D;
+            {
+                double interval = double.Parse(setting) * 1000.0D;
+                
+                // Minimum delay is one millisecond
+                if (interval < 1.0D)
+                    interval = 1.0D;
+
+                ConnectionAttemptInterval = interval;
+            }
             else
-                m_delayedConnection.Interval = 1500.0D;
+                ConnectionAttemptInterval = 1500.0D;
 
             if (settings.TryGetValue("allowUseOfCachedConfiguration", out setting))
                 m_allowUseOfCachedConfiguration = setting.ParseBoolean();
@@ -649,6 +654,10 @@ namespace TVA.PhasorProtocols
             // Most of the parameters in the connection string will be for the data source in the frame parser
             // so we provide all of them, other parameters will simply be ignored
             frameParser.ConnectionString = ConnectionString;
+
+            // Since input adapter will automatically reconnect on connection exceptions, we need only to specify
+            // that the frame parser try to connect once per connection attempt
+            frameParser.MaximumConnectionAttempts = 1;
 
             // For captured data simulations we will inject a simulated timestamp and auto-repeat file stream...
             if (frameParser.TransportProtocol == TransportProtocol.File)
@@ -675,9 +684,6 @@ namespace TVA.PhasorProtocols
 
             if (settings.TryGetValue("parsingExceptionWindow", out setting))
                 frameParser.ParsingExceptionWindow = Ticks.FromSeconds(double.Parse(setting));
-
-            if (settings.TryGetValue("maximumConnectionAttempts", out setting))
-                frameParser.MaximumConnectionAttempts = int.Parse(setting);
 
             if (settings.TryGetValue("autoStartDataParsingSequence", out setting))
                 frameParser.AutoStartDataParsingSequence = setting.ParseBoolean();
@@ -949,9 +955,6 @@ namespace TVA.PhasorProtocols
         /// </summary>
         protected override void AttemptDisconnection()
         {
-            // Stop the delayed connection timer, if active
-            m_delayedConnection.Enabled = false;
-
             // Stop data stream monitor
             m_dataStreamMonitor.Enabled = false;
 
@@ -1182,6 +1185,10 @@ namespace TVA.PhasorProtocols
         {
             Exception ex = e.Argument1;
             OnProcessException(new InvalidOperationException(string.Format("Connection attempt failed: {0}", ex.Message), ex));
+
+            // So long as user hasn't requested to stop, keep trying connection
+            if (Enabled)
+                Start();
         }
 
         private void m_frameParser_ParsingException(object sender, EventArgs<Exception> e)
@@ -1191,12 +1198,8 @@ namespace TVA.PhasorProtocols
 
         private void m_frameParser_ExceededParsingExceptionThreshold(object sender, EventArgs e)
         {
-            OnStatusMessage("\r\nConnection is being reset due to an excessive number of exceptions...\r\n");
-
-            // After exceeding exception threshold, connect only after short delay. If the wrong protocol
-            // has been selected for a data stream the exceptions can be fast and furious, this pause will
-            // help the system recover between connection attempts and keep the system responsive.
-            m_delayedConnection.Start();
+            OnStatusMessage("\r\nConnection is being reset due to an excessive number of exceptions...\r\n");            
+            Start();
         }
 
         private void m_frameParser_ConnectionAttempt(object sender, EventArgs e)
@@ -1246,18 +1249,6 @@ namespace TVA.PhasorProtocols
             }
 
             m_bytesReceived = 0;
-        }
-
-        private void m_delayedConnection_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            try
-            {
-                Start();
-            }
-            catch (Exception ex)
-            {
-                OnProcessException(new InvalidOperationException(string.Format("Connection attempt failed: {0}", ex.Message), ex));
-            }
         }
 
         #endregion
