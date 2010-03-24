@@ -400,11 +400,17 @@ namespace TVA.PhasorProtocols.Anonymous
         /// Deserializes cached configuration, if available.
         /// </summary>
         /// <param name="configurationName">Name of the configuration to get file name for.</param>
+        /// <param name="fromCache">Set to True retrieve from cache, False to retrieve from specified file name in <paramref name="configurationName"/></param>
         /// <returns>Cached configuration frame, or null if not available.</returns>
-        public static IConfigurationFrame GetCachedConfiguration(string configurationName)
+        public static IConfigurationFrame GetCachedConfiguration(string configurationName, bool fromCache)
         {
             IConfigurationFrame configFrame = null;
-            string configFileName = GetConfigurationCacheFileName(configurationName);
+            string configFileName;
+
+            if (fromCache)
+                configFileName = GetConfigurationCacheFileName(configurationName);
+            else
+                configFileName = configurationName;
 
             if (File.Exists(configFileName))
             {

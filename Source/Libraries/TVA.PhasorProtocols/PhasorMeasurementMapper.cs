@@ -694,6 +694,9 @@ namespace TVA.PhasorProtocols
             if (settings.TryGetValue("executeParseOnSeparateThread", out setting))
                 frameParser.ExecuteParseOnSeparateThread = setting.ParseBoolean();
 
+            if (settings.TryGetValue("configurationFile", out setting))
+                LoadConfiguration(setting);
+
             // Provide access ID to frame parser as this may be necessary to make a phasor connection
             frameParser.DeviceID = m_accessID;
             frameParser.SourceName = Name;
@@ -820,7 +823,7 @@ namespace TVA.PhasorProtocols
         /// Resets the statistics of the specified device associated with this connection.
         /// </summary>
         /// <param name="idCode">Integer ID code of device on which to reset statistics.</param>
-        [AdapterCommand("Resets the statistics of the specified device associated with this connection.")]
+        [AdapterCommand("Resets the statistics of the device with the specified idCode.")]
         public void ResetDeviceStatistics(ushort idCode)
         {
             ConfigurationCell definedDevice;
@@ -846,7 +849,7 @@ namespace TVA.PhasorProtocols
         {
             try
             {
-                IConfigurationFrame configFrame = ConfigurationFrame.GetCachedConfiguration(Name);
+                IConfigurationFrame configFrame = ConfigurationFrame.GetCachedConfiguration(Name, true);
 
                 // As soon as a configuration frame is made available to the frame parser, regardless of source,
                 // full parsing of data frames can begin...
@@ -861,6 +864,38 @@ namespace TVA.PhasorProtocols
             catch (Exception ex)
             {
                 OnProcessException(new InvalidOperationException(string.Format("Failed to load cached configuration \"{0}\": {1}", ConfigurationCacheFileName, ex.Message), ex));
+            }
+        }
+
+        /// <summary>
+        /// Attempts to load the specified configuration.
+        /// </summary>
+        /// <param name="configurationFileName">Path and file name containing serialized configuration.</param>
+        [AdapterCommand("Attempts to load the specified configuration.")]
+        public void LoadConfiguration(string configurationFileName)
+        {
+            try
+            {
+                IConfigurationFrame configFrame = ConfigurationFrame.GetCachedConfiguration(configurationFileName, false);
+
+                // As soon as a configuration frame is made available to the frame parser, regardless of source,
+                // full parsing of data frames can begin...
+                if (configFrame != null)
+                {
+                    m_frameParser.ConfigurationFrame = configFrame;
+
+                    // Cache this configuration frame since its being loaded as the new last known good configuration
+                    ThreadPool.QueueUserWorkItem(ConfigurationFrame.Cache,
+                        new EventArgs<IConfigurationFrame, Action<Exception>, string>(configFrame, OnProcessException, Name));
+
+                    m_receivedConfigFrame = true;
+                }
+                else
+                    OnStatusMessage("NOTICE: Cannot load configuration, file \"{0}\" does not exist.", configurationFileName);
+            }
+            catch (Exception ex)
+            {
+                OnProcessException(new InvalidOperationException(string.Format("Failed to load configuration \"{0}\": {1}", configurationFileName, ex.Message), ex));
             }
         }
 

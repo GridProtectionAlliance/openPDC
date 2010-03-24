@@ -1433,7 +1433,7 @@ Public Class PMUConnectionTester
             m_attributeFrames(frame.FrameType) = frame
         End SyncLock
 
-        If m_selectedCell IsNot Nothing Then
+        If m_selectedCell IsNot Nothing And frame.Cells.Count > 0 Then
             Dim cell As IDataCell = frame.Cells(ComboBoxPmus.SelectedIndex)
             Dim frequency As Double = cell.FrequencyValue.Frequency
             Dim phasorCount As Integer = cell.PhasorValues.Count
