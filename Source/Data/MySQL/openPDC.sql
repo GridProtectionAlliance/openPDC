@@ -224,26 +224,17 @@ CREATE TABLE ImportedMeasurement(
 	NodeID NCHAR(36) NULL,
 	SourceNodeID NCHAR(36) NULL,
 	SignalID NCHAR(36) NULL,
-	HistorianID INT NULL,
-	PointID INT AUTO_INCREMENT NOT NULL,
-	DeviceID INT NULL,
+	Source NVARCHAR(50) NOT NULL,
+	PointID INT NOT NULL,
 	PointTag NVARCHAR(50) NOT NULL,
 	AlternateTag NVARCHAR(50) NULL,
-	SignalTypeID INT NOT NULL,
-	PhasorSourceIndex INT NULL,
+	SignalTypeID INT NULL,
 	SignalReference NVARCHAR(24) NOT NULL,
 	Adder DOUBLE NOT NULL DEFAULT 0.0,
 	Multiplier DOUBLE NOT NULL DEFAULT 1.0,
 	Description LONGTEXT NULL,
-	Enabled TINYINT NOT NULL DEFAULT 0,
-	CONSTRAINT PK_ImportedMeasurement PRIMARY KEY (SignalID ASC),
-	CONSTRAINT IX_ImportedMeasurement UNIQUE KEY (PointID ASC),
-	CONSTRAINT IX_ImportedMeasurement_PointTag UNIQUE KEY (PointTag ASC),
-	CONSTRAINT IX_ImportedMeasurement_SignalReference UNIQUE KEY (SignalReference ASC)
+	Enabled TINYINT NOT NULL DEFAULT 0
 );
-
-CREATE TRIGGER UpdateImportedMeasurementGuid BEFORE INSERT ON ImportedMeasurement FOR EACH ROW
-SET NEW.SignalID = UUID();
 
 CREATE TABLE OutputStreamMeasurement(
 	NodeID NCHAR(36) NOT NULL,
@@ -415,12 +406,6 @@ ALTER TABLE Measurement ADD CONSTRAINT FK_Measurement_Device FOREIGN KEY(DeviceI
 ALTER TABLE Measurement ADD CONSTRAINT FK_Measurement_Historian FOREIGN KEY(HistorianID) REFERENCES Historian (ID);
 
 ALTER TABLE Measurement ADD CONSTRAINT FK_Measurement_SignalType FOREIGN KEY(SignalTypeID) REFERENCES SignalType (ID);
-
-ALTER TABLE ImportedMeasurement ADD CONSTRAINT FK_ImportedMeasurement_Device FOREIGN KEY(DeviceID) REFERENCES Device (ID);
-
-ALTER TABLE ImportedMeasurement ADD CONSTRAINT FK_ImportedMeasurement_Historian FOREIGN KEY(HistorianID) REFERENCES Historian (ID);
-
-ALTER TABLE ImportedMeasurement ADD CONSTRAINT FK_ImportedMeasurement_SignalType FOREIGN KEY(SignalTypeID) REFERENCES SignalType (ID);
 
 ALTER TABLE OutputStreamMeasurement ADD CONSTRAINT FK_OutputStreamMeasurement_Historian FOREIGN KEY(HistorianID) REFERENCES Historian (ID);
 
