@@ -220,6 +220,31 @@ CREATE TABLE Measurement(
 CREATE TRIGGER UpdateMeasurementGuid BEFORE INSERT ON Measurement FOR EACH ROW
 SET NEW.SignalID = UUID();
 
+CREATE TABLE ImportedMeasurement(
+	NodeID NCHAR(36) NULL,
+	SourceNodeID NCHAR(36) NULL,
+	SignalID NCHAR(36) NULL,
+	HistorianID INT NULL,
+	PointID INT AUTO_INCREMENT NOT NULL,
+	DeviceID INT NULL,
+	PointTag NVARCHAR(50) NOT NULL,
+	AlternateTag NVARCHAR(50) NULL,
+	SignalTypeID INT NOT NULL,
+	PhasorSourceIndex INT NULL,
+	SignalReference NVARCHAR(24) NOT NULL,
+	Adder DOUBLE NOT NULL DEFAULT 0.0,
+	Multiplier DOUBLE NOT NULL DEFAULT 1.0,
+	Description LONGTEXT NULL,
+	Enabled TINYINT NOT NULL DEFAULT 0,
+	CONSTRAINT PK_ImportedMeasurement PRIMARY KEY (SignalID ASC),
+	CONSTRAINT IX_ImportedMeasurement UNIQUE KEY (PointID ASC),
+	CONSTRAINT IX_ImportedMeasurement_PointTag UNIQUE KEY (PointTag ASC),
+	CONSTRAINT IX_ImportedMeasurement_SignalReference UNIQUE KEY (SignalReference ASC)
+);
+
+CREATE TRIGGER UpdateImportedMeasurementGuid BEFORE INSERT ON ImportedMeasurement FOR EACH ROW
+SET NEW.SignalID = UUID();
+
 CREATE TABLE OutputStreamMeasurement(
 	NodeID NCHAR(36) NOT NULL,
 	AdapterID INT NOT NULL,
@@ -391,6 +416,12 @@ ALTER TABLE Measurement ADD CONSTRAINT FK_Measurement_Historian FOREIGN KEY(Hist
 
 ALTER TABLE Measurement ADD CONSTRAINT FK_Measurement_SignalType FOREIGN KEY(SignalTypeID) REFERENCES SignalType (ID);
 
+ALTER TABLE ImportedMeasurement ADD CONSTRAINT FK_ImportedMeasurement_Device FOREIGN KEY(DeviceID) REFERENCES Device (ID);
+
+ALTER TABLE ImportedMeasurement ADD CONSTRAINT FK_ImportedMeasurement_Historian FOREIGN KEY(HistorianID) REFERENCES Historian (ID);
+
+ALTER TABLE ImportedMeasurement ADD CONSTRAINT FK_ImportedMeasurement_SignalType FOREIGN KEY(SignalTypeID) REFERENCES SignalType (ID);
+
 ALTER TABLE OutputStreamMeasurement ADD CONSTRAINT FK_OutputStreamMeasurement_Historian FOREIGN KEY(HistorianID) REFERENCES Historian (ID);
 
 ALTER TABLE OutputStreamMeasurement ADD CONSTRAINT FK_OutputStreamMeasurement_Measurement FOREIGN KEY(PointID) REFERENCES Measurement (PointID);
@@ -540,7 +571,7 @@ ORDER BY CalculatedMeasurement.LoadOrder;
 
 CREATE VIEW ActiveMeasurement
 AS
-SELECT COALESCE(Historian.NodeID, Device.NodeID) AS NodeID, CONCAT_WS(':', Historian.Acronym, CAST(Measurement.PointID AS CHAR)) AS ID, Measurement.SignalID, Measurement.PointTag, 
+SELECT COALESCE(Historian.NodeID, Device.NodeID) AS NodeID, CONCAT_WS(':', COALESCE(Historian.Acronym, Device.Acronym, '__'), CAST(Measurement.PointID AS CHAR)) AS ID, Measurement.SignalID, Measurement.PointTag, 
 	Measurement.AlternateTag, Measurement.SignalReference, Device.Acronym AS Device, CASE WHEN Device.IsConcentrator = 0 AND Device.ParentID IS NOT NULL THEN RuntimeP.ID ELSE Runtime.ID END AS DeviceID,
 	COALESCE(Device.FramesPerSecond, 30) AS FramesPerSecond, Protocol.Acronym AS Protocol, SignalType.Acronym AS SignalType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier,
 	Company.Acronym AS Company, Device.Longitude, Device.Latitude, Measurement.Description
