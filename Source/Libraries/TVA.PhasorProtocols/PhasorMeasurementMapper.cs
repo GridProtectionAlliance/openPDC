@@ -799,7 +799,7 @@ namespace TVA.PhasorProtocols
                 OnStatusMessage("Sent device command \"{0}\"...", command);
             }
             else
-                OnStatusMessage("Failed to send device command \"{0}\", no frame parser is defined.");
+                OnStatusMessage("Failed to send device command \"{0}\", no frame parser is defined.", command);
         }
 
         /// <summary>
@@ -808,15 +808,20 @@ namespace TVA.PhasorProtocols
         [AdapterCommand("Resets the statistics of all devices associated with this connection.")]
         public void ResetStatistics()
         {
-            foreach (ConfigurationCell definedDevice in m_definedDevices.Values)
+            if (m_definedDevices != null)
             {
-                definedDevice.TotalDataQualityErrors = 0;
-                definedDevice.TotalDeviceErrors = 0;
-                definedDevice.TotalFrames = 0;
-                definedDevice.TotalTimeQualityErrors = 0;
-            }
+                foreach (ConfigurationCell definedDevice in m_definedDevices.Values)
+                {
+                    definedDevice.TotalDataQualityErrors = 0;
+                    definedDevice.TotalDeviceErrors = 0;
+                    definedDevice.TotalFrames = 0;
+                    definedDevice.TotalTimeQualityErrors = 0;
+                }
 
-            OnStatusMessage("Statistics reset for all devices associated with this connection.");
+                OnStatusMessage("Statistics reset for all devices associated with this connection.");
+            }
+            else
+                OnStatusMessage("Failed to reset statistics, no devices are defined.");
         }
 
         /// <summary>
@@ -826,19 +831,24 @@ namespace TVA.PhasorProtocols
         [AdapterCommand("Resets the statistics of the device with the specified idCode.")]
         public void ResetDeviceStatistics(ushort idCode)
         {
-            ConfigurationCell definedDevice;
-
-            if (m_definedDevices.TryGetValue(idCode, out definedDevice))
+            if (m_definedDevices != null)
             {
-                definedDevice.TotalDataQualityErrors = 0;
-                definedDevice.TotalDeviceErrors = 0;
-                definedDevice.TotalFrames = 0;
-                definedDevice.TotalTimeQualityErrors = 0;
+                ConfigurationCell definedDevice;
 
-                OnStatusMessage("Statistics reset for device with ID code \"{0}\" associated with this connection.", idCode);
+                if (m_definedDevices.TryGetValue(idCode, out definedDevice))
+                {
+                    definedDevice.TotalDataQualityErrors = 0;
+                    definedDevice.TotalDeviceErrors = 0;
+                    definedDevice.TotalFrames = 0;
+                    definedDevice.TotalTimeQualityErrors = 0;
+
+                    OnStatusMessage("Statistics reset for device with ID code \"{0}\" associated with this connection.", idCode);
+                }
+                else
+                    OnStatusMessage("WARNING: Failed to find device with ID code \"{0}\" associated with this connection.", idCode);
             }
             else
-                OnStatusMessage("WARNING: Failed to find device with ID code \"{0}\" associated with this connection.", idCode);
+                OnStatusMessage("Failed to reset statistics, no devices are defined.");
         }
 
         /// <summary>
@@ -1259,9 +1269,16 @@ namespace TVA.PhasorProtocols
 
         private void m_dataStreamMonitor_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            // If a configuration has yet to be loaded, attempt to load last known good configuration
-            if (!m_receivedConfigFrame && m_allowUseOfCachedConfiguration)
+            if (m_bytesReceived == 0)
             {
+                // If we've received no data in the last timespan, we restart connect cycle...
+                m_dataStreamMonitor.Enabled = false;
+                OnStatusMessage("\r\nNo data received in {0} seconds, restarting connect cycle...\r\n", (int)m_dataStreamMonitor.Interval / 1000.0D);
+                Start();
+            }
+            else if (!m_receivedConfigFrame && m_allowUseOfCachedConfiguration)
+            {
+                // If data is being received but a configuration has yet to be loaded, attempt to load last known good configuration
                 if (!m_cachedConfigLoadAttempted)
                 {
                     OnStatusMessage("WARNING: Configuration frame has yet to be received, attempting to load cached configuration...");
@@ -1273,14 +1290,6 @@ namespace TVA.PhasorProtocols
                     OnStatusMessage("\r\nConfiguration frame has yet to be received even after attempt to load from cache, restarting connect cycle...\r\n");
                     Start();
                 }
-            }
-
-            // If we've received no data in the last timespan, we restart connect cycle...
-            if (m_bytesReceived == 0)
-            {
-                m_dataStreamMonitor.Enabled = false;
-                OnStatusMessage("\r\nNo data received in {0} seconds, restarting connect cycle...\r\n", (int)m_dataStreamMonitor.Interval / 1000.0D);
-                Start();
             }
 
             m_bytesReceived = 0;
