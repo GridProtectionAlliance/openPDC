@@ -1837,6 +1837,29 @@
             </summary>
             <returns>A <see cref="T:System.String"/> value.</returns>
         </member>
+        <member name="M:TVA.Historian.Files.ArchiveDataPoint.ToString(System.String)">
+            <summary>
+            Returns the text representation of <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> object in the specified <paramref name="format"/>.
+            </summary>
+            <param name="format">Format of text output (I for ID, T for Time, V for Value, Q for Quality).</param>
+            <returns>A <see cref="T:System.String"/> value.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveDataPoint.ToString(System.IFormatProvider)">
+            <summary>
+            Returns the text representation of <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> object using the specified <paramref name="provider"/>.
+            </summary>
+            <param name="provider">An <see cref="T:System.IFormatProvider"/> that supplies culture-specific formatting information.</param>
+            <returns>A <see cref="T:System.String"/> value.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveDataPoint.ToString(System.String,System.IFormatProvider)">
+            <summary>
+            Returns the text representation of <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> object in the specified <paramref name="format"/> 
+            using the specified <paramref name="provider"/>.
+            </summary>
+            <param name="format">Format of text output (I for ID, T for Time, V for Value, Q for Quality).</param>
+            <param name="provider">An <see cref="T:System.IFormatProvider"/> that supplies culture-specific formatting information.</param>
+            <returns>A <see cref="T:System.String"/> value.</returns>
+        </member>
         <member name="M:TVA.Historian.Files.ArchiveDataPoint.GetHashCode">
             <summary>
             Returns the hash code for the current <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> object.
