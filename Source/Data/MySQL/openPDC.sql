@@ -230,8 +230,15 @@ CREATE TABLE ImportedMeasurement(
 	AlternateTag NVARCHAR(50) NULL,
 	SignalTypeID INT NULL,
 	SignalReference NVARCHAR(24) NOT NULL,
+	FramesPerSecond INT NULL,
+	ProtocolID INT NULL,
+	PhasorType NCHAR(1) NULL,
+	Phase NCHAR(1) NULL,
 	Adder DOUBLE NOT NULL DEFAULT 0.0,
 	Multiplier DOUBLE NOT NULL DEFAULT 1.0,
+	CompanyID INT NULL,
+	Longitude DECIMAL(9, 6) NULL,
+	Latitude DECIMAL(9, 6) NULL,
 	Description LONGTEXT NULL,
 	Enabled TINYINT NOT NULL DEFAULT 0
 );
@@ -556,9 +563,9 @@ ORDER BY CalculatedMeasurement.LoadOrder;
 
 CREATE VIEW ActiveMeasurement
 AS
-SELECT COALESCE(Historian.NodeID, Device.NodeID) AS NodeID, CONCAT_WS(':', COALESCE(Historian.Acronym, Device.Acronym, '__'), CAST(Measurement.PointID AS CHAR)) AS ID, Measurement.SignalID, Measurement.PointTag, 
+SELECT COALESCE(Historian.NodeID, Device.NodeID) AS NodeID, COALESCE(Historian.NodeID, Device.NodeID) AS SourceNodeID, CONCAT_WS(':', COALESCE(Historian.Acronym, Device.Acronym, '__'), CAST(Measurement.PointID AS CHAR)) AS ID, Measurement.SignalID, Measurement.PointTag, 
 	Measurement.AlternateTag, Measurement.SignalReference, Device.Acronym AS Device, CASE WHEN Device.IsConcentrator = 0 AND Device.ParentID IS NOT NULL THEN RuntimeP.ID ELSE Runtime.ID END AS DeviceID,
-	COALESCE(Device.FramesPerSecond, 30) AS FramesPerSecond, Protocol.Acronym AS Protocol, SignalType.Acronym AS SignalType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier,
+	COALESCE(Device.FramesPerSecond, 30) AS FramesPerSecond, Protocol.Acronym AS Protocol, SignalType.Acronym AS SignalType, Phasor.Type AS PhasorType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier,
 	Company.Acronym AS Company, Device.Longitude, Device.Latitude, Measurement.Description
 FROM Company RIGHT OUTER JOIN
 	Device ON Company.ID = Device.CompanyID RIGHT OUTER JOIN
@@ -570,7 +577,17 @@ FROM Company RIGHT OUTER JOIN
 	Historian ON Measurement.HistorianID = Historian.ID LEFT OUTER JOIN
 	Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device' LEFT OUTER JOIN
 	Runtime AS RuntimeP ON RuntimeP.SourceID = Device.ParentID AND RuntimeP.SourceTable = N'Device'
-WHERE (Device.Enabled <> 0 OR Device.Enabled IS NULL) AND (Measurement.Enabled <> 0);
+WHERE (Device.Enabled <> 0 OR Device.Enabled IS NULL) AND (Measurement.Enabled <> 0)
+UNION ALL
+SELECT ImportedMeasurement.NodeID, ImportedMeasurement.SourceNodeID, CONCAT_WS(':', ImportedMeasurement.Source, CAST(ImportedMeasurement.PointID AS CHAR)) AS ID, ImportedMeasurement.SignalID, ImportedMeasurement.PointTag,
+	ImportedMeasurement.AlternateTag, ImportedMeasurement.SignalReference, NULL AS Device, NULL AS DeviceID,
+	ImportedMeasurement.FramesPerSecond, Protocol.Acronym AS Protocol, SignalType.Acronym AS SignalType, ImportedMeasurement.PhasorType, ImportedMeasurement.Phase, ImportedMeasurement.Adder, ImportedMeasurement.Multiplier,
+	Company.Acronym AS Company, ImportedMeasurement.Longitude, ImportedMeasurement.Latitude, ImportedMeasurement.Description
+FROM ImportedMeasurement LEFT OUTER JOIN 
+	SignalType ON ImportedMeasurement.SignalTypeID = SignalType.ID LEFT OUTER JOIN
+	Protocol ON ImportedMeasurement.ProtocolID = Protocol.ID LEFT OUTER JOIN
+	Company ON ImportedMeasurement.CompanyID = Company.ID
+WHERE ImportedMeasurement.Enabled <> 0;
 
 CREATE VIEW IaonOutputAdapter
 AS
