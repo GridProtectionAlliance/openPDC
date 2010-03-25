@@ -237,6 +237,7 @@ using System.Data;
 using System.Text;
 using System.Threading;
 using TVA.Communication;
+using TVA.IO;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
 using TVA.PhasorProtocols.Anonymous;
@@ -429,7 +430,8 @@ namespace TVA.PhasorProtocols
 
                 if (m_allowUseOfCachedConfiguration)
                 {
-                    status.AppendFormat("   Cached config file name: {0}", ConfigurationCacheFileName);
+                    //                   123456789012345678901234567890
+                    status.AppendFormat("   Cached config file name: {0}", FilePath.TrimFileName(ConfigurationCacheFileName, 51));
                     status.AppendLine();
                 }
 
