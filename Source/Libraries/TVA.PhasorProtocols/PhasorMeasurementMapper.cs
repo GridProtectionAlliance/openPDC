@@ -1245,8 +1245,11 @@ namespace TVA.PhasorProtocols
 
         private void m_frameParser_ExceededParsingExceptionThreshold(object sender, EventArgs e)
         {
-            OnStatusMessage("\r\nConnection is being reset due to an excessive number of exceptions...\r\n");            
-            Start();
+            OnStatusMessage("\r\nConnection is being reset due to an excessive number of exceptions...\r\n");
+
+            // So long as user hasn't already requested to stop, we restart connection
+            if (Enabled)
+                Start();
         }
 
         private void m_frameParser_ConnectionAttempt(object sender, EventArgs e)
