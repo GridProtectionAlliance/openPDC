@@ -923,24 +923,28 @@ namespace TVA.PhasorProtocols
                         signalCellIndexes.Add(signal.Acronym, signal.CellIndex);
                     }
 
-                    // Define measurement key
-                    measurementKey = new MeasurementKey(uint.Parse(measurementRow["PointID"].ToString()), measurementRow["Historian"].ToString());
+                    // No need to define this measurement for sorting unless it has a destination in the outgoing frame
+                    if (signal.CellIndex > -1)
+                    {
+                        // Define measurement key
+                        measurementKey = new MeasurementKey(uint.Parse(measurementRow["PointID"].ToString()), measurementRow["Historian"].ToString());
 
-                    // It is possible, but not as common, that a measurement will have multiple destinations
-                    // within an outgoing data stream frame, hence the following
-                    if (m_signalReferences.TryGetValue(measurementKey, out signals))
-                    {
-                        // Add a new signal to existing collection
-                        List<SignalReference> signalList = new List<SignalReference>(signals);
-                        signalList.Add(signal);
-                        m_signalReferences[measurementKey] = signalList.ToArray();
-                    }
-                    else
-                    {
-                        // Add new signal to new collection
-                        signals = new SignalReference[1];
-                        signals[0] = signal;
-                        m_signalReferences.Add(measurementKey, signals);
+                        // It is possible, but not as common, that a measurement will have multiple destinations
+                        // within an outgoing data stream frame, hence the following
+                        if (m_signalReferences.TryGetValue(measurementKey, out signals))
+                        {
+                            // Add a new signal to existing collection
+                            List<SignalReference> signalList = new List<SignalReference>(signals);
+                            signalList.Add(signal);
+                            m_signalReferences[measurementKey] = signalList.ToArray();
+                        }
+                        else
+                        {
+                            // Add new signal to new collection
+                            signals = new SignalReference[1];
+                            signals[0] = signal;
+                            m_signalReferences.Add(measurementKey, signals);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -949,7 +953,8 @@ namespace TVA.PhasorProtocols
                 }
             }
 
-            // Assign action adapter input measurement keys
+            // Assign action adapter input measurement keys - this assigns the expected measurements per frame needed
+            // by the concentration engine for preemptive publication 
             InputMeasurementKeys = m_signalReferences.Keys.ToArray();
 
             // Create a new protocol specific configuration frame
@@ -988,9 +993,7 @@ namespace TVA.PhasorProtocols
                     // an outgoing phasor data frame
                     foreach (SignalReference signal in signals)
                     {
-                        // No need to queue this measurement unless it has a destination in the outgoing frame
-                        if (signal.CellIndex > -1)
-                            inputMeasurements.Add(new SignalReferenceMeasurement(measurement, signal));
+                        inputMeasurements.Add(new SignalReferenceMeasurement(measurement, signal));
                     }
                 }
             }
