@@ -243,12 +243,18 @@ namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class OutputStreamDevices : ChildWindow
 	{
+		#region [ Members ]
+
 		int m_sourceOutputStreamID;
 		string m_sourceOutputStreamAcronym;
 		bool m_inEditMode = false;
 		int m_outputStreamDeviceID = 0;
 		OutputStreamDevice m_selectedOutputStreamDevice;
 		PhasorDataServiceClient m_client;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public OutputStreamDevices(int outputStreamID, string outputStreamAcronym)
 		{
@@ -265,6 +271,10 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
 
 		void client_DeleteOutputStreamDeviceCompleted(object sender, DeleteOutputStreamDeviceCompletedEventArgs e)
 		{
@@ -289,6 +299,56 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			sm.Show();
 			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, false);
 		}
+
+		void client_SaveOutputStreamDeviceCompleted(object sender, SaveOutputStreamDeviceCompletedEventArgs e)
+		{
+			SystemMessages sm;
+			if (e.Error == null)
+			{
+				ClearForm();
+				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						ButtonType.OkOnly);
+			}
+			else
+			{
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+			}
+			sm.Show();
+			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, false);
+		}
+
+		void client_GetOutputStreamDeviceListCompleted(object sender, GetOutputStreamDeviceListCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ListBoxOutputStreamDeviceList.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+		}
+		
+		#endregion
+
+		#region [ Controls Event Handlers ]
 
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
@@ -317,6 +377,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			else
 				m_client.SaveOutputStreamDeviceAsync(outputStreamDevice, true, string.Empty);
 		}
+		
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -327,6 +388,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 			ClearForm();
 		}
+		
 		void ListBoxOutputStreamDeviceList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (ListBoxOutputStreamDeviceList.SelectedIndex >= 0)
@@ -338,54 +400,58 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				m_outputStreamDeviceID = m_selectedOutputStreamDevice.ID;
 			}
 		}
+
+		private void HyperlinkButtonPhasors_Click(object sender, RoutedEventArgs e)
+		{
+			int outputStreamDeviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ((HyperlinkButton)sender).Name;
+			OutputStreamDevicePhasors osdp = new OutputStreamDevicePhasors(outputStreamDeviceId, acronym);
+			osdp.Show();
+		}
+
+		private void HyperlinkButtonAnalogs_Click(object sender, RoutedEventArgs e)
+		{
+			int outputStreamDeviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ((HyperlinkButton)sender).Name;
+			OutputStreamDeviceAnalogs osda = new OutputStreamDeviceAnalogs(outputStreamDeviceId, acronym);
+			osda.Show();
+		}
+
+		private void HyperlinkButtonDigitals_Click(object sender, RoutedEventArgs e)
+		{
+			int outputStreamDeviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ((HyperlinkButton)sender).Name;
+			OutputStreamDeviceDigitals osdd = new OutputStreamDeviceDigitals(outputStreamDeviceId, acronym);
+			osdd.Show();
+		}
+
+		private void HyperlinkButtonDelete_Click(object sender, RoutedEventArgs e)
+		{
+			int outputStreamDeviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ((HyperlinkButton)sender).Name;
+			m_client.DeleteOutputStreamDeviceAsync(m_sourceOutputStreamID, new ObservableCollection<string>() { acronym });
+		}
+
+		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+		{
+			AddDevices addDevices = new AddDevices(m_sourceOutputStreamID, m_sourceOutputStreamAcronym);
+			addDevices.Closed += new EventHandler(addDevices_Closed);
+			addDevices.Show();
+		}
+		
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void OutputStreamDevices_Loaded(object sender, RoutedEventArgs e)
 		{
 			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, false);
 		}
-		void client_SaveOutputStreamDeviceCompleted(object sender, SaveOutputStreamDeviceCompletedEventArgs e)
-		{
-			SystemMessages sm;
-			if (e.Error == null)
-			{
-				ClearForm();
-				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-						ButtonType.OkOnly);
-			}
-			else
-			{
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-			}
-			sm.Show();									
-			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, false);
-		}
-		void client_GetOutputStreamDeviceListCompleted(object sender, GetOutputStreamDeviceListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ListBoxOutputStreamDeviceList.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
 
-				sm.Show();
-			}
-		}
+		#endregion
+
+		#region [ Methods ]
+
 		void ClearForm()
 		{
 			GridOutputStreamDeviceDetail.DataContext = new OutputStreamDevice();
@@ -395,46 +461,12 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ListBoxOutputStreamDeviceList.SelectedIndex = -1;
 		}
 
-		private void HyperlinkButtonPhasors_Click(object sender, RoutedEventArgs e)
-		{
-			int outputStreamDeviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
-			string acronym = ((HyperlinkButton)sender).Name;
-			OutputStreamDevicePhasors osdp = new OutputStreamDevicePhasors(outputStreamDeviceId, acronym);
-			osdp.Show();
-		}
-		private void HyperlinkButtonAnalogs_Click(object sender, RoutedEventArgs e)
-		{
-			int outputStreamDeviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
-			string acronym = ((HyperlinkButton)sender).Name;
-			OutputStreamDeviceAnalogs osda = new OutputStreamDeviceAnalogs(outputStreamDeviceId, acronym);
-			osda.Show();
-		}
-		private void HyperlinkButtonDigitals_Click(object sender, RoutedEventArgs e)
-		{
-			int outputStreamDeviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
-			string acronym = ((HyperlinkButton)sender).Name;
-			OutputStreamDeviceDigitals osdd = new OutputStreamDeviceDigitals(outputStreamDeviceId, acronym);
-			osdd.Show();
-		}
-		
-		private void HyperlinkButtonDelete_Click(object sender, RoutedEventArgs e)
-		{
-			int outputStreamDeviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
-			string acronym = ((HyperlinkButton)sender).Name;
-			m_client.DeleteOutputStreamDeviceAsync(m_sourceOutputStreamID, new ObservableCollection<string>(){acronym});
-		}
-
-		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
-		{
-			AddDevices addDevices = new AddDevices(m_sourceOutputStreamID, m_sourceOutputStreamAcronym);
-			addDevices.Closed += new EventHandler(addDevices_Closed);
-			addDevices.Show();
-		}
 		void addDevices_Closed(object sender, EventArgs e)
 		{
 			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, false);
 		}
-		
+
+		#endregion		
 	}
 }
 

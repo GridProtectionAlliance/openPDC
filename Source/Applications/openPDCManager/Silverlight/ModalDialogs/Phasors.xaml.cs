@@ -234,19 +234,25 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class Phasors : ChildWindow
 	{
+		#region [ Members ]
+
 		int m_sourceDeviceID;
 		string m_sourceDeviceAcronym;
 		bool m_inEditMode = false;
 		int m_phasorID = 0;
 		PhasorDataServiceClient m_client;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public Phasors(int deviceID, string deviceAcronym)
 		{
@@ -263,6 +269,10 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			m_client.SavePhasorCompleted += new EventHandler<SavePhasorCompletedEventArgs>(client_SavePhasorCompleted);
 			ListBoxPhasorList.SelectionChanged += new SelectionChangedEventHandler(ListBoxPhasorList_SelectionChanged);
 		}
+
+		#endregion
+
+		#region [ Client Event Handlers ]
 
 		void client_SavePhasorCompleted(object sender, SavePhasorCompletedEventArgs e)
 		{
@@ -289,6 +299,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			m_client.GetPhasorListAsync(m_sourceDeviceID);
 			m_client.GetPhasorsAsync(m_sourceDeviceID, true);
 		}
+
 		void client_GetPhasorsCompleted(object sender, GetPhasorsCompletedEventArgs e)
 		{
 			if (e.Error == null)			
@@ -310,23 +321,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			if (ComboboxDestinationPhasor.Items.Count > 0)
 				ComboboxDestinationPhasor.SelectedIndex = 0;
 		}
-		void ListBoxPhasorList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (ListBoxPhasorList.SelectedIndex >= 0)
-			{
-				Phasor selectedPhasor = ListBoxPhasorList.SelectedItem as Phasor;
-				GridPhasorDetail.DataContext = selectedPhasor;
-				if (selectedPhasor.DestinationPhasorID.HasValue)
-					ComboboxDestinationPhasor.SelectedItem = new KeyValuePair<int, string>((int)selectedPhasor.DestinationPhasorID, selectedPhasor.DestinationPhasorLabel);
-				else
-					ComboboxDestinationPhasor.SelectedIndex = 0;
-				ComboboxPhase.SelectedItem = new KeyValuePair<string, string>(selectedPhasor.Phase, selectedPhasor.PhaseType);
-				ComboboxType.SelectedItem = new KeyValuePair<string, string>(selectedPhasor.Type, selectedPhasor.PhasorType);
 
-				m_inEditMode = true;
-				m_phasorID = selectedPhasor.ID;
-			}
-		}
 		void client_GetPhasorListCompleted(object sender, GetPhasorListCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -346,6 +341,29 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				sm.Show();
 			}
 		}
+		
+		#endregion
+
+		#region [ Controls Event Handlers ]
+
+		void ListBoxPhasorList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (ListBoxPhasorList.SelectedIndex >= 0)
+			{
+				Phasor selectedPhasor = ListBoxPhasorList.SelectedItem as Phasor;
+				GridPhasorDetail.DataContext = selectedPhasor;
+				if (selectedPhasor.DestinationPhasorID.HasValue)
+					ComboboxDestinationPhasor.SelectedItem = new KeyValuePair<int, string>((int)selectedPhasor.DestinationPhasorID, selectedPhasor.DestinationPhasorLabel);
+				else
+					ComboboxDestinationPhasor.SelectedIndex = 0;
+				ComboboxPhase.SelectedItem = new KeyValuePair<string, string>(selectedPhasor.Phase, selectedPhasor.PhaseType);
+				ComboboxType.SelectedItem = new KeyValuePair<string, string>(selectedPhasor.Type, selectedPhasor.PhasorType);
+
+				m_inEditMode = true;
+				m_phasorID = selectedPhasor.ID;
+			}
+		}
+
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -355,6 +373,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			sb.Begin();
 			ClearForm();
 		}
+
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -379,6 +398,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			else
 				m_client.SavePhasorAsync(phasor, true);
 		}
+		
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void Phasors_Loaded(object sender, RoutedEventArgs e)
 		{
 			m_client.GetPhasorListAsync(m_sourceDeviceID);
@@ -394,6 +418,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ComboboxType.Items.Add(new KeyValuePair<string, string>("I", "Current"));
 			ComboboxType.SelectedIndex = 0;
 		}
+
+		#endregion
+
+		#region [ Methods ]
+
 		void ClearForm()
 		{
 			GridPhasorDetail.DataContext = new Phasor();
@@ -404,7 +433,9 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			m_inEditMode = false;
 			m_phasorID = 0;
 		}
-		
+
+		#endregion
+
 	}
 }
 

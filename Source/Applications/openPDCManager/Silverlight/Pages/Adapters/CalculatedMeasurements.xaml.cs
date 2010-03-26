@@ -244,10 +244,16 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 {
 	public partial class CalculatedMeasurements : Page
 	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		bool m_inEditMode = false;
 		int m_calculatedMeasurementID = 0;
 		string m_nodeID;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public CalculatedMeasurements()
 		{
@@ -261,6 +267,11 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ListBoxCalculatedMeasurementList.SelectionChanged += new SelectionChangedEventHandler(ListBoxCalculatedMeasurementList_SelectionChanged);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
+
 		void client_SaveCalculatedMeasurementCompleted(object sender, SaveCalculatedMeasurementCompletedEventArgs e)
 		{
 			SystemMessages sm;
@@ -285,6 +296,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			sm.Show();
 			m_client.GetCalculatedMeasurementListAsync(m_nodeID);
 		}
+		
 		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -307,6 +319,32 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			if (ComboBoxNode.Items.Count > 0)
 				ComboBoxNode.SelectedIndex = 0;
 		}
+
+		void client_GetCalculatedMeasurementListCompleted(object sender, GetCalculatedMeasurementListCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ListBoxCalculatedMeasurementList.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Calculated Measurement List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
+
 		void ListBoxCalculatedMeasurementList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (ListBoxCalculatedMeasurementList.SelectedIndex >= 0)
@@ -318,6 +356,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 				m_inEditMode = true;
 			}
 		}
+		
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -328,6 +367,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 			ClearForm();
 		}
+		
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -363,37 +403,13 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			else
 				m_client.SaveCalculatedMeasurementAsync(calculatedMeasurement, true);
 		}
-		void CalculatedMeasurements_Loaded(object sender, RoutedEventArgs e)
-		{			
-		}
-		void client_GetCalculatedMeasurementListCompleted(object sender, GetCalculatedMeasurementListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ListBoxCalculatedMeasurementList.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Calculated Measurement List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
 
-				sm.Show();
-			}
-		}
-		void ClearForm()
+		#endregion
+
+		#region [ Page Event Handlers ]
+
+		void CalculatedMeasurements_Loaded(object sender, RoutedEventArgs e)
 		{
-			GridCalculatedMeasurementDetail.DataContext = new CalculatedMeasurement();
-			if (ComboBoxNode.Items.Count > 0)
-				ComboBoxNode.SelectedIndex = 0;
-			m_inEditMode = false;
-			m_calculatedMeasurementID = 0;
-			ListBoxCalculatedMeasurementList.SelectedIndex = -1;
 		}
 
 		// Executes when the user navigates to this page.
@@ -404,6 +420,22 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			m_client.GetCalculatedMeasurementListAsync(m_nodeID);
 			m_client.GetNodesAsync(true, false);
 		}
+
+		#endregion
+
+		#region [ Methods ]
+
+		void ClearForm()
+		{
+			GridCalculatedMeasurementDetail.DataContext = new CalculatedMeasurement();
+			if (ComboBoxNode.Items.Count > 0)
+				ComboBoxNode.SelectedIndex = 0;
+			m_inEditMode = false;
+			m_calculatedMeasurementID = 0;
+			ListBoxCalculatedMeasurementList.SelectedIndex = -1;
+		}
+
+		#endregion
 
 	}
 }

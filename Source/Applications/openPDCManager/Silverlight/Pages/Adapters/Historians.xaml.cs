@@ -234,20 +234,26 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
+using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
-using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Adapters
 {
 	public partial class Historians : Page
 	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		bool m_inEditMode;
 		int m_historianID;
 		string m_nodeID;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public Historians()
 		{
@@ -261,6 +267,10 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ListBoxHistorianList.SelectionChanged += new SelectionChangedEventHandler(ListBoxHistorianList_SelectionChanged);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
 
 		void client_SaveHistorianCompleted(object sender, SaveHistorianCompletedEventArgs e)
 		{
@@ -286,6 +296,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			sm.Show();
 			m_client.GetHistorianListAsync(m_nodeID);
 		}
+		
 		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -308,6 +319,32 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			if (ComboBoxNode.Items.Count > 0)
 				ComboBoxNode.SelectedIndex = 0;
 		}
+
+		void client_GetHistorianListCompleted(object sender, GetHistorianListCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ListBoxHistorianList.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
+
 		void ListBoxHistorianList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (ListBoxHistorianList.SelectedIndex >= 0)
@@ -321,9 +358,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 				m_historianID = selectedHistorian.ID;
 			}
 		}
-		void Historians_Loaded(object sender, RoutedEventArgs e)
-		{			
-		}
+
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -352,6 +387,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			else
 				m_client.SaveHistorianAsync(historian, true);
 		}
+		
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -362,26 +398,28 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 			ClearForm();
 		}
-		void client_GetHistorianListCompleted(object sender, GetHistorianListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ListBoxHistorianList.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
+		
+		#endregion
 
-				sm.Show();
-			}
+		#region [ Page Event Handlers ]
+
+		void Historians_Loaded(object sender, RoutedEventArgs e)
+		{
 		}
+
+		// Executes when the user navigates to this page.
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			App app = (App)Application.Current;
+			m_nodeID = app.NodeValue;
+			m_client.GetHistorianListAsync(m_nodeID);
+			m_client.GetNodesAsync(true, false);
+		}
+
+		#endregion
+
+		#region [ Methods ]
+
 		void ClearForm()
 		{
 			GridHistorianDetail.DataContext = new Historian();	// bind an empty historian.
@@ -393,14 +431,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			m_historianID = 0;
 		}
 
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			App app = (App)Application.Current;
-			m_nodeID = app.NodeValue;
-			m_client.GetHistorianListAsync(m_nodeID);
-			m_client.GetNodesAsync(true, false);
-		}
+		#endregion
 
 	}
 }

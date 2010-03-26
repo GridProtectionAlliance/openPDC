@@ -242,10 +242,16 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 {
 	public partial class CurrentDevices : ChildWindow
 	{
+		#region [ Members ]
+
 		int m_sourceOutputStreamID;
 		string m_sourceOutputStreamAcronym;		
 		ObservableCollection<string> m_devicesToBeDeleted;		
 		PhasorDataServiceClient m_client;
+		
+		#endregion
+
+		#region [ Constructor ]
 
 		public CurrentDevices(int outputStreamID, string outputStreamAcronym)
 		{
@@ -260,6 +266,10 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);
 			ButtonDelete.Click += new RoutedEventHandler(ButtonDelete_Click);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
 
 		void client_DeleteOutputStreamDeviceCompleted(object sender, DeleteOutputStreamDeviceCompletedEventArgs e)
 		{
@@ -284,38 +294,7 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			sm.Show();
 			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, true);
 		}
-		void ButtonDelete_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonDeleteTransform);
-			sb.Begin();
-
-			if (m_devicesToBeDeleted.Count > 0)
-				m_client.DeleteOutputStreamDeviceAsync(m_sourceOutputStreamID, m_devicesToBeDeleted);
-			else
-			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please select device(s) to delete", SystemMessage = string.Empty, UserMessageType = MessageType.Information }, ButtonType.OkOnly);
-				sm.Show();
-			}
-		}
-		void ButtonAdd_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonAddTransform);
-			sb.Begin();
-
-			AddDevices addDevices = new AddDevices(m_sourceOutputStreamID, m_sourceOutputStreamAcronym);
-			addDevices.Closed += new EventHandler(addDevices_Closed);
-			addDevices.Show();
-		}
-		void addDevices_Closed(object sender, EventArgs e)
-		{
-			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, true);
-		}
+		
 		void client_GetOutputStreamDeviceListCompleted(object sender, GetOutputStreamDeviceListCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -334,26 +313,73 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 						ButtonType.OkOnly);
 
 				sm.Show();
-			}			
+			}
 		}
-		void CurrentDevices_Loaded(object sender, RoutedEventArgs e)
+
+		#endregion
+
+		#region [ Control Event Handlers ]
+		
+		void ButtonDelete_Click(object sender, RoutedEventArgs e)
 		{
-			m_devicesToBeDeleted = new ObservableCollection<string>();
-			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, true);
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonDeleteTransform);
+			sb.Begin();
+
+			if (m_devicesToBeDeleted.Count > 0)
+				m_client.DeleteOutputStreamDeviceAsync(m_sourceOutputStreamID, m_devicesToBeDeleted);
+			else
+			{
+				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please select device(s) to delete", SystemMessage = string.Empty, UserMessageType = MessageType.Information }, ButtonType.OkOnly);
+				sm.Show();
+			}
 		}
+		
+		void ButtonAdd_Click(object sender, RoutedEventArgs e)
+		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonAddTransform);
+			sb.Begin();
+
+			AddDevices addDevices = new AddDevices(m_sourceOutputStreamID, m_sourceOutputStreamAcronym);
+			addDevices.Closed += new EventHandler(addDevices_Closed);
+			addDevices.Show();
+		}
+
 		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
 		{
 			string deviceAcronym = ((CheckBox)sender).Content.ToString();
 			if (m_devicesToBeDeleted.Contains(deviceAcronym))
 				m_devicesToBeDeleted.Remove(deviceAcronym);
 		}
+
 		private void CheckBox_Checked(object sender, RoutedEventArgs e)
 		{
 			string deviceAcronym = ((CheckBox)sender).Content.ToString();
 			if (!m_devicesToBeDeleted.Contains(deviceAcronym))
 				m_devicesToBeDeleted.Add(deviceAcronym);
-		}		
+		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
+		void addDevices_Closed(object sender, EventArgs e)
+		{
+			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, true);
+		}
 		
+		void CurrentDevices_Loaded(object sender, RoutedEventArgs e)
+		{
+			m_devicesToBeDeleted = new ObservableCollection<string>();
+			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, true);
+		}
+
+		#endregion
 	}
 }
 

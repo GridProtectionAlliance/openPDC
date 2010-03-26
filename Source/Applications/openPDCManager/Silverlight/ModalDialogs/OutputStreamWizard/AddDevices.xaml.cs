@@ -235,20 +235,27 @@ using System.Linq;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using System.Windows.Media.Animation;
+using System.Windows.Media;
 
 namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 {
 	public partial class AddDevices : ChildWindow
 	{
+		#region [ Members ]
+
 		int m_sourceOutputStreamID;
 		string m_sourceOutputStreamAcronym;
 		Dictionary<int, string> m_devicesToBeAdded;
 		PhasorDataServiceClient m_client;
 		Dictionary<int, string> m_deviceList;
 		string m_nodeValue;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public AddDevices(int outputStreamID, string outputStreamAcronym)
 		{
@@ -264,6 +271,10 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			m_client.GetDevicesForOutputStreamCompleted += new EventHandler<GetDevicesForOutputStreamCompletedEventArgs>(client_GetDevicesForOutputStreamCompleted);
 			m_client.AddDevicesCompleted += new EventHandler<AddDevicesCompletedEventArgs>(client_AddDevicesCompleted);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
 
 		void client_AddDevicesCompleted(object sender, AddDevicesCompletedEventArgs e)
 		{
@@ -288,35 +299,14 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			sm.Show();
 			m_client.GetDevicesForOutputStreamAsync(m_sourceOutputStreamID, m_nodeValue);
 		}
-		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonShowAllTransform);
-			sb.Begin();
 
-			ListBoxDeviceList.ItemsSource = m_deviceList;
-		}
-		void ButtonSearch_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSearchTransform);
-			sb.Begin();
-
-			string searchText = TextBoxSearch.Text.ToUpper();
-			ListBoxDeviceList.ItemsSource = (from item in m_deviceList.AsEnumerable()
-											 where item.Value.ToUpper().Contains(searchText)
-											 select item).ToList();
-		}
 		void client_GetDevicesForOutputStreamCompleted(object sender, GetDevicesForOutputStreamCompletedEventArgs e)
 		{
 			if (e.Error == null)
-			{
-				ListBoxDeviceList.ItemsSource = e.Result;
+			{				
 				m_deviceList = e.Result;
+				ListBoxDeviceList.ItemsSource = m_deviceList;
+				ListBoxDeviceList.SelectedIndex = 0;
 			}
 			else
 			{
@@ -334,6 +324,36 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 				sm.Show();
 			}
 		}
+
+		#endregion
+
+		#region [ Controls Event Handlers ]
+
+		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
+		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonShowAllTransform);
+			sb.Begin();
+
+			ListBoxDeviceList.ItemsSource = m_deviceList;
+		}
+
+		void ButtonSearch_Click(object sender, RoutedEventArgs e)
+		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonSearchTransform);
+			sb.Begin();
+
+			string searchText = TextBoxSearch.Text.ToUpper();
+			ListBoxDeviceList.ItemsSource = (from item in m_deviceList.AsEnumerable()
+											 where item.Value.ToUpper().Contains(searchText)
+											 select item).ToList();
+		}
+
 		void ButtonAdd_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -349,8 +369,29 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please Select Device(s) to Add", SystemMessage = string.Empty, UserMessageType = MessageType.Information },
 						 ButtonType.OkOnly);
 				sm.Show();
-			}				
+			}
 		}
+
+		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+		{
+			string deviceAcronym = ((CheckBox)sender).Content.ToString();
+			int deviceID = Convert.ToInt32(((CheckBox)sender).Tag.ToString());
+			if (m_devicesToBeAdded.ContainsKey(deviceID))
+				m_devicesToBeAdded.Remove(deviceID);
+		}
+
+		private void CheckBox_Checked(object sender, RoutedEventArgs e)
+		{
+			string deviceAcronym = ((CheckBox)sender).Content.ToString();
+			int deviceID = Convert.ToInt32(((CheckBox)sender).Tag.ToString());
+			if (!m_devicesToBeAdded.ContainsKey(deviceID))
+				m_devicesToBeAdded.Add(deviceID, deviceAcronym);
+		}
+
+		#endregion			
+
+		#region [ Page Event Handlers ]
+
 		void AddDevices_Loaded(object sender, RoutedEventArgs e)
 		{
 			m_devicesToBeAdded = new Dictionary<int, string>();
@@ -358,21 +399,9 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			m_nodeValue = ((App)Application.Current).NodeValue;
 			m_client.GetDevicesForOutputStreamAsync(m_sourceOutputStreamID, m_nodeValue);
 		}
-		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
-		{
-			string deviceAcronym = ((CheckBox)sender).Content.ToString();
-			int deviceID = Convert.ToInt32(((CheckBox)sender).Tag.ToString());
-			if (m_devicesToBeAdded.ContainsKey(deviceID))
-			    m_devicesToBeAdded.Remove(deviceID);
-		}
-		private void CheckBox_Checked(object sender, RoutedEventArgs e)
-		{
-			string deviceAcronym = ((CheckBox)sender).Content.ToString();
-			int deviceID = Convert.ToInt32(((CheckBox)sender).Tag.ToString());
-			if (!m_devicesToBeAdded.ContainsKey(deviceID))
-				m_devicesToBeAdded.Add(deviceID, deviceAcronym);
-		}	
-		
+
+		#endregion
+
 	}
 }
 

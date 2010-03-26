@@ -70,21 +70,24 @@
                 <Border Style="{StaticResource HeaderRowBorderStyle}">
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Point ID" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <TextBlock Text="Signal ID" Width="{StaticResource XXLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Historian" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <TextBlock Text="Point ID" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Device" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <TextBlock Text="Historian" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Point Tag" Width="{StaticResource XLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <TextBlock Text="Device" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Signal Reference" Width="{StaticResource XLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <TextBlock Text="Point Tag" Width="{StaticResource LargerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
-                        <TextBlock Text="Enabled" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Signal Reference" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <TextBlock Text="Enabled" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
@@ -95,21 +98,24 @@
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" ToolTipService.ToolTip="{Binding Path=Description}">
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=PointID}" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" Padding="0"/>
+                                                <TextBlock Text="{Binding Path=SignalID}" Width="{StaticResource XXLargeItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=HistorianAcronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="0"/>
+                                                <TextBlock Text="{Binding Path=PointID}" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=DeviceAcronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="0"/>
+                                                <TextBlock Text="{Binding Path=HistorianAcronym}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=PointTag}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Padding="0"/>
+                                                <TextBlock Text="{Binding Path=DeviceAcronym}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=SignalReference}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Padding="0"/>
+                                                <TextBlock Text="{Binding Path=PointTag}" Width="{StaticResource LargerItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
-                                            <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallItemSize}">
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <TextBlock Text="{Binding Path=SignalReference}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="0"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
                                                 <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Enabled}" IsEnabled="False" />
                                             </Border>
                                         </StackPanel>

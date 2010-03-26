@@ -230,26 +230,32 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
 using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
-using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
 
 namespace openPDCManager.Silverlight.Pages.Adapters
 {
 	public partial class DeviceMeasurements : Page
 	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		DuplexServiceClient m_duplexClient;
 		ActivityWindow m_activityWindow;
 		ObservableCollection<DeviceMeasurementData> deviceMeasurementDataList;
 		bool m_connected = false;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public DeviceMeasurements()
 		{
@@ -263,6 +269,10 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			m_duplexClient.SendToClientReceived += new EventHandler<SendToClientReceivedEventArgs>(m_duplexClient_SendToClientReceived);
 		}
 
+		#endregion
+
+		#region [ Methods ]
+
 		void ReconnectToService()
 		{
 			ConnectMessage msg = new ConnectMessage();
@@ -272,6 +282,10 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			msg.DataPointID = 0;
 			m_duplexClient.SendToServiceAsync(msg);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
 
 		void m_duplexClient_SendToClientReceived(object sender, SendToClientReceivedEventArgs e)
 		{
@@ -306,11 +320,6 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 				m_connected = true;
 		}
 
-		void DeviceMeasurements_Loaded(object sender, RoutedEventArgs e)
-		{
-			ReconnectToService();
-		}
-
 		void m_client_GetDeviceMeasurementDataCompleted(object sender, GetDeviceMeasurementDataCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -338,6 +347,15 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 				m_activityWindow.Close();
 		}
 
+		#endregion
+
+		#region [ Page Event Handlers ]
+
+		void DeviceMeasurements_Loaded(object sender, RoutedEventArgs e)
+		{
+			ReconnectToService();
+		}
+
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
@@ -355,6 +373,8 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 				m_duplexClient.SendToServiceAsync(new DisconnectMessage());
 			base.OnNavigatingFrom(e);
 		}
+
+		#endregion
 
 	}
 }

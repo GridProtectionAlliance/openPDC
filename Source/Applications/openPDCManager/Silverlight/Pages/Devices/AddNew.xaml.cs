@@ -234,20 +234,26 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
+using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
-using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class AddNew : Page
 	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		ActivityWindow m_activityWindow;
 		bool m_inEditMode = false;
 		int m_deviceID = 0;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public AddNew()
 		{
@@ -272,6 +278,10 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			ComboboxParent.SelectionChanged += new SelectionChangedEventHandler(ComboboxParent_SelectionChanged);
 		}
 
+		#endregion
+
+		#region [ Service Event Handlers ]
+
 		void client_GetDeviceListByParentIDCompleted(object sender, GetDeviceListByParentIDCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -292,11 +302,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				sm.Show();
 			}
 		}
-		void ButtonView_Click(object sender, RoutedEventArgs e)
-		{
-			if (((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key != 0)
-				NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?did=" + ((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key.ToString(), UriKind.Relative));
-		}
+
 		void client_GetConcentratorDeviceCompleted(object sender, GetConcentratorDeviceCompletedEventArgs e)
 		{
 			if (e.Error == null && e.Result != null)
@@ -304,16 +310,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				Device device = new Device();
 				device = e.Result;
 				ToolTip toolTip = new ToolTip();
-				toolTip.DataContext = device;				
+				toolTip.DataContext = device;
 				toolTip.Template = Application.Current.Resources["PdcInfoToolTipTemplate"] as ControlTemplate;
-				ToolTipService.SetToolTip(ButtonView, toolTip);				
+				ToolTipService.SetToolTip(ButtonView, toolTip);
 			}
 		}
-		void ComboboxParent_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key != 0)
-				m_client.GetConcentratorDeviceAsync(((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key);			
-		}
+
 		void client_GetDeviceByDeviceIDCompleted(object sender, GetDeviceByDeviceIDCompletedEventArgs e)
 		{
 			Device deviceToEdit = new Device();
@@ -349,7 +351,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				{
 					foreach (KeyValuePair<string, string> item in ComboboxTimeZone.Items)
 					{
-						if (item.Key ==deviceToEdit.TimeZone)
+						if (item.Key == deviceToEdit.TimeZone)
 						{
 							ComboboxTimeZone.SelectedItem = item;
 							break;
@@ -392,6 +394,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (m_activityWindow != null)
 				m_activityWindow.Close();
 		}
+		
 		void client_SaveDeviceCompleted(object sender, SaveDeviceCompletedEventArgs e)
 		{
 			SystemMessages sm;
@@ -413,8 +416,211 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 			}
-			sm.Show();						
+			sm.Show();
+
+			NavigationService.Navigate(new Uri("/Pages/Devices/Browse.xaml", UriKind.Relative));
 		}
+
+		void client_GetTimeZonesCompleted(object sender, GetTimeZonesCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboboxTimeZone.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Time Zones", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboboxTimeZone.Items.Count > 0)
+				ComboboxTimeZone.SelectedIndex = 0;
+		}
+		
+		void client_GetProtocolsCompleted(object sender, GetProtocolsCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboboxProtocol.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Protocols", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboboxProtocol.Items.Count > 0)
+				ComboboxProtocol.SelectedIndex = 0;
+		}
+		
+		void client_GetVendorDevicesCompleted(object sender, GetVendorDevicesCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboboxVendorDevice.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboboxVendorDevice.Items.Count > 0)
+				ComboboxVendorDevice.SelectedIndex = 0;
+		}
+		
+		void client_GetInterconnectionsCompleted(object sender, GetInterconnectionsCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboboxInterconnection.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboboxInterconnection.Items.Count > 0)
+				ComboboxInterconnection.SelectedIndex = 0;
+		}
+		
+		void client_GetHistoriansCompleted(object sender, GetHistoriansCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboboxHistorian.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboboxHistorian.Items.Count > 0)
+				ComboboxHistorian.SelectedIndex = 0;
+		}
+		
+		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboboxNode.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboboxNode.Items.Count > 0)
+				ComboboxNode.SelectedIndex = 0;
+		}
+		
+		void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboboxCompany.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboboxCompany.Items.Count > 0)
+				ComboboxCompany.SelectedIndex = 0;
+		}
+		
+		void client_GetDevicesCompleted(object sender, GetDevicesCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboboxParent.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboboxParent.Items.Count > 0)
+				ComboboxParent.SelectedIndex = 0;
+		}
+		
+		#endregion
+
+		#region [ Control Event Handlers ]
+
+		void ButtonView_Click(object sender, RoutedEventArgs e)
+		{
+			if (((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key != 0)
+				NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?did=" + ((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key.ToString(), UriKind.Relative));
+		}
+		
+		void ComboboxParent_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key != 0)
+				m_client.GetConcentratorDeviceAsync(((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key);			
+		}
+		
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -425,6 +631,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 			ClearForm();
 		}
+		
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -464,182 +671,31 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				m_client.SaveDeviceAsync(device, false, 0, 0);
 			}
 		}
-		void client_GetTimeZonesCompleted(object sender, GetTimeZonesCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboboxTimeZone.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Time Zones", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
 
-				sm.Show();
-			}
-			if (ComboboxTimeZone.Items.Count > 0)
-				ComboboxTimeZone.SelectedIndex = 0;
-		}
-		void client_GetProtocolsCompleted(object sender, GetProtocolsCompletedEventArgs e)
+		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (e.Error == null)
-				ComboboxProtocol.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Protocols", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-			if (ComboboxProtocol.Items.Count > 0)
-				ComboboxProtocol.SelectedIndex = 0;
+			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
+			NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?did=" + deviceId, UriKind.Relative));
 		}
-		void client_GetVendorDevicesCompleted(object sender, GetVendorDevicesCompletedEventArgs e)
+
+		private void HyperlinkButtonPhasors_Click(object sender, RoutedEventArgs e)
 		{
-			if (e.Error == null)
-				ComboboxVendorDevice.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-			if (ComboboxVendorDevice.Items.Count > 0)
-				ComboboxVendorDevice.SelectedIndex = 0;
+			int deviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ToolTipService.GetToolTip((HyperlinkButton)sender).ToString();
+			Phasors phasors = new Phasors(deviceId, acronym);
+			phasors.Show();
 		}
-		void client_GetInterconnectionsCompleted(object sender, GetInterconnectionsCompletedEventArgs e)
+
+		private void HyperlinkButtonMeasurements_Click(object sender, RoutedEventArgs e)
 		{
-			if (e.Error == null)
-				ComboboxInterconnection.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-			if (ComboboxInterconnection.Items.Count > 0)
-				ComboboxInterconnection.SelectedIndex = 0;
+			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
+			NavigationService.Navigate(new Uri("/Pages/Manage/Measurements.xaml?did=" + deviceId, UriKind.Relative));
 		}
-		void client_GetHistoriansCompleted(object sender, GetHistoriansCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboboxHistorian.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
 
-				sm.Show();
-			}
-			if (ComboboxHistorian.Items.Count > 0)
-				ComboboxHistorian.SelectedIndex = 0;
-		}
-		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboboxNode.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
+		#endregion
 
-				sm.Show();
-			}
-			if (ComboboxNode.Items.Count > 0)
-				ComboboxNode.SelectedIndex = 0;
-		}
-		void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboboxCompany.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
+		#region [ Page Event Handlers ]
 
-				sm.Show();
-			}
-			if (ComboboxCompany.Items.Count > 0)
-				ComboboxCompany.SelectedIndex = 0;
-		}
-		void client_GetDevicesCompleted(object sender, GetDevicesCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboboxParent.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-			if (ComboboxParent.Items.Count > 0)
-				ComboboxParent.SelectedIndex = 0;
-		}
 		void AddNew_Loaded(object sender, RoutedEventArgs e)
 		{
 			if (this.NavigationContext.QueryString.ContainsKey("did"))
@@ -651,6 +707,26 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				m_client.GetDeviceByDeviceIDAsync(m_deviceID);
 			}
 		}
+
+		// Executes when the user navigates to this page.
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			StackPanelDeviceList.Visibility = Visibility.Collapsed;
+			StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
+			m_client.GetDevicesAsync(DeviceType.Concentrator, ((App)Application.Current).NodeValue, true);
+			m_client.GetCompaniesAsync(true);
+			m_client.GetNodesAsync(true, false);
+			m_client.GetHistoriansAsync(true, true);
+			m_client.GetInterconnectionsAsync(true);
+			m_client.GetVendorDevicesAsync(true);
+			m_client.GetProtocolsAsync(true);
+			m_client.GetTimeZonesAsync(true);
+		}
+
+		#endregion
+
+		#region [ Methods ]
+
 		void ClearForm()
 		{
 			GridDeviceDetail.DataContext = new Device();
@@ -665,40 +741,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			m_inEditMode = false;
 			m_deviceID = 0;
 		}
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			StackPanelDeviceList.Visibility = Visibility.Collapsed;
-			StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
-			m_client.GetDevicesAsync(DeviceType.Concentrator, ((App)Application.Current).NodeValue, true);
-			m_client.GetCompaniesAsync(true);
-			m_client.GetNodesAsync(true, false);
-			m_client.GetHistoriansAsync(true, true);
-			m_client.GetInterconnectionsAsync(true);
-			m_client.GetVendorDevicesAsync(true);
-			m_client.GetProtocolsAsync(true);
-			m_client.GetTimeZonesAsync(true);			
-		}
 
-		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
-		{
-			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
-			NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?did=" + deviceId, UriKind.Relative));
-		}
-
-		private void HyperlinkButtonPhasors_Click(object sender, RoutedEventArgs e)
-		{
-			int deviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());			
-			string acronym = ToolTipService.GetToolTip((HyperlinkButton)sender).ToString();			 
-			Phasors phasors = new Phasors(deviceId, acronym);
-			phasors.Show();
-		}
-
-		private void HyperlinkButtonMeasurements_Click(object sender, RoutedEventArgs e)
-		{
-			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
-			NavigationService.Navigate(new Uri("/Pages/Manage/Measurements.xaml?did=" + deviceId, UriKind.Relative));
-		}
-
+		#endregion
+				
 	}
 }

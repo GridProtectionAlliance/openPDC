@@ -241,11 +241,17 @@ namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class OutputStreamDeviceDigitals : ChildWindow
 	{
+		#region [ Members ]
+
 		int m_sourceOutputStreamDeviceID;
 		string m_sourceOutputStreamDeviceAcronym;				
 		bool m_inEditMode = false;
 		int m_outputStreamDeviceDigitalID = 0;
 		PhasorDataServiceClient m_client;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public OutputStreamDeviceDigitals(int outputStreamDeviceID, string outputStreamDeviceAcronym)
 		{
@@ -261,6 +267,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			m_client.SaveOutputStreamDeviceDigitalCompleted += new EventHandler<SaveOutputStreamDeviceDigitalCompletedEventArgs>(client_SaveOutputStreamDeviceDigitalCompleted);
 			ListBoxOutputStreamDeviceDigitalList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDeviceDigitalList_SelectionChanged);
 		}
+
+		#endregion 
+
+		#region [ Controls Event Handlers ]
+
 		void ListBoxOutputStreamDeviceDigitalList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (ListBoxOutputStreamDeviceDigitalList.SelectedIndex >= 0)
@@ -271,6 +282,46 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				m_outputStreamDeviceDigitalID = selectedOutputStreamDeviceDigital.ID;
 			}
 		}
+
+		void ButtonSave_Click(object sender, RoutedEventArgs e)
+		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonSaveTransform);
+			sb.Begin();
+
+			OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
+			App app = (App)Application.Current;
+
+			outputStreamDeviceDigital.NodeID = app.NodeValue;
+			outputStreamDeviceDigital.OutputStreamDeviceID = m_sourceOutputStreamDeviceID;
+			outputStreamDeviceDigital.Label = TextBoxLabel.Text;
+			outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
+			if (m_inEditMode == true && m_outputStreamDeviceDigitalID > 0)
+			{
+				outputStreamDeviceDigital.ID = m_outputStreamDeviceDigitalID;
+				m_client.SaveOutputStreamDeviceDigitalAsync(outputStreamDeviceDigital, false);
+			}
+			else
+				m_client.SaveOutputStreamDeviceDigitalAsync(outputStreamDeviceDigital, true);
+		}
+		
+		void ButtonClear_Click(object sender, RoutedEventArgs e)
+		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonClearTransform);
+			sb.Begin();
+
+			ClearForm();
+		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
+
 		void client_SaveOutputStreamDeviceDigitalCompleted(object sender, SaveOutputStreamDeviceDigitalCompletedEventArgs e)
 		{
 			SystemMessages sm;
@@ -295,6 +346,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			sm.Show();
 			m_client.GetOutputStreamDeviceDigitalListAsync(m_sourceOutputStreamDeviceID);	
 		}
+		
 		void client_GetOutputStreamDeviceDigitalListCompleted(object sender, GetOutputStreamDeviceDigitalListCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -315,43 +367,20 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				sm.Show();
 			}
 		}
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
 
-			OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
-			App app = (App)Application.Current;
+		#endregion
 
-			outputStreamDeviceDigital.NodeID = app.NodeValue;
-			outputStreamDeviceDigital.OutputStreamDeviceID = m_sourceOutputStreamDeviceID;
-			outputStreamDeviceDigital.Label = TextBoxLabel.Text;
-			outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
-			if (m_inEditMode == true && m_outputStreamDeviceDigitalID > 0)
-			{
-				outputStreamDeviceDigital.ID = m_outputStreamDeviceDigitalID;
-				m_client.SaveOutputStreamDeviceDigitalAsync(outputStreamDeviceDigital, false);
-			}
-			else
-				m_client.SaveOutputStreamDeviceDigitalAsync(outputStreamDeviceDigital, true);
-		}
-		void ButtonClear_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonClearTransform);
-			sb.Begin();
+		#region [ Page Event Handlers ]
 
-			ClearForm();
-		}
 		void OutputStreamDeviceDigitals_Loaded(object sender, RoutedEventArgs e)
 		{
-			m_client.GetOutputStreamDeviceDigitalListAsync(m_sourceOutputStreamDeviceID);	
+			m_client.GetOutputStreamDeviceDigitalListAsync(m_sourceOutputStreamDeviceID);
 		}
+
+		#endregion
+
+		#region [ Methods ]
+
 		void ClearForm()
 		{
 			GridOutputStreamDeviceDigitalDetail.DataContext = new OutputStreamDeviceDigital();
@@ -359,6 +388,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			m_outputStreamDeviceDigitalID = 0;
 			ListBoxOutputStreamDeviceDigitalList.SelectedIndex = -1;
 		}
+
+		#endregion
 	}
 }
 

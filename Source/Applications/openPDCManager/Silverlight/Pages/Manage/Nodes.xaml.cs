@@ -234,19 +234,25 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
 using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Manage
 {
 	public partial class Nodes : Page
-	{
+	{		
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		bool m_inEditMode = false;
 		string m_nodeID = string.Empty;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public Nodes()
 		{
@@ -260,6 +266,10 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ListBoxNodeList.SelectionChanged += new SelectionChangedEventHandler(ListBoxNodeList_SelectionChanged);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
 
 		void client_SaveNodeCompleted(object sender, SaveNodeCompletedEventArgs e)
 		{
@@ -284,8 +294,56 @@ namespace openPDCManager.Silverlight.Pages.Manage
 						ButtonType.OkOnly);
 			}
 			sm.Show();
-			m_client.GetNodeListAsync(false);								
+			m_client.GetNodeListAsync(false);
 		}
+
+		void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboBoxCompany.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboBoxCompany.Items.Count > 0)
+				ComboBoxCompany.SelectedIndex = 0;
+		}
+		
+		void client_GetNodeListCompleted(object sender, GetNodeListCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ListBoxNodeList.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Node List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
 
 		void ListBoxNodeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -301,6 +359,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 				m_nodeID = selectedNode.ID;
 			}
 		}
+		
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -330,6 +389,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			else
 				m_client.SaveNodeAsync(node, true);
 		}
+		
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -340,52 +400,27 @@ namespace openPDCManager.Silverlight.Pages.Manage
 
 			ClearForm();
 		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void Nodes_Loaded(object sender, RoutedEventArgs e)
 		{
 			//m_client.GetRealTimeDataAsync(((App)Application.Current).TimeSeriesDataServiceUrl);
 		}
-		void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
+		
+		// Executes when the user navigates to this page.
+		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			if (e.Error == null)
-				ComboBoxCompany.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-			if (ComboBoxCompany.Items.Count > 0)
-				ComboBoxCompany.SelectedIndex = 0;
+			m_client.GetNodeListAsync(false);
+			m_client.GetCompaniesAsync(true);
 		}
-		void client_GetNodeListCompleted(object sender, GetNodeListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ListBoxNodeList.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Node List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
 
-				sm.Show();
-			}
-		}
+		#endregion
+
+		#region [ Methods ]
+
 		void ClearForm()
 		{
 			GridNodeDetail.DataContext = new Node();
@@ -396,12 +431,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			ListBoxNodeList.SelectedIndex = -1;
 		}
 
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			m_client.GetNodeListAsync(false);
-			m_client.GetCompaniesAsync(true);
-		}
+		#endregion
 
 	}
 }

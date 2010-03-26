@@ -247,19 +247,24 @@ using openPDCManager.Silverlight.Utilities;
 namespace openPDCManager.Silverlight.Pages
 {
     public partial class HomePage : Page
-    {
+	{
+		#region [ Members ]
+
 		DuplexServiceClient m_duplexClient;
 		PhasorDataServiceClient m_client;
 		bool m_connected = false;
 		ActivityWindow m_activityWindow;
-
 		//ObservableCollection<PmuDistribution> pmuDistributionList = new ObservableCollection<PmuDistribution>();
 		ObservableCollection<InterconnectionStatus> interconnectionStatusList = new ObservableCollection<InterconnectionStatus>();
 		Dictionary<string, int> deviceDistributionList  = new Dictionary<string, int>();
 		ObservableCollection<TimeSeriesDataPoint> timeSeriesDataList = new ObservableCollection<TimeSeriesDataPoint>();
 		int framesPerSecond = 30;
 
-        public HomePage()
+		#endregion
+
+		#region [ Constructor ]
+
+		public HomePage()
         {
 			InitializeComponent();
 			this.Loaded += new RoutedEventHandler(HomePage_Loaded);
@@ -274,7 +279,11 @@ namespace openPDCManager.Silverlight.Pages
 			
 			ButtonGetData.Click += new RoutedEventHandler(ButtonGetData_Click);
 			ComboBoxDevice.SelectionChanged += new SelectionChangedEventHandler(ComboBoxDevice_SelectionChanged);
-        }
+		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
 
 		void m_client_GetFilteredMeasurementsByDeviceCompleted(object sender, GetFilteredMeasurementsByDeviceCompletedEventArgs e)
 		{
@@ -303,17 +312,6 @@ namespace openPDCManager.Silverlight.Pages
 			ReconnectToService();
 		}
 
-		void ComboBoxDevice_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (ComboBoxDevice.Items.Count > 0 && ComboBoxDevice.SelectedIndex != -1)
-			{
-				if (((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key == 0)
-					ComboBoxMeasurements.ItemsSource = new Dictionary<int, string>();
-				else
-					m_client.GetFilteredMeasurementsByDeviceAsync(((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key);
-			}
-		}
-
 		void m_client_GetDevicesCompleted(object sender, GetDevicesCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -339,6 +337,69 @@ namespace openPDCManager.Silverlight.Pages
 				ReconnectToService();
 		}
 
+		void duplexClient_SendToServiceCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				m_connected = true;
+		}
+
+		void duplexClient_SendToClientReceived(object sender, SendToClientReceivedEventArgs e)
+		{
+			if (e.msg is LivePhasorDataMessage)
+			{
+				LivePhasorDataMessage livePhasorData = (LivePhasorDataMessage)e.msg;
+
+				//pmuDistributionList = livePhasorData.PmuDistributionList;		        				
+				interconnectionStatusList = livePhasorData.InterconnectionStatusList;
+				deviceDistributionList = livePhasorData.DeviceDistributionList;
+
+				//ItemsControlPmuDistribution.ItemsSource = pmuDistributionList;
+				ChartDeviceDistribution.DataContext = deviceDistributionList;
+				ItemControlInterconnectionStatus.ItemsSource = interconnectionStatusList;
+			}
+			else if (e.msg is TimeSeriesDataMessage)
+			{
+				if (((TimeSeriesDataMessage)e.msg).TimeSeriesData.Count > framesPerSecond)
+				{
+					for (int i = 0; i < (int)((TimeSeriesDataMessage)e.msg).TimeSeriesData.Count / framesPerSecond; i++)
+					{
+						if (timeSeriesDataList.Count == 0)
+							timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = ((TimeSeriesDataMessage)e.msg).TimeSeriesData[(i * framesPerSecond)].Value });
+						else
+							timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = ((TimeSeriesDataMessage)e.msg).TimeSeriesData[(i * framesPerSecond)].Value });
+					}
+				}
+				else if (((TimeSeriesDataMessage)e.msg).TimeSeriesData.Count > 0)
+				{
+					if (timeSeriesDataList.Count == 0)
+						timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = ((TimeSeriesDataMessage)e.msg).TimeSeriesData[0].Value });
+					else
+						timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = ((TimeSeriesDataMessage)e.msg).TimeSeriesData[0].Value });
+				}
+				if (timeSeriesDataList.Count > 30)
+					timeSeriesDataList.RemoveAt(0);
+
+				ChartRealTimeData.DataContext = timeSeriesDataList;
+			}
+			if (m_activityWindow != null)
+				m_activityWindow.Close();
+		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
+
+		void ComboBoxDevice_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (ComboBoxDevice.Items.Count > 0 && ComboBoxDevice.SelectedIndex != -1)
+			{
+				if (((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key == 0)
+					ComboBoxMeasurements.ItemsSource = new Dictionary<int, string>();
+				else
+					m_client.GetFilteredMeasurementsByDeviceAsync(((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key);
+			}
+		}
+		
 		void ButtonGetData_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -348,6 +409,16 @@ namespace openPDCManager.Silverlight.Pages
 			sb.Begin();			
 			ReconnectToService();
 		}
+
+		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			//ReconnectToService();
+			m_client.GetDevicesAsync(DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, false);
+		}
+
+		#endregion
+
+		#region [ Methods ]
 
 		void ReconnectToService()
 		{
@@ -385,11 +456,9 @@ namespace openPDCManager.Silverlight.Pages
 			timeSeriesDataList = new ObservableCollection<TimeSeriesDataPoint>();
 		}
 
-		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			//ReconnectToService();
-			m_client.GetDevicesAsync(DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, false);
-		}
+		#endregion
+
+		#region [ Page Event Handlers ]
 
 		void HomePage_Loaded(object sender, RoutedEventArgs e)
 		{
@@ -399,55 +468,7 @@ namespace openPDCManager.Silverlight.Pages
 				m_client.GetDevicesAsync(DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, false);
 			}						
 		}
-		
-		void duplexClient_SendToServiceCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
-		{   			
-		    if (e.Error == null)
-		        m_connected = true;
-		}
-		
-		void duplexClient_SendToClientReceived(object sender, SendToClientReceivedEventArgs e)
-		{	
-		    if (e.msg is LivePhasorDataMessage)
-		    {
-		        LivePhasorDataMessage livePhasorData = (LivePhasorDataMessage)e.msg;
-
-				//pmuDistributionList = livePhasorData.PmuDistributionList;		        				
-				interconnectionStatusList = livePhasorData.InterconnectionStatusList;		        
-				deviceDistributionList = livePhasorData.DeviceDistributionList;
-
-				//ItemsControlPmuDistribution.ItemsSource = pmuDistributionList;
-		        ChartDeviceDistribution.DataContext = deviceDistributionList;
-		        ItemControlInterconnectionStatus.ItemsSource = interconnectionStatusList;                
-		    }
-			else if (e.msg is TimeSeriesDataMessage)
-			{
-				if (((TimeSeriesDataMessage)e.msg).TimeSeriesData.Count > framesPerSecond)
-				{
-					for (int i = 0; i < (int)((TimeSeriesDataMessage)e.msg).TimeSeriesData.Count / framesPerSecond; i++)
-					{
-						if (timeSeriesDataList.Count == 0)
-							timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = ((TimeSeriesDataMessage)e.msg).TimeSeriesData[(i * framesPerSecond)].Value });
-						else
-							timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = ((TimeSeriesDataMessage)e.msg).TimeSeriesData[(i * framesPerSecond)].Value });
-					}					
-				}
-				else if (((TimeSeriesDataMessage)e.msg).TimeSeriesData.Count > 0)
-				{
-					if (timeSeriesDataList.Count == 0)
-						timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = ((TimeSeriesDataMessage)e.msg).TimeSeriesData[0].Value });
-					else
-						timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = ((TimeSeriesDataMessage)e.msg).TimeSeriesData[0].Value });
-				}
-				if (timeSeriesDataList.Count > 30)
-				    timeSeriesDataList.RemoveAt(0);
-
-				ChartRealTimeData.DataContext = timeSeriesDataList;				
-			}
-			if (m_activityWindow != null)
-				m_activityWindow.Close();
-		}
-		
+						
 		// Executes just before a page is no longer the active page in a frame.
 		protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
 		{
@@ -461,7 +482,8 @@ namespace openPDCManager.Silverlight.Pages
         {
 			m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
 			m_activityWindow.Show();
-        }
+		}
 
-    }
+		#endregion
+	}
 }

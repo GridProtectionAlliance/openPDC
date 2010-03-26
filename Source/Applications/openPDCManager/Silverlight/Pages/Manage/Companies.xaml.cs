@@ -233,19 +233,25 @@ using System;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
 using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Manage
 {
 	public partial class Companies : Page
 	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		bool m_inEditMode = false;
 		int m_companyID = 0;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public Companies()
 		{
@@ -258,6 +264,11 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ListBoxCompanyList.SelectionChanged += new SelectionChangedEventHandler(ListBoxCompanyList_SelectionChanged);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
+
 		void client_SaveCompanyCompleted(object sender, SaveCompanyCompletedEventArgs e)
 		{
 			SystemMessages sm;
@@ -283,10 +294,47 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			sm.Show();						
 			m_client.GetCompanyListAsync();	//refresh data to reflect changes.
 		}
+
+		void client_GetCompanyListCompleted(object sender, GetCompanyListCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ListBoxCompanyList.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Company List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void Companies_Loaded(object sender, RoutedEventArgs e)
 		{
-			
+
 		}
+
+		// Executes when the user navigates to this page.
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			m_client.GetCompanyListAsync();
+		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
+
 		void ListBoxCompanyList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (ListBoxCompanyList.SelectedIndex >= 0)
@@ -329,26 +377,11 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			else
 				m_client.SaveCompanyAsync(company, true);
 		}
-		void client_GetCompanyListCompleted(object sender, GetCompanyListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ListBoxCompanyList.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Company List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
 
-				sm.Show();
-			}
-		}
+		#endregion
+
+		#region [ Methods ]
+
 		void ClearForm()
 		{
 			GridCompanyDetail.DataContext = new Company();	//bind an empty object
@@ -357,11 +390,6 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			ListBoxCompanyList.SelectedIndex = -1;
 		}
 
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			m_client.GetCompanyListAsync();	
-		}
-
+		#endregion
 	}
 }

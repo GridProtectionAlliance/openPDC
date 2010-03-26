@@ -234,19 +234,25 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class OutputStreamDeviceAnalogs : ChildWindow
 	{
+		#region [ Members ]
+
 		int m_sourceOutputStreamDeviceID;
 		string m_sourceOutputStreamDeviceAcronym;				
 		bool m_inEditMode = false;
 		int m_outputStreamDeviceAnalogID = 0;
 		PhasorDataServiceClient m_client;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public OutputStreamDeviceAnalogs(int outputStreamDeviceID, string outputStreamDeviceAcronym)
 		{
@@ -262,6 +268,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			m_client.SaveOutputStreamDeviceAnalogCompleted += new EventHandler<SaveOutputStreamDeviceAnalogCompletedEventArgs>(client_SaveOutputStreamDeviceAnalogCompleted);
 			ListBoxOutputStreamDeviceAnalogList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDeviceAnalogList_SelectionChanged);
 		}
+
+		#endregion
+
+		#region [ Controls Event Handlers ]
+
 		void ListBoxOutputStreamDeviceAnalogList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (ListBoxOutputStreamDeviceAnalogList.SelectedIndex >= 0)
@@ -273,50 +284,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				m_outputStreamDeviceAnalogID = selectedOutputStreamDeviceAnalog.ID;
 			}
 		}
-		void client_SaveOutputStreamDeviceAnalogCompleted(object sender, SaveOutputStreamDeviceAnalogCompletedEventArgs e)
-		{
-			SystemMessages sm;
-			if (e.Error == null)
-			{
-				ClearForm();
-				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-						ButtonType.OkOnly);
-			}
-			else
-			{
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Analog Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-			}
-			sm.Show();
-			m_client.GetOutputStreamDeviceAnalogListAsync(m_sourceOutputStreamDeviceID);
-		}
-		void client_GetOutputStreamDeviceAnalogListCompleted(object sender, GetOutputStreamDeviceAnalogListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ListBoxOutputStreamDeviceAnalogList.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Ouptu Stream Device Analog List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
 
-				sm.Show();
-			}
-		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -341,6 +309,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			else
 				m_client.SaveOutputStreamDeviceAnalogAsync(outputStreamDeviceAnalog, true);
 		}
+
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -351,6 +320,61 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 			ClearForm();
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
+
+		void client_SaveOutputStreamDeviceAnalogCompleted(object sender, SaveOutputStreamDeviceAnalogCompletedEventArgs e)
+		{
+			SystemMessages sm;
+			if (e.Error == null)
+			{
+				ClearForm();
+				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						ButtonType.OkOnly);
+			}
+			else
+			{
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Analog Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+			}
+			sm.Show();
+			m_client.GetOutputStreamDeviceAnalogListAsync(m_sourceOutputStreamDeviceID);
+		}
+		
+		void client_GetOutputStreamDeviceAnalogListCompleted(object sender, GetOutputStreamDeviceAnalogListCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ListBoxOutputStreamDeviceAnalogList.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Ouptu Stream Device Analog List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void OutputStreamDeviceAnalogs_Loaded(object sender, RoutedEventArgs e)
 		{
 			m_client.GetOutputStreamDeviceAnalogListAsync(m_sourceOutputStreamDeviceID);
@@ -359,6 +383,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "Peak of analog input"));
 			ComboBoxType.SelectedIndex = 0;
 		}
+
+		#endregion 
+
+		#region [ Methods ]
+
 		void ClearForm()
 		{
 			GridOutputStreamDeviceAnalogDetail.DataContext = new OutputStreamDeviceAnalog();
@@ -368,6 +397,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ListBoxOutputStreamDeviceAnalogList.SelectedIndex = -1;
 		}
 
+		#endregion
 	}
 }
 

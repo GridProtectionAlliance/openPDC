@@ -242,11 +242,17 @@ namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class OutputStreamDevicePhasors : ChildWindow
 	{
+		#region [ Members ]
+
 		int m_sourceOutputStreamDeviceID;
 		string m_sourceOutputStreamDeviceAcronym;		
 		bool m_inEditMode = false;
 		int m_outputStreamDevicePhasorID = 0;
 		PhasorDataServiceClient m_client;
+
+		#endregion
+
+		#region [ Constructor }
 
 		public OutputStreamDevicePhasors(int outputStreamDeviceID, string outputStreamDeviceAcronym)
 		{
@@ -263,6 +269,10 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ListBoxOutputStreamDevicePhasorList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDevicePhasorList_SelectionChanged);
 		}
 
+		#endregion
+
+		#region [ Controls Event Handlers ]
+
 		void ListBoxOutputStreamDevicePhasorList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (ListBoxOutputStreamDevicePhasorList.SelectedIndex >= 0)
@@ -275,50 +285,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				m_outputStreamDevicePhasorID = selectedOutputStreamDevicePhasor.ID;
 			}
 		}
-		void client_SaveOutputStreamDevicePhasorCompleted(object sender, SaveOutputStreamDevicePhasorCompletedEventArgs e)
-		{
-			SystemMessages sm;
-			if (e.Error == null)
-			{
-				ClearForm();
-				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-						ButtonType.OkOnly);
-			}
-			else
-			{
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Phasor Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-			}
-			sm.Show();
-			m_client.GetOutputStreamDevicePhasorListAsync(m_sourceOutputStreamDeviceID);
-		}
-		void client_GetOutputStreamDevicePhasorListCompleted(object sender, GetOutputStreamDevicePhasorListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ListBoxOutputStreamDevicePhasorList.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device Phasor List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
 
-				sm.Show();
-			}
-		}
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -344,6 +311,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			else
 				m_client.SaveOutputStreamDevicePhasorAsync(outputStreamDevicePhasor, true);
 		}
+
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -352,8 +320,63 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			Storyboard.SetTarget(sb, ButtonClearTransform);
 			sb.Begin();
 
-			ClearForm();	
+			ClearForm();
 		}
+		
+		#endregion
+
+		#region [ Client Event Handlers ]
+
+		void client_SaveOutputStreamDevicePhasorCompleted(object sender, SaveOutputStreamDevicePhasorCompletedEventArgs e)
+		{
+			SystemMessages sm;
+			if (e.Error == null)
+			{
+				ClearForm();
+				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						ButtonType.OkOnly);
+			}
+			else
+			{
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Phasor Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+			}
+			sm.Show();
+			m_client.GetOutputStreamDevicePhasorListAsync(m_sourceOutputStreamDeviceID);
+		}
+		
+		void client_GetOutputStreamDevicePhasorListCompleted(object sender, GetOutputStreamDevicePhasorListCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ListBoxOutputStreamDevicePhasorList.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device Phasor List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void OutputStreamDevicePhasors_Loaded(object sender, RoutedEventArgs e)
 		{
 			m_client.GetOutputStreamDevicePhasorListAsync(m_sourceOutputStreamDeviceID);
@@ -369,6 +392,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ComboboxType.SelectedIndex = 0;
 
 		}
+
+		#endregion
+
+		#region [ Methods ]
+		
 		void ClearForm()
 		{
 			GridOutputStreamDevicePhasorDetail.DataContext = new OutputStreamDevicePhasor();
@@ -378,7 +406,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			m_outputStreamDevicePhasorID = 0;
 			ListBoxOutputStreamDevicePhasorList.SelectedIndex = -1;
 		}
-			
+
+		#endregion
 	}
 }
-

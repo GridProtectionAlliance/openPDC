@@ -241,7 +241,14 @@ namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class SystemMessages : ChildWindow
 	{
+		#region [ Members ]
+
 		Message m_systemMessage = new Message();
+
+		#endregion
+
+		#region [ Constructor ]
+
 		public SystemMessages(Message message, ButtonType buttonType)
 		{
 			InitializeComponent();
@@ -308,15 +315,26 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 		}
 
+		#endregion
+
+		#region [ Control Event Handlers ]
+
 		void ButtonOk_Click(object sender, RoutedEventArgs e)
 		{
 			this.DialogResult = true;
 		}
 
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void SystemMessages_Loaded(object sender, RoutedEventArgs e)
 		{
 			GridSystemMessageDetail.DataContext = m_systemMessage;
-		}		
+		}
+
+		#endregion
+
 	}
 }
 

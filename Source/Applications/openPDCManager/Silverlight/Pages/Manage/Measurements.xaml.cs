@@ -234,25 +234,29 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
+using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.UserControls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media.Animation;
-using System.Windows.Data;
 
 namespace openPDCManager.Silverlight.Pages.Manage
 {
 	public partial class Measurements : Page
 	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		bool m_inEditMode = false;
 		string m_signalID = string.Empty;
 		int m_deviceID = 0;
 		ActivityWindow m_activityWindow;
-		
+
+		#endregion
+
+		#region [ Constructor ]
+
 		public Measurements()
 		{
 			InitializeComponent();
@@ -271,6 +275,10 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			ListBoxMeasurementList.SelectionChanged += new SelectionChangedEventHandler(ListBoxMeasurementList_SelectionChanged);
 			ComboBoxDevice.SelectionChanged += new SelectionChangedEventHandler(ComboBoxDevice_SelectionChanged);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
 
 		void client_GetDeviceByDeviceIDCompleted(object sender, GetDeviceByDeviceIDCompletedEventArgs e)
 		{
@@ -378,89 +386,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			else
 				m_client.GetMeasurementListAsync(app.NodeValue);
 		}
-		
-		void ComboBoxDevice_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			KeyValuePair<int, string> selectedDevice = (KeyValuePair<int, string>)ComboBoxDevice.SelectedItem;
-			m_client.GetPhasorsAsync(selectedDevice.Key, true);
-		}
-		
-		void ListBoxMeasurementList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (ListBoxMeasurementList.SelectedIndex >= 0)
-			{
-				Measurement selectedMeasurement = ListBoxMeasurementList.SelectedItem as Measurement;
-				GridMeasurementDetail.DataContext = selectedMeasurement;
-				if (selectedMeasurement.HistorianID.HasValue)
-					ComboBoxHistorian.SelectedItem = new KeyValuePair<int, string>((int)selectedMeasurement.HistorianID, selectedMeasurement.HistorianAcronym);
-				else
-					ComboBoxHistorian.SelectedIndex = 0;
-				if (selectedMeasurement.DeviceID.HasValue)
-					ComboBoxDevice.SelectedItem = new KeyValuePair<int, string>((int)selectedMeasurement.DeviceID, selectedMeasurement.DeviceAcronym);
-				else
-					ComboBoxDevice.SelectedIndex = 0;
 
-				if (ComboBoxPhasorSource.Items.Count > 0 && selectedMeasurement.PhasorSourceIndex.HasValue)
-				{
-					foreach (KeyValuePair<int, string> item in ComboBoxPhasorSource.Items)
-					{
-						if (item.Value == selectedMeasurement.PhasorLabel)
-						{
-							ComboBoxPhasorSource.SelectedItem = item;
-							break;
-						}
-					}
-				}
-
-				ComboBoxSignalType.SelectedItem = new KeyValuePair<int, string>(selectedMeasurement.SignalTypeID, selectedMeasurement.SignalName);
-
-				m_inEditMode = true;
-				m_signalID = selectedMeasurement.SignalID;
-			}
-		}
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
-
-			Measurement measurement = new Measurement();
-			measurement.HistorianID = ((KeyValuePair<int, string>)ComboBoxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxHistorian.SelectedItem).Key;			
-			measurement.DeviceID = ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key;
-			measurement.PointTag = TextBoxPointTag.Text;
-			measurement.AlternateTag = TextBoxAlternateTag.Text;
-			measurement.SignalTypeID = ((KeyValuePair<int, string>)ComboBoxSignalType.SelectedItem).Key;
-			measurement.PhasorSourceIndex = ((KeyValuePair<int, string>)ComboBoxPhasorSource.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxPhasorSource.SelectedItem).Key;
-			measurement.SignalReference = TextBoxSignalReference.Text;
-			measurement.Adder = Convert.ToDouble(TextBoxAdder.Text);
-			measurement.Multiplier = Convert.ToDouble(TextBoxMultiplier.Text);
-			measurement.Description = TextBoxDescription.Text;
-			measurement.Enabled = (bool)CheckboxEnabled.IsChecked;
-
-			if (m_inEditMode == true && !string.IsNullOrEmpty(m_signalID))
-			{
-				measurement.SignalID = m_signalID;
-				m_client.SaveMeasurementAsync(measurement, false);
-			}
-			else
-				m_client.SaveMeasurementAsync(measurement, true);
-		}
-		void ButtonClear_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonClearTransform);
-			sb.Begin();
-
-			ClearForm();	
-		}
-		void Measurements_Loaded(object sender, RoutedEventArgs e)
-		{
-			
-		}
 		void client_GetPhasorsCompleted(object sender, GetPhasorsCompletedEventArgs e)
 		{
 			//ComboBoxPhasorSource.Items.Clear();
@@ -505,6 +431,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 				sm.Show();
 			}
 		}
+
 		void client_GetSignalTypesCompleted(object sender, GetSignalTypesCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -529,6 +456,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 				sm.Show();
 			}
 		}
+
 		void client_GetDevicesCompleted(object sender, GetDevicesCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -553,6 +481,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 				sm.Show();
 			}
 		}
+
 		void client_GetHistoriansCompleted(object sender, GetHistoriansCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -577,21 +506,101 @@ namespace openPDCManager.Silverlight.Pages.Manage
 				sm.Show();
 			}
 		}
-		void ClearForm()
+		
+		#endregion
+
+		#region [ Control Event Handlers ]
+
+		void ComboBoxDevice_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			GridMeasurementDetail.DataContext = new Measurement();
-			if (ComboBoxDevice.Items.Count > 0)
-				ComboBoxDevice.SelectedIndex = 0;
-			if (ComboBoxHistorian.Items.Count > 0)
-				ComboBoxHistorian.SelectedIndex = 0;
-			if (ComboBoxPhasorSource.Items.Count > 0)
-				ComboBoxPhasorSource.SelectedIndex = 0;
-			if (ComboBoxSignalType.Items.Count > 0)
-				ComboBoxSignalType.SelectedIndex = 0;
-			m_inEditMode = false;
-			m_signalID = string.Empty;
-			ListBoxMeasurementList.SelectedIndex = -1;
+			KeyValuePair<int, string> selectedDevice = (KeyValuePair<int, string>)ComboBoxDevice.SelectedItem;
+			m_client.GetPhasorsAsync(selectedDevice.Key, true);
 		}
+		
+		void ListBoxMeasurementList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (ListBoxMeasurementList.SelectedIndex >= 0)
+			{
+				Measurement selectedMeasurement = ListBoxMeasurementList.SelectedItem as Measurement;
+				GridMeasurementDetail.DataContext = selectedMeasurement;
+				if (selectedMeasurement.HistorianID.HasValue)
+					ComboBoxHistorian.SelectedItem = new KeyValuePair<int, string>((int)selectedMeasurement.HistorianID, selectedMeasurement.HistorianAcronym);
+				else
+					ComboBoxHistorian.SelectedIndex = 0;
+				if (selectedMeasurement.DeviceID.HasValue)
+					ComboBoxDevice.SelectedItem = new KeyValuePair<int, string>((int)selectedMeasurement.DeviceID, selectedMeasurement.DeviceAcronym);
+				else
+					ComboBoxDevice.SelectedIndex = 0;
+
+				if (ComboBoxPhasorSource.Items.Count > 0 && selectedMeasurement.PhasorSourceIndex.HasValue)
+				{
+					foreach (KeyValuePair<int, string> item in ComboBoxPhasorSource.Items)
+					{
+						if (item.Value == selectedMeasurement.PhasorLabel)
+						{
+							ComboBoxPhasorSource.SelectedItem = item;
+							break;
+						}
+					}
+				}
+
+				ComboBoxSignalType.SelectedItem = new KeyValuePair<int, string>(selectedMeasurement.SignalTypeID, selectedMeasurement.SignalName);
+
+				m_inEditMode = true;
+				m_signalID = selectedMeasurement.SignalID;
+			}
+		}
+		
+		void ButtonSave_Click(object sender, RoutedEventArgs e)
+		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonSaveTransform);
+			sb.Begin();
+
+			Measurement measurement = new Measurement();
+			measurement.HistorianID = ((KeyValuePair<int, string>)ComboBoxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxHistorian.SelectedItem).Key;			
+			measurement.DeviceID = ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key;
+			measurement.PointTag = TextBoxPointTag.Text;
+			measurement.AlternateTag = TextBoxAlternateTag.Text;
+			measurement.SignalTypeID = ((KeyValuePair<int, string>)ComboBoxSignalType.SelectedItem).Key;
+			measurement.PhasorSourceIndex = ((KeyValuePair<int, string>)ComboBoxPhasorSource.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxPhasorSource.SelectedItem).Key;
+			measurement.SignalReference = TextBoxSignalReference.Text;
+			measurement.Adder = Convert.ToDouble(TextBoxAdder.Text);
+			measurement.Multiplier = Convert.ToDouble(TextBoxMultiplier.Text);
+			measurement.Description = TextBoxDescription.Text;
+			measurement.Enabled = (bool)CheckboxEnabled.IsChecked;
+
+			if (m_inEditMode == true && !string.IsNullOrEmpty(m_signalID))
+			{
+				measurement.SignalID = m_signalID;
+				m_client.SaveMeasurementAsync(measurement, false);
+			}
+			else
+				m_client.SaveMeasurementAsync(measurement, true);
+		}
+		
+		void ButtonClear_Click(object sender, RoutedEventArgs e)
+		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonClearTransform);
+			sb.Begin();
+
+			ClearForm();
+		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
+		void Measurements_Loaded(object sender, RoutedEventArgs e)
+		{
+			
+		}
+						
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
@@ -613,6 +622,28 @@ namespace openPDCManager.Silverlight.Pages.Manage
 				m_client.GetMeasurementListAsync(app.NodeValue);
 			}
 		}
+
+		#endregion
+
+		#region [ Methods ]
+
+		void ClearForm()
+		{
+			GridMeasurementDetail.DataContext = new Measurement();
+			if (ComboBoxDevice.Items.Count > 0)
+				ComboBoxDevice.SelectedIndex = 0;
+			if (ComboBoxHistorian.Items.Count > 0)
+				ComboBoxHistorian.SelectedIndex = 0;
+			if (ComboBoxPhasorSource.Items.Count > 0)
+				ComboBoxPhasorSource.SelectedIndex = 0;
+			if (ComboBoxSignalType.Items.Count > 0)
+				ComboBoxSignalType.SelectedIndex = 0;
+			m_inEditMode = false;
+			m_signalID = string.Empty;
+			ListBoxMeasurementList.SelectedIndex = -1;
+		}
+
+		#endregion
 
 	}
 }

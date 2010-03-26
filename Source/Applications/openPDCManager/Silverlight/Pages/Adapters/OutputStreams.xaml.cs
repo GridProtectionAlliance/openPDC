@@ -245,10 +245,16 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 {
 	public partial class OutputStreams : Page
 	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		bool m_inEditMode = false;
 		int m_outputStreamID = 0;
 		string m_nodeValue;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public OutputStreams()
 		{
@@ -262,6 +268,10 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			ListBoxOutputStreamList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamList_SelectionChanged);
 			Loaded += new RoutedEventHandler(OutputStreams_Loaded);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
 
 		void client_SaveOutputStreamCompleted(object sender, SaveOutputStreamCompletedEventArgs e)
 		{
@@ -287,6 +297,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			sm.Show();
 			m_client.GetOutputStreamListAsync(false, m_nodeValue);
 		}
+		
 		void client_GetOutputStreamListCompleted(object sender, GetOutputStreamListCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -307,10 +318,54 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 				sm.Show();
 			}
 		}
+
+		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboBoxNode.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboBoxNode.Items.Count > 0)
+				ComboBoxNode.SelectedIndex = 0;
+		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void OutputStreams_Loaded(object sender, RoutedEventArgs e)
 		{
-			
+
 		}
+
+		// Executes when the user navigates to this page.
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			m_nodeValue = ((App)Application.Current).NodeValue;
+			m_client.GetNodesAsync(true, false);
+			ComboBoxType.Items.Add(new KeyValuePair<int, string>(0, "IEEE C37.118"));
+			ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "BPA"));
+			ComboBoxType.SelectedIndex = 0;
+			m_client.GetOutputStreamListAsync(false, m_nodeValue);
+		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
+
 		void ListBoxOutputStreamList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (ListBoxOutputStreamList.SelectedIndex >= 0)
@@ -331,6 +386,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 				m_inEditMode = true;
 			}
 		}
+		
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -367,6 +423,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			else
 				m_client.SaveOutputStreamAsync(outputStream, true);
 		}
+		
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -375,30 +432,37 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			Storyboard.SetTarget(sb, ButtonClearTransform);
 			sb.Begin();
 
-			ClearForm();	
+			ClearForm();
 		}
-		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboBoxNode.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
 
-				sm.Show();
-			}
-			if (ComboBoxNode.Items.Count > 0)
-				ComboBoxNode.SelectedIndex = 0;
+		void HyperlinkButtonDevices_Click(object sender, RoutedEventArgs e)
+		{
+			int outputStreamId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ((HyperlinkButton)sender).Name;
+			OutputStreamDevices osd = new OutputStreamDevices(outputStreamId, acronym);
+			osd.Show();
 		}
+		
+		void HyperlinkButtonMeasurements_Click(object sender, RoutedEventArgs e)
+		{
+			int outputStreamId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ((HyperlinkButton)sender).Name;
+			OutputStreamMeasurements osm = new OutputStreamMeasurements(outputStreamId, acronym);
+			osm.Show();
+		}
+		
+		void HyperlinkButtonWizard_Click(object sender, RoutedEventArgs e)
+		{
+			int outputStreamId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ((HyperlinkButton)sender).Name;
+			CurrentDevices currentDevices = new CurrentDevices(outputStreamId, acronym);
+			currentDevices.Show();
+		}
+
+		#endregion
+
+		#region [ Methods ]
+
 		void ClearForm()
 		{
 			GridOutputStreamDetail.DataContext = new OutputStream();
@@ -416,37 +480,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			ListBoxOutputStreamList.SelectedIndex = -1;
 		}
 
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			m_nodeValue = ((App)Application.Current).NodeValue;
-			m_client.GetNodesAsync(true, false);
-			ComboBoxType.Items.Add(new KeyValuePair<int, string>(0, "IEEE C37.118"));
-			ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "BPA"));
-			ComboBoxType.SelectedIndex = 0;
-			m_client.GetOutputStreamListAsync(false, m_nodeValue);
-		}
-		private void HyperlinkButtonDevices_Click(object sender, RoutedEventArgs e)
-		{	
-			int outputStreamId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
-			string acronym = ((HyperlinkButton)sender).Name;
-			OutputStreamDevices osd = new OutputStreamDevices(outputStreamId, acronym);			
-			osd.Show();
-		}
-		private void HyperlinkButtonMeasurements_Click(object sender, RoutedEventArgs e)
-		{
-			int outputStreamId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
-			string acronym = ((HyperlinkButton)sender).Name;
-			OutputStreamMeasurements osm = new OutputStreamMeasurements(outputStreamId, acronym);
-			osm.Show();
-		}
-		private void HyperlinkButtonWizard_Click(object sender, RoutedEventArgs e)
-		{
-			int outputStreamId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
-			string acronym = ((HyperlinkButton)sender).Name;
-			CurrentDevices currentDevices = new CurrentDevices(outputStreamId, acronym);
-			currentDevices.Show();
-		}
+		#endregion
 
 	}
 }

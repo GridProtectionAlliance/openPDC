@@ -237,7 +237,14 @@ namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class ActivityWindow : ChildWindow
 	{
+		#region [ Members ]
+
 		string m_displayMessage;
+
+		#endregion
+
+		#region [ Constructors ]
+
 		public ActivityWindow(string message)
 		{
 			InitializeComponent();
@@ -245,6 +252,10 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			Loaded += new RoutedEventHandler(ActivityWindow_Loaded);
 			Closing += new EventHandler<System.ComponentModel.CancelEventArgs>(ActivityWindow_Closing);
 		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
 
 		void ActivityWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -255,6 +266,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		{
 			TextBlockMessage.Text = m_displayMessage;
 		}
+
+		#endregion
 	}
 }
 

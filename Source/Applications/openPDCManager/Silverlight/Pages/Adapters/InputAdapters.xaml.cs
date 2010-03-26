@@ -237,15 +237,24 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 {
 	public partial class InputAdapters : Page
 	{
+		#region [ Constructor ]
+
 		public InputAdapters()
 		{
-			InitializeComponent();			
-		}		
+			InitializeComponent();
+		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			InputAdapterControl.SetAdapterType(AdapterType.Input);			
+			InputAdapterControl.SetAdapterType(AdapterType.Input);
 		}
+
+		#endregion
 
 	}
 }

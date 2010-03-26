@@ -233,19 +233,25 @@ using System;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
+using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
-using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Manage
 {
 	public partial class Vendors : Page
 	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		bool m_inEditMode = false;
 		int m_vendorID = 0;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public Vendors()
 		{
@@ -258,6 +264,11 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ListBoxVendorList.SelectionChanged += new SelectionChangedEventHandler(ListBoxVendorList_SelectionChanged);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
+
 		void client_SaveVendorCompleted(object sender, SaveVendorCompletedEventArgs e)
 		{
 			SystemMessages sm;
@@ -283,6 +294,32 @@ namespace openPDCManager.Silverlight.Pages.Manage
 						
 			m_client.GetVendorListAsync();	//Refresh data to reflect changes on the current screen.
 		}
+
+		void client_GetVendorListCompleted(object sender, GetVendorListCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ListBoxVendorList.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
+
 		void ListBoxVendorList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (ListBoxVendorList.SelectedIndex >= 0)
@@ -293,6 +330,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 				m_vendorID = selectedVendor.ID;
 			}
 		}
+		
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -316,6 +354,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			else	//i.e. It is a new item			
 				m_client.SaveVendorAsync(vendor, true);			
 		}
+		
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -325,30 +364,26 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			sb.Begin();
 			ClearForm();
 		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void Vendors_Loaded(object sender, RoutedEventArgs e)
 		{
-			
-		}
-		void client_GetVendorListCompleted(object sender, GetVendorListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ListBoxVendorList.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
 
-				sm.Show();
-			}
 		}
+
+		// Executes when the user navigates to this page.
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			m_client.GetVendorListAsync();
+		}
+
+		#endregion
+
+		#region [ Methods ]
+
 		void ClearForm()
 		{
 			GridVendorDetail.DataContext = new Vendor();		//this is done to clear all the textboxes and to retain binding information. Please do not set empty strings as textboxes' vaues.
@@ -357,11 +392,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			ListBoxVendorList.SelectedIndex = -1;
 		}
 
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			m_client.GetVendorListAsync();
-		}
+		#endregion
 
 	}
 }

@@ -235,19 +235,25 @@ using System.Linq;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
+using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using System.Windows.Media.Animation;
-using openPDCManager.Silverlight.ModalDialogs;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class OtherDevices : Page
 	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		ObservableCollection<OtherDevice> m_otherDeviceList = new ObservableCollection<OtherDevice>();
-		
+
+		#endregion
+
+		#region [ Constructor ]
+
 		public OtherDevices()
 		{
 			InitializeComponent();
@@ -257,6 +263,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
 			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
 		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
+
 		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -267,6 +278,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 			ListBoxOtherDeviceList.ItemsSource = m_otherDeviceList;
 		}
+		
 		void ButtonSearch_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -281,10 +293,32 @@ namespace openPDCManager.Silverlight.Pages.Devices
 													|| item.CompanyName.ToUpper().Contains(searchText) || item.VendorDeviceName.ToUpper().Contains(searchText)
 											 select item).ToList();
 		}
+
+		void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+		{
+			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
+			NavigationService.Navigate(new Uri("/Pages/Devices/ManageOtherDevices.xaml?did=" + deviceId, UriKind.Relative));
+		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void OtherDevices_Loaded(object sender, RoutedEventArgs e)
 		{
 			
 		}
+				
+		// Executes when the user navigates to this page.
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			m_client.GetOtherDeviceListAsync();
+		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
+
 		void client_GetOtherDeviceListCompleted(object sender, GetOtherDeviceListCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -309,17 +343,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 		}
 
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			m_client.GetOtherDeviceListAsync();	
-		}
-
-		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
-		{
-			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
-			NavigationService.Navigate(new Uri("/Pages/Devices/ManageOtherDevices.xaml?did=" + deviceId, UriKind.Relative));
-		}
+		#endregion
 
 	}
 }

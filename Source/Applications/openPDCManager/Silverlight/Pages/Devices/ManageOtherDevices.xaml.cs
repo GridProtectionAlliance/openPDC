@@ -234,19 +234,25 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
+using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
-using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class ManageOtherDevices : Page
 	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		bool m_inEditMode = false;
 		int m_deviceID = 0;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public ManageOtherDevices()
 		{
@@ -261,6 +267,10 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
 
 		void client_GetOtherDeviceByDeviceIDCompleted(object sender, GetOtherDeviceByDeviceIDCompletedEventArgs e)
 		{
@@ -298,6 +308,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				sm.Show();
 			}
 		}
+		
 		void client_SaveOtherDeviceCompleted(object sender, SaveOtherDeviceCompletedEventArgs e)
 		{
 			SystemMessages sm;
@@ -321,6 +332,80 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 			sm.Show();
 		}
+
+		void client_GetInterconnectionsCompleted(object sender, GetInterconnectionsCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboboxInterconnection.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboboxInterconnection.Items.Count > 0)
+				ComboboxInterconnection.SelectedIndex = 0;
+		}
+
+		void client_GetVendorDevicesCompleted(object sender, GetVendorDevicesCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboboxVendorDevice.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboboxVendorDevice.Items.Count > 0)
+				ComboboxVendorDevice.SelectedIndex = 0;
+		}
+
+		void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboboxCompany.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboboxCompany.Items.Count > 0)
+				ComboboxCompany.SelectedIndex = 0;
+		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
+
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -331,6 +416,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 			ClearForm();
 		}
+		
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -359,72 +445,11 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				m_client.SaveOtherDeviceAsync(otherDevice, false);
 			}
 		}
-		void client_GetInterconnectionsCompleted(object sender, GetInterconnectionsCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboboxInterconnection.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
 
-				sm.Show();
-			}
-			if (ComboboxInterconnection.Items.Count > 0)
-				ComboboxInterconnection.SelectedIndex = 0;
-		}
-		void client_GetVendorDevicesCompleted(object sender, GetVendorDevicesCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboboxVendorDevice.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
+		#endregion
 
-				sm.Show();
-			}
-			if (ComboboxVendorDevice.Items.Count > 0)
-				ComboboxVendorDevice.SelectedIndex = 0;
-		}
-		void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboboxCompany.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
+		#region [ Page Event Handlers ]
 
-				sm.Show();
-			}
-			if (ComboboxCompany.Items.Count > 0)
-				ComboboxCompany.SelectedIndex = 0;
-		}
 		void ManageOtherDevices_Loaded(object sender, RoutedEventArgs e)
 		{
 			if (this.NavigationContext.QueryString.ContainsKey("did"))
@@ -435,6 +460,18 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 		}
 
+		// Executes when the user navigates to this page.
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			m_client.GetCompaniesAsync(true);
+			m_client.GetVendorDevicesAsync(true);
+			m_client.GetInterconnectionsAsync(true);
+		}
+
+		#endregion
+
+		#region [ Methods ]
+
 		void ClearForm()
 		{
 			GridOtherDeviceDetail.DataContext = new OtherDevice();
@@ -444,13 +481,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			m_inEditMode = false;
 			m_deviceID = 0;
 		}
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			m_client.GetCompaniesAsync(true);
-			m_client.GetVendorDevicesAsync(true);
-			m_client.GetInterconnectionsAsync(true);			
-		}
+
+		#endregion
 
 	}
 }

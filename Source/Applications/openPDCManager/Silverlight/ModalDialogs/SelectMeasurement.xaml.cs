@@ -230,25 +230,31 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using System.Collections.Generic;
 using openPDCManager.Silverlight.Utilities;
 
 namespace openPDCManager.Silverlight.ModalDialogs
 {
 	public partial class SelectMeasurement : ChildWindow
 	{
+		#region [ Members ]
+
 		int m_sourceOutputStreamID;
 		string m_sourceOutputStreamAcronym;
 		PhasorDataServiceClient m_client;
 		ObservableCollection<Measurement> m_measurementList;		
 		List<string[]> m_measurementsToBeAdded;
 		ActivityWindow m_activityWindow;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public SelectMeasurement(int outputStreamID, string outputStreamAcronym)
 		{
@@ -263,6 +269,10 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			m_client = Common.GetPhasorDataServiceProxyClient();
 			m_client.GetMeasurementsForOutputStreamCompleted += new EventHandler<GetMeasurementsForOutputStreamCompletedEventArgs>(client_GetMeasurementsForOutputStreamCompleted);
 		}
+
+		#endregion
+
+		#region [ Client Event Handlers ]
 
 		void client_GetMeasurementsForOutputStreamCompleted(object sender, GetMeasurementsForOutputStreamCompletedEventArgs e)
 		{
@@ -287,11 +297,17 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			}
 			if (m_activityWindow != null)
 				m_activityWindow.Close();
-		}		
+		}
+
+		#endregion
+
+		#region [ Controls Event Handlers ]
+
 		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
 		{
 			ListBoxMeasurementList.ItemsSource = m_measurementList;
 		}
+		
 		void ButtonSearch_Click(object sender, RoutedEventArgs e)
 		{
 			string searchText = TextBoxSearch.Text.ToUpper();
@@ -299,6 +315,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 												  where item.PointTag.ToUpper().Contains(searchText) || item.SignalReference.ToUpper().Contains(searchText)
 												  select item).ToList();			
 		}
+		
 		void ButtonAdd_Click(object sender, RoutedEventArgs e)
 		{
 			if (m_measurementsToBeAdded.Count > 0)
@@ -327,16 +344,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				sm.Show();
 			}				
 		}
-		void SelectMeasurement_Loaded(object sender, RoutedEventArgs e)
-		{
-			m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
-			m_activityWindow.Show();
-			m_measurementList = new ObservableCollection<Measurement>();			
-			m_measurementsToBeAdded = new List<string[]>();
-			App app = (App)Application.Current;			
-			m_client.GetMeasurementsForOutputStreamAsync(app.NodeValue, m_sourceOutputStreamID);
-		}						
-		private void CheckBox_Checked(object sender, RoutedEventArgs e)
+		
+		void CheckBox_Checked(object sender, RoutedEventArgs e)
 		{
 			CheckBox checkedBox = (CheckBox)sender;
 			ToolTip tooltip = new ToolTip();
@@ -344,14 +353,32 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			//string[] format is {Name=PointID, Tooltip=SignalReference, Tag=HistorianID}
 			m_measurementsToBeAdded.Add(new string[] { checkedBox.Name, ToolTipService.GetToolTip(checkedBox).ToString(), checkedBox.Tag == null ? string.Empty : checkedBox.Tag.ToString() });			
 		}
-		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+		
+		void CheckBox_Unchecked(object sender, RoutedEventArgs e)
 		{
 			CheckBox checkedBox = (CheckBox)sender;
 			ToolTip tooltip = new ToolTip();
 			tooltip = ToolTipService.GetToolTip(checkedBox) as ToolTip;
 			//string[] format is {Name=PointID, Tooltip=SignalReference, Tag=HistorianID}
-			m_measurementsToBeAdded.Remove(new string[] { checkedBox.Name, ToolTipService.GetToolTip(checkedBox).ToString(), checkedBox.Tag.ToString() });			
+			m_measurementsToBeAdded.Remove(new string[] { checkedBox.Name, ToolTipService.GetToolTip(checkedBox).ToString(), checkedBox.Tag.ToString() });
 		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
+		void SelectMeasurement_Loaded(object sender, RoutedEventArgs e)
+		{
+			m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+			m_activityWindow.Show();
+			m_measurementList = new ObservableCollection<Measurement>();
+			m_measurementsToBeAdded = new List<string[]>();
+			App app = (App)Application.Current;
+			m_client.GetMeasurementsForOutputStreamAsync(app.NodeValue, m_sourceOutputStreamID);
+		}
+
+		#endregion
+
 	}
 }
 

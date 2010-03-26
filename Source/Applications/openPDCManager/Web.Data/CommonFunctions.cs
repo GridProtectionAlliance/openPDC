@@ -608,7 +608,9 @@ namespace openPDCManager.Web.Data
 				foreach (TimeZoneInfo tzi in TimeZoneInfo.GetSystemTimeZones())
 				{					
 					if (!timeZonesList.ContainsKey(tzi.StandardName))
-						timeZonesList.Add(tzi.StandardName, tzi.DisplayName);					
+						timeZonesList.Add(tzi.StandardName, tzi.DisplayName);
+
+					System.Diagnostics.Debug.WriteLine(tzi.DisplayName);
 				}
 				return timeZonesList;
 			}

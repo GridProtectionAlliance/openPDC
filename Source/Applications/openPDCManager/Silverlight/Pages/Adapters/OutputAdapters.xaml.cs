@@ -237,10 +237,16 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 {
 	public partial class OutputAdapters : Page
 	{
+		#region [ Constructor ]
+
 		public OutputAdapters()
 		{
 			InitializeComponent();
 		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
 
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -248,5 +254,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			OutputAdapterControl.SetAdapterType(AdapterType.Output);
 		}
 
+		#endregion
+		
 	}
 }

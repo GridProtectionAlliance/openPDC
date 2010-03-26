@@ -234,20 +234,26 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
+using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
-using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.UserControls
 {
 	public partial class AdapterUserControl : UserControl
 	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		bool m_inEditMode = false;
 		int m_adapterID = 0;
 		AdapterType m_adapterType;
 		string m_nodeID;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public AdapterUserControl()
 		{
@@ -261,6 +267,10 @@ namespace openPDCManager.Silverlight.UserControls
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ListBoxAdapterList.SelectionChanged += new SelectionChangedEventHandler(ListBoxAdapterList_SelectionChanged);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
 
 		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
 		{
@@ -284,6 +294,7 @@ namespace openPDCManager.Silverlight.UserControls
 			if (ComboboxNode.Items.Count > 0)
 				ComboboxNode.SelectedIndex = 0;
 		}
+		
 		void client_SaveAdapterCompleted(object sender, SaveAdapterCompletedEventArgs e)
 		{
 			SystemMessages sm;
@@ -308,17 +319,7 @@ namespace openPDCManager.Silverlight.UserControls
 			sm.Show();
 			m_client.GetAdapterListAsync(false, m_adapterType, m_nodeID);
 		}
-		void ListBoxAdapterList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (ListBoxAdapterList.SelectedIndex >= 0)
-			{
-				Adapter selectedAdapter = ListBoxAdapterList.SelectedItem as Adapter;
-				GridAdapterDetail.DataContext = selectedAdapter;
-				ComboboxNode.SelectedItem = new KeyValuePair<string, string>(selectedAdapter.NodeID, selectedAdapter.NodeName);
-				m_inEditMode = true;
-				m_adapterID = selectedAdapter.ID;
-			}
-		}
+
 		void client_GetAdapterListCompleted(object sender, GetAdapterListCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -339,6 +340,23 @@ namespace openPDCManager.Silverlight.UserControls
 				sm.Show();
 			}
 		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
+
+		void ListBoxAdapterList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (ListBoxAdapterList.SelectedIndex >= 0)
+			{
+				Adapter selectedAdapter = ListBoxAdapterList.SelectedItem as Adapter;
+				GridAdapterDetail.DataContext = selectedAdapter;
+				ComboboxNode.SelectedItem = new KeyValuePair<string, string>(selectedAdapter.NodeID, selectedAdapter.NodeName);
+				m_inEditMode = true;
+				m_adapterID = selectedAdapter.ID;
+			}
+		}
+		
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -348,6 +366,7 @@ namespace openPDCManager.Silverlight.UserControls
 			sb.Begin();
 			ClearForm();
 		}
+		
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -373,6 +392,11 @@ namespace openPDCManager.Silverlight.UserControls
 			else
 				m_client.SaveAdapterAsync(adapter, true);
 		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void AdaptersUserControl_Loaded(object sender, RoutedEventArgs e)
 		{
 			App app = (App)Application.Current;
@@ -380,6 +404,11 @@ namespace openPDCManager.Silverlight.UserControls
 			m_client.GetNodesAsync(true, false);
 			m_client.GetAdapterListAsync(false, m_adapterType, m_nodeID);
 		}
+
+		#endregion
+
+		#region [ Methods ]
+
 		void ClearForm()
 		{
 			GridAdapterDetail.DataContext = new Adapter();
@@ -389,9 +418,13 @@ namespace openPDCManager.Silverlight.UserControls
 			m_adapterID = 0;
 			ListBoxAdapterList.SelectedIndex = -1;
 		}
+		
 		public void SetAdapterType(AdapterType adpType)
 		{
 			m_adapterType = adpType;
 		}
+
+		#endregion
+
 	}
 }

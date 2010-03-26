@@ -241,22 +241,33 @@ using Microsoft.Maps.MapControl;
 namespace openPDCManager.Silverlight
 {
     public partial class App : Application
-    {
+	{
+		#region [ Properties ]
+
 		public string NodeValue { get; set; }
 		public string NodeName { get; set; }
 		public string TimeSeriesDataServiceUrl { get; set; }
 		public string RemoteStatusServiceUrl { get; set; }
 		public ApplicationIdCredentialsProvider Credentials { get; set; }
-        public App()
+
+		#endregion
+
+		#region [ Constructor ]
+
+		public App()
         {
             this.Startup += this.Application_Startup;
             this.Exit += this.Application_Exit;
             this.UnhandledException += this.Application_UnhandledException;
             
             InitializeComponent();
-        }
+		}
 
-        private void Application_Startup(object sender, StartupEventArgs e)
+		#endregion
+
+		#region [ Application Event Handlers ]
+
+		private void Application_Startup(object sender, StartupEventArgs e)
         {
             if ((e.InitParams != null) && (e.InitParams.ContainsKey("BaseServiceUrl")))
                 Resources.Add("BaseServiceUrl", e.InitParams["BaseServiceUrl"]);
@@ -268,11 +279,13 @@ namespace openPDCManager.Silverlight
 			this.Credentials = credentialsProvider;
 			this.RootVisual = new MasterLayoutControl();
         }
-        private void Application_Exit(object sender, EventArgs e)
+        
+		private void Application_Exit(object sender, EventArgs e)
         {
 
         }
-        private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
+        
+		private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
             // If the app is running outside of the debugger then report the exception using
             // the browser's exception mechanism. On IE this will display it a yellow alert 
@@ -287,8 +300,13 @@ namespace openPDCManager.Silverlight
                 e.Handled = true;
                 Deployment.Current.Dispatcher.BeginInvoke(delegate { ReportErrorToDOM(e); });
             }
-        }
-        private void ReportErrorToDOM(ApplicationUnhandledExceptionEventArgs e)
+		}
+
+		#endregion
+
+		#region [ Methods ]
+
+		private void ReportErrorToDOM(ApplicationUnhandledExceptionEventArgs e)
         {
             try
             {
@@ -300,7 +318,8 @@ namespace openPDCManager.Silverlight
             catch (Exception)
             {
             }
-        }
+		}
 
+		#endregion
 	}
 }

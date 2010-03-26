@@ -229,27 +229,33 @@
 */
 #endregion
 
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.ServiceModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using System.Windows;
-using System.ServiceModel;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using System.Collections.ObjectModel;
-using System;
-using System.Linq;
-using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
 using Microsoft.Maps.MapControl;
+using openPDCManager.Silverlight.ModalDialogs;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class PlanningMap : Page
-	{		
+	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		Button m_pushPinButton;
 		ObservableCollection<OtherDevice> m_deviceList;
 		ObservableCollection<MapData> m_mapDataList;
 		ToolTip m_toolTip;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public PlanningMap()
 		{
@@ -260,6 +266,10 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			VirtualEarthPlanningMap.CredentialsProvider = (Application.Current as App).Credentials;
 			Loaded += new RoutedEventHandler(PlanningMap_Loaded);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
 
 		void client_GetMapDataCompleted(object sender, GetMapDataCompletedEventArgs e)
 		{
@@ -306,6 +316,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				sm.Show();
 			}
 		}
+		
 		void client_GetOtherDeviceListCompleted(object sender, GetOtherDeviceListCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -354,10 +365,16 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				sm.Show();
 			}
 		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void PlanningMap_Loaded(object sender, RoutedEventArgs e)
 		{			
 			
 		}
+		
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
@@ -365,5 +382,6 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			m_client.GetMapDataAsync(MapType.Planning, app.NodeValue);
 		}
 
+		#endregion
 	}
 }

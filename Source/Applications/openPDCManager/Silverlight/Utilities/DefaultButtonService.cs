@@ -239,8 +239,14 @@ namespace openPDCManager.Silverlight.Utilities
 {
 	public static class DefaultButtonService
 	{
+		#region [ Members ]
+
 		public static DependencyProperty DefaultButtonProperty = DependencyProperty.RegisterAttached("DefaultButton", typeof(Button), typeof(DefaultButtonService),
 																	new PropertyMetadata(null, DefaultButtonChanged));
+		
+		#endregion
+
+		#region [ Methods ]
 
 		private static void DefaultButtonChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
@@ -270,6 +276,8 @@ namespace openPDCManager.Silverlight.Utilities
 		{
 			obj.GetValue(DefaultButtonProperty);
 		}
+
+		#endregion
 
 	}
 }

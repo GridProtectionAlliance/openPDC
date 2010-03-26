@@ -244,11 +244,17 @@ using openPDCManager.Silverlight.Utilities;
 namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class ActiveMap : Page
-	{	
+	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		Button m_pushPinButton;		
 		ToolTip m_toolTip;		
 		ObservableCollection<MapData> m_mapDataList;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public ActiveMap()
 		{
@@ -256,8 +262,13 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			m_client = Common.GetPhasorDataServiceProxyClient();
 			VirtualEarthActiveMap.CredentialsProvider = (Application.Current as App).Credentials;
 			Loaded += new RoutedEventHandler(ActiveMap_Loaded);
-			m_client.GetMapDataCompleted += new EventHandler<GetMapDataCompletedEventArgs>(client_GetMapDataCompleted);		
+			m_client.GetMapDataCompleted += new EventHandler<GetMapDataCompletedEventArgs>(client_GetMapDataCompleted);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
+
 		void client_GetMapDataCompleted(object sender, GetMapDataCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -299,17 +310,25 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 				sm.Show();
 			}
-		}		
+		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void ActiveMap_Loaded(object sender, RoutedEventArgs e)
 		{
 			
 		}
+		
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
 			App app = (App)Application.Current;
 			m_client.GetMapDataAsync(MapType.Active, app.NodeValue);
 		}
+
+		#endregion
 
 	}
 }

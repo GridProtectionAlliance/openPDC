@@ -244,9 +244,15 @@ namespace openPDCManager.Silverlight.Pages
 {
 	public partial class Monitor : Page
 	{
+		#region [ Members ]
+
 		DuplexServiceClient m_duplexClient;
 		bool m_connected = false;
 		ActivityWindow m_activityWindow;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public Monitor()
 		{
@@ -255,8 +261,12 @@ namespace openPDCManager.Silverlight.Pages
 			m_duplexClient = Common.GetDuplexServiceProxyClient();
 			m_duplexClient.SendToServiceCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(m_duplexClient_SendToServiceCompleted);
 			m_duplexClient.SendToClientReceived += new EventHandler<SendToClientReceivedEventArgs>(m_duplexClient_SendToClientReceived);
-			ButtonSendServiceRequest.Click += new RoutedEventHandler(ButtonSendServiceRequest_Click);			
+			ButtonSendServiceRequest.Click += new RoutedEventHandler(ButtonSendServiceRequest_Click);
 		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
 
 		void ButtonSendServiceRequest_Click(object sender, RoutedEventArgs e)
 		{
@@ -272,6 +282,10 @@ namespace openPDCManager.Silverlight.Pages
 				m_duplexClient.SendToServiceAsync(message);
 			}
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
 
 		void m_duplexClient_SendToClientReceived(object sender, SendToClientReceivedEventArgs e)
 		{
@@ -302,14 +316,16 @@ namespace openPDCManager.Silverlight.Pages
 					TextBoxServiceStatus.Inlines.Add(run);
 				}
 			}
-
-			ScrollViewerMonitor.ScrollToVerticalOffset(TextBoxServiceStatus.ActualHeight);
 						
 			if (TextBoxServiceStatus.Inlines.Count > 75)
 				TextBoxServiceStatus.Inlines.RemoveAt(0);
 
 			if (m_activityWindow != null)
 				m_activityWindow.Close();
+
+			ScrollViewerMonitor.UpdateLayout();	//this is required to keep scroll-bar at the bottom.
+			ScrollViewerMonitor.ScrollToVerticalOffset(TextBoxServiceStatus.ActualHeight * 2);
+			//ScrollViewerMonitor.ScrollToBottom();
 		}
 
 		void m_duplexClient_SendToServiceCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
@@ -318,19 +334,13 @@ namespace openPDCManager.Silverlight.Pages
 				m_connected = true;
 		}
 
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void Monitor_Loaded(object sender, RoutedEventArgs e)
 		{
-			ReconnectToService();			
-		}
-
-		void ReconnectToService()
-		{
-			ConnectMessage msg = new ConnectMessage();
-			msg.NodeID = ((App)Application.Current).NodeValue;
-			msg.TimeSeriesDataRootUrl = ((App)Application.Current).TimeSeriesDataServiceUrl;	// "http://localhost:6152/historian/timeseriesdata/read/";			
-			msg.CurrentDisplayType = DisplayType.ServiceClient;
-			msg.DataPointID = 0;
-			m_duplexClient.SendToServiceAsync(msg);
+			ReconnectToService();
 		}
 
 		// Executes when the user navigates to this page.
@@ -347,6 +357,22 @@ namespace openPDCManager.Silverlight.Pages
 				m_duplexClient.SendToServiceAsync(new DisconnectMessage());
 			base.OnNavigatingFrom(e);
 		}
+
+		#endregion
+
+		#region [ Methods ]
+
+		void ReconnectToService()
+		{
+			ConnectMessage msg = new ConnectMessage();
+			msg.NodeID = ((App)Application.Current).NodeValue;
+			msg.TimeSeriesDataRootUrl = ((App)Application.Current).TimeSeriesDataServiceUrl;	// "http://localhost:6152/historian/timeseriesdata/read/";			
+			msg.CurrentDisplayType = DisplayType.ServiceClient;
+			msg.DataPointID = 0;
+			m_duplexClient.SendToServiceAsync(msg);
+		}
+
+		#endregion
 
 	}
 }

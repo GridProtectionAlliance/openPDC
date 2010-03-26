@@ -238,16 +238,18 @@ using System.ServiceModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
+using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
-using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class InputWizard : Page
-	{		
+	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		Stream m_configFileData, m_connectionFileData, m_iniFileData;
 		ConnectionSettings m_connectionSettings;
@@ -259,6 +261,10 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		int? m_parentID = null;
 		string m_iniFileName = string.Empty;
 		string m_iniFilePath = string.Empty;
+
+		#endregion
+
+		#region [ Constructor ]
 		
 		public InputWizard()
 		{
@@ -290,8 +296,10 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			CheckboxConnectToPDC.Unchecked += new RoutedEventHandler(CheckboxConnectToPDC_Unchecked);
 			ComboboxProtocol.SelectionChanged += new SelectionChangedEventHandler(ComboboxProtocol_SelectionChanged);
 		}
+		
+		#endregion
 
-		#region " Service Event Handlers"
+		#region [ Service Event Handlers ]
 
 		void client_GetProtocolIDByAcronymCompleted(object sender, GetProtocolIDByAcronymCompletedEventArgs e)
 		{
@@ -618,7 +626,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 		#endregion
 
-		#region " Controls Event Handlers"
+		#region [ Controls Event Handlers ]
 
 		void ComboboxProtocol_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -628,14 +636,17 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			else
 				IniFileUploadVisualization(Visibility.Collapsed);
 		}
+		
 		void CheckboxConnectToPDC_Unchecked(object sender, RoutedEventArgs e)
 		{
 			PdcInfoVisualization(Visibility.Collapsed);
 		}
+		
 		void CheckboxConnectToPDC_Checked(object sender, RoutedEventArgs e)
 		{
 			PdcInfoVisualization(Visibility.Visible);
 		}
+		
 		void AccordianWizard_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (AccordianWizard.SelectedIndex == 1)
@@ -684,6 +695,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				ButtonPrevious.Visibility = Visibility.Visible;
 			}
 		}		
+		
 		void ButtonBrowseIniFile_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -705,6 +717,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				//UploadIniFile(iniFileName, iniFileData);
 			}
 		}
+		
 		void ButtonBrowseConnectionFile_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -724,6 +737,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				m_client.GetConnectionSettingsAsync(ReadFileBytes(m_connectionFileData));
 			}
 		}
+		
 		void ButtonBrowseConfigurationFile_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -743,6 +757,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				//client.GetWizardConfigurationInfoAsync(ReadFileBytes(configFileData));
 			}
 		}
+		
 		void ButtonPrevious_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -757,6 +772,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				item.IsSelected = true;
 			}
 		}
+		
 		void ButtonNext_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -809,6 +825,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				item.IsSelected = true;
 			}
 		}
+		
 		void ComboboxVendor_Loaded(object sender, RoutedEventArgs e)
 		{
 			if (m_vendorDeviceList.Count > 0)
@@ -817,6 +834,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				((ComboBox)sender).SelectedIndex = 0;
 			}			
 		}
+		
 		void ComboboxType_Loaded(object sender, RoutedEventArgs e)
 		{
 			ComboBox phasorTypes = (ComboBox)sender;
@@ -840,6 +858,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 
 		}
+		
 		void ComboboxPhase_Loaded(object sender, RoutedEventArgs e)
 		{
 			ComboBox phaseTypes = (ComboBox)sender;
@@ -862,8 +881,44 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				//we don't care
 			}
 		}
-		
+
+		void CheckAllDevices_Checked(object sender, RoutedEventArgs e)
+		{
+			foreach (WizardDeviceInfo deviceInfo in m_wizardDeviceInfoList)
+			{
+				deviceInfo.Include = true;
+			}
+		}
+
+		void CheckAllDevices_Unchecked(object sender, RoutedEventArgs e)
+		{
+			foreach (WizardDeviceInfo deviceInfo in m_wizardDeviceInfoList)
+			{
+				deviceInfo.Include = false;
+			}
+		}
+
+		void CheckBox_Checked(object sender, RoutedEventArgs e)
+		{
+			WizardDeviceInfo deviceInfo = (WizardDeviceInfo)((CheckBox)sender).DataContext;
+			foreach (PhasorInfo phasorInfo in deviceInfo.PhasorList)
+			{
+				phasorInfo.Include = true;
+			}
+		}
+
+		void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+		{
+			WizardDeviceInfo deviceInfo = (WizardDeviceInfo)((CheckBox)sender).DataContext;
+			foreach (PhasorInfo phasorInfo in deviceInfo.PhasorList)
+			{
+				phasorInfo.Include = false;
+			}
+		}
+
 		#endregion
+
+		#region [ Methods ]
 
 		//void UploadIniFile(string fileName, Stream fileData)
 		//{
@@ -894,10 +949,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		//        output.Write(buffer, 0, bytesRead);
 		//    }
 		//}
+		
 		void InputWizard_Loaded(object sender, RoutedEventArgs e)
 		{
 			
 		}
+		
 		void PdcInfoVisualization(Visibility visibility)
 		{
 			TextBlockPDCName.Visibility = visibility;
@@ -907,11 +964,13 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			TextBlockPDCDeviceVendor.Visibility = visibility;
 			ComboboxPDCVendor.Visibility = visibility;
 		}
+		
 		void IniFileUploadVisualization(Visibility visibility)
 		{
 			TextBlockIniFile.Visibility = visibility;
 			StackPanelIniFile.Visibility = visibility;
 		}		
+		
 		byte[] ReadFileBytes(Stream inputStream)
 		{
 			byte[] bytes;
@@ -941,6 +1000,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 			return bytes;
 		}
+		
 		T Deserialize<T>(Stream inputStream)
 		{
 			var serializer = new DataContractSerializer(typeof(T));
@@ -948,6 +1008,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			return deserializedObject;
 		}
 		
+		#endregion
+
+		#region [ Page Event Handlers ]
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
@@ -974,5 +1037,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			m_phasorTypes.Add("V", "Voltage"); 
 			m_phasorTypes.Add("I", "Current");
 		}
+
+		#endregion
+
 	}
 }

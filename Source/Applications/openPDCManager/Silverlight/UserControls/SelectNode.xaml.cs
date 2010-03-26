@@ -230,22 +230,27 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
+using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
 using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using System.ServiceModel;
 
 namespace openPDCManager.Silverlight.UserControls
 {
 	public partial class SelectNode : UserControl
-	{		
+	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client = new PhasorDataServiceClient();
 		public delegate void OnNodesChanged(object sender, RoutedEventArgs e);
 		public event OnNodesChanged NodeCollectionChanged;
 		bool m_raiseNodesCollectionChanged = false;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public SelectNode()
 		{
@@ -256,6 +261,10 @@ namespace openPDCManager.Silverlight.UserControls
 			ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
 			Loaded += new RoutedEventHandler(SelectNode_Loaded);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
 
 		void m_client_GetNodeListCompleted(object sender, GetNodeListCompletedEventArgs e)
 		{
@@ -307,11 +316,19 @@ namespace openPDCManager.Silverlight.UserControls
 			m_raiseNodesCollectionChanged = false;
 		}
 
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void SelectNode_Loaded(object sender, RoutedEventArgs e)
 		{
 			//m_client.GetNodesAsync(true, false);
 			m_client.GetNodeListAsync(true);
 		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
 
 		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -328,51 +345,9 @@ namespace openPDCManager.Silverlight.UserControls
 			}
 		}
 
-		//void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
-		//{
-		//    if (e.Error == null)
-		//    {
-		//        ComboboxNode.ItemsSource = e.Result;
-		//        App app = (App)Application.Current;
-		//        if (ComboboxNode.Items.Count > 0)
-		//        {
-		//            if (!string.IsNullOrEmpty(app.NodeValue))
-		//            {
-		//                foreach (KeyValuePair<string, string> item in ComboboxNode.Items)
-		//                {
-		//                    if (item.Key == app.NodeValue)
-		//                    {
-		//                        ComboboxNode.SelectedItem = item;
-		//                        break;
-		//                    }
+		#endregion
 
-		//                }
-		//            }
-		//            else
-		//                ComboboxNode.SelectedIndex = 0;
-		//    //        app.NodeValue = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Key;
-		//    //        app.NodeName = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Value;
-		//        }
-		//        else
-		//            app.NodeValue = string.Empty;
-		//    }
-		//    else
-		//    {
-		//    //    SystemMessages sm;
-		//    //    if (e.Error is FaultException<CustomServiceFault>)
-		//    //    {
-		//    //        FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-		//    //        sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-		//    //            ButtonType.OkOnly);
-		//    //    }
-		//    //    else
-		//    //        sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-		//    //            ButtonType.OkOnly);
-
-		//    //    sm.Show();
-		//    }
-		//    m_raiseNodesCollectionChanged = false;
-		//}
+		#region [ Methods ]
 
 		public void RefreshNodeList()
 		{				
@@ -385,8 +360,10 @@ namespace openPDCManager.Silverlight.UserControls
 			m_raiseNodesCollectionChanged = true;
 			if (NodeCollectionChanged != null && m_raiseNodesCollectionChanged)
 				NodeCollectionChanged(this, null);
-						
+
 		}
-		
+
+		#endregion
+
 	}
 }

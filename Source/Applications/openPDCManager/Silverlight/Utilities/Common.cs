@@ -231,18 +231,20 @@
 
 using System;
 using System.Linq;
-using System.Xml.Linq;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using System.Windows;
 using System.ServiceModel;
-using System.Windows.Browser;
-using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
 using System.ServiceModel.Channels;
+using System.Windows;
+using System.Windows.Browser;
+using System.Xml.Linq;
+using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
 
 namespace openPDCManager.Silverlight.Utilities
 {
 	public static class Common
 	{
+		#region [ Methods ]
+
 		public static Message ParseStringToMessage(string messageXML)
 		{	
 			XDocument xdoc = XDocument.Parse(messageXML.Substring(1));
@@ -322,5 +324,8 @@ namespace openPDCManager.Silverlight.Utilities
 
 			return new DuplexServiceClient(binding, address);
 		}
+
+		#endregion
+
 	}
 }

@@ -242,19 +242,41 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 {
 	public partial class IaonTree : Page
 	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public IaonTree()
 		{
 			InitializeComponent();
 			m_client = Common.GetPhasorDataServiceProxyClient();
 			m_client.GetIaonTreeDataCompleted += new EventHandler<GetIaonTreeDataCompletedEventArgs>(client_GetIaonTreeDataCompleted);
-			Loaded += new RoutedEventHandler(IaonTree_Loaded);			
+			Loaded += new RoutedEventHandler(IaonTree_Loaded);
 		}
 
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void IaonTree_Loaded(object sender, RoutedEventArgs e)
-		{			
+		{
 		}
+
+		// Executes when the user navigates to this page.
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			App app = (App)Application.Current;
+			m_client.GetIaonTreeDataAsync(app.NodeValue);
+		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
+
 		void client_GetIaonTreeDataCompleted(object sender, GetIaonTreeDataCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -276,12 +298,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			}
 		}
 
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			App app = (App)Application.Current;
-			m_client.GetIaonTreeDataAsync(app.NodeValue);	
-		}
+		#endregion
 
 	}
 }

@@ -7,6 +7,7 @@
         <Border Background="{StaticResource PortletBackgroundBrush}">
             <StackPanel Orientation="Vertical" x:Name="StackPanelDevices">                               
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <CheckBox x:Name="CheckAll" Content="" Margin="0, 10, 27, 0" HorizontalAlignment="Left" VerticalAlignment="Center" />
                     <TextBox x:Name="TextBoxSearch" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Margin="5" />
                     <Button x:Name="ButtonSearch" Content="../../Images/Search.png" Tag="Search" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="5" Cursor="Hand">
                         <Button.RenderTransform>
@@ -26,7 +27,7 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <CheckBox HorizontalAlignment="Center" Content="{Binding Path=Value}" Tag="{Binding Path=Key}" Width="{StaticResource XLargeItemSize}" 
-                                               Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked" />
+                                               Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked" IsChecked="{Binding IsChecked, ElementName=CheckAll}"/>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>

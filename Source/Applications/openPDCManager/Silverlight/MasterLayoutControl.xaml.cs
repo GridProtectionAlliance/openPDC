@@ -234,17 +234,21 @@ using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.ServiceModel;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using System.Collections.Generic;
 using openPDCManager.Silverlight.UserControls;
 
 namespace openPDCManager.Silverlight
 {
 	public partial class MasterLayoutControl : UserControl
 	{
+		#region [ Members ]
+
 		const double layoutRootHeight = 900;
 		const double layoutRootWidth = 1200;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public MasterLayoutControl()
 		{
@@ -258,6 +262,10 @@ namespace openPDCManager.Silverlight
 			UserControlSelectNode.NodeCollectionChanged += new SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);
 			UserControlSelectNode.ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
 		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
 
 		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -278,8 +286,23 @@ namespace openPDCManager.Silverlight
 		void ButtonChangeMode_Click(object sender, RoutedEventArgs e)
 		{		
             if (!App.Current.IsRunningOutOfBrowser && App.Current.InstallState == InstallState.NotInstalled)
-                App.Current.Install();        
+                App.Current.Install();
 		}
+
+		void XamWebMenuItem_Click(object sender, EventArgs e)
+		{
+			System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration"), "_blank");
+		}
+
+		void HyperlinkButtonMonitor_Click(object sender, RoutedEventArgs e)
+		{
+			ContentFrame.Navigate(new Uri("/Pages/Monitor.xaml", UriKind.Relative));
+		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void MasterLayoutControl_Loaded(object sender, RoutedEventArgs e)
 		{
 			if (App.Current.IsRunningOutOfBrowser)
@@ -302,11 +325,31 @@ namespace openPDCManager.Silverlight
 				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Red);
 			}			
 		}
+		
 		void Content_Resized(object sender, EventArgs e)
 		{		
 			
 			ScaleContent(Application.Current.Host.Content.ActualHeight, Application.Current.Host.Content.ActualWidth);
 		}
+
+		void NetworkChange_NetworkAddressChanged(object sender, EventArgs e)
+		{
+			if (NetworkInterface.GetIsNetworkAvailable())
+			{
+				TextBlockConnectivity.Text = "Connected (online)";
+				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Green);
+			}
+			else
+			{
+				TextBlockConnectivity.Text = "Disconnected (offline)";
+				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Red);
+			}
+		}
+
+		#endregion
+
+		#region [ Methods ]
+
 		void ScaleContent(double height, double width)
 		{			
 			if (height > 0 && width > 0)
@@ -327,30 +370,10 @@ namespace openPDCManager.Silverlight
 				//    LayoutRootScale.ScaleX = width / layoutRootWidth;
 				//    LayoutRootScale.ScaleY = width / layoutRootWidth;
 				//}
-			}		
-		}
-		void NetworkChange_NetworkAddressChanged(object sender, EventArgs e)
-		{
-			if (NetworkInterface.GetIsNetworkAvailable())
-			{
-				TextBlockConnectivity.Text = "Connected (online)";
-				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Green);
 			}
-			else
-			{
-				TextBlockConnectivity.Text = "Disconnected (offline)";
-				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Red);
-			}
-		}
-		private void XamWebMenuItem_Click(object sender, EventArgs e)
-		{
-			System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration"), "_blank");
 		}
 
-		private void HyperlinkButtonMonitor_Click(object sender, RoutedEventArgs e)
-		{
-			ContentFrame.Navigate(new Uri("/Pages/Monitor.xaml", UriKind.Relative));
-		}
+		#endregion
 		
 	}
 }

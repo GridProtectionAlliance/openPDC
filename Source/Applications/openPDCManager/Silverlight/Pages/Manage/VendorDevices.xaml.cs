@@ -234,19 +234,25 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
+using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
-using System.Windows.Media.Animation;
 
 namespace openPDCManager.Silverlight.Pages.Manage
 {
 	public partial class VendorDevices : Page
 	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		bool m_inEditMode = false;
 		int m_vendorDeviceID = 0;
+
+		#endregion
+
+		#region [ Constructor ]
 
 		public VendorDevices()
 		{
@@ -260,6 +266,11 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ListBoxVendorDeviceList.SelectionChanged += new SelectionChangedEventHandler(ListBoxVendorDeviceList_SelectionChanged);
 		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
+
 		void client_SaveVendorDeviceCompleted(object sender, SaveVendorDeviceCompletedEventArgs e)
 		{
 			SystemMessages sm;
@@ -285,6 +296,55 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			
 			m_client.GetVendorDeviceListAsync(); //Refresh data to reflect changes on the current screen.
 		}
+
+		void client_GetVendorsCompleted(object sender, GetVendorsCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ComboBoxVendor.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendors", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+			if (ComboBoxVendor.Items.Count > 0)
+				ComboBoxVendor.SelectedIndex = 0;
+		}
+		
+		void client_GetVendorDeviceListCompleted(object sender, GetVendorDeviceListCompletedEventArgs e)
+		{
+			if (e.Error == null)
+				ListBoxVendorDeviceList.ItemsSource = e.Result;
+			else
+			{
+				SystemMessages sm;
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Device List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+
+				sm.Show();
+			}
+		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
+
 		void ListBoxVendorDeviceList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (ListBoxVendorDeviceList.SelectedIndex >= 0)
@@ -296,6 +356,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 				m_inEditMode = true;
 			}
 		}
+		
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -305,6 +366,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			sb.Begin();
 			ClearForm();
 		}
+		
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -328,52 +390,27 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			else
 				m_client.SaveVendorDeviceAsync(vendorDevice, true);
 		}
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void VendorDevices_Loaded(object sender, RoutedEventArgs e)
 		{
-			
-		}
-		void client_GetVendorsCompleted(object sender, GetVendorsCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboBoxVendor.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendors", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
 
-				sm.Show();
-			}
-			if (ComboBoxVendor.Items.Count > 0)
-				ComboBoxVendor.SelectedIndex = 0;
 		}
-		void client_GetVendorDeviceListCompleted(object sender, GetVendorDeviceListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ListBoxVendorDeviceList.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Device List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
 
-				sm.Show();
-			}
+		// Executes when the user navigates to this page.
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			m_client.GetVendorsAsync(false);
+			m_client.GetVendorDeviceListAsync();
 		}
+
+		#endregion
+
+		#region [ Methods ]
+
 		void ClearForm()
 		{
 			if (ComboBoxVendor.Items.Count > 0)
@@ -384,12 +421,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			ListBoxVendorDeviceList.SelectedIndex = -1;
 		}
 
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			m_client.GetVendorsAsync(false);
-			m_client.GetVendorDeviceListAsync();
-		}
+		#endregion
 
 	}
 }

@@ -234,10 +234,16 @@ namespace openPDCManager.Silverlight.Utilities
 {
 	public class Message
 	{
+		#region [ Properties ]
+
 		public MessageType UserMessageType { get; set; }		
 		public string UserMessage { get; set; }
-		public string SystemMessage { get; set; }		
+		public string SystemMessage { get; set; }
+
+		#endregion
 	}
+
+	#region [ Enumerations ]
 
 	public enum MessageType
 	{
@@ -255,4 +261,6 @@ namespace openPDCManager.Silverlight.Utilities
 		YesNo,
 		YesNoCancel
 	}
+
+	#endregion
 }

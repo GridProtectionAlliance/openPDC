@@ -111,7 +111,8 @@
                                     <Border Style="{StaticResource HeaderRowBorderStyle}">
                                         <StackPanel Orientation="Horizontal">
                                             <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                                                <TextBlock Text="" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                <CheckBox x:Name="CheckAllDevices" Content="" Width="{StaticResource XXSmallItemSize}"  HorizontalAlignment="Left" VerticalAlignment="Center" Checked="CheckAllDevices_Checked" Unchecked="CheckAllDevices_Unchecked" />
+                                                <!--<TextBlock Text="" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>-->
                                             </Border>
                                             <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                                                 <TextBlock Text="Acronym" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
@@ -144,7 +145,7 @@
                                                                 <converter:StringToDictionaryConverter x:Key="stringToDictionaryConverter" />
                                                             </StackPanel.Resources>
                                                             <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XXSmallItemSize}">
-                                                                <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Include, Mode=TwoWay }" />
+                                                                <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Include, Mode=TwoWay }" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" />
                                                             </Border>
                                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                                 <TextBox Text="{Binding Path=Acronym, Mode=TwoWay}" Width="{StaticResource SmallerItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>

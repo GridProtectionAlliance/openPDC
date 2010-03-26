@@ -235,21 +235,27 @@ using System.Linq;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Navigation;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.Utilities;
-using System.Windows.Media.Animation;
 using System.Windows.Data;
+using System.Windows.Media.Animation;
+using System.Windows.Navigation;
+using openPDCManager.Silverlight.ModalDialogs;
+using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.Silverlight.Utilities;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
 	public partial class Browse : Page
-	{		
+	{
+		#region [ Members ]
+
 		PhasorDataServiceClient m_client;
 		ObservableCollection<Device> m_deviceList = new ObservableCollection<Device>();
 		ActivityWindow m_activityWindow;
-		
+
+		#endregion
+
+		#region [ Constructor ]
+
 		public Browse()
 		{
 			InitializeComponent();
@@ -257,8 +263,13 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			m_client.GetDeviceListCompleted += new EventHandler<GetDeviceListCompletedEventArgs>(client_GetDeviceListCompleted);
 			Loaded += new RoutedEventHandler(Browse_Loaded);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
-			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);	
-		}		
+			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
+		}
+
+		#endregion
+
+		#region [ Control Event Handlers ]
+
 		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -269,6 +280,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 			ListBoxDeviceList.ItemsSource = m_deviceList;			
 		}
+		
 		void ButtonSearch_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -283,11 +295,49 @@ namespace openPDCManager.Silverlight.Pages.Devices
 												|| item.InterconnectionName.ToUpper().Contains(searchText) || item.CompanyName.ToUpper().Contains(searchText) || item.VendorDeviceName.ToUpper().Contains(searchText)
 											 select item).ToList();
 		}
+
+		void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+		{
+			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
+			NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?did=" + deviceId, UriKind.Relative));
+		}
+
+		void HyperlinkButtonPhasors_Click(object sender, RoutedEventArgs e)
+		{
+			int deviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
+			string acronym = ((HyperlinkButton)sender).Name;
+			Phasors phasors = new Phasors(deviceId, acronym);
+			phasors.Show();
+		}
+
+		void HyperlinkButtonMeasurements_Click(object sender, RoutedEventArgs e)
+		{
+			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
+			NavigationService.Navigate(new Uri("/Pages/Manage/Measurements.xaml?did=" + deviceId, UriKind.Relative));
+		}				
+
+		#endregion
+
+		#region [ Page Event Handlers ]
+
 		void Browse_Loaded(object sender, RoutedEventArgs e)
 		{
 			m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
-			m_activityWindow.Show();			
+			m_activityWindow.Show();
 		}
+
+		// Executes when the user navigates to this page.
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			App app = (App)Application.Current;
+			string nodeID = app.NodeValue;
+			m_client.GetDeviceListAsync(nodeID);
+		}
+
+		#endregion
+
+		#region [ Service Event Handlers ]
+
 		void client_GetDeviceListCompleted(object sender, GetDeviceListCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -316,33 +366,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				m_activityWindow.Close();
 		}
 
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			App app = (App)Application.Current;
-			string nodeID = app.NodeValue;
-			m_client.GetDeviceListAsync(nodeID);	
-		}
-
-		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
-		{
-			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
-			NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?did=" + deviceId, UriKind.Relative));
-		}
-
-		private void HyperlinkButtonPhasors_Click(object sender, RoutedEventArgs e)
-		{
-			int deviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
-			string acronym = ((HyperlinkButton)sender).Name;
-			Phasors phasors = new Phasors(deviceId, acronym);
-			phasors.Show();
-		}
-
-		private void HyperlinkButtonMeasurements_Click(object sender, RoutedEventArgs e)
-		{
-			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
-			NavigationService.Navigate(new Uri("/Pages/Manage/Measurements.xaml?did=" + deviceId, UriKind.Relative));
-		}				
+		#endregion
 
 	}
 }
