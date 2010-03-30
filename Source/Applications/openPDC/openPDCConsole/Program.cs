@@ -235,7 +235,7 @@ namespace openPDC
 {
     class Program
     {
-        static ServiceClient m_serviceClient;
+        static ServiceClient s_serviceClient;
 
         static void Main(string[] args)
         {
@@ -244,15 +244,15 @@ namespace openPDC
             TVA.Console.Events.EnableRaisingEvents();
 
             // Start the client component.
-            m_serviceClient = new ServiceClient();
-            m_serviceClient.Start(args);
-            m_serviceClient.Dispose();
+            s_serviceClient = new ServiceClient();
+            s_serviceClient.Start(args);
+            s_serviceClient.Dispose();
         }
 
         static void OnConsoleClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // Dispose the client component.
-            m_serviceClient.Dispose();
+            s_serviceClient.Dispose();
         }
     }
 }

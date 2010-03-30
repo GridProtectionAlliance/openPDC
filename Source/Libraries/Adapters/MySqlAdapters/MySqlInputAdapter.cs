@@ -333,7 +333,7 @@ namespace MySqlAdapters
             {
                 string key = pair.ToLower().Split('=')[0].Trim();
 
-                if (m_validKeys.Contains<string>(key))
+                if (s_validKeys.Contains<string>(key))
                 {
                     builder.Append(pair);
                     builder.Append(';');
@@ -404,7 +404,7 @@ namespace MySqlAdapters
         // Static Fields
 
         // Collection of keys that can be used in a MySQL connection string.
-        private static string[] m_validKeys = 
+        private static string[] s_validKeys = 
         {
             "server", "port", "protocol",
             "database", "uid", "user", "pwd", "password",

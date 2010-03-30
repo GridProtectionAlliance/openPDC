@@ -640,29 +640,29 @@ namespace DataQualityMonitoring
 
         private void AttachToService()
         {
-            lock (m_service)
+            lock (s_service)
             {
-                m_service.AttachRangeTest(this);
+                s_service.AttachRangeTest(this);
 
-                if (exceptionProcessor == null)
-                    exceptionProcessor = this;
+                if (s_exceptionProcessor == null)
+                    s_exceptionProcessor = this;
             }
         }
 
         private void DetachFromService()
         {
-            lock (m_service)
+            lock (s_service)
             {
-                m_service.DetachRangeTest(this);
+                s_service.DetachRangeTest(this);
 
-                if (this == exceptionProcessor)
+                if (this == s_exceptionProcessor)
                 {
-                    ICollection<RangeTest> tests = m_service.Tests;
+                    ICollection<RangeTest> tests = s_service.Tests;
 
                     if (tests.Count > 0)
-                        exceptionProcessor = tests.GetEnumerator().Current;
+                        s_exceptionProcessor = tests.GetEnumerator().Current;
                     else
-                        exceptionProcessor = null;
+                        s_exceptionProcessor = null;
                 }
             }
         }
@@ -690,22 +690,22 @@ namespace DataQualityMonitoring
         #region [ Static ]
 
         // Static Fields
-        private static OutOfRangeService m_service;
-        private static RangeTest exceptionProcessor;
+        private static OutOfRangeService s_service;
+        private static RangeTest s_exceptionProcessor;
 
         // Static Constructor
         static RangeTest()
         {
-            m_service = new OutOfRangeService();
-            m_service.ServiceProcessException += m_service_ServiceProcessException;
-            m_service.Initialize();
+            s_service = new OutOfRangeService();
+            s_service.ServiceProcessException += s_service_ServiceProcessException;
+            s_service.Initialize();
         }
 
         // Static Methods
-        private static void m_service_ServiceProcessException(object sender, EventArgs<Exception> e)
+        private static void s_service_ServiceProcessException(object sender, EventArgs<Exception> e)
         {
-            if (exceptionProcessor != null)
-                exceptionProcessor.OnProcessException(e.Argument);
+            if (s_exceptionProcessor != null)
+                s_exceptionProcessor.OnProcessException(e.Argument);
         }
 
         #endregion

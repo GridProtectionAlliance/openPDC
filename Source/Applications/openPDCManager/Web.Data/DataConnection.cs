@@ -263,16 +263,16 @@ namespace openPDCManager.Web.Data
         public DataConnection()
         {
             // Only need to establish data types and load settings once
-            if (m_connectionType == null || string.IsNullOrEmpty(m_connectionString))
+            if (s_connectionType == null || string.IsNullOrEmpty(s_connectionString))
             {
 				// Load connection settings from the system settings category				
 				ConfigurationFile config = ConfigurationFile.Current; //new ConfigurationFile("~/web.config", ApplicationType.Web);
 				CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
 
 				string dataProviderString = configSettings["DataProviderString"].Value;
-				m_connectionString = configSettings["ConnectionString"].Value;
+				s_connectionString = configSettings["ConnectionString"].Value;
 
-				if (string.IsNullOrEmpty(m_connectionString))
+				if (string.IsNullOrEmpty(s_connectionString))
 					throw new NullReferenceException("ConnectionString setting was undefined.");
 
 				if (string.IsNullOrEmpty(dataProviderString))
@@ -301,13 +301,13 @@ namespace openPDCManager.Web.Data
 				//m_connectionString = "Data Source=RGOCDSQL;Initial Catalog=openPDC;User Id=openPDCManagerUser;Password=NXJCt0XD";
 
                 assembly = Assembly.Load(new AssemblyName(assemblyName));
-                m_connectionType = assembly.GetType(connectionTypeName);
-                m_adapterType = assembly.GetType(adapterTypeName);
+                s_connectionType = assembly.GetType(connectionTypeName);
+                s_adapterType = assembly.GetType(adapterTypeName);
             }
 
             // Open ADO.NET provider connection
-            m_connection = (IDbConnection)Activator.CreateInstance(m_connectionType);
-            m_connection.ConnectionString = m_connectionString;			
+            m_connection = (IDbConnection)Activator.CreateInstance(s_connectionType);
+            m_connection.ConnectionString = s_connectionString;			
             m_connection.Open();
         }
 
@@ -376,9 +376,9 @@ namespace openPDCManager.Web.Data
         #region [ Static ]
 
         // Static Fields
-        static Type m_connectionType;
-        static Type m_adapterType;
-        static string m_connectionString;
+        static Type s_connectionType;
+        static Type s_adapterType;
+        static string s_connectionString;
 
         #endregion        
     }
