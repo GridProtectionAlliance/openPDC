@@ -354,7 +354,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				GridPhasorDetail.DataContext = selectedPhasor;
 				if (selectedPhasor.DestinationPhasorID.HasValue)
 					ComboboxDestinationPhasor.SelectedItem = new KeyValuePair<int, string>((int)selectedPhasor.DestinationPhasorID, selectedPhasor.DestinationPhasorLabel);
-				else
+				else if (ComboboxDestinationPhasor.Items.Count > 0)
 					ComboboxDestinationPhasor.SelectedIndex = 0;
 				ComboboxPhase.SelectedItem = new KeyValuePair<string, string>(selectedPhasor.Phase, selectedPhasor.PhaseType);
 				ComboboxType.SelectedItem = new KeyValuePair<string, string>(selectedPhasor.Type, selectedPhasor.PhasorType);

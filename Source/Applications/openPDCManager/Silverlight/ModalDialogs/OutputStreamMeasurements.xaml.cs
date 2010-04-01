@@ -248,6 +248,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		string m_sourceOutputStreamAcronym;		
 		bool m_inEditMode = false;
 		int m_outputStreamMeasurementID = 0;
+		OutputStreamMeasurement m_selectedOutputStreamMeasurement;
 		PhasorDataServiceClient m_client;
 
 		#endregion
@@ -257,6 +258,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		public OutputStreamMeasurements(int outputStreamID, string outputStreamAcronym)
 		{
 			InitializeComponent();
+			m_selectedOutputStreamMeasurement = new OutputStreamMeasurement();
 			m_sourceOutputStreamID = outputStreamID;
 			m_sourceOutputStreamAcronym = outputStreamAcronym;
 			this.Title = "Manage Measurements For Output Stream: " + m_sourceOutputStreamAcronym;
@@ -366,10 +368,10 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		{
 			if (ListBoxOutputStreamMeasurementList.SelectedIndex >= 0)
 			{
-				OutputStreamMeasurement selectedOutputStreamMeasurement = ListBoxOutputStreamMeasurementList.SelectedItem as OutputStreamMeasurement;
-				GridOutputStreamMeasurementDetail.DataContext = selectedOutputStreamMeasurement;
+				m_selectedOutputStreamMeasurement = ListBoxOutputStreamMeasurementList.SelectedItem as OutputStreamMeasurement;
+				GridOutputStreamMeasurementDetail.DataContext = m_selectedOutputStreamMeasurement;
 				m_inEditMode = true;
-				m_outputStreamMeasurementID = selectedOutputStreamMeasurement.ID;
+				m_outputStreamMeasurementID = m_selectedOutputStreamMeasurement.ID;
 			}
 		}
 		
@@ -392,22 +394,26 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			Storyboard.SetTarget(sb, ButtonSaveTransform);
 			sb.Begin();
 
-			OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
-			App app = (App)Application.Current;
+			//since this screen only allows editing of the existing measurement from the list box, following lines were commented and new lines were added below it.
 
-			outputStreamMeasurement.NodeID = app.NodeValue;
-			outputStreamMeasurement.AdapterID = m_sourceOutputStreamID;
-			outputStreamMeasurement.HistorianID = string.IsNullOrEmpty(TextBlockHistorian.Text) ? (int?)null : Convert.ToInt32(TextBlockHistorian.Text);
-			outputStreamMeasurement.PointID = Convert.ToInt32(TextBlockPointID.Text);
-			outputStreamMeasurement.SignalReference = TextBoxSignalReference.Text;
+			//OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
+			//App app = (App)Application.Current;
+			//outputStreamMeasurement.NodeID = app.NodeValue;
+			//outputStreamMeasurement.AdapterID = m_sourceOutputStreamID;
+			//outputStreamMeasurement.HistorianID = string.IsNullOrEmpty(TextBlockHistorian.Text) ? (int?)null : Convert.ToInt32(TextBlockHistorian.Text);
+			//outputStreamMeasurement.PointID = Convert.ToInt32(TextBlockPointID.Text);
+			//outputStreamMeasurement.SignalReference = TextBoxSignalReference.Text;
 
-			if (m_inEditMode == true && m_outputStreamMeasurementID > 0)
-			{
-				outputStreamMeasurement.ID = m_outputStreamMeasurementID;
-				m_client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, false);
-			}
-			else
-				m_client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, true);
+			//if (m_inEditMode == true && m_outputStreamMeasurementID > 0)
+			//{
+			//    outputStreamMeasurement.ID = m_outputStreamMeasurementID;
+			//    m_client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, false);
+			//}
+			//else
+			//    m_client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, true);
+
+			m_selectedOutputStreamMeasurement.SignalReference = TextBoxSignalReference.Text;
+			m_client.SaveOutputStreamMeasurementAsync(m_selectedOutputStreamMeasurement, false);
 		}
 
 		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)

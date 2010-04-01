@@ -306,7 +306,8 @@ namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
 			{				
 				m_deviceList = e.Result;
 				ListBoxDeviceList.ItemsSource = m_deviceList;
-				ListBoxDeviceList.SelectedIndex = 0;
+				if (ListBoxDeviceList.Items.Count > 0)
+					ListBoxDeviceList.SelectedIndex = 0;
 			}
 			else
 			{

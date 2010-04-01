@@ -249,8 +249,8 @@ namespace openPDCManager.Silverlight.Converters
 			else if (value.ToString().ToUpper() == "BAD")
 				scBrush.Color = Color.FromArgb(255, 200, 25, 25);								
 			else	//any other quality tag
-				scBrush.Color = Color.FromArgb(255, 0, 0, 0);
-
+				scBrush.Color = Color.FromArgb(255, 180, 140, 10);
+				
 			return scBrush as Brush;
 		}
 

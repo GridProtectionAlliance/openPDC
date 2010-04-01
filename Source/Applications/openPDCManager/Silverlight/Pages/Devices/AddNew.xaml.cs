@@ -331,15 +331,15 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					ComboboxCompany.SelectedIndex = 0;
 				if (deviceToEdit.HistorianID.HasValue)
 					ComboboxHistorian.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.HistorianID, deviceToEdit.HistorianAcronym);
-				else
+				else if (ComboboxHistorian.Items.Count > 0)
 					ComboboxHistorian.SelectedIndex = 0;
 				if (deviceToEdit.InterconnectionID.HasValue)
 					ComboboxInterconnection.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.InterconnectionID, deviceToEdit.InterconnectionName);
-				else
+				else if (ComboboxInterconnection.Items.Count >0 )
 					ComboboxInterconnection.SelectedIndex = 0;
 				if (deviceToEdit.ParentID.HasValue)
 					ComboboxParent.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.ParentID, deviceToEdit.ParentAcronym);
-				else
+				else if (ComboboxParent.Items.Count > 0)
 					ComboboxParent.SelectedIndex = 0;
 				if (deviceToEdit.ProtocolID.HasValue)
 					ComboboxProtocol.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.ProtocolID, deviceToEdit.ProtocolName);
