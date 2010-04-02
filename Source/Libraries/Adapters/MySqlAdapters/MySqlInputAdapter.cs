@@ -376,7 +376,7 @@ namespace MySqlAdapters
         /// <returns>Text of the status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return string.Format("{0} measurements read from database.", ReceivedMeasurements);
+            return string.Format("{0} measurements read from database.", ProcessedMeasurements);
         }
 
         private void m_timer_Elapsed(object sender, ElapsedEventArgs e)

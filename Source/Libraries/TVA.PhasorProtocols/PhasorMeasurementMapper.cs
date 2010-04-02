@@ -590,6 +590,8 @@ namespace TVA.PhasorProtocols
         /// </summary>
         public override void Initialize()
         {
+            base.Initialize();
+
             Dictionary<string, string> settings = Settings;
             ConfigurationCell definedDevice;
             Measurement definedMeasurement;

@@ -304,6 +304,7 @@ namespace TVA.PhasorProtocols
         private Ticks m_timestamp;
         private double m_adder;
         private double m_multiplier;
+        private MeasurementValueFilterFunction m_measurementValueFilter;
 
         #endregion
 
@@ -734,6 +735,33 @@ namespace TVA.PhasorProtocols
             return Measurement.ToString(this);
         }
 
+        /// <summary>
+        /// Determines whether the specified object is equal to the <see cref="DataCellBase"/>.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object"/> to compare with the <see cref="DataCellBase"/>.</param>
+        /// <returns>true if the specified object is equal to the <see cref="DataCellBase"/>; otherwise, false.</returns>
+        public override bool Equals(object obj)
+        {
+            IMeasurement measurement = obj as IMeasurement;
+
+            // If comparing to another measurment, use hash code for equality
+            if (measurement != null)
+                return ((IMeasurement)this).Equals(measurement);
+
+            // Otherwise use default equality comparison
+            return base.Equals(obj);
+        }
+
+        /// <summary>
+        /// Serves as a hash function for the <see cref="DataCellBase"/>.
+        /// </summary>
+        /// <returns>A hash code for the <see cref="DataCellBase"/>.</returns>
+        /// <remarks>Hash code based on value of measurement key associated with the <see cref="DataCellBase"/>.</remarks>
+        public override int GetHashCode()
+        {
+            return ((IMeasurement)this).GetHashCode();
+        }
+
         #endregion
 
         #region [ IMeasurement Implementation ]
@@ -852,6 +880,24 @@ namespace TVA.PhasorProtocols
             }
         }
 
+        MeasurementValueFilterFunction IMeasurement.MeasurementValueFilter
+        {
+            get
+            {
+                // If measurement user has assigned another filter for this measurement,
+                // we'll use it instead
+                if (m_measurementValueFilter != null)
+                    return m_measurementValueFilter;
+
+                // Otherwise, status flags are digital in nature, so we return a majority item filter
+                return Measurement.MajorityValueFilter;
+            }
+            set
+            {
+                m_measurementValueFilter = value;
+            }
+        }
+
         bool IMeasurement.ValueQualityIsGood
         {
             get
@@ -888,6 +934,11 @@ namespace TVA.PhasorProtocols
             }
         }
 
+        int IMeasurement.GetHashCode()
+        {
+            return ((IMeasurement)this).Key.GetHashCode();
+        }
+
         int IComparable.CompareTo(object obj)
         {
             IMeasurement measurement = obj as IMeasurement;
@@ -900,7 +951,7 @@ namespace TVA.PhasorProtocols
 
         int IComparable<IMeasurement>.CompareTo(IMeasurement other)
         {
-            return (this as IMeasurement).Value.CompareTo(other.Value);
+            return (this as IMeasurement).GetHashCode().CompareTo(other.GetHashCode());
         }
 
         bool IEquatable<IMeasurement>.Equals(IMeasurement other)

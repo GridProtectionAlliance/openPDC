@@ -261,6 +261,7 @@ namespace TVA.PhasorProtocols
         private double m_multiplier;
         private int m_dataQualityIsGood;
         private int m_timeQualityIsGood;
+        private MeasurementValueFilterFunction m_measurementValueFilter;
 
         #endregion
 
@@ -368,6 +369,28 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_signalID = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets exact timestamp, in ticks, of the data represented by this <see cref="ChannelValueMeasurement{T}"/>.
+        /// </summary>
+        /// <remarks>
+        /// This value returns timestamp of parent data frame unless assigned an alternate value.<br/>
+        /// The value of this property represents the number of 100-nanosecond intervals that have elapsed since 12:00:00 midnight, January 1, 0001.
+        /// </remarks>
+        public virtual Ticks Timestamp
+        {
+            get
+            {
+                if (m_timestamp == -1)
+                    m_timestamp = m_parent.Parent.Parent.Timestamp;
+
+                return m_timestamp;
+            }
+            set
+            {
+                m_timestamp = value;
             }
         }
 
@@ -501,24 +524,22 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets or sets exact timestamp, in ticks, of the data represented by this <see cref="ChannelValueMeasurement{T}"/>.
+        /// Gets or sets function used to apply a downsampling filter over a sequence of <see cref="IMeasurement"/> values.
         /// </summary>
-        /// <remarks>
-        /// This value returns timestamp of parent data frame unless assigned an alternate value.<br/>
-        /// The value of this property represents the number of 100-nanosecond intervals that have elapsed since 12:00:00 midnight, January 1, 0001.
-        /// </remarks>
-        public virtual Ticks Timestamp
+        public virtual MeasurementValueFilterFunction MeasurementValueFilter
         {
             get
             {
-                if (m_timestamp == -1)
-                    m_timestamp = m_parent.Parent.Parent.Timestamp;
+                // If measurement user has assigned a specific filter for this measurement, we use it
+                if (m_measurementValueFilter != null)
+                    return m_measurementValueFilter;
 
-                return m_timestamp;
+                // Otherwise we use default filter algorithm as specified by the parent channel value
+                return m_parent.GetMeasurementValueFilterFunction(m_valueIndex);
             }
             set
             {
-                m_timestamp = value;
+                m_measurementValueFilter = value;
             }
         }
 
@@ -572,10 +593,10 @@ namespace TVA.PhasorProtocols
         /// </summary>
         /// <param name="other">The <see cref="IMeasurement"/> to compare with the current <see cref="ChannelValueMeasurement{T}"/>.</param>
         /// <returns>A 32-bit signed integer that indicates the relative order of the objects being compared.</returns>
-        /// <remarks>This implementation of a basic measurement compares itself by value.</remarks>
+        /// <remarks>Measurement implementations should compare by hash code.</remarks>
         public int CompareTo(IMeasurement other)
         {
-            return Value.CompareTo(other.Value);
+            return GetHashCode().CompareTo(other.GetHashCode());
         }
 
         /// <summary>
@@ -584,7 +605,7 @@ namespace TVA.PhasorProtocols
         /// <param name="obj">The <see cref="Object"/> to compare with the current <see cref="ChannelValueMeasurement{T}"/>.</param>
         /// <returns>A 32-bit signed integer that indicates the relative order of the objects being compared.</returns>
         /// <exception cref="ArgumentException"><paramref name="obj"/> is not an <see cref="IMeasurement"/>.</exception>
-        /// <remarks>This implementation of a basic measurement compares itself by value.</remarks>
+        /// <remarks>Measurement implementations should compare by hash code.</remarks>
         public int CompareTo(object obj)
         {
             IMeasurement other = obj as IMeasurement;
@@ -596,13 +617,12 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Serves as a hash function for the current <see cref="ChannelValueMeasurement{T}"/>.
+        /// Get the hash code for the <see cref="ChannelValueMeasurement{T}"/>.<see cref="MeasurementKey"/>.
         /// </summary>
-        /// <returns>A hash code for the current <see cref="ChannelValueMeasurement{T}"/>.</returns>
-        /// <remarks>Hash code based on value of measurement.</remarks>
+        /// <returns>Hash code for the <see cref="ChannelValueMeasurement{T}"/>.<see cref="MeasurementKey"/>.</returns>
         public override int GetHashCode()
         {
-            return Value.GetHashCode();
+            return Key.GetHashCode();
         }
 
         #endregion

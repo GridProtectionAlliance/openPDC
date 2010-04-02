@@ -237,6 +237,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+using TVA.Measurements;
 
 namespace TVA.PhasorProtocols
 {
@@ -395,8 +396,22 @@ namespace TVA.PhasorProtocols
         {
             if (index == 0)
                 return m_value;
-            else
+
+            throw new ArgumentOutOfRangeException("index", "Invalid composite index requested");
+        }
+
+        /// <summary>
+        /// Gets function used to apply a downsampling filter over a sequence of <see cref="IMeasurement"/> values.
+        /// </summary>
+        /// <param name="index">Index of composite value for which to retrieve its filter function.</param>
+        /// <returns>Majority value filter function since all values are digital in nature.</returns>
+        public override MeasurementValueFilterFunction GetMeasurementValueFilterFunction(int index)
+        {
+            if (index < 0 || index > CompositeValueCount - 1)
                 throw new ArgumentOutOfRangeException("index", "Invalid composite index requested");
+
+            // Digital values shouldn't be averaged, so a majority value filter is applied when downsampling is instead
+            return Measurement.MajorityValueFilter;
         }
 
         /// <summary>

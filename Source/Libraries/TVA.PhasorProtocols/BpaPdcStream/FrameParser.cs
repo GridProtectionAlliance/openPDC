@@ -402,7 +402,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                 StringBuilder status = new StringBuilder();
 
                 status.Append("    INI configuration file: ");
-                status.Append(m_configurationFileName);
+                status.Append(FilePath.TrimFileName(m_configurationFileName, 51));
                 status.AppendLine();
                 if (m_configurationFrame != null)
                 {

@@ -411,6 +411,20 @@ namespace TVA.PhasorProtocols
         public abstract double GetCompositeValue(int index);
 
         /// <summary>
+        /// Gets function used to apply a downsampling filter over a sequence of <see cref="IMeasurement"/> values.
+        /// </summary>
+        /// <param name="index">Index of composite value for which to retrieve its filter function.</param>
+        /// <returns>Function used to apply a downsampling filter over a sequence of <see cref="IMeasurement"/> values, if defined; otherwise, <c>null</c>.</returns>
+        public virtual MeasurementValueFilterFunction GetMeasurementValueFilterFunction(int index)
+        {
+            if (index < 0 || index > CompositeValueCount - 1)
+                throw new ArgumentOutOfRangeException("index", "Invalid composite index requested");
+
+            // All values assumed to be analog in nature unless derived class specifies otherwise
+            return Measurement.AverageValueFilter;
+        }
+
+        /// <summary>
         /// Populates a <see cref="SerializationInfo"/> with the data needed to serialize the target object.
         /// </summary>
         /// <param name="info">The <see cref="SerializationInfo"/> to populate with data.</param>

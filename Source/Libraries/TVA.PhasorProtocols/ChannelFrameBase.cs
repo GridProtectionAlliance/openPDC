@@ -265,7 +265,7 @@ namespace TVA.PhasorProtocols
         private Ticks m_timestamp;                                          // Time, represented as 100-nanosecond ticks, of this frame of data
         private int m_parsedBinaryLength;                                   // Binary length of frame as provided from parsed header
         private bool m_published;                                           // Determines if this frame of data has been published (IFrame.Published)
-        private int m_publishedMeasurements;                                // Total measurements published by this frame          (IFrame.PublishedMeasurements)
+        private int m_sortedMeasurements;                                   // Total measurements published into this frame        (IFrame.SortedMeasurements)
         private Dictionary<MeasurementKey, IMeasurement> m_measurements;    // Collection of measurements published by this frame  (IFrame.Measurements)
         private IMeasurement m_lastSortedMeasurement;                       // Last measurement sorted into this frame             (IFrame.LastSortedMeasurement)
 
@@ -284,6 +284,8 @@ namespace TVA.PhasorProtocols
             m_idCode = idCode;
             m_cells = cells;
             m_timestamp = timestamp;
+            m_measurements = new Dictionary<MeasurementKey, IMeasurement>();
+            m_sortedMeasurements = -1;
         }
 
         /// <summary>
@@ -297,6 +299,8 @@ namespace TVA.PhasorProtocols
             m_idCode = info.GetUInt16("idCode");
             m_cells = (IChannelCellCollection<T>)info.GetValue("cells", typeof(IChannelCellCollection<T>));
             m_timestamp = info.GetInt64("timestamp");
+            m_measurements = new Dictionary<MeasurementKey, IMeasurement>();
+            m_sortedMeasurements = -1;
         }
 
         #endregion
@@ -334,13 +338,10 @@ namespace TVA.PhasorProtocols
         /// <remarks>
         /// Represents a dictionary of measurements, keyed by <see cref="MeasurementKey"/>.
         /// </remarks>
-        public virtual IDictionary<MeasurementKey, IMeasurement> Measurements
+        public IDictionary<MeasurementKey, IMeasurement> Measurements
         {
             get
             {
-                if (m_measurements == null)
-                    m_measurements = new Dictionary<MeasurementKey, IMeasurement>();
-
                 return m_measurements;
             }
         }
@@ -410,7 +411,7 @@ namespace TVA.PhasorProtocols
         /// <remarks>
         /// This value is used to help monitor slow moving measurements that are being sorted into the <see cref="ChannelFrameBase{T}"/>.
         /// </remarks>
-        public virtual IMeasurement LastSortedMeasurement
+        public IMeasurement LastSortedMeasurement
         {
             get
             {
@@ -425,7 +426,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets or sets published state of this <see cref="ChannelFrameBase{T}"/>.
         /// </summary>
-        public virtual bool Published
+        public bool Published
         {
             get
             {
@@ -438,17 +439,20 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets or sets total number of measurements that have been published for this <see cref="ChannelFrameBase{T}"/>.
+        /// Gets or sets total number of measurements that have been sorted into this <see cref="ChannelFrameBase{T}"/>.
         /// </summary>
-        public virtual int PublishedMeasurements
+        public int SortedMeasurements
         {
             get
             {
-                return m_publishedMeasurements;
+                if (m_sortedMeasurements == -1)
+                    return m_measurements.Count;
+
+                return m_sortedMeasurements;
             }
             set
             {
-                m_publishedMeasurements = value;
+                m_sortedMeasurements = value;
             }
         }
 
