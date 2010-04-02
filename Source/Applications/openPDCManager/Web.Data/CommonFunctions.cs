@@ -2365,7 +2365,7 @@ namespace openPDCManager.Web.Data
 
 				if (digitalCount > 0)
 				{
-					for (int i = 0; i < digitalCount; i++)
+					for (int i = 1; i <= digitalCount; i++)
 					{
 						measurement = new Measurement();
 						measurement.HistorianID = addedDevice.HistorianID;
@@ -2400,7 +2400,7 @@ namespace openPDCManager.Web.Data
 
 				if (analogCount > 0)
 				{
-					for (int i = 0; i < analogCount; i++)
+					for (int i = 1; i <= analogCount; i++)
 					{
 						measurement = new Measurement();
 						measurement.HistorianID = addedDevice.HistorianID;
