@@ -407,10 +407,10 @@ namespace TVA.PhasorProtocols
         /// <returns>Majority value filter function since all values are digital in nature.</returns>
         public override MeasurementValueFilterFunction GetMeasurementValueFilterFunction(int index)
         {
-            if (index < 0 || index > CompositeValueCount - 1)
+            if (index != 0)
                 throw new ArgumentOutOfRangeException("index", "Invalid composite index requested");
 
-            // Digital values shouldn't be averaged, so a majority value filter is applied when downsampling is instead
+            // Digital values shouldn't be averaged, so a majority value filter is applied when downsampling
             return Measurement.MajorityValueFilter;
         }
 

@@ -308,12 +308,27 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         protected override IConfigurationFrame CreateNewConfigurationFrame(TVA.PhasorProtocols.Anonymous.ConfigurationFrame baseConfigurationFrame)
         {
             ConfigurationCell newCell;
+            int count = 0;
             
             // Fix ID labels to use BPA PDCstream 4 character label
             foreach (TVA.PhasorProtocols.Anonymous.ConfigurationCell baseCell in baseConfigurationFrame.Cells)
             {
                 baseCell.StationName = baseCell.IDLabel.TruncateLeft(baseCell.MaximumStationNameLength);
                 baseCell.IDLabel = DataSource.Tables["OutputStreamDevices"].Select(string.Format("ID={0}", baseCell.IDCode))[0]["BpaAcronym"].ToNonNullString(baseCell.IDLabel).TruncateLeft(4);
+
+                // If no ID label was provided, we default to first 4 characters of station name
+                if (string.IsNullOrEmpty(baseCell.IDLabel))
+                {
+                    string stationName = baseCell.StationName;
+                    string pmuID = count.ToString();
+
+                    if (string.IsNullOrEmpty(stationName))
+                        stationName = "PMU";
+                    
+                    baseCell.IDLabel = stationName.Substring(0, 4 - pmuID.Length).ToUpper() + pmuID;
+                }
+
+                count++;
             }
 
             // Create a default INI file if one doesn't exist
