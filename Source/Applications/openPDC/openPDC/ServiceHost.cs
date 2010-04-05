@@ -1419,19 +1419,34 @@ namespace openPDC
                         // See if specific ID for an adapter was requested
                         if (requestInfo.Request.Arguments.Exists("OrderedArg1"))
                         {
-                            IAdapter adapter = GetRequestedAdapter(requestInfo, out collection);
+                            string adapterID = requestInfo.Request.Arguments["OrderedArg1"];
+                            uint id;
 
-                            // Initialize specified adapter
-                            if (adapter != null && collection != null)
+                            // Try initializing new adapter by ID searching in any collection if all runtime ID's are unique
+                            if (m_uniqueAdapterIDs && uint.TryParse(adapterID, out id) && m_allAdapters.TryInitializeAdapterByID(id))
                             {
-                                if (collection.TryInitializeAdapterByID(adapter.ID))
+                                IAdapter adapter;
+
+                                if (m_allAdapters.TryGetAnyAdapterByID(id, out adapter, out collection))
                                     SendResponse(requestInfo, true, "Adapter \"{0}\" ({1}) was successfully initialized...", adapter.Name, adapter.ID);
                                 else
-                                    SendResponse(requestInfo, false, "Adapter \"{0}\" ({1}) failed to initialize.", adapter.Name, adapter.ID);
+                                    SendResponse(requestInfo, true, "Adapter ({1}) was successfully initialized...", id);
                             }
                             else
-                                SendResponse(requestInfo, false, "Requested adapter was not found.");
+                            {
+                                IAdapter adapter = GetRequestedAdapter(requestInfo, out collection);
 
+                                // Initialize specified adapter
+                                if (adapter != null && collection != null)
+                                {
+                                    if (collection.TryInitializeAdapterByID(adapter.ID))
+                                        SendResponse(requestInfo, true, "Adapter \"{0}\" ({1}) was successfully initialized...", adapter.Name, adapter.ID);
+                                    else
+                                        SendResponse(requestInfo, false, "Adapter \"{0}\" ({1}) failed to initialize.", adapter.Name, adapter.ID);
+                                }
+                                else
+                                    SendResponse(requestInfo, false, "Requested adapter was not found.");
+                            }
                         }
                         else
                         {

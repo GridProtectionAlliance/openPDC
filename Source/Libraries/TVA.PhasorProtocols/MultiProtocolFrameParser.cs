@@ -1970,11 +1970,6 @@ namespace TVA.PhasorProtocols
                     SendDeviceCommand(DeviceCommand.SendConfigurationFrame2);
                     break;
             }
-
-            if (m_phasorProtocol != PhasorProtocol.SelFastMessage)
-                SendDeviceCommand(DeviceCommand.SendConfigurationFrame2);
-            else
-                SendDeviceCommand(DeviceCommand.EnableRealTimeData);
         }
 
         // Calculate frame and data rates
@@ -2029,7 +2024,9 @@ namespace TVA.PhasorProtocols
 
         private void m_dataChannel_ConnectionEstablished(object sender, EventArgs e)
         {
-            ClientConnectedHandler();
+            // Only handle client connection from data channel when command channel is undefined
+            if (!(m_commandChannel != null && m_commandChannel.CurrentState == ClientState.Connected))
+                ClientConnectedHandler();
         }
 
         private void m_dataChannel_ConnectionAttempt(object sender, EventArgs e)
