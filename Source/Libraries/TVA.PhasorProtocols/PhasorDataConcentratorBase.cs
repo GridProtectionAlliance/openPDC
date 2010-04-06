@@ -346,6 +346,7 @@ namespace TVA.PhasorProtocols
         private LineFrequency m_nominalFrequency;
         private DataFormat m_dataFormat;
         private CoordinateFormat m_coordinateFormat;
+        private uint m_scalingValue;
         private bool m_autoPublishConfigurationFrame;
         private bool m_autoStartDataChannel;
         private ushort m_idCode;
@@ -603,6 +604,8 @@ namespace TVA.PhasorProtocols
                 status.AppendLine();
                 status.AppendFormat("         Coordinate format: {0}", m_coordinateFormat);
                 status.AppendLine();
+                status.AppendFormat("             Scaling value: {0} {1}", m_scalingValue, m_dataFormat == DataFormat.FixedInteger ? "(applied)" : "(not applied)");
+                status.AppendLine();
 
                 if (m_dataChannel != null)
                 {
@@ -776,6 +779,11 @@ namespace TVA.PhasorProtocols
             else
                 m_coordinateFormat = CoordinateFormat.Polar;
 
+            if (settings.TryGetValue("scalingValue", out setting))
+                m_scalingValue = uint.Parse(setting);
+            else
+                m_scalingValue = 1373291U;
+
             // Initialize data channel if defined
             if (!string.IsNullOrEmpty(dataChannel))
                 this.DataChannel = new UdpServer(dataChannel);
@@ -851,6 +859,9 @@ namespace TVA.PhasorProtocols
                                 GeneratePhasorLabel(label, phase, type),
                                 type,
                                 null));
+
+                        // Apply scaling factor to newly added phasor definition
+                        cell.PhasorDefinitions[cell.PhasorDefinitions.Count - 1].ScalingValue = m_scalingValue;
                     }
 
                     // Add frequency definition
@@ -871,7 +882,10 @@ namespace TVA.PhasorProtocols
                                     cell,
                                     label,
                                     analogType));
-                        }
+
+                            // Apply scaling factor to newly added analog definition
+                            cell.AnalogDefinitions[cell.AnalogDefinitions.Count - 1].ScalingValue = m_scalingValue;
+                        }                            
                     }
 
                     // Optionally define all the digitals configured for this device
