@@ -1,14 +1,14 @@
 ﻿//*******************************************************************************************************
-//  MySqlInputAdapter.cs - Gbtc
+//  CsvOutputAdapter.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  11/13/2009 - Stephen C. Wills
+//  04/06/2010 - Stephen C. Wills
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -229,48 +229,39 @@
 */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-using System.Timers;
-using MySql.Data.MySqlClient;
 using TVA;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
 
-namespace MySqlAdapters
+namespace CsvAdapters
 {
     /// <summary>
-    /// Represents an input adapter that reads measurements from a MySQL database table.
+    /// Represents an output adapter that writes measurements to a CSV file.
     /// </summary>
-    public class MySqlInputAdapter : InputAdapterBase
+    public class CsvOutputAdapter : OutputAdapterBase
     {
 
         #region [ Members ]
 
         // Fields
-        private string m_mySqlConnectionString;
-        private MySqlConnection m_connection;
-        private Timer m_timer;
-        private int m_inputInterval;
-        private int m_measurementsPerInput;
-        private int m_startingMeasurement;
-        private bool m_fakeTimestamps;
+        private string m_fileName;
+        private StreamWriter m_outStream;
+        private int m_measurementCount;
 
         #endregion
 
         #region [ Constructors ]
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MySqlInputAdapter"/> class.
+        /// Initializes a new instance of the <see cref="CsvOutputAdapter"/> class.
         /// </summary>
-        public MySqlInputAdapter()
+        public CsvOutputAdapter()
         {
-            m_timer = new Timer();
-            m_inputInterval = 33;
-            m_measurementsPerInput = 5;
-            m_fakeTimestamps = false;
+            m_fileName = "measurements.csv";
+            m_measurementCount = 0;
         }
 
         #endregion
@@ -278,19 +269,19 @@ namespace MySqlAdapters
         #region [ Properties ]
 
         /// <summary>
-        /// Returns a connection string containing only the key-value pairs
-        /// that are used to connect to MySQL.
+        /// Returns a flag that determines if measurements sent to this
+        /// <see cref="CsvOutputAdapter"/> are destined for archival.
         /// </summary>
-        public string MySqlConnectionString
+        public override bool OutputIsForArchive
         {
             get
             {
-                return m_mySqlConnectionString;
+                return true;
             }
         }
 
         /// <summary>
-        /// Gets a flag that determines if this <see cref="MySqlInputAdapter"/>
+        /// Gets a flag that determines if this <see cref="CsvOutputAdapter"/>
         /// uses an asynchronous connection.
         /// </summary>
         protected override bool UseAsyncConnect
@@ -301,12 +292,29 @@ namespace MySqlAdapters
             }
         }
 
+        /// <summary>
+        /// Returns the detailed status of this <see cref="CsvInputAdapter"/>.
+        /// </summary>
+        public override string Status
+        {
+            get
+            {
+                StringBuilder status = new StringBuilder();
+
+                status.Append(base.Status);
+                status.AppendFormat("                 File name: {0}", m_fileName);
+                status.AppendLine();
+
+                return status.ToString();
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
 
         /// <summary>
-        /// Initializes this <see cref="MySqlInputAdapter"/>.
+        /// Initializes this <see cref="CsvOutputAdapter"/>.
         /// </summary>
         public override void Initialize()
         {
@@ -315,86 +323,61 @@ namespace MySqlAdapters
             Dictionary<string, string> settings = Settings;
             string setting;
 
-            if (settings.TryGetValue("inputInterval", out setting))
-                m_inputInterval = int.Parse(setting);
+            // Load optional parameters
 
-            if (settings.TryGetValue("measurementsPerInput", out setting))
-                m_measurementsPerInput = int.Parse(setting);
-
-            if (settings.TryGetValue("fakeTimestamps", out setting))
-                m_fakeTimestamps = bool.Parse(setting);
-
-            // Create the MySQL connection string using only the portions of the
-            // original connection string that are used by MySQL
-            StringBuilder builder = new StringBuilder();
-            string[] pairs = ConnectionString.Split(';');
-
-            foreach (string pair in pairs)
-            {
-                string key = pair.ToLower().Split('=')[0].Trim();
-
-                if (s_validKeys.Contains<string>(key))
-                {
-                    builder.Append(pair);
-                    builder.Append(';');
-                }
-            }
-
-            m_mySqlConnectionString = builder.ToString();
-
-            // Create a new MySql connection object
-            m_connection = new MySqlConnection(m_mySqlConnectionString);
-
-            // Set up the timer to trigger inputs
-            m_timer.Interval = m_inputInterval;
-            m_timer.AutoReset = true;
-            m_timer.Elapsed += m_timer_Elapsed;
+            if (settings.TryGetValue("file", out setting))
+                m_fileName = setting;
         }
 
         /// <summary>
-        /// Attempts to connect to this <see cref="MySqlInputAdapter"/>.
+        /// Attempts to connect to this <see cref="CsvOutputAdapter"/>.
         /// </summary>
         protected override void AttemptConnection()
         {
-            m_connection.Open();
-            m_timer.Start();
+            m_outStream = new StreamWriter(m_fileName);
+            m_outStream.WriteLine(s_fileHeader);
         }
 
         /// <summary>
-        /// Attempts to disconnect from this <see cref="MySqlInputAdapter"/>.
+        /// Attempts to disconnect from this <see cref="CsvOutputAdapter"/>.
         /// </summary>
         protected override void AttemptDisconnection()
         {
-            m_timer.Stop();
-            m_connection.Close();
+            m_outStream.Close();
         }
 
         /// <summary>
-        /// Gets a short one-line status of this <see cref="MySqlInputAdapter"/>.
+        /// Archives <paramref name="measurements"/> locally.
+        /// </summary>
+        /// <param name="measurements">Measurements to be archived.</param>
+        protected override void ProcessMeasurements(IMeasurement[] measurements)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            foreach (IMeasurement measurement in measurements)
+            {
+                builder.Append(measurement.SignalID);
+                builder.Append(',');
+                builder.Append(measurement.Key);
+                builder.Append(',');
+                builder.Append((long)measurement.Timestamp);
+                builder.Append(',');
+                builder.Append(measurement.AdjustedValue);
+                builder.Append(System.Environment.NewLine);
+            }
+
+            m_outStream.Write(builder.ToString());
+            m_measurementCount += measurements.Length;
+        }
+
+        /// <summary>
+        /// Gets a short one-line status of this <see cref="CsvOutputAdapter"/>.
         /// </summary>
         /// <param name="maxLength">Maximum length of the status message.</param>
         /// <returns>Text of the status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return string.Format("{0} measurements read from database.", ProcessedMeasurements);
-        }
-
-        private void m_timer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            string commandString = "SELECT SignalID,Timestamp,Value FROM Measurement LIMIT " + m_startingMeasurement + "," + m_measurementsPerInput;
-            MySqlCommand command = new MySqlCommand(commandString, m_connection);
-            MySqlDataReader reader = command.ExecuteReader();
-            List<IMeasurement> measurements = new List<IMeasurement>();
-
-            while (reader.Read())
-            {
-                Ticks timeStamp = m_fakeTimestamps ? new Ticks(DateTime.UtcNow) : new Ticks(reader.GetInt64("Timestamp"));
-                measurements.Add(new Measurement(reader.GetGuid("SignalID"), reader.GetDouble("Value"), timeStamp));
-            }
-
-            reader.Close();
-            OnNewMeasurements(measurements);
-            m_startingMeasurement += m_measurementsPerInput;
+            return string.Format("Archived {0} measurements locally.", m_measurementCount).TruncateRight(maxLength);
         }
 
         #endregion
@@ -402,16 +385,7 @@ namespace MySqlAdapters
         #region [ Static ]
 
         // Static Fields
-
-        // Collection of keys that can be used in a MySQL connection string.
-        private static string[] s_validKeys = 
-        {
-            "server", "port", "protocol",
-            "database", "uid", "user", "pwd", "password",
-            "encryption", "encrypt", "charset",
-            "default command timeout", "connection timeout",
-            "ignore prepare", "shared memory name"
-        };
+        private static string s_fileHeader = "Signal ID,Measurement Key,Timestamp,Value";
 
         #endregion
     }
