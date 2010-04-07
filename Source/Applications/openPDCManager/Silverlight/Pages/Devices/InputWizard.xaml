@@ -67,7 +67,7 @@
                                         </Button>
                                     </StackPanel>
                                     <!--<TextBlock Grid.Row="7" Grid.Column="0" Text="ID Code" HorizontalAlignment="Left" Margin="2"/>-->
-                                    <CheckBox x:Name="CheckboxConnectToPDC" Content="Connect to PDC" Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Margin="2"/>                                    
+                                    <CheckBox x:Name="CheckboxConnectToPDC" Content="Connection is to Concentrator" FontSize="{StaticResource XLargeTextSize}" FontWeight="Bold" Grid.Row="7" Grid.Column="1" VerticalAlignment="Bottom" Margin="5"/>                                    
                                     <TextBlock Grid.Row="8" Grid.Column="0" x:Name="TextBlockPDCName" Text="PDC Name" HorizontalAlignment="Left" Margin="2"/>
                                     <TextBox x:Name="TextBoxPDCName" Grid.Row="8" Grid.Column="1" Width="{StaticResource LargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
                                     <TextBlock Grid.Row="9" Grid.Column="0" x:Name="TextBlockAcronym" Text="Acronym" HorizontalAlignment="Left" Margin="2"/>

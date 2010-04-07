@@ -261,6 +261,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			InitializeComponent();
 			m_client = Common.GetPhasorDataServiceProxyClient();
 			m_client.GetDeviceListCompleted += new EventHandler<GetDeviceListCompletedEventArgs>(client_GetDeviceListCompleted);
+			m_client.SaveDeviceCompleted += new EventHandler<SaveDeviceCompletedEventArgs>(m_client_SaveDeviceCompleted);
 			Loaded += new RoutedEventHandler(Browse_Loaded);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
 			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
@@ -314,7 +315,14 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
 			NavigationService.Navigate(new Uri("/Pages/Manage/Measurements.xaml?did=" + deviceId, UriKind.Relative));
-		}				
+		}
+
+		private void ButtonSave_Click(object sender, RoutedEventArgs e)
+		{
+			Device device = new Device();
+			device = ((Button)sender).DataContext as Device;
+			m_client.SaveDeviceAsync(device, false, 0, 0);
+		}
 
 		#endregion
 
@@ -329,9 +337,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			App app = (App)Application.Current;
-			string nodeID = app.NodeValue;
-			m_client.GetDeviceListAsync(nodeID);
+			RefreshDeviceList();
 		}
 
 		#endregion
@@ -366,7 +372,40 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				m_activityWindow.Close();
 		}
 
+		void m_client_SaveDeviceCompleted(object sender, SaveDeviceCompletedEventArgs e)
+		{
+			SystemMessages sm;
+			if (e.Error == null)
+				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						ButtonType.OkOnly);
+			else
+			{
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+			}
+			sm.Show();
+
+			RefreshDeviceList();
+		}
+
 		#endregion
 
+		#region [ Methods ]
+
+		void RefreshDeviceList()
+		{
+			App app = (App)Application.Current;
+			string nodeID = app.NodeValue;
+			m_client.GetDeviceListAsync(nodeID);
+		}
+
+		#endregion
 	}
 }

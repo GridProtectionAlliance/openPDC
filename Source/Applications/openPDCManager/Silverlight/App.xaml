@@ -12,6 +12,7 @@
             <sys:Double x:Key="SmallTextSize">10</sys:Double>
             <sys:Double x:Key="LargeTextSize">11</sys:Double>
             <sys:Double x:Key="LargerTextSize">13</sys:Double>
+            <sys:Double x:Key="XLargeTextSize">14</sys:Double>
             <sys:Double x:Key="XXLargeTextSize">34</sys:Double>
             
             <sys:Double x:Key="BlankItemSize">10</sys:Double>

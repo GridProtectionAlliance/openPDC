@@ -874,9 +874,12 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 		void CheckAllDevices_Checked(object sender, RoutedEventArgs e)
 		{
-			foreach (WizardDeviceInfo deviceInfo in m_wizardDeviceInfoList)
+			if (m_wizardDeviceInfoList != null)
 			{
-				deviceInfo.Include = true;
+				foreach (WizardDeviceInfo deviceInfo in m_wizardDeviceInfoList)
+				{
+					deviceInfo.Include = true;
+				}
 			}
 		}
 
