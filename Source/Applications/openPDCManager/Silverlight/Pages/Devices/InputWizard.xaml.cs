@@ -261,6 +261,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		int? m_parentID = null;
 		string m_iniFileName = string.Empty;
 		string m_iniFilePath = string.Empty;
+		bool nextButtonClicked = false;
 
 		#endregion
 
@@ -548,6 +549,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 						ButtonType.OkOnly);
 			}
 			sm.Show();
+			nextButtonClicked = false;
 			if (m_activityWindow != null)
 				m_activityWindow.Close();	
 		}
@@ -774,49 +776,35 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 		
 		void ButtonNext_Click(object sender, RoutedEventArgs e)
-		{
+		{	
+			ButtonNext.IsEnabled = false;
 			Storyboard sb = new Storyboard();
 			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
 			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
 			Storyboard.SetTarget(sb, ButtonNextTransform);
 			sb.Begin();
 
-			//Code here has been moved to AccordianWizard_SelectionChanged. Since SelectionChanged occurs after selection has been changed, this same code is implemented on index == 1
-			if (AccordianWizard.SelectedIndex == 0)	//we will wait till user clicks next on the first screen to read config file becuase INI file may play a role before we can read config file.
-			{
-				//if ((((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Value.ToUpper().Contains("BPA")) && !string.IsNullOrEmpty(m_iniFileName))
-				//{
-				//    string configFileDataString = (new StreamReader(m_configFileData)).ReadToEnd();
-				//    string leftPart = configFileDataString.Substring(0, configFileDataString.IndexOf("</configurationFileName>"));
-				//    string rightPart = configFileDataString.Substring(configFileDataString.IndexOf("</configurationFileName>"));
-				//    leftPart = leftPart.Substring(0, leftPart.LastIndexOf(">") + 1);
-
-				//    configFileDataString = leftPart + m_iniFilePath + "\\" + m_iniFileName + rightPart;
-
-				//    Byte[] fileData = Encoding.UTF8.GetBytes(configFileDataString);
-				//    MemoryStream ms = new MemoryStream();
-				//    ms.Write(fileData, 0, fileData.Length);
-				//    ms.Position = 0;
-				//    m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(ms));
-				//}
-				//else
-				//    m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(m_configFileData));
-			}
-
-			//if (AccordianWizard.SelectedIndex == 1 && ((bool)CheckboxConnectToPDC.IsChecked))	//we'll check this on second screen instead of first because second screen will give us company information, historian etc.
-			//        m_client.GetDeviceByAcronymAsync(TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
-
+			//here we only handle finish button. Every other Next button click is handled in the Accordian selection changed event.
 			if (AccordianWizard.SelectedIndex == AccordianWizard.Items.Count - 1)
 			{
-				m_activityWindow = new ActivityWindow("Processing Request... Please Wait...");
-				m_activityWindow.Show();
-
-				App app = (App)Application.Current;
-				int? protocolID = ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key;
-				int? companyID = ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key;
-				int? historianID = ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key;
-				int? interconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
-				m_client.SaveWizardConfigurationInfoAsync(app.NodeValue, m_wizardDeviceInfoList, TextBoxConnectionString.Text, protocolID, companyID, historianID, interconnectionID, m_parentID);
+				if (!nextButtonClicked)
+				{
+					nextButtonClicked = true;
+					m_activityWindow = new ActivityWindow("Processing Request... Please Wait...");
+					m_activityWindow.Show();
+					
+					App app = (App)Application.Current;
+					int? protocolID = ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key;
+					int? companyID = ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key;
+					int? historianID = ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key;
+					int? interconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
+					m_client.SaveWizardConfigurationInfoAsync(app.NodeValue, m_wizardDeviceInfoList, TextBoxConnectionString.Text, protocolID, companyID, historianID, interconnectionID, m_parentID);
+				}
+				else
+				{
+					SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Application is busy processing previous request. Please wait.", SystemMessage = "", UserMessageType = MessageType.Information }, ButtonType.OkOnly);
+					sm.Show();
+				}
 			}
 
 			if (AccordianWizard.SelectedIndex < AccordianWizard.Items.Count - 1)
@@ -824,6 +812,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				AccordionItem item = AccordianWizard.Items[AccordianWizard.SelectedIndex + 1] as AccordionItem;
 				item.IsSelected = true;
 			}
+
+			ButtonNext.IsEnabled = true;						
 		}
 		
 		void ComboboxVendor_Loaded(object sender, RoutedEventArgs e)
@@ -1021,7 +1011,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			PdcInfoVisualization(Visibility.Collapsed);
 			if (AccordianWizard.SelectedIndex == 0)
 				ButtonPrevious.Visibility = Visibility.Collapsed;
-			m_client.GetCompaniesAsync(true);
+			m_client.GetCompaniesAsync(false);
 			m_client.GetHistoriansAsync(true, true);
 			m_client.GetInterconnectionsAsync(true);
 			m_client.GetExecutingAssemblyPathAsync();
