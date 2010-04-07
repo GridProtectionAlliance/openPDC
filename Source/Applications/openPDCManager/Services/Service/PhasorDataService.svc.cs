@@ -355,6 +355,10 @@ namespace openPDCManager.Services.Service
 		{
 			return CommonFunctions.GetConcentratorDevice(deviceID);
 		}
+		public string DeleteDevice(int deviceID)
+		{
+			return CommonFunctions.DeleteDevice(deviceID);
+		}
 		#endregion
 
 		#region " Manage Phasor Code"

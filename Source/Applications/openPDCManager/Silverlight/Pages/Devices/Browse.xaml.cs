@@ -251,17 +251,18 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		PhasorDataServiceClient m_client;
 		ObservableCollection<Device> m_deviceList = new ObservableCollection<Device>();
 		ActivityWindow m_activityWindow;
-
+		
 		#endregion
 
 		#region [ Constructor ]
 
 		public Browse()
 		{
-			InitializeComponent();
+			InitializeComponent();			
 			m_client = Common.GetPhasorDataServiceProxyClient();
 			m_client.GetDeviceListCompleted += new EventHandler<GetDeviceListCompletedEventArgs>(client_GetDeviceListCompleted);
 			m_client.SaveDeviceCompleted += new EventHandler<SaveDeviceCompletedEventArgs>(m_client_SaveDeviceCompleted);
+			m_client.DeleteDeviceCompleted += new EventHandler<DeleteDeviceCompletedEventArgs>(m_client_DeleteDeviceCompleted);
 			Loaded += new RoutedEventHandler(Browse_Loaded);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
 			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
@@ -317,11 +318,29 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			NavigationService.Navigate(new Uri("/Pages/Manage/Measurements.xaml?did=" + deviceId, UriKind.Relative));
 		}
 
-		private void ButtonSave_Click(object sender, RoutedEventArgs e)
+		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
 			Device device = new Device();
 			device = ((Button)sender).DataContext as Device;
 			m_client.SaveDeviceAsync(device, false, 0, 0);
+		}
+
+		void ButtonDelete_Click(object sender, RoutedEventArgs e)
+		{
+			Device device = new Device();
+			device = ((Button)sender).DataContext as Device;
+			SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete device?", SystemMessage = "Device Acronym: " + device.Acronym, UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+			sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+			{
+				if ((bool)sm.DialogResult)
+					m_client.DeleteDeviceAsync(device.ID);				
+			});
+			sm.Show();	
+		}
+
+		void sm_Closed(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion
@@ -395,6 +414,31 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			RefreshDeviceList();
 		}
 
+		void m_client_DeleteDeviceCompleted(object sender, DeleteDeviceCompletedEventArgs e)
+		{
+			SystemMessages sm;
+			if (e.Error == null)
+				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						ButtonType.OkOnly);
+			else
+			{
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Device", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+			}
+			sm.Show();
+
+			System.Diagnostics.Debug.WriteLine(sm.DialogResult);
+
+			RefreshDeviceList();
+		}
+
 		#endregion
 
 		#region [ Methods ]
@@ -407,5 +451,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 
 		#endregion
+
+		
 	}
 }

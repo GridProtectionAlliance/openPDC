@@ -94,7 +94,10 @@
                                                 <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Enabled, Mode=TwoWay}" IsEnabled="True" />
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XXSmallItemSize}">
-                                                <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Click="ButtonSave_Click" />
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="" ToolTipService.ToolTip="Click Here to Save Changes" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="0, 0, 3, 0" Click="ButtonSave_Click" />
+                                                    <Button x:Name="ButtonDelete" Content="../../Images/Cancel.png" Tag="" ToolTipService.ToolTip="Click Here to Delete Device" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="3, 0, 0, 0" Click="ButtonDelete_Click" />
+                                                </StackPanel>
                                             </Border>
                                         </StackPanel>
                                     </DataTemplate>

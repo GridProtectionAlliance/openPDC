@@ -255,6 +255,9 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			m_systemMessage = message;
 			Loaded += new RoutedEventHandler(SystemMessages_Loaded);
 			ButtonOk.Click += new RoutedEventHandler(ButtonOk_Click);
+			ButtonCancel.Click += new RoutedEventHandler(ButtonCancel_Click);
+			ButtonYes.Click += new RoutedEventHandler(ButtonYes_Click);
+			ButtonNo.Click += new RoutedEventHandler(ButtonNo_Click);
 			if (message.UserMessageType == MessageType.Success)
 			{
 				this.Title = "openPDCManager: Operation Completed Successfully!";
@@ -275,6 +278,13 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				TextBlockMessageType.Text = "ERROR";
 				ImageMessageType.Source = new BitmapImage(new Uri(@"../Images/Error.png", UriKind.Relative));
 				BorderMain.Background = Application.Current.Resources["RedRadialGradientBrush"] as Brush;
+			}
+			else if (message.UserMessageType == MessageType.Confirmation)
+			{
+				this.Title = "openPDCManager: Conformation!";
+				TextBlockMessageType.Text = "CONFORMATION";
+				ImageMessageType.Source = new BitmapImage(new Uri(@"../Images/Warning.png", UriKind.Relative));
+				BorderMain.Background = Application.Current.Resources["YellowRadialGradientBrush"] as Brush;
 			}
 			else //treat as information.
 			{
@@ -320,6 +330,21 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		#region [ Control Event Handlers ]
 
 		void ButtonOk_Click(object sender, RoutedEventArgs e)
+		{
+			this.DialogResult = true;
+		}
+
+		void ButtonCancel_Click(object sender, RoutedEventArgs e)
+		{
+			this.DialogResult = false;
+		}
+
+		void ButtonNo_Click(object sender, RoutedEventArgs e)
+		{
+			this.DialogResult = false;
+		}
+
+		void ButtonYes_Click(object sender, RoutedEventArgs e)
 		{
 			this.DialogResult = true;
 		}

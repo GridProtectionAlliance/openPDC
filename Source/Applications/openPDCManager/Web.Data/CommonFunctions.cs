@@ -2608,6 +2608,31 @@ namespace openPDCManager.Web.Data
 			}
 		}
 
+		public static string DeleteDevice(int deviceID)
+		{
+			DataConnection connection = new DataConnection();
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Delete From Device Where ID = @id";
+				command.Parameters.Add(AddWithValue(command, "@id", deviceID));
+				command.ExecuteNonQuery();
+
+				return "Device Deleted Successfully";
+			}
+			catch (Exception ex)
+			{
+				LogException("DeleteDevice", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Delete Device", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				connection.Dispose();
+			}
+		}
+
 		#endregion
 
 		#region " Manage Phasor Code"

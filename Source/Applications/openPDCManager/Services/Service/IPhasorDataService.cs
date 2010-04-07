@@ -366,6 +366,10 @@ namespace openPDCManager.Services.Service
 		[FaultContract(typeof(CustomServiceFault))]
 		Device GetConcentratorDevice(int deviceID);
 
+		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
+		string DeleteDevice(int deviceID);
+
 		#endregion
 
 		#region " Manage Phasors Code"
