@@ -149,7 +149,14 @@ CREATE TABLE Device(
 	TimeZone NVARCHAR(128) NULL,
 	FramesPerSecond INT NULL DEFAULT 30,
 	TimeAdjustmentTicks BIGINT NOT NULL DEFAULT 0,
-	DataLossInterval DOUBLE NOT NULL DEFAULT 35,
+	DataLossInterval DOUBLE NOT NULL DEFAULT 5,
+	AllowedParsingExceptions INT NOT NULL DEFAULT 10,
+	ParsingExceptionWindow DOUBLE NOT NULL DEFAULT 5,
+	DelayedConnectionInterval DOUBLE NOT NULL DEFAULT 5,
+	AllowUseOfCachedConfiguration TINYINT NOT NULL DEFAULT 1,
+	AutoStartDataParsingSequence TINYINT NOT NULL DEFAULT 1,
+	SkipDisableRealTimeData TINYINT NOT NULL DEFAULT 0,
+	MeasurementReportingInterval INT NOT NULL DEFAULT 100000,
 	ContactList LONGTEXT NULL,
 	MeasuredLines INT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
@@ -228,15 +235,15 @@ CREATE TABLE ImportedMeasurement(
 	PointID INT NOT NULL,
 	PointTag NVARCHAR(50) NOT NULL,
 	AlternateTag NVARCHAR(50) NULL,
-	SignalTypeID INT NULL,
+	SignalTypeAcronym NVARCHAR(4) NULL,
 	SignalReference NVARCHAR(24) NOT NULL,
 	FramesPerSecond INT NULL,
-	ProtocolID INT NULL,
+	ProtocolAcronym NVARCHAR(50) NULL,
 	PhasorType NCHAR(1) NULL,
 	Phase NCHAR(1) NULL,
 	Adder DOUBLE NOT NULL DEFAULT 0.0,
 	Multiplier DOUBLE NOT NULL DEFAULT 1.0,
-	CompanyID INT NULL,
+	CompanyAcronym NVARCHAR(50) NULL,
 	Longitude DECIMAL(9, 6) NULL,
 	Latitude DECIMAL(9, 6) NULL,
 	Description LONGTEXT NULL,
@@ -292,7 +299,11 @@ CREATE TABLE CalculatedMeasurement(
 	LagTime DOUBLE NOT NULL DEFAULT 3.0,
 	LeadTime DOUBLE NOT NULL DEFAULT 1.0,
 	UseLocalClockAsRealTime TINYINT NOT NULL DEFAULT 0,
-	AllowSortsByArrival TINYINT NOT NULL DEFAULT 0,
+	AllowSortsByArrival TINYINT NOT NULL DEFAULT 1,
+	IgnoreBadTimeStamps TINYINT NOT NULL DEFAULT 0,
+	TimeResolution INT NOT NULL DEFAULT 10000,
+	AllowPreemptivePublishing TINYINT NOT NULL DEFAULT 1,
+	DownsamplingMethod NVARCHAR(15) NOT NULL DEFAULT N'LastReceived',
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_CalculatedMeasurement PRIMARY KEY (ID ASC)
@@ -318,7 +329,8 @@ CREATE TABLE Historian(
 	AssemblyName LONGTEXT NULL,
 	TypeName LONGTEXT NULL,
 	ConnectionString LONGTEXT NULL,
-	IsLocal TINYINT NOT NULL DEFAULT 0,
+	IsLocal TINYINT NOT NULL DEFAULT 1,
+	MeasurementReportingInterval INT NOT NULL DEFAULT 100000,
 	Description LONGTEXT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled TINYINT NOT NULL DEFAULT 0,
@@ -354,7 +366,14 @@ CREATE TABLE OutputStream(
 	LagTime DOUBLE NOT NULL DEFAULT 3.0,
 	LeadTime DOUBLE NOT NULL DEFAULT 1.0,
 	UseLocalClockAsRealTime TINYINT NOT NULL DEFAULT 0,
-	AllowSortsByArrival TINYINT NOT NULL DEFAULT 0,
+	AllowSortsByArrival TINYINT NOT NULL DEFAULT 1,
+	IgnoreBadTimeStamps TINYINT NOT NULL DEFAULT 0,
+	TimeResolution INT NOT NULL DEFAULT 10000,
+	AllowPreemptivePublishing TINYINT NOT NULL DEFAULT 1,
+	DownsamplingMethod NVARCHAR(15) NOT NULL DEFAULT N'LastReceived',
+	DataFormat NVARCHAR(15) NOT NULL DEFAULT N'FloatingPoint',
+	CoordinateFormat NVARCHAR(15) NOT NULL DEFAULT N'Polar',
+	ScalingValue INT NOT NULL DEFAULT 1373291,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_OutputStream PRIMARY KEY (ID ASC)
@@ -414,6 +433,8 @@ ALTER TABLE Measurement ADD CONSTRAINT FK_Measurement_Historian FOREIGN KEY(Hist
 
 ALTER TABLE Measurement ADD CONSTRAINT FK_Measurement_SignalType FOREIGN KEY(SignalTypeID) REFERENCES SignalType (ID);
 
+ALTER TABLE ImportedMeasurement ADD CONSTRAINT FK_ImportedMeasurement_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
+
 ALTER TABLE OutputStreamMeasurement ADD CONSTRAINT FK_OutputStreamMeasurement_Historian FOREIGN KEY(HistorianID) REFERENCES Historian (ID);
 
 ALTER TABLE OutputStreamMeasurement ADD CONSTRAINT FK_OutputStreamMeasurement_Measurement FOREIGN KEY(PointID) REFERENCES Measurement (PointID);
@@ -456,7 +477,8 @@ AS
 SELECT Historian.NodeID, Runtime.ID, Historian.Acronym AS AdapterName,
  COALESCE(TRIM(Historian.AssemblyName), N'HistorianAdapters.dll') AS AssemblyName, 
  COALESCE(TRIM(Historian.TypeName), IF(IsLocal = 1, N'HistorianAdapters.LocalOutputAdapter', N'HistorianAdapters.RemoteOutputAdapter')) AS TypeName, 
- CONCAT_WS(';', Historian.ConnectionString, CONCAT(N'instanceName=', Historian.Acronym), CONCAT(N'sourceids=', Historian.Acronym)) AS ConnectionString
+ CONCAT_WS(';', Historian.ConnectionString, CONCAT(N'instanceName=', Historian.Acronym), CONCAT(N'sourceids=', Historian.Acronym),
+ CONCAT(N'measurementReportingInterval=', CAST(Historian.MeasurementReportingInterval AS CHAR))) AS ConnectionString
 FROM Historian LEFT OUTER JOIN
  Runtime ON Historian.ID = Runtime.SourceID AND Runtime.SourceTable = N'Historian'
 WHERE (Historian.Enabled <> 0)
@@ -471,7 +493,14 @@ SELECT Device.NodeID, Runtime.ID, Device.Acronym AS AdapterName, N'TVA.PhasorPro
  IF(Device.TimeZone IS NULL, N'', CONCAT(N'timeZone=', Device.TimeZone)),
  CONCAT(N'timeAdjustmentTicks=', CAST(Device.TimeAdjustmentTicks AS CHAR)),
  IF(Protocol.Acronym IS NULL, N'', CONCAT(N'phasorProtocol=', Protocol.Acronym)),
- CONCAT(N'dataLossInterval=', CAST(Device.DataLossInterval AS CHAR))) AS ConnectionString
+ CONCAT(N'dataLossInterval=', CAST(Device.DataLossInterval AS CHAR)),
+ CONCAT(N'allowedParsingExceptions=', CAST(Device.AllowedParsingExceptions AS CHAR)),
+ CONCAT(N'parsingExceptionWindow=', CAST(Device.ParsingExceptionWindow AS CHAR)),
+ CONCAT(N'delayedConnectionInterval=', CAST(Device.DelayedConnectionInterval AS CHAR)),
+ CONCAT(N'allowUseOfCachedConfiguration=', CAST(Device.AllowUseOfCachedConfiguration AS CHAR)),
+ CONCAT(N'autoStartDataParsingSequence=', CAST(Device.AutoStartDataParsingSequence AS CHAR)),
+ CONCAT(N'skipDisableRealTimeData=', CAST(Device.SkipDisableRealTimeData AS CHAR)),
+ CONCAT(N'measurementReportingInterval=', CAST(Device.MeasurementReportingInterval AS CHAR))) AS ConnectionString
 FROM Device LEFT OUTER JOIN
  Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
  Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device'
@@ -530,7 +559,14 @@ SELECT OutputStream.NodeID, Runtime.ID, OutputStream.Acronym AS AdapterName,
  CONCAT(N'leadTime=', CAST(OutputStream.LeadTime AS CHAR)),
  CONCAT(N'framesPerSecond=', CAST(OutputStream.FramesPerSecond AS CHAR)),
  CONCAT(N'useLocalClockAsRealTime=', CAST(OutputStream.UseLocalClockAsRealTime AS CHAR)),
- CONCAT(N'allowSortsByArrival=', CAST(OutputStream.AllowSortsByArrival AS CHAR))) AS ConnectionString
+ CONCAT(N'allowSortsByArrival=', CAST(OutputStream.AllowSortsByArrival AS CHAR)),
+ CONCAT(N'ignoreBadTimestamps=', CAST(OutputStream.IgnoreBadTimeStamps AS CHAR)),
+ CONCAT(N'timeResolution=', CAST(OutputStream.TimeResolution AS CHAR)),
+ CONCAT(N'allowPreemptivePublishing=', CAST(OutputStream.AllowPreemptivePublishing AS CHAR)),
+ CONCAT(N'downsamplingMethod=', OutputStream.DownsamplingMethod),
+ CONCAT(N'dataFormat=', OutputStream.DataFormat),
+ CONCAT(N'coordinateFormat=', OutputStream.CoordinateFormat),
+ CONCAT(N'scalingValue=', CAST(OutputStream.ScalingValue AS CHAR))) AS ConnectionString
 FROM OutputStream LEFT OUTER JOIN
  Runtime ON OutputStream.ID = Runtime.SourceID AND Runtime.SourceTable = N'OutputStream'
 WHERE (OutputStream.Enabled <> 0)
@@ -555,7 +591,11 @@ SELECT CalculatedMeasurement.NodeID, Runtime.ID, CalculatedMeasurement.Acronym A
  CONCAT(N'lagTime=', CAST(CalculatedMeasurement.LagTime AS CHAR)),
  CONCAT(N'leadTime=', CAST(CalculatedMeasurement.LeadTime AS CHAR)),
  IF(InputMeasurements IS NULL, N'', CONCAT(N'inputMeasurementKeys={', InputMeasurements, N'}')),
- IF(OutputMeasurements IS NULL, N'', CONCAT(N'outputMeasurements={', OutputMeasurements, N'}'))) AS ConnectionString
+ IF(OutputMeasurements IS NULL, N'', CONCAT(N'outputMeasurements={', OutputMeasurements, N'}')),
+ CONCAT(N'ignoreBadTimestamps=', CAST(CalculatedMeasurement.IgnoreBadTimeStamps AS CHAR)),
+ CONCAT(N'timeResolution=', CAST(CalculatedMeasurement.TimeResolution AS CHAR)),
+ CONCAT(N'allowPreemptivePublishing=', CAST(CalculatedMeasurement.AllowPreemptivePublishing AS CHAR)),
+ CONCAT(N'downsamplingMethod=', CalculatedMeasurement.DownsamplingMethod)) AS ConnectionString
 FROM CalculatedMeasurement LEFT OUTER JOIN
  Runtime ON CalculatedMeasurement.ID = Runtime.SourceID AND Runtime.SourceTable = N'CalculatedMeasurement'
 WHERE (CalculatedMeasurement.Enabled <> 0)
@@ -579,14 +619,11 @@ FROM Company RIGHT OUTER JOIN
 	Runtime AS RuntimeP ON RuntimeP.SourceID = Device.ParentID AND RuntimeP.SourceTable = N'Device'
 WHERE (Device.Enabled <> 0 OR Device.Enabled IS NULL) AND (Measurement.Enabled <> 0)
 UNION ALL
-SELECT ImportedMeasurement.NodeID, ImportedMeasurement.SourceNodeID, CONCAT_WS(':', ImportedMeasurement.Source, CAST(ImportedMeasurement.PointID AS CHAR)) AS ID, ImportedMeasurement.SignalID, ImportedMeasurement.PointTag,
-	ImportedMeasurement.AlternateTag, ImportedMeasurement.SignalReference, NULL AS Device, NULL AS DeviceID,
-	ImportedMeasurement.FramesPerSecond, Protocol.Acronym AS Protocol, SignalType.Acronym AS SignalType, ImportedMeasurement.PhasorType, ImportedMeasurement.Phase, ImportedMeasurement.Adder, ImportedMeasurement.Multiplier,
-	Company.Acronym AS Company, ImportedMeasurement.Longitude, ImportedMeasurement.Latitude, ImportedMeasurement.Description
-FROM ImportedMeasurement LEFT OUTER JOIN 
-	SignalType ON ImportedMeasurement.SignalTypeID = SignalType.ID LEFT OUTER JOIN
-	Protocol ON ImportedMeasurement.ProtocolID = Protocol.ID LEFT OUTER JOIN
-	Company ON ImportedMeasurement.CompanyID = Company.ID
+SELECT NodeID, SourceNodeID, CONCAT_WS(':', Source, CAST(PointID AS CHAR)) AS ID, SignalID, PointTag,
+	AlternateTag, SignalReference, NULL AS Device, NULL AS DeviceID,
+	FramesPerSecond, ProtocolAcronym AS Protocol, SignalTypeAcronym AS SignalType, PhasorType, Phase, Adder, Multiplier,
+	CompanyAcronym AS Company, Longitude, Latitude, Description
+FROM ImportedMeasurement
 WHERE ImportedMeasurement.Enabled <> 0;
 
 CREATE VIEW IaonOutputAdapter
