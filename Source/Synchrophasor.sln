@@ -170,9 +170,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICCPExport", "Libraries\Ada
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvAdapters", "Libraries\Adapters\CsvAdapters\CsvAdapters.csproj", "{78E3A08A-E7FC-415C-82E1-0BB93C454DAD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDCServices", "Applications\openPDC\openPDCServices\openPDCServices.csproj", "{17C0E07E-646F-4D20-9394-0CC34AD6D5B1}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 21
+		SccNumberOfProjects = 22
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs07.codeplex.com/
 		SccLocalPath0 = .
@@ -256,6 +258,10 @@ Global
 		SccProjectTopLevelParentUniqueName20 = Synchrophasor.sln
 		SccProjectName20 = Libraries/Adapters/CsvAdapters
 		SccLocalPath20 = Libraries\\Adapters\\CsvAdapters
+		SccProjectUniqueName21 = Applications\\openPDC\\openPDCServices\\openPDCServices.csproj
+		SccProjectTopLevelParentUniqueName21 = Synchrophasor.sln
+		SccProjectName21 = Applications/openPDC/openPDCServices
+		SccLocalPath21 = Applications\\openPDC\\openPDCServices
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -334,6 +340,10 @@ Global
 		{78E3A08A-E7FC-415C-82E1-0BB93C454DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78E3A08A-E7FC-415C-82E1-0BB93C454DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78E3A08A-E7FC-415C-82E1-0BB93C454DAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -353,6 +363,7 @@ Global
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{27A26713-8779-41AB-AFF1-BAB6BB0228E8} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{0BF2447E-252D-4712-B154-E350AF463081} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
+		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{20A58D77-CB7C-444E-A084-C61B40639B60} = {3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}
 		{F8902AA2-1A9A-451B-89D1-7FEA30C34C48} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{8A1BCFAA-19E8-408A-8C72-170B1211DC27} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
