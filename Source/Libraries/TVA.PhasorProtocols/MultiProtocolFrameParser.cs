@@ -1474,15 +1474,26 @@ namespace TVA.PhasorProtocols
         private void InitializeCommandChannel(string connectionString)
         {
             // Parse command channel connection settings
+            TransportProtocol transportProtocol;
             Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
+            string setting;
 
             // Verify user did not attempt to setup command channel as a TCP server
             if (settings.ContainsKey("islistener") && settings["islistener"].ParseBoolean())
                 throw new ArgumentException("Command channel cannot be setup as a TCP server.");
 
-            // Validate command channel transport protocol selection
-            TransportProtocol transportProtocol = (TransportProtocol)Enum.Parse(typeof(TransportProtocol), settings["protocol"], true);
+            // Determine what transport protocol user selected
+            if (settings.TryGetValue("transportProtocol", out setting) || settings.TryGetValue("protocol", out setting))
+            {
+                transportProtocol = (TransportProtocol)Enum.Parse(typeof(TransportProtocol), setting, true);
 
+                // The communications engine only recognizes the transport protocol key as "protocol"
+                connectionString = connectionString.ReplaceCaseInsensitive("transportProtocol", "protocol");
+            }
+            else
+                throw new ArgumentException("No transport protocol was specified for command channel. For example: \"transportProtocol=Tcp\".");
+
+            // Validate command channel transport protocol selection
             if (transportProtocol != TransportProtocol.Tcp && transportProtocol != TransportProtocol.Serial && transportProtocol != TransportProtocol.File)
                 throw new ArgumentException("Command channel transport protocol can only be defined as TCP, Serial or File");
 

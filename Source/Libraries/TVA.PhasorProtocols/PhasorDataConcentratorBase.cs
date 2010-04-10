@@ -857,11 +857,9 @@ namespace TVA.PhasorProtocols
                             new PhasorDefinition(
                                 cell,
                                 GeneratePhasorLabel(label, phase, type),
+                                m_scalingValue,
                                 type,
                                 null));
-
-                        // Apply scaling factor to newly added phasor definition
-                        cell.PhasorDefinitions[cell.PhasorDefinitions.Count - 1].ScalingValue = m_scalingValue;
                     }
 
                     // Add frequency definition
@@ -881,10 +879,8 @@ namespace TVA.PhasorProtocols
                                 new AnalogDefinition(
                                     cell,
                                     label,
+                                    m_scalingValue,
                                     analogType));
-
-                            // Apply scaling factor to newly added analog definition
-                            cell.AnalogDefinitions[cell.AnalogDefinitions.Count - 1].ScalingValue = m_scalingValue;
                         }                            
                     }
 

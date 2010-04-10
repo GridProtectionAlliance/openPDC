@@ -360,6 +360,7 @@ namespace openPDC
         {
             // Make sure default service settings exist
             ConfigurationFile configFile = ConfigurationFile.Current;
+            string cachePath = string.Format("{0}\\ConfigurationCache\\", FilePath.GetAbsolutePath(""));
 
             // System settings
             CategorizedSettingsElementCollection systemSettings = configFile.Settings["systemSettings"];
@@ -367,6 +368,7 @@ namespace openPDC
             systemSettings.Add("ConfigurationType", "Database", "Specifies type of configuration: Database, WebService or XmlFile");
             systemSettings.Add("ConnectionString", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=openPDC.mdb", "Configuration database connection string");
             systemSettings.Add("DataProviderString", "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089};ConnectionType=System.Data.OleDb.OleDbConnection;AdapterType=System.Data.OleDb.OleDbDataAdapter", "Configuration database ADO.NET data provider assembly type creation string");
+            systemSettings.Add("ConfigurationCachePath", cachePath, "Defines the path used to cache serialized configurations");
             systemSettings.Add("CachedConfigurationFile", "SystemConfiguration.xml", "File name for last known good system configuration (only cached for a Database or WebService connection)");
             systemSettings.Add("UniqueAdaptersIDs", "True", "Set to true if all runtime adapter ID's will be unique to allow for easier adapter specification");
             systemSettings.Add("ProcessPriority", "RealTime", "Sets desired process priority: Normal, AboveNormal, High, RealTime");
@@ -392,19 +394,27 @@ namespace openPDC
             thresholdSettings.Add("MeasurementDumpingThreshold", "500000", "Number of unarchived measurements allowed in any output adapter queue before taking evasive action and dumping data");
             thresholdSettings.Add("DefaultSampleSizeWarningThreshold", "10", "Default number of unpublished samples (in seconds) allowed in any action adapter queue before displaying a warning message");
 
-            // Define configuration cache sub-directory
-            string cachePath = string.Format("{0}\\ConfigurationCache\\", FilePath.GetAbsolutePath(""));
+            // Retrieve configuration cache directory as defined in the config file
+            cachePath = systemSettings["ConfigurationCachePath"].Value;
 
             // Make sure configuration cache directory exists
-            if (!Directory.Exists(cachePath))
-                Directory.CreateDirectory(cachePath);
+            try
+            {
+                if (!Directory.Exists(cachePath))
+                    Directory.CreateDirectory(cachePath);
+            }
+            catch (Exception ex)
+            {
+                DisplayStatusMessage("Failed to create configuration cache directory due to exception: {0}", UpdateType.Alarm, ex.Message);
+                m_serviceHelper.ErrorLogger.Log(ex);
+            }
 
             // Initialize system settings
             m_nodeID = systemSettings["NodeID"].ValueAs<Guid>();
             m_configurationType = systemSettings["ConfigurationType"].ValueAs<ConfigurationType>();
             m_connectionString = systemSettings["ConnectionString"].Value;
             m_dataProviderString = systemSettings["DataProviderString"].Value;
-            m_cachedConfigurationFile = cachePath + systemSettings["CachedConfigurationFile"].Value;
+            m_cachedConfigurationFile = FilePath.AddPathSuffix(cachePath) + systemSettings["CachedConfigurationFile"].Value;
             m_uniqueAdapterIDs = systemSettings["UniqueAdaptersIDs"].ValueAsBoolean(true);
 
             // Define guid with query string delimeters according to database needs
@@ -450,15 +460,14 @@ namespace openPDC
         // Once service has successfully started we handle system initialization
         private void ServiceStartedHandler(object sender, EventArgs e)
         {
+            // Define a line of asterisks for emphasis
+            string stars = new string('*', 79);
+
             // Log startup information
             m_serviceHelper.UpdateStatus(
                 UpdateType.Information,
                 "\r\n\r\n{0}\r\n\r\nNode {{{1}}} Initializing\r\n\r\nUTC System Timestamp: {2}\r\n\r\nCurrent system file path:\r\n\r\n{3}\r\n\r\n{4}\r\n",
-                new string('*', 80),
-                m_nodeID,
-                DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff"),
-                FilePath.GetAbsolutePath(""),
-                new string('*', 80));
+                stars, m_nodeID, DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff"), FilePath.GetAbsolutePath(""), stars);
 
             // Create health exporter
             m_healthExporter = new MultipleDestinationExporter("HealthExporter", Timeout.Infinite);
@@ -1199,11 +1208,13 @@ namespace openPDC
                                 if (method.TryGetAttribute(out commandAttribute))
                                 {
                                     ParameterInfo[] parameterInfo = method.GetParameters();
+                                    object returnValue = null;
+                                    bool success = true;
 
                                     if (parameterInfo == null || (parameterInfo != null && parameterInfo.Length == 0))
                                     {
-                                        // Invoke parameterless method
-                                        method.Invoke(adapter, null);
+                                        // Invoke parameterless adapter command
+                                        returnValue = method.Invoke(adapter, null);
                                     }
                                     else
                                     {
@@ -1220,11 +1231,24 @@ namespace openPDC
                                                 parameters[i] = parameterValue.ConvertToType(parameterInfo[i].ParameterType);
                                             }
 
-                                            method.Invoke(adapter, parameters);
-                                            SendResponse(requestInfo, true);
+                                            // Invoke adapter command with specified parameters
+                                            returnValue = method.Invoke(adapter, parameters);
                                         }
                                         else
+                                        {
+                                            success = false;
                                             SendResponse(requestInfo, false, "Parameter count mismatch, \"{0}\" command expects {1} parameters.", command, parameterInfo.Length);
+                                        }
+                                    }
+
+                                    // If invoke was successful, return actionable response
+                                    if (success)
+                                    {
+                                        // Return value, if any, will be returned to requesting client as a response attachment
+                                        if (returnValue == null)
+                                            SendResponse(requestInfo, true, "Command \"{0}\" successfully invoked.", command);
+                                        else
+                                            SendResponseWithAttachment(requestInfo, returnValue, "Command \"{0}\" successfully invoked, return value = {1}", command, returnValue.ToNonNullString("null"));
                                     }
                                 }
                                 else
@@ -1235,7 +1259,7 @@ namespace openPDC
                         }
                         catch (Exception ex)
                         {
-                            SendResponse(requestInfo, false, ex.Message);
+                            SendResponse(requestInfo, false, "Failed to invoke command: {0}", ex.Message);
                             m_serviceHelper.ErrorLogger.Log(ex);
                         }
                     }
@@ -1356,7 +1380,7 @@ namespace openPDC
                     }
                     catch (Exception ex)
                     {
-                        SendResponse(requestInfo, false, ex.Message);
+                        SendResponse(requestInfo, false, "Failed to list commands: {0}", ex.Message);
                         m_serviceHelper.ErrorLogger.Log(ex);
                     }
                 }
@@ -1533,10 +1557,10 @@ namespace openPDC
                     m_statusExporter.Initialize();
                     SendResponse(requestInfo, true);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    SendResponse(requestInfo, false);
-                    throw;
+                    SendResponse(requestInfo, false, "Failed to reauthenticate network shares: {0}", ex.Message);
+                    m_serviceHelper.ErrorLogger.Log(ex);
                 }
             }
         }
@@ -1548,18 +1572,23 @@ namespace openPDC
         // Send actionable response to client
         private void SendResponse(ClientRequestInfo requestInfo, bool success)
         {
-            string response = requestInfo.Request.Command + (success ? ":Success" : ":Failure");
+            string responseType = requestInfo.Request.Command + (success ? ":Success" : ":Failure");
 
-            m_serviceHelper.SendResponse(requestInfo.Sender.ClientID, new ServiceResponse(response));
+            // Send response to service
+            m_serviceHelper.SendResponse(requestInfo.Sender.ClientID, new ServiceResponse(responseType));
 
             if (m_serviceHelper.LogStatusUpdates && m_serviceHelper.StatusLog.IsOpen)
-                m_serviceHelper.StatusLog.WriteTimestampedLine(response);
+            {
+                string arguments = requestInfo.Request.Arguments.ToString();
+                string message = responseType + (string.IsNullOrEmpty(arguments) ? "" : "(" + arguments + ")");
+                m_serviceHelper.StatusLog.WriteTimestampedLine(message);
+            }
         }
 
         // Send actionable response to client with message
         private void SendResponse(ClientRequestInfo requestInfo, bool success, string status, params object[] args)
         {
-            string response = requestInfo.Request.Command + (success ? ":Success" : ":Failure");
+            string responseType = requestInfo.Request.Command + (success ? ":Success" : ":Failure");
             string message;
 
             if (args.Length == 0)
@@ -1567,10 +1596,42 @@ namespace openPDC
             else
                 message = string.Format(status, args) + "\r\n\r\n";
 
-            m_serviceHelper.SendResponse(requestInfo.Sender.ClientID, new ServiceResponse(response, message));
+            // Send response to service
+            m_serviceHelper.SendResponse(requestInfo.Sender.ClientID, new ServiceResponse(responseType, message));
 
             if (m_serviceHelper.LogStatusUpdates && m_serviceHelper.StatusLog.IsOpen)
-                m_serviceHelper.StatusLog.WriteTimestampedLine(response + " - " + message);
+            {
+                string arguments = requestInfo.Request.Arguments.ToString();
+                message = responseType + (string.IsNullOrEmpty(arguments) ? "" : "(" + arguments + ")") + " - " + message;
+                m_serviceHelper.StatusLog.WriteTimestampedLine(message);
+            }
+        }
+
+        // Send actionable response to client with attachments (assumes successful response)
+        private void SendResponseWithAttachment(ClientRequestInfo requestInfo, object attachment, string status, params object[] args)
+        {
+            string responseType = requestInfo.Request.Command + ":Success";
+            string message;
+            
+            if (args.Length == 0)
+                message = status + "\r\n\r\n";
+            else
+                message = string.Format(status, args) + "\r\n\r\n";
+
+            ServiceResponse response = new ServiceResponse(responseType, message);
+
+            // Add attachments to service response
+            response.Attachments.Add(attachment);
+
+            // Send response to service
+            m_serviceHelper.SendResponse(requestInfo.Sender.ClientID, response);
+
+            if (m_serviceHelper.LogStatusUpdates && m_serviceHelper.StatusLog.IsOpen)
+            {
+                string arguments = requestInfo.Request.Arguments.ToString();
+                message = responseType + (string.IsNullOrEmpty(arguments) ? "" : "(" + arguments + ")") + " - " + message;
+                m_serviceHelper.StatusLog.WriteTimestampedLine(message);
+            }
         }
 
         // Display response message (send to request sender)
@@ -1584,6 +1645,7 @@ namespace openPDC
         {
             try
             {
+                status = status.Replace("{", "{{").Replace("}", "}}");
                 m_serviceHelper.UpdateStatus(type, string.Format("{0}\r\n\r\n", status));
             }
             catch (Exception ex)

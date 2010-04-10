@@ -288,7 +288,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             if (settings.TryGetValue("timebase", out setting))
                 m_timeBase = uint.Parse(setting);
             else
-                m_timeBase = 16777215;
+                m_timeBase = 16777215U;
 
             // Start base class initialization
             base.Initialize();

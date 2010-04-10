@@ -232,13 +232,20 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
 using TVA;
 using TVA.Console;
+using TVA.PhasorProtocols;
 using TVA.Reflection;
 using TVA.Security.Cryptography;
 using TVA.Services;
+using TVA.IO;
 
 namespace openPDC
 {
@@ -432,6 +439,7 @@ namespace openPDC
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     break;
             }
+
             Console.Write(e.Argument2);
             Console.ForegroundColor = m_originalFgColor;
         }
@@ -440,7 +448,45 @@ namespace openPDC
         {
             string response = e.Argument.Type;
             string message = e.Argument.Message;
+            List<object> attachments = e.Argument.Attachments;
 
+            // Handle any special attachments coming in from service
+            if (attachments != null)
+            {
+                foreach (object attachment in attachments)
+                {
+                    // If user requested a configuration frame, serialize it to XML and open it in a browser
+                    if (attachment is IConfigurationFrame)
+                    {
+                        IConfigurationFrame configurationFrame = attachment as IConfigurationFrame;
+                        string fileName = string.Format("{0}\\DownloadedConfiguration-ID[{1}].xml", FilePath.GetAbsolutePath(""), configurationFrame.IDCode);
+                        FileStream configFile = File.Create(fileName);
+                        SoapFormatter xmlSerializer = new SoapFormatter();
+
+                        xmlSerializer.AssemblyFormat = FormatterAssemblyStyle.Simple;
+                        xmlSerializer.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
+
+                        try 
+	                    {
+                            // Attempt to serialize configuration frame as XML
+                            xmlSerializer.Serialize(configFile, configurationFrame);
+	                    }
+	                    catch (Exception ex)
+	                    {                    		
+                            byte[] errorMessage = Encoding.UTF8.GetBytes(ex.Message);
+                            configFile.Write(errorMessage, 0, errorMessage.Length);
+                            Console.Write("Failed to serialize configuration frame: {0}", ex.Message);
+	                    }
+
+                        configFile.Close();
+
+                        // Open captured XML sample file in explorer...
+                        Process.Start("explorer.exe", fileName);
+                    }
+                }
+            }
+
+            // Handle response message, if any
             if (!string.IsNullOrEmpty(response))
             {
                 // Reponse types are formatted as "Command:Success" or "Command:Failure"

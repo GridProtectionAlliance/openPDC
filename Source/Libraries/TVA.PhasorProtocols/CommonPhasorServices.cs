@@ -1,17 +1,15 @@
-//*******************************************************************************************************
-//  ConfigurationFrame.cs - Gbtc
+﻿//*******************************************************************************************************
+//  CommonPhasorServices.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  05/05/2009 - J. Ritchie Carroll
+//  4/9/2010 - J. Ritchie Carroll
 //       Generated original version of source code.
-//  09/15/2009 - Stephen C. Wills
-//       Added new header and license agreement.
 //
 //*******************************************************************************************************
 
@@ -232,58 +230,64 @@
 #endregion
 
 using System;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters;
-using System.Runtime.Serialization.Formatters.Soap;
-using TVA.Configuration;
-using TVA.IO;
-using TVA.IO.Checksums;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text;
+using System.Threading;
+using TVA.Communication;
+using TVA.Measurements;
+using TVA.Measurements.Routing;
 
-namespace TVA.PhasorProtocols.Anonymous
+namespace TVA.PhasorProtocols
 {
     /// <summary>
-    /// Represents a protocol independent implementation of a <see cref="IConfigurationFrame"/> that can be sent or received.
+    /// Provides common phasor services.
     /// </summary>
-    [Serializable()]
-    public class ConfigurationFrame : ConfigurationFrameBase
+    /// <remarks>
+    /// Typically class should be implemented as a singleton since one instance will suffice.
+    /// </remarks>
+    public class CommonPhasorServices : FacileActionAdapterBase
     {
-        #region [ Constructors ]
+        #region [ Members ]
 
-        /// <summary>
-        /// Creates a new <see cref="ConfigurationFrame"/> from specified parameters.
-        /// </summary>
-        /// <param name="idCode">The ID code of this <see cref="ConfigurationFrame"/>.</param>
-        /// <param name="timestamp">The exact timestamp, in <see cref="Ticks"/>, of the data represented by this <see cref="ConfigurationFrame"/>.</param>
-        /// <param name="frameRate">The defined frame rate of this <see cref="ConfigurationFrame"/>.</param>
-        public ConfigurationFrame(ushort idCode, Ticks timestamp, ushort frameRate)
-            : base(idCode, new ConfigurationCellCollection(), timestamp, frameRate)
-        {
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="ConfigurationFrame"/> from serialization parameters.
-        /// </summary>
-        /// <param name="info">The <see cref="SerializationInfo"/> with populated with data.</param>
-        /// <param name="context">The source <see cref="StreamingContext"/> for this deserialization.</param>
-        protected ConfigurationFrame(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
+        // Fields
+        private ManualResetEvent m_configurationWaitHandle;
+        private MultiProtocolFrameParser m_frameParser;
+        private IConfigurationFrame m_configurationFrame;
+        private bool m_disposed;
 
         #endregion
 
-        #region [ Properties ]
+        #region [ Constructors ]
 
         /// <summary>
-        /// Gets reference to the <see cref="ConfigurationCellCollection"/> for this <see cref="ConfigurationFrame"/>.
+        /// Creates a new <see cref="CommonPhasorServices"/>.
         /// </summary>
-        public new ConfigurationCellCollection Cells
+        public CommonPhasorServices()
         {
-            get
-            {
-                return base.Cells as ConfigurationCellCollection;
-            }
+            // Create wait handle to use to wait for configuration frame
+            m_configurationWaitHandle = new ManualResetEvent(false);
+
+            // Create a new phasor protocol frame parser used to dynamically request device configuration frames
+            // and return them to remote clients so that the frame can be used in system setup and configuration
+            m_frameParser = new MultiProtocolFrameParser();
+
+            // Attach to events on new frame parser reference
+            m_frameParser.ConnectionAttempt += m_frameParser_ConnectionAttempt;
+            m_frameParser.ConnectionEstablished += m_frameParser_ConnectionEstablished;
+            m_frameParser.ConnectionException += m_frameParser_ConnectionException;
+            m_frameParser.ConnectionTerminated += m_frameParser_ConnectionTerminated;
+            m_frameParser.ExceededParsingExceptionThreshold += m_frameParser_ExceededParsingExceptionThreshold;
+            m_frameParser.ParsingException += m_frameParser_ParsingException;
+            m_frameParser.ReceivedConfigurationFrame += m_frameParser_ReceivedConfigurationFrame;
+
+            // We only want to try to connect to device and retrieve configuration
+            m_frameParser.MaximumConnectionAttempts = 1;
+            m_frameParser.SourceName = Name;
+            m_frameParser.AutoRepeatCapturedPlayback = false;
+            m_frameParser.AutoStartDataParsingSequence = false;
+            m_frameParser.SkipDisableRealTimeData = true;
+            m_frameParser.DefinedFrameRate = FramesPerSecond;
         }
 
         #endregion
@@ -291,149 +295,231 @@ namespace TVA.PhasorProtocols.Anonymous
         #region [ Methods ]
 
         /// <summary>
-        /// Calculates checksum of given <paramref name="buffer"/>.
+        /// Releases the unmanaged resources used by the <see cref="CommonPhasorServices"/> object and optionally releases the managed resources.
         /// </summary>
-        /// <param name="buffer">Buffer image over which to calculate checksum.</param>
-        /// <param name="offset">Start index into <paramref name="buffer"/> to calculate checksum.</param>
-        /// <param name="length">Length of data within <paramref name="buffer"/> to calculate checksum.</param>
-        /// <returns>Checksum over specified portion of <paramref name="buffer"/>.</returns>
-        protected override ushort CalculateChecksum(byte[] buffer, int offset, int length)
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
         {
-            // Just returning calculated CRC-CCITT over given buffer as a default CRC
-            return buffer.CrcCCITTChecksum(offset, length);
-        }
-
-        #endregion
-
-        #region [ Static ]
-
-        // Static Fields
-        private static string s_configurationCachePath;
-
-        // Static Properties
-
-        /// <summary>
-        /// Gets the path for storing serialized phasor protocol configurations.
-        /// </summary>
-        /// <returns>Path for storing serialized phasor protocol configurations.</returns>
-        public static string ConfigurationCachePath
-        {
-            get
+            if (!m_disposed)
             {
-                // This property will not change during system life-cycle so we cache if for future use
-                if (string.IsNullOrEmpty(s_configurationCachePath))
+                try
                 {
-                    // Define default configuration cache directory relative to path of host application
-                    s_configurationCachePath = string.Format("{0}\\ConfigurationCache\\", FilePath.GetAbsolutePath(""));
+                    if (disposing)
+                    {
+                        // Detach from frame parser events and dispose
+                        if (m_frameParser != null)
+                        {
+                            m_frameParser.ConnectionAttempt -= m_frameParser_ConnectionAttempt;
+                            m_frameParser.ConnectionEstablished -= m_frameParser_ConnectionEstablished;
+                            m_frameParser.ConnectionException -= m_frameParser_ConnectionException;
+                            m_frameParser.ConnectionTerminated -= m_frameParser_ConnectionTerminated;
+                            m_frameParser.ExceededParsingExceptionThreshold -= m_frameParser_ExceededParsingExceptionThreshold;
+                            m_frameParser.ParsingException -= m_frameParser_ParsingException;
+                            m_frameParser.ReceivedConfigurationFrame -= m_frameParser_ReceivedConfigurationFrame;
+                            m_frameParser.Dispose();
+                        }
+                        m_frameParser = null;
 
-                    // Make sure configuration cache path setting exists within system settings section of config file
-                    ConfigurationFile configFile = ConfigurationFile.Current;
-                    CategorizedSettingsElementCollection systemSettings = configFile.Settings["systemSettings"];
-                    systemSettings.Add("ConfigurationCachePath", s_configurationCachePath, "Defines the path used to cache serialized phasor protocol configurations");
+                        // Dispose of wait handle
+                        if (m_configurationWaitHandle != null)
+                            m_configurationWaitHandle.Close();
 
-                    // Retrieve configuration cache directory as defined in the config file
-                    s_configurationCachePath = FilePath.AddPathSuffix(systemSettings["ConfigurationCachePath"].Value);
+                        m_configurationWaitHandle = null;
 
-                    // Make sure configuration cache directory exists
-                    if (!Directory.Exists(s_configurationCachePath))
-                        Directory.CreateDirectory(s_configurationCachePath);
+                        m_configurationFrame = null;
+                    }
                 }
-
-                return s_configurationCachePath;
+                finally
+                {
+                    base.Dispose(disposing);    // Call base class Dispose().
+                    m_disposed = true;          // Prevent duplicate dispose.
+                }
             }
         }
 
-        // Static Methods
+        /// <summary>
+        /// Intializes <see cref="CommonPhasorServices"/>.
+        /// </summary>
+        public override void Initialize()
+        {
+            base.Initialize();
+
+        }
 
         /// <summary>
-        /// Serialize configuration frame to cache folder for later use (if needed).
+        /// Requests a configuration frame from a phasor device.
         /// </summary>
-        /// <param name="state">
-        /// Reference to a <see cref="EventArgs{T1, T2, T3}"/> instance containing the following:<br/>
-        /// a reference to <see cref="IConfigurationFrame"/> (as T1),<br/>
-        /// a <see cref="Action{T}"/> delegate to handle process exceptions (as T2),<br/>
-        /// and a <see cref="string"/> representing the configuration name (as T3).
-        /// </param>
-        /// <remarks>
-        /// It is expected that this function will be called from the <see cref="System.Threading.ThreadPool"/>.
-        /// </remarks>
-        public static void Cache(object state)
+        /// <param name="connectionString">Connection string used to connect to phasor device.</param>
+        /// <returns>A <see cref="IConfigurationFrame"/> if successful, -or- <c>null</c> if request failed.</returns>
+        [AdapterCommand("Connects to a phasor device and requests its configuration frame.")]
+        public IConfigurationFrame RequestDeviceConfiguration(string connectionString)
         {
-            EventArgs<IConfigurationFrame, Action<Exception>, string> e = state as EventArgs<IConfigurationFrame, Action<Exception>, string>;
-
-            if (e != null)
+            if (string.IsNullOrEmpty(connectionString))
             {
-                IConfigurationFrame configurationFrame = e.Argument1;
-                Action<Exception> exceptionHandler = e.Argument2;
-                string configurationName = e.Argument3;
+                OnStatusMessage("ERROR: No connection string was specified, request for configuration canceled.");
+                return null;
+            }
 
+            // Define a line of asterisks for emphasis
+            string stars = new string('*', 79);
+
+            // Only allow configuration request if another request is not already pending...
+            if (Monitor.TryEnter(m_frameParser))
+            {
                 try
                 {
-                    // Serialize configuration frame to a file
-                    FileStream configFile = File.Create(GetConfigurationCacheFileName(configurationName));
-                    SoapFormatter xmlSerializer = new SoapFormatter();
+                    Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
+                    string setting;
+                    ushort accessID;
 
-                    xmlSerializer.AssemblyFormat = FormatterAssemblyStyle.Simple;
-                    xmlSerializer.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
-                    xmlSerializer.Serialize(configFile, configurationFrame);
+                    // Get accessID from connection string
+                    if (settings.TryGetValue("accessID", out setting))
+                        accessID = ushort.Parse(setting);
+                    else
+                        accessID = 1;
 
-                    configFile.Close();
+                    // Most of the parameters in the connection string will be for the data source in the frame parser
+                    // so we provide all of them, other parameters will simply be ignored
+                    m_frameParser.ConnectionString = connectionString;
+
+                    // Provide access ID to frame parser as this may be necessary to make a phasor connection
+                    m_frameParser.DeviceID = accessID;
+
+                    // Clear any existing configuration frame
+                    m_configurationFrame = null;
+
+                    // Inform user of temporary loss of command access
+                    OnStatusMessage("\r\n{0}\r\n\r\nAttempting to request remote device configuration.\r\n\r\nThis request could take up to sixty seconds to complete.\r\n\r\nNo other commands will be accepted until this request succeeds or fails.\r\n\r\n{0}", stars, stars);
+
+                    // Make sure the wait handle is not set
+                    m_configurationWaitHandle.Reset();
+
+                    // Start the frame parser - this will attempt connection
+                    m_frameParser.Start();
+
+                    // We wait a maximum of 60 seconds to receive the configuration frame - this delay should be the maximum time ever needed
+                    // to receive a configuration frame. If the device connection is Active or Hybrid then the configuration frame should be
+                    // returned immediately - for purely Passive connections the configuration frame is delivered once per minute.
+                    if (!m_configurationWaitHandle.WaitOne(60000))
+                        OnStatusMessage("WARNING: Timed-out waiting to retrieve remote device configuration.");
+
+                    // Terminate connection to device
+                    m_frameParser.Stop();
+
+                    if (m_configurationFrame == null)
+                        OnStatusMessage("Failed to retrieve remote device configuration.");
+
+                    return m_configurationFrame;
                 }
                 catch (Exception ex)
                 {
-                    exceptionHandler(new InvalidOperationException(string.Format("Failed to serialize configuration frame: {0}", ex.Message), ex));
+                    OnStatusMessage("ERROR: Failed to request configuration due to exception: {0}", ex.Message);
+                }
+                finally
+                {
+                    // Release the lock
+                    Monitor.Exit(m_frameParser);
+
+                    // Inform user of restoration of command access
+                    OnStatusMessage("\r\n{0}\r\n\r\nRemote device configuration request completed.\r\n\r\nCommand access has been restored.\r\n\r\n{0}", stars, stars);
                 }
             }
-        }
-
-        /// <summary>
-        /// Gets the file name with path of the specified <paramref name="configurationName"/>.
-        /// </summary>
-        /// <param name="configurationName">Name of the configuration to get file name for.</param>
-        /// <returns>File name with path of the specified <paramref name="configurationName"/>.</returns>
-        public static string GetConfigurationCacheFileName(string configurationName)
-        {
-            return string.Format("{0}{1}.configuration.xml", ConfigurationCachePath, configurationName);
-        }
-
-        /// <summary>
-        /// Deserializes cached configuration, if available.
-        /// </summary>
-        /// <param name="configurationName">Name of the configuration to get file name for.</param>
-        /// <param name="fromCache">Set to True retrieve from cache, False to retrieve from specified file name in <paramref name="configurationName"/></param>
-        /// <returns>Cached configuration frame, or null if not available.</returns>
-        public static IConfigurationFrame GetCachedConfiguration(string configurationName, bool fromCache)
-        {
-            IConfigurationFrame configFrame = null;
-            string configFileName;
-
-            if (fromCache)
-                configFileName = GetConfigurationCacheFileName(configurationName);
             else
-                configFileName = configurationName;
+                OnStatusMessage("ERROR: Cannot process simultaneous requests for device configurations, please try again in a few seconds...");
 
-            if (File.Exists(configFileName))
-            {
-                FileStream configFile = null;
-                SoapFormatter xmlSerializer = new SoapFormatter();
-
-                try 
-	            {
-                    configFile = File.Open(configFileName, FileMode.Open);
-                    xmlSerializer.AssemblyFormat = FormatterAssemblyStyle.Simple;
-                    xmlSerializer.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
-                    configFrame = xmlSerializer.Deserialize(configFile) as IConfigurationFrame;
-                }
-	            finally
-	            {
-                    if (configFile != null)
-                        configFile.Close();
-	            }
-            }
-
-            return configFrame;
+            return null;
         }
 
-        #endregion        
+        /// <summary>
+        /// Sends the specified <see cref="DeviceCommand"/> to the current device connection.
+        /// </summary>
+        /// <param name="command"><see cref="DeviceCommand"/> to send to connected device.</param>
+        public void SendCommand(DeviceCommand command)
+        {
+            if (m_frameParser != null)
+            {
+                m_frameParser.SendDeviceCommand(command);
+                OnStatusMessage("Sent device command \"{0}\"...", command);
+            }
+            else
+                OnStatusMessage("Failed to send device command \"{0}\", no frame parser is defined.", command);
+        }
+
+        /// <summary>
+        /// Queues a collection of measurements for processing.
+        /// </summary>
+        /// <param name="measurements">Collection of measurements to queue for processing.</param>
+        /// <remarks>
+        /// The <see cref="CommonPhasorServices"/> adapter doesn't process any measurements.
+        /// </remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override void QueueMeasurementsForProcessing(IEnumerable<IMeasurement> measurements)
+        {
+            // The common phasor services doesn't have a need to process any measurements
+        }
+
+        /// <summary>
+        /// Gets a short one-line status of this <see cref="CommonPhasorServices"/>.
+        /// </summary>
+        /// <param name="maxLength">Maximum number of available characters for display.</param>
+        /// <returns>A short one-line summary of the current status of the <see cref="CommonPhasorServices"/>.</returns>
+        public override string GetShortStatus(int maxLength)
+        {
+            return "Type \"LISTCOMMANDS 0\" to enumerate service commands.".CenterText(maxLength);
+        }
+
+        private void m_frameParser_ReceivedConfigurationFrame(object sender, EventArgs<IConfigurationFrame> e)
+        {
+            // Cache received configuration frame
+            m_configurationFrame = e.Argument;
+
+            OnStatusMessage("Successfully received configuration frame");
+
+            // Clear wait handle
+            m_configurationWaitHandle.Set();
+        }
+
+        private void m_frameParser_ConnectionTerminated(object sender, EventArgs e)
+        {
+            // Communications layer closed connection (close not initiated by system) - so we cancel request...
+            if (m_frameParser.Enabled)
+                OnStatusMessage("ERROR: Connection closed by remote device, request for configuration canceled.");
+
+            // Clear wait handle
+            m_configurationWaitHandle.Set();
+        }
+
+        private void m_frameParser_ConnectionEstablished(object sender, EventArgs e)
+        {
+            OnStatusMessage("Connected to remote device, requesting configuration frame...");
+
+            // Send manual request for configuration frame
+            SendCommand(DeviceCommand.SendConfigurationFrame2);
+        }
+
+        private void m_frameParser_ConnectionException(object sender, EventArgs<Exception, int> e)
+        {
+            OnStatusMessage("ERROR: Connection attempt failed, request for configuration canceled: {0}", e.Argument1.Message);
+
+            // Clear wait handle
+            m_configurationWaitHandle.Set();
+        }
+
+        private void m_frameParser_ParsingException(object sender, EventArgs<Exception> e)
+        {
+            OnStatusMessage("ERROR: Parsing exception during request for configuration: {0}", e.Argument.Message);
+        }
+
+        private void m_frameParser_ExceededParsingExceptionThreshold(object sender, EventArgs e)
+        {
+            OnStatusMessage("\r\nRequest for configuration canceled due to an excessive number of exceptions...\r\n");
+        }
+
+        private void m_frameParser_ConnectionAttempt(object sender, EventArgs e)
+        {
+            OnStatusMessage("Attempting {0} {1} based connection...", m_frameParser.PhasorProtocol.GetFormattedProtocolName(), m_frameParser.TransportProtocol.ToString().ToUpper());
+        }
+
+        #endregion
     }
 }

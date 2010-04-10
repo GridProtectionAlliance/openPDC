@@ -113,6 +113,7 @@
     <Compile Include="CommandFrameBase.cs" />
     <Compile Include="CommandFrameParsingState.cs" />
     <Compile Include="Common.cs" />
+    <Compile Include="CommonPhasorServices.cs" />
     <Compile Include="ConfigurationCellBase.cs" />
     <Compile Include="ConfigurationCellCollection.cs" />
     <Compile Include="ConfigurationCellParsingState.cs" />
