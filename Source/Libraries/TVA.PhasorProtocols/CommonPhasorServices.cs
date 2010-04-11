@@ -287,7 +287,6 @@ namespace TVA.PhasorProtocols
             m_frameParser.AutoRepeatCapturedPlayback = false;
             m_frameParser.AutoStartDataParsingSequence = false;
             m_frameParser.SkipDisableRealTimeData = true;
-            m_frameParser.DefinedFrameRate = FramesPerSecond;
         }
 
         #endregion
@@ -335,15 +334,6 @@ namespace TVA.PhasorProtocols
                     m_disposed = true;          // Prevent duplicate dispose.
                 }
             }
-        }
-
-        /// <summary>
-        /// Intializes <see cref="CommonPhasorServices"/>.
-        /// </summary>
-        public override void Initialize()
-        {
-            base.Initialize();
-
         }
 
         /// <summary>
@@ -473,7 +463,7 @@ namespace TVA.PhasorProtocols
             // Cache received configuration frame
             m_configurationFrame = e.Argument;
 
-            OnStatusMessage("Successfully received configuration frame");
+            OnStatusMessage("Successfully received configuration frame!");
 
             // Clear wait handle
             m_configurationWaitHandle.Set();

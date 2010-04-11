@@ -357,7 +357,15 @@ Public Class PMUConnectionTester
         m_associatedNodes = New Dictionary(Of String, UltraTreeNode)
 
         m_dataStreamLock = New Object
-        m_lastConnectionFileName = GetAbsolutePath("LastRun.PmuConnection")
+
+        ' Make sure a folder exists for PMU Connection Tester files
+        Dim personalDataFolder As String = AddPathSuffix(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)) & "PMU Connection Tester\"
+
+        If Not Directory.Exists(personalDataFolder) Then
+            Directory.CreateDirectory(personalDataFolder)
+        End If
+
+        m_lastConnectionFileName = personalDataFolder & "LastRun.PmuConnection"
 
         ' Intialize interface thread delegates
         m_receivedFrameBufferImageFunction = New ReceivedFrameBufferImageFunctionSignature(AddressOf ReceivedFrameBufferImage)

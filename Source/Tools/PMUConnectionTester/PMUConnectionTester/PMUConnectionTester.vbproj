@@ -193,16 +193,19 @@
       <DependentUpon>SplashScreen.vb</DependentUpon>
     </EmbeddedResource>
     <None Include="CommandChannel.ico" />
+    <Content Include="openPDCTestStream.PmuConnection">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="PMUConnectionTester.ico" />
+    <Content Include="Sample1344.PmuConnection">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Embedded Resources\TVAPSOLogo.png" />
     <Content Include="PMUConnectionTester.chm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="LastRun.PmuConnection">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Sample1344.PmuCapture">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Embedded Resources\SplashScreen.png" />
   </ItemGroup>

@@ -644,6 +644,9 @@ FROM RuntimeCustomInputAdapter;
 
 CREATE VIEW IaonActionAdapter
 AS
+SELECT Node.ID AS NodeID, 0 AS ID, N'PHASOR!SERVICES' AS AdapterName, N'TVA.PhasorProtocols.dll' AS AssemblyName, N'TVA.PhasorProtocols.CommonPhasorServices' AS TypeName, N'' AS ConnectionString
+FROM Node
+UNION
 SELECT NodeID, ID, AdapterName, AssemblyName, TypeName, ConnectionString
 FROM RuntimeOutputStream
 UNION
