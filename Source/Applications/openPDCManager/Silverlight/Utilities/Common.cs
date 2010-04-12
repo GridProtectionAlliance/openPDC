@@ -325,6 +325,31 @@ namespace openPDCManager.Silverlight.Utilities
 			return new DuplexServiceClient(binding, address);
 		}
 
+		public static void SetDefaultSystemSettings(bool overWrite)
+		{
+			//Check if system settings are available in the isolated storage. If not, then assign them default values.
+			if (!IsolatedStorageManager.Contains("DefaultHeight") || overWrite)
+				IsolatedStorageManager.SaveIntoIsolatedStorage("DefaultHeight", 900);
+
+			if (!IsolatedStorageManager.Contains("DefaultWidth") || overWrite)
+				IsolatedStorageManager.SaveIntoIsolatedStorage("DefaultWidth", 1200);
+
+			if (!IsolatedStorageManager.Contains("MinimumHeight") || overWrite)
+				IsolatedStorageManager.SaveIntoIsolatedStorage("MinimumHeight", 600);
+
+			if (!IsolatedStorageManager.Contains("MinimumWidth") || overWrite)
+				IsolatedStorageManager.SaveIntoIsolatedStorage("MinimumWidth", 800);
+
+			if (!IsolatedStorageManager.Contains("ResizeWithBrowser") || overWrite)
+				IsolatedStorageManager.SaveIntoIsolatedStorage("ResizeWithBrowser", true);
+
+			if (!IsolatedStorageManager.Contains("MaintainAspectRatio") || overWrite)
+				IsolatedStorageManager.SaveIntoIsolatedStorage("MaintainAspectRatio", false);
+
+			if (!IsolatedStorageManager.Contains("NumberOfMessagesOnMonitor") || overWrite)
+				IsolatedStorageManager.SaveIntoIsolatedStorage("NumberOfMessagesOnMonitor", 75);
+		}
+
 		#endregion
 
 	}

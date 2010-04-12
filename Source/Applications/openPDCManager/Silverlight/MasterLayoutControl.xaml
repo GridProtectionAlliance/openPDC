@@ -150,7 +150,13 @@
                                     <Image Source="Images/Pmu.png" />
                                 </igMenu:XamWebMenuItem.Icon>
                             </igMenu:XamWebMenuItem>
-                        </igMenu:XamWebMenuItem>
+                            <igMenu:XamWebSeparator />
+                            <igMenu:XamWebMenuItem Header="System Settings" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Manage/SystemSettings.xaml">
+                                    <igMenu:XamWebMenuItem.Icon>
+                                        <Image Source="Images/Configuration.png" />
+                                    </igMenu:XamWebMenuItem.Icon>
+                                </igMenu:XamWebMenuItem>
+                            </igMenu:XamWebMenuItem>
                         <igMenu:XamWebMenuItem Header="Help" Style="{StaticResource XamWebMenuItemStyleMainMenu}" Click="XamWebMenuItem_Click" />
                     </igMenu:XamWebMenu>
                             <TextBlock Text="" Width="{StaticResource XXXSmallItemSize}" />

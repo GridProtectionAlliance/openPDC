@@ -1,14 +1,14 @@
 ﻿//*******************************************************************************************************
-//  MasterLayoutControl.xaml.cs - Gbtc
+//  SystemSettings.xaml.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  09/28/2009 - Mehulbhai P. Thakkar
+//  04/09/2010 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -230,173 +230,111 @@
 #endregion
 
 using System;
-using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.UserControls;
+using System.Windows.Media.Animation;
+using System.Windows.Navigation;
 using openPDCManager.Silverlight.Utilities;
+using openPDCManager.Silverlight.ModalDialogs;
 
-namespace openPDCManager.Silverlight
+namespace openPDCManager.Silverlight.Pages.Manage
 {
-	public partial class MasterLayoutControl : UserControl
+	public partial class SystemSettings : Page
 	{
-		#region [ Members ]
-
-		const double layoutRootHeight = 900;
-		const double layoutRootWidth = 1200;
-
-		#endregion
-
 		#region [ Constructor ]
 
-		public MasterLayoutControl()
+		public SystemSettings()
 		{
-			InitializeComponent();			
-			
-			App.Current.Host.Content.Resized += new EventHandler(Content_Resized);
-			
-			Loaded += new RoutedEventHandler(MasterLayoutControl_Loaded);
-			NetworkChange.NetworkAddressChanged += new NetworkAddressChangedEventHandler(NetworkChange_NetworkAddressChanged);
-			ButtonChangeMode.Click += new RoutedEventHandler(ButtonChangeMode_Click);
-			UserControlSelectNode.NodeCollectionChanged += new SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);
-			UserControlSelectNode.ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
+			InitializeComponent();
+			this.Loaded += new RoutedEventHandler(SystemSettings_Loaded);
+			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
+			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 		}
 
 		#endregion
 
-		#region [ Control Event Handlers ]
+		#region [ Controls Event Handlers ]
 
-		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
-			if (UserControlSelectNode.ComboboxNode.SelectedItem != null)
-				TextBlockNode.Text = ((Node)UserControlSelectNode.ComboboxNode.SelectedItem).Name;
-				
-				//TextBlockNode.Text = ((KeyValuePair<string, string>)UserControlSelectNode.ComboboxNode.SelectedItem).Value;
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonClearTransform);
+			sb.Begin();
 
-			Uri homeUri = new Uri("/Pages/HomePage.xaml", UriKind.Relative);
-			ContentFrame.Navigate(homeUri);			
+			//Load Default Settings.
+			Common.SetDefaultSystemSettings(true);
+			LoadSettingsFromIsolatedStorage();
+
+			SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Successfully Restored Default System Settings", SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						ButtonType.OkOnly);			
+			sm.Show();
 		}
 
-		void UserControlSelectNode_NodeCollectionChanged(object sender, RoutedEventArgs e)
+		void ButtonSave_Click(object sender, RoutedEventArgs e)
 		{
-			(sender as SelectNode).RefreshNodeList();			
-		}
-				
-		void ButtonChangeMode_Click(object sender, RoutedEventArgs e)
-		{		
-            if (!App.Current.IsRunningOutOfBrowser && App.Current.InstallState == InstallState.NotInstalled)
-                App.Current.Install();
-		}
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonSaveTransform);
+			sb.Begin();
 
-		void XamWebMenuItem_Click(object sender, EventArgs e)
-		{
-			System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration"), "_blank");
-		}
+			if (!string.IsNullOrEmpty(TextBoxDefaultWidth.Text))
+				IsolatedStorageManager.SaveIntoIsolatedStorage("DefaultWidth", Convert.ToInt32(TextBoxDefaultWidth.Text));
+			
+			if (!string.IsNullOrEmpty(TextBoxDefaultHeight.Text))
+				IsolatedStorageManager.SaveIntoIsolatedStorage("DefaultHeight", Convert.ToInt32(TextBoxDefaultHeight.Text));
+			
+			if (!string.IsNullOrEmpty(TextBoxMinimumWidth.Text))
+				IsolatedStorageManager.SaveIntoIsolatedStorage("MinimumWidth", Convert.ToInt32(TextBoxMinimumWidth.Text));
+			
+			if (!string.IsNullOrEmpty(TextBoxMinimumHeight.Text))
+				IsolatedStorageManager.SaveIntoIsolatedStorage("MinimumHeight", Convert.ToInt32(TextBoxMinimumHeight.Text));
+			
+			IsolatedStorageManager.SaveIntoIsolatedStorage("ResizeWithBrowser", CheckboxResizeWithBrowser.IsChecked);
+			
+			IsolatedStorageManager.SaveIntoIsolatedStorage("MaintainAspectRatio", CheckboxMaintainAspectRatio.IsChecked);
 
-		void HyperlinkButtonMonitor_Click(object sender, RoutedEventArgs e)
-		{
-			ContentFrame.Navigate(new Uri("/Pages/Monitor.xaml", UriKind.Relative));
+			if (!string.IsNullOrEmpty(TextBoxNumberOfMessagesOnMonitor.Text))
+				IsolatedStorageManager.SaveIntoIsolatedStorage("NumberOfMessagesOnMonitor", Convert.ToInt32(TextBoxNumberOfMessagesOnMonitor.Text));
+
+			LoadSettingsFromIsolatedStorage();
+
+			SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Successfully Saved System Settings", SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+						ButtonType.OkOnly);
+			sm.Show();
 		}
 
 		#endregion
 
 		#region [ Page Event Handlers ]
 
-		void MasterLayoutControl_Loaded(object sender, RoutedEventArgs e)
+		void SystemSettings_Loaded(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.IsRunningOutOfBrowser)
-			{
-				TextBlockExecutionMode.Text = "Out of Browser";
-				//Application.Current.Resources["BaseServiceUrl"] = "http://localhost:1068/";
-			}
-			else
-			{
-				TextBlockExecutionMode.Text = "In Browser";
-			}
-			if (NetworkInterface.GetIsNetworkAvailable())
-			{
-				TextBlockConnectivity.Text = "Connected (online)";
-				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Cyan);
-			}
-			else
-			{
-				TextBlockConnectivity.Text = "Disconnected (offline)";
-				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Red);
-			}			
-		}
-		
-		void Content_Resized(object sender, EventArgs e)
-		{	
-			ScaleContent(Application.Current.Host.Content.ActualHeight, Application.Current.Host.Content.ActualWidth);
+			LoadSettingsFromIsolatedStorage();
 		}
 
-		void NetworkChange_NetworkAddressChanged(object sender, EventArgs e)
+		// Executes when the user navigates to this page.
+		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			if (NetworkInterface.GetIsNetworkAvailable())
-			{
-				TextBlockConnectivity.Text = "Connected (online)";
-				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Green);
-			}
-			else
-			{
-				TextBlockConnectivity.Text = "Disconnected (offline)";
-				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Red);
-			}
 		}
 
 		#endregion
 
 		#region [ Methods ]
 
-		void ScaleContent(double height, double width)
+		void LoadSettingsFromIsolatedStorage()
 		{
-			double defaultHeight = IsolatedStorageManager.LoadFromIsolatedStorage("DefaultHeight") == null ? layoutRootHeight : Convert.ToDouble(IsolatedStorageManager.LoadFromIsolatedStorage("DefaultHeight"));
-			double defaultWidth = IsolatedStorageManager.LoadFromIsolatedStorage("DefaultWidth") == null ? layoutRootWidth : Convert.ToDouble(IsolatedStorageManager.LoadFromIsolatedStorage("DefaultWidth"));
-			double minimumHeight = IsolatedStorageManager.LoadFromIsolatedStorage("MinimumHeight") == null ? 600 : Convert.ToDouble(IsolatedStorageManager.LoadFromIsolatedStorage("MinimumHeight"));
-			double minimumWidth = IsolatedStorageManager.LoadFromIsolatedStorage("MinimumWidth") == null ? 800 : Convert.ToDouble(IsolatedStorageManager.LoadFromIsolatedStorage("MinimumWidth"));
-			
-			if (height == 0) height = defaultHeight; //If for some reason, we dont get actual height and width then use default values.
-			if (width == 0) width = defaultWidth;
-
-			//if set to resize with browser then use actual height and width of the browser passed in the method parameters.
-			if (IsolatedStorageManager.LoadFromIsolatedStorage("ResizeWithBrowser") != null && (bool)IsolatedStorageManager.LoadFromIsolatedStorage("ResizeWithBrowser"))
-			{				
-				if (IsolatedStorageManager.LoadFromIsolatedStorage("MaintainAspectRatio") != null && (bool)IsolatedStorageManager.LoadFromIsolatedStorage("MaintainAspectRatio"))
-				{
-					if (height / layoutRootHeight <= width / layoutRootWidth)
-					{
-						if (height < minimumHeight) height = minimumHeight;
-						LayoutRootScale.ScaleX = 0.98 * (height / layoutRootHeight);
-						LayoutRootScale.ScaleY = 0.98 * (height / layoutRootHeight);
-					}
-					else
-					{
-						if (width < minimumWidth) width = minimumWidth;
-						LayoutRootScale.ScaleX = 0.98 * (width / layoutRootWidth);
-						LayoutRootScale.ScaleY = 0.98 * (width / layoutRootWidth);
-					}
-				}
-				else
-				{
-					if (height < minimumHeight) height = minimumHeight;
-					if (width < minimumWidth) width = minimumWidth;
-					LayoutRootScale.ScaleX = 0.98 * (width / layoutRootWidth);
-					LayoutRootScale.ScaleY = 0.98 * (height / layoutRootHeight);
-				}
-			}
-			else	// if set not to resize with browser then, use default height and width to scale
-			{
-				if (defaultWidth < minimumWidth) defaultWidth = minimumWidth;
-				if (defaultHeight < minimumHeight) defaultHeight = minimumHeight;
-			
-				LayoutRootScale.ScaleX = 0.98 * (defaultWidth / layoutRootWidth);
-				LayoutRootScale.ScaleY = 0.98 * (defaultHeight / layoutRootHeight);				
-			}
+			TextBoxDefaultWidth.Text = IsolatedStorageManager.LoadFromIsolatedStorage("DefaultWidth").ToString();
+			TextBoxDefaultHeight.Text = IsolatedStorageManager.LoadFromIsolatedStorage("DefaultHeight").ToString();
+			TextBoxMinimumWidth.Text = IsolatedStorageManager.LoadFromIsolatedStorage("MinimumWidth").ToString();
+			TextBoxMinimumHeight.Text = IsolatedStorageManager.LoadFromIsolatedStorage("MinimumHeight").ToString();
+			TextBoxNumberOfMessagesOnMonitor.Text = IsolatedStorageManager.LoadFromIsolatedStorage("NumberOfMessagesOnMonitor").ToString();
+			CheckboxResizeWithBrowser.IsChecked = (bool)IsolatedStorageManager.LoadFromIsolatedStorage("ResizeWithBrowser");
+			CheckboxMaintainAspectRatio.IsChecked = (bool)IsolatedStorageManager.LoadFromIsolatedStorage("MaintainAspectRatio");
 		}
 
 		#endregion
-		
 	}
 }

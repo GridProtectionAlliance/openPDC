@@ -249,6 +249,7 @@ namespace openPDCManager.Silverlight.Pages
 		DuplexServiceClient m_duplexClient;
 		bool m_connected = false;
 		ActivityWindow m_activityWindow;
+		int m_numberOfMessagesOnMonitor;
 
 		#endregion
 
@@ -262,6 +263,7 @@ namespace openPDCManager.Silverlight.Pages
 			m_duplexClient.SendToServiceCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(m_duplexClient_SendToServiceCompleted);
 			m_duplexClient.SendToClientReceived += new EventHandler<SendToClientReceivedEventArgs>(m_duplexClient_SendToClientReceived);
 			ButtonSendServiceRequest.Click += new RoutedEventHandler(ButtonSendServiceRequest_Click);
+			m_numberOfMessagesOnMonitor = IsolatedStorageManager.LoadFromIsolatedStorage("NumberOfMessagesOnMonitor") == null ? 50 : Convert.ToInt32(IsolatedStorageManager.LoadFromIsolatedStorage("NumberOfMessagesOnMonitor"));
 		}
 
 		#endregion
@@ -317,7 +319,7 @@ namespace openPDCManager.Silverlight.Pages
 				}
 			}
 						
-			if (TextBoxServiceStatus.Inlines.Count > 75)
+			if (TextBoxServiceStatus.Inlines.Count > m_numberOfMessagesOnMonitor)
 				TextBoxServiceStatus.Inlines.RemoveAt(0);
 
 			if (m_activityWindow != null)

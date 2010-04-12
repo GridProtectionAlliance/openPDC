@@ -231,12 +231,10 @@
 
 using System;
 using System.Windows;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
-using System.Windows.Browser;
 using Microsoft.Maps.MapControl;
+using openPDCManager.Silverlight.Utilities;
+using openPDCManager.Silverlight.ModalDialogs;
+using System.Text;
 
 namespace openPDCManager.Silverlight
 {
@@ -278,6 +276,9 @@ namespace openPDCManager.Silverlight
 
 			this.Credentials = credentialsProvider;
 			this.RootVisual = new MasterLayoutControl();
+
+			//Set default system settings if no settings exist.
+			Common.SetDefaultSystemSettings(false);
         }
         
 		private void Application_Exit(object sender, EventArgs e)
@@ -287,19 +288,28 @@ namespace openPDCManager.Silverlight
         
 		private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            // If the app is running outside of the debugger then report the exception using
-            // the browser's exception mechanism. On IE this will display it a yellow alert 
-            // icon in the status bar and Firefox will display a script error.
-            if (!System.Diagnostics.Debugger.IsAttached)
-            {
+			//// If the app is running outside of the debugger then report the exception using
+			//// the browser's exception mechanism. On IE this will display it a yellow alert 
+			//// icon in the status bar and Firefox will display a script error.
+			//if (!System.Diagnostics.Debugger.IsAttached)
+			//{
 
-                // NOTE: This will allow the application to continue running after an exception has been thrown
-                // but not handled. 
-                // For production applications this error handling should be replaced with something that will 
-                // report the error to the website and stop the application.
-                e.Handled = true;
-                Deployment.Current.Dispatcher.BeginInvoke(delegate { ReportErrorToDOM(e); });
-            }
+			//    // NOTE: This will allow the application to continue running after an exception has been thrown
+			//    // but not handled. 
+			//    // For production applications this error handling should be replaced with something that will 
+			//    // report the error to the website and stop the application.
+			//    e.Handled = true;
+			//    Deployment.Current.Dispatcher.BeginInvoke(delegate { ReportErrorToDOM(e); });
+			//}
+
+			StringBuilder sb = new StringBuilder();
+			sb.AppendLine("Exception Type: " + e.GetType().ToString());
+			sb.AppendLine("Error Message: " + e.ExceptionObject.Message);
+			sb.AppendLine("Stack Trace: " + e.ExceptionObject.StackTrace);
+
+			SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Application Error Occured", SystemMessage = sb.ToString(), UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+			sm.Show();
 		}
 
 		#endregion

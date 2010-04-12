@@ -199,6 +199,9 @@
     <Compile Include="Pages\Manage\Nodes.xaml.cs">
       <DependentUpon>Nodes.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Manage\SystemSettings.xaml.cs">
+      <DependentUpon>SystemSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Manage\VendorDevices.xaml.cs">
       <DependentUpon>VendorDevices.xaml</DependentUpon>
     </Compile>
@@ -211,6 +214,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Common.cs" />
     <Compile Include="Utilities\DefaultButtonService.cs" />
+    <Compile Include="Utilities\IsolatedStorageManager.cs" />
     <Compile Include="Utilities\Message.cs" />
     <Compile Include="Service References\LivePhasorDataServiceProxy\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -355,6 +359,10 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
     <Page Include="Pages\Manage\Nodes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
+    <Page Include="Pages\Manage\SystemSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>

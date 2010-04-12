@@ -1,14 +1,14 @@
 ﻿//*******************************************************************************************************
-//  MasterLayoutControl.xaml.cs - Gbtc
+//  IsolatedStorageManager.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  09/28/2009 - Mehulbhai P. Thakkar
+//  04/08/2010 - Mehulbhai P. Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -229,174 +229,69 @@
 */
 #endregion
 
-using System;
-using System.Net.NetworkInformation;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.UserControls;
-using openPDCManager.Silverlight.Utilities;
+using System.IO.IsolatedStorage;
 
-namespace openPDCManager.Silverlight
+namespace openPDCManager.Silverlight.Utilities
 {
-	public partial class MasterLayoutControl : UserControl
+	public static class IsolatedStorageManager
 	{
-		#region [ Members ]
-
-		const double layoutRootHeight = 900;
-		const double layoutRootWidth = 1200;
-
-		#endregion
-
-		#region [ Constructor ]
-
-		public MasterLayoutControl()
+		/// <summary>
+		/// Save property and value into isolated storage
+		/// </summary>
+		/// <param name="value">value to store</param>
+		/// <param name="name">name of property</param>
+		public static void SaveIntoIsolatedStorage(string name, object value)
 		{
-			InitializeComponent();			
-			
-			App.Current.Host.Content.Resized += new EventHandler(Content_Resized);
-			
-			Loaded += new RoutedEventHandler(MasterLayoutControl_Loaded);
-			NetworkChange.NetworkAddressChanged += new NetworkAddressChangedEventHandler(NetworkChange_NetworkAddressChanged);
-			ButtonChangeMode.Click += new RoutedEventHandler(ButtonChangeMode_Click);
-			UserControlSelectNode.NodeCollectionChanged += new SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);
-			UserControlSelectNode.ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
+			IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
+			//If settings have never been saved, then we have to add appsetting first
+			if (!appSettings.Contains(name))
+				appSettings.Add(name, null);
+						
+			appSettings[name] = value;
+			appSettings.Save();			
 		}
 
-		#endregion
-
-		#region [ Control Event Handlers ]
-
-		void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		public static bool Contains(string name)
 		{
-			if (UserControlSelectNode.ComboboxNode.SelectedItem != null)
-				TextBlockNode.Text = ((Node)UserControlSelectNode.ComboboxNode.SelectedItem).Name;
-				
-				//TextBlockNode.Text = ((KeyValuePair<string, string>)UserControlSelectNode.ComboboxNode.SelectedItem).Value;
-
-			Uri homeUri = new Uri("/Pages/HomePage.xaml", UriKind.Relative);
-			ContentFrame.Navigate(homeUri);			
+			IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
+			return appSettings.Contains(name);
 		}
 
-		void UserControlSelectNode_NodeCollectionChanged(object sender, RoutedEventArgs e)
+		/// <summary>
+		/// Remove property value from isolated storage
+		/// </summary>
+		/// <param name="name">name of property</param>
+		public static void Remove(string name)
 		{
-			(sender as SelectNode).RefreshNodeList();			
-		}
-				
-		void ButtonChangeMode_Click(object sender, RoutedEventArgs e)
-		{		
-            if (!App.Current.IsRunningOutOfBrowser && App.Current.InstallState == InstallState.NotInstalled)
-                App.Current.Install();
-		}
+			IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
-		void XamWebMenuItem_Click(object sender, EventArgs e)
-		{
-			System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration"), "_blank");
+			//If settings have been saved, then we remove 
+			if (appSettings.Contains(name))
+				appSettings.Remove(name);
 		}
 
-		void HyperlinkButtonMonitor_Click(object sender, RoutedEventArgs e)
+		/// <summary>
+		/// Removes all properties stored in isolated storage
+		/// </summary>
+		public static void RemoveAll()
 		{
-			ContentFrame.Navigate(new Uri("/Pages/Monitor.xaml", UriKind.Relative));
+			IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
+			appSettings.Clear();
 		}
 
-		#endregion
-
-		#region [ Page Event Handlers ]
-
-		void MasterLayoutControl_Loaded(object sender, RoutedEventArgs e)
+		/// <summary>
+		/// Retrieve setting that was stored in Isolated Storage
+		/// </summary>
+		/// <param name="name">name of the property to retrieve</param>
+		/// <returns></returns>
+		public static object LoadFromIsolatedStorage(string name)
 		{
-			if (App.Current.IsRunningOutOfBrowser)
+			IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
+			if (appSettings.Contains(name))
 			{
-				TextBlockExecutionMode.Text = "Out of Browser";
-				//Application.Current.Resources["BaseServiceUrl"] = "http://localhost:1068/";
+				return appSettings[name];
 			}
-			else
-			{
-				TextBlockExecutionMode.Text = "In Browser";
-			}
-			if (NetworkInterface.GetIsNetworkAvailable())
-			{
-				TextBlockConnectivity.Text = "Connected (online)";
-				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Cyan);
-			}
-			else
-			{
-				TextBlockConnectivity.Text = "Disconnected (offline)";
-				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Red);
-			}			
+			return null;
 		}
-		
-		void Content_Resized(object sender, EventArgs e)
-		{	
-			ScaleContent(Application.Current.Host.Content.ActualHeight, Application.Current.Host.Content.ActualWidth);
-		}
-
-		void NetworkChange_NetworkAddressChanged(object sender, EventArgs e)
-		{
-			if (NetworkInterface.GetIsNetworkAvailable())
-			{
-				TextBlockConnectivity.Text = "Connected (online)";
-				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Green);
-			}
-			else
-			{
-				TextBlockConnectivity.Text = "Disconnected (offline)";
-				TextBlockConnectivity.Foreground = new SolidColorBrush(Colors.Red);
-			}
-		}
-
-		#endregion
-
-		#region [ Methods ]
-
-		void ScaleContent(double height, double width)
-		{
-			double defaultHeight = IsolatedStorageManager.LoadFromIsolatedStorage("DefaultHeight") == null ? layoutRootHeight : Convert.ToDouble(IsolatedStorageManager.LoadFromIsolatedStorage("DefaultHeight"));
-			double defaultWidth = IsolatedStorageManager.LoadFromIsolatedStorage("DefaultWidth") == null ? layoutRootWidth : Convert.ToDouble(IsolatedStorageManager.LoadFromIsolatedStorage("DefaultWidth"));
-			double minimumHeight = IsolatedStorageManager.LoadFromIsolatedStorage("MinimumHeight") == null ? 600 : Convert.ToDouble(IsolatedStorageManager.LoadFromIsolatedStorage("MinimumHeight"));
-			double minimumWidth = IsolatedStorageManager.LoadFromIsolatedStorage("MinimumWidth") == null ? 800 : Convert.ToDouble(IsolatedStorageManager.LoadFromIsolatedStorage("MinimumWidth"));
-			
-			if (height == 0) height = defaultHeight; //If for some reason, we dont get actual height and width then use default values.
-			if (width == 0) width = defaultWidth;
-
-			//if set to resize with browser then use actual height and width of the browser passed in the method parameters.
-			if (IsolatedStorageManager.LoadFromIsolatedStorage("ResizeWithBrowser") != null && (bool)IsolatedStorageManager.LoadFromIsolatedStorage("ResizeWithBrowser"))
-			{				
-				if (IsolatedStorageManager.LoadFromIsolatedStorage("MaintainAspectRatio") != null && (bool)IsolatedStorageManager.LoadFromIsolatedStorage("MaintainAspectRatio"))
-				{
-					if (height / layoutRootHeight <= width / layoutRootWidth)
-					{
-						if (height < minimumHeight) height = minimumHeight;
-						LayoutRootScale.ScaleX = 0.98 * (height / layoutRootHeight);
-						LayoutRootScale.ScaleY = 0.98 * (height / layoutRootHeight);
-					}
-					else
-					{
-						if (width < minimumWidth) width = minimumWidth;
-						LayoutRootScale.ScaleX = 0.98 * (width / layoutRootWidth);
-						LayoutRootScale.ScaleY = 0.98 * (width / layoutRootWidth);
-					}
-				}
-				else
-				{
-					if (height < minimumHeight) height = minimumHeight;
-					if (width < minimumWidth) width = minimumWidth;
-					LayoutRootScale.ScaleX = 0.98 * (width / layoutRootWidth);
-					LayoutRootScale.ScaleY = 0.98 * (height / layoutRootHeight);
-				}
-			}
-			else	// if set not to resize with browser then, use default height and width to scale
-			{
-				if (defaultWidth < minimumWidth) defaultWidth = minimumWidth;
-				if (defaultHeight < minimumHeight) defaultHeight = minimumHeight;
-			
-				LayoutRootScale.ScaleX = 0.98 * (defaultWidth / layoutRootWidth);
-				LayoutRootScale.ScaleY = 0.98 * (defaultHeight / layoutRootHeight);				
-			}
-		}
-
-		#endregion
-		
 	}
 }
