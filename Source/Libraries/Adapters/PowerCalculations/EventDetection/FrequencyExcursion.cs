@@ -1,18 +1,19 @@
 ﻿//*******************************************************************************************************
-//  LOFTrigger.cs - Gbtc
+//  FrequencyExcursion.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
-//  Description: The project is for Loss of Field protection
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  12/02/2009 - Jian R. Zuo
+//  09/29/2009 - Jian (Ryan) Zuo
 //       Generated original version of source code.
-//  12/16/2009 - Jian R. Zuo
-//       Reading parameters configuration from database   
+//  10/19/2009 - J. Ritchie Carroll
+//       Migrated code to openPDC action adapter type.
+//  04/12/2010 - J. Ritchie Carroll
+//       Further abstracted code for frequency excursion detection.
 //
 //*******************************************************************************************************
 
@@ -236,42 +237,56 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TVA;
 using TVA.Measurements;
 using TVA.PhasorProtocols;
-using TVA.Collections;
 
-namespace EventDetection
+namespace PowerCalculations.EventDetection
 {
     /// <summary>
-    /// Represents an action adapter that implement logic to detect Loss of Field based on Montgomery PMU.
+    /// Defines the type of frequency excursion detected.
     /// </summary>
-    public class LOFTrigger : CalculatedMeasurementBase
+    public enum ExcursionType
+    {
+        /// <summary>
+        /// Generation based frequency excursion.
+        /// </summary>
+        GenerationTrip,
+        /// <summary>
+        /// Load based frequency excursion.
+        /// </summary>
+        LoadTrip
+    }
+
+    /// <summary>
+    /// Represents an algorithm that detects frequency excursions.
+    /// </summary>
+    public class FrequencyExcursion : CalculatedMeasurementBase
     {
         #region [ Members ]
 
         // Fields
-        private double m_PSet;                                     //Threshold of Pset MW: default value -600 mW      
-        private double m_QSet;                                     //Threshold of Qset MVar: default value 200 mVar
-        private double m_QAreaSet;                                 //Threshold of Qarea MVar-sec: default value 500 mVar-sec
-        private double m_VThreshold;                               //Threshold of Voltage: default value 0.95 p.u. or 475 kV
-        private double m_QAreamVar;                                //Calculated Q area value                 
-        private int m_interval;                                 //Interval between adjacent check
-        private long m_count;                                    //Frame count for debug purpose
-        private long m_count1;
-        private long m_count2;
-        MeasurementKey m_MontVoltageMagnitude;
-        MeasurementKey m_MontVoltageAngle;
-        MeasurementKey m_MontCurrentMagnitude;
-        MeasurementKey m_MontCurrentAngle;
-        IMeasurement m_warningSignal;
+        private double m_estimateTriggerThreshold;  // Threshold for detecting abnormal excursion in frequency
+        private int m_analysisWindowSize;           // Analysis Window Size
+        private int m_analysisInterval;             // Analysis Interval
+        private int m_consecutiveDetections;        // Consecutive detections used to determine if the alarm is true or false
+        private double m_powerEstimateRatio;        // Ratio used to calculate the total estimated MW change from frequency 
+        private int m_alarmProhibitCounter;         // Counter to prevent duplicated alarms
+        private int m_alarmProhibitPeriod;          // Period to prevent duplicated alarms
+        private List<double> m_frequencies;         // Frequency measurement values
+        private List<DateTime> m_timeStamps;        // Timestamps of frequencies
+        private int m_minimumValidChannels;         // Minimum frequency values needed to perform a valid calculation
+        private int m_detectedExcursions;           // Number of detected excursions
+        private long m_count;                       // Published frame count
+
+        // Important: Make sure output definition defines points in the following order
+        private enum Output { WarningSignal, FrequencyDelta, TypeOfExcursion, EstimatedSize }
 
         #endregion
 
         #region [ Properties ]
 
         /// <summary>
-        /// Returns the detailed status of the frequency monitor event detector.
+        /// Returns the detailed status of the <see cref="FrequencyExcursion"/> detector.
         /// </summary>
         public override string Status
         {
@@ -279,9 +294,23 @@ namespace EventDetection
             {
                 StringBuilder status = new StringBuilder();
 
-                //status.AppendFormat("                Adpater ID: {0}", ID);
-                //status.AppendLine();
+                status.AppendFormat("Estimate trigger threshold: {0}", m_estimateTriggerThreshold);
+                status.AppendLine();
+                status.AppendFormat("      Analysis window size: {0}", m_analysisWindowSize);
+                status.AppendLine();
+                status.AppendFormat("         Analysis interval: {0}", m_analysisInterval);
+                status.AppendLine();
+                status.AppendFormat("   Detections before alarm: {0}", m_consecutiveDetections);
+                status.AppendLine();
+                status.AppendFormat(" Minimum valid frequencies: {0}", m_minimumValidChannels);
+                status.AppendLine();
+                status.AppendFormat("      Power estimate ratio: {0}MW", m_powerEstimateRatio);
+                status.AppendLine();
+                status.AppendFormat("    Minimum alarm interval: {0} seconds", (int)(m_alarmProhibitPeriod / FramesPerSecond));
+                status.AppendLine();
+
                 status.Append(base.Status);
+
                 return status.ToString();
             }
         }
@@ -291,42 +320,83 @@ namespace EventDetection
         #region [ Methods ]
 
         /// <summary>
-        /// Initializes <see cref="FrequencyMonitor"/>.
+        /// Initializes the <see cref="FrequencyExcursion"/> detector.
         /// </summary>
         public override void Initialize()
         {
             base.Initialize();
 
             Dictionary<string, string> settings = Settings;
+            string setting;
 
-#if DEBUG
-            OnStatusMessage("********In Initialize()***********");
-#endif
+            //  <Parameters paraName="EstimateTriggerThreshold" value="0.0256" description="The threshold of estimation trigger"></Parameters>
+            //  <Parameters paraName="AnalysisWindowSize" value="120" description="The sample size of the analysis window"></Parameters>
+            //  <Parameters paraName="AnalysisInterval" value="30" description="The frame interval between two adjacent frequency testing"></Parameters>
+            //  <Parameters paraName="ConsecutiveDetections" value="2" description="Number of needed consecutive detections before positive alarm"></Parameters>
+            //  <Parameters paraName="MinimumValidChannel" value="3" description="Minimum valid channel for conduction the frequency testing"></Parameters>
+            //  <Parameters paraName="PowerEstimateRatio" value="19530.00" description="The ratio of total amount of generator (load) trip over the frequency excursion"></Parameters>
+            //  <Parameters paraName="MinimumAlarmInterval" value="20" description="Minimum duration between alarms, in whole seconds"></Parameters>
+
             // Load required parameters
-            m_PSet = double.Parse(settings["PSet"]);
-            m_QSet = double.Parse(settings["QSet"]);
-            m_QAreaSet = double.Parse(settings["QAreaSet"]);
-            m_VThreshold = double.Parse(settings["VoltageThreshold"]);
-            m_interval = int.Parse(settings["CalculateInterval"]);
-            m_count = 0;
-            m_count1 = 0;
-            m_count2 = 0;
+            if (settings.TryGetValue("estimateTriggerThreshold", out setting))
+                m_estimateTriggerThreshold = double.Parse(setting);
+            else
+                m_estimateTriggerThreshold = 0.0256D;
 
-            //m_PSet = -600;
-            //m_QSet = 200;
-            //m_QAreaSet = 500;
-            //m_VThreshold = 475000;
-            //m_interval = 30;
+            if (settings.TryGetValue("analysisWindowSize", out setting))
+                m_analysisWindowSize = int.Parse(setting);
+            else
+                m_analysisWindowSize = 4 * FramesPerSecond;
 
-            // Load needed measurement keys from defined InputMeasurementKeys
-            // inputMeasurementKeys={P2:3981;P2:3980;P2:3991;P2:3990}; outputMeasurements={P2:9999}
-            m_MontVoltageMagnitude = InputMeasurementKeys[InputMeasurementKeyTypes.IndexOf(signalType => signalType == SignalType.VPHM)];
-            m_MontVoltageAngle = InputMeasurementKeys[InputMeasurementKeyTypes.IndexOf(signalType => signalType == SignalType.VPHA)];
-            m_MontCurrentMagnitude = InputMeasurementKeys[InputMeasurementKeyTypes.IndexOf(signalType => signalType == SignalType.IPHM)];
-            m_MontCurrentAngle = InputMeasurementKeys[InputMeasurementKeyTypes.IndexOf(signalType => signalType == SignalType.IPHA)];
+            if (settings.TryGetValue("analysisInterval", out setting))
+                m_analysisInterval = int.Parse(setting);
+            else
+                m_analysisInterval = FramesPerSecond;
 
-            // Load warning signal output measurement
-            m_warningSignal = OutputMeasurements[0];
+            if (settings.TryGetValue("consecutiveDetections", out setting))
+                m_consecutiveDetections = int.Parse(setting);
+            else
+                m_consecutiveDetections = 2;
+
+            if (settings.TryGetValue("minimumValidChannels", out setting))
+                m_minimumValidChannels = int.Parse(setting);
+            else
+                m_minimumValidChannels = 3;
+
+            if (settings.TryGetValue("powerEstimateRatio", out setting))
+                m_powerEstimateRatio = double.Parse(setting);
+            else
+                m_powerEstimateRatio = 19530.0D;
+
+            if (settings.TryGetValue("minimumAlarmInterval", out setting))
+                m_alarmProhibitPeriod = int.Parse(setting) * FramesPerSecond;
+            else
+                m_alarmProhibitPeriod = 20 * FramesPerSecond;
+
+            m_frequencies = new List<double>();
+            m_timeStamps = new List<DateTime>();
+
+            // Validate input measurements
+            List<MeasurementKey> validInputMeasurementKeys = new List<MeasurementKey>();
+
+            for (int i = 0; i < InputMeasurementKeys.Length; i++)
+            {
+                if (InputMeasurementKeyTypes[i] == SignalType.FREQ)
+                    validInputMeasurementKeys.Add(InputMeasurementKeys[i]);
+            }
+
+            if (validInputMeasurementKeys.Count == 0)
+                throw new InvalidOperationException("No valid frequency measurements were specified as inputs to the frequency excursion detector.");
+
+            if (validInputMeasurementKeys.Count < m_minimumValidChannels)
+                throw new InvalidOperationException(string.Format("Minimum valid frequency measurements (i.e., \"minimumValidChannels\") for the frequency excursion detector is currently set to {0}, only {1} {2} defined.", m_minimumValidChannels, validInputMeasurementKeys.Count, (validInputMeasurementKeys.Count == 1 ? "was" : "were")));
+
+            // Make sure only frequencies are used as input
+            InputMeasurementKeys = validInputMeasurementKeys.ToArray();
+
+            // Validate output measurements
+            if (OutputMeasurements.Length < Enum.GetValues(typeof(Output)).Length)
+                throw new InvalidOperationException("Not enough output measurements were specified for the frequency excursion detector, expecting measurements for \"Warning Signal Status (0 = Not Signaled, 1 = Signaled)\", \"Frequency Delta\", \"Type of Excursion (0 = Gen Trip, 1 = Load Trip)\" and \"Estimated Size (MW)\" - in this order.");
         }
 
         /// <summary>
@@ -335,89 +405,83 @@ namespace EventDetection
         /// </summary>
         /// <param name="frame"><see cref="IFrame"/> of measurements with the same timestamp that arrived within <see cref="ConcentratorBase.LagTime"/> that are ready for processing.</param>
         /// <param name="index">Index of <see cref="IFrame"/> within a second ranging from zero to <c><see cref="ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
-        /// <remarks>
-        /// If user implemented publication function consistently exceeds available publishing time (i.e., <c>1 / <see cref="ConcentratorBase.FramesPerSecond"/></c> seconds),
-        /// concentration will fall behind. A small amount of this time is required by the <see cref="ConcentratorBase"/> for processing overhead, so actual total time
-        /// available for user function process will always be slightly less than <c>1 / <see cref="ConcentratorBase.FramesPerSecond"/></c> seconds.
-        /// </remarks>
         protected override void PublishFrame(IFrame frame, int index)
         {
-            double voltageMagnitude = 0.0D;
-            double voltageAngle = 0.0D;
-            double currentMagnitude = 0.0D;
-            double currentAngle = 0.0D;
-            double realPower;
-            double reactivePower;
-            double deltaT;
-            IMeasurement measurement;
-            bool warningSignaled = false;
+            MeasurementKey[] inputMeasurements = InputMeasurementKeys;
+            double averageFrequency = double.NaN;
 
+            // Increment frame counter
             m_count++;
-#if DEBUG
-            if (m_count % 60 == 0)
-                OnStatusMessage("{0} events handled...", m_count);
-#endif
-            if ((m_count % m_interval) == 0)
+
+            if (m_alarmProhibitCounter > 0)
+                m_alarmProhibitCounter--;
+
+            // Calculate the average of all the frequencies that arrived in this frame
+            if (frame.Measurements.Count > 0)
+                averageFrequency = frame.Measurements.Select(m => m.Value.AdjustedValue).Average();
+
+            // Track new frequency and its timestamp
+            m_frequencies.Add(averageFrequency);
+            m_timeStamps.Add(frame.Timestamp);
+
+            // Maintain analysis window size
+            while (m_frequencies.Count > m_analysisWindowSize)
             {
-                m_count1 = m_count2;
-                m_count2 = m_count;
+                m_frequencies.RemoveAt(0);
+                m_timeStamps.RemoveAt(0);
+            }
 
-                if (frame.Measurements.TryGetValue(m_MontVoltageMagnitude, out measurement))
-                    voltageMagnitude = measurement.AdjustedValue;                           
-                else
-                    OnProcessException(new InvalidOperationException("Failed to receive voltage magnitude - could not calculate loss of field."));
+            if (m_count % m_analysisInterval == 0 && m_frequencies.Count == m_analysisWindowSize)
+            {
+                double frequency1 = m_frequencies[0];
+                double frequency2 = m_frequencies[m_analysisWindowSize - 1];
+                double frequencyDelta = 0.0D, estimatedSize = 0.0D;
+                ExcursionType typeofExcursion = ExcursionType.GenerationTrip;
+                bool warningSignaled = false;
 
-                if (frame.Measurements.TryGetValue(m_MontVoltageAngle, out measurement))
-                    voltageAngle = measurement.AdjustedValue / 180.00 * Math.PI;
-                else
-                    OnProcessException(new InvalidOperationException("Failed to receive voltage angle - could not calculate loss of field.."));
-
-                if (frame.Measurements.TryGetValue(m_MontCurrentMagnitude, out measurement))
-                    currentMagnitude = measurement.AdjustedValue;
-                else
-                    OnProcessException(new InvalidOperationException("Failed to receive current magnitude - could not calculate loss of field.."));
-
-                if (frame.Measurements.TryGetValue(m_MontCurrentAngle, out measurement))
-                    currentAngle = measurement.AdjustedValue / 180.00 * Math.PI;                       
-                else
-                    OnProcessException(new InvalidOperationException("Failed to receive current angle - could not calculate loss of field.."));
-
-                realPower = 3 * voltageMagnitude * currentMagnitude * Math.Cos(voltageAngle - currentAngle) / 1000000.00;
-                reactivePower = 3 * voltageMagnitude * currentMagnitude * Math.Sin(voltageAngle - currentAngle) / 1000000.00;
-                deltaT = (m_count2 - m_count1) / FramesPerSecond;
-
-                if ((realPower < m_PSet) && (reactivePower > m_QSet))
+                if (!double.IsNaN(frequency1) && !double.IsNaN(frequency2))
                 {
-                    m_QAreamVar = m_QAreamVar + deltaT * (reactivePower - m_QSet);
-                    if ((m_QAreamVar > m_QAreaSet) && (voltageMagnitude < (m_VThreshold / Math.Sqrt(3))))
+                    frequencyDelta = frequency1 - frequency2;
+
+                    if (Math.Abs(frequencyDelta) > m_estimateTriggerThreshold)
+                        m_detectedExcursions++;
+                    else
+                        m_detectedExcursions = 0;
+
+                    if (m_detectedExcursions >= m_consecutiveDetections)
                     {
+                        typeofExcursion = (frequency1 > frequency2 ? ExcursionType.GenerationTrip : ExcursionType.LoadTrip);
+                        estimatedSize = Math.Abs(frequencyDelta) * m_powerEstimateRatio;
+
+                        // Display frequency excursion detection warning
+                        if (m_alarmProhibitCounter == 0)
+                        {
+                            OutputFrequencyWarning(m_timeStamps[0], frequencyDelta, typeofExcursion, estimatedSize);
+                            m_alarmProhibitCounter = m_alarmProhibitPeriod;
+                        }
+
                         warningSignaled = true;
-                        OutputLOFWarning(realPower, reactivePower, m_QAreamVar);
                     }
                 }
-                else
-                    m_QAreamVar = 0;
-#if DEBUG
-                OnStatusMessage("In ProcessFrames: MontVoltageMagnitude is {0}", voltageMagnitude);
-                OnStatusMessage("In ProcessFrames: MontVoltageAngle is {0}", voltageAngle);
-                OnStatusMessage("In ProcessFrames: MontCurrentMagnitude is {0}", currentMagnitude);
-                OnStatusMessage("In ProcessFrames: MontCurrentAngle is {0}", currentAngle);
-                OnStatusMessage("In ProcessFrames: RealPower is {0};ReactivePower is {1}; DeltaT is {2}", realPower, reactivePower, deltaT);
-                OnStatusMessage("In ProcessFrames: m_QAreamVar is {0}", m_QAreamVar);
-#endif
 
-                // Expose warning signal value
-                OnNewMeasurements(new IMeasurement[] {Measurement.Clone(m_warningSignal, warningSignaled ? 1.0D : 0.0D, frame.Timestamp)});
+                // Expose output measurement values
+                IMeasurement[] outputMeasurements = OutputMeasurements;
+
+                OnNewMeasurements(new IMeasurement[]
+                { 
+                    Measurement.Clone(outputMeasurements[(int)Output.WarningSignal], warningSignaled ? 1.0D : 0.0D, frame.Timestamp),
+                    Measurement.Clone(outputMeasurements[(int)Output.FrequencyDelta], frequencyDelta, frame.Timestamp),
+                    Measurement.Clone(outputMeasurements[(int)Output.TypeOfExcursion], (int)typeofExcursion, frame.Timestamp),
+                    Measurement.Clone(outputMeasurements[(int)Output.EstimatedSize], estimatedSize, frame.Timestamp)
+                });
             }
         }
 
-        private void OutputLOFWarning (double realPower, double reactivePower, double QAreamVar)
+        private void OutputFrequencyWarning(DateTime timestamp, double delta, ExcursionType typeOfExcursion, double totalAmount)
         {
-            OnStatusMessage("************** LOF Warning!!!!!*************");
-            OnStatusMessage (string.Format ("The real power is {0}:",realPower ));
-            OnStatusMessage (string.Format ("The reactive power is {0}:",reactivePower));
-            OnStatusMessage(string.Format("The Q Area is {0}:", QAreamVar));
+            OnStatusMessage("WARNING: Frequency excursion detected!\r\n              Time = {0}\r\n             Delta = {1}\r\n              Type = {2}\r\n    Estimated Size = {3}MW\r\n", timestamp.ToString("dd-MMM-yyyy HH:mm:ss.fff"), delta, typeOfExcursion, totalAmount.ToString("0.00"));
         }
+
         #endregion
     }
 }

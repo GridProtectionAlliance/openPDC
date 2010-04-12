@@ -17,9 +17,9 @@ using System.Security.Permissions;
 #else
 [assembly: AssemblyConfiguration("Release Build")]
 #endif
-[assembly: AssemblyDefaultAlias("EventDetection")]
-[assembly: AssemblyDescription("Event detection output adapters.")]
-[assembly: AssemblyTitle("EventDetection")]
+[assembly: AssemblyDefaultAlias("PowerCalculations")]
+[assembly: AssemblyDescription("Power calculation adapters.")]
+[assembly: AssemblyTitle("PowerCalculations")]
 
 // Other configuration attributes.
 [assembly: CLSCompliant(false)]

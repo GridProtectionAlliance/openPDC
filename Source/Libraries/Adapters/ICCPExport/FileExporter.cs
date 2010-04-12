@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  MeasurementExporter.cs - Gbtc, ICCP data export module
+//  FileExporter.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -18,6 +18,7 @@
 //      Add default value to m_exportInterval avoid "Attempted to divide by zero" exception
 //  02/01/2010 - Jian R. Zuo
 //      Change "return Status.ToString();" to "return status.ToString();"
+//
 //*******************************************************************************************************
 
 #region [ TVA Open Source Agreement ]
@@ -438,7 +439,7 @@ namespace ICCPExport
                 //   B) Timestamp falls within first frame of data in the second
                 //   C) This is a defined input measurement for this adapter
                 bool sort = ((DateTime)timestamp).Second % m_exportInterval == 0 &&
-                        timestamp.DistanceBeyondSecond() < (TicksPerFrame/2) &&
+                        timestamp.DistanceBeyondSecond() < (TicksPerFrame / 2) &&
                         IsInputMeasurement(measurement.Key);
 
                 if (sort)

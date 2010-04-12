@@ -8,16 +8,16 @@
     <ProjectGuid>{B74CF4DA-2972-489B-AF08-419560EE57EF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EventDetection</RootNamespace>
-    <AssemblyName>EventDetection</AssemblyName>
+    <RootNamespace>PowerCalculations</RootNamespace>
+    <AssemblyName>PowerCalculations</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\openPDC.snk</AssemblyOriginatorKeyFile>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\..\openPDC.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,9 +55,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FrequencyMonitor.cs" />
-    <Compile Include="LOFTrigger.cs" />
+    <Compile Include="AverageFrequency.cs" />
+    <Compile Include="EventDetection\FrequencyExcursion.cs" />
+    <Compile Include="EventDetection\LossOfField.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReferenceAngle.cs" />
+    <Compile Include="ReferenceMagnitude.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj">
@@ -74,7 +77,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>COPY "$(TargetPath)" "$(OutDir)..\Applications\openPDC\$(TargetFileName)"
-COPY "$(TargetDir)EventDetection.dll" ""$(OutDir)..\Applications\openPDC\EventDetection.dll"</PostBuildEvent>
+    <PostBuildEvent>COPY "$(TargetPath)" "$(OutDir)..\Applications\openPDC\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
