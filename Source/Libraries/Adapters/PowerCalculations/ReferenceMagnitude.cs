@@ -12,6 +12,8 @@
 //       Initial version of source generated
 //  12/23/2009 - Jian R. Zuo
 //       Converted code to C#;
+//  04/12/2010 - J. Ritchie Carroll
+//       Performed full code review, optimization and further abstracted code for magnitude calculation.
 //
 //*******************************************************************************************************
 
@@ -255,7 +257,7 @@ namespace PowerCalculations
         #region [ Properties ]
 
         /// <summary>
-        /// Returns the detailed status of the <see cref="ReferenceMagnitude"/>.
+        /// Returns the detailed status of the <see cref="ReferenceMagnitude"/> calculator.
         /// </summary>
         public override string Status
         {
@@ -307,7 +309,7 @@ namespace PowerCalculations
 
             // Validate output measurements
             if (OutputMeasurements.Length < 1)
-                throw new InvalidOperationException("An output measurement was not specified for the reference magnitudes calculator - one measurement is expected to represent the \"Calculated Reference Magnitude\" value.");
+                throw new InvalidOperationException("An output measurement was not specified for the reference magnitude calculator - one measurement is expected to represent the \"Calculated Reference Magnitude\" value.");
         }
 
         /// <summary>

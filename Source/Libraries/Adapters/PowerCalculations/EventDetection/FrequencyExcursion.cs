@@ -13,7 +13,7 @@
 //  10/19/2009 - J. Ritchie Carroll
 //       Migrated code to openPDC action adapter type.
 //  04/12/2010 - J. Ritchie Carroll
-//       Further abstracted code for frequency excursion detection.
+//       Performed full code review, optimization and further abstracted code for excursion detection.
 //
 //*******************************************************************************************************
 

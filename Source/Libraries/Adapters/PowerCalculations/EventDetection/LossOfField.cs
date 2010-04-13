@@ -14,7 +14,7 @@
 //  12/16/2009 - Jian R. Zuo
 //       Reading parameters configuration from database
 //  04/12/2010 - J. Ritchie Carroll
-//       Further abstracted code for LOF detection.
+//       Performed full code review, optimization and further abstracted code for LOF detection.
 //
 //*******************************************************************************************************
 
@@ -277,7 +277,7 @@ namespace PowerCalculations.EventDetection
         #region [ Properties ]
 
         /// <summary>
-        /// Returns the detailed status of the <see cref="LossOfField"/>.
+        /// Returns the detailed status of the <see cref="LossOfField"/> detector.
         /// </summary>
         public override string Status
         {
@@ -379,6 +379,9 @@ namespace PowerCalculations.EventDetection
 
             m_currentAngle = InputMeasurementKeys[index];
 
+            // Make sure only these phasor measurements are used as input
+            InputMeasurementKeys = new MeasurementKey[] { m_voltageMagnitude, m_voltageAngle, m_currentMagnitude, m_currentAngle };
+
             // Validate output measurements
             if (OutputMeasurements.Length < Enum.GetValues(typeof(Output)).Length)
                 throw new InvalidOperationException("Not enough output measurements were specified for the loss of field detector, expecting measurements for \"Warning Signal Status (0 = Not Signaled, 1 = Signaled)\", \"Real Power\", \"Reactive Power\" and \"Q-Area Value\" - in this order.");
@@ -411,24 +414,24 @@ namespace PowerCalculations.EventDetection
                 m_count2 = m_count;
 
                 if (frame.Measurements.TryGetValue(m_voltageMagnitude, out measurement))
-                    voltageMagnitude = measurement.AdjustedValue;                           
+                    voltageMagnitude = measurement.AdjustedValue;
                 else
-                    OnProcessException(new InvalidOperationException("Failed to receive voltage magnitude - could not calculate loss of field."));
+                    return;
 
                 if (frame.Measurements.TryGetValue(m_voltageAngle, out measurement))
                     voltageAngle = Angle.FromDegrees(measurement.AdjustedValue);
                 else
-                    OnProcessException(new InvalidOperationException("Failed to receive voltage angle - could not calculate loss of field."));
+                    return;
 
                 if (frame.Measurements.TryGetValue(m_currentMagnitude, out measurement))
                     currentMagnitude = measurement.AdjustedValue;
                 else
-                    OnProcessException(new InvalidOperationException("Failed to receive current magnitude - could not calculate loss of field."));
+                    return;
 
                 if (frame.Measurements.TryGetValue(m_currentAngle, out measurement))
                     currentAngle = Angle.FromDegrees(measurement.AdjustedValue);
                 else
-                    OnProcessException(new InvalidOperationException("Failed to receive current angle - could not calculate loss of field."));
+                    return;
 
                 realPower = 3 * voltageMagnitude * currentMagnitude * Math.Cos(voltageAngle - currentAngle) / SI.Mega;
                 reactivePower = 3 * voltageMagnitude * currentMagnitude * Math.Sin(voltageAngle - currentAngle) / SI.Mega;

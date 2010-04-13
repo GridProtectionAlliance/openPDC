@@ -1,6 +1,7 @@
 ﻿//*******************************************************************************************************
-//  AverageFrequency.cs - Gbtc
-//
+//  PowerStability.cs - Gbtc
+//  
+//  Calculate the Power Deviation from Cumberland. The VB.net version is developed by James. Ritchie Carroll
 //  Tennessee Valley Authority, 2009
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
@@ -8,12 +9,14 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  11/22/2006 - J. Ritchie Carroll
-//       Initial version of source generated
-//  12/24/2009 - Jian R. Zuo
-//       Converted code to C#
+//  11/08/2006 - J. Ritchie Carroll
+//      Initial version of source generated
+//  05/27/2008 - J. Ritchie Carroll
+//       Added Montgomery line to power calculation
+//  12/22/2009 - Jian R. Zuo
+//       Conveted code to C#;
 //  04/12/2010 - J. Ritchie Carroll
-//       Performed full code review, optimization and further abstracted code for average calculation.
+//       Performed full code review, optimization and further abstracted code for stability calculator.
 //
 //*******************************************************************************************************
 
@@ -235,146 +238,236 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using TVA;
+using TVA.Collections;
 using TVA.Measurements;
+using TVA.Measurements.Routing;
+using TVA.NumericalAnalysis;
 using TVA.PhasorProtocols;
+using TVA.Units;
 
 namespace PowerCalculations
 {
     /// <summary>
-    /// Calculates a real-time average frequency reporting the average, maximum and minimum values.
+    /// Represents an algorithm that calculates power and stability from a synchrophasor device.
     /// </summary>
-    public class AverageFrequency : CalculatedMeasurementBase
+    /// <remarks>
+    /// <para>
+    /// This algorithm calculates power and its standard deviation in real-time that can be used to
+    /// determine if there is an oscillatory signature in the power output.
+    /// </para>
+    /// <para>
+    /// If multiple voltage phasors are provided as inputs to this algorithm, then they are assumed to be
+    /// redundant values on the same bus, the first energized value will be the voltage phasor that is
+    /// used in the calculation.<br/>
+    /// If multiple current phasors are provided as inputs to this algorithm, then they are assumed to be
+    /// cumulative inputs representing the desired power output summation of the generation source.
+    /// </para>
+    /// <para>
+    /// Individual phase angle and magnitude phasor elements are expected to be defined consecutively.
+    /// That is the definition order of angles and magnitudes must match so that the angle / magnitude
+    /// pair can be matched up appropriately. For example: angle1, angle2, angle3, mag1, mag2, mag3.
+    /// </para>
+    /// </remarks>
+    public class PowerStability : CalculatedMeasurementBase
     {
         #region [ Members ]
 
-        // Constants
-        private const double LoFrequency = 57.0D;
-        private const double HiFrequency = 62.0D;
-
         // Fields
-        private double m_averageFrequency;
-        private double m_maximumFrequency;
-        private double m_minimumFrequency;
+        private int m_minimumSamples;
+        private double m_energizedThreshold;
+        private List<double> m_powerDataSample;
+        private double m_lastStdev;
+        private MeasurementKey[] m_voltageAngles;
+        private MeasurementKey[] m_voltageMagnitudes;
+        private MeasurementKey[] m_currentAngles;
+        private MeasurementKey[] m_currentMagnitudes;
 
         // Important: Make sure output definition defines points in the following order
-        private enum Output { Average, Maximum, Minimum }
+        private enum Output { Power, StDev }
 
         #endregion
 
         #region [ Properties ]
 
         /// <summary>
-        /// Returns the detailed status of the <see cref="AverageFrequency"/> calculator.
+        /// Returns the detailed status of the <see cref="PowerStability"/> monitor.
         /// </summary>
         public override string Status
         {
             get
             {
+                const int ValuesToShow = 3;
+                
                 StringBuilder status = new StringBuilder();
 
-                status.Append("     Last average frequency: ");
-                status.Append(m_averageFrequency);
+                status.AppendFormat("            Data sample size: {0} seconds", (int)(m_minimumSamples / FramesPerSecond));
                 status.AppendLine();
-                status.Append("     Last maximum frequency:");
-                status.Append(m_maximumFrequency);
+                status.AppendFormat("     Energized bus threshold: {0} volts", m_energizedThreshold.ToString("0.00"));
                 status.AppendLine();
-                status.Append("     Last minimum frequency:");
-                status.Append(m_minimumFrequency);
+                status.AppendFormat("       Total voltage phasors: {0}", m_voltageMagnitudes.Length);
+                status.AppendLine();
+                status.AppendFormat("       Total current phasors: {0}", m_currentMagnitudes.Length);
+                status.AppendLine();
+                status.Append("           Last power values: ");
+                
+                lock (m_powerDataSample)
+                {
+                    // Display last several values
+                    if (m_powerDataSample.Count > ValuesToShow)
+                        status.Append(m_powerDataSample.GetRange(m_powerDataSample.Count - ValuesToShow - 1, ValuesToShow).Select(v => v.ToString("0.00MW")).ToDelimitedString(", "));
+                    else
+                        status.Append("Not enough values calculated yet...");
+                }
+
+                status.AppendLine();
+                status.AppendFormat("       Latest stdev of power: {0}", m_lastStdev);
                 status.AppendLine();
                 status.Append(base.Status);
 
-                return status.ToString ();
+                return status.ToString();
             }
         }
+
         #endregion
 
         #region [ Methods ]
 
         /// <summary>
-        /// Initializes the <see cref="AverageFrequency"/> calculator.
+        /// Initializes the <see cref="PowerStability"/> monitor.
         /// </summary>
         public override void Initialize()
         {
             base.Initialize();
 
-            // Validate input measurements
-            List<MeasurementKey> validInputMeasurementKeys = new List<MeasurementKey>();
+            Dictionary<string, string> settings = Settings;
+            string setting;
 
-            for (int i = 0; i < InputMeasurementKeys.Length; i++)
-            {
-                if (InputMeasurementKeyTypes[i] == SignalType.FREQ)
-                    validInputMeasurementKeys.Add(InputMeasurementKeys[i]);
-            }
+            // Load parameters
+            if (settings.TryGetValue("sampleSize", out setting))            // Data sample size to monitor, in seconds
+                m_minimumSamples = int.Parse(setting) * FramesPerSecond;
+            else
+                m_minimumSamples = 15 * FramesPerSecond;
 
-            if (validInputMeasurementKeys.Count == 0)
-                throw new InvalidOperationException("No valid frequency measurements were specified as inputs to the average frequency calculator.");
+            if (settings.TryGetValue("energizedThreshold", out setting))    // Energized bus threshold, in volts, recommended value
+                m_energizedThreshold = double.Parse(setting);               // is 20% of nominal line-to-neutral voltage
+            else
+                m_energizedThreshold = 58000.0D;
 
-            // Make sure only frequencies are used as input
-            InputMeasurementKeys = validInputMeasurementKeys.ToArray();
+            // Load needed phase angle and magnitude measurement keys from defined InputMeasurementKeys
+            m_voltageAngles = InputMeasurementKeys.Where((key, index) => InputMeasurementKeyTypes[index] == SignalType.VPHA).ToArray();
+            m_voltageMagnitudes = InputMeasurementKeys.Where((key, index) => InputMeasurementKeyTypes[index] == SignalType.VPHM).ToArray();
+            m_currentAngles = InputMeasurementKeys.Where((key, index) => InputMeasurementKeyTypes[index] == SignalType.IPHA).ToArray();
+            m_currentMagnitudes = InputMeasurementKeys.Where((key, index) => InputMeasurementKeyTypes[index] == SignalType.IPHM).ToArray();
+
+            if (m_voltageAngles.Length < 1)
+                throw new InvalidOperationException("No voltage angle input measurement keys were not found - at least one voltage angle input measurement is required for the power stability monitor.");
+
+            if (m_voltageMagnitudes.Length < 1)
+                throw new InvalidOperationException("No voltage magnitude input measurement keys were not found - at least one voltage magnitude input measurement is required for the power stability monitor.");
+
+            if (m_currentAngles.Length < 1)
+                throw new InvalidOperationException("No current angle input measurement keys were not found - at least one current angle input measurement is required for the power stability monitor.");
+
+            if (m_currentMagnitudes.Length < 1)
+                throw new InvalidOperationException("No current magnitude input measurement keys were not found - at least one current magnitude input measurement is required for the power stability monitor.");
+
+            if (m_voltageAngles.Length != m_voltageMagnitudes.Length)
+                throw new InvalidOperationException("A different number of voltage magnitude and angle input measurement keys were supplied - the angles and magnitudes must be supplied in pairs, i.e., one voltage magnitude input measurement must be supplied for each voltage angle input measurement in a consecutive sequence (e.g., VA1, VM1, VA2, VM2, etc.)");
+
+            if (m_currentAngles.Length != m_currentMagnitudes.Length)
+                throw new InvalidOperationException("A different number of current magnitude and angle input measurement keys were supplied - the angles and magnitudes must be supplied in pairs, i.e., one current magnitude input measurement must be supplied for each current angle input measurement in a consecutive sequence (e.g., IA1, IM1, IA2, IM2, etc.)");
+
+            // Make sure only these phasor measurements are used as input
+            InputMeasurementKeys = m_voltageAngles.Concat(m_voltageMagnitudes).Concat(m_currentAngles).Concat(m_currentMagnitudes).ToArray();
 
             // Validate output measurements
             if (OutputMeasurements.Length < Enum.GetValues(typeof(Output)).Length)
-                throw new InvalidOperationException("Not enough output measurements were specified for the average frequency calculator, expecting measurements for \"Average\", \"Maximum\", and \"Minimum\" frequencies - in this order.");
+                throw new InvalidOperationException("Not enough output measurements were specified for the power stability monitor, expecting measurements for the \"Calculated Power\", and the \"Standard Deviation of Power\" - in this order.");
+
+            m_powerDataSample = new List<double>();            
         }
-        
+
         /// <summary>
-        /// Calculates the average frequency for all frequencies that have reported in the specified lag time.
+        /// Publishes the <see cref="IFrame"/> of time-aligned collection of <see cref="IMeasurement"/> values that arrived within the
+        /// adapter's defined <see cref="ConcentratorBase.LagTime"/>.
         /// </summary>
-        /// <param name="frame">Single frame of measurement data within a one second sample.</param>
-        /// <param name="index">Index of frame within the one second sample.</param>
+        /// <param name="frame"><see cref="IFrame"/> of measurements with the same timestamp that arrived within <see cref="ConcentratorBase.LagTime"/> that are ready for processing.</param>
+        /// <param name="index">Index of <see cref="IFrame"/> within a second ranging from zero to <c><see cref="ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
         protected override void PublishFrame(IFrame frame, int index)
         {
-            if (frame.Measurements.Count > 0)
-            {
-                double frequency;
-                double frequencyTotal;
-                double maximumFrequency = LoFrequency;
-                double minimumFrequency = HiFrequency;
-                int total;
-                
-                frequencyTotal = 0.0D;
-                total = 0;
-                
-                foreach (IMeasurement measurement in frame.Measurements.Values)
-                {
-                    frequency = measurement.AdjustedValue;
-                    
-                    // Validate frequency
-                    if (frequency > LoFrequency && frequency < HiFrequency)
-                    {
-                        frequencyTotal += frequency;
-                        
-                        if (frequency > maximumFrequency)
-                            maximumFrequency = frequency;
-                        
-                        if (frequency < minimumFrequency)
-                            minimumFrequency = frequency;
+            IMeasurement magnitude, angle;
+            double voltageMagnitude = double.NaN, voltageAngle = double.NaN, power = 0.0D;
+            int i;
 
-                        total++;
+            IDictionary<MeasurementKey, IMeasurement> measurements = frame.Measurements;
+
+            // Get first voltage magnitude and angle value pair that is above the energized threshold
+            for (i = 0; i < m_voltageMagnitudes.Length; i++)
+            {
+                if (measurements.TryGetValue(m_voltageMagnitudes[i], out magnitude) && measurements.TryGetValue(m_voltageAngles[i], out angle))
+                {
+                    if (magnitude.AdjustedValue > m_energizedThreshold)
+                    {
+                        voltageMagnitude = magnitude.AdjustedValue;
+                        voltageAngle = angle.AdjustedValue;
+                        break;
                     }
                 }
+            }
 
-                if (total > 0)
+            // Exit if bus voltage measurements were not available for calculation
+            if (double.IsNaN(voltageMagnitude))
+                return;
+            
+            // Calculate the sum of the current phasors
+            for (i = 0; i < m_currentMagnitudes.Length; i++)
+            {
+                // Retrieve current magnitude and angle measurements as consecutive pairs
+                if (measurements.TryGetValue(m_currentMagnitudes[i], out magnitude) && measurements.TryGetValue(m_currentAngles[i], out angle))
+                    power += magnitude.AdjustedValue * Math.Cos(Angle.FromDegrees(angle.AdjustedValue - voltageAngle));
+                else
+                    return; // Exit if current measurements were not available for calculation
+            }
+
+            // Apply bus voltage and convert to 3-phase megawatts
+            power = power * voltageMagnitude / (SI.Mega / 3.0D);
+            
+            // Add latest calculated power to data sample
+            lock (m_powerDataSample)
+            {
+                m_powerDataSample.Add(power);
+                
+                // Maintain sample size
+                while (m_powerDataSample.Count > m_minimumSamples)
+                    m_powerDataSample.RemoveAt(0);
+            }
+
+            IMeasurement[] outputMeasurements = OutputMeasurements;
+            Measurement powerMeasurement = Measurement.Clone(outputMeasurements[(int)Output.Power], power, frame.Timestamp);
+
+            // Check to see if the needed number of samples are available to begin producing the standard deviation output measurement
+            if (m_powerDataSample.Count >= m_minimumSamples)
+            {
+                Measurement stdevMeasurement = Measurement.Clone(outputMeasurements[(int)Output.StDev], frame.Timestamp);
+
+                lock (m_powerDataSample)
                 {
-                    m_averageFrequency = (frequencyTotal / total);
-                    m_maximumFrequency = maximumFrequency;
-                    m_minimumFrequency = minimumFrequency;
+                    stdevMeasurement.Value = m_powerDataSample.StandardDeviation();
                 }
 
                 // Provide calculated measurements for external consumption
-                IMeasurement[] outputMeasurements = OutputMeasurements;
-
-                OnNewMeasurements(new IMeasurement[]{
-                    Measurement.Clone(outputMeasurements[(int)Output.Average], m_averageFrequency, frame.Timestamp),
-                    Measurement.Clone(outputMeasurements[(int)Output.Maximum], m_maximumFrequency, frame.Timestamp),
-                    Measurement.Clone(outputMeasurements[(int)Output.Minimum], m_minimumFrequency, frame.Timestamp)});
+                OnNewMeasurements(new IMeasurement[] { powerMeasurement, stdevMeasurement });
+                
+                // Track last standard deviation...
+                m_lastStdev = stdevMeasurement.AdjustedValue;
             }
-            else
+            else if (power > 0.0D)
             {
-                m_averageFrequency = 0.0D;
-                m_maximumFrequency = 0.0D;
-                m_minimumFrequency = 0.0D;
+                // If not, we can still start publishing power calculation as soon as we have one...
+                OnNewMeasurements(new IMeasurement[] { powerMeasurement });
             }
         }
 

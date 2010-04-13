@@ -21,7 +21,7 @@
 //  12/28/2009 - Jian R. Zuo
 //       Include System.Linq and use "Average" extension function.
 //  04/12/2010 - J. Ritchie Carroll
-//       Further abstracted code for average calculation.
+//       Performed full code review, optimization and further abstracted code for average calculation.
 //
 //*******************************************************************************************************
 
@@ -272,7 +272,7 @@ namespace PowerCalculations
         #region [ Properties ]
 
         /// <summary>
-        /// Returns the detailed status of the <see cref="ReferenceAngle"/>.
+        /// Returns the detailed status of the <see cref="ReferenceAngle"/> calculator.
         /// </summary>
         public override string Status
         {
