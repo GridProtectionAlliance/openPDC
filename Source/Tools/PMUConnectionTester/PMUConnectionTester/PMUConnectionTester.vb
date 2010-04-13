@@ -425,6 +425,7 @@ Public Class PMUConnectionTester
         InitializeChart()
         ComboBoxProtocols.SelectedIndex = 0
         ComboBoxCommands.SelectedIndex = 0
+        ComboBoxByteEncodingDisplayFormats.SelectedIndex = 0
         GroupBoxConfigurationFrame.Expanded = False
         GroupBoxHeaderFrame.Expanded = False
         GroupBoxStatus.Expanded = False
