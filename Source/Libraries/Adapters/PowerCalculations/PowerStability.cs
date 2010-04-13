@@ -268,7 +268,7 @@ namespace PowerCalculations
     /// <para>
     /// Individual phase angle and magnitude phasor elements are expected to be defined consecutively.
     /// That is the definition order of angles and magnitudes must match so that the angle / magnitude
-    /// pair can be matched up appropriately. For example: angle1, angle2, angle3, mag1, mag2, mag3.
+    /// pair can be matched up appropriately. For example: angle1;mag1;  angle2;mag2;  angle3;mag3.
     /// </para>
     /// </remarks>
     public class PowerStability : CalculatedMeasurementBase
@@ -375,10 +375,10 @@ namespace PowerCalculations
                 throw new InvalidOperationException("No current magnitude input measurement keys were not found - at least one current magnitude input measurement is required for the power stability monitor.");
 
             if (m_voltageAngles.Length != m_voltageMagnitudes.Length)
-                throw new InvalidOperationException("A different number of voltage magnitude and angle input measurement keys were supplied - the angles and magnitudes must be supplied in pairs, i.e., one voltage magnitude input measurement must be supplied for each voltage angle input measurement in a consecutive sequence (e.g., VA1, VM1, VA2, VM2, etc.)");
+                throw new InvalidOperationException("A different number of voltage magnitude and angle input measurement keys were supplied - the angles and magnitudes must be supplied in pairs, i.e., one voltage magnitude input measurement must be supplied for each voltage angle input measurement in a consecutive sequence (e.g., VA1;VM1;  VA2;VM2; ... VAn;VMn)");
 
             if (m_currentAngles.Length != m_currentMagnitudes.Length)
-                throw new InvalidOperationException("A different number of current magnitude and angle input measurement keys were supplied - the angles and magnitudes must be supplied in pairs, i.e., one current magnitude input measurement must be supplied for each current angle input measurement in a consecutive sequence (e.g., IA1, IM1, IA2, IM2, etc.)");
+                throw new InvalidOperationException("A different number of current magnitude and angle input measurement keys were supplied - the angles and magnitudes must be supplied in pairs, i.e., one current magnitude input measurement must be supplied for each current angle input measurement in a consecutive sequence (e.g., IA1;IM1;  IA2;IM2; ... IAn;IMn)");
 
             // Make sure only these phasor measurements are used as input
             InputMeasurementKeys = m_voltageAngles.Concat(m_voltageMagnitudes).Concat(m_currentAngles).Concat(m_currentMagnitudes).ToArray();
