@@ -265,8 +265,7 @@ namespace PowerCalculations
             {
                 StringBuilder status = new StringBuilder();
 
-                status.Append(" Last calculated magnitude:");
-                status.Append(m_referenceMagnitude);
+                status.AppendFormat(" Last calculated magnitude: {0}", m_referenceMagnitude);
                 status.AppendLine();
                 status.Append(base.Status);
 

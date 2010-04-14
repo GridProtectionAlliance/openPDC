@@ -303,15 +303,15 @@ namespace PowerCalculations
                 
                 StringBuilder status = new StringBuilder();
 
-                status.AppendFormat("            Data sample size: {0} seconds", (int)(m_minimumSamples / FramesPerSecond));
+                status.AppendFormat("          Data sample size: {0} seconds", (int)(m_minimumSamples / FramesPerSecond));
                 status.AppendLine();
-                status.AppendFormat("     Energized bus threshold: {0} volts", m_energizedThreshold.ToString("0.00"));
+                status.AppendFormat("   Energized bus threshold: {0} volts", m_energizedThreshold.ToString("0.00"));
                 status.AppendLine();
-                status.AppendFormat("       Total voltage phasors: {0}", m_voltageMagnitudes.Length);
+                status.AppendFormat("     Total voltage phasors: {0}", m_voltageMagnitudes.Length);
                 status.AppendLine();
-                status.AppendFormat("       Total current phasors: {0}", m_currentMagnitudes.Length);
+                status.AppendFormat("     Total current phasors: {0}", m_currentMagnitudes.Length);
                 status.AppendLine();
-                status.Append("           Last power values: ");
+                status.Append("         Last power values: ");
                 
                 lock (m_powerDataSample)
                 {
@@ -323,7 +323,7 @@ namespace PowerCalculations
                 }
 
                 status.AppendLine();
-                status.AppendFormat("       Latest stdev of power: {0}", m_lastStdev);
+                status.AppendFormat("     Latest stdev of power: {0}", m_lastStdev);
                 status.AppendLine();
                 status.Append(base.Status);
 
@@ -398,11 +398,10 @@ namespace PowerCalculations
         /// <param name="index">Index of <see cref="IFrame"/> within a second ranging from zero to <c><see cref="ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
         protected override void PublishFrame(IFrame frame, int index)
         {
+            IDictionary<MeasurementKey, IMeasurement> measurements = frame.Measurements;
             IMeasurement magnitude, angle;
             double voltageMagnitude = double.NaN, voltageAngle = double.NaN, power = 0.0D;
             int i;
-
-            IDictionary<MeasurementKey, IMeasurement> measurements = frame.Measurements;
 
             // Get first voltage magnitude and angle value pair that is above the energized threshold
             for (i = 0; i < m_voltageMagnitudes.Length; i++)

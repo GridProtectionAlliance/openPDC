@@ -285,17 +285,17 @@ namespace PowerCalculations.EventDetection
             {
                 StringBuilder status = new StringBuilder();
 
-                status.AppendFormat("     Calculated Q-area value: {0}", m_qAreamVar);
+                status.AppendFormat("   Calculated Q-area value: {0}", m_qAreamVar);
                 status.AppendLine();
-                status.AppendFormat("                 P-Set value: {0}", m_pSet);
+                status.AppendFormat("               P-Set value: {0}", m_pSet);
                 status.AppendLine();
-                status.AppendFormat("                 Q-Set value: {0}", m_qSet);
+                status.AppendFormat("               Q-Set value: {0}", m_qSet);
                 status.AppendLine();
-                status.AppendFormat("            Q-Area set value: {0}", m_qAreaSet);
+                status.AppendFormat("          Q-Area set value: {0}", m_qAreaSet);
                 status.AppendLine();
-                status.AppendFormat("           Voltage threshold: {0}", m_voltageThreshold);
+                status.AppendFormat("         Voltage threshold: {0}", m_voltageThreshold);
                 status.AppendLine();
-                status.AppendFormat("        Calculation interval: {0}", m_analysisInterval);
+                status.AppendFormat("      Calculation interval: {0}", m_analysisInterval);
                 status.AppendLine();
                 
                 status.Append(base.Status);
@@ -395,40 +395,41 @@ namespace PowerCalculations.EventDetection
         /// <param name="index">Index of <see cref="IFrame"/> within a second ranging from zero to <c><see cref="ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
         protected override void PublishFrame(IFrame frame, int index)
         {
-            double voltageMagnitude = 0.0D;
-            double voltageAngle = 0.0D;
-            double currentMagnitude = 0.0D;
-            double currentAngle = 0.0D;
-            double realPower;
-            double reactivePower;
-            double deltaT;
-            IMeasurement measurement;
-            bool warningSignaled = false;
-
             // Increment frame counter
             m_count++;
 
             if (m_count % m_analysisInterval == 0)
             {
+                IDictionary<MeasurementKey, IMeasurement> measurements = frame.Measurements;
+                IMeasurement measurement;
+                double voltageMagnitude = 0.0D;
+                double voltageAngle = 0.0D;
+                double currentMagnitude = 0.0D;
+                double currentAngle = 0.0D;
+                double realPower;
+                double reactivePower;
+                double deltaT;
+                bool warningSignaled = false;
+
                 m_count1 = m_count2;
                 m_count2 = m_count;
 
-                if (frame.Measurements.TryGetValue(m_voltageMagnitude, out measurement))
+                if (measurements.TryGetValue(m_voltageMagnitude, out measurement))
                     voltageMagnitude = measurement.AdjustedValue;
                 else
                     return;
 
-                if (frame.Measurements.TryGetValue(m_voltageAngle, out measurement))
+                if (measurements.TryGetValue(m_voltageAngle, out measurement))
                     voltageAngle = Angle.FromDegrees(measurement.AdjustedValue);
                 else
                     return;
 
-                if (frame.Measurements.TryGetValue(m_currentMagnitude, out measurement))
+                if (measurements.TryGetValue(m_currentMagnitude, out measurement))
                     currentMagnitude = measurement.AdjustedValue;
                 else
                     return;
 
-                if (frame.Measurements.TryGetValue(m_currentAngle, out measurement))
+                if (measurements.TryGetValue(m_currentAngle, out measurement))
                     currentAngle = Angle.FromDegrees(measurement.AdjustedValue);
                 else
                     return;

@@ -273,14 +273,11 @@ namespace PowerCalculations
             {
                 StringBuilder status = new StringBuilder();
 
-                status.Append("     Last average frequency: ");
-                status.Append(m_averageFrequency);
+                status.AppendFormat("    Last average frequency: {0}", m_averageFrequency);
                 status.AppendLine();
-                status.Append("     Last maximum frequency:");
-                status.Append(m_maximumFrequency);
+                status.AppendFormat("    Last maximum frequency: {0}", m_maximumFrequency);
                 status.AppendLine();
-                status.Append("     Last minimum frequency:");
-                status.Append(m_minimumFrequency);
+                status.AppendFormat("    Last minimum frequency: {0}", m_minimumFrequency);
                 status.AppendLine();
                 status.Append(base.Status);
 

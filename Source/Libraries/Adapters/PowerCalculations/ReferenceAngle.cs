@@ -245,6 +245,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TVA.Collections;
 using TVA.Measurements;
 using TVA.PhasorProtocols;
 
@@ -282,12 +283,12 @@ namespace PowerCalculations
 
                 StringBuilder status = new StringBuilder ();
 
-                status.Append(" Last" + ValuesToShow + " calculated angles:");
+                status.AppendFormat("  Last " + ValuesToShow + " calculated angles:");
 
                 lock (m_latestCalculatedAngles)
                 {
                     if (m_latestCalculatedAngles.Count > ValuesToShow)
-                        status.Append(m_latestCalculatedAngles.GetRange(m_latestCalculatedAngles.Count - ValuesToShow, ValuesToShow).ToString().Split('c'));
+                        status.Append(m_latestCalculatedAngles.GetRange(m_latestCalculatedAngles.Count - ValuesToShow, ValuesToShow).Select(v => v.ToString("0.00°")).ToDelimitedString(", "));
                     else
                         status.Append("Not enough values calculated yet ...");
                 }
