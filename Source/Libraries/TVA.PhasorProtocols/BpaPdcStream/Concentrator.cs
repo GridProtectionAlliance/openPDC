@@ -340,7 +340,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             }
 
             // Create a new BPA PDCstream configuration frame using base configuration
-            ConfigurationFrame configurationFrame = new ConfigurationFrame(DateTime.UtcNow.Ticks, m_iniFileName, baseConfigurationFrame.FrameRate, RevisionNumber.Revision2, StreamType.Compact);
+            ConfigurationFrame configurationFrame = new ConfigurationFrame(DateTime.UtcNow.Ticks, m_iniFileName, 1, RevisionNumber.Revision2, StreamType.Compact);
 
             foreach (TVA.PhasorProtocols.Anonymous.ConfigurationCell baseCell in baseConfigurationFrame.Cells)
             {
