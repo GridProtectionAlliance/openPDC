@@ -239,6 +239,7 @@ CREATE TABLE ImportedMeasurement(
 	SignalReference NVARCHAR(24) NOT NULL,
 	FramesPerSecond INT NULL,
 	ProtocolAcronym NVARCHAR(50) NULL,
+	PhasorID INT NULL,
 	PhasorType NCHAR(1) NULL,
 	Phase NCHAR(1) NULL,
 	Adder DOUBLE NOT NULL DEFAULT 0.0,
@@ -605,7 +606,7 @@ CREATE VIEW ActiveMeasurement
 AS
 SELECT COALESCE(Historian.NodeID, Device.NodeID) AS NodeID, COALESCE(Historian.NodeID, Device.NodeID) AS SourceNodeID, CONCAT_WS(':', COALESCE(Historian.Acronym, Device.Acronym, '__'), CAST(Measurement.PointID AS CHAR)) AS ID, Measurement.SignalID, Measurement.PointTag, 
 	Measurement.AlternateTag, Measurement.SignalReference, Device.Acronym AS Device, CASE WHEN Device.IsConcentrator = 0 AND Device.ParentID IS NOT NULL THEN RuntimeP.ID ELSE Runtime.ID END AS DeviceID,
-	COALESCE(Device.FramesPerSecond, 30) AS FramesPerSecond, Protocol.Acronym AS Protocol, SignalType.Acronym AS SignalType, Phasor.Type AS PhasorType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier,
+	COALESCE(Device.FramesPerSecond, 30) AS FramesPerSecond, Protocol.Acronym AS Protocol, SignalType.Acronym AS SignalType, Phasor.ID AS PhasorID, Phasor.Type AS PhasorType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier,
 	Company.Acronym AS Company, Device.Longitude, Device.Latitude, Measurement.Description
 FROM Company RIGHT OUTER JOIN
 	Device ON Company.ID = Device.CompanyID RIGHT OUTER JOIN
@@ -621,7 +622,7 @@ WHERE (Device.Enabled <> 0 OR Device.Enabled IS NULL) AND (Measurement.Enabled <
 UNION ALL
 SELECT NodeID, SourceNodeID, CONCAT_WS(':', Source, CAST(PointID AS CHAR)) AS ID, SignalID, PointTag,
 	AlternateTag, SignalReference, NULL AS Device, NULL AS DeviceID,
-	FramesPerSecond, ProtocolAcronym AS Protocol, SignalTypeAcronym AS SignalType, PhasorType, Phase, Adder, Multiplier,
+	FramesPerSecond, ProtocolAcronym AS Protocol, SignalTypeAcronym AS SignalType, PhasorID, PhasorType, Phase, Adder, Multiplier,
 	CompanyAcronym AS Company, Longitude, Latitude, Description
 FROM ImportedMeasurement
 WHERE ImportedMeasurement.Enabled <> 0;
