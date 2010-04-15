@@ -278,9 +278,13 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// </summary>
         /// <param name="parent">The <see cref="ConfigurationCell"/> parent of this <see cref="DigitalDefinition"/>.</param>
         /// <param name="label">The label of this <see cref="DigitalDefinition"/>.</param>
-        public DigitalDefinition(ConfigurationCell parent, string label)
+        /// <param name="normalStatus">The normal status for this <see cref="DigitalDefinition"/>.</param>
+        /// <param name="validInputs">The valid input for this <see cref="DigitalDefinition"/>.</param>
+        public DigitalDefinition(ConfigurationCell parent, string label, ushort normalStatus, ushort validInputs)
             : base(parent, label)
         {
+            m_normalStatus = normalStatus;
+            m_validInputs = validInputs;
         }
 
         /// <summary>

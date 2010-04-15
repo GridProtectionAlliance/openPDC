@@ -124,11 +124,11 @@ Partial Class AlternateCommandChannel
         '
         Me.TextBoxTcpPort.AutoSize = False
         Me.TextBoxTcpPort.EditAs = Infragistics.Win.UltraWinMaskedEdit.EditAsType.UseSpecifiedMask
-        Me.TextBoxTcpPort.InputMask = "nnnnn"
+        Me.TextBoxTcpPort.InputMask = "-nnnnn"
         Me.TextBoxTcpPort.Location = New System.Drawing.Point(66, 48)
         Me.TextBoxTcpPort.Name = "TextBoxTcpPort"
         Me.TextBoxTcpPort.PromptChar = Global.Microsoft.VisualBasic.ChrW(32)
-        Me.TextBoxTcpPort.Size = New System.Drawing.Size(40, 20)
+        Me.TextBoxTcpPort.Size = New System.Drawing.Size(45, 20)
         Me.TextBoxTcpPort.TabIndex = 3
         Me.TextBoxTcpPort.Text = "4712"
         '

@@ -795,7 +795,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
 
                     cell.Offset = m_rowLength;
 
-                    m_rowLength += (ushort)(12 + FrequencyValue.CalculateBinaryLength(cell.FrequencyDefinition));
+                    m_rowLength += (ushort)(8 + FrequencyValue.CalculateBinaryLength(cell.FrequencyDefinition));
 
                     for (int y = 0; y < cell.PhasorDefinitions.Count; y++)
                     {

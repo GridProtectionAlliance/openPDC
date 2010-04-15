@@ -232,11 +232,12 @@
 #endregion
 
 using System;
+using System.IO;
+using System.Text;
 using System.Threading;
 using TVA.IO;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
-using System.IO;
 
 namespace TVA.PhasorProtocols.BpaPdcStream
 {
@@ -267,6 +268,22 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             set
             {
                 m_iniFileName = value;
+            }
+        }
+
+        /// <summary>
+        /// Returns the detailed status of this <see cref="Concentrator"/>.
+        /// </summary>
+        public override string Status
+        {
+            get
+            {
+                StringBuilder status = new StringBuilder();
+
+                status.AppendLine("           Output protocol: BPA PDCstream");
+                status.Append(base.Status);
+
+                return status.ToString();
             }
         }
 
@@ -403,7 +420,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         protected override IFrame CreateNewFrame(Ticks timestamp)
         {
             // We create a new BPA PDCstream data frame based on current configuration frame
-            ushort sampleNumber = (ushort)(((double)timestamp.DistanceBeyondSecond() + 1.0D) / (double)base.TicksPerFrame + 1.0D);
+            ushort sampleNumber = (ushort)((timestamp.DistanceBeyondSecond() + 1.0D) / base.TicksPerFrame);
 
             DataFrame dataFrame = new DataFrame(timestamp, m_configurationFrame, 1, sampleNumber);
             DataCell dataCell;

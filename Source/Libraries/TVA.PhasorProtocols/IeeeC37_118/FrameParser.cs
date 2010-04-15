@@ -646,7 +646,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                     // Create equivalent dervied digital definitions
                     foreach (IDigitalDefinition sourceDigital in sourceCell.DigitalDefinitions)
                     {
-                        derivedCell.DigitalDefinitions.Add(new DigitalDefinition(derivedCell, sourceDigital.Label));
+                        derivedCell.DigitalDefinitions.Add(new DigitalDefinition(derivedCell, sourceDigital.Label, 0, 0));
                     }
 
                     // Add cell to frame

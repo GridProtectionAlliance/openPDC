@@ -242,6 +242,13 @@ namespace TVA.PhasorProtocols.Anonymous
     [Serializable()]
     public class DigitalDefinition : DigitalDefinitionBase
     {
+        #region [ Members ]
+
+        // Fields
+        private uint m_maskValue;
+
+        #endregion
+        
         #region [ Constructors ]
 
         /// <summary>
@@ -249,9 +256,11 @@ namespace TVA.PhasorProtocols.Anonymous
         /// </summary>
         /// <param name="parent">The <see cref="ConfigurationCell"/> parent of this <see cref="DigitalDefinition"/>.</param>
         /// <param name="label">The label of this <see cref="DigitalDefinition"/>.</param>
-        public DigitalDefinition(ConfigurationCell parent, string label)
+        /// <param name="maskValue">The value of the digital mask made available in configuration frames.</param>
+        public DigitalDefinition(ConfigurationCell parent, string label, uint maskValue)
             : base(parent, label)
         {
+            m_maskValue = maskValue;
         }
 
         /// <summary>
@@ -280,6 +289,21 @@ namespace TVA.PhasorProtocols.Anonymous
             set
             {
                 base.Parent = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the digital mask value of this <see cref="DigitalDefinition"/> made available in configuration frames.
+        /// </summary>
+        public uint MaskValue
+        {
+            get
+            {
+                return m_maskValue;
+            }
+            set
+            {
+                m_maskValue = value;
             }
         }
 

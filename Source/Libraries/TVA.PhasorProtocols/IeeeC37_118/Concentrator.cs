@@ -233,6 +233,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using TVA.Communication;
 using TVA.Measurements;
@@ -272,6 +273,22 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             }
         }
 
+        /// <summary>
+        /// Returns the detailed status of this <see cref="Concentrator"/>.
+        /// </summary>
+        public override string Status
+        {
+            get
+            {
+                StringBuilder status = new StringBuilder();
+
+                status.AppendLine("           Output protocol: IEEE C37.118");
+                status.Append(base.Status);
+
+                return status.ToString();
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
@@ -302,6 +319,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         protected override IConfigurationFrame CreateNewConfigurationFrame(TVA.PhasorProtocols.Anonymous.ConfigurationFrame baseConfigurationFrame)
         {
             ConfigurationCell newCell;
+            uint maskValue;
 
             // Create a new IEEE C37.118 configuration frame 2 using base configuration
             ConfigurationFrame2 configurationFrame = new ConfigurationFrame2(m_timeBase, baseConfigurationFrame.IDCode, DateTime.UtcNow.Ticks, baseConfigurationFrame.FrameRate);
@@ -337,7 +355,15 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                 // Add digital definitions
                 foreach (IDigitalDefinition digitalDefinition in baseCell.DigitalDefinitions)
                 {
-                    newCell.DigitalDefinitions.Add(new DigitalDefinition(newCell, digitalDefinition.Label));
+                    // Attempt to derive user defined mask value if available
+                    TVA.PhasorProtocols.Anonymous.DigitalDefinition anonymousDigitalDefinition = digitalDefinition as TVA.PhasorProtocols.Anonymous.DigitalDefinition;
+
+                    if (anonymousDigitalDefinition != null)
+                        maskValue = anonymousDigitalDefinition.MaskValue;
+                    else
+                        maskValue = 0U;
+
+                    newCell.DigitalDefinitions.Add(new DigitalDefinition(newCell, digitalDefinition.Label, maskValue.LowWord(), maskValue.HighWord()));
                 }
 
                 // Add new PMU configuration (cell) to protocol specific configuration frame

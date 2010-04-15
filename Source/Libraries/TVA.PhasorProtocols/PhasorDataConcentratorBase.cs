@@ -346,7 +346,10 @@ namespace TVA.PhasorProtocols
         private LineFrequency m_nominalFrequency;
         private DataFormat m_dataFormat;
         private CoordinateFormat m_coordinateFormat;
-        private uint m_scalingValue;
+        private uint m_currentScalingValue;
+        private uint m_voltageScalingValue;
+        private uint m_analogScalingValue;
+        private uint m_digitalMaskValue;
         private bool m_autoPublishConfigurationFrame;
         private bool m_autoStartDataChannel;
         private ushort m_idCode;
@@ -466,6 +469,85 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_coordinateFormat = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the integer scaling value to apply to current values published by this <see cref="PhasorDataConcentratorBase"/>.
+        /// </summary>
+        /// <remarks>
+        /// Typically only the lower 24-bits will be used to scale current values in 10^–5 amperes per bit. Note that this value represents
+        /// the default value that will be used if user has not specified a value for the individual current scaling value.
+        /// </remarks>
+        public uint CurrentScalingValue
+        {
+            get
+            {
+                return m_currentScalingValue;
+            }
+            set
+            {
+                m_currentScalingValue = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the integer scaling value to apply to voltage values published by this <see cref="PhasorDataConcentratorBase"/>.
+        /// </summary>
+        /// <remarks>
+        /// Typically only the lower 24-bits will be used to scale voltage values in 10^–5 volts per bit. Note that this value represents
+        /// the default value that will be used if user has not specified a value for the individual voltage scaling value.
+        /// </remarks>
+        public uint VoltageScalingValue
+        {
+            get
+            {
+                return m_voltageScalingValue;
+            }
+            set
+            {
+                m_voltageScalingValue = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the integer scaling value to apply to analog values published by this <see cref="PhasorDataConcentratorBase"/>.
+        /// </summary>
+        /// <remarks>
+        /// Typically only the lower 24-bits will be used to scale analog values in 10^–5 units per bit. Note that this value represents
+        /// the default value that will be used if user has not specified a value for the individual analog scaling value.
+        /// </remarks>
+        public uint AnalogScalingValue
+        {
+            get
+            {
+                return m_analogScalingValue;
+            }
+            set
+            {
+                m_analogScalingValue = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the digital mask value made available in configuration frames for use with digital values published by this <see cref="PhasorDataConcentratorBase"/>.
+        /// </summary>
+        /// <remarks>
+        /// This value represents two mask words for use with digital status values. In IEEE C37.118 configuration frames, the two 16-bit words that make up a digital mask
+        /// value are provided for each defined digital word. Note that this value represents the default value that will be used if user has not specified a value for the
+        /// individual digital word. The low word will be used to indicate the normal status of the digital inputs by returning a 0 when exclusive ORed (XOR) with the status
+        /// word. The high word will indicate the current valid inputs to the PMU by having a bit set in the binary position corresponding to the digital input and
+        /// all other bits set to 0. If digital status words are used for something other than boolean status indications, the use is left to the user.
+        /// </remarks>
+        public uint DigitalMaskValue
+        {
+            get
+            {
+                return m_digitalMaskValue;
+            }
+            set
+            {
+                m_digitalMaskValue = value;
             }
         }
 
@@ -604,7 +686,20 @@ namespace TVA.PhasorProtocols
                 status.AppendLine();
                 status.AppendFormat("         Coordinate format: {0}", m_coordinateFormat);
                 status.AppendLine();
-                status.AppendFormat("             Scaling value: {0} {1}", m_scalingValue, m_dataFormat == DataFormat.FixedInteger ? "(applied)" : "(not applied)");
+
+                if (m_dataFormat == DataFormat.FixedInteger)
+                {
+                    status.AppendFormat("     Current scaling value: {0:00000000} ({1})", m_currentScalingValue, (m_currentScalingValue * 0.00001D).ToString("0.00000"));
+                    status.AppendLine();
+                    status.AppendFormat("     Voltage scaling value: {0:00000000} ({1})", m_voltageScalingValue, (m_voltageScalingValue * 0.00001D).ToString("0.00000"));
+                    status.AppendLine();
+                    status.AppendFormat("      Analog scaling value: {0:00000000} ({1})", m_analogScalingValue, (m_analogScalingValue * 0.00001D).ToString("0.00000"));
+                    status.AppendLine();
+                }
+
+                status.AppendFormat("       Digital normal mask: {0} (big endian)", ByteEncoding.BigEndianBinary.GetString(BitConverter.GetBytes(m_digitalMaskValue.LowWord())));
+                status.AppendLine();
+                status.AppendFormat(" Digital valid inputs mask: {0} (big endian)", ByteEncoding.BigEndianBinary.GetString(BitConverter.GetBytes(m_digitalMaskValue.HighWord())));
                 status.AppendLine();
 
                 if (m_dataChannel != null)
@@ -779,10 +874,20 @@ namespace TVA.PhasorProtocols
             else
                 m_coordinateFormat = CoordinateFormat.Polar;
 
-            if (settings.TryGetValue("scalingValue", out setting))
-                m_scalingValue = uint.Parse(setting);
+            if (settings.TryGetValue("currentScalingValue", out setting))
+                m_currentScalingValue = uint.Parse(setting);
             else
-                m_scalingValue = 1373291U;
+                m_currentScalingValue = 2423U;
+
+            if (settings.TryGetValue("voltageScalingValue", out setting))
+                m_voltageScalingValue = uint.Parse(setting);
+            else
+                m_voltageScalingValue = 2725785U;
+
+            if (settings.TryGetValue("analogScalingValue", out setting))
+                m_analogScalingValue = uint.Parse(setting);
+            else
+                m_analogScalingValue = 1373291U;
 
             // Initialize data channel if defined
             if (!string.IsNullOrEmpty(dataChannel))
@@ -857,7 +962,7 @@ namespace TVA.PhasorProtocols
                             new PhasorDefinition(
                                 cell,
                                 GeneratePhasorLabel(label, phase, type),
-                                m_scalingValue,
+                                type == PhasorType.Voltage ? m_voltageScalingValue : m_currentScalingValue,
                                 type,
                                 null));
                     }
@@ -879,7 +984,7 @@ namespace TVA.PhasorProtocols
                                 new AnalogDefinition(
                                     cell,
                                     label,
-                                    m_scalingValue,
+                                    m_analogScalingValue,
                                     analogType));
                         }                            
                     }
@@ -898,7 +1003,8 @@ namespace TVA.PhasorProtocols
                             cell.DigitalDefinitions.Add(
                                 new DigitalDefinition(
                                     cell,
-                                    label));
+                                    label,
+                                    m_digitalMaskValue));
                         }
                     }
 

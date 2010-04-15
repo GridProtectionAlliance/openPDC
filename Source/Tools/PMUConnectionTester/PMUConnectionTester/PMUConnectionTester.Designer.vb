@@ -414,11 +414,11 @@ Partial Class PMUConnectionTester
         '
         Me.TextBoxDeviceID.AutoSize = False
         Me.TextBoxDeviceID.EditAs = Infragistics.Win.UltraWinMaskedEdit.EditAsType.UseSpecifiedMask
-        Me.TextBoxDeviceID.InputMask = "nnnnn"
+        Me.TextBoxDeviceID.InputMask = "-nnnnn"
         Me.TextBoxDeviceID.Location = New System.Drawing.Point(96, 34)
         Me.TextBoxDeviceID.Name = "TextBoxDeviceID"
         Me.TextBoxDeviceID.PromptChar = Global.Microsoft.VisualBasic.ChrW(32)
-        Me.TextBoxDeviceID.Size = New System.Drawing.Size(40, 20)
+        Me.TextBoxDeviceID.Size = New System.Drawing.Size(45, 20)
         Me.TextBoxDeviceID.TabIndex = 11
         Me.TextBoxDeviceID.Text = "1"
         '
@@ -504,11 +504,11 @@ Partial Class PMUConnectionTester
         '
         Me.TextBoxTcpPort.AutoSize = False
         Me.TextBoxTcpPort.EditAs = Infragistics.Win.UltraWinMaskedEdit.EditAsType.UseSpecifiedMask
-        Me.TextBoxTcpPort.InputMask = "nnnnn"
+        Me.TextBoxTcpPort.InputMask = "-nnnnn"
         Me.TextBoxTcpPort.Location = New System.Drawing.Point(66, 48)
         Me.TextBoxTcpPort.Name = "TextBoxTcpPort"
         Me.TextBoxTcpPort.PromptChar = Global.Microsoft.VisualBasic.ChrW(32)
-        Me.TextBoxTcpPort.Size = New System.Drawing.Size(40, 20)
+        Me.TextBoxTcpPort.Size = New System.Drawing.Size(45, 20)
         Me.TextBoxTcpPort.TabIndex = 3
         Me.TextBoxTcpPort.Text = "4712"
         '
@@ -575,11 +575,11 @@ Partial Class PMUConnectionTester
         Me.TextBoxUdpRemotePort.AutoSize = False
         Me.TextBoxUdpRemotePort.EditAs = Infragistics.Win.UltraWinMaskedEdit.EditAsType.UseSpecifiedMask
         Me.TextBoxUdpRemotePort.Enabled = False
-        Me.TextBoxUdpRemotePort.InputMask = "nnnnn"
+        Me.TextBoxUdpRemotePort.InputMask = "-nnnnn"
         Me.TextBoxUdpRemotePort.Location = New System.Drawing.Point(81, 59)
         Me.TextBoxUdpRemotePort.Name = "TextBoxUdpRemotePort"
         Me.TextBoxUdpRemotePort.PromptChar = Global.Microsoft.VisualBasic.ChrW(32)
-        Me.TextBoxUdpRemotePort.Size = New System.Drawing.Size(40, 20)
+        Me.TextBoxUdpRemotePort.Size = New System.Drawing.Size(45, 20)
         Me.TextBoxUdpRemotePort.TabIndex = 4
         Me.TextBoxUdpRemotePort.Text = "5000"
         '
@@ -595,7 +595,7 @@ Partial Class PMUConnectionTester
         '
         Appearance39.TextHAlignAsString = "Right"
         Me.LabelUdpLocalPort.Appearance = Appearance39
-        Me.LabelUdpLocalPort.Location = New System.Drawing.Point(-1, 36)
+        Me.LabelUdpLocalPort.Location = New System.Drawing.Point(-3, 36)
         Me.LabelUdpLocalPort.Name = "LabelUdpLocalPort"
         Me.LabelUdpLocalPort.Size = New System.Drawing.Size(63, 23)
         Me.LabelUdpLocalPort.TabIndex = 0
@@ -605,11 +605,11 @@ Partial Class PMUConnectionTester
         '
         Me.TextBoxUdpLocalPort.AutoSize = False
         Me.TextBoxUdpLocalPort.EditAs = Infragistics.Win.UltraWinMaskedEdit.EditAsType.UseSpecifiedMask
-        Me.TextBoxUdpLocalPort.InputMask = "nnnnn"
-        Me.TextBoxUdpLocalPort.Location = New System.Drawing.Point(66, 33)
+        Me.TextBoxUdpLocalPort.InputMask = "-nnnnn"
+        Me.TextBoxUdpLocalPort.Location = New System.Drawing.Point(64, 33)
         Me.TextBoxUdpLocalPort.Name = "TextBoxUdpLocalPort"
         Me.TextBoxUdpLocalPort.PromptChar = Global.Microsoft.VisualBasic.ChrW(32)
-        Me.TextBoxUdpLocalPort.Size = New System.Drawing.Size(40, 20)
+        Me.TextBoxUdpLocalPort.Size = New System.Drawing.Size(45, 20)
         Me.TextBoxUdpLocalPort.TabIndex = 1
         Me.TextBoxUdpLocalPort.Text = "4712"
         '
