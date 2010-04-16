@@ -249,6 +249,8 @@ using TVA.PhasorProtocols;
 using System.Net;
 using System.Xml.Linq;
 using TVA.PhasorProtocols.BpaPdcStream;
+using openPDCManager.Web.Data.ServiceCommunication;
+using System.Threading;
 
 namespace openPDCManager.Web.Data
 {
@@ -380,17 +382,62 @@ namespace openPDCManager.Web.Data
 		{			
 			try
 			{
-				List<WizardDeviceInfo> wizardDeviceInfoList = new List<WizardDeviceInfo>();
+				//List<WizardDeviceInfo> wizardDeviceInfoList = new List<WizardDeviceInfo>();
 				SoapFormatter sf = new SoapFormatter();
 				sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
 				sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
-				IConfigurationFrame configurationFrame = sf.Deserialize(inputStream) as IConfigurationFrame;
+				IConfigurationFrame configurationFrame = sf.Deserialize(inputStream) as IConfigurationFrame;				
+				//if (configurationFrame != null)
+				//{
+				//    int parentAccessID = configurationFrame.IDCode;
+				//    wizardDeviceInfoList = (from cell in configurationFrame.Cells
+				//                            select new WizardDeviceInfo()
+				//                            {												
+				//                                Acronym = cell.StationName.Replace(" ", "").ToUpper(),
+				//                                Name = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(cell.StationName.ToLower()),
+				//                                Longitude = 0,
+				//                                Latitude = 0,
+				//                                VendorDeviceID = (int?)null,
+				//                                AccessID = cell.IDCode,
+				//                                ParentAccessID = parentAccessID,
+				//                                Include = true,
+				//                                DigitalCount = cell.DigitalDefinitions.Count(),
+				//                                AnalogCount = cell.AnalogDefinitions.Count(),
+				//                                AddDigitals = false,
+				//                                AddAnalogs = false,
+				//                                PhasorList = (from phasor in cell.PhasorDefinitions
+				//                                              select new PhasorInfo()
+				//                                              {
+				//                                                  Label = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(phasor.Label.Replace("?", " ").Trim().ToLower()),
+				//                                                  Type = phasor.PhasorType == PhasorType.Current ? "I" : "V",
+				//                                                  Phase = "+",
+				//                                                  DestinationLabel = "",
+				//                                                  Include = true
+				//                                              }).ToList()
+				//                            }).ToList();
+												
+				//}
+				return ParseConfigurationFrame(configurationFrame);
+			}
+			catch(Exception ex)
+			{
+				LogException("GetWizardConfigurationInfo", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Parse Configuration File", SystemMessage = ex.Message };
+				throw new FaultException<CustomServiceFault>(fault);
+			}			
+		}
+
+		public static List<WizardDeviceInfo> ParseConfigurationFrame(IConfigurationFrame configurationFrame)
+		{
+			try
+			{
+				List<WizardDeviceInfo> wizardDeviceInfoList = new List<WizardDeviceInfo>();
 				if (configurationFrame != null)
 				{
 					int parentAccessID = configurationFrame.IDCode;
 					wizardDeviceInfoList = (from cell in configurationFrame.Cells
 											select new WizardDeviceInfo()
-											{												
+											{
 												Acronym = cell.StationName.Replace(" ", "").ToUpper(),
 												Name = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(cell.StationName.ToLower()),
 												Longitude = 0,
@@ -413,16 +460,91 @@ namespace openPDCManager.Web.Data
 																  Include = true
 															  }).ToList()
 											}).ToList();
-												
+
 				}
 				return wizardDeviceInfoList;
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
-				LogException("GetWizardConfigurationInfo", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Parse Configuration File", SystemMessage = ex.Message };
+				LogException("ParseConfigurationFrame", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Parse Configuration Frame", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
-			}			
+			}
+		}
+
+		private static IConfigurationFrame s_responseAttachment;
+		private static string s_responseMessage;
+		private static ManualResetEvent s_responseWaitHandle;
+		public static List<WizardDeviceInfo> RetrieveConfigurationFrame(string nodeConnectionString, string deviceConnectionString, int protocolID)
+		{
+			//s_responseMessage = string.Empty;
+			//s_responseAttachment = null;
+			WindowsServiceClient windowsServiceClient = new WindowsServiceClient(nodeConnectionString);
+			try
+			{
+				s_responseWaitHandle = new ManualResetEvent(false);
+				windowsServiceClient.Helper.ReceivedServiceResponse += new EventHandler<TVA.EventArgs<TVA.Services.ServiceResponse>>(Helper_ReceivedServiceResponse);
+				windowsServiceClient.Helper.ReceivedServiceUpdate += new EventHandler<TVA.EventArgs<TVA.Services.UpdateType, string>>(Helper_ReceivedServiceUpdate);
+				windowsServiceClient.Helper.RemotingClient.MaxConnectionAttempts = 10;
+				windowsServiceClient.Helper.Connect();
+				if (windowsServiceClient.Helper.RemotingClient.Enabled)
+				{
+					if (deviceConnectionString.ToLower().Contains("phasorprotocol"))
+						windowsServiceClient.Helper.SendRequest(string.Format("invoke 0 requestdeviceconfiguration \"{0}\"", deviceConnectionString));
+					else
+						windowsServiceClient.Helper.SendRequest(string.Format("invoke 0 requestdeviceconfiguration \"{0}\"", deviceConnectionString + "; phasorProtocol=" + GetProtocolAcronymByID(protocolID)));
+
+					if (s_responseWaitHandle.WaitOne(65000))
+						return ParseConfigurationFrame(s_responseAttachment as IConfigurationFrame);
+					else
+						throw new ApplicationException("Response timeout occured. Waited 60 seconds for Configuration Frame to arrive.");
+				}
+				else
+				{
+					throw new ApplicationException("Connection timeout occured. Tried 10 times to connect to openPDC windows service.");
+				}
+			}
+			catch (Exception ex)
+			{
+				LogException("RetrieveConfigurationFrame", ex);
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Configuration", SystemMessage = ex.Message + Environment.NewLine + s_responseMessage };
+				throw new FaultException<CustomServiceFault>(fault);
+			}
+			finally
+			{
+				windowsServiceClient.Helper.Disconnect();
+				//windowsServiceClient.Dispose();
+			}
+		}
+
+		static void Helper_ReceivedServiceUpdate(object sender, TVA.EventArgs<TVA.Services.UpdateType, string> e)
+		{
+			if (e.Argument2.StartsWith("[PHASOR!SERVICES]") && !e.Argument2.Contains("*"))
+			{
+				string temp = e.Argument2.Replace("[PHASOR!SERVICES]", "").Replace("*", "");
+				//if (temp.StartsWith("*"))
+				//    temp = temp.Substring(temp.LastIndexOf("*") + 1 );
+				s_responseMessage += temp;
+			}
+		}
+
+		private static void Helper_ReceivedServiceResponse(object sender, TVA.EventArgs<TVA.Services.ServiceResponse> e)
+		{			           
+            List<object> attachments = e.Argument.Attachments;
+
+            // Handle any special attachments coming in from service
+			if (attachments != null)
+			{
+				foreach (object attachment in attachments)
+				{
+					// If user requested a configuration frame, serialize it to XML and open it in a browser
+					if (attachment is IConfigurationFrame)
+					{
+						s_responseAttachment = attachment as IConfigurationFrame;
+						s_responseWaitHandle.Set();
+					}
+				}
+			}
 		}
 
 		public static string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, 
@@ -430,21 +552,6 @@ namespace openPDCManager.Web.Data
 		{
 			try
 			{
-				//Before we start saving information into database make sure all the device acronyms are unique in the collection.
-				//We will compare only those devices which are checked to be added to the database.
-				//List<string> acronymList = new List<string>();
-				//acronymList = (from item in wizardDeviceInfoList
-				//               where item.Include == true
-				//               select item.Acronym).ToList();
-				
-				//List<string> distinctAcronymList = new List<string>();
-				//distinctAcronymList = (from item in wizardDeviceInfoList
-				//                       where item.Include == true
-				//                       select item.Acronym).Distinct().ToList();
-
-				//if (acronymList.Count != distinctAcronymList.Count)	//i.e. there are duplicate acronyms.
-				//	throw new ArgumentException("Duplicate Acronyms Exists!");
-
 				List<string> nondistinctAcronymList = new List<string>();
 				nondistinctAcronymList = (from item in wizardDeviceInfoList
 										  where item.Include == true
@@ -517,8 +624,6 @@ namespace openPDCManager.Web.Data
 						}
 						else
 							SaveDevice(device, true, digitalCount, analogCount);
-
-						
 
 						Device addedDevice = GetDeviceByAcronym(info.Acronym);
 						int count = 1;
@@ -1367,37 +1472,44 @@ namespace openPDCManager.Web.Data
 
 					foreach (Measurement measurement in measurementList)
 					{
-						OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
-						outputStreamMeasurement.NodeID = device.NodeID;
-						outputStreamMeasurement.AdapterID = outputStreamID;
-						outputStreamMeasurement.HistorianID = measurement.HistorianID;
-						outputStreamMeasurement.PointID = measurement.PointID;
-						outputStreamMeasurement.SignalReference = measurement.SignalReference;
-						SaveOutputStreamMeasurement(outputStreamMeasurement, true);
 
-						if (addAnalogs && measurement.SignalSuffix == "AV") //if add analogs checked and measurement is analog value then add it to OutputStreamDeviceAnalog Table.
+						if (measurement.SignalSuffix == "AV")
 						{
-							OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
-							outputStreamDeviceAnalog.NodeID = device.NodeID;
-							outputStreamDeviceAnalog.OutputStreamDeviceID = savedOutputStreamDeviceID;
-							outputStreamDeviceAnalog.Label = measurement.PointTag;
-							outputStreamDeviceAnalog.Type = 0;	//default
-							outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
-							SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, true);
+							if (addAnalogs)
+							{
+								OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
+								outputStreamDeviceAnalog.NodeID = device.NodeID;
+								outputStreamDeviceAnalog.OutputStreamDeviceID = savedOutputStreamDeviceID;
+								outputStreamDeviceAnalog.Label = measurement.PointTag;
+								outputStreamDeviceAnalog.Type = 0;	//default
+								outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
+								SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, true);
+							}
 						}
-
-						if (addDigitals && measurement.SignalSuffix == "DV") //if add digitals checked and measurement is digital value then add it to OutputStreamDeviceDigital Table.
+						else if (measurement.SignalSuffix == "DV")
 						{
-							OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
-							outputStreamDeviceDigital.NodeID = device.NodeID;
-							outputStreamDeviceDigital.OutputStreamDeviceID = savedOutputStreamDeviceID;
-							outputStreamDeviceDigital.Label = measurement.PointTag;
-							outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
-							SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, true);
+							if (addDigitals)
+							{
+								OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
+								outputStreamDeviceDigital.NodeID = device.NodeID;
+								outputStreamDeviceDigital.OutputStreamDeviceID = savedOutputStreamDeviceID;
+								outputStreamDeviceDigital.Label = measurement.PointTag;
+								outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
+								SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, true);
+							}
 						}
+						else
+						{
+							OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
+							outputStreamMeasurement.NodeID = device.NodeID;
+							outputStreamMeasurement.AdapterID = outputStreamID;
+							outputStreamMeasurement.HistorianID = measurement.HistorianID;
+							outputStreamMeasurement.PointID = measurement.PointID;
+							outputStreamMeasurement.SignalReference = measurement.SignalReference;
+							SaveOutputStreamMeasurement(outputStreamMeasurement, true);
+						}						
 					}
 					//********************************************
-
 				}
 
 				return "Output Stream Device(s) Added Successfully";
@@ -3394,6 +3506,33 @@ namespace openPDCManager.Web.Data
 			}
 		}
 
+		private static string GetProtocolAcronymByID(int id)
+		{
+			DataConnection connection = new DataConnection();
+			try
+			{
+				IDbCommand command = connection.Connection.CreateCommand();
+				command.CommandType = CommandType.Text;
+				command.CommandText = "Select Acronym From Protocol Where ID = @id";
+				command.Parameters.Add(AddWithValue(command, "@id", id));
+				DataTable resultTable = new DataTable();
+				resultTable.Load(command.ExecuteReader());
+				if (resultTable.Rows.Count > 0)
+					return resultTable.Rows[0]["Acronym"].ToString();
+				else
+					return string.Empty;
+			}
+			catch (Exception ex)
+			{
+				LogException("GetProtocolAcronymByID", ex);
+				return string.Empty;
+			}
+			finally
+			{
+				connection.Dispose();
+			}
+		}
+
 		#endregion
 
 		#region " Manage Signal Types Code"
@@ -4013,5 +4152,6 @@ namespace openPDCManager.Web.Data
 
 		#endregion
 
+		
 	}
 }

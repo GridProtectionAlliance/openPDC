@@ -285,6 +285,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			m_client.GetExecutingAssemblyPathCompleted += new EventHandler<GetExecutingAssemblyPathCompletedEventArgs>(client_GetExecutingAssemblyPathCompleted);
 			m_client.SaveIniFileCompleted += new EventHandler<SaveIniFileCompletedEventArgs>(client_SaveIniFileCompleted);
 			m_client.GetProtocolIDByAcronymCompleted += new EventHandler<GetProtocolIDByAcronymCompletedEventArgs>(client_GetProtocolIDByAcronymCompleted);
+			m_client.RetrieveConfigurationFrameCompleted += new EventHandler<RetrieveConfigurationFrameCompletedEventArgs>(client_RetrieveConfigurationFrameCompleted);
 			//Controls Events
 			Loaded += new RoutedEventHandler(InputWizard_Loaded);
 			ButtonBrowseConfigurationFile.Click += new RoutedEventHandler(ButtonBrowseConfigurationFile_Click);
@@ -292,12 +293,13 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			ButtonBrowseIniFile.Click += new RoutedEventHandler(ButtonBrowseIniFile_Click);
 			ButtonNext.Click += new RoutedEventHandler(ButtonNext_Click);
 			ButtonPrevious.Click += new RoutedEventHandler(ButtonPrevious_Click);
+			ButtonRequestConfiguration.Click += new RoutedEventHandler(ButtonRequestConfiguration_Click);
 			AccordianWizard.SelectionChanged += new SelectionChangedEventHandler(AccordianWizard_SelectionChanged);			
 			CheckboxConnectToPDC.Checked += new RoutedEventHandler(CheckboxConnectToPDC_Checked);
 			CheckboxConnectToPDC.Unchecked += new RoutedEventHandler(CheckboxConnectToPDC_Unchecked);
 			ComboboxProtocol.SelectionChanged += new SelectionChangedEventHandler(ComboboxProtocol_SelectionChanged);
 		}
-		
+				
 		#endregion
 
 		#region [ Service Event Handlers ]
@@ -316,6 +318,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				}
 			}
 		}
+		
 		void client_SaveIniFileCompleted(object sender, SaveIniFileCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -335,6 +338,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				sm.Show();
 			}			
 		}
+		
 		void client_GetExecutingAssemblyPathCompleted(object sender, GetExecutingAssemblyPathCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -355,6 +359,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				sm.Show();
 			}
 		}
+		
 		void client_GetInterconnectionsCompleted(object sender, GetInterconnectionsCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -377,6 +382,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (ComboboxInterconnection.Items.Count > 0)
 				ComboboxInterconnection.SelectedIndex = 0;
 		}
+		
 		void client_GetHistoriansCompleted(object sender, GetHistoriansCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -399,6 +405,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (ComboboxHistorian.Items.Count > 0)
 				ComboboxHistorian.SelectedIndex = 0;
 		}
+		
 		void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -421,6 +428,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (ComboboxCompany.Items.Count > 0)
 				ComboboxCompany.SelectedIndex = 0;
 		}
+		
 		void client_GetVendorDevicesCompleted(object sender, GetVendorDevicesCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -446,6 +454,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (ComboboxPDCVendor.Items.Count > 0)
 				ComboboxPDCVendor.SelectedIndex = 0;
 		}
+		
 		void client_GetProtocolsCompleted(object sender, GetProtocolsCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -468,6 +477,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (ComboboxProtocol.Items.Count > 0)
 				ComboboxProtocol.SelectedIndex = 0;
 		}
+		
 		void client_GetConnectionSettingsCompleted(object sender, GetConnectionSettingsCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -503,6 +513,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				sm.Show();
 			}
 		}
+		
 		void client_GetWizardConfigurationInfoCompleted(object sender, GetWizardConfigurationInfoCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -528,6 +539,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (m_activityWindow != null)
 				m_activityWindow.Close();
 		}		
+		
 		void client_SaveWizardConfigurationInfoCompleted(object sender, SaveWizardConfigurationInfoCompletedEventArgs e)
 		{
 			SystemMessages sm;
@@ -553,6 +565,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (m_activityWindow != null)
 				m_activityWindow.Close();	
 		}
+		
 		void client_GetDeviceByAcronymCompleted(object sender, GetDeviceByAcronymCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -605,6 +618,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				sm.Show();
 			}
 		}
+		
 		void client_SaveDeviceCompleted(object sender, SaveDeviceCompletedEventArgs e)
 		{
 			if (e.Error == null)
@@ -624,6 +638,33 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 				sm.Show();
 			}
+		}
+
+		void client_RetrieveConfigurationFrameCompleted(object sender, RetrieveConfigurationFrameCompletedEventArgs e)
+		{
+			SystemMessages sm;
+			if (e.Error == null)
+			{
+				m_wizardDeviceInfoList = e.Result;
+				ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
+				sm = new SystemMessages(new Message() { UserMessage = "Retrieved Configuration Successfully!", SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
+			}
+			else
+			{				
+				if (e.Error is FaultException<CustomServiceFault>)
+				{
+					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);
+				}
+				else
+					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Configuration", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+						ButtonType.OkOnly);				
+			}
+			sm.Show();
+
+			if (m_activityWindow != null)
+				m_activityWindow.Close();
 		}
 
 		#endregion
@@ -653,33 +694,38 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			if (AccordianWizard.SelectedIndex == 1)
 			{
-				m_activityWindow = new ActivityWindow("Validating Configuration File... Please Wait...");
-				m_activityWindow.Show();
-
-				if (m_wizardDeviceInfoList.Count == 0) //this was added to fix issues with going back and forth on wizard steps.
-				{
-					if ((((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Value.ToUpper().Contains("BPA")) && !string.IsNullOrEmpty(m_iniFileName))
-					{
-						string configFileDataString = (new StreamReader(m_configFileData)).ReadToEnd();
-						string leftPart = configFileDataString.Substring(0, configFileDataString.IndexOf("</configurationFileName>"));
-						string rightPart = configFileDataString.Substring(configFileDataString.IndexOf("</configurationFileName>"));
-						leftPart = leftPart.Substring(0, leftPart.LastIndexOf(">") + 1);
-
-						configFileDataString = leftPart + m_iniFilePath + "\\" + m_iniFileName + rightPart;
-
-						Byte[] fileData = Encoding.UTF8.GetBytes(configFileDataString);
-						MemoryStream ms = new MemoryStream();
-						ms.Write(fileData, 0, fileData.Length);
-						ms.Position = 0;
-						m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(ms));
-					}
-					else
-						m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(m_configFileData));
-				}
+				
 			}
-			
-			if (AccordianWizard.SelectedIndex == 2 && ((bool)CheckboxConnectToPDC.IsChecked))
-				m_client.GetDeviceByAcronymAsync(TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
+
+			if (AccordianWizard.SelectedIndex == 2)
+			{
+				if ((bool)CheckboxConnectToPDC.IsChecked)
+					m_client.GetDeviceByAcronymAsync(TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
+
+				//m_activityWindow = new ActivityWindow("Validating Configuration File... Please Wait...");
+				//m_activityWindow.Show();
+
+				//if (m_wizardDeviceInfoList.Count == 0) //this was added to fix issues with going back and forth on wizard steps.
+				//{
+				//    if ((((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Value.ToUpper().Contains("BPA")) && !string.IsNullOrEmpty(m_iniFileName))
+				//    {
+				//        string configFileDataString = (new StreamReader(m_configFileData)).ReadToEnd();
+				//        string leftPart = configFileDataString.Substring(0, configFileDataString.IndexOf("</configurationFileName>"));
+				//        string rightPart = configFileDataString.Substring(configFileDataString.IndexOf("</configurationFileName>"));
+				//        leftPart = leftPart.Substring(0, leftPart.LastIndexOf(">") + 1);
+
+				//        configFileDataString = leftPart + m_iniFilePath + "\\" + m_iniFileName + rightPart;
+
+				//        Byte[] fileData = Encoding.UTF8.GetBytes(configFileDataString);
+				//        MemoryStream ms = new MemoryStream();
+				//        ms.Write(fileData, 0, fileData.Length);
+				//        ms.Position = 0;
+				//        m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(ms));
+				//    }
+				//    else
+				//        m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(m_configFileData));
+				//}
+			}
 
 			if (AccordianWizard.SelectedIndex == 0)
 			{
@@ -754,9 +800,30 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			bool? result = openFileDialog.ShowDialog();
 			if (result != null && result == true)
 			{
+				m_activityWindow = new ActivityWindow("Validating Configuration File... Please Wait...");
+				m_activityWindow.Show();
+
 				TextBoxConfigurationFile.Text = openFileDialog.File.Name;
 				m_configFileData = openFileDialog.File.OpenRead();
-				//client.GetWizardConfigurationInfoAsync(ReadFileBytes(configFileData));
+
+				if ((((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Value.ToUpper().Contains("BPA")) && !string.IsNullOrEmpty(m_iniFileName))
+				{
+					string configFileDataString = (new StreamReader(m_configFileData)).ReadToEnd();
+					string leftPart = configFileDataString.Substring(0, configFileDataString.IndexOf("</configurationFileName>"));
+					string rightPart = configFileDataString.Substring(configFileDataString.IndexOf("</configurationFileName>"));
+					leftPart = leftPart.Substring(0, leftPart.LastIndexOf(">") + 1);
+
+					configFileDataString = leftPart + m_iniFilePath + "\\" + m_iniFileName + rightPart;
+
+					Byte[] fileData = Encoding.UTF8.GetBytes(configFileDataString);
+					MemoryStream ms = new MemoryStream();
+					ms.Write(fileData, 0, fileData.Length);
+					ms.Position = 0;
+					m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(ms));
+				}
+				else
+					m_client.GetWizardConfigurationInfoAsync(ReadFileBytes(m_configFileData));
+
 			}
 		}
 		
@@ -906,6 +973,24 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			foreach (PhasorInfo phasorInfo in deviceInfo.PhasorList)
 			{
 				phasorInfo.Include = false;
+			}
+		}
+
+		void ButtonRequestConfiguration_Click(object sender, RoutedEventArgs e)
+		{
+			m_activityWindow = new ActivityWindow("Retrieving Configuration Frame... Please Wait...");
+			m_activityWindow.Show();
+
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonRequestConfigurationTransform);
+			sb.Begin();
+
+			if (!string.IsNullOrEmpty(	((App)Application.Current).RemoteStatusServiceUrl))
+				m_client.RetrieveConfigurationFrameAsync(((App)Application.Current).RemoteStatusServiceUrl, TextBoxConnectionString.Text, ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key);
+			else
+			{
 			}
 		}
 

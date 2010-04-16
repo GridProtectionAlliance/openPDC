@@ -273,7 +273,7 @@ namespace openPDCManager.Web.Data.ServiceCommunication
             // Initialize windows service client.
             m_clientHelper = new ClientHelper();
             m_clientHelper.RemotingClient = m_remotingClient;
-            m_clientHelper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;
+            m_clientHelper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;			
         }
 
         /// <summary>

@@ -4710,6 +4710,13 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> EndGetWizardConfigurationInfo(System.IAsyncResult result);
         
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/RetrieveConfigurationFrame", ReplyAction="http://tempuri.org/IPhasorDataService/RetrieveConfigurationFrameResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/RetrieveConfigurationFrameCustomServiceFaul" +
+            "tFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+        System.IAsyncResult BeginRetrieveConfigurationFrame(string nodeConnectionString, string deviceConnectionString, int protocolID, System.AsyncCallback callback, object asyncState);
+        
+        System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> EndRetrieveConfigurationFrame(System.IAsyncResult result);
+        
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfo", ReplyAction="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfoResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfoCustomServiceFau" +
             "ltFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
@@ -5150,6 +5157,25 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         private object[] results;
         
         public GetWizardConfigurationInfoCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class RetrieveConfigurationFrameCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public RetrieveConfigurationFrameCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -6445,6 +6471,12 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.Threading.SendOrPostCallback onGetWizardConfigurationInfoCompletedDelegate;
         
+        private BeginOperationDelegate onBeginRetrieveConfigurationFrameDelegate;
+        
+        private EndOperationDelegate onEndRetrieveConfigurationFrameDelegate;
+        
+        private System.Threading.SendOrPostCallback onRetrieveConfigurationFrameCompletedDelegate;
+        
         private BeginOperationDelegate onBeginSaveWizardConfigurationInfoDelegate;
         
         private EndOperationDelegate onEndSaveWizardConfigurationInfoDelegate;
@@ -6902,6 +6934,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         public event System.EventHandler<GetWizardConfigurationInfoCompletedEventArgs> GetWizardConfigurationInfoCompleted;
         
+        public event System.EventHandler<RetrieveConfigurationFrameCompletedEventArgs> RetrieveConfigurationFrameCompleted;
+        
         public event System.EventHandler<SaveWizardConfigurationInfoCompletedEventArgs> SaveWizardConfigurationInfoCompleted;
         
         public event System.EventHandler<GetExecutingAssemblyPathCompletedEventArgs> GetExecutingAssemblyPathCompleted;
@@ -7084,6 +7118,56 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             }
             base.InvokeAsync(this.onBeginGetWizardConfigurationInfoDelegate, new object[] {
                         inputStream}, this.onEndGetWizardConfigurationInfoDelegate, this.onGetWizardConfigurationInfoCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginRetrieveConfigurationFrame(string nodeConnectionString, string deviceConnectionString, int protocolID, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginRetrieveConfigurationFrame(nodeConnectionString, deviceConnectionString, protocolID, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndRetrieveConfigurationFrame(System.IAsyncResult result) {
+            return base.Channel.EndRetrieveConfigurationFrame(result);
+        }
+        
+        private System.IAsyncResult OnBeginRetrieveConfigurationFrame(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            string nodeConnectionString = ((string)(inValues[0]));
+            string deviceConnectionString = ((string)(inValues[1]));
+            int protocolID = ((int)(inValues[2]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginRetrieveConfigurationFrame(nodeConnectionString, deviceConnectionString, protocolID, callback, asyncState);
+        }
+        
+        private object[] OnEndRetrieveConfigurationFrame(System.IAsyncResult result) {
+            System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndRetrieveConfigurationFrame(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnRetrieveConfigurationFrameCompleted(object state) {
+            if ((this.RetrieveConfigurationFrameCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.RetrieveConfigurationFrameCompleted(this, new RetrieveConfigurationFrameCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void RetrieveConfigurationFrameAsync(string nodeConnectionString, string deviceConnectionString, int protocolID) {
+            this.RetrieveConfigurationFrameAsync(nodeConnectionString, deviceConnectionString, protocolID, null);
+        }
+        
+        public void RetrieveConfigurationFrameAsync(string nodeConnectionString, string deviceConnectionString, int protocolID, object userState) {
+            if ((this.onBeginRetrieveConfigurationFrameDelegate == null)) {
+                this.onBeginRetrieveConfigurationFrameDelegate = new BeginOperationDelegate(this.OnBeginRetrieveConfigurationFrame);
+            }
+            if ((this.onEndRetrieveConfigurationFrameDelegate == null)) {
+                this.onEndRetrieveConfigurationFrameDelegate = new EndOperationDelegate(this.OnEndRetrieveConfigurationFrame);
+            }
+            if ((this.onRetrieveConfigurationFrameCompletedDelegate == null)) {
+                this.onRetrieveConfigurationFrameCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnRetrieveConfigurationFrameCompleted);
+            }
+            base.InvokeAsync(this.onBeginRetrieveConfigurationFrameDelegate, new object[] {
+                        nodeConnectionString,
+                        deviceConnectionString,
+                        protocolID}, this.onEndRetrieveConfigurationFrameDelegate, this.onRetrieveConfigurationFrameCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -10330,6 +10414,21 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> EndGetWizardConfigurationInfo(System.IAsyncResult result) {
                 object[] _args = new object[0];
                 System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> _result = ((System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo>)(base.EndInvoke("GetWizardConfigurationInfo", _args, result)));
+                return _result;
+            }
+            
+            public System.IAsyncResult BeginRetrieveConfigurationFrame(string nodeConnectionString, string deviceConnectionString, int protocolID, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[3];
+                _args[0] = nodeConnectionString;
+                _args[1] = deviceConnectionString;
+                _args[2] = protocolID;
+                System.IAsyncResult _result = base.BeginInvoke("RetrieveConfigurationFrame", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> EndRetrieveConfigurationFrame(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> _result = ((System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo>)(base.EndInvoke("RetrieveConfigurationFrame", _args, result)));
                 return _result;
             }
             

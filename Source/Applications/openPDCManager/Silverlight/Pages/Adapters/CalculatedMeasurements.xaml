@@ -32,7 +32,7 @@
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Node" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                         <ComboBox x:Name="ComboBoxNode" Grid.Row="0" Grid.Column="1" DisplayMemberPath="Value" Margin="5"/>
                         <TextBlock Grid.Row="0" Grid.Column="2" Text="Acronym" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                        <TextBox x:Name="TextBoxAcronym" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Acronym}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBox x:Name="TextBoxAcronym" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Acronym}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Name" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                         <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="Assembly Name" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>

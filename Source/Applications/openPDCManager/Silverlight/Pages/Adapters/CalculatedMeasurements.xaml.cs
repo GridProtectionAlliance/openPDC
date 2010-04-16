@@ -386,7 +386,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			calculatedMeasurement.ConfigSection = TextBoxConfigSection.Text;
 			calculatedMeasurement.InputMeasurements = TextBoxInputMeasurements.Text;
 			calculatedMeasurement.OutputMeasurements = TextBoxOutputMeasurements.Text;
-			calculatedMeasurement.MinimumMeasurementsToUse = Convert.ToInt32(TextBoxMinMeasurements.Text);
+			calculatedMeasurement.MinimumMeasurementsToUse = string.IsNullOrEmpty(TextBoxMinMeasurements.Text) ? 0 : Convert.ToInt32(TextBoxMinMeasurements.Text);
 			calculatedMeasurement.FramesPerSecond = Convert.ToInt32(TextBoxFramesPerSecond.Text);
 			calculatedMeasurement.LagTime = Convert.ToDouble(TextBoxLagTime.Text);
 			calculatedMeasurement.LeadTime = Convert.ToDouble(TextBoxLeadTime.Text);

@@ -594,6 +594,10 @@ namespace openPDCManager.Services.Service
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
+		List<WizardDeviceInfo> RetrieveConfigurationFrame(string nodeConnectionString, string deviceConnectionString, int protocolID);
+
+		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
 		string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID);
 
 		[OperationContract]

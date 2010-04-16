@@ -613,6 +613,11 @@ namespace openPDCManager.Services.Service
 		{
 			return CommonFunctions.GetWizardConfigurationInfo(inputStream);
 		}
+
+		public List<WizardDeviceInfo> RetrieveConfigurationFrame(string nodeConnectionString, string deviceConnectionString, int protocolID)
+		{
+			return CommonFunctions.RetrieveConfigurationFrame(nodeConnectionString, deviceConnectionString, protocolID);
+		}
 		
 		public string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID)
 		{
