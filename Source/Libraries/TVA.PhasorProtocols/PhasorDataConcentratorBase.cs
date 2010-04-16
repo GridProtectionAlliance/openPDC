@@ -889,6 +889,11 @@ namespace TVA.PhasorProtocols
             else
                 m_analogScalingValue = 1373291U;
 
+            if (settings.TryGetValue("digitalMaskValue", out setting))
+                m_digitalMaskValue = uint.Parse(setting);
+            else
+                m_digitalMaskValue = Word.MakeDword(0xFFFF, 0x0000);
+
             // Initialize data channel if defined
             if (!string.IsNullOrEmpty(dataChannel))
                 this.DataChannel = new UdpServer(dataChannel);
