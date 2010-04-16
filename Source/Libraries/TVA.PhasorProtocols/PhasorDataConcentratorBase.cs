@@ -352,6 +352,7 @@ namespace TVA.PhasorProtocols
         private uint m_digitalMaskValue;
         private bool m_autoPublishConfigurationFrame;
         private bool m_autoStartDataChannel;
+        private bool m_processDataValidFlag;
         private ushort m_idCode;
         private bool m_disposed;
 
@@ -424,6 +425,25 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_autoStartDataChannel = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets flag that determines if the data valid flag assignments should be processed during frame publication.
+        /// </summary>
+        /// <remarks>
+        /// In cases where client applications ignore the data validity flag, setting this flag to <c>false</c> will
+        /// provide a slight processing optimization, especially useful on very large data streams.
+        /// </remarks>
+        public bool ProcessDataValidFlag
+        {
+            get
+            {
+                return m_processDataValidFlag;
+            }
+            set
+            {
+                m_processDataValidFlag = value;
             }
         }
 
@@ -894,6 +914,11 @@ namespace TVA.PhasorProtocols
             else
                 m_digitalMaskValue = Word.MakeDword(0xFFFF, 0x0000);
 
+            if (settings.TryGetValue("processDataValidFlag", out setting))
+                m_processDataValidFlag = setting.ParseBoolean();
+            else
+                m_processDataValidFlag = true;
+
             // Initialize data channel if defined
             if (!string.IsNullOrEmpty(dataChannel))
                 this.DataChannel = new UdpServer(dataChannel);
@@ -1003,7 +1028,7 @@ namespace TVA.PhasorProtocols
 
                             // IEEE C37.118 digital labels are defined with all 16-labels (one for each bit) in one large formatted
                             // string - so we don't remove duplicate white space in this string
-                            label = digitalRow["Label"].ToNonNullString("Digital " + order).Trim().TruncateRight(labelLength);
+                            label = digitalRow["Label"].ToNonNullString("Digital " + order).Trim().TruncateRight(labelLength * 16);
 
                             cell.DigitalDefinitions.Add(
                                 new DigitalDefinition(
@@ -1150,8 +1175,6 @@ namespace TVA.PhasorProtocols
                     if ((object)signalMeasurement != null && dataFrame != null)
                     {
                         PhasorValueCollection phasorValues;
-                        DigitalValueCollection digitalValues;
-                        AnalogValueCollection analogValues;
                         SignalReference signal = signalMeasurement.SignalReference;
                         IDataCell dataCell = dataFrame.Cells[signal.CellIndex];
                         int signalIndex = signal.Index;
@@ -1182,16 +1205,20 @@ namespace TVA.PhasorProtocols
                             case FundamentalSignalType.Status:
                                 // Assign "common status flags" measurement to data cell
                                 dataCell.CommonStatusFlags = unchecked((uint)signalMeasurement.AdjustedValue);
+
+                                // Assign by arrival sorting flag for bad synchronization
+                                if (!dataCell.SynchronizationIsValid && AllowSortsByArrival && !IgnoreBadTimestamps)
+                                    dataCell.DataSortingType = DataSortingType.ByArrival;
                                 break;
                             case FundamentalSignalType.Digital:
                                 // Assign "digital" measurement to data cell
-                                digitalValues = dataCell.DigitalValues;
+                                DigitalValueCollection digitalValues = dataCell.DigitalValues;
                                 if (digitalValues.Count >= signalIndex)
                                     digitalValues[signalIndex - 1].Value = unchecked((ushort)signalMeasurement.AdjustedValue);
                                 break;
                             case FundamentalSignalType.Analog:
                                 // Assign "analog" measurement to data cell
-                                analogValues = dataCell.AnalogValues;
+                                AnalogValueCollection analogValues = dataCell.AnalogValues;
                                 if (analogValues.Count >= signalIndex)
                                     analogValues[signalIndex - 1].Value = signalMeasurement.AdjustedValue;
                                 break;
@@ -1208,7 +1235,11 @@ namespace TVA.PhasorProtocols
                     }
 
                     // This is not expected to occur - but just in case
-                    OnProcessException(new InvalidCastException(string.Format("Attempt was made to assign an invalid measurement to phasor data concentration frame, expected a \"SignalReferenceMeasurement\" but got a \"{0}\"", measurement.GetType().Name)));
+                    if ((object)signalMeasurement == null && measurement != null)
+                        OnProcessException(new InvalidCastException(string.Format("Attempt was made to assign an invalid measurement to phasor data concentration frame, expected a \"SignalReferenceMeasurement\" but received a \"{0}\"", measurement.GetType().Name)));
+
+                    if (dataFrame == null && frame != null)
+                        OnProcessException(new InvalidCastException(string.Format("During measurement assignment, incoming frame was not a phasor data concentration frame, expected a type derived from \"IDataFrame\" but received a \"{0}\"", frame.GetType().Name)));
                 }
             }
 
@@ -1237,6 +1268,16 @@ namespace TVA.PhasorProtocols
                     m_configurationFrame.Timestamp = dataFrame.Timestamp;
                     image = m_configurationFrame.BinaryImage;
                     m_publishChannel.MulticastAsync(image, 0, image.Length);
+                }
+
+                // If the expected values did not arrive for a device, we mark the data as invalid
+                if (m_processDataValidFlag)
+                {
+                    foreach (IDataCell cell in dataFrame.Cells)
+                    {
+                        if (!cell.AllValuesAssigned)
+                            cell.DataIsValid = false;
+                    }
                 }
 
                 // Publish data frame binary image

@@ -290,6 +290,7 @@ namespace TVA.PhasorProtocols
         // Fields
         private IConfigurationCell m_configurationCell;
         private ushort m_statusFlags;
+        private bool m_statusAssigned;
         private PhasorValueCollection m_phasorValues;
         private IFrequencyValue m_frequencyValue;
         private AnalogValueCollection m_analogValues;
@@ -350,6 +351,7 @@ namespace TVA.PhasorProtocols
             m_frequencyValue = (IFrequencyValue)info.GetValue("frequencyValue", typeof(IFrequencyValue));
             m_analogValues = (AnalogValueCollection)info.GetValue("analogValues", typeof(AnalogValueCollection));
             m_digitalValues = (DigitalValueCollection)info.GetValue("digitalValues", typeof(DigitalValueCollection));
+            m_statusAssigned = true;
         }
 
         #endregion
@@ -435,6 +437,7 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_statusFlags = value;
+                m_statusAssigned = true;
             }
         }
 
@@ -504,7 +507,7 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return (PhasorValues.AllValuesAssigned && !FrequencyValue.IsEmpty && AnalogValues.AllValuesAssigned && DigitalValues.AllValuesAssigned);
+                return m_statusAssigned && PhasorValues.AllValuesAssigned && !FrequencyValue.IsEmpty && AnalogValues.AllValuesAssigned && DigitalValues.AllValuesAssigned;
             }
         }
 

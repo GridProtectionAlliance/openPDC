@@ -287,6 +287,8 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         protected HeaderFrame(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+            // Deserialize data frame
+            m_frameHeader = (CommonFrameHeader)info.GetValue("frameHeader", typeof(CommonFrameHeader));
         }
 
         #endregion
@@ -416,6 +418,34 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         }
 
         /// <summary>
+        /// Gets the length of the <see cref="HeaderImage"/>.
+        /// </summary>
+        protected override int HeaderLength
+        {
+            get
+            {
+                return CommonFrameHeader.FixedLength;
+            }
+        }
+
+        /// <summary>
+        /// Gets the binary header image of the <see cref="HeaderFrame"/> object.
+        /// </summary>
+        protected override byte[] HeaderImage
+        {
+            get
+            {
+                // Make sure to provide proper frame length for use in the common header image
+                unchecked
+                {
+                    CommonHeader.FrameLength = (ushort)BinaryLength;
+                }
+
+                return CommonHeader.BinaryImage;
+            }
+        }
+
+        /// <summary>
         /// <see cref="Dictionary{TKey,TValue}"/> of string based property names and values for the <see cref="HeaderFrame"/> object.
         /// </summary>
         public override Dictionary<string, string> Attributes
@@ -469,6 +499,9 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
+
+            // Serialize data frame
+            info.AddValue("frameHeader", m_frameHeader, typeof(CommonFrameHeader));
         }
 
         #endregion
