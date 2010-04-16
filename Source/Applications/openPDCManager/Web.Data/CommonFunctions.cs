@@ -507,7 +507,7 @@ namespace openPDCManager.Web.Data
 			catch (Exception ex)
 			{
 				LogException("RetrieveConfigurationFrame", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Configuration", SystemMessage = ex.Message + Environment.NewLine + s_responseMessage };
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Configuration", SystemMessage = ex.Message + " Error details: " + Environment.NewLine + s_responseMessage };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
@@ -521,7 +521,7 @@ namespace openPDCManager.Web.Data
 		{
 			if (e.Argument2.StartsWith("[PHASOR!SERVICES]") && !e.Argument2.Contains("*"))
 			{
-				string temp = e.Argument2.Replace("[PHASOR!SERVICES]", "").Replace("*", "");
+				string temp = e.Argument2.Replace("[PHASOR!SERVICES]", "").Replace("\r\n\r\n", "\r\n");
 				//if (temp.StartsWith("*"))
 				//    temp = temp.Substring(temp.LastIndexOf("*") + 1 );
 				s_responseMessage += temp;

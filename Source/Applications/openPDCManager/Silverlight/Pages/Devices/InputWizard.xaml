@@ -95,7 +95,7 @@
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                                                        
-                                    <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">                                        
+                                    <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Margin="0, 15, 0, 0">                                        
                                         <Button x:Name="ButtonRequestConfiguration" Content="../../Images/RequestData.png" Tag="Request Configuration From openPDC" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="2" Cursor="Hand">
                                             <Button.RenderTransform>
                                                 <ScaleTransform x:Name="ButtonRequestConfigurationTransform" ScaleX="1" ScaleY="1" />
