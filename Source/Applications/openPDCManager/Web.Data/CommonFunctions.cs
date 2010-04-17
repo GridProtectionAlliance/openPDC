@@ -477,8 +477,8 @@ namespace openPDCManager.Web.Data
 		private static ManualResetEvent s_responseWaitHandle;
 		public static List<WizardDeviceInfo> RetrieveConfigurationFrame(string nodeConnectionString, string deviceConnectionString, int protocolID)
 		{
-			//s_responseMessage = string.Empty;
-			//s_responseAttachment = null;
+			s_responseMessage = string.Empty;
+			s_responseAttachment = null;
 			WindowsServiceClient windowsServiceClient = new WindowsServiceClient(nodeConnectionString);
 			try
 			{
@@ -520,12 +520,7 @@ namespace openPDCManager.Web.Data
 		static void Helper_ReceivedServiceUpdate(object sender, TVA.EventArgs<TVA.Services.UpdateType, string> e)
 		{
 			if (e.Argument2.StartsWith("[PHASOR!SERVICES]") && !e.Argument2.Contains("*"))
-			{
-				string temp = e.Argument2.Replace("[PHASOR!SERVICES]", "").Replace("\r\n\r\n", "\r\n");
-				//if (temp.StartsWith("*"))
-				//    temp = temp.Substring(temp.LastIndexOf("*") + 1 );
-				s_responseMessage += temp;
-			}
+				s_responseMessage += e.Argument2.Replace("[PHASOR!SERVICES]", "").Replace("\r\n\r\n", "\r\n");			
 		}
 
 		private static void Helper_ReceivedServiceResponse(object sender, TVA.EventArgs<TVA.Services.ServiceResponse> e)
