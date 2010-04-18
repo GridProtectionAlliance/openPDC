@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_02340CBC034B421D959B8A37F8EEF613"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_13A76638D9BE1C872B5E95D135554565"
         "OwnerKey" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
         "MsmSig" = "8:_UNDEFINED"
@@ -29,6 +35,12 @@
         {
         "MsmKey" = "8:_2151971E3E9FF9204FD51F1B836BD069"
         "OwnerKey" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2ACC98A08DB9A5A7146ACFF9A5AEA5FF"
+        "OwnerKey" = "8:_B8514C631D1EF985D4406DE524E73F42"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -81,18 +93,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_5AEE91B1FBDCCC5F3DFA2568835F3EA4"
-        "OwnerKey" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_5AEE91B1FBDCCC5F3DFA2568835F3EA4"
-        "OwnerKey" = "8:_B8514C631D1EF985D4406DE524E73F42"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_634E5C34B6FCBD157E0EBCF1A80FB1E0"
         "OwnerKey" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
         "MsmSig" = "8:_UNDEFINED"
@@ -111,20 +111,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_9013BB39DACECBFA53FA0B99C2FBB255"
-        "OwnerKey" = "8:_5AEE91B1FBDCCC5F3DFA2568835F3EA4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9013BB39DACECBFA53FA0B99C2FBB255"
-        "OwnerKey" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9013BB39DACECBFA53FA0B99C2FBB255"
-        "OwnerKey" = "8:_B8514C631D1EF985D4406DE524E73F42"
+        "MsmKey" = "8:_A3C554204EE24CEEB17DD434FBCE08A4"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -220,6 +208,12 @@
         "Entry"
         {
         "MsmKey" = "8:_DF2ADF8C7EDEF6A1188E9E67DCB1E9E0"
+        "OwnerKey" = "8:_B8514C631D1EF985D4406DE524E73F42"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DF2ADF8C7EDEF6A1188E9E67DCB1E9E0"
         "OwnerKey" = "8:_7030CCD8CC66DA6CCF7F40DF09D271A4"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -238,19 +232,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_B8514C631D1EF985D4406DE524E73F42"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_7030CCD8CC66DA6CCF7F40DF09D271A4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2ACC98A08DB9A5A7146ACFF9A5AEA5FF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DF2ADF8C7EDEF6A1188E9E67DCB1E9E0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -310,19 +298,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B8514C631D1EF985D4406DE524E73F42"
+        "OwnerKey" = "8:_2ACC98A08DB9A5A7146ACFF9A5AEA5FF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5AEE91B1FBDCCC5F3DFA2568835F3EA4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9013BB39DACECBFA53FA0B99C2FBB255"
+        "OwnerKey" = "8:_DF2ADF8C7EDEF6A1188E9E67DCB1E9E0"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -430,6 +412,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_02340CBC034B421D959B8A37F8EEF613"
+            {
+            "SourcePath" = "8:PmuCapture.ico"
+            "TargetName" = "8:PmuCapture.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_5A3EFF278728431A903835C5D0B23885"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_13A76638D9BE1C872B5E95D135554565"
             {
             "AssemblyRegister" = "3:1"
@@ -585,37 +587,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5AEE91B1FBDCCC5F3DFA2568835F3EA4"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TVA.Communication, Version=1.1.17.43549, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_5AEE91B1FBDCCC5F3DFA2568835F3EA4"
-                    {
-                    "Name" = "8:TVA.Communication.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:TVA.Communication.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_5A3EFF278728431A903835C5D0B23885"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_634E5C34B6FCBD157E0EBCF1A80FB1E0"
             {
             "AssemblyRegister" = "3:1"
@@ -698,21 +669,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9013BB39DACECBFA53FA0B99C2FBB255"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A3C554204EE24CEEB17DD434FBCE08A4"
             {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TVA.Core, Version=1.1.17.43549, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_9013BB39DACECBFA53FA0B99C2FBB255"
-                    {
-                    "Name" = "8:TVA.Core.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:TVA.Core.dll"
-            "TargetName" = "8:"
+            "SourcePath" = "8:PmuConnection.ico"
+            "TargetName" = "8:PmuConnection.ico"
             "Tag" = "8:"
             "Folder" = "8:_5A3EFF278728431A903835C5D0B23885"
             "Condition" = "8:"
@@ -726,7 +686,7 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AA9DB20501A3D1642A0C6A9DC728BB6B"
@@ -815,7 +775,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TVA.PhasorProtocols, Version=1.1.27.44092, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:TVA.PhasorProtocols, Version=1.1.31.45531, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_B8514C631D1EF985D4406DE524E73F42"
@@ -944,8 +904,8 @@
             "Description" = "8:Captured data files associated with the PMU Connection Tester."
             "Extensions" = "8:PmuCapture"
             "MIME" = "8:"
-            "Icon" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
-            "IconIndex" = "3:32512"
+            "Icon" = "8:_02340CBC034B421D959B8A37F8EEF613"
+            "IconIndex" = "3:0"
                 "Command"
                 {
                 "Command" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
@@ -967,8 +927,8 @@
             "Description" = "8:Connection files associated with the PMU Connection Tester."
             "Extensions" = "8:PmuConnection"
             "MIME" = "8:"
-            "Icon" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
-            "IconIndex" = "3:32512"
+            "Icon" = "8:_A3C554204EE24CEEB17DD434FBCE08A4"
+            "IconIndex" = "3:0"
                 "Command"
                 {
                 "Command" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
@@ -1071,7 +1031,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:openPDC PMU Connection Tester"
         "ProductCode" = "8:{6602B32E-0671-4FE1-A7A4-63025D325F49}"
-        "PackageCode" = "8:{DCB1E801-2A7D-4E2D-A5C1-1DB24C418E1D}"
+        "PackageCode" = "8:{8BD42359-5EC7-47CB-B72C-988E1EC374F0}"
         "UpgradeCode" = "8:{2F75A16E-39EE-44C2-B8EE-D147ACB4743E}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
