@@ -895,22 +895,34 @@ namespace TVA.PhasorProtocols
                 m_coordinateFormat = CoordinateFormat.Polar;
 
             if (settings.TryGetValue("currentScalingValue", out setting))
-                m_currentScalingValue = uint.Parse(setting);
+            {
+                if (!uint.TryParse(setting, out m_currentScalingValue))
+                    m_currentScalingValue = unchecked((uint)int.Parse(setting));
+            }
             else
                 m_currentScalingValue = 2423U;
 
             if (settings.TryGetValue("voltageScalingValue", out setting))
-                m_voltageScalingValue = uint.Parse(setting);
+            {
+                if (!uint.TryParse(setting, out m_voltageScalingValue))
+                    m_voltageScalingValue = unchecked((uint)int.Parse(setting));
+            }
             else
                 m_voltageScalingValue = 2725785U;
 
             if (settings.TryGetValue("analogScalingValue", out setting))
-                m_analogScalingValue = uint.Parse(setting);
+            {
+                if (!uint.TryParse(setting, out m_analogScalingValue))
+                    m_analogScalingValue = unchecked((uint)int.Parse(setting));
+            }
             else
                 m_analogScalingValue = 1373291U;
 
             if (settings.TryGetValue("digitalMaskValue", out setting))
-                m_digitalMaskValue = uint.Parse(setting);
+            {
+                if (!uint.TryParse(setting, out m_digitalMaskValue))
+                    m_digitalMaskValue = unchecked((uint)int.Parse(setting));
+            }
             else
                 m_digitalMaskValue = Word.MakeDword(0xFFFF, 0x0000);
 
@@ -957,7 +969,8 @@ namespace TVA.PhasorProtocols
             PhasorType type;
             AnalogType analogType;
             char phase;
-            string label;
+            string label, scale;
+            uint scalingValue;
             int order;
 
             // Define a protocol independent configuration frame
@@ -972,11 +985,20 @@ namespace TVA.PhasorProtocols
                     cell = new ConfigurationCell(m_baseConfigurationFrame, ushort.Parse(deviceRow["ID"].ToString()));
 
                     // Assign user selected data and coordinate formats, derived classes can change
+                    
+                    // TODO: Stephen, once these fields are added to the data structure, uncomment the following cell definition lines then delete this comment line
+                    //cell.PhasorDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["PhasorDataFormat"].ToNonNullString(m_dataFormat.ToString()));
+                    //cell.FrequencyDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["FrequencyDataFormat"].ToNonNullString(m_dataFormat.ToString()));
+                    //cell.AnalogDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["AnalogDataFormat"].ToNonNullString(m_dataFormat.ToString()));
+                    //cell.PhasorCoordinateFormat = (CoordinateFormat)Enum.Parse(typeof(CoordinateFormat), deviceRow["CoordinateFormat"].ToNonNullString(m_coordinateFormat.ToString()));
+                    
+                    // TODO: Stephen, once the aforementioned fields are added, delete the following old cell definition lines then delete this comment line
                     cell.PhasorDataFormat = m_dataFormat;
                     cell.PhasorCoordinateFormat = m_coordinateFormat;
                     cell.FrequencyDataFormat = m_dataFormat;
                     cell.AnalogDataFormat = m_dataFormat;
 
+                    // Assign device identification labels
                     cell.IDLabel = deviceRow["Name"].ToString().Trim();
                     cell.StationName = deviceRow["Acronym"].ToString().TruncateRight(cell.MaximumStationNameLength).Trim();
 
@@ -987,12 +1009,21 @@ namespace TVA.PhasorProtocols
                         label = phasorRow["Label"].ToNonNullString("Phasor " + order).Trim().RemoveDuplicateWhiteSpace().TruncateRight(labelLength - 4);
                         type = phasorRow["Type"].ToNonNullString("V").Trim().ToUpper().StartsWith("V") ? PhasorType.Voltage : PhasorType.Current;
                         phase = phasorRow["Phase"].ToNonNullString("+").Trim().ToUpper()[0];
+                        scale = phasorRow["ScalingValue"].ToNonNullString("0");
+
+                        // Scale can be defined as a negative value in database, so check both formatting styles
+                        if (!uint.TryParse(scale, out scalingValue))
+                            scalingValue = unchecked((uint)int.Parse(scale));
+
+                        // Choose stream defined default value if no scaling value was defined
+                        if (scalingValue == 0)
+                            scalingValue = (type == PhasorType.Voltage ? m_voltageScalingValue : m_currentScalingValue);
 
                         cell.PhasorDefinitions.Add(
                             new PhasorDefinition(
                                 cell,
                                 GeneratePhasorLabel(label, phase, type),
-                                type == PhasorType.Voltage ? m_voltageScalingValue : m_currentScalingValue,
+                                scalingValue,
                                 type,
                                 null));
                     }
@@ -1009,12 +1040,17 @@ namespace TVA.PhasorProtocols
                             order = int.Parse(analogRow["LoadOrder"].ToNonNullString("0"));
                             label = analogRow["Label"].ToNonNullString("Analog " + order).Trim().RemoveDuplicateWhiteSpace().TruncateRight(labelLength);
                             analogType = analogRow["AnalogType"].ToNonNullString("SinglePointOnWave").ConvertToType<AnalogType>();
+                            scale = analogRow["ScalingValue"].ToNonNullString("0");
+
+                            // Scale can be defined as a negative value in database, so check both formatting styles
+                            if (!uint.TryParse(scale, out scalingValue))
+                                scalingValue = unchecked((uint)int.Parse(scale));
 
                             cell.AnalogDefinitions.Add(
                                 new AnalogDefinition(
                                     cell,
                                     label,
-                                    m_analogScalingValue,
+                                    scalingValue == 0 ? m_analogScalingValue : scalingValue,
                                     analogType));
                         }                            
                     }
@@ -1025,16 +1061,21 @@ namespace TVA.PhasorProtocols
                         foreach (DataRow digitalRow in DataSource.Tables["OutputStreamDeviceDigitals"].Select(string.Format("OutputStreamDeviceID={0}", cell.IDCode), "LoadOrder"))
                         {
                             order = int.Parse(digitalRow["LoadOrder"].ToNonNullString("0"));
+                            scale = digitalRow["MaskValue"].ToNonNullString("0");
 
                             // IEEE C37.118 digital labels are defined with all 16-labels (one for each bit) in one large formatted
                             // string - so we don't remove duplicate white space in this string
                             label = digitalRow["Label"].ToNonNullString("Digital " + order).Trim().TruncateRight(labelLength * 16);
 
+                            // Mask can be defined as a negative value in database, so check both formatting styles
+                            if (!uint.TryParse(scale, out scalingValue))
+                                scalingValue = unchecked((uint)int.Parse(scale));
+
                             cell.DigitalDefinitions.Add(
                                 new DigitalDefinition(
                                     cell,
                                     label,
-                                    m_digitalMaskValue));
+                                    scalingValue == 0 ? m_digitalMaskValue : scalingValue));
                         }
                     }
 
