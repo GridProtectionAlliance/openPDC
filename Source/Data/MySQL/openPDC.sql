@@ -179,6 +179,7 @@ CREATE TABLE OutputStreamDeviceDigital(
 	OutputStreamDeviceID INT NOT NULL,
 	ID INT AUTO_INCREMENT NOT NULL,
 	Label NVARCHAR(256) NOT NULL,
+	MaskValue INT NOT NULL DEFAULT 0,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_OutputStreamDeviceDigital PRIMARY KEY (ID ASC)
 );
@@ -190,6 +191,7 @@ CREATE TABLE OutputStreamDevicePhasor(
 	Label NVARCHAR(256) NOT NULL,
 	Type NCHAR(1) NOT NULL DEFAULT 'V',
 	Phase NCHAR(1) NOT NULL DEFAULT '+',
+	ScalingValue INT NOT NULL DEFAULT 0,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_OutputStreamDevicePhasor PRIMARY KEY (ID ASC)
 );
@@ -200,6 +202,7 @@ CREATE TABLE OutputStreamDeviceAnalog(
 	ID INT AUTO_INCREMENT NOT NULL,
 	Label NVARCHAR(16) NOT NULL,
 	Type INT NOT NULL DEFAULT 0,
+	ScalingValue INT NOT NULL DEFAULT 0,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_OutputStreamDeviceAnalog PRIMARY KEY (ID ASC)
 );
@@ -374,7 +377,10 @@ CREATE TABLE OutputStream(
 	DownsamplingMethod NVARCHAR(15) NOT NULL DEFAULT N'LastReceived',
 	DataFormat NVARCHAR(15) NOT NULL DEFAULT N'FloatingPoint',
 	CoordinateFormat NVARCHAR(15) NOT NULL DEFAULT N'Polar',
-	ScalingValue INT NOT NULL DEFAULT 1373291,
+	CurrentScalingValue INT NOT NULL DEFAULT 2423,
+	VoltageScalingValue INT NOT NULL DEFAULT 2725785,
+	AnalogScalingValue INT NOT NULL DEFAULT 1373291,
+	DigitalMaskValue INT NOT NULL DEFAULT -65536,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_OutputStream PRIMARY KEY (ID ASC)
@@ -567,7 +573,10 @@ SELECT OutputStream.NodeID, Runtime.ID, OutputStream.Acronym AS AdapterName,
  CONCAT(N'downsamplingMethod=', OutputStream.DownsamplingMethod),
  CONCAT(N'dataFormat=', OutputStream.DataFormat),
  CONCAT(N'coordinateFormat=', OutputStream.CoordinateFormat),
- CONCAT(N'scalingValue=', CAST(OutputStream.ScalingValue AS CHAR))) AS ConnectionString
+ CONCAT(N'currentScalingValue=', CAST(OutputStream.CurrentScalingValue AS CHAR)),
+ CONCAT(N'voltageScalingValue=', CAST(OutputStream.VoltageScalingValue AS CHAR)),
+ CONCAT(N'analogScalingValue=', CAST(OutputStream.AnalogScalingValue AS CHAR)),
+ CONCAT(N'digitalMaskValue=', CAST(OutputStream.DigitalMaskValue AS CHAR))) AS ConnectionString
 FROM OutputStream LEFT OUTER JOIN
  Runtime ON OutputStream.ID = Runtime.SourceID AND Runtime.SourceTable = N'OutputStream'
 WHERE (OutputStream.Enabled <> 0)
