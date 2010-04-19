@@ -1110,29 +1110,29 @@ Partial Class PMUConnectionTester
         Me.ContextMenuForTree.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
         Me.ContextMenuForTree.ShowImageMargin = False
         Me.ContextMenuForTree.ShowItemToolTips = False
-        Me.ContextMenuForTree.Size = New System.Drawing.Size(115, 76)
+        Me.ContextMenuForTree.Size = New System.Drawing.Size(112, 76)
         '
         'MenuItemRefresh
         '
         Me.MenuItemRefresh.Name = "MenuItemRefresh"
-        Me.MenuItemRefresh.Size = New System.Drawing.Size(114, 22)
+        Me.MenuItemRefresh.Size = New System.Drawing.Size(111, 22)
         Me.MenuItemRefresh.Text = "Refresh"
         '
         'ToolStripSeparator5
         '
         Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
-        Me.ToolStripSeparator5.Size = New System.Drawing.Size(111, 6)
+        Me.ToolStripSeparator5.Size = New System.Drawing.Size(108, 6)
         '
         'MenuItemExpandAll
         '
         Me.MenuItemExpandAll.Name = "MenuItemExpandAll"
-        Me.MenuItemExpandAll.Size = New System.Drawing.Size(114, 22)
+        Me.MenuItemExpandAll.Size = New System.Drawing.Size(111, 22)
         Me.MenuItemExpandAll.Text = "Expand All"
         '
         'MenuItemCollapseAll
         '
         Me.MenuItemCollapseAll.Name = "MenuItemCollapseAll"
-        Me.MenuItemCollapseAll.Size = New System.Drawing.Size(114, 22)
+        Me.MenuItemCollapseAll.Size = New System.Drawing.Size(111, 22)
         Me.MenuItemCollapseAll.Text = "Collapse All"
         '
         'GroupBoxConnection
@@ -1739,7 +1739,7 @@ Partial Class PMUConnectionTester
         '
         Me.MenuItemFile.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuItemConnection, Me.MenuItemConfigFile, Me.MenuItemCapture, Me.ToolStripSeparator1, Me.MenuItemExit})
         Me.MenuItemFile.Name = "MenuItemFile"
-        Me.MenuItemFile.Size = New System.Drawing.Size(35, 20)
+        Me.MenuItemFile.Size = New System.Drawing.Size(37, 20)
         Me.MenuItemFile.Text = "&File"
         '
         'MenuItemConnection
@@ -1747,19 +1747,19 @@ Partial Class PMUConnectionTester
         Me.MenuItemConnection.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuItemLoadConnection, Me.MenuItemSaveConnection})
         Me.MenuItemConnection.Image = CType(resources.GetObject("MenuItemConnection.Image"), System.Drawing.Image)
         Me.MenuItemConnection.Name = "MenuItemConnection"
-        Me.MenuItemConnection.Size = New System.Drawing.Size(139, 22)
+        Me.MenuItemConnection.Size = New System.Drawing.Size(136, 22)
         Me.MenuItemConnection.Text = "&Connection"
         '
         'MenuItemLoadConnection
         '
         Me.MenuItemLoadConnection.Name = "MenuItemLoadConnection"
-        Me.MenuItemLoadConnection.Size = New System.Drawing.Size(121, 22)
+        Me.MenuItemLoadConnection.Size = New System.Drawing.Size(109, 22)
         Me.MenuItemLoadConnection.Text = "&Load..."
         '
         'MenuItemSaveConnection
         '
         Me.MenuItemSaveConnection.Name = "MenuItemSaveConnection"
-        Me.MenuItemSaveConnection.Size = New System.Drawing.Size(121, 22)
+        Me.MenuItemSaveConnection.Size = New System.Drawing.Size(109, 22)
         Me.MenuItemSaveConnection.Text = "&Save..."
         '
         'MenuItemConfigFile
@@ -1767,20 +1767,20 @@ Partial Class PMUConnectionTester
         Me.MenuItemConfigFile.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuItemLoadConfigFile, Me.MenuItemSaveConfigFile})
         Me.MenuItemConfigFile.Image = CType(resources.GetObject("MenuItemConfigFile.Image"), System.Drawing.Image)
         Me.MenuItemConfigFile.Name = "MenuItemConfigFile"
-        Me.MenuItemConfigFile.Size = New System.Drawing.Size(139, 22)
+        Me.MenuItemConfigFile.Size = New System.Drawing.Size(136, 22)
         Me.MenuItemConfigFile.Text = "C&onfig File"
         '
         'MenuItemLoadConfigFile
         '
         Me.MenuItemLoadConfigFile.Name = "MenuItemLoadConfigFile"
-        Me.MenuItemLoadConfigFile.Size = New System.Drawing.Size(121, 22)
+        Me.MenuItemLoadConfigFile.Size = New System.Drawing.Size(109, 22)
         Me.MenuItemLoadConfigFile.Text = "&Load..."
         '
         'MenuItemSaveConfigFile
         '
         Me.MenuItemSaveConfigFile.Enabled = False
         Me.MenuItemSaveConfigFile.Name = "MenuItemSaveConfigFile"
-        Me.MenuItemSaveConfigFile.Size = New System.Drawing.Size(121, 22)
+        Me.MenuItemSaveConfigFile.Size = New System.Drawing.Size(109, 22)
         Me.MenuItemSaveConfigFile.Text = "&Save..."
         '
         'MenuItemCapture
@@ -1788,99 +1788,99 @@ Partial Class PMUConnectionTester
         Me.MenuItemCapture.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuItemStartCapture, Me.MenuItemStopCapture, Me.ToolStripSeparator3, Me.MenuItemStartStreamDebugCapture, Me.MenuItemStopStreamDebugCapture, Me.ToolStripSeparator6, Me.MenuItemCaptureSampleFrames, Me.MenuItemCancelSampleFrameCapture})
         Me.MenuItemCapture.Image = CType(resources.GetObject("MenuItemCapture.Image"), System.Drawing.Image)
         Me.MenuItemCapture.Name = "MenuItemCapture"
-        Me.MenuItemCapture.Size = New System.Drawing.Size(139, 22)
+        Me.MenuItemCapture.Size = New System.Drawing.Size(136, 22)
         Me.MenuItemCapture.Text = "C&apture"
         '
         'MenuItemStartCapture
         '
         Me.MenuItemStartCapture.Name = "MenuItemStartCapture"
-        Me.MenuItemStartCapture.Size = New System.Drawing.Size(234, 22)
+        Me.MenuItemStartCapture.Size = New System.Drawing.Size(233, 22)
         Me.MenuItemStartCapture.Text = "S&tart Capture..."
         '
         'MenuItemStopCapture
         '
         Me.MenuItemStopCapture.Enabled = False
         Me.MenuItemStopCapture.Name = "MenuItemStopCapture"
-        Me.MenuItemStopCapture.Size = New System.Drawing.Size(234, 22)
+        Me.MenuItemStopCapture.Size = New System.Drawing.Size(233, 22)
         Me.MenuItemStopCapture.Text = "Sto&p Capture"
         '
         'ToolStripSeparator3
         '
         Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
-        Me.ToolStripSeparator3.Size = New System.Drawing.Size(231, 6)
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(230, 6)
         '
         'MenuItemStartStreamDebugCapture
         '
         Me.MenuItemStartStreamDebugCapture.Name = "MenuItemStartStreamDebugCapture"
-        Me.MenuItemStartStreamDebugCapture.Size = New System.Drawing.Size(234, 22)
+        Me.MenuItemStartStreamDebugCapture.Size = New System.Drawing.Size(233, 22)
         Me.MenuItemStartStreamDebugCapture.Text = "Start Stream &Debug Capture..."
         '
         'MenuItemStopStreamDebugCapture
         '
         Me.MenuItemStopStreamDebugCapture.Enabled = False
         Me.MenuItemStopStreamDebugCapture.Name = "MenuItemStopStreamDebugCapture"
-        Me.MenuItemStopStreamDebugCapture.Size = New System.Drawing.Size(234, 22)
+        Me.MenuItemStopStreamDebugCapture.Size = New System.Drawing.Size(233, 22)
         Me.MenuItemStopStreamDebugCapture.Text = "Stop Stream D&ebug Capture"
         '
         'ToolStripSeparator6
         '
         Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
-        Me.ToolStripSeparator6.Size = New System.Drawing.Size(231, 6)
+        Me.ToolStripSeparator6.Size = New System.Drawing.Size(230, 6)
         '
         'MenuItemCaptureSampleFrames
         '
         Me.MenuItemCaptureSampleFrames.Name = "MenuItemCaptureSampleFrames"
-        Me.MenuItemCaptureSampleFrames.Size = New System.Drawing.Size(234, 22)
+        Me.MenuItemCaptureSampleFrames.Size = New System.Drawing.Size(233, 22)
         Me.MenuItemCaptureSampleFrames.Text = "&Capture Sample Frames..."
         '
         'MenuItemCancelSampleFrameCapture
         '
         Me.MenuItemCancelSampleFrameCapture.Enabled = False
         Me.MenuItemCancelSampleFrameCapture.Name = "MenuItemCancelSampleFrameCapture"
-        Me.MenuItemCancelSampleFrameCapture.Size = New System.Drawing.Size(234, 22)
+        Me.MenuItemCancelSampleFrameCapture.Size = New System.Drawing.Size(233, 22)
         Me.MenuItemCancelSampleFrameCapture.Text = "C&ancel Sample Frame Capture"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(136, 6)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(133, 6)
         '
         'MenuItemExit
         '
         Me.MenuItemExit.Name = "MenuItemExit"
-        Me.MenuItemExit.Size = New System.Drawing.Size(139, 22)
+        Me.MenuItemExit.Size = New System.Drawing.Size(136, 22)
         Me.MenuItemExit.Text = "E&xit"
         '
         'MenuItemHelp
         '
         Me.MenuItemHelp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuItemLocalHelp, Me.MenuItemOnlineHelp, Me.ToolStripSeparator2, Me.MenuItemAbout})
         Me.MenuItemHelp.Name = "MenuItemHelp"
-        Me.MenuItemHelp.Size = New System.Drawing.Size(40, 20)
+        Me.MenuItemHelp.Size = New System.Drawing.Size(44, 20)
         Me.MenuItemHelp.Text = "&Help"
         '
         'MenuItemLocalHelp
         '
         Me.MenuItemLocalHelp.Image = CType(resources.GetObject("MenuItemLocalHelp.Image"), System.Drawing.Image)
         Me.MenuItemLocalHelp.Name = "MenuItemLocalHelp"
-        Me.MenuItemLocalHelp.Size = New System.Drawing.Size(151, 22)
+        Me.MenuItemLocalHelp.Size = New System.Drawing.Size(146, 22)
         Me.MenuItemLocalHelp.Text = "&Local Help..."
         '
         'MenuItemOnlineHelp
         '
         Me.MenuItemOnlineHelp.Image = CType(resources.GetObject("MenuItemOnlineHelp.Image"), System.Drawing.Image)
         Me.MenuItemOnlineHelp.Name = "MenuItemOnlineHelp"
-        Me.MenuItemOnlineHelp.Size = New System.Drawing.Size(151, 22)
+        Me.MenuItemOnlineHelp.Size = New System.Drawing.Size(146, 22)
         Me.MenuItemOnlineHelp.Text = "&Online Help..."
         '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(148, 6)
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(143, 6)
         '
         'MenuItemAbout
         '
         Me.MenuItemAbout.Name = "MenuItemAbout"
-        Me.MenuItemAbout.Size = New System.Drawing.Size(151, 22)
+        Me.MenuItemAbout.Size = New System.Drawing.Size(146, 22)
         Me.MenuItemAbout.Text = "&About..."
         '
         'TabSharedControlsPageChart
