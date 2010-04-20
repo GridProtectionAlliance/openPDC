@@ -716,7 +716,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                                 cell = Cells[x];
 
                                 // Lookup INI file configuration cell by ID label
-                                m_configurationFileCells.TryGetByIDLabel(cell.IDLabel, ref configurationCell);
+                                m_configurationFileCells.TryGetByIDLabel(cell.IDLabel, out configurationCell);
                                 configurationFileCell = (ConfigurationCell)configurationCell;
 
                                 if (configurationFileCell == null)

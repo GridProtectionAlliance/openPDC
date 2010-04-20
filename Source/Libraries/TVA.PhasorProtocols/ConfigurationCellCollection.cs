@@ -285,7 +285,7 @@ namespace TVA.PhasorProtocols
         /// otherwise, null is returned.
         /// </param>
         /// <returns><c>true</c> if the <see cref="ConfigurationCellCollection"/> contains an element with the specified <paramref name="label"/>; otherwise, <c>false</c>.</returns>
-        public virtual bool TryGetByIDLabel(string label, ref IConfigurationCell configurationCell)
+        public virtual bool TryGetByIDLabel(string label, out IConfigurationCell configurationCell)
         {
             configurationCell = this.FirstOrDefault(cell => string.Compare(cell.IDLabel, label, true) == 0);
             return (configurationCell != null);

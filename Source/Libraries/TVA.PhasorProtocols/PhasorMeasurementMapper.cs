@@ -234,6 +234,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using TVA.Communication;
@@ -257,6 +258,7 @@ namespace TVA.PhasorProtocols
         private MultiProtocolFrameParser m_frameParser;
         private Dictionary<string, IMeasurement> m_definedMeasurements;
         private Dictionary<ushort, ConfigurationCell> m_definedDevices;
+        private Dictionary<string, ConfigurationCell> m_labelDefinedDevices;
         private Dictionary<string, long> m_undefinedDevices;
         private System.Timers.Timer m_dataStreamMonitor;
         private bool m_allowUseOfCachedConfiguration;
@@ -455,14 +457,20 @@ namespace TVA.PhasorProtocols
 
                 IConfigurationCell parsedDevice;
                 string stationName;
-
-                foreach (ConfigurationCell definedDevice in m_definedDevices.Values)
+                
+                foreach (ConfigurationCell definedDevice in DefinedDevices)
                 {
                     stationName = null;
 
                     // Attempt to lookup station name in configuration frame of connected device
-                    if (m_frameParser != null && m_frameParser.ConfigurationFrame != null && m_frameParser.ConfigurationFrame.Cells.TryGetByIDCode(definedDevice.IDCode, out parsedDevice))
-                        stationName = parsedDevice.StationName;
+                    if (m_frameParser != null && m_frameParser.ConfigurationFrame != null)
+                    {
+                        // Attempt to lookup by label (if defined), then by ID code
+                        if ((m_labelDefinedDevices != null && m_labelDefinedDevices.ContainsKey(definedDevice.IDLabel) && 
+                            m_frameParser.ConfigurationFrame.Cells.TryGetByIDLabel(definedDevice.IDLabel, out parsedDevice)) ||
+                            m_frameParser.ConfigurationFrame.Cells.TryGetByIDCode(definedDevice.IDCode, out parsedDevice))
+                                stationName = parsedDevice.StationName;
+                    }
 
                     // We will default to defined name if parsed name is unavailable
                     if (string.IsNullOrEmpty(stationName))
@@ -550,6 +558,20 @@ namespace TVA.PhasorProtocols
             }
         }
 
+        /// <summary>
+        /// Gets an enumeration of all defined system devices (regardless of ID or label based definition)
+        /// </summary>
+        protected IEnumerable<ConfigurationCell> DefinedDevices
+        {
+            get
+            {
+                if (m_labelDefinedDevices != null)
+                    return m_definedDevices.Values.Concat(m_labelDefinedDevices.Values);
+
+                return m_definedDevices.Values;
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
@@ -593,10 +615,7 @@ namespace TVA.PhasorProtocols
             base.Initialize();
 
             Dictionary<string, string> settings = Settings;
-            ConfigurationCell definedDevice;
-            Measurement definedMeasurement;
-            MeasurementKey pointID;
-            string setting, signalReference;
+            string setting;
 
             // Load optional mapper specific connection parameters
             if (settings.TryGetValue("isConcentrator", out setting))
@@ -705,15 +724,27 @@ namespace TVA.PhasorProtocols
             frameParser.DeviceID = m_accessID;
             frameParser.SourceName = Name;
 
-            // Assign reference to frame parser and attach to needed events
+            // Assign reference to frame parser for this connection and attach to needed events
             this.FrameParser = frameParser;
 
-            // Load device list for this mapper connection
+            // Load input devices associated with this connection
+            LoadInputDevices();
+
+            // Load active device measurements associated with this connection
+            LoadDeviceMeasurements();
+        }
+
+        // Load device list for this mapper connection
+        private void LoadInputDevices()
+        {
+            ConfigurationCell definedDevice;
+
             m_definedDevices = new Dictionary<ushort, ConfigurationCell>();
 
             if (m_isConcentrator)
             {
                 StringBuilder deviceStatus = new StringBuilder();
+                bool devicedAdded;
                 int index = 0;
 
                 deviceStatus.AppendLine();
@@ -725,23 +756,53 @@ namespace TVA.PhasorProtocols
                 // Making a connection to a concentrator that can support multiple devices
                 foreach (DataRow row in DataSource.Tables["InputStreamDevices"].Select(string.Format("ParentID={0}", ID)))
                 {
+                    // Create new configuration cell parsing needed ID code and label from input stream configuration
                     definedDevice = new ConfigurationCell(ushort.Parse(row["AccessID"].ToString()));
-                    definedDevice.IDLabel = row["Acronym"].ToString();
+                    definedDevice.IDLabel = row["Acronym"].ToString().Trim();
                     definedDevice.Tag = uint.Parse(row["ID"].ToString());
-                    m_definedDevices.Add(definedDevice.IDCode, definedDevice);
+                    devicedAdded = false;
 
-                    // Create status display string for expected device
-                    deviceStatus.Append("   Device ");
-                    deviceStatus.Append((index++).ToString("00"));
-                    deviceStatus.Append(": ");
-                    deviceStatus.Append(definedDevice.IDLabel);
-                    deviceStatus.Append(" (");
-                    deviceStatus.Append(definedDevice.IDCode);
-                    deviceStatus.Append(')');
-                    deviceStatus.AppendLine();
+                    // See if key already exists in this collection
+                    if (m_definedDevices.ContainsKey(definedDevice.IDCode))
+                    {
+                        // For devices that do not have unique ID codes, we fall back on its label for unique lookup
+                        if (m_labelDefinedDevices == null)
+                            m_labelDefinedDevices = new Dictionary<string, ConfigurationCell>(StringComparer.OrdinalIgnoreCase);
+
+                        if (m_labelDefinedDevices.ContainsKey(definedDevice.IDLabel))
+                        {
+                            OnProcessException(new InvalidOperationException(string.Format("ERROR: Device ID \"{0}\", labeled \"{1}\", was not unique in the {2} input stream. Data from devices that are not distinctly defined by ID code or label will not be correctly parsed until uniquely identified.", definedDevice.IDCode, definedDevice.IDLabel, Name)));
+                        }
+                        else
+                        {
+                            m_labelDefinedDevices.Add(definedDevice.IDLabel, definedDevice);
+                            devicedAdded = true;
+                        }
+                    }
+                    else
+                    {
+                        m_definedDevices.Add(definedDevice.IDCode, definedDevice);
+                        devicedAdded = true;
+                    }
+
+                    if (devicedAdded)
+                    {
+                        // Create status display string for expected device
+                        deviceStatus.Append("   Device ");
+                        deviceStatus.Append((index++).ToString("00"));
+                        deviceStatus.Append(": ");
+                        deviceStatus.Append(definedDevice.IDLabel);
+                        deviceStatus.Append(" (");
+                        deviceStatus.Append(definedDevice.IDCode);
+                        deviceStatus.Append(')');
+                        deviceStatus.AppendLine();
+                    }
                 }
 
                 OnStatusMessage(deviceStatus.ToString());
+
+                if (m_labelDefinedDevices != null)
+                    OnStatusMessage("WARNING: {0} has (1) defined input devices that do not have unique ID codes (i.e., the AccessID), as a result system will use the device label for identification. This is not the optimal configuration.", Name, m_labelDefinedDevices.Count);
             }
             else
             {
@@ -751,8 +812,15 @@ namespace TVA.PhasorProtocols
                 definedDevice.Tag = ID;
                 m_definedDevices.Add(definedDevice.IDCode, definedDevice);
             }
+        }
 
-            // Load active device measurements for this mapper connection
+        // Load active device measurements for this mapper connection
+        private void LoadDeviceMeasurements()
+        {
+            Measurement definedMeasurement;
+            MeasurementKey pointID;
+            string signalReference;
+
             m_definedMeasurements = new Dictionary<string, IMeasurement>();
 
             foreach (DataRow row in DataSource.Tables["ActiveMeasurements"].Select(string.Format("DeviceID={0}", ID)))
@@ -814,7 +882,7 @@ namespace TVA.PhasorProtocols
         {
             if (m_definedDevices != null)
             {
-                foreach (ConfigurationCell definedDevice in m_definedDevices.Values)
+                foreach (ConfigurationCell definedDevice in DefinedDevices)
                 {
                     definedDevice.TotalDataQualityErrors = 0;
                     definedDevice.TotalDeviceErrors = 0;
@@ -929,7 +997,7 @@ namespace TVA.PhasorProtocols
                     // Calculate total bad frames
                     long totalDataErrors = 0;
 
-                    foreach (ConfigurationCell definedDevice in m_definedDevices.Values)
+                    foreach (ConfigurationCell definedDevice in DefinedDevices)
                     {
                         totalDataErrors += definedDevice.TotalDataQualityErrors;
                     }
@@ -1085,8 +1153,10 @@ namespace TVA.PhasorProtocols
             {
                 try
                 {
-                    // Lookup device information by its ID code
-                    if (m_definedDevices.TryGetValue(parsedDevice.IDCode, out definedDevice))
+                    // Lookup device by its label (if needed), then by its ID code
+                    if ((m_labelDefinedDevices != null && 
+                        m_labelDefinedDevices.TryGetValue(parsedDevice.IDLabel, out definedDevice)) || 
+                        m_definedDevices.TryGetValue(parsedDevice.IDCode, out definedDevice))
                     {
                         // Track latest reporting time for this device
                         if (timestamp > definedDevice.LastReportTime)

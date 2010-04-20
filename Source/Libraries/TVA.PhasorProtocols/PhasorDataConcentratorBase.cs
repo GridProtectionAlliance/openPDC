@@ -984,8 +984,7 @@ namespace TVA.PhasorProtocols
                     // Create a new configuration cell
                     cell = new ConfigurationCell(m_baseConfigurationFrame, ushort.Parse(deviceRow["ID"].ToString()));
 
-                    // Assign user selected data and coordinate formats, derived classes can change
-                    
+                    // Assign user selected data and coordinate formats, derived classes can change                    
                     cell.PhasorDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["PhasorDataFormat"].ToNonNullString(m_dataFormat.ToString()));
                     cell.FrequencyDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["FrequencyDataFormat"].ToNonNullString(m_dataFormat.ToString()));
                     cell.AnalogDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["AnalogDataFormat"].ToNonNullString(m_dataFormat.ToString()));
