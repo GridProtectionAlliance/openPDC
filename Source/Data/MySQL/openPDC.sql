@@ -271,6 +271,10 @@ CREATE TABLE OutputStreamDevice(
 	Acronym NVARCHAR(16) NOT NULL,
 	BpaAcronym NVARCHAR(4) NULL,
 	Name NVARCHAR(100) NOT NULL,
+	PhasorDataFormat NVARCHAR(15) NULL,
+	FrequencyDataFormat NVARCHAR(15) NULL,
+	AnalogDataFormat NVARCHAR(15) NULL,
+	CoordinateFormat NVARCHAR(15) NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled TINYINT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_OutputStreamDevice PRIMARY KEY (ID ASC)
@@ -544,7 +548,8 @@ ORDER BY CustomInputAdapter.LoadOrder;
 CREATE VIEW RuntimeOutputStreamDevice
 AS
 SELECT OutputStreamDevice.NodeID, Runtime.ID AS ParentID, OutputStreamDevice.ID, OutputStreamDevice.Acronym, 
- OutputStreamDevice.BpaAcronym, OutputStreamDevice.Name, OutputStreamDevice.LoadOrder
+ OutputStreamDevice.BpaAcronym, OutputStreamDevice.Name, OutputStreamDevice.PhasorDataFormat, OutputStreamDevice.FrequencyDataFormat,
+ OutputStreamDevice.AnalogDataFormat, OutputStreamDevice.CoordinateFormat, OutputStreamDevice.LoadOrder
 FROM OutputStreamDevice LEFT OUTER JOIN
  Runtime ON OutputStreamDevice.AdapterID = Runtime.SourceID AND Runtime.SourceTable = N'OutputStream'
 WHERE (OutputStreamDevice.Enabled <> 0)

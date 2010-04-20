@@ -986,17 +986,10 @@ namespace TVA.PhasorProtocols
 
                     // Assign user selected data and coordinate formats, derived classes can change
                     
-                    // TODO: Stephen, once these fields are added to the data structure, uncomment the following cell definition lines then delete this comment line
-                    //cell.PhasorDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["PhasorDataFormat"].ToNonNullString(m_dataFormat.ToString()));
-                    //cell.FrequencyDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["FrequencyDataFormat"].ToNonNullString(m_dataFormat.ToString()));
-                    //cell.AnalogDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["AnalogDataFormat"].ToNonNullString(m_dataFormat.ToString()));
-                    //cell.PhasorCoordinateFormat = (CoordinateFormat)Enum.Parse(typeof(CoordinateFormat), deviceRow["CoordinateFormat"].ToNonNullString(m_coordinateFormat.ToString()));
-                    
-                    // TODO: Stephen, once the aforementioned fields are added, delete the following old cell definition lines then delete this comment line
-                    cell.PhasorDataFormat = m_dataFormat;
-                    cell.PhasorCoordinateFormat = m_coordinateFormat;
-                    cell.FrequencyDataFormat = m_dataFormat;
-                    cell.AnalogDataFormat = m_dataFormat;
+                    cell.PhasorDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["PhasorDataFormat"].ToNonNullString(m_dataFormat.ToString()));
+                    cell.FrequencyDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["FrequencyDataFormat"].ToNonNullString(m_dataFormat.ToString()));
+                    cell.AnalogDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["AnalogDataFormat"].ToNonNullString(m_dataFormat.ToString()));
+                    cell.PhasorCoordinateFormat = (CoordinateFormat)Enum.Parse(typeof(CoordinateFormat), deviceRow["CoordinateFormat"].ToNonNullString(m_coordinateFormat.ToString()));
 
                     // Assign device identification labels
                     cell.IDLabel = deviceRow["Name"].ToString().Trim();
