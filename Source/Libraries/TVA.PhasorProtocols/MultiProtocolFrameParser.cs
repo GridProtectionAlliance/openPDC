@@ -1427,7 +1427,7 @@ namespace TVA.PhasorProtocols
                             fnetParameters.FrameRate = ushort.Parse(setting);
 
                         if (settings.TryGetValue("nominalFrequency", out setting))
-                            fnetParameters.NominalFrequency = (LineFrequency)Enum.Parse(typeof(LineFrequency), setting, true);
+                            fnetParameters.NominalFrequency = (LineFrequency)int.Parse(setting);
                     }
                     break;
                 case PhasorProtocol.SelFastMessage:
@@ -1438,7 +1438,7 @@ namespace TVA.PhasorProtocols
 
                     if (selParameters != null)
                     {
-                        if (settings.TryGetValue("messageperiod", out setting))
+                        if (settings.TryGetValue("messagePeriod", out setting))
                             selParameters.MessagePeriod = (SelFastMessage.MessagePeriod)Enum.Parse(typeof(SelFastMessage.MessagePeriod), setting, true);
                     }
                     break;
