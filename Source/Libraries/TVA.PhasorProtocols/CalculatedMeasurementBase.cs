@@ -400,15 +400,15 @@ namespace TVA.PhasorProtocols
 
                 status.Append(base.Status);
 
-                if (InputMeasurementKeys != null)
+                if (OutputMeasurements != null)
                 {
                     status.AppendLine();
-                    status.AppendLine("Input measurement keys signal type summary:");
+                    status.AppendLine("Output measurements signal type summary:");
                     status.AppendLine();
 
                     foreach (SignalType signalType in Enum.GetValues(typeof(SignalType)))
                     {
-                        count = InputMeasurementKeys.Where((key, index) => InputMeasurementKeyTypes[index] == signalType).Count();
+                        count = OutputMeasurements.Where((key, index) => OutputMeasurementTypes[index] == signalType).Count();
 
                         if (count > 0)
                         {
@@ -418,15 +418,15 @@ namespace TVA.PhasorProtocols
                     }
                 }
 
-                if (OutputMeasurements != null)
+                if (InputMeasurementKeys != null)
                 {
                     status.AppendLine();
-                    status.AppendLine("Output measurement signal type summary:");
+                    status.AppendLine("Input measurement keys signal type summary:");
                     status.AppendLine();
 
                     foreach (SignalType signalType in Enum.GetValues(typeof(SignalType)))
                     {
-                        count = OutputMeasurements.Where((key, index) => OutputMeasurementTypes[index] == signalType).Count();
+                        count = InputMeasurementKeys.Where((key, index) => InputMeasurementKeyTypes[index] == signalType).Count();
 
                         if (count > 0)
                         {
@@ -449,14 +449,17 @@ namespace TVA.PhasorProtocols
         {
             try
             {
-                DataRow row = DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID = '{0}'", key.ToString()))[0];
-                return (SignalType)Enum.Parse(typeof(SignalType), row["SignalType"].ToString(), true);
+                DataRow[] filteredRows = DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID = '{0}'", key.ToString()));
+
+                if (filteredRows.Length > 0)
+                    return (SignalType)Enum.Parse(typeof(SignalType), filteredRows[0]["SignalType"].ToString(), true);
             }
             catch (Exception ex)
             {
                 OnProcessException(new InvalidOperationException(string.Format("Failed to lookup signal type for measurement {0}: {1}", key.ToString(), ex.Message), ex));
-                return SignalType.NONE;
             }
+            
+            return SignalType.NONE;
         }
 
         #endregion        

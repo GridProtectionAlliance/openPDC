@@ -192,8 +192,12 @@
       <SubType>Designer</SubType>
       <DependentUpon>SplashScreen.vb</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="CommandChannel.ico" />
     <Content Include="openPDCTestStream.PmuConnection">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LastRun.PmuConnection">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="PMUConnectionTester.ico" />
