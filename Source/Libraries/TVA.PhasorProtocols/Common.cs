@@ -12,6 +12,8 @@
 //       Generated original version of source code.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
+//  04/21/2010 - J.Ritchie Carroll
+//       Added GetFormattedSignalTypeName signal type enumeration extension.
 //
 //*******************************************************************************************************
 
@@ -324,7 +326,43 @@ namespace TVA.PhasorProtocols
                 case PhasorProtocol.Macrodyne:
                     return "Macrodyne";
                 default:
-                    return Enum.GetName(typeof(PhasorProtocol), protocol).Replace('_', '.').ToUpper();
+                    return protocol.ToString().Replace('_', '.').ToUpper();
+            }
+        }
+
+        /// <summary>
+        /// Returns display friendly signal type name.
+        /// </summary>
+        /// <param name="signalType"><see cref="SignalType"/> to return display name for.</param>
+        /// <returns>Friendly protocol display name for specified <paramref name="SignalType"/>.</returns>
+        public static string GetFormattedSignalTypeName(this SignalType signalType)
+        {
+            switch (signalType)
+            {
+                case SignalType.IPHM:
+                    return "Current phase magnitude";
+                case SignalType.IPHA:
+                    return "Current phase angle";
+                case SignalType.VPHM:
+                    return "Voltage phase magnitude";
+                case SignalType.VPHA:
+                    return "Voltage phase angle";
+                case SignalType.FREQ:
+                    return "Frequency";
+                case SignalType.DFDT:
+                    return "Frequency delta (dF/dt)";
+                case SignalType.ALOG:
+                    return "Analog";
+                case SignalType.STAT:
+                    return "Status flags";
+                case SignalType.DIGI:
+                    return "Digital";
+                case SignalType.CALC:
+                    return "Calculated";
+                case SignalType.NONE:
+                    return "Undefined";
+                default:
+                    return signalType.ToString().ToTitleCase();
             }
         }
     }

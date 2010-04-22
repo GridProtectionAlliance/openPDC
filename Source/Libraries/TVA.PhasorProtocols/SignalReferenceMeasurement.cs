@@ -243,6 +243,7 @@ namespace TVA.PhasorProtocols
         #region [ Members ]
 
         // Fields
+        private IMeasurement m_measurement;
         private SignalReference m_signalReference;
 
         #endregion
@@ -259,6 +260,7 @@ namespace TVA.PhasorProtocols
         {
             base.ValueQualityIsGood = measurement.ValueQualityIsGood;
             base.TimestampQualityIsGood = measurement.TimestampQualityIsGood;
+            m_measurement = measurement;
             m_signalReference = signalReference;
         }
 
@@ -277,6 +279,342 @@ namespace TVA.PhasorProtocols
             }
         }
 
+        /// <summary>
+        /// Gets or sets a boolean value that determines if this <see cref="SignalReferenceMeasurement"/> has been
+        /// discarded during sorting.
+        /// </summary>
+        /// <remarks>
+        /// Unlike other properties in the <see cref="SignalReferenceMeasurement"/>, updates to this property apply
+        /// to the source <see cref="IMeasurement"/> reference - updates to other properties will only apply to this
+        /// <see cref="SignalReferenceMeasurement"/> instance. Since all measurement operations coming in from the
+        /// input adapters occur on the same thread (typically the communications thread), the source measurement
+        /// can be marked as discarded before it hits the archive queue. This way the archived measurement quality
+        /// flags can be marked to note that the measurement never made it into the real-time processing stream.
+        /// </remarks>
+        public override bool IsDiscarded
+        {
+            get
+            {
+                return m_measurement.IsDiscarded;
+            }
+            set
+            {
+                m_measurement.IsDiscarded = value;
+            }
+        }
+
         #endregion
     }
+
+    #region [ Wrapper Implementation ]
+
+    // Below is an alternate version of the SignalReferenceMeasurement that acts as a "wrapper" instead of a new
+    // instance measurement with copied values. If more than the IsDiscarded property needed to be updated in the
+    // instance implementation, then the wrapper version will make more sense. We are currently using the instance
+    // version since it should operate a little quicker.
+
+    ///// <summary>
+    ///// Represents an <see cref="IMeasurement"/> wrapper that is associated with a <see cref="SignalReference"/>.
+    ///// </summary>
+    //public class SignalReferenceMeasurement : IMeasurement
+    //{
+    //    #region [ Members ]
+
+    //    // Fields
+    //    private IMeasurement m_measurement;
+    //    private SignalReference m_signalReference;
+
+    //    #endregion
+
+    //    #region [ Constructors ]
+
+    //    /// <summary>
+    //    /// Constructs a new <see cref="SignalReferenceMeasurement"/> from the specified parameters.
+    //    /// </summary>
+    //    /// <param name="measurement">Source <see cref="IMeasurement"/> value.</param>
+    //    /// <param name="signalReference">Associated <see cref="SignalReference"/>.</param>
+    //    public SignalReferenceMeasurement(IMeasurement measurement, SignalReference signalReference)
+    //    {
+    //        m_measurement = measurement;
+    //        m_signalReference = signalReference;
+    //    }
+
+    //    #endregion
+
+    //    #region [ Properties ]
+
+    //    /// <summary>
+    //    /// Gets the <see cref="SignalReference"/> associated with this <see cref="SignalReferenceMeasurement"/>.
+    //    /// </summary>
+    //    public SignalReference SignalReference
+    //    {
+    //        get
+    //        {
+    //            return m_signalReference;
+    //        }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets the numeric ID of this <see cref="SignalReferenceMeasurement"/>.
+    //    /// </summary>
+    //    /// <remarks>
+    //    /// <para>In most implementations, this will be a required field.</para>
+    //    /// <para>Note that this field, in addition to <see cref="Source"/>, typically creates the primary key for a <see cref="SignalReferenceMeasurement"/>.</para>
+    //    /// </remarks>
+    //    public uint ID
+    //    {
+    //        get
+    //        {
+    //            return m_measurement.ID;
+    //        }
+    //        set
+    //        {
+    //            m_measurement.ID = value;
+    //        }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets the source of this <see cref="SignalReferenceMeasurement"/>.
+    //    /// </summary>
+    //    /// <remarks>
+    //    /// <para>In most implementations, this will be a required field.</para>
+    //    /// <para>Note that this field, in addition to <see cref="ID"/>, typically creates the primary key for a <see cref="SignalReferenceMeasurement"/>.</para>
+    //    /// <para>This value is typically used to track the archive name in which measurement is stored.</para>
+    //    /// </remarks>
+    //    public string Source
+    //    {
+    //        get
+    //        {
+    //            return m_measurement.Source;
+    //        }
+    //        set
+    //        {
+    //            m_measurement.Source = value;
+    //        }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets the primary key (a <see cref="MeasurementKey"/>, of this <see cref="SignalReferenceMeasurement"/>.
+    //    /// </summary>
+    //    public MeasurementKey Key
+    //    {
+    //        get
+    //        {
+    //            return m_measurement.Key;
+    //        }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets the <see cref="Guid"/> based signal ID of this <see cref="SignalReferenceMeasurement"/>, if available.
+    //    /// </summary>
+    //    public System.Guid SignalID
+    //    {
+    //        get
+    //        {
+    //            return m_measurement.SignalID;
+    //        }
+    //        set
+    //        {
+    //            m_measurement.SignalID = value;
+    //        }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets the text based tag name of this <see cref="SignalReferenceMeasurement"/>.
+    //    /// </summary>
+    //    public string TagName
+    //    {
+    //        get
+    //        {
+    //            return m_measurement.TagName;
+    //        }
+    //        set
+    //        {
+    //            m_measurement.TagName = value;
+    //        }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets the raw measurement value that is not offset by <see cref="Adder"/> and <see cref="Multiplier"/>.
+    //    /// </summary>
+    //    /// <returns>Raw value of this <see cref="SignalReferenceMeasurement"/> (i.e., value that is not offset by <see cref="Adder"/> and <see cref="Multiplier"/>).</returns>
+    //    public double Value
+    //    {
+    //        get
+    //        {
+    //            return m_measurement.Value;
+    //        }
+    //        set
+    //        {
+    //            m_measurement.Value = value;
+    //        }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets the adjusted numeric value of this measurement, taking into account the specified <see cref="Adder"/> and <see cref="Multiplier"/> offsets.
+    //    /// </summary>
+    //    /// <remarks>
+    //    /// Note that returned value will be offset by <see cref="Adder"/> and <see cref="Multiplier"/>.
+    //    /// </remarks>
+    //    /// <returns><see cref="Value"/> offset by <see cref="Adder"/> and <see cref="Multiplier"/> (i.e., <c><see cref="Value"/> * <see cref="Multiplier"/> + <see cref="Adder"/></c>).</returns>
+    //    public double AdjustedValue
+    //    {
+    //        get
+    //        {
+    //            return m_measurement.AdjustedValue;
+    //        }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets an offset to add to the measurement value. This defaults to 0.0.
+    //    /// </summary>
+    //    public double Adder
+    //    {
+    //        get
+    //        {
+    //            return m_measurement.Adder;
+    //        }
+    //        set
+    //        {
+    //            m_measurement.Adder = value;
+    //        }
+    //    }
+
+    //    /// <summary>
+    //    /// Defines a mulplicative offset to apply to the measurement value. This defaults to 1.0.
+    //    /// </summary>
+    //    public double Multiplier
+    //    {
+    //        get
+    //        {
+    //            return m_measurement.Multiplier;
+    //        }
+    //        set
+    //        {
+    //            m_measurement.Multiplier = value;
+    //        }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets exact timestamp, in ticks, of the data represented by this <see cref="SignalReferenceMeasurement"/>.
+    //    /// </summary>
+    //    /// <remarks>
+    //    /// The value of this property represents the number of 100-nanosecond intervals that have elapsed since 12:00:00 midnight, January 1, 0001.
+    //    /// </remarks>
+    //    public Ticks Timestamp
+    //    {
+    //        get
+    //        {
+    //            return m_measurement.Timestamp;
+    //        }
+    //        set
+    //        {
+    //            m_measurement.Timestamp = value;
+    //        }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets a boolean value that determines if the quality of the numeric value of this <see cref="SignalReferenceMeasurement"/> is good.
+    //    /// </summary>
+    //    public bool ValueQualityIsGood
+    //    {
+    //        get
+    //        {
+    //            return m_measurement.ValueQualityIsGood;
+    //        }
+    //        set
+    //        {
+    //            m_measurement.ValueQualityIsGood = value;
+    //        }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets a boolean value that determines if the quality of the timestamp of this <see cref="SignalReferenceMeasurement"/> is good.
+    //    /// </summary>
+    //    public bool TimestampQualityIsGood
+    //    {
+    //        get
+    //        {
+    //            return m_measurement.TimestampQualityIsGood;
+    //        }
+    //        set
+    //        {
+    //            m_measurement.TimestampQualityIsGood = value;
+    //        }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets a boolean value that determines if this <see cref="SignalReferenceMeasurement"/> has been discarded during sorting.
+    //    /// </summary>
+    //    public bool IsDiscarded
+    //    {
+    //        get
+    //        {
+    //            return m_measurement.IsDiscarded;
+    //        }
+    //        set
+    //        {
+    //            m_measurement.IsDiscarded = value;
+    //        }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets function used to apply a downsampling filter over a sequence of <see cref="IMeasurement"/> values.
+    //    /// </summary>
+    //    public MeasurementValueFilterFunction MeasurementValueFilter
+    //    {
+    //        get
+    //        {
+    //            return m_measurement.MeasurementValueFilter;
+    //        }
+    //        set
+    //        {
+    //            m_measurement.MeasurementValueFilter = value;
+    //        }
+    //    }
+
+    //    #endregion
+
+    //    #region [ Methods ]
+
+    //    /// <summary>
+    //    /// Determines whether the specified <see cref="IMeasurement"/> is equal to the current <see cref="SignalReferenceMeasurement"/>.
+    //    /// </summary>
+    //    /// <param name="other">The <see cref="IMeasurement"/> to compare with the current <see cref="SignalReferenceMeasurement"/>.</param>
+    //    /// <returns>
+    //    /// true if the specified <see cref="IMeasurement"/> is equal to the current <see cref="SignalReferenceMeasurement"/>;
+    //    /// otherwise, false.
+    //    /// </returns>
+    //    public bool Equals(IMeasurement other)
+    //    {
+    //        return m_measurement.Equals(other);
+    //    }
+
+    //    /// <summary>
+    //    /// Compares the <see cref="SignalReferenceMeasurement"/> with the specified <see cref="Object"/>.
+    //    /// </summary>
+    //    /// <param name="obj">The <see cref="Object"/> to compare with the current <see cref="SignalReferenceMeasurement"/>.</param>
+    //    /// <returns>A 32-bit signed integer that indicates the relative order of the objects being compared.</returns>
+    //    /// <exception cref="ArgumentException"><paramref name="obj"/> is not an <see cref="IMeasurement"/>.</exception>
+    //    /// <remarks>Measurement implementations should compare by hash code.</remarks>
+    //    public int CompareTo(object obj)
+    //    {
+    //        return m_measurement.CompareTo(obj);
+    //    }
+
+    //    /// <summary>
+    //    /// Compares the <see cref="SignalReferenceMeasurement"/> with an <see cref="IMeasurement"/>.
+    //    /// </summary>
+    //    /// <param name="other">The <see cref="IMeasurement"/> to compare with the current <see cref="SignalReferenceMeasurement"/>.</param>
+    //    /// <returns>A 32-bit signed integer that indicates the relative order of the objects being compared.</returns>
+    //    /// <remarks>Measurement implementations should compare by hash code.</remarks>
+    //    public int CompareTo(IMeasurement other)
+    //    {
+    //        return m_measurement.CompareTo(other);
+    //    }
+
+    //    #endregion
+    //}
+
+    #endregion
 }

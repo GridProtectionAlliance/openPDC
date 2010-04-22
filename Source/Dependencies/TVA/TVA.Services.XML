@@ -89,12 +89,14 @@
         <member name="M:TVA.Services.ClientHelper.SaveSettings">
             <summary>
             Saves settings for the <see cref="T:TVA.Services.ClientHelper"/> to the config file if the <see cref="P:TVA.Services.ClientHelper.PersistSettings"/> property is set to true.
-            </summary>        
+            </summary>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Services.ClientHelper.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Services.ClientHelper.LoadSettings">
             <summary>
             Loads saved settings for the <see cref="T:TVA.Services.ClientHelper"/> from the config file if the <see cref="P:TVA.Services.ClientHelper.PersistSettings"/> property is set to true.
-            </summary>        
+            </summary>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Services.ClientHelper.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Services.ClientHelper.Connect">
             <summary>
@@ -595,18 +597,21 @@
         <member name="M:TVA.Services.ServiceHelper.SaveSettings">
             <summary>
             Saves settings of the <see cref="T:TVA.Services.ServiceHelper"/> to the config file if the <see cref="P:TVA.Services.ServiceHelper.PersistSettings"/> property is set to true.
-            </summary>        
+            </summary>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Services.ServiceHelper.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Services.ServiceHelper.SaveSettings(System.Boolean)">
             <summary>
             Saves settings of the <see cref="T:TVA.Services.ServiceHelper"/> to the config file if the <see cref="P:TVA.Services.ServiceHelper.PersistSettings"/> property is set to true.
             </summary>
             <param name="includeServiceComponents">A boolean value that indicates whether the settings of <see cref="P:TVA.Services.ServiceHelper.ServiceComponents"/> are to be saved.</param>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Services.ServiceHelper.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Services.ServiceHelper.LoadSettings">
             <summary>
             Loads saved settings of the <see cref="T:TVA.Services.ServiceHelper"/> from the config file if the <see cref="P:TVA.Services.ServiceHelper.PersistSettings"/> property is set to true.
-            </summary>        
+            </summary>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Services.ServiceHelper.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Services.ServiceHelper.LoadSettings(System.Boolean)">
             <summary>

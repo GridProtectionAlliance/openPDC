@@ -252,6 +252,10 @@ namespace TVA.PhasorProtocols
     public enum CommonStatusFlags : uint
     {
         /// <summary>
+        /// Data was discarded from real-time stream due to late arrival (0 when not discarded, 1 when discarded).
+        /// </summary>
+        DataDiscarded = (uint)Bits.Bit20,
+        /// <summary>
         /// Data is valid (0 when device data is valid, 1 when invalid or device is in test mode).
         /// </summary>
         DataIsValid = (uint)Bits.Bit19,
@@ -270,7 +274,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Reserved bits for future common flags, presently set to 0.
         /// </summary>
-        ReservedFlags = (uint)(Bits.Bit20 | Bits.Bit21 | Bits.Bit22 | Bits.Bit23 | Bits.Bit24 | Bits.Bit25 | Bits.Bit26 | Bits.Bit27 | Bits.Bit28 | Bits.Bit29 | Bits.Bit30 | Bits.Bit31),
+        ReservedFlags = (uint)(Bits.Bit21 | Bits.Bit22 | Bits.Bit23 | Bits.Bit24 | Bits.Bit25 | Bits.Bit26 | Bits.Bit27 | Bits.Bit28 | Bits.Bit29 | Bits.Bit30 | Bits.Bit31),
         /// <summary>
         /// No flags.
         /// </summary>
@@ -305,6 +309,7 @@ namespace TVA.PhasorProtocols
         private Ticks m_timestamp;
         private double m_adder;
         private double m_multiplier;
+        private bool m_isDiscarded;
         private MeasurementValueFilterFunction m_measurementValueFilter;
 
         #endregion
@@ -316,14 +321,15 @@ namespace TVA.PhasorProtocols
         /// </summary>
         /// <param name="parent">The reference to parent <see cref="IDataFrame"/> of this <see cref="DataCellBase"/>.</param>
         /// <param name="configurationCell">The <see cref="IConfigurationCell"/> associated with this <see cref="DataCellBase"/>.</param>
+        /// <param name="statusFlags">The default status flags to apply to this <see cref="DataCellBase"/>.</param>
         /// <param name="maximumPhasors">Sets the maximum number of phasors for the <see cref="PhasorValues"/> collection.</param>
         /// <param name="maximumAnalogs">Sets the maximum number of phasors for the <see cref="AnalogValues"/> collection.</param>
         /// <param name="maximumDigitals">Sets the maximum number of phasors for the <see cref="DigitalValues"/> collection.</param>
-        protected DataCellBase(IDataFrame parent, IConfigurationCell configurationCell, int maximumPhasors, int maximumAnalogs, int maximumDigitals)
+        protected DataCellBase(IDataFrame parent, IConfigurationCell configurationCell, ushort statusFlags, int maximumPhasors, int maximumAnalogs, int maximumDigitals)
             : base(parent, 0)
         {
             m_configurationCell = configurationCell;
-            m_statusFlags = ushort.MaxValue;
+            m_statusFlags = statusFlags;
             m_phasorValues = new PhasorValueCollection(maximumPhasors);
             m_analogValues = new AnalogValueCollection(maximumAnalogs);
             m_digitalValues = new DigitalValueCollection(maximumDigitals);
@@ -484,6 +490,9 @@ namespace TVA.PhasorProtocols
                 if (DeviceError)
                     commonFlags |= (uint)PhasorProtocols.CommonStatusFlags.DeviceError;
 
+                if (m_isDiscarded)
+                    commonFlags |= (uint)PhasorProtocols.CommonStatusFlags.DataDiscarded;
+
                 return commonFlags;
             }
             set
@@ -497,6 +506,7 @@ namespace TVA.PhasorProtocols
                 SynchronizationIsValid = (value & (uint)PhasorProtocols.CommonStatusFlags.SynchronizationIsValid) == 0;
                 DataSortingType = ((value & (uint)PhasorProtocols.CommonStatusFlags.DataSortingType) == 0) ? PhasorProtocols.DataSortingType.ByTimestamp : PhasorProtocols.DataSortingType.ByArrival;
                 DeviceError = ((value & (uint)PhasorProtocols.CommonStatusFlags.DeviceError) > 0 );
+                m_isDiscarded = ((value & (uint)PhasorProtocols.CommonStatusFlags.DataDiscarded) > 0);
             }
         }
 
@@ -641,6 +651,7 @@ namespace TVA.PhasorProtocols
                 baseAttributes.Add("Synchronization Is Valid", SynchronizationIsValid.ToString());
                 baseAttributes.Add("Data Sorting Type", Enum.GetName(typeof(DataSortingType), DataSortingType));
                 baseAttributes.Add("Device Error", DeviceError.ToString());
+                baseAttributes.Add("Data Discarded", m_isDiscarded.ToString());
                 baseAttributes.Add("Total Phasor Values", PhasorValues.Count.ToString());
                 baseAttributes.Add("Total Analog Values", AnalogValues.Count.ToString());
                 baseAttributes.Add("Total Digital Values", DigitalValues.Count.ToString());
@@ -905,10 +916,14 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return this.DataIsValid;
+                // The quality of the status flags "measurement" is always assumed to be good since it consists
+                // of the flags that make up the actual quality of the incoming device data, as a result this
+                // property will always return true so as to not affect archived data quality
+                return true;
             }
             set
             {
+                // Updates to data quality are applied to status flags
                 this.DataIsValid = value;
             }
         }
@@ -917,11 +932,31 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return this.SynchronizationIsValid;
+                // The quality of the status flags "measurement" is always assumed to be good since it consists
+                // of the flags that make up the actual quality of the incoming device data, as a result this
+                // property will always return true so as to not affect archived data quality
+                return true;
             }
             set
             {
+                // Updates to time quality are applied to status flags
                 this.SynchronizationIsValid = value;
+            }
+        }
+
+        bool IMeasurement.IsDiscarded
+        {
+            get
+            {
+                // The quality of the status flags "measurement" is always assumed to be good since it consists
+                // of the flags that make up the actual quality of the incoming device data, as a result this
+                // property will always return false so as to not affect archived data quality
+                return false;
+            }
+            set
+            {
+                // Updates to discarded state are applied to status flags
+                m_isDiscarded = value;
             }
         }
 

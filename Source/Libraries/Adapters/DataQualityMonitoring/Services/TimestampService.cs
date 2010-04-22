@@ -231,12 +231,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TVA.Web.Services;
-using TVA.Measurements;
-using TVA;
 using System.ServiceModel;
+using TVA;
+using TVA.Measurements;
+using TVA.Web.Services;
 
 namespace DataQualityMonitoring.Services
 {

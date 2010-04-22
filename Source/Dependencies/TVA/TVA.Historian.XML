@@ -101,12 +101,14 @@
         <member name="M:TVA.Historian.DataListener.SaveSettings">
             <summary>
             Saves settings for the <see cref="T:TVA.Historian.DataListener"/> to the config file if the <see cref="P:TVA.Historian.DataListener.PersistSettings"/> property is set to true.
-            </summary>        
+            </summary>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.DataListener.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.DataListener.LoadSettings">
             <summary>
             Loads saved settings for the <see cref="T:TVA.Historian.DataListener"/> from the config file if the <see cref="P:TVA.Historian.DataListener.PersistSettings"/>  property is set to true.
-            </summary>        
+            </summary>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.DataListener.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.DataListener.Start">
             <summary>
@@ -1782,9 +1784,16 @@
         </member>
         <member name="M:TVA.Historian.Files.ArchiveDataPoint.#ctor(TVA.Measurements.IMeasurement)">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> class.
+            Initializes a new instance of the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> class from a <see cref="T:TVA.Measurements.IMeasurement"/> value.
             </summary>
             <param name="measurement">Object that implements the <see cref="T:TVA.Measurements.IMeasurement"/> interface.</param>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveDataPoint.#ctor(TVA.Measurements.IMeasurement,TVA.Historian.Quality)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> class from a <see cref="T:TVA.Measurements.IMeasurement"/> value.
+            </summary>
+            <param name="measurement">Object that implements the <see cref="T:TVA.Measurements.IMeasurement"/> interface.</param>
+            <param name="quality">Specific <see cref="P:TVA.Historian.Files.ArchiveDataPoint.Quality"/> value to apply to new <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.</param>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveDataPoint.#ctor(System.Int32,TVA.Historian.TimeTag,System.Single,TVA.Historian.Quality)">
             <summary>
@@ -2326,12 +2335,14 @@
         <member name="M:TVA.Historian.Files.ArchiveFile.SaveSettings">
             <summary>
             Saves settings for the <see cref="T:TVA.Historian.Files.ArchiveFile"/> to the config file if the <see cref="P:TVA.Historian.Files.ArchiveFile.PersistSettings"/> property is set to true.
-            </summary>        
+            </summary>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.Files.ArchiveFile.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.LoadSettings">
             <summary>
             Loads saved settings for the <see cref="T:TVA.Historian.Files.ArchiveFile"/> from the config file if the <see cref="P:TVA.Historian.Files.ArchiveFile.PersistSettings"/> property is set to true.
-            </summary>        
+            </summary>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.Files.ArchiveFile.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.Open">
             <summary>
@@ -4735,11 +4746,13 @@
             <summary>
             Saves metadata provider settings to the config file if the <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.PersistSettings"/> property is set to true.
             </summary>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.MetadataProviders.MetadataProviderBase.LoadSettings">
             <summary>
             Loads saved metadata provider settings from the config file if the <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.PersistSettings"/> property is set to true.
             </summary>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.MetadataProviders.MetadataProviderBase.Refresh">
             <summary>
@@ -5150,11 +5163,13 @@
             <summary>
             Saves replication provider settings to the config file if the <see cref="P:TVA.Historian.Replication.ReplicationProviderBase.PersistSettings"/> property is set to true.
             </summary>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.Replication.ReplicationProviderBase.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.Replication.ReplicationProviderBase.LoadSettings">
             <summary>
             Loads saved replication provider settings from the config file if the <see cref="P:TVA.Historian.Replication.ReplicationProviderBase.PersistSettings"/> property is set to true.
-            </summary>        
+            </summary>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.Replication.ReplicationProviderBase.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.Replication.ReplicationProviderBase.Replicate">
             <summary>
@@ -5360,12 +5375,14 @@
         <member name="M:TVA.Historian.Notifiers.NotifierBase.SaveSettings">
             <summary>
             Saves notifier settings to the config file if the <see cref="P:TVA.Historian.Notifiers.NotifierBase.PersistSettings"/> property is set to true.
-            </summary>        
+            </summary>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.Notifiers.NotifierBase.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.Notifiers.NotifierBase.LoadSettings">
             <summary>
             Loads saved notifier settings from the config file if the <see cref="P:TVA.Historian.Notifiers.NotifierBase.PersistSettings"/> property is set to true.
-            </summary>        
+            </summary>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.Notifiers.NotifierBase.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.Notifiers.NotifierBase.Notify(System.String,System.String,System.String,TVA.Historian.Notifiers.NotificationTypes)">
             <summary>

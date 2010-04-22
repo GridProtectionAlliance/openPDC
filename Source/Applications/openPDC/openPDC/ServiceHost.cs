@@ -424,7 +424,7 @@ namespace openPDC
             if (settings.TryGetValue("Provider", out setting))
             {
                 // Check if provider is for Access since it uses braces as Guid delimeters
-                if (setting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.CurrentCultureIgnoreCase))
+                if (setting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
                 {
                     m_nodeIDQueryString = "{" + m_nodeID + "}";
 

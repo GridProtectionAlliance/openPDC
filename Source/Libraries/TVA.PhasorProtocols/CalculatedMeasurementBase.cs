@@ -8,8 +8,10 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  10/19/2009 - Ritchie
+//  10/19/2009 - J. Ritchie Carroll
 //       Generated original version of source code.
+//  04/21/2010 - J. Ritchie Carroll
+//       Added signal type summary to the calculated measurement status.
 //
 //*******************************************************************************************************
 
@@ -230,7 +232,10 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Text;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
 
@@ -248,7 +253,7 @@ namespace TVA.PhasorProtocols
     public enum SignalType
     {
         /// <summary>
-        /// Current magnitude.
+        /// Current phase magnitude.
         /// </summary>
         IPHM = 1,
         /// <summary>
@@ -256,7 +261,7 @@ namespace TVA.PhasorProtocols
         /// </summary>
         IPHA = 2,
         /// <summary>
-        /// Voltage magnitude.
+        /// Voltage phase magnitude.
         /// </summary>
         VPHM = 3,
         /// <summary>
@@ -380,6 +385,61 @@ namespace TVA.PhasorProtocols
             }
         }
 
+        /// <summary>
+        /// Returns the detailed status of the calculated measurement.
+        /// </summary>
+        /// <remarks>
+        /// Derived classes should extend status with implementation specific information.
+        /// </remarks>
+        public override string Status
+        {
+            get
+            {
+                StringBuilder status = new StringBuilder();
+                int count;
+
+                status.Append(base.Status);
+
+                if (InputMeasurementKeys != null)
+                {
+                    status.AppendLine();
+                    status.AppendLine("Input measurement keys signal type summary:");
+                    status.AppendLine();
+
+                    foreach (SignalType signalType in Enum.GetValues(typeof(SignalType)))
+                    {
+                        count = InputMeasurementKeys.Where((key, index) => InputMeasurementKeyTypes[index] == signalType).Count();
+
+                        if (count > 0)
+                        {
+                            status.AppendFormat("{0} {1} signal{2}", count.ToString().PadLeft(15), signalType.GetFormattedSignalTypeName(), count > 1 ? "s" : "");
+                            status.AppendLine();
+                        }
+                    }
+                }
+
+                if (OutputMeasurements != null)
+                {
+                    status.AppendLine();
+                    status.AppendLine("Output measurement signal type summary:");
+                    status.AppendLine();
+
+                    foreach (SignalType signalType in Enum.GetValues(typeof(SignalType)))
+                    {
+                        count = OutputMeasurements.Where((key, index) => OutputMeasurementTypes[index] == signalType).Count();
+
+                        if (count > 0)
+                        {
+                            status.AppendFormat("{0} {1} signal{2}", count.ToString().PadLeft(15), signalType.GetFormattedSignalTypeName(), count > 1 ? "s" : "");
+                            status.AppendLine();
+                        }
+                    }
+                }
+
+                return status.ToString();
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
@@ -392,8 +452,9 @@ namespace TVA.PhasorProtocols
                 DataRow row = DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID = '{0}'", key.ToString()))[0];
                 return (SignalType)Enum.Parse(typeof(SignalType), row["SignalType"].ToString(), true);
             }
-            catch
+            catch (Exception ex)
             {
+                OnProcessException(new InvalidOperationException(string.Format("Failed to lookup signal type for measurement {0}: {1}", key.ToString(), ex.Message), ex));
                 return SignalType.NONE;
             }
         }

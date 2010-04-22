@@ -370,6 +370,9 @@ namespace TVA.PhasorProtocols
 
             // Synchrophasor protocols should default to millisecond resolution
             base.TimeResolution = Ticks.PerMillisecond;
+
+            // Subscribe to discarding measurements event of base class
+            //base.DiscardingMeasurements += 
         }
 
         #endregion
@@ -465,6 +468,9 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets or sets the <see cref="PhasorProtocols.DataFormat"/> defined for this <see cref="PhasorDataConcentratorBase"/>.
         /// </summary>
+        /// <remarks>
+        /// Note that this value represents the default format that will be used if user has not specified a data format for an individual device.
+        /// </remarks>
         public DataFormat DataFormat
         {
             get
@@ -480,6 +486,9 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets or sets the <see cref="PhasorProtocols.CoordinateFormat"/> defined for this <see cref="PhasorDataConcentratorBase"/>.
         /// </summary>
+        /// <remarks>
+        /// Note that this value represents the default format that will be used if user has not specified a coordinate format for an individual device.
+        /// </remarks>
         public CoordinateFormat CoordinateFormat
         {
             get
@@ -497,7 +506,7 @@ namespace TVA.PhasorProtocols
         /// </summary>
         /// <remarks>
         /// Typically only the lower 24-bits will be used to scale current values in 10^–5 amperes per bit. Note that this value represents
-        /// the default value that will be used if user has not specified a value for the individual current scaling value.
+        /// the default value that will be used if user has not specified a value for an individual device.
         /// </remarks>
         public uint CurrentScalingValue
         {
@@ -516,7 +525,7 @@ namespace TVA.PhasorProtocols
         /// </summary>
         /// <remarks>
         /// Typically only the lower 24-bits will be used to scale voltage values in 10^–5 volts per bit. Note that this value represents
-        /// the default value that will be used if user has not specified a value for the individual voltage scaling value.
+        /// the default value that will be used if user has not specified a value for an individual device.
         /// </remarks>
         public uint VoltageScalingValue
         {
@@ -535,7 +544,7 @@ namespace TVA.PhasorProtocols
         /// </summary>
         /// <remarks>
         /// Typically only the lower 24-bits will be used to scale analog values in 10^–5 units per bit. Note that this value represents
-        /// the default value that will be used if user has not specified a value for the individual analog scaling value.
+        /// the default value that will be used if user has not specified a value for an individual device.
         /// </remarks>
         public uint AnalogScalingValue
         {
@@ -554,10 +563,10 @@ namespace TVA.PhasorProtocols
         /// </summary>
         /// <remarks>
         /// This value represents two mask words for use with digital status values. In IEEE C37.118 configuration frames, the two 16-bit words that make up a digital mask
-        /// value are provided for each defined digital word. Note that this value represents the default value that will be used if user has not specified a value for the
-        /// individual digital word. The low word will be used to indicate the normal status of the digital inputs by returning a 0 when exclusive ORed (XOR) with the status
-        /// word. The high word will indicate the current valid inputs to the PMU by having a bit set in the binary position corresponding to the digital input and
-        /// all other bits set to 0. If digital status words are used for something other than boolean status indications, the use is left to the user.
+        /// value are provided for each defined digital word. Note that this value represents the default value that will be used if user has not specified a value for an
+        /// individual device. The low word will be used to indicate the normal status of the digital inputs by returning a 0 when exclusive ORed (XOR) with the status word.
+        /// The high word will indicate the current valid inputs to the PMU by having a bit set in the binary position corresponding to the digital input and all other bits
+        /// set to 0. If digital status words are used for something other than boolean status indications, the use is left to the user.
         /// </remarks>
         public uint DigitalMaskValue
         {
@@ -777,21 +786,24 @@ namespace TVA.PhasorProtocols
         public override void Start()
         {
             // Wait for initialization to complete.
-            base.WaitForInitialize();
+            if (WaitForInitialize(InitializationTimeout))
+            {
+                // Start communications servers
+                if (m_autoStartDataChannel && m_dataChannel != null && m_dataChannel.CurrentState == ServerState.NotRunning)
+                    m_dataChannel.Start();
 
-            // Start communications servers
-            if (m_autoStartDataChannel && m_dataChannel != null && m_dataChannel.CurrentState == ServerState.NotRunning)
-                m_dataChannel.Start();
+                if (m_commandChannel != null && m_commandChannel.CurrentState == ServerState.NotRunning)
+                    m_commandChannel.Start();
 
-            if (m_commandChannel != null && m_commandChannel.CurrentState == ServerState.NotRunning)
-                m_commandChannel.Start();
-
-            // Base action adapter gets started once data channel has been started (see m_dataChannel_ServerStarted)
-            // so that the system doesn't attempt to start frame publication without an operational output data channel
-            // when m_autoStartDataChannel is set to false. Otherwise if data is being published on command channel,
-            // we go ahead and start concentration engine...
-            if (m_publishChannel == m_commandChannel)
-                base.Start();
+                // Base action adapter gets started once data channel has been started (see m_dataChannel_ServerStarted)
+                // so that the system doesn't attempt to start frame publication without an operational output data channel
+                // when m_autoStartDataChannel is set to false. Otherwise if data is being published on command channel,
+                // we go ahead and start concentration engine...
+                if (m_publishChannel == m_commandChannel)
+                    base.Start();
+            }
+            else
+                OnProcessException(new TimeoutException("Failed to start phasor data concentrator due to timeout waiting for initialization."));
         }
 
         /// <summary>
@@ -984,7 +996,7 @@ namespace TVA.PhasorProtocols
                     // Create a new configuration cell
                     cell = new ConfigurationCell(m_baseConfigurationFrame, ushort.Parse(deviceRow["ID"].ToString()));
 
-                    // Assign user selected data and coordinate formats, derived classes can change                    
+                    // Assign user selected data and coordinate formats, derived classes can change
                     cell.PhasorDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["PhasorDataFormat"].ToNonNullString(m_dataFormat.ToString()));
                     cell.FrequencyDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["FrequencyDataFormat"].ToNonNullString(m_dataFormat.ToString()));
                     cell.AnalogDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["AnalogDataFormat"].ToNonNullString(m_dataFormat.ToString()));

@@ -230,8 +230,9 @@
 #End Region
 
 Imports System.Text
-Imports System.ComponentModel
 Imports System.Collections.ObjectModel
+Imports System.ComponentModel
+Imports System.Configuration
 Imports System.Globalization
 Imports TVA.Configuration
 
@@ -452,7 +453,8 @@ Public Class ApplicationSettings
 
     <Category(ApplicationSettingsCategory), _
     Description("Maximum encoded bytes to display for frames in the ""Real-time Frame Detail""."), _
-    DefaultValue(DefaultMaximumFrameDisplayBytes)> _
+    DefaultValue(DefaultMaximumFrameDisplayBytes), _
+    UserScopedSetting()> _
     Public Property MaximumFrameDisplayBytes() As Integer
         Get
             Return m_maximumFrameDisplayBytes
@@ -468,7 +470,8 @@ Public Class ApplicationSettings
 
     <Category(ApplicationSettingsCategory), _
     Description("Set to True to load previous connection settings at startup."), _
-    DefaultValue(DefaultRestoreLastConnectionSettings)> _
+    DefaultValue(DefaultRestoreLastConnectionSettings), _
+    UserScopedSetting()> _
     Public Property RestoreLastConnectionSettings() As Boolean
         Get
             Return m_restoreLastConnectionSettings
@@ -480,7 +483,8 @@ Public Class ApplicationSettings
 
     <Category(ApplicationSettingsCategory), _
     Description("Set to True to force use of IPv4."), _
-    DefaultValue(DefaultForceIPv4)> _
+    DefaultValue(DefaultForceIPv4), _
+    UserScopedSetting()> _
     Public Property ForceIPv4() As Boolean
         Get
             Return m_forceIPv4
@@ -492,7 +496,8 @@ Public Class ApplicationSettings
 
     <Category(ApplicationSettingsCategory), _
     Description("Defines the number of parsing exceptions allowed during ParsingExceptionWindow before connection is reset."), _
-    DefaultValue(DefaultAllowedParsingExceptions)> _
+    DefaultValue(DefaultAllowedParsingExceptions), _
+    UserScopedSetting()> _
     Public Property AllowedParsingExceptions() As Integer
         Get
             Return m_allowedParsingExceptions
@@ -504,7 +509,8 @@ Public Class ApplicationSettings
 
     <Category(ApplicationSettingsCategory), _
     Description("Defines time duration, in seconds, to monitor parsing exceptions."), _
-    DefaultValue(DefaultParsingExceptionWindow)> _
+    DefaultValue(DefaultParsingExceptionWindow), _
+    UserScopedSetting()> _
     Public Property ParsingExceptionWindow() As Double
         Get
             Return m_parsingExceptionWindow
@@ -520,7 +526,8 @@ Public Class ApplicationSettings
 
     <Category(AttributeTreeCategory), _
     Description("Defines the highlight background color for channel node entries on the attribute tree."), _
-    DefaultValue(GetType(Color), DefaultChannelNodeBackgroundColor)> _
+    DefaultValue(GetType(Color), DefaultChannelNodeBackgroundColor), _
+    UserScopedSetting()> _
     Public Property ChannelNodeBackgroundColor() As Color
         Get
             Return m_channelNodeBackgroundColor
@@ -532,7 +539,8 @@ Public Class ApplicationSettings
 
     <Category(AttributeTreeCategory), _
     Description("Defines the highlight foreground color for channel node entries on the attribute tree."), _
-    DefaultValue(GetType(Color), DefaultChannelNodeForegroundColor)> _
+    DefaultValue(GetType(Color), DefaultChannelNodeForegroundColor), _
+    UserScopedSetting()> _
     Public Property ChannelNodeForegroundColor() As Color
         Get
             Return m_channelNodeForegroundColor
@@ -544,7 +552,8 @@ Public Class ApplicationSettings
 
     <Category(AttributeTreeCategory), _
     Description("Defines the initial state for nodes when added to the attribute tree.  Note that a fully expanded tree will take much longer to initialize."), _
-    DefaultValue(GetType(NodeState), DefaultInitialNodeState)> _
+    DefaultValue(GetType(NodeState), DefaultInitialNodeState), _
+    UserScopedSetting()> _
     Public Property InitialNodeState() As NodeState
         Get
             Return m_initialNodeState
@@ -556,7 +565,8 @@ Public Class ApplicationSettings
 
     <Category(AttributeTreeCategory), _
     Description("Set to True to show attributes as children of their channel entries."), _
-    DefaultValue(DefaultShowAttributesAsChildren)> _
+    DefaultValue(DefaultShowAttributesAsChildren), _
+    UserScopedSetting()> _
     Public Property ShowAttributesAsChildren() As Boolean
         Get
             Return m_showAttributesAsChildren
@@ -572,7 +582,8 @@ Public Class ApplicationSettings
 
     <Category(ChartSettingsCategory), _
     Description("Chart refresh rate in seconds. Typical setting is 0.1, increase this number if app runs slow."), _
-    DefaultValue(DefaultChartRefreshRate)> _
+    DefaultValue(DefaultChartRefreshRate), _
+    UserScopedSetting()> _
     Public Property RefreshRate() As Single
         Get
             Return m_refreshRate
@@ -588,7 +599,8 @@ Public Class ApplicationSettings
 
     <Category(ChartSettingsCategory), _
     Description("Background color for graph region."), _
-    DefaultValue(GetType(Color), DefaultBackgroundColor)> _
+    DefaultValue(GetType(Color), DefaultBackgroundColor), _
+    UserScopedSetting()> _
     Public Property BackgroundColor() As Color
         Get
             Return m_backgroundColor
@@ -600,7 +612,8 @@ Public Class ApplicationSettings
 
     <Category(ChartSettingsCategory), _
     Description("Foreground color for graph region (axes, legend border, text, etc.)"), _
-    DefaultValue(GetType(Color), DefaultForegroundColor)> _
+    DefaultValue(GetType(Color), DefaultForegroundColor), _
+    UserScopedSetting()> _
     Public Property ForegroundColor() As Color
         Get
             Return m_foregroundColor
@@ -612,7 +625,8 @@ Public Class ApplicationSettings
 
     <Category(ChartSettingsCategory), _
     Description("Trend line graphing width (in pixels)."), _
-    DefaultValue(DefaultTrendLineWidth)> _
+    DefaultValue(DefaultTrendLineWidth), _
+    UserScopedSetting()> _
     Public Property TrendLineWidth() As Integer
         Get
             Return m_trendLineWidth
@@ -628,7 +642,8 @@ Public Class ApplicationSettings
 
     <Category(ChartSettingsCategory), _
     Description("Set to True to show data points on graphs."), _
-    DefaultValue(DefaultShowDataPointsOnGraphs)> _
+    DefaultValue(DefaultShowDataPointsOnGraphs), _
+    UserScopedSetting()> _
     Public Property ShowDataPointsOnGraphs() As Boolean
         Get
             Return m_showDataPointsOnGraphs
@@ -644,7 +659,8 @@ Public Class ApplicationSettings
 
     <Category(ConnectionSettingsCategory), _
     Description("Maximum number of times to attempt connection before giving up; set to -1 to continue connection attempt indefinitely."), _
-    DefaultValue(DefaultMaximumConnectionAttempts)> _
+    DefaultValue(DefaultMaximumConnectionAttempts), _
+    UserScopedSetting()> _
     Public Property MaximumConnectionAttempts() As Integer
         Get
             Return m_maximumConnectionAttempts
@@ -662,7 +678,8 @@ Public Class ApplicationSettings
 
     <Category(ConnectionSettingsCategory), _
     Description("Set to True to automatically send commands for ConfigFrame2 and EnableRealTimeData."), _
-    DefaultValue(DefaultAutoStartDataParsingSequence)> _
+    DefaultValue(DefaultAutoStartDataParsingSequence), _
+    UserScopedSetting()> _
     Public Property AutoStartDataParsingSequence() As Boolean
         Get
             Return m_autoStartDataParsingSequence
@@ -674,7 +691,8 @@ Public Class ApplicationSettings
 
     <Category(ConnectionSettingsCategory), _
     Description("Allows frame parsing to be executed on a separate thread (other than communications thread) - typically only needed when data frames are very large.  This change will happen dynamically, even if a connection is active."), _
-    DefaultValue(DefaultExecuteParseOnSeparateThread)> _
+    DefaultValue(DefaultExecuteParseOnSeparateThread), _
+    UserScopedSetting()> _
     Public Property ExecuteParseOnSeparateThread() As Boolean
         Get
             Return m_executeParseOnSeparateThread
@@ -686,7 +704,8 @@ Public Class ApplicationSettings
 
     <Category(ConnectionSettingsCategory), _
     Description("Defines flag to skip automatic disabling of the real-time data stream on shutdown or startup. Useful when using UDP multicast with several subscribed clients."), _
-    DefaultValue(DefaultSkipDisableRealTimeData)> _
+    DefaultValue(DefaultSkipDisableRealTimeData), _
+    UserScopedSetting()> _
     Public Property SkipDisableRealTimeData() As Boolean
         Get
             Return m_skipDisableRealTimeData
@@ -702,7 +721,8 @@ Public Class ApplicationSettings
 
     <Category(PhaseAngleGraphCategory), _
     Description("Sets the phase angle graph to plot either raw or relative phase angles."), _
-    DefaultValue(GetType(AngleGraphStyle), DefaultPhaseAngleGraphStyle)> _
+    DefaultValue(GetType(AngleGraphStyle), DefaultPhaseAngleGraphStyle), _
+    UserScopedSetting()> _
     Public Property PhaseAngleGraphStyle() As AngleGraphStyle
         Get
             Return m_phaseAngleGraphStyle
@@ -714,7 +734,8 @@ Public Class ApplicationSettings
 
     <Category(PhaseAngleGraphCategory), _
     Description("Set to True to show phase angle graph legend."), _
-    DefaultValue(DefaultShowPhaseAngleLegend)> _
+    DefaultValue(DefaultShowPhaseAngleLegend), _
+    UserScopedSetting()> _
     Public Property ShowPhaseAngleLegend() As Boolean
         Get
             Return m_showPhaseAngleLegend
@@ -726,7 +747,8 @@ Public Class ApplicationSettings
 
     <Category(PhaseAngleGraphCategory), _
     Description("Sets the total number of phase angle points to display."), _
-    DefaultValue(DefaultPhaseAnglePointsToPlot)> _
+    DefaultValue(DefaultPhaseAnglePointsToPlot), _
+    UserScopedSetting()> _
     Public Property PhaseAnglePointsToPlot() As Integer
         Get
             Return m_phaseAnglePointsToPlot
@@ -742,7 +764,8 @@ Public Class ApplicationSettings
 
     <Category(PhaseAngleGraphCategory), _
     Description("Background color for phase angle legend."), _
-    DefaultValue(GetType(Color), DefaultLegendBackgroundColor)> _
+    DefaultValue(GetType(Color), DefaultLegendBackgroundColor), _
+    UserScopedSetting()> _
     Public Property LegendBackgroundColor() As Color
         Get
             Return m_legendBackgroundColor
@@ -754,7 +777,8 @@ Public Class ApplicationSettings
 
     <Category(PhaseAngleGraphCategory), _
     Description("Foreground color for phase angle legend text."), _
-    DefaultValue(GetType(Color), DefaultLegendForegroundColor)> _
+    DefaultValue(GetType(Color), DefaultLegendForegroundColor), _
+    UserScopedSetting()> _
     Public Property LegendForegroundColor() As Color
         Get
             Return m_legendForegroundColor
@@ -766,7 +790,8 @@ Public Class ApplicationSettings
 
     <Category(PhaseAngleGraphCategory), _
     Description("Possible foreground colors for phase angle trends."), _
-    DefaultValue(GetType(ColorList), DefaultPhaseAngleColors)> _
+    DefaultValue(GetType(ColorList), DefaultPhaseAngleColors), _
+    UserScopedSetting()> _
     Public Property PhaseAngleColors() As ColorList
         Get
             Return m_phaseAngleColors
@@ -782,7 +807,8 @@ Public Class ApplicationSettings
 
     <Category(FrequencyGraphCategory), _
     Description("Sets the total number of frequency points to display."), _
-    DefaultValue(DefaultFrequencyPointsToPlot)> _
+    DefaultValue(DefaultFrequencyPointsToPlot), _
+    UserScopedSetting()> _
     Public Property FrequencyPointsToPlot() As Integer
         Get
             Return m_frequencyPointsToPlot
@@ -798,7 +824,8 @@ Public Class ApplicationSettings
 
     <Category(FrequencyGraphCategory), _
     Description("Foreground color for frequency trend."), _
-    DefaultValue(GetType(Color), DefaultFrequencyColor)> _
+    DefaultValue(GetType(Color), DefaultFrequencyColor), _
+    UserScopedSetting()> _
     Public Property FrequencyColor() As Color
         Get
             Return m_frequencyColor

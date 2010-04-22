@@ -233,15 +233,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using TVA;
-using TVA.Collections;
-using TVA.Communication;
-using TVA.Measurements.Routing;
 using TVA.Measurements;
+using TVA.Measurements.Routing;
 
 namespace TestingAdapters
 {

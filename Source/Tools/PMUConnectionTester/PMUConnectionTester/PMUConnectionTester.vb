@@ -290,6 +290,7 @@ Public Class PMUConnectionTester
     Private Delegate Sub DataStreamExceptionFunctionSignature(ByVal ex As Exception)
     Private Delegate Sub ConnectionExceptionFunctionSignature(ByVal ex As Exception, ByVal connectionAttempts As Integer)
     Private Delegate Sub LookupAssociatedChannelNodeFunctionSignature(ByVal associatedKey As String)
+    Private Delegate Sub LoadConnectionSettingsFunctionSignature(ByVal filename As String)
 
     ' Interface thread delegates
     Private m_receivedFrameBufferImageFunction As ReceivedFrameBufferImageFunctionSignature
@@ -301,6 +302,7 @@ Public Class PMUConnectionTester
     Private m_dataStreamExceptionFunction As DataStreamExceptionFunctionSignature
     Private m_connectionExceptionFunction As ConnectionExceptionFunctionSignature
     Private m_lookupAssociatedChannelNodeFunction As LookupAssociatedChannelNodeFunctionSignature
+    Private m_loadConnectionSettingsFunction As LoadConnectionSettingsFunctionSignature
 
     ' Phasor parsing variables
     Private WithEvents m_frameParser As MultiProtocolFrameParser
@@ -377,6 +379,7 @@ Public Class PMUConnectionTester
         m_dataStreamExceptionFunction = New DataStreamExceptionFunctionSignature(AddressOf DataStreamException)
         m_connectionExceptionFunction = New ConnectionExceptionFunctionSignature(AddressOf ConnectionException)
         m_lookupAssociatedChannelNodeFunction = New LookupAssociatedChannelNodeFunctionSignature(AddressOf LookupAssociatedChannelNode)
+        m_loadConnectionSettingsFunction = New LoadConnectionSettingsFunctionSignature(AddressOf LoadConnectionSettings)
 
         With EntryAssembly.Version
             LabelVersion.Text = "Version " & .Major & "." & .Minor & "." & .Build & "." & .Revision
@@ -472,6 +475,47 @@ Public Class PMUConnectionTester
         End Try
 
         Shutdown()
+
+    End Sub
+
+    Private Sub PMUConnectionTester_DragEnter(ByVal sender As Object, ByVal e As System.Windows.Forms.DragEventArgs) Handles Me.DragEnter
+
+        ' We allow file drops from explorer onto connection tester
+        If e.Data.GetDataPresent(DataFormats.FileDrop) Then
+            e.Effect = DragDropEffects.Copy
+        Else
+            e.Effect = DragDropEffects.None
+        End If
+
+    End Sub
+
+    Private Sub PMUConnectionTester_DragDrop(ByVal sender As Object, ByVal e As System.Windows.Forms.DragEventArgs) Handles Me.DragDrop
+
+        Try
+            Dim fileNames As Array = TryCast(e.Data.GetData(DataFormats.FileDrop), Array)
+
+            If fileNames IsNot Nothing Then
+                ' Only dealing with first file dropped on the form
+                Dim fileName As String = fileNames.GetValue(0).ToString()
+
+                If File.Exists(fileName) Then
+                    If Path.GetExtension(fileName).ToLower().Trim() = ".pmuconnection" Then
+                        ' Deserializing connection settings may take a moment and explorer thread will be pending,
+                        ' so we queue load operation on the form's invocation queue
+                        Me.BeginInvoke(m_loadConnectionSettingsFunction, fileName)
+                    Else
+                        ' All other files are assumed to be a capture file
+                        TextBoxFileCaptureName.Text = fileName
+                        TabControlCommunications.Tabs(TransportProtocol.File).Selected = True
+                    End If
+
+                    ' Show form in case explorer is overlapping
+                    Me.Activate()
+                End If
+            End If
+        Catch ex As Exception
+            AppendStatusMessage(String.Format("Exception occured while dropping file name: {0}", ex.Message))
+        End Try
 
     End Sub
 
@@ -1699,10 +1743,13 @@ Public Class PMUConnectionTester
             .TypeFormat = FormatterTypeStyle.TypesWhenNeeded
 
             Try
+                Me.Cursor = Cursors.WaitCursor
                 ApplyConnectionSettings(CType(.Deserialize(settingsFile), ConnectionSettings))
                 UpdateApplicationTitle(filename)
             Catch ex As Exception
                 MsgBox("Failed to open connection settings: " & ex.Message, MsgBoxStyle.OkOnly Or MsgBoxStyle.Exclamation)
+            Finally
+                Me.Cursor = Cursors.Default
             End Try
         End With
 

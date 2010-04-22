@@ -261,6 +261,7 @@ namespace TVA.PhasorProtocols
         private double m_multiplier;
         private int m_dataQualityIsGood;
         private int m_timeQualityIsGood;
+        private bool m_isDiscarded;
         private MeasurementValueFilterFunction m_measurementValueFilter;
 
         #endregion
@@ -486,7 +487,7 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets or sets a boolean value determining if the quality of the timestamp of this <see cref="ChannelValueMeasurement{T}"/> is good.
+        /// Gets or sets a boolean value that determines if the quality of the timestamp of this <see cref="ChannelValueMeasurement{T}"/> is good.
         /// </summary>
         /// <remarks>This value returns timestamp quality of parent data cell unless assigned an alternate value.</remarks>
         public virtual bool TimestampQualityIsGood
@@ -505,7 +506,7 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets or sets a boolean value determining if the quality of the numeric value of this <see cref="ChannelValueMeasurement{T}"/> is good.
+        /// Gets or sets a boolean value that determines if the quality of the numeric value of this <see cref="ChannelValueMeasurement{T}"/> is good.
         /// </summary>
         /// <remarks>This value returns data quality of parent data cell unless assigned an alternate value.</remarks>
         public virtual bool ValueQualityIsGood
@@ -520,6 +521,21 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_dataQualityIsGood = (value ? 1 : 0);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if this <see cref="ChannelValueMeasurement{T}"/> has been discarded during sorting.
+        /// </summary>
+        public virtual bool IsDiscarded
+        {
+            get
+            {
+                return m_isDiscarded;
+            }
+            set
+            {
+                m_isDiscarded = value;
             }
         }
 

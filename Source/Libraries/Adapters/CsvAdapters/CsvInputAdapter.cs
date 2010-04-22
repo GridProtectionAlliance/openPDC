@@ -232,9 +232,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
-using System.Text;
 
 namespace CsvAdapters
 {
