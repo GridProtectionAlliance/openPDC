@@ -449,7 +449,6 @@ namespace HistorianAdapters
             m_dataServices.AdapterLoaded += DataServices_AdapterLoaded;
             m_dataServices.AdapterUnloaded += DataServices_AdapterUnloaded;
             m_dataServices.AdapterLoadException += AdapterLoader_AdapterLoadException;
-            m_dataServices.Initialize();
 
             // Provide metadata sync support.
             m_metadataProviders = new MetadataProviders();
@@ -457,7 +456,6 @@ namespace HistorianAdapters
             m_metadataProviders.AdapterLoaded += MetadataProviders_AdapterLoaded;
             m_metadataProviders.AdapterUnloaded += MetadataProviders_AdapterUnloaded;
             m_metadataProviders.AdapterLoadException += AdapterLoader_AdapterLoadException;
-            m_metadataProviders.Initialize();
 
             // Provide archive replication support.
             m_replicationProviders = new ReplicationProviders();
@@ -465,7 +463,6 @@ namespace HistorianAdapters
             m_replicationProviders.AdapterLoaded += ReplicationProviders_AdapterLoaded;
             m_replicationProviders.AdapterUnloaded += ReplicationProviders_AdapterUnloaded;
             m_replicationProviders.AdapterLoadException += AdapterLoader_AdapterLoadException;
-            m_replicationProviders.Initialize();
         }
 
         /// <summary>
@@ -563,6 +560,11 @@ namespace HistorianAdapters
             m_archive.StateFile.Open();
             m_archive.IntercomFile.Open();
             m_archive.Open();
+
+            // Initialization of services needs to occur after files are open
+            m_dataServices.Initialize();
+            m_metadataProviders.Initialize();
+            m_replicationProviders.Initialize();
 
             if (m_refreshMetadata)
             {
