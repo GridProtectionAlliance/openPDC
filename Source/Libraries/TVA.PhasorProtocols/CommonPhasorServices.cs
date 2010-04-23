@@ -281,7 +281,7 @@ namespace TVA.PhasorProtocols
             m_frameParser.ParsingException += m_frameParser_ParsingException;
             m_frameParser.ReceivedConfigurationFrame += m_frameParser_ReceivedConfigurationFrame;
 
-            // We only want to try to connect to device and retrieve configuration
+            // We only want to try to connect to device and retrieve configuration as quickly as possible
             m_frameParser.MaximumConnectionAttempts = 1;
             m_frameParser.SourceName = Name;
             m_frameParser.AutoRepeatCapturedPlayback = false;
@@ -347,7 +347,7 @@ namespace TVA.PhasorProtocols
             if (string.IsNullOrEmpty(connectionString))
             {
                 OnStatusMessage("ERROR: No connection string was specified, request for configuration canceled.");
-                return null;
+                return new ConfigurationErrorFrame();
             }
 
             // Define a line of asterisks for emphasis
@@ -397,7 +397,10 @@ namespace TVA.PhasorProtocols
                     m_frameParser.Stop();
 
                     if (m_configurationFrame == null)
+                    {
+                        m_configurationFrame = new ConfigurationErrorFrame();
                         OnStatusMessage("Failed to retrieve remote device configuration.");
+                    }
 
                     return m_configurationFrame;
                 }
@@ -417,7 +420,7 @@ namespace TVA.PhasorProtocols
             else
                 OnStatusMessage("ERROR: Cannot process simultaneous requests for device configurations, please try again in a few seconds...");
 
-            return null;
+            return new ConfigurationErrorFrame();
         }
 
         /// <summary>
@@ -503,6 +506,9 @@ namespace TVA.PhasorProtocols
         private void m_frameParser_ExceededParsingExceptionThreshold(object sender, EventArgs e)
         {
             OnStatusMessage("\r\nRequest for configuration canceled due to an excessive number of exceptions...\r\n");
+
+            // Clear wait handle
+            m_configurationWaitHandle.Set();
         }
 
         private void m_frameParser_ConnectionAttempt(object sender, EventArgs e)

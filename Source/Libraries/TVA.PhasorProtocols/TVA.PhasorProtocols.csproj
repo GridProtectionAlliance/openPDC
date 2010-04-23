@@ -117,6 +117,7 @@
     <Compile Include="ConfigurationCellBase.cs" />
     <Compile Include="ConfigurationCellCollection.cs" />
     <Compile Include="ConfigurationCellParsingState.cs" />
+    <Compile Include="ConfigurationErrorFrame.cs" />
     <Compile Include="ConfigurationFrameBase.cs" />
     <Compile Include="ConfigurationFrameCollection.cs" />
     <Compile Include="ConfigurationFrameParsingState.cs" />

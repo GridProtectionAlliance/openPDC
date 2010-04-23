@@ -1,17 +1,15 @@
 ﻿//*******************************************************************************************************
-//  ServiceClient.cs - Gbtc
+//  ConfigurationErrorFrame.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  05/04/2009 - J. Ritchie Carroll
+//  04/23/2010 - James R. Carroll
 //       Generated original version of source code.
-//  09/15/2009 - Stephen C. Wills
-//       Added new header and license agreement.
 //
 //*******************************************************************************************************
 
@@ -233,319 +231,259 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.Serialization.Formatters;
-using System.Runtime.Serialization.Formatters.Soap;
-using System.Text;
-using TVA;
-using TVA.Console;
-using TVA.PhasorProtocols;
-using TVA.Reflection;
-using TVA.Security.Cryptography;
-using TVA.Services;
-using TVA.IO;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 
-namespace openPDC
+namespace TVA.PhasorProtocols
 {
-    public partial class ServiceClient : Component
+    /// <summary>
+    /// Represents an implementation of <see cref="IConfigurationFrame"/> that by existance only denotes an error state.
+    /// </summary>
+    /// <remarks>
+    /// This class is used by <see cref="CommonPhasorServices"/> to return an error state when configuration could not be retrieved.
+    /// </remarks>
+    [Serializable()]
+    public class ConfigurationErrorFrame : IConfigurationFrame
     {
-        #region [ Members ]
-
-        // Fields
-        private bool m_telnetActive;
-        private ConsoleColor m_originalBgColor;
-        private ConsoleColor m_originalFgColor;
-
-        #endregion
-
         #region [ Constructors ]
 
-        public ServiceClient()
-            : base()
+        /// <summary>
+        /// Creates a new instance of the <see cref="ConfigurationErrorFrame"/> class.
+        /// </summary>
+        public ConfigurationErrorFrame()
         {
-            InitializeComponent();
+        }
 
-            // Save the color scheme.
-            m_originalBgColor = Console.BackgroundColor;
-            m_originalFgColor = Console.ForegroundColor;
-
-            // Register event handlers.
-            m_clientHelper.AuthenticationFailure += ClientHelper_AuthenticationFailure;
-            m_clientHelper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;
-            m_clientHelper.ReceivedServiceResponse += ClientHelper_ReceivedServiceResponse;
-            m_clientHelper.TelnetSessionEstablished += ClientHelper_TelnetSessionEstablished;
-            m_clientHelper.TelnetSessionTerminated += ClientHelper_TelnetSessionTerminated;
+        /// <summary>
+        /// Creates a new <see cref="ConfigurationErrorFrame"/> from serialization parameters.
+        /// </summary>
+        /// <param name="info">The <see cref="SerializationInfo"/> with populated with data.</param>
+        /// <param name="context">The source <see cref="StreamingContext"/> for this deserialization.</param>
+        protected ConfigurationErrorFrame(SerializationInfo info, StreamingContext context)
+        {
         }
 
         #endregion
 
         #region [ Methods ]
 
-        public void Start(string[] args)
+        /// <summary>
+        /// Populates a <see cref="SerializationInfo"/> with the data needed to serialize the target object.
+        /// </summary>
+        /// <param name="info">The <see cref="SerializationInfo"/> to populate with data.</param>
+        /// <param name="context">The destination <see cref="StreamingContext"/> for this serialization.</param>
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            string userInput = null;
-            Arguments arguments = new Arguments(string.Join(" ", args));
+        }
 
-            if (arguments.Exists("server") || arguments.Exists("secret"))
+        #endregion
+        
+        #region [ Explicit Interface Implementation ]
+
+        ConfigurationCellCollection IConfigurationFrame.Cells
+        {
+            get
             {
-                // Override default settings with user provided input. 
-                m_clientHelper.PersistSettings = false;
-                m_remotingClient.PersistSettings = false;
-
-                if (arguments.Exists("secret"))
-                    m_remotingClient.SharedSecret = arguments["secret"];
-
-                if (arguments.Exists("server"))
-                    m_remotingClient.ConnectionString = string.Format("Server={0}", arguments["server"]);
-            }
-
-            // Connect to service and send commands. 
-            m_clientHelper.Connect();
-            while (m_clientHelper.Enabled && string.Compare(userInput, "Exit", true) != 0)
-            {
-                // Wait for a command from the user. 
-                userInput = Console.ReadLine();
-                // Write a blank line to the console.
-                Console.WriteLine();
-
-                if (!string.IsNullOrEmpty(userInput))
-                {
-                    // The user typed in a command and didn't just hit <ENTER>. 
-                    switch (userInput.ToUpper())
-                    {
-                        case "CLS":
-                            // User wants to clear the console window. 
-                            Console.Clear();
-                            break;
-                        case "EXIT":
-                            // User wants to exit the telnet session with the service. 
-                            if (m_telnetActive)
-                            {
-                                userInput = string.Empty;
-                                m_clientHelper.SendRequest("Telnet -disconnect");
-                            }
-                            break;
-                        default:
-                            // User wants to send a request to the service. 
-                            m_clientHelper.SendRequest(userInput);
-                            if (string.Compare(userInput, "Help", true) == 0)
-                                DisplayHelp();
-
-                            break;
-                    }
-                }
+                return null;
             }
         }
 
-        private void DisplayHelp()
+        IConfigurationFrameParsingState IConfigurationFrame.State
         {
-            StringBuilder help = new StringBuilder();
-
-            help.AppendFormat("Commands supported by {0}:", AssemblyInfo.EntryAssembly.Name);
-            help.AppendLine();
-            help.AppendLine();
-            help.Append("Command".PadRight(20));
-            help.Append(" ");
-            help.Append("Description".PadRight(55));
-            help.AppendLine();
-            help.Append(new string('-', 20));
-            help.Append(" ");
-            help.Append(new string('-', 55));
-            help.AppendLine();
-            help.Append("Cls".PadRight(20));
-            help.Append(" ");
-            help.Append("Clears this console screen".PadRight(55));
-            help.AppendLine();
-            help.Append("Exit".PadRight(20));
-            help.Append(" ");
-            help.Append("Exits this console screen".PadRight(55));
-            help.AppendLine();
-            help.AppendLine();
-            help.AppendLine();
-
-            Console.Write(help.ToString());
-        }
-
-        private void ClientHelper_AuthenticationFailure(object sender, CancelEventArgs e)
-        {
-            // Prompt for authentication method.
-            StringBuilder prompt = new StringBuilder();
-            prompt.Append("Remote connection was has rejected due to authentication failure. Please ");
-            prompt.Append("select from one of the options below to re-authenticate the remote connection:");
-            prompt.AppendLine();
-            prompt.AppendLine();
-            prompt.Append("[0] Abort (no retry)");
-            prompt.AppendLine();
-            prompt.Append("[1] NTLM Authentication");
-            prompt.AppendLine();
-            prompt.Append("[2] Kerberos Authentication");
-            prompt.AppendLine();
-            prompt.AppendLine();
-            prompt.Append("Selection: ");
-            Console.Write(prompt.ToString());
-
-            // Capture authentication method selection.
-            int selection;
-            int.TryParse(Console.ReadLine(), out selection);
-
-            Console.WriteLine();
-            if (selection == 1)         // NTLM Authentication
+            get
             {
-                // Capture the username.
-                string username = "";
-                Console.Write("Enter username: ");
-                username = Console.ReadLine();
-
-                // Capture the password.
-                string password = "";
-                ConsoleKeyInfo key;
-                Console.Write("Enter password: ");
-                while ((key = Console.ReadKey(true)).KeyChar != '\r')
-                {
-                    password += key.KeyChar;
-                }
-
-                // Update authentication parameters.
-                e.Cancel = false;
-                m_clientHelper.AuthenticationMethod = IdentityToken.Ntlm;
-                m_clientHelper.AuthenticationInput = username + ":" + password;
+                return null;
             }
-            else if (selection == 2)    // Kerberos Authentication
+            set
             {
-                // Update authentication parameters.
-                e.Cancel = false;
-                Console.Write("Enter target principal: ");
-                m_clientHelper.AuthenticationMethod = IdentityToken.Kerberos;
-                m_clientHelper.AuthenticationInput = Console.ReadLine();
+                throw new NotImplementedException();
             }
-            Console.WriteLine();
-            Console.WriteLine();
         }
 
-        private void ClientHelper_ReceivedServiceUpdate(object sender, EventArgs<UpdateType, string> e)
+        ushort IConfigurationFrame.FrameRate
         {
-            // Output status updates from the service to the console window.
-            switch (e.Argument1)
+            get
             {
-                case UpdateType.Alarm:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                case UpdateType.Information:
-                    Console.ForegroundColor = m_originalFgColor;
-                    break;
-                case UpdateType.Warning:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    break;
+                return 0;
             }
-
-            Console.Write(e.Argument2);
-            Console.ForegroundColor = m_originalFgColor;
-        }
-
-        private void ClientHelper_ReceivedServiceResponse(object sender, EventArgs<ServiceResponse> e)
-        {
-            string response = e.Argument.Type;
-            string message = e.Argument.Message;
-            List<object> attachments = e.Argument.Attachments;
-
-            // Handle any special attachments coming in from service
-            if (attachments != null)
+            set
             {
-                foreach (object attachment in attachments)
-                {
-                    if (attachment is ConfigurationErrorFrame)
-                    {
-                        Console.WriteLine("Received configuration error frame, invocation request for device configuration has failed. See common phasor services response for reason.\r\n");
-                    }
-                    else if (attachment is IConfigurationFrame)
-                    {
-                        // Attachment is a configuration frame, serialize it to XML and open it in a browser
-                        IConfigurationFrame configurationFrame = attachment as IConfigurationFrame;
-                        string fileName = string.Format("{0}\\DownloadedConfiguration-ID[{1}].xml", FilePath.GetAbsolutePath(""), configurationFrame.IDCode);
-                        FileStream configFile = File.Create(fileName);
-                        SoapFormatter xmlSerializer = new SoapFormatter();
-
-                        xmlSerializer.AssemblyFormat = FormatterAssemblyStyle.Simple;
-                        xmlSerializer.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
-
-                        try 
-	                    {
-                            // Attempt to serialize configuration frame as XML
-                            xmlSerializer.Serialize(configFile, configurationFrame);
-	                    }
-	                    catch (Exception ex)
-	                    {                    		
-                            byte[] errorMessage = Encoding.UTF8.GetBytes(ex.Message);
-                            configFile.Write(errorMessage, 0, errorMessage.Length);
-                            Console.Write("Failed to serialize configuration frame: {0}", ex.Message);
-	                    }
-
-                        configFile.Close();
-
-                        // Open captured XML sample file in explorer...
-                        Process.Start("explorer.exe", fileName);
-                    }
-                }
+                throw new NotImplementedException();
             }
+        }
 
-            // Handle response message, if any
-            if (!string.IsNullOrEmpty(response))
+        decimal IConfigurationFrame.TicksPerFrame
+        {
+            get
             {
-                // Reponse types are formatted as "Command:Success" or "Command:Failure"
-                string[] parts = response.Split(':');
-                string action;
-                bool success;
-
-                if (parts.Length > 1)
-                {
-                    action = parts[0].Trim().ToTitleCase();
-                    success = (string.Compare(parts[1].Trim(), "Success", true) == 0);
-                }
-                else
-                {
-                    action = response;
-                    success = true;
-                }
-
-                if (success)
-                {
-                    if (string.IsNullOrEmpty(message))
-                        Console.Write(string.Format("{0} command processed successfully.\r\n\r\n", action));
-                    else
-                        Console.Write(string.Format("{0}\r\n\r\n", message));
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-
-                    if (string.IsNullOrEmpty(message))
-                        Console.Write(string.Format("{0} failure.\r\n\r\n", action));
-                    else
-                        Console.Write(string.Format("{0} failure: {1}\r\n\r\n", action, message));
-
-                    Console.ForegroundColor = m_originalFgColor;
-                }
-            }            
+                return 0;
+            }
         }
 
-        private void ClientHelper_TelnetSessionEstablished(object sender, EventArgs e)
+        void IConfigurationFrame.SetNominalFrequency(LineFrequency value)
         {
-            // Change the console color scheme to indicate active telnet session.
-            m_telnetActive = true;
-            Console.BackgroundColor = ConsoleColor.Blue;
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.Clear();
+            throw new NotImplementedException();
         }
 
-        private void ClientHelper_TelnetSessionTerminated(object sender, EventArgs e)
+        FundamentalFrameType IChannelFrame.FrameType
         {
-            // Revert to original color scheme to indicate end of telnet session.
-            m_telnetActive = false;
-            Console.BackgroundColor = m_originalBgColor;
-            Console.ForegroundColor = m_originalFgColor;
-            Console.Clear();
+            get
+            {
+                return FundamentalFrameType.ConfigurationFrame;
+            }
+        }
+
+        object IChannelFrame.Cells
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        ushort IChannelFrame.IDCode
+        {
+            get
+            {
+                return 0;
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        UnixTimeTag IChannelFrame.TimeTag
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        Dictionary<string, string> IChannel.Attributes
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        IChannelParsingState IChannel.State
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        object IChannel.Tag
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        byte[] TVA.Parsing.ISupportBinaryImage.BinaryImage
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        int TVA.Parsing.ISupportBinaryImage.BinaryLength
+        {
+            get
+            {
+                return 0;
+            }
+        }
+
+        int TVA.Parsing.ISupportBinaryImage.Initialize(byte[] binaryImage, int startIndex, int length)
+        {
+            return 0;
+        }
+
+        TVA.Measurements.IMeasurement TVA.Measurements.IFrame.LastSortedMeasurement
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        IDictionary<TVA.Measurements.MeasurementKey, TVA.Measurements.IMeasurement> TVA.Measurements.IFrame.Measurements
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        bool TVA.Measurements.IFrame.Published
+        {
+            get
+            {
+                return false;
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        int TVA.Measurements.IFrame.SortedMeasurements
+        {
+            get
+            {
+                return -1;
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        Ticks TVA.Measurements.IFrame.Timestamp
+        {
+            get
+            {
+                return 0;
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        bool IEquatable<TVA.Measurements.IFrame>.Equals(TVA.Measurements.IFrame other)
+        {
+            return false;
+        }
+
+        int IComparable<TVA.Measurements.IFrame>.CompareTo(TVA.Measurements.IFrame other)
+        {
+            return 1;
+        }
+
+        int IComparable.CompareTo(object obj)
+        {
+            return 1;
         }
 
         #endregion
