@@ -317,6 +317,8 @@ Public Class PMUConnectionTester
     Friend WithEvents m_applicationSettings As ApplicationSettings
     Private m_applicationName As String
     Private m_lastFileName As String
+    Private m_ipStackIsIPv6 As Boolean
+    Private m_loopbackAddress As String
 
     ' Charting data variables
     Private m_frequencyData As DataTable
@@ -427,8 +429,26 @@ Public Class PMUConnectionTester
         PropertyGridApplicationSettings.AdjustCommentAreaHeight(4)
         PropertyGridApplicationSettings.AdjustLabelRatio(1.62)
 
+        ' Determine if default IP stack is IPv6
+        Try
+            ' First address family in addresslist for loopback will determine default IP stack
+            If Dns.GetHostEntry(IPAddress.Loopback).AddressList(0).AddressFamily = Sockets.AddressFamily.InterNetworkV6 Then
+                m_ipStackIsIPv6 = True
+            Else
+                m_ipStackIsIPv6 = False
+            End If
+        Catch
+            ' Default to IPv4
+            m_ipStackIsIPv6 = False
+        End Try
+
         ' Setup IP mode
         ForceIPv4 = m_applicationSettings.ForceIPv4
+
+        ' Assign default loopback addresses
+        TextBoxTcpHostIP.Text = m_loopbackAddress
+        TextBoxUdpHostIP.Text = m_loopbackAddress
+        AlternateCommandChannel.TextBoxTcpHostIP.Text = m_loopbackAddress
 
         InitializeChart()
         ComboBoxProtocols.SelectedIndex = 0
@@ -676,7 +696,7 @@ Public Class PMUConnectionTester
         TextBoxTcpHostIP.Enabled = needsHostIP
         LabelTcpHostIP.Enabled = needsHostIP
 
-        If Not needsHostIP Then TextBoxTcpHostIP.Text = "127.0.0.1"
+        If Not needsHostIP Then TextBoxTcpHostIP.Text = m_loopbackAddress
 
     End Sub
 
@@ -690,7 +710,7 @@ Public Class PMUConnectionTester
         TextBoxUdpRemotePort.Enabled = needsHostIP
         LabelUdpRemotePort.Enabled = needsHostIP
 
-        If Not needsHostIP Then TextBoxUdpHostIP.Text = "127.0.0.1"
+        If Not needsHostIP Then TextBoxUdpHostIP.Text = m_loopbackAddress
 
     End Sub
 
@@ -900,7 +920,7 @@ Public Class PMUConnectionTester
             .FileName = ""
             .CheckFileExists = True
             If .ShowDialog(Me) = OK Then
-                Dim configFile As FileStream = File.Open(.FileName, FileMode.Open)
+                Dim configFile As FileStream = File.Open(.FileName, FileMode.Open, FileAccess.Read, FileShare.Read)
 
                 With New SoapFormatter
                     .AssemblyFormat = FormatterAssemblyStyle.Simple
@@ -1741,7 +1761,7 @@ Public Class PMUConnectionTester
 
     Private Sub LoadConnectionSettings(ByVal filename As String)
 
-        Dim settingsFile As FileStream = File.Open(filename, FileMode.Open)
+        Dim settingsFile As FileStream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)
 
         With New SoapFormatter
             .AssemblyFormat = FormatterAssemblyStyle.Simple
@@ -1894,7 +1914,7 @@ Public Class PMUConnectionTester
 
                     ' Note that old style connection strings may not contain "islistener" key
                     If connectionData.ContainsKey("islistener") AndAlso connectionData("islistener").ParseBoolean() Then
-                        TextBoxTcpHostIP.Text = "127.0.0.1"
+                        TextBoxTcpHostIP.Text = m_loopbackAddress
                         CheckBoxEstablishTcpServer.Checked = True
                     Else
                         AssignHostIP(TextBoxTcpHostIP, connectionData("server"))
@@ -1908,7 +1928,7 @@ Public Class PMUConnectionTester
                         CheckBoxRemoteUdpServer.Checked = True
                     Else
                         TextBoxUdpLocalPort.Text = connectionData("localport")
-                        TextBoxUdpHostIP.Text = "127.0.0.1"
+                        TextBoxUdpHostIP.Text = m_loopbackAddress
                         TextBoxUdpRemotePort.Text = "5000"
                         CheckBoxRemoteUdpServer.Checked = False
                     End If
@@ -1964,7 +1984,7 @@ Public Class PMUConnectionTester
             maskedEditControl.Text = ipValue
         End If
 
-        If String.IsNullOrEmpty(maskedEditControl.Text) Then maskedEditControl.Text = "127.0.0.1"
+        If String.IsNullOrEmpty(maskedEditControl.Text) Then maskedEditControl.Text = m_loopbackAddress
 
     End Sub
 
@@ -1983,6 +2003,8 @@ Public Class PMUConnectionTester
                 AssignHostIP(AlternateCommandChannel.TextBoxTcpHostIP, AlternateCommandChannel.TextBoxTcpHostIP.Text)
                 AlternateCommandChannel.TextBoxTcpHostIP.InputMask = "nnn\.nnn\.nnn\.nnn"
                 AlternateCommandChannel.TextBoxTcpHostIP.EditAs = EditAsType.UseSpecifiedMask
+
+                m_loopbackAddress = "127.0.0.1"
             Else
                 ' We remove input mask if we're not forcing IPv4, this allows for free form DNS and IPv6 entry
                 TextBoxTcpHostIP.InputMask = ""
@@ -1993,6 +2015,12 @@ Public Class PMUConnectionTester
 
                 AlternateCommandChannel.TextBoxTcpHostIP.InputMask = ""
                 AlternateCommandChannel.TextBoxTcpHostIP.EditAs = EditAsType.String
+
+                If m_ipStackIsIPv6 Then
+                    m_loopbackAddress = "::1"
+                Else
+                    m_loopbackAddress = "127.0.0.1"
+                End If
             End If
         End Set
     End Property
