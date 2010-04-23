@@ -386,37 +386,7 @@ namespace openPDCManager.Web.Data
 				SoapFormatter sf = new SoapFormatter();
 				sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
 				sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
-				IConfigurationFrame configurationFrame = sf.Deserialize(inputStream) as IConfigurationFrame;				
-				//if (configurationFrame != null)
-				//{
-				//    int parentAccessID = configurationFrame.IDCode;
-				//    wizardDeviceInfoList = (from cell in configurationFrame.Cells
-				//                            select new WizardDeviceInfo()
-				//                            {												
-				//                                Acronym = cell.StationName.Replace(" ", "").ToUpper(),
-				//                                Name = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(cell.StationName.ToLower()),
-				//                                Longitude = 0,
-				//                                Latitude = 0,
-				//                                VendorDeviceID = (int?)null,
-				//                                AccessID = cell.IDCode,
-				//                                ParentAccessID = parentAccessID,
-				//                                Include = true,
-				//                                DigitalCount = cell.DigitalDefinitions.Count(),
-				//                                AnalogCount = cell.AnalogDefinitions.Count(),
-				//                                AddDigitals = false,
-				//                                AddAnalogs = false,
-				//                                PhasorList = (from phasor in cell.PhasorDefinitions
-				//                                              select new PhasorInfo()
-				//                                              {
-				//                                                  Label = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(phasor.Label.Replace("?", " ").Trim().ToLower()),
-				//                                                  Type = phasor.PhasorType == PhasorType.Current ? "I" : "V",
-				//                                                  Phase = "+",
-				//                                                  DestinationLabel = "",
-				//                                                  Include = true
-				//                                              }).ToList()
-				//                            }).ToList();
-												
-				//}
+				IConfigurationFrame configurationFrame = sf.Deserialize(inputStream) as IConfigurationFrame;								
 				return ParseConfigurationFrame(configurationFrame);
 			}
 			catch(Exception ex)
@@ -495,7 +465,14 @@ namespace openPDCManager.Web.Data
 						windowsServiceClient.Helper.SendRequest(string.Format("invoke 0 requestdeviceconfiguration \"{0}\"", deviceConnectionString + "; phasorProtocol=" + GetProtocolAcronymByID(protocolID)));
 
 					if (s_responseWaitHandle.WaitOne(65000))
-						return ParseConfigurationFrame(s_responseAttachment as IConfigurationFrame);
+					{
+						if (s_responseAttachment is ConfigurationErrorFrame)
+							throw new ApplicationException("Received configuration error frame, invocation request for device configuration has failed.\r\n");
+						else if (s_responseAttachment is IConfigurationFrame)
+							return ParseConfigurationFrame(s_responseAttachment as IConfigurationFrame);						
+						else
+							throw new ApplicationException("Invalid frame received, invocation for device configuration has failed.");
+					}
 					else
 						throw new ApplicationException("Response timeout occured. Waited 60 seconds for Configuration Frame to arrive.");
 				}
@@ -532,8 +509,14 @@ namespace openPDCManager.Web.Data
 			{
 				foreach (object attachment in attachments)
 				{
-					// If user requested a configuration frame, serialize it to XML and open it in a browser
-					if (attachment is IConfigurationFrame)
+					if (attachment is ConfigurationErrorFrame)
+					{
+						Thread.Sleep(1000);
+						s_responseAttachment = attachment as ConfigurationErrorFrame;
+						s_responseWaitHandle.Set();
+						//Console.WriteLine("Received configuration error frame, invocation request for device configuration has failed. See common phasor services response for reason.\r\n");
+					}
+					else if (attachment is IConfigurationFrame)	// If user requested a configuration frame, send it to parsing function to retrieve devices list.
 					{
 						s_responseAttachment = attachment as IConfigurationFrame;
 						s_responseWaitHandle.Set();
@@ -913,6 +896,36 @@ namespace openPDCManager.Web.Data
 			}
 
 			return minMaxPointIDs;
+		}
+				
+		//public static List<string> GetPorts()
+		//{
+		//    List<string> portsList = new List<string>();
+
+		//    foreach (string port in System.IO.Ports.SerialPort.GetPortNames())
+		//        portsList.Add(port);
+
+		//    return portsList;
+		//}
+
+		public static List<string> GetStopBits()
+		{
+			List<string> stopBitsList = new List<string>();
+
+			foreach (string stopBit in Enum.GetNames(typeof(System.IO.Ports.StopBits)))
+				stopBitsList.Add(stopBit);
+
+			return stopBitsList;
+		}
+
+		public static List<string> GetParities()
+		{
+			List<string> parityList = new List<string>();
+
+			foreach (string parity in Enum.GetNames(typeof(System.IO.Ports.Parity)))
+				parityList.Add(parity);
+
+			return parityList;
 		}
 
 		#region " Manage Companies Code"

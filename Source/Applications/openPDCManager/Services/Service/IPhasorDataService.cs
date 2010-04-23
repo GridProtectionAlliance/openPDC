@@ -608,5 +608,16 @@ namespace openPDCManager.Services.Service
 		[FaultContract(typeof(CustomServiceFault))]
 		string SaveIniFile(Stream input);
 
+		//[OperationContract]
+		//[FaultContract(typeof(CustomServiceFault))]
+		//List<string> GetPorts();
+
+		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
+		List<string> GetStopBits();
+
+		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
+		List<string> GetParities();
 	}
 }

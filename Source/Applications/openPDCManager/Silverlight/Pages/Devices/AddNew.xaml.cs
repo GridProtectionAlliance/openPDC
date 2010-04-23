@@ -276,6 +276,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonView.Click += new RoutedEventHandler(ButtonView_Click);
 			ComboboxParent.SelectionChanged += new SelectionChangedEventHandler(ComboboxParent_SelectionChanged);
+			ButtonBuildConnectionString.Click += new RoutedEventHandler(ButtonBuildConnectionString_Click);
 		}
 
 		#endregion
@@ -672,13 +673,13 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 		}
 
-		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+		void HyperlinkButton_Click(object sender, RoutedEventArgs e)
 		{
 			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
 			NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?did=" + deviceId, UriKind.Relative));
 		}
 
-		private void HyperlinkButtonPhasors_Click(object sender, RoutedEventArgs e)
+		void HyperlinkButtonPhasors_Click(object sender, RoutedEventArgs e)
 		{
 			int deviceId = Convert.ToInt32(((HyperlinkButton)sender).Tag.ToString());
 			string acronym = ToolTipService.GetToolTip((HyperlinkButton)sender).ToString();
@@ -686,10 +687,23 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			phasors.Show();
 		}
 
-		private void HyperlinkButtonMeasurements_Click(object sender, RoutedEventArgs e)
+		void HyperlinkButtonMeasurements_Click(object sender, RoutedEventArgs e)
 		{
 			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
 			NavigationService.Navigate(new Uri("/Pages/Manage/Measurements.xaml?did=" + deviceId, UriKind.Relative));
+		}
+
+		void ButtonBuildConnectionString_Click(object sender, RoutedEventArgs e)
+		{
+			ConnectionStringBuilder csb = new ConnectionStringBuilder();
+			if (!string.IsNullOrEmpty(TextBoxConnectionString.Text))
+				csb.ConnectionString = TextBoxConnectionString.Text;
+			csb.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+			{
+				if ((bool)csb.DialogResult)
+					TextBoxConnectionString.Text = csb.ConnectionString;
+			});
+			csb.Show();
 		}
 
 		#endregion

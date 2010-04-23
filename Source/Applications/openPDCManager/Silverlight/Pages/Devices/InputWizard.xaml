@@ -50,9 +50,18 @@
                                         </Button>
                                     </StackPanel>
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Connection String" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                    <TextBox Grid.Row="2" Grid.Column="1" x:Name="TextBoxConnectionString" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource SmallerItemSize}" HorizontalAlignment="Left" 
+                                    <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="1">                                        
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox x:Name="TextBoxConnectionString" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource SmallerItemSize}" HorizontalAlignment="Left" 
                                              TextAlignment="Left" VerticalAlignment="Center" Margin="2" TextWrapping="Wrap" />
-                                    
+                                            <Button x:Name="ButtonBuildConnectionString" Content="../../Images/Add.png" Tag="Build..." Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
+                                                <Button.RenderTransform>
+                                                    <ScaleTransform x:Name="ButtonBuildConnectionStringTransform" ScaleX="1" ScaleY="1" />
+                                                </Button.RenderTransform>
+                                            </Button>
+                                        </StackPanel>
+                                        <TextBlock Text="Connection information is relative to the openPDC node." FontStyle="Italic" HorizontalAlignment="Left" Margin="2" />
+                                    </StackPanel>
                                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Device Protocol" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
                                     <ComboBox x:Name="ComboboxProtocol" Grid.Row="3" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
                                     <TextBlock Grid.Row="4" Grid.Column="0" x:Name="TextBlockIniFile" Text="Select INI File" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
@@ -72,9 +81,7 @@
                                     <TextBox x:Name="TextBoxPDCAcronym" Grid.Row="8" Grid.Column="1" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
                                     <TextBlock Grid.Row="9" Grid.Column="0" x:Name="TextBlockPDCDeviceVendor" Text="PDC Device Vendor" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
                                     <ComboBox x:Name="ComboboxPDCVendor" Grid.Row="9" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
-                                    
-                                                                    
-
+        
                                 </Grid>
                             </layoutToolkit:AccordionItem.Content>
                         </layoutToolkit:AccordionItem>
@@ -103,8 +110,7 @@
                                         </Button>
                                         <TextBlock Text="This request could take upto 60 seconds to complete." FontSize="{StaticResource SmallerTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2"/>
                                     </StackPanel>
-                                    
-                                    
+                                                                        
                                     <TextBlock Text="OR" Grid.Row="1" Grid.Column="1" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0, 5, 0, 5" />
                                     
                                     <TextBlock Grid.Row="2" Grid.Column="1" Text="Select XML Configuration File (from PMU Connection Tester)" HorizontalAlignment="Left" Margin="2"/>

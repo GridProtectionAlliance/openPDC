@@ -632,6 +632,21 @@ namespace openPDCManager.Services.Service
 		public string SaveIniFile(Stream input)
 		{
 			return CommonFunctions.SaveIniFile(input);
-		}		
+		}
+
+		//public List<string> GetPorts()
+		//{
+		//    return CommonFunctions.GetPorts();
+		//}
+
+		public List<string> GetStopBits()
+		{
+			return CommonFunctions.GetStopBits();
+		}
+
+		public List<string> GetParities()
+		{
+			return CommonFunctions.GetParities();
+		}
 	}
 }

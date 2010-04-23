@@ -1,7 +1,7 @@
-<OutOfBrowserSettings ShortName="TVA NERC Phasor Concentration System" EnableGPUAcceleration="False" ShowInstallMenuItem="True">
-  <OutOfBrowserSettings.Blurb>TVA NERC Phasor Concentration System</OutOfBrowserSettings.Blurb>
+<OutOfBrowserSettings ShortName="TVA NERC Phasor Concentration System" EnableGPUAcceleration="True" ShowInstallMenuItem="True">
+  <OutOfBrowserSettings.Blurb>openPDC Manager</OutOfBrowserSettings.Blurb>
   <OutOfBrowserSettings.WindowSettings>
-    <WindowSettings Title="TVA NERC PCS" Height="900" Width="1200" />
+    <WindowSettings Title="openPDC Manager" Height="900" Width="1200" />
   </OutOfBrowserSettings.WindowSettings>
   <OutOfBrowserSettings.Icons />
 </OutOfBrowserSettings>

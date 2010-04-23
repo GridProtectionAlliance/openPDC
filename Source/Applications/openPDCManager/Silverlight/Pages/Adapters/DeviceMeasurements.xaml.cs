@@ -291,6 +291,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		{
 			if (e.msg is TimeTaggedDataMessage)
 			{
+				TextBlockLastRefresh.Text = "Last Refresh: " + DateTime.Now.ToString();
 				Dictionary<int, TimeTaggedMeasurement> timeTaggedMeasurements = new Dictionary<int, TimeTaggedMeasurement>();
 				timeTaggedMeasurements = (e.msg as TimeTaggedDataMessage).TimeTaggedMeasurements;
 

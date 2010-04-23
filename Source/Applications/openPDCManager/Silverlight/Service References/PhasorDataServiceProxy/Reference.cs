@@ -2968,10 +2968,6 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="ConnectionSettings", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.Generic.Dictionary<int, string>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<string>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.Generic.Dictionary<string, string>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.PhasorProtocol))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.Measurement>))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.Measurement))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.OtherDevice>))]
@@ -3008,6 +3004,10 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.DeviceType))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.Phasor>))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.Phasor))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.PhasorProtocol))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<string>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.Generic.Dictionary<int, string>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.Generic.Dictionary<string, string>))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo>))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.PhasorInfo>))]
@@ -3200,32 +3200,6 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="PhasorProtocol", Namespace="http://schemas.datacontract.org/2004/07/TVA.PhasorProtocols")]
-    public enum PhasorProtocol : int {
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        IeeeC37_118V1 = 0,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        IeeeC37_118D6 = 1,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Ieee1344 = 2,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        BpaPdcStream = 3,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        FNet = 4,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        SelFastMessage = 5,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Macrodyne = 6,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -4637,6 +4611,32 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
     }
     
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="PhasorProtocol", Namespace="http://schemas.datacontract.org/2004/07/TVA.PhasorProtocols")]
+    public enum PhasorProtocol : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        IeeeC37_118V1 = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        IeeeC37_118D6 = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Ieee1344 = 2,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        BpaPdcStream = 3,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        FNet = 4,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        SelFastMessage = 5,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Macrodyne = 6,
+    }
+    
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
@@ -4736,6 +4736,18 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         System.IAsyncResult BeginSaveIniFile(byte[] input, System.AsyncCallback callback, object asyncState);
         
         string EndSaveIniFile(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetStopBits", ReplyAction="http://tempuri.org/IPhasorDataService/GetStopBitsResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/GetStopBitsCustomServiceFaultFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+        System.IAsyncResult BeginGetStopBits(System.AsyncCallback callback, object asyncState);
+        
+        System.Collections.ObjectModel.ObservableCollection<string> EndGetStopBits(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetParities", ReplyAction="http://tempuri.org/IPhasorDataService/GetParitiesResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/GetParitiesCustomServiceFaultFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+        System.IAsyncResult BeginGetParities(System.AsyncCallback callback, object asyncState);
+        
+        System.Collections.ObjectModel.ObservableCollection<string> EndGetParities(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetMeasurementsForOutputStream", ReplyAction="http://tempuri.org/IPhasorDataService/GetMeasurementsForOutputStreamResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/GetMeasurementsForOutputStreamCustomService" +
@@ -5241,6 +5253,44 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             get {
                 base.RaiseExceptionIfNecessary();
                 return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class GetStopBitsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetStopBitsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.Collections.ObjectModel.ObservableCollection<string> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.Collections.ObjectModel.ObservableCollection<string>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class GetParitiesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetParitiesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.Collections.ObjectModel.ObservableCollection<string> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.Collections.ObjectModel.ObservableCollection<string>)(this.results[0]));
             }
         }
     }
@@ -6495,6 +6545,18 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.Threading.SendOrPostCallback onSaveIniFileCompletedDelegate;
         
+        private BeginOperationDelegate onBeginGetStopBitsDelegate;
+        
+        private EndOperationDelegate onEndGetStopBitsDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetStopBitsCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetParitiesDelegate;
+        
+        private EndOperationDelegate onEndGetParitiesDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetParitiesCompletedDelegate;
+        
         private BeginOperationDelegate onBeginGetMeasurementsForOutputStreamDelegate;
         
         private EndOperationDelegate onEndGetMeasurementsForOutputStreamDelegate;
@@ -6942,6 +7004,10 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         public event System.EventHandler<SaveIniFileCompletedEventArgs> SaveIniFileCompleted;
         
+        public event System.EventHandler<GetStopBitsCompletedEventArgs> GetStopBitsCompleted;
+        
+        public event System.EventHandler<GetParitiesCompletedEventArgs> GetParitiesCompleted;
+        
         public event System.EventHandler<GetMeasurementsForOutputStreamCompletedEventArgs> GetMeasurementsForOutputStreamCompleted;
         
         public event System.EventHandler<GetOtherDeviceListCompletedEventArgs> GetOtherDeviceListCompleted;
@@ -7318,6 +7384,94 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             }
             base.InvokeAsync(this.onBeginSaveIniFileDelegate, new object[] {
                         input}, this.onEndSaveIniFileDelegate, this.onSaveIniFileCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetStopBits(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStopBits(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Collections.ObjectModel.ObservableCollection<string> openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndGetStopBits(System.IAsyncResult result) {
+            return base.Channel.EndGetStopBits(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetStopBits(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetStopBits(callback, asyncState);
+        }
+        
+        private object[] OnEndGetStopBits(System.IAsyncResult result) {
+            System.Collections.ObjectModel.ObservableCollection<string> retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndGetStopBits(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetStopBitsCompleted(object state) {
+            if ((this.GetStopBitsCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetStopBitsCompleted(this, new GetStopBitsCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetStopBitsAsync() {
+            this.GetStopBitsAsync(null);
+        }
+        
+        public void GetStopBitsAsync(object userState) {
+            if ((this.onBeginGetStopBitsDelegate == null)) {
+                this.onBeginGetStopBitsDelegate = new BeginOperationDelegate(this.OnBeginGetStopBits);
+            }
+            if ((this.onEndGetStopBitsDelegate == null)) {
+                this.onEndGetStopBitsDelegate = new EndOperationDelegate(this.OnEndGetStopBits);
+            }
+            if ((this.onGetStopBitsCompletedDelegate == null)) {
+                this.onGetStopBitsCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStopBitsCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetStopBitsDelegate, null, this.onEndGetStopBitsDelegate, this.onGetStopBitsCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetParities(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetParities(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Collections.ObjectModel.ObservableCollection<string> openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndGetParities(System.IAsyncResult result) {
+            return base.Channel.EndGetParities(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetParities(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetParities(callback, asyncState);
+        }
+        
+        private object[] OnEndGetParities(System.IAsyncResult result) {
+            System.Collections.ObjectModel.ObservableCollection<string> retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndGetParities(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetParitiesCompleted(object state) {
+            if ((this.GetParitiesCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetParitiesCompleted(this, new GetParitiesCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetParitiesAsync() {
+            this.GetParitiesAsync(null);
+        }
+        
+        public void GetParitiesAsync(object userState) {
+            if ((this.onBeginGetParitiesDelegate == null)) {
+                this.onBeginGetParitiesDelegate = new BeginOperationDelegate(this.OnBeginGetParities);
+            }
+            if ((this.onEndGetParitiesDelegate == null)) {
+                this.onEndGetParitiesDelegate = new EndOperationDelegate(this.OnEndGetParities);
+            }
+            if ((this.onGetParitiesCompletedDelegate == null)) {
+                this.onGetParitiesCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetParitiesCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetParitiesDelegate, null, this.onEndGetParitiesDelegate, this.onGetParitiesCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -10474,6 +10628,30 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             public string EndSaveIniFile(System.IAsyncResult result) {
                 object[] _args = new object[0];
                 string _result = ((string)(base.EndInvoke("SaveIniFile", _args, result)));
+                return _result;
+            }
+            
+            public System.IAsyncResult BeginGetStopBits(System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[0];
+                System.IAsyncResult _result = base.BeginInvoke("GetStopBits", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public System.Collections.ObjectModel.ObservableCollection<string> EndGetStopBits(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                System.Collections.ObjectModel.ObservableCollection<string> _result = ((System.Collections.ObjectModel.ObservableCollection<string>)(base.EndInvoke("GetStopBits", _args, result)));
+                return _result;
+            }
+            
+            public System.IAsyncResult BeginGetParities(System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[0];
+                System.IAsyncResult _result = base.BeginInvoke("GetParities", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public System.Collections.ObjectModel.ObservableCollection<string> EndGetParities(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                System.Collections.ObjectModel.ObservableCollection<string> _result = ((System.Collections.ObjectModel.ObservableCollection<string>)(base.EndInvoke("GetParities", _args, result)));
                 return _result;
             }
             

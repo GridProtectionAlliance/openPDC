@@ -294,6 +294,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			ButtonNext.Click += new RoutedEventHandler(ButtonNext_Click);
 			ButtonPrevious.Click += new RoutedEventHandler(ButtonPrevious_Click);
 			ButtonRequestConfiguration.Click += new RoutedEventHandler(ButtonRequestConfiguration_Click);
+			ButtonBuildConnectionString.Click += new RoutedEventHandler(ButtonBuildConnectionString_Click);
 			AccordianWizard.SelectionChanged += new SelectionChangedEventHandler(AccordianWizard_SelectionChanged);			
 			CheckboxConnectToPDC.Checked += new RoutedEventHandler(CheckboxConnectToPDC_Checked);
 			CheckboxConnectToPDC.Unchecked += new RoutedEventHandler(CheckboxConnectToPDC_Unchecked);
@@ -992,6 +993,19 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			else
 			{
 			}
+		}
+
+		void ButtonBuildConnectionString_Click(object sender, RoutedEventArgs e)
+		{			
+			ConnectionStringBuilder csb = new ConnectionStringBuilder();
+			if (!string.IsNullOrEmpty(TextBoxConnectionString.Text))
+				csb.ConnectionString = TextBoxConnectionString.Text;
+			csb.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+			{
+				if ((bool)csb.DialogResult)
+					TextBoxConnectionString.Text = csb.ConnectionString;
+			});
+			csb.Show();
 		}
 
 		#endregion

@@ -79,7 +79,15 @@
                     </Style>
                 </StackPanel.Resources>
 
-                <TextBlock Text="Current Device Measurements" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Current Device Measurements" Grid.Column="0"  Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                    <TextBlock x:Name="TextBlockLastRefresh" Grid.Column="1" Foreground="#FFFFFFFF" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="{StaticResource SmallTextSize}" />
+                </Grid>
+                    
                 <!--<ScrollViewer BorderThickness="0" Padding="0">
                     <ScrollViewer.Content>-->
                 <controls:TreeView x:Name="TreeViewDeviceMeasurements" Background="{StaticResource PortletBackgroundBrush}" ItemTemplate="{StaticResource RootNodeTemplate}" Height="772" ItemContainerStyle="{StaticResource ExpandedItemStyle}" />
