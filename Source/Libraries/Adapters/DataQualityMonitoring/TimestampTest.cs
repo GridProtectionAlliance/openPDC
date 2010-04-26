@@ -235,6 +235,7 @@ using DataQualityMonitoring.Services;
 using TVA;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
+using System.Threading;
 
 namespace DataQualityMonitoring
 {
@@ -243,12 +244,11 @@ namespace DataQualityMonitoring
     /// </summary>
     public class TimestampTest : FacileActionAdapterBase
     {
-
         #region [ Members ]
 
         // Fields
         private Dictionary<Ticks, LinkedList<IMeasurement>> m_badTimestampMeasurements;
-        private ConcentratorBase m_discardingAdapter;
+        private ActionAdapterBase m_discardingAdapter;
         private int m_totalBadTimestampMeasurements;
         private Ticks m_timeToPurge;
         private Ticks m_warnInterval;
@@ -316,9 +316,9 @@ namespace DataQualityMonitoring
             // Find the adapter whose name matches the specified concentratorName
             foreach (IAdapter adapter in Parent)
             {
-                ConcentratorBase concentrator = adapter as ConcentratorBase;
+                ActionAdapterBase concentrator = adapter as ActionAdapterBase;
 
-                if (concentrator != null && adapter.Name == concentratorName)
+                if (concentrator != null && string.Compare(adapter.Name, concentratorName, true) == 0)
                 {
                     m_discardingAdapter = concentrator;
                     break;
@@ -326,10 +326,22 @@ namespace DataQualityMonitoring
             }
 
             if (m_discardingAdapter == null)
-            {
                 throw new ArgumentException(string.Format("Concentrator {0} not found.", concentratorName));
+
+            // Wait for associated adapter to initialize
+            int timeout = m_discardingAdapter.InitializationTimeout;
+            int waitTime = 0;
+
+            while (!m_discardingAdapter.Initialized && waitTime < timeout)
+            {
+                Thread.Sleep(100);
+                waitTime += 100;
             }
 
+            if (!m_discardingAdapter.Initialized)
+                throw new TimeoutException(string.Format("Timeout waiting for concentrator {0} to initialize.", concentratorName));
+
+            // Attach to adapter's discarding measurements event
             m_discardingAdapter.DiscardingMeasurements += m_discardingAdapter_DiscardingMeasurements;
 
             m_purgeTimer.Interval = m_timeToPurge.ToMilliseconds();
@@ -395,6 +407,11 @@ namespace DataQualityMonitoring
                             m_timestampService.ServiceProcessException -= m_timestampService_ServiceProcessException;
                             m_timestampService.Dispose();
                         }
+
+                        if (m_discardingAdapter != null)
+                            m_discardingAdapter.DiscardingMeasurements -= m_discardingAdapter_DiscardingMeasurements;
+
+                        m_discardingAdapter = null; 
                     }
                 }
                 finally
