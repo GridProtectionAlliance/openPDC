@@ -241,15 +241,15 @@ namespace DataQualityMonitoring
     /// <summary>
     /// Tests measurements to determine whether their timestamps are good or bad.
     /// </summary>
-    public class TimestampTest : OutputAdapterBase
+    public class TimestampTest : FacileActionAdapterBase
     {
 
         #region [ Members ]
 
         // Fields
         private Dictionary<Ticks, LinkedList<IMeasurement>> m_badTimestampMeasurements;
-        private Ticks m_lagTime;
-        private Ticks m_leadTime;
+        private ConcentratorBase m_discardingAdapter;
+        private int m_totalBadTimestampMeasurements;
         private Ticks m_timeToPurge;
         private Ticks m_warnInterval;
         private System.Timers.Timer m_purgeTimer;
@@ -267,8 +267,6 @@ namespace DataQualityMonitoring
         public TimestampTest()
         {
             m_badTimestampMeasurements = new Dictionary<Ticks, LinkedList<IMeasurement>>();
-            m_lagTime = 0L;
-            m_leadTime = 0L;
             m_timeToPurge = Ticks.FromSeconds(1.0);
             m_warnInterval = Ticks.FromSeconds(4.0);
             m_purgeTimer = new System.Timers.Timer();
@@ -277,67 +275,7 @@ namespace DataQualityMonitoring
 
         #endregion
 
-        #region [ Properties ]
-
-        /// <summary>
-        /// Measurements sent to this <see cref="TimestampTest"/> are not destined for archival.
-        /// </summary>
-        public override bool OutputIsForArchive
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// This <see cref="TimestampTest"/> does not connect asynchronously.
-        /// </summary>
-        protected override bool UseAsyncConnect
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        #endregion
-
         #region [ Methods ]
-
-        /// <summary>
-        /// Attempts to connect to this <see cref="TimestampTest"/>.
-        /// </summary>
-        protected override void AttemptConnection()
-        {
-        }
-
-        /// <summary>
-        /// Attempts to disconnect from this <see cref="TimestampTest"/>.
-        /// </summary>
-        protected override void AttemptDisconnection()
-        {
-        }
-
-        /// <summary>
-        /// Process the measurements to determine if any measurements are coming in with bad timestamps.
-        /// </summary>
-        /// <param name="measurements">The array of measurements to check for bad timestamps.</param>
-        protected override void ProcessMeasurements(IMeasurement[] measurements)
-        {
-            Ticks currentTime = DateTime.UtcNow.Ticks;
-
-            lock (m_badTimestampMeasurements)
-            {
-                foreach (IMeasurement measurement in measurements)
-                {
-                    Ticks distance = currentTime - measurement.Timestamp;
-
-                    if (IsInputMeasurement(measurement.Key) && (!measurement.TimestampQualityIsGood || distance > m_leadTime || distance < -m_lagTime))
-                        AddMeasurementWithBadTimestamp(currentTime, measurement);
-                }
-            }
-        }
 
         /// <summary>
         /// Returns a short, one-line status message about the adapter.
@@ -346,8 +284,7 @@ namespace DataQualityMonitoring
         /// <returns>A short, one-line status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            int count = GetBadTimestampMeasurementCount();
-            return string.Format("{0} input measurements; {1} bad timestamps", InputMeasurementKeys.Length, count);
+            return string.Format("        Detected {0} measurements with bad timestamps", m_totalBadTimestampMeasurements);
         }
 
         /// <summary>
@@ -356,8 +293,8 @@ namespace DataQualityMonitoring
         public override void Initialize()
         {
             base.Initialize();
-            string errorMessage = "{0} is missing from Settings - Example: lagTime=3; leadTime=1";
 
+            string errorMessage = "{0} is missing from Settings - Example: concentratorName=TESTSTREAM";
             Dictionary<string, string> settings = Settings;
             string setting;
 
@@ -369,15 +306,31 @@ namespace DataQualityMonitoring
                 m_warnInterval = Ticks.FromSeconds(double.Parse(setting));
 
             // Load required parameters
-            if (!settings.TryGetValue("lagTime", out setting))
-                throw new ArgumentException(string.Format(errorMessage, "lagTime"));
+            string concentratorName;
 
-            m_lagTime = Ticks.FromSeconds(double.Parse(setting));
+            if (!settings.TryGetValue("concentratorName", out concentratorName))
+                throw new ArgumentException(string.Format(errorMessage, "concentratorName"));
 
-            if (!settings.TryGetValue("leadTime", out setting))
-                throw new ArgumentException(string.Format(errorMessage, "leadTime"));
+            m_discardingAdapter = null;
 
-            m_leadTime = Ticks.FromSeconds(double.Parse(setting));
+            // Find the adapter whose name matches the specified concentratorName
+            foreach (IAdapter adapter in Parent)
+            {
+                ConcentratorBase concentrator = adapter as ConcentratorBase;
+
+                if (concentrator != null && adapter.Name == concentratorName)
+                {
+                    m_discardingAdapter = concentrator;
+                    break;
+                }
+            }
+
+            if (m_discardingAdapter == null)
+            {
+                throw new ArgumentException(string.Format("Concentrator {0} not found.", concentratorName));
+            }
+
+            m_discardingAdapter.DiscardingMeasurements += m_discardingAdapter_DiscardingMeasurements;
 
             m_purgeTimer.Interval = m_timeToPurge.ToMilliseconds();
             m_purgeTimer.Elapsed += m_purgeTimer_Elapsed;
@@ -411,6 +364,18 @@ namespace DataQualityMonitoring
 
             m_purgeTimer.Stop();
             m_warningTimer.Stop();
+        }
+
+        /// <summary>
+        /// Queues a collection of measurements for processing.
+        /// </summary>
+        /// <param name="measurements">Collection of measurements to queue for processing.</param>
+        /// <remarks>
+        /// The <see cref="TimestampTest"/> adapter doesn't process any measurements.
+        /// </remarks>
+        public override void QueueMeasurementsForProcessing(IEnumerable<IMeasurement> measurements)
+        {
+            // The timestamp test doesn't have a need to process any measurements
         }
 
         /// <summary>
@@ -470,6 +435,20 @@ namespace DataQualityMonitoring
             return count;
         }
 
+        private void m_discardingAdapter_DiscardingMeasurements(object sender, EventArgs<IEnumerable<IMeasurement>> e)
+        {
+            Ticks currentTime = DateTime.UtcNow.Ticks;
+
+            lock (m_badTimestampMeasurements)
+            {
+                foreach (IMeasurement measurement in e.Argument)
+                {
+                    Ticks distance = currentTime - measurement.Timestamp;
+                    AddMeasurementWithBadTimestamp(currentTime, measurement);
+                }
+            }
+        }
+
         private void AddMeasurementWithBadTimestamp(Ticks timeArrived, IMeasurement measurement)
         {
             lock (m_badTimestampMeasurements)
@@ -483,6 +462,7 @@ namespace DataQualityMonitoring
                 }
 
                 measurementList.AddLast(measurement);
+                m_totalBadTimestampMeasurements++;
             }
         }
 
@@ -498,7 +478,7 @@ namespace DataQualityMonitoring
                 {
                     Ticks distance = currentTime - timeArrived;
 
-                    if (distance < m_timeToPurge)
+                    if (distance > m_timeToPurge)
                         m_badTimestampMeasurements.Remove(timeArrived);
                 }
             }
