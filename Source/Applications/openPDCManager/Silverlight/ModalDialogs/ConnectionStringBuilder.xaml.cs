@@ -242,6 +242,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 	{
 		#region [ Members ]
 
+		ConnectionType m_connectionType;
 		string m_connectionString;
 		PhasorDataServiceClient m_client;
 		Dictionary<string, string> keyvaluepairs;
@@ -264,13 +265,21 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			file
 		}
 
+		public enum ConnectionType
+		{
+			DeviceConnection,
+			DataChannel,
+			CommandChannel
+		}
+
 		#endregion
 
 		#region [ Constructor ]
 
-		public ConnectionStringBuilder()
+		public ConnectionStringBuilder(ConnectionType connectionType)
 		{
-			InitializeComponent();			
+			InitializeComponent();
+			m_connectionType = connectionType;
 			m_client = Common.GetPhasorDataServiceProxyClient();
 			//m_client.GetPortsCompleted += new System.EventHandler<GetPortsCompletedEventArgs>(m_client_GetPortsCompleted);
 			m_client.GetStopBitsCompleted += new System.EventHandler<GetStopBitsCompletedEventArgs>(m_client_GetStopBitsCompleted);
@@ -304,15 +313,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				ComboboxStopBits.ItemsSource = e.Result;
 			if (ComboboxStopBits.Items.Count > 0)
 				ComboboxStopBits.SelectedIndex = 0;
-		}
-
-		//void m_client_GetPortsCompleted(object sender, GetPortsCompletedEventArgs e)
-		//{
-		//    if (e.Error == null)
-		//        ComboboxPort.ItemsSource = e.Result;
-		//    if (ComboboxPort.Items.Count > 0)
-		//        ComboboxPort.SelectedIndex = 0;
-		//}
+		}			
 
 		#endregion
 
@@ -470,6 +471,29 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 		void ConnectionStringBuilder_Loaded(object sender, RoutedEventArgs e)
 		{
+			if (m_connectionType == ConnectionType.CommandChannel)
+			{
+				TabItemTCP.Visibility = Visibility.Visible;
+				TabItemUDP.Visibility = Visibility.Collapsed;
+				TabItemSerial.Visibility = Visibility.Visible;
+				TabItemFile.Visibility = Visibility.Visible;
+			}
+			else if (m_connectionType == ConnectionType.DataChannel)
+			{
+				TabControlOptions.SelectedIndex = 1;
+				TabItemTCP.Visibility = Visibility.Collapsed;
+				TabItemUDP.Visibility = Visibility.Visible;
+				TabItemSerial.Visibility = Visibility.Collapsed;
+				TabItemFile.Visibility = Visibility.Collapsed;				
+			}
+			else
+			{
+				TabItemTCP.Visibility = Visibility.Visible;
+				TabItemUDP.Visibility = Visibility.Visible;
+				TabItemSerial.Visibility = Visibility.Visible;
+				TabItemFile.Visibility = Visibility.Visible;
+			}
+
 			keyvaluepairs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
 			m_client.GetParitiesAsync();
@@ -533,7 +557,9 @@ namespace openPDCManager.Silverlight.ModalDialogs
 					else
 						CheckboxEstablishServer.IsChecked = false;
 				}
-				else if ((keyvaluepairs.ContainsKey("transportprotocol") && keyvaluepairs["transportprotocol"].ToLower() == "udp") || (keyvaluepairs.ContainsKey("protocol") && keyvaluepairs["protocol"].ToLower() == "udp"))
+				else if ((keyvaluepairs.ContainsKey("transportprotocol") && keyvaluepairs["transportprotocol"].ToLower() == "udp") || 
+							(keyvaluepairs.ContainsKey("protocol") && keyvaluepairs["protocol"].ToLower() == "udp") ||
+							(m_connectionType == ConnectionType.DataChannel))
 				{
 					TabControlOptions.SelectedIndex = 1;
 					if (keyvaluepairs.ContainsKey("localport"))
@@ -601,13 +627,16 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		}
 
 		void SetConnectionString(TransportProtocol transportProtocol)
-		{	
-			if (!keyvaluepairs.ContainsKey("transportprotocol") && !keyvaluepairs.ContainsKey("protocol"))
-				keyvaluepairs.Add("transportprotocol", transportProtocol.ToString());
-			else if (keyvaluepairs.ContainsKey("transportprotocol"))
-				keyvaluepairs["transportprotocol"] = transportProtocol.ToString();
-			else if (keyvaluepairs.ContainsKey("protocol"))
-				keyvaluepairs["protocol"] = transportProtocol.ToString();
+		{
+			if (m_connectionType != ConnectionType.DataChannel)	// don't need transport protocol if it is a data channel. By default it is UDP.
+			{
+				if (!keyvaluepairs.ContainsKey("transportprotocol") && !keyvaluepairs.ContainsKey("protocol"))
+					keyvaluepairs.Add("transportprotocol", transportProtocol.ToString());
+				else if (keyvaluepairs.ContainsKey("transportprotocol"))
+					keyvaluepairs["transportprotocol"] = transportProtocol.ToString();
+				else if (keyvaluepairs.ContainsKey("protocol"))
+					keyvaluepairs["protocol"] = transportProtocol.ToString();
+			}
 
 			if ((bool)CheckboxForceIPv4.IsChecked)
 			{
@@ -615,6 +644,10 @@ namespace openPDCManager.Silverlight.ModalDialogs
 					keyvaluepairs.Add("interface", "0.0.0.0");
 				else
 					keyvaluepairs["interface"] = "0.0.0.0";
+			}
+			else
+			{
+				keyvaluepairs.Remove("interface");
 			}
 
 			m_connectionString = string.Empty;

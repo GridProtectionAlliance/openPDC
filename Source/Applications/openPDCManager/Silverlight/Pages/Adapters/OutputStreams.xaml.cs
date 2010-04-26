@@ -267,7 +267,9 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ListBoxOutputStreamList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamList_SelectionChanged);
 			Loaded += new RoutedEventHandler(OutputStreams_Loaded);
-		}
+			ButtonBuildCommandChannel.Click += new RoutedEventHandler(ButtonBuildCommandChannel_Click);
+			ButtonBuildDataChannel.Click += new RoutedEventHandler(ButtonBuildDataChannel_Click);
+		}		
 
 		#endregion
 
@@ -457,6 +459,32 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			string acronym = ((HyperlinkButton)sender).Name;
 			CurrentDevices currentDevices = new CurrentDevices(outputStreamId, acronym);
 			currentDevices.Show();
+		}
+
+		void ButtonBuildDataChannel_Click(object sender, RoutedEventArgs e)
+		{
+			ConnectionStringBuilder csb = new ConnectionStringBuilder(ConnectionStringBuilder.ConnectionType.DataChannel);
+			if (!string.IsNullOrEmpty(TextBoxDataChannel.Text))
+				csb.ConnectionString = TextBoxDataChannel.Text;
+			csb.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+			{
+				if ((bool)csb.DialogResult)
+					TextBoxDataChannel.Text = csb.ConnectionString;
+			});
+			csb.Show();
+		}
+
+		void ButtonBuildCommandChannel_Click(object sender, RoutedEventArgs e)
+		{
+			ConnectionStringBuilder csb = new ConnectionStringBuilder(ConnectionStringBuilder.ConnectionType.CommandChannel);
+			if (!string.IsNullOrEmpty(TextBoxCommandChannel.Text))
+				csb.ConnectionString = TextBoxCommandChannel.Text;
+			csb.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+			{
+				if ((bool)csb.DialogResult)
+					TextBoxCommandChannel.Text = csb.ConnectionString;
+			});
+			csb.Show();
 		}
 
 		#endregion

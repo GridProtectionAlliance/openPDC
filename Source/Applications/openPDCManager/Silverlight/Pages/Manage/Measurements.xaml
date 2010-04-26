@@ -5,7 +5,8 @@
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            mc:Ignorable="d"
            xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"     
-           xmlns:data="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data"
+           xmlns:data="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data" 
+           xmlns:DefaultButton="clr-namespace:openPDCManager.Silverlight.Utilities" 
            Title="Manage Measurements">
     <Grid x:Name="GridManageMeasurements">
         <Border Style="{StaticResource PortletBorderStyle}">
@@ -68,6 +69,21 @@
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource HeaderRowBorderStyle}">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <TextBox x:Name="TextBoxSearch" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Margin="2"  DefaultButton:DefaultButtonService.DefaultButton="{Binding ElementName=ButtonSearch}"/>
+                        <Button x:Name="ButtonSearch" Content="../../Images/Search.png" Tag="Search" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="2" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonSearchTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
+                        <Button x:Name="ButtonShowAll" Content="../../Images/CancelSearch.png" Tag="Show All" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="2" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonShowAllTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource HeaderRowBorderStyle}">
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Signal ID" Width="{StaticResource XXLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
@@ -91,7 +107,7 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ScrollViewer BorderThickness="0" Padding="0" Height="492">
+                    <ScrollViewer BorderThickness="0" Padding="0" Height="463">
                         <ScrollViewer.Content>                            
                             <ListBox x:Name="ListBoxMeasurementList" Margin="0" Padding="0">
                                 <ListBox.ItemTemplate>
@@ -125,7 +141,7 @@
                         </ScrollViewer.Content>
                     </ScrollViewer>
                 </Border>
-                <data:DataPager x:Name="DataPagerMeasurements" PageSize="21" AutoEllipsis="True" NumericButtonCount="3" DisplayMode="FirstLastPreviousNext"/>
+                <data:DataPager x:Name="DataPagerMeasurements" PageSize="20" AutoEllipsis="True" NumericButtonCount="3" DisplayMode="FirstLastPreviousNext"/>
             </StackPanel>
         </Border>
     </Grid>

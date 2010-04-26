@@ -996,8 +996,8 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 
 		void ButtonBuildConnectionString_Click(object sender, RoutedEventArgs e)
-		{			
-			ConnectionStringBuilder csb = new ConnectionStringBuilder();
+		{
+			ConnectionStringBuilder csb = new ConnectionStringBuilder(ConnectionStringBuilder.ConnectionType.DeviceConnection);
 			if (!string.IsNullOrEmpty(TextBoxConnectionString.Text))
 				csb.ConnectionString = TextBoxConnectionString.Text;
 			csb.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)

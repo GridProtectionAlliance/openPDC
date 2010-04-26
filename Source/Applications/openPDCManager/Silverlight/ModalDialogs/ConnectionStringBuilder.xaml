@@ -11,7 +11,7 @@
                     <StackPanel Orientation="Vertical">
                         <CheckBox x:Name="CheckboxForceIPv4" Content="Force IPv4" FontWeight="Bold" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0"/>
                         <controls:TabControl x:Name="TabControlOptions">
-                        <controls:TabItem Header="TCP" x:Name="tcp">
+                        <controls:TabItem Header="TCP" x:Name="TabItemTCP">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
@@ -32,7 +32,7 @@
                                 <Button x:Name="ButtonSaveTCP" Grid.Row="2" Grid.Column="2" Content="../../Images/Save.png" Tag="Save Settings" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>
                             </Grid>
                         </controls:TabItem>
-                        <controls:TabItem Header="UDP" x:Name="udp">
+                        <controls:TabItem Header="UDP" x:Name="TabItemUDP">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
@@ -61,7 +61,7 @@
                                 <Button x:Name="ButtonSaveUDP" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Content="../../Images/Save.png" Tag="Save Settings" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>                                
                             </Grid>
                         </controls:TabItem>
-                        <controls:TabItem Header="Serial" x:Name="serial">
+                        <controls:TabItem Header="Serial" x:Name="TabItemSerial">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
@@ -91,7 +91,7 @@
                                 <Button x:Name="ButtonSaveSerial" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Content="../../Images/Save.png" Tag="Save Settings" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>
                             </Grid>
                         </controls:TabItem>
-                        <controls:TabItem Header="File" x:Name="file">
+                        <controls:TabItem Header="File" x:Name="TabItemFile">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />

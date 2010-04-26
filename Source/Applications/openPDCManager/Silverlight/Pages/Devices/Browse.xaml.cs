@@ -241,6 +241,7 @@ using System.Windows.Navigation;
 using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
+using System.Collections.Generic;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
@@ -280,7 +281,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			Storyboard.SetTarget(sb, ButtonShowAllTransform);
 			sb.Begin();
 
-			ListBoxDeviceList.ItemsSource = m_deviceList;			
+			BindData(m_deviceList);			
 		}
 		
 		void ButtonSearch_Click(object sender, RoutedEventArgs e)
@@ -291,11 +292,13 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			Storyboard.SetTarget(sb, ButtonSearchTransform);
 			sb.Begin();
 
-			string searchText = TextBoxSearch.Text.ToUpper();			
-			ListBoxDeviceList.ItemsSource = (from item in m_deviceList
+			string searchText = TextBoxSearch.Text.ToUpper();
+			List<Device> searchResult = new List<Device>();
+			searchResult = (from item in m_deviceList
 											 where item.Acronym.ToUpper().Contains(searchText) || item.Name.ToUpper().Contains(searchText) || item.ProtocolName.ToUpper().Contains(searchText)
 												|| item.InterconnectionName.ToUpper().Contains(searchText) || item.CompanyName.ToUpper().Contains(searchText) || item.VendorDeviceName.ToUpper().Contains(searchText)
 											 select item).ToList();
+			BindData(searchResult);
 		}
 
 		void HyperlinkButton_Click(object sender, RoutedEventArgs e)
@@ -368,9 +371,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			if (e.Error == null)
 			{
 				m_deviceList = e.Result;
-				PagedCollectionView devicesList = new PagedCollectionView(m_deviceList);
-				ListBoxDeviceList.ItemsSource = devicesList;
-				DataPagerDevices.Source = devicesList;
+				BindData(m_deviceList);				
 			}
 			else
 			{
@@ -448,6 +449,14 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			App app = (App)Application.Current;
 			string nodeID = app.NodeValue;
 			m_client.GetDeviceListAsync(nodeID);
+		}
+
+		void BindData(IEnumerable<Device> deviceList)
+		{
+			PagedCollectionView pagedList = new PagedCollectionView(deviceList);
+			ListBoxDeviceList.ItemsSource = pagedList;
+			DataPagerDevices.Source = pagedList;
+			ListBoxDeviceList.SelectedIndex = -1;			
 		}
 
 		#endregion

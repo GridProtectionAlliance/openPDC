@@ -231,6 +231,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -252,6 +254,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		string m_signalID = string.Empty;
 		int m_deviceID = 0;
 		ActivityWindow m_activityWindow;
+		ObservableCollection<Measurement> m_measurementList;
 
 		#endregion
 
@@ -274,6 +277,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
 			ListBoxMeasurementList.SelectionChanged += new SelectionChangedEventHandler(ListBoxMeasurementList_SelectionChanged);
 			ComboBoxDevice.SelectionChanged += new SelectionChangedEventHandler(ComboBoxDevice_SelectionChanged);
+			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
+			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
 		}
 
 		#endregion
@@ -307,7 +312,10 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		void client_GetMeasurementsByDeviceCompleted(object sender, GetMeasurementsByDeviceCompletedEventArgs e)
 		{
 			if (e.Error == null)
-				ListBoxMeasurementList.ItemsSource = e.Result;
+			{
+				m_measurementList = e.Result;
+				BindData(m_measurementList);
+			}
 			else
 			{
 				SystemMessages sm;
@@ -331,11 +339,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		{
 			if (e.Error == null)
 			{
-				PagedCollectionView measurementList = new PagedCollectionView(e.Result);
-				ListBoxMeasurementList.ItemsSource = measurementList;
-				DataPagerMeasurements.Source = measurementList;
-				ListBoxMeasurementList.SelectedIndex = -1;
-				ClearForm();
+				m_measurementList = e.Result;
+				BindData(m_measurementList);
 			}
 			else
 			{
@@ -592,18 +597,48 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			ClearForm();
 		}
 
+		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
+		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonShowAllTransform);
+			sb.Begin();
+
+			BindData(m_measurementList);
+		}
+
+		void ButtonSearch_Click(object sender, RoutedEventArgs e)
+		{
+			Storyboard sb = new Storyboard();
+			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+			Storyboard.SetTarget(sb, ButtonSearchTransform);
+			sb.Begin();
+
+			string searchText = TextBoxSearch.Text.ToUpper();
+			//ListBoxMeasurementList.ItemsSource 
+			List<Measurement> searchResult = new List<Measurement>();
+			searchResult = (from item in m_measurementList
+												  where item.PointTag.Contains(searchText) || item.SignalReference.Contains(searchText) || item.SignalSuffix.Contains(searchText) || item.Description.ToUpper().Contains(searchText)
+														|| item.DeviceAcronym.Contains(searchText) || item.SignalName.ToUpper().Contains(searchText) || item.SignalAcronym.Contains(searchText)
+												  select item).ToList();
+			BindData(searchResult);
+		}
+
 		#endregion
 
 		#region [ Page Event Handlers ]
 
 		void Measurements_Loaded(object sender, RoutedEventArgs e)
 		{
-			
+		
 		}
 						
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+			m_measurementList = new ObservableCollection<Measurement>();
 			App app = (App)Application.Current;
 			m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
 			m_activityWindow.Show();
@@ -641,6 +676,15 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			m_inEditMode = false;
 			m_signalID = string.Empty;
 			ListBoxMeasurementList.SelectedIndex = -1;
+		}
+
+		void BindData(IEnumerable<Measurement> measurementList)
+		{
+			PagedCollectionView pagedList = new PagedCollectionView(measurementList);
+			ListBoxMeasurementList.ItemsSource = pagedList;
+			DataPagerMeasurements.Source = pagedList;
+			ListBoxMeasurementList.SelectedIndex = -1;
+			ClearForm();
 		}
 
 		#endregion
