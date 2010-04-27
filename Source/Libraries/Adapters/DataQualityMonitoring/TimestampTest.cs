@@ -284,7 +284,7 @@ namespace DataQualityMonitoring
         /// <returns>A short, one-line status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return string.Format("        Detected {0} measurements with bad timestamps", m_totalBadTimestampMeasurements);
+            return string.Format("Detected {0} measurements with bad timestamps", m_totalBadTimestampMeasurements).CenterText(maxLength);
         }
 
         /// <summary>

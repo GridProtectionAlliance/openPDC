@@ -415,9 +415,9 @@ namespace HistorianAdapters
         public override string GetShortStatus(int maxLength)
         {
             if (m_outputIsForArchive)
-                return string.Format("Published {0} measurements for archival.", m_measurementsPublished).TruncateRight(maxLength);
+                return string.Format("Published {0} measurements for archival.", m_measurementsPublished).CenterText(maxLength);
             else
-                return string.Format("Published {0} measurements for processing.", m_measurementsPublished).TruncateRight(maxLength);
+                return string.Format("Published {0} measurements for processing.", m_measurementsPublished).CenterText(maxLength);
         }
 
         /// <summary>

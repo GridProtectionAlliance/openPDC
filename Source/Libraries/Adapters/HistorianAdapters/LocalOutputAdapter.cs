@@ -472,7 +472,7 @@ namespace HistorianAdapters
         /// <returns>Text of the status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return string.Format("Archived {0} measurements locally.", m_archivedMeasurements).TruncateRight(maxLength);
+            return string.Format("Archived {0} measurements locally.", m_archivedMeasurements).CenterText(maxLength);
         }
 
         /// <summary>

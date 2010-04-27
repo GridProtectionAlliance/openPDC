@@ -433,7 +433,7 @@ namespace TestingAdapters
         /// <returns>A short one-line summary of the current status of this <see cref="AdapterBase"/>.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return ("Total sent measurements " + ProcessedMeasurements.ToString("N0")).PadLeft(maxLength, '\xA0');
+            return ("Total sent measurements " + ProcessedMeasurements.ToString("N0")).CenterText(maxLength);
         }
 
         /// <summary>

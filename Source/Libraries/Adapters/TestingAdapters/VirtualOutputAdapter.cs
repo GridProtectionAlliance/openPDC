@@ -297,7 +297,7 @@ namespace TestingAdapters
         /// </summary>
         public override string GetShortStatus(int maxLength)
         {
-            return "Virtual historian sending data to null...".CenterText(maxLength);
+            return "Virtual historian is sending all data to null...".CenterText(maxLength);
         }
 
         #endregion

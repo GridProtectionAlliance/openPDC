@@ -233,6 +233,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using TVA;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
 
@@ -375,7 +376,7 @@ namespace CsvAdapters
         /// <returns>Text of the status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return string.Format("{0} measurements read from file.", ProcessedMeasurements);
+            return string.Format("{0} measurements read from CSV file.", ProcessedMeasurements).CenterText(maxLength);
         }
 
         private void m_timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)

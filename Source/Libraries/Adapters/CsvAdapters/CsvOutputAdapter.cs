@@ -377,7 +377,7 @@ namespace CsvAdapters
         /// <returns>Text of the status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return string.Format("Archived {0} measurements locally.", m_measurementCount).TruncateRight(maxLength);
+            return string.Format("Archived {0} measurements to CSV file.", m_measurementCount).CenterText(maxLength);
         }
 
         #endregion

@@ -359,7 +359,7 @@ namespace HistorianAdapters
         /// <returns>Text of the status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return string.Format("Received {0} bytes in {1} packets.", m_historianDataListener.TotalBytesReceived, m_historianDataListener.TotalPacketsReceived).TruncateRight(maxLength);
+            return string.Format("Received {0} bytes in {1} packets.", m_historianDataListener.TotalBytesReceived, m_historianDataListener.TotalPacketsReceived).CenterText(maxLength);
         }
 
         /// <summary>

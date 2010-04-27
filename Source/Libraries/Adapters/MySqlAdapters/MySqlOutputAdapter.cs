@@ -360,7 +360,7 @@ namespace MySqlAdapters
         /// <returns>Text of the status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return string.Format("Archived {0} measurements locally.", m_measurementCount).TruncateRight(maxLength);
+            return string.Format("Archived {0} measurements to MySQL database.", m_measurementCount).CenterText(maxLength);
         }
 
         /// <summary>
