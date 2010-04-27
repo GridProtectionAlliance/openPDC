@@ -18,6 +18,8 @@
 //      Add default value to m_exportInterval avoid "Attempted to divide by zero" exception
 //  02/01/2010 - Jian R. Zuo
 //      Change "return Status.ToString();" to "return status.ToString();"
+//  04/27/2010 - J. Ritchie Carroll
+//       Performed full code review, optimization and bug fixes for ICCP data export.
 //
 //*******************************************************************************************************
 
@@ -243,6 +245,7 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using TVA;
+using TVA.Collections;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
 using TVA.NumericalAnalysis;
@@ -292,14 +295,22 @@ namespace ICCPExport
             {
                 StringBuilder status = new StringBuilder();
                 
-                status.AppendFormat("     Using numeric quality: {0}\r\n", m_useNumericQuality);
-                status.AppendFormat("     Using reference angle: {0}\r\n", m_useReferenceAngle);
+                status.AppendFormat("     Using numeric quality: {0}", m_useNumericQuality);
+                status.AppendLine();
+                status.AppendFormat("     Using reference angle: {0}", m_useReferenceAngle);
+                status.AppendLine();
 
                 if (m_useReferenceAngle)
-                    status.AppendFormat("     Reference angle point: {0}\r\n", m_referenceAngleKey.ToString());
+                {
+                    status.AppendFormat("     Reference angle point: {0}", m_referenceAngleKey.ToString());
+                    status.AppendLine();
+                }
 
                 if (!string.IsNullOrEmpty(m_companyTagPrefix))
-                    status.AppendFormat("        Company tag prefix: {0}\r\n", m_companyTagPrefix);
+                {
+                    status.AppendFormat("        Company tag prefix: {0}", m_companyTagPrefix);
+                    status.AppendLine();
+                }
 
                 if (m_dataExporter != null)
                     status.Append(m_dataExporter.Status);
@@ -322,27 +333,20 @@ namespace ICCPExport
             base.Initialize();
 
             Dictionary<string, string> settings = Settings;
-            string errorMessage = "{0} is missing from Settings - Example: exportInterval=5; useReferenceAngle=True; referenceAngleMeasurement=ArchiveA:121; companyTagPrefix=TVA; useNumericQuality=True; inputMeasurementKeys={FILTER ActiveMeasurements WHERE Device='SHELBY' AND SignalType='FREQ'}";
+            string errorMessage = "{0} is missing from Settings - Example: exportInterval=5; useReferenceAngle=True; referenceAngleMeasurement=DEVARCHIVE:6; companyTagPrefix=TVA; useNumericQuality=True; inputMeasurementKeys={{FILTER ActiveMeasurements WHERE Device='SHELBY' AND SignalType='FREQ'}}";
             string setting;
 
             // Load required parameters
             if (!settings.TryGetValue("exportInterval", out setting))
-            {
-                m_exportInterval = 10;                                  //Default value
                 throw new ArgumentException(string.Format(errorMessage, "exportInterval"));
-            }
             
             m_exportInterval = int.Parse(setting);
 
             if (m_exportInterval == 0)
-            {
-                m_exportInterval = 10;                                  //Default value
-                throw new ArgumentException(string.Format("{0} should not be ZERO - Example: exportInterval=5; useReferenceAngle=True; referenceAngleMeasurement=ArchiveA:121; companyTagPrefix=TVA; useNumericQuality=True; inputMeasurementKeys={FILTER ActiveMeasurements WHERE Device='SHELBY' AND SignalType='FREQ'}", "exportInterval"));
-            }
+                throw new ArgumentException("exportInterval should not be 0 - Example: exportInterval=5");
 
             if (InputMeasurementKeys == null || InputMeasurementKeys.Length == 0)
-                throw new InvalidOperationException("There are no input measurements defined. You must define \"inputMeasurementKeys\" to define which measurements to export");
-
+                throw new InvalidOperationException("There are no input measurements defined. You must define \"inputMeasurementKeys\" to define which measurements to export.");
 
             if (!settings.TryGetValue("useReferenceAngle", out setting))
                 throw new ArgumentException(string.Format(errorMessage, "useReferenceAngle"));
@@ -358,6 +362,16 @@ namespace ICCPExport
                 m_referenceAngleKey = MeasurementKey.Parse(setting);
             }
 
+            // Make sure reference angle is part of input measurement keys collection
+            if (!InputMeasurementKeys.Contains(m_referenceAngleKey))
+                InputMeasurementKeys = InputMeasurementKeys.Concat(new MeasurementKey[] { m_referenceAngleKey }).ToArray();
+
+            // Make sure sure reference angle key is actually an angle measurement
+            SignalType signalType = InputMeasurementKeyTypes[InputMeasurementKeys.IndexOf(key => key == m_referenceAngleKey)];
+
+            if (signalType != SignalType.IPHA && signalType != SignalType.VPHA)
+                throw new InvalidOperationException(string.Format("Specified reference angle measurement key is a {0} signal, not a phase angle.", signalType.GetFormattedSignalTypeName()));
+
             // Load optional parameters
             if (settings.TryGetValue("companyTagPrefix", out setting))
                 m_companyTagPrefix = setting.ToUpper().Trim();
@@ -371,26 +385,31 @@ namespace ICCPExport
 
             // Suffix company tag prefix with an underscore if defined
             if (!string.IsNullOrEmpty(m_companyTagPrefix))
-                m_companyTagPrefix += "_";
+                m_companyTagPrefix = m_companyTagPrefix.EnsureEnd('_');
 
             // Define a default export location - user can override and add multiple locations in config later...
-            ExportDestination[] defaultDestinations = new ExportDestination[] { new ExportDestination(string.Format("C:\\{0}.txt", Name), true, "", "", "") };
-            m_dataExporter = new MultipleDestinationExporter(Name, m_exportInterval * 1000);
+            ExportDestination[] defaultDestinations = new ExportDestination[] { new ExportDestination(FilePath.GetAbsolutePath("ICCPExport.txt"), false, "", "", "") };
+            m_dataExporter = new MultipleDestinationExporter(ConfigurationSection, m_exportInterval * 1000);
+            m_dataExporter.PersistSettings = true;
             m_dataExporter.Initialize(defaultDestinations);
 
             // Create new measurement tag name dictionary
             m_measurementTags = new Dictionary<MeasurementKey, string>();
+            string pointID = "undefined";
 
             // Lookup point tag name for input measurement in the ActiveMeasurements table
             foreach (MeasurementKey key in InputMeasurementKeys)
             {
                 try
                 {
+                    // Get measurement key as a string
+                    pointID = key.ToString();
+
                     // Lookup measurement key in active measurements table
-                    DataRow row = DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID='{0}'", key.ToString()))[0];
+                    DataRow row = DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID='{0}'", pointID))[0];
 
                     // Remove invalid symbols that may be in tag name
-                    string pointTag = row["PointTag"].ToString().Replace('-', '_').Replace(':', '_').ToUpper();
+                    string pointTag = row["PointTag"].ToNonNullString(pointID).Replace('-', '_').Replace(':', '_').ToUpper();
 
                     // Prefix point tag with company prefix if defined
                     if (!string.IsNullOrEmpty(m_companyTagPrefix) && !pointTag.StartsWith(m_companyTagPrefix))
@@ -400,7 +419,7 @@ namespace ICCPExport
                 }
                 catch (Exception ex)
                 {
-                    OnProcessException(new InvalidOperationException(string.Format("Failed to lookup point tag for measurement [{0}] due to exception: {1}", key.ToString(), ex.Message)));
+                    OnProcessException(new InvalidOperationException(string.Format("Failed to lookup point tag for measurement [{0}] due to exception: {1}", pointID, ex.Message)));
                 }
             }
 
@@ -429,6 +448,7 @@ namespace ICCPExport
         {
             List<IMeasurement> inputMeasurements = new List<IMeasurement>();
             Ticks timestamp;
+            bool sortMeasurement;
 
             foreach (IMeasurement measurement in measurements)
             {
@@ -438,11 +458,12 @@ namespace ICCPExport
                 //   A) Timestamp's seconds are an interval of the defined export interval
                 //   B) Timestamp falls within first frame of data in the second
                 //   C) This is a defined input measurement for this adapter
-                bool sort = ((DateTime)timestamp).Second % m_exportInterval == 0 &&
-                        timestamp.DistanceBeyondSecond() < (TicksPerFrame / 2) &&
-                        IsInputMeasurement(measurement.Key);
+                sortMeasurement = 
+                        ((DateTime)timestamp).Second % m_exportInterval == 0 && // <-- A
+                        timestamp.DistanceBeyondSecond() < TicksPerFrame &&     // <-- B
+                        IsInputMeasurement(measurement.Key);                    // <-- C
 
-                if (sort)
+                if (sortMeasurement)
                     inputMeasurements.Add(measurement);
             }
 

@@ -314,6 +314,7 @@ namespace TVA.PhasorProtocols
         // Fields
         private SignalType[] m_inputMeasurementKeyTypes;
         private SignalType[] m_outputMeasurementTypes;
+        private string m_configurationSection;
 
         #endregion
 
@@ -386,6 +387,21 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Gets or sets the configuration section to use for this <see cref="CalculatedMeasurementBase"/>.
+        /// </summary>
+        public virtual string ConfigurationSection
+        {
+            get
+            {
+                return m_configurationSection;
+            }
+            set
+            {
+                m_configurationSection = value;
+            }
+        }
+
+        /// <summary>
         /// Returns the detailed status of the calculated measurement.
         /// </summary>
         /// <remarks>
@@ -398,6 +414,8 @@ namespace TVA.PhasorProtocols
                 StringBuilder status = new StringBuilder();
                 int count;
 
+                status.AppendFormat("     Configuration section: {0}", ConfigurationSection);
+                status.AppendLine();
                 status.Append(base.Status);
 
                 if (OutputMeasurements != null)
@@ -443,6 +461,18 @@ namespace TVA.PhasorProtocols
         #endregion
 
         #region [ Methods ]
+
+        /// <summary>
+        /// Intializes <see cref="CalculatedMeasurementBase"/>.
+        /// </summary>
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            // Load optional parameters
+            if (!Settings.TryGetValue("configurationSection", out m_configurationSection))
+                m_configurationSection = Name;
+        }
 
         // Lookup signal type for given measurement key
         private SignalType LookupSignalType(MeasurementKey key)
