@@ -238,6 +238,7 @@ using System.Windows;
 using System.Windows.Controls;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
+using System.Windows.Data;
 
 namespace openPDCManager.Silverlight.ModalDialogs
 {
@@ -249,7 +250,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		string m_sourceOutputStreamAcronym;
 		PhasorDataServiceClient m_client;
 		ObservableCollection<Measurement> m_measurementList;		
-		List<string[]> m_measurementsToBeAdded;
+		//List<string[]> m_measurementsToBeAdded;
+		Dictionary<string, string[]> m_measurementsToBeAdded;
 		ActivityWindow m_activityWindow;
 
 		#endregion
@@ -272,14 +274,14 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 		#endregion
 
-		#region [ Client Event Handlers ]
+		#region [ Service Event Handlers ]
 
 		void client_GetMeasurementsForOutputStreamCompleted(object sender, GetMeasurementsForOutputStreamCompletedEventArgs e)
 		{
 			if (e.Error == null)
 			{
 				m_measurementList = e.Result;
-				ListBoxMeasurementList.ItemsSource = m_measurementList;
+				BindData(m_measurementList);				
 			}
 			else
 			{
@@ -305,15 +307,18 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
 		{
-			ListBoxMeasurementList.ItemsSource = m_measurementList;
+			BindData(m_measurementList);
 		}
 		
 		void ButtonSearch_Click(object sender, RoutedEventArgs e)
 		{
 			string searchText = TextBoxSearch.Text.ToUpper();
-			ListBoxMeasurementList.ItemsSource = (from item in m_measurementList
+
+			List<Measurement> searchResult = new List<Measurement>();
+			searchResult = (from item in m_measurementList
 												  where item.PointTag.ToUpper().Contains(searchText) || item.SignalReference.ToUpper().Contains(searchText)
-												  select item).ToList();			
+												  select item).ToList();
+			BindData(searchResult);
 		}
 		
 		void ButtonAdd_Click(object sender, RoutedEventArgs e)
@@ -322,14 +327,14 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			{
 				App app = (App)Application.Current;
 				//string[] format is {Name=PointID, Tooltip=SignalReference, Tag=HistorianID}
-				foreach (string[] measurement in m_measurementsToBeAdded)
+				foreach (KeyValuePair<string, string[]> measurement in m_measurementsToBeAdded)
 				{
 					OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
 					outputStreamMeasurement.NodeID = app.NodeValue;
 					outputStreamMeasurement.AdapterID = m_sourceOutputStreamID;
-					outputStreamMeasurement.HistorianID = string.IsNullOrEmpty(measurement[2]) ? (int?)null : Convert.ToInt32(measurement[2]);
-					outputStreamMeasurement.PointID = Convert.ToInt32(measurement[0]);
-					outputStreamMeasurement.SignalReference = measurement[1].Replace(measurement[1].Substring(0, measurement[1].LastIndexOf("-")), "<UNASSIGNED>");
+					outputStreamMeasurement.HistorianID = string.IsNullOrEmpty(measurement.Value[2]) ? (int?)null : Convert.ToInt32(measurement.Value[2]);
+					outputStreamMeasurement.PointID = Convert.ToInt32(measurement.Value[0]);
+					outputStreamMeasurement.SignalReference = measurement.Value[1].Replace(measurement.Value[1].Substring(0, measurement.Value[1].LastIndexOf("-")), "<UNASSIGNED>");
 					m_client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, true);
 				}
 				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Output Stream Measurements Added Successfully", SystemMessage = string.Empty, UserMessageType = MessageType.Success },
@@ -351,7 +356,9 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ToolTip tooltip = new ToolTip();
 			tooltip = ToolTipService.GetToolTip(checkedBox) as ToolTip;
 			//string[] format is {Name=PointID, Tooltip=SignalReference, Tag=HistorianID}
-			m_measurementsToBeAdded.Add(new string[] { checkedBox.Name, ToolTipService.GetToolTip(checkedBox).ToString(), checkedBox.Tag == null ? string.Empty : checkedBox.Tag.ToString() });			
+			//m_measurementsToBeAdded.Add(new string[] { checkedBox.Name, ToolTipService.GetToolTip(checkedBox).ToString(), checkedBox.Tag == null ? string.Empty : checkedBox.Tag.ToString() });			
+			if (!m_measurementsToBeAdded.ContainsKey(checkedBox.Name))
+				m_measurementsToBeAdded.Add(checkedBox.Name, new string[] { checkedBox.Name, ToolTipService.GetToolTip(checkedBox).ToString(), checkedBox.Tag == null ? string.Empty : checkedBox.Tag.ToString() });
 		}
 		
 		void CheckBox_Unchecked(object sender, RoutedEventArgs e)
@@ -360,7 +367,9 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ToolTip tooltip = new ToolTip();
 			tooltip = ToolTipService.GetToolTip(checkedBox) as ToolTip;
 			//string[] format is {Name=PointID, Tooltip=SignalReference, Tag=HistorianID}
-			m_measurementsToBeAdded.Remove(new string[] { checkedBox.Name, ToolTipService.GetToolTip(checkedBox).ToString(), checkedBox.Tag.ToString() });
+			//m_measurementsToBeAdded.Remove(new string[] { checkedBox.Name, ToolTipService.GetToolTip(checkedBox).ToString(), checkedBox.Tag == null ? string.Empty : checkedBox.Tag.ToString() });
+			if (m_measurementsToBeAdded.ContainsKey(checkedBox.Name))
+				m_measurementsToBeAdded.Remove(checkedBox.Name);
 		}
 
 		#endregion
@@ -372,13 +381,20 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
 			m_activityWindow.Show();
 			m_measurementList = new ObservableCollection<Measurement>();
-			m_measurementsToBeAdded = new List<string[]>();
+			m_measurementsToBeAdded = new Dictionary<string, string[]>();
 			App app = (App)Application.Current;
 			m_client.GetMeasurementsForOutputStreamAsync(app.NodeValue, m_sourceOutputStreamID);
 		}
 
 		#endregion
 
+		void BindData(IEnumerable<Measurement> measurementList)
+		{
+			PagedCollectionView pagedList = new PagedCollectionView(measurementList);
+			ListBoxMeasurementList.ItemsSource = pagedList;
+			DataPagerMeasurements.Source = pagedList;
+			ListBoxMeasurementList.SelectedIndex = -1;			
+		}
 	}
 }
 

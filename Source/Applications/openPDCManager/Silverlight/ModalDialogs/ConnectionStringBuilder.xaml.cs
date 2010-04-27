@@ -476,7 +476,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				TabItemTCP.Visibility = Visibility.Visible;
 				TabItemUDP.Visibility = Visibility.Collapsed;
 				TabItemSerial.Visibility = Visibility.Visible;
-				TabItemFile.Visibility = Visibility.Visible;
+				TabItemFile.Visibility = Visibility.Collapsed;
 			}
 			else if (m_connectionType == ConnectionType.DataChannel)
 			{

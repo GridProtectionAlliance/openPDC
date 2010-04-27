@@ -460,7 +460,6 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		}
 
 		#endregion
-
 		
 	}
 }

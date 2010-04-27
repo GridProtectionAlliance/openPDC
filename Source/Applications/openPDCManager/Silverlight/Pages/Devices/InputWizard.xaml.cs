@@ -1085,7 +1085,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				}
 				numBytesToRead = bytes.Length;
 			}
-			catch (Exception ex)
+			catch
 			{
 				if (m_activityWindow != null)
 					m_activityWindow.Close();

@@ -412,8 +412,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			//else
 			//    m_client.SaveOutputStreamMeasurementAsync(outputStreamMeasurement, true);
 
-			m_selectedOutputStreamMeasurement.SignalReference = TextBoxSignalReference.Text;
-			m_client.SaveOutputStreamMeasurementAsync(m_selectedOutputStreamMeasurement, false);
+			if (m_inEditMode)
+			{
+				m_selectedOutputStreamMeasurement.SignalReference = TextBoxSignalReference.Text;
+				m_client.SaveOutputStreamMeasurementAsync(m_selectedOutputStreamMeasurement, false);
+			}
 		}
 
 		private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
