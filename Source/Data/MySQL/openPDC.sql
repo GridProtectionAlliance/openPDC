@@ -600,7 +600,7 @@ CREATE VIEW RuntimeCalculatedMeasurement
 AS
 SELECT CalculatedMeasurement.NodeID, Runtime.ID, CalculatedMeasurement.Acronym AS AdapterName, 
  TRIM(CalculatedMeasurement.AssemblyName) AS AssemblyName, TRIM(CalculatedMeasurement.TypeName) AS TypeName,
- CONCAT_WS(';', IF(ConfigSection IS NULL, N'', CONCAT(N'configurationSection=', ConfigSection)),
+ CONCAT_WS(';', CalculatedMeasurement.ConnectionString, IF(ConfigSection IS NULL, N'', CONCAT(N'configurationSection=', ConfigSection)),
  CONCAT(N'minimumMeasurementsToUse=', CAST(CalculatedMeasurement.MinimumMeasurementsToUse AS CHAR)),
  CONCAT(N'framesPerSecond=', CAST(CalculatedMeasurement.FramesPerSecond AS CHAR)),
  CONCAT(N'lagTime=', CAST(CalculatedMeasurement.LagTime AS CHAR)),
