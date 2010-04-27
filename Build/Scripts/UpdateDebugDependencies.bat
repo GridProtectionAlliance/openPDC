@@ -16,6 +16,7 @@
 @ECHO OFF
 COPY "..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Communication.*" "..\..\Source\Dependencies\TVA\"
 COPY "..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Core.*" "..\..\Source\Dependencies\TVA\"
+COPY "..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Security.*" "..\..\Source\Dependencies\TVA\"
 COPY "..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Services.*" "..\..\Source\Dependencies\TVA\"
 COPY "..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Windows.*" "..\..\Source\Dependencies\TVA\"
 COPY "..\..\..\..\Framework\Current Version\Build\Output\Debug\Libraries\TVA.Web.*" "..\..\Source\Dependencies\TVA\"
