@@ -175,6 +175,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDCServices", "Applicat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerCalculations", "Libraries\Adapters\PowerCalculations\PowerCalculations.csproj", "{B74CF4DA-2972-489B-AF08-419560EE57EF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Signed", "Signed", "{AD0B25C0-9724-4923-B43B-5648FA89AB7F}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\TVA\Signed\Microsoft.Web.Services3.dll = Dependencies\TVA\Signed\Microsoft.Web.Services3.dll
+		Dependencies\TVA\Signed\TVA.Communication.dll = Dependencies\TVA\Signed\TVA.Communication.dll
+		Dependencies\TVA\Signed\TVA.Core.dll = Dependencies\TVA\Signed\TVA.Core.dll
+		Dependencies\TVA\Signed\TVA.Historian.dll = Dependencies\TVA\Signed\TVA.Historian.dll
+		Dependencies\TVA\Signed\TVA.Security.dll = Dependencies\TVA\Signed\TVA.Security.dll
+		Dependencies\TVA\Signed\TVA.Services.dll = Dependencies\TVA\Signed\TVA.Services.dll
+		Dependencies\TVA\Signed\TVA.Web.dll = Dependencies\TVA\Signed\TVA.Web.dll
+		Dependencies\TVA\Signed\TVA.Windows.dll = Dependencies\TVA\Signed\TVA.Windows.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 22
@@ -388,5 +400,6 @@ Global
 		{9A59B9E0-A36F-4C52-8568-CB004B20885B} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{F0072CE5-12A6-4713-BBD0-B57966ED2339} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{41F2680B-D656-47F5-9A0D-3605BF886774} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
+		{AD0B25C0-9724-4923-B43B-5648FA89AB7F} = {4CA4A21E-97E7-4566-95DF-A8DD97D7D02B}
 	EndGlobalSection
 EndGlobal

@@ -30,6 +30,9 @@
 //  12/11/2009 - Pinal C. Patel
 //       Fixed the implementation for allowing multiple adapter instances.
 //       Expanded the adapter status to include dynamically loaded plugins.
+//  04/28/2010 - Pinal C. Patel
+//       Modified ProcessMeasurements() method to not throw an exception if the archive file is not 
+//       open as this will be handled by ArchiveFile.WriteData() method if necessary.
 //
 //*******************************************************************************************************
 
@@ -618,9 +621,6 @@ namespace HistorianAdapters
         /// <exception cref="InvalidOperationException">Local archive is closed.</exception>
         protected override void ProcessMeasurements(IMeasurement[] measurements)
         {
-            if (!m_archive.IsOpen)
-                throw new InvalidOperationException("Archive is closed.");
-
             foreach (IMeasurement measurement in measurements)
             {
                 m_archive.WriteData(new ArchiveDataPoint(measurement));
