@@ -334,6 +334,6 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)/Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>COPY "$(TargetPath)" "..\$(OutDir)..\Applications\openPDC\$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>IF EXIST "..\$(OutDir)..\Applications\openPDC" COPY "$(TargetPath)" "..\$(OutDir)..\Applications\openPDC"</PostBuildEvent>
   </PropertyGroup>
 </Project>
