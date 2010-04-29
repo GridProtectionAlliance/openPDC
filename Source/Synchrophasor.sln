@@ -187,9 +187,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Signed", "Signed", "{AD0B25
 		Dependencies\TVA\Signed\TVA.Windows.dll = Dependencies\TVA\Signed\TVA.Windows.dll
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{532E7465-B8A6-41BA-B4BF-D23504645007}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TVA.PhasorProtocols.Test", "Libraries\Test\TVA.PhasorProtocols.Test\TVA.PhasorProtocols.Test.csproj", "{36D4CA56-E2DA-4435-B370-4867A83B6379}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B697ECD-E3BE-485B-BE90-BAAA12F3A68D}"
+	ProjectSection(SolutionItems) = preProject
+		openPDC.snk = openPDC.snk
+		Synchrophasor.testrunconfig = Synchrophasor.testrunconfig
+		Synchrophasor.vsmdi = Synchrophasor.vsmdi
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 22
+		SccNumberOfProjects = 23
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs07.codeplex.com/
 		SccLocalPath0 = .
@@ -277,6 +288,13 @@ Global
 		SccProjectTopLevelParentUniqueName21 = Synchrophasor.sln
 		SccProjectName21 = Libraries/Adapters/PowerCalculations
 		SccLocalPath21 = Libraries\\Adapters\\PowerCalculations
+		SccProjectUniqueName22 = Libraries\\Test\\TVA.PhasorProtocols.Test\\TVA.PhasorProtocols.Test.csproj
+		SccProjectTopLevelParentUniqueName22 = Synchrophasor.sln
+		SccProjectName22 = Libraries/Test/TVA.PhasorProtocols.Test
+		SccLocalPath22 = Libraries\\Test\\TVA.PhasorProtocols.Test
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Synchrophasor.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -359,6 +377,10 @@ Global
 		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -373,6 +395,7 @@ Global
 		{F92C9476-E7E7-458C-B6C4-2E4707052345} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
+		{532E7465-B8A6-41BA-B4BF-D23504645007} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{9049F37F-1DE9-4F22-8F62-24D0814A80C6} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{DDCC02C0-E3BE-4989-996E-DFB0402F47A5} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
@@ -401,5 +424,6 @@ Global
 		{F0072CE5-12A6-4713-BBD0-B57966ED2339} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{41F2680B-D656-47F5-9A0D-3605BF886774} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{AD0B25C0-9724-4923-B43B-5648FA89AB7F} = {4CA4A21E-97E7-4566-95DF-A8DD97D7D02B}
+		{36D4CA56-E2DA-4435-B370-4867A83B6379} = {532E7465-B8A6-41BA-B4BF-D23504645007}
 	EndGlobalSection
 EndGlobal
