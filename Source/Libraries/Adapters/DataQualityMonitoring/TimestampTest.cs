@@ -248,7 +248,7 @@ namespace DataQualityMonitoring
 
         // Fields
         private Dictionary<Ticks, LinkedList<IMeasurement>> m_badTimestampMeasurements;
-        private ActionAdapterBase m_discardingAdapter;
+        private IActionAdapter m_discardingAdapter;
         private int m_totalBadTimestampMeasurements;
         private Ticks m_timeToPurge;
         private Ticks m_warnInterval;
@@ -316,7 +316,7 @@ namespace DataQualityMonitoring
             // Find the adapter whose name matches the specified concentratorName
             foreach (IAdapter adapter in Parent)
             {
-                ActionAdapterBase concentrator = adapter as ActionAdapterBase;
+                IActionAdapter concentrator = adapter as IActionAdapter;
 
                 if (concentrator != null && string.Compare(adapter.Name, concentratorName, true) == 0)
                 {
@@ -330,19 +330,14 @@ namespace DataQualityMonitoring
 
             // Wait for associated adapter to initialize
             int timeout = m_discardingAdapter.InitializationTimeout;
-            int waitTime = 0;
-
-            while (!m_discardingAdapter.Initialized && waitTime < timeout)
-            {
-                Thread.Sleep(100);
-                waitTime += 100;
-            }
+            m_discardingAdapter.WaitForInitialize(timeout);
 
             if (!m_discardingAdapter.Initialized)
                 throw new TimeoutException(string.Format("Timeout waiting for concentrator {0} to initialize.", concentratorName));
 
-            // Attach to adapter's discarding measurements event
+            // Attach to adapter's discarding measurements and disposed events
             m_discardingAdapter.DiscardingMeasurements += m_discardingAdapter_DiscardingMeasurements;
+            m_discardingAdapter.Disposed += m_discardingAdapter_Disposed;
 
             m_purgeTimer.Interval = m_timeToPurge.ToMilliseconds();
             m_purgeTimer.Elapsed += m_purgeTimer_Elapsed;
@@ -409,7 +404,10 @@ namespace DataQualityMonitoring
                         }
 
                         if (m_discardingAdapter != null)
+                        {
                             m_discardingAdapter.DiscardingMeasurements -= m_discardingAdapter_DiscardingMeasurements;
+                            m_discardingAdapter.Disposed -= m_discardingAdapter_Disposed;
+                        }
 
                         m_discardingAdapter = null; 
                     }
@@ -501,7 +499,7 @@ namespace DataQualityMonitoring
             }
         }
 
-        // Periodically purge measurements to speed up retrival of data.
+        // Periodically purge measurements to speed up retrieval of data.
         private void m_purgeTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             PurgeOldMeasurements();
@@ -514,6 +512,13 @@ namespace DataQualityMonitoring
 
             if (count > 0)
                 OnStatusMessage("Received {0} measurements with bad timestamps within the last {1} seconds.", count, (int)m_timeToPurge.ToSeconds());
+        }
+
+        private void m_discardingAdapter_Disposed(object sender, EventArgs e)
+        {
+            m_discardingAdapter.DiscardingMeasurements -= m_discardingAdapter_DiscardingMeasurements;
+            m_discardingAdapter.Disposed -= m_discardingAdapter_Disposed;
+            m_discardingAdapter = null;
         }
 
         private void m_timestampService_ServiceProcessException(object sender, EventArgs<Exception> e)
