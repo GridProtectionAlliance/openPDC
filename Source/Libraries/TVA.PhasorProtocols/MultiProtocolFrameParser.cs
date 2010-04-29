@@ -1552,9 +1552,11 @@ namespace TVA.PhasorProtocols
                     // For file based playback, we allow the option of auto-repeat
                     FileClient fileClient = new FileClient();
 
+                    fileClient.FileOpenMode = FileMode.Open;
                     fileClient.FileAccessMode = FileAccess.Read;
                     fileClient.FileShareMode = FileShare.Read;
                     fileClient.AutoRepeat = m_autoRepeatCapturedPlayback;
+
                     m_dataChannel = fileClient;
                     break;
                 default:
