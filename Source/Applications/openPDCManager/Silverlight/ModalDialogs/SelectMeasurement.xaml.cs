@@ -388,13 +388,17 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 		#endregion
 
+		#region [ Methods ]
+
 		void BindData(IEnumerable<Measurement> measurementList)
 		{
 			PagedCollectionView pagedList = new PagedCollectionView(measurementList);
 			ListBoxMeasurementList.ItemsSource = pagedList;
 			DataPagerMeasurements.Source = pagedList;
-			ListBoxMeasurementList.SelectedIndex = -1;			
+			ListBoxMeasurementList.SelectedIndex = -1;
 		}
+
+		#endregion
 	}
 }
 

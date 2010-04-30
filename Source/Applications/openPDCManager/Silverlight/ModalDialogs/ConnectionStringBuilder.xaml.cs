@@ -262,7 +262,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			tcp,
 			udp,
 			serial,
-			file
+			file,
+			udpserver
 		}
 
 		public enum ConnectionType
@@ -290,10 +291,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ButtonSaveSerial.Click += new RoutedEventHandler(ButtonSaveSerial_Click);
 			ButtonSaveUDP.Click += new RoutedEventHandler(ButtonSaveUDP_Click);
 			ButtonBrowseFile.Click += new RoutedEventHandler(ButtonBrowseFile_Click);
+			ButtonSaveUdpServer.Click += new RoutedEventHandler(ButtonSaveUdpServer_Click);
 			TabControlOptions.SelectionChanged += new SelectionChangedEventHandler(TabControlOptions_SelectionChanged);
 			CheckboxEnableMulticast.Checked += new RoutedEventHandler(CheckboxEnableMulticast_Checked);
 			CheckboxEnableMulticast.Unchecked += new RoutedEventHandler(CheckboxEnableMulticast_Unchecked);			
-		}			
+		}					
 				
 		#endregion
 
@@ -339,9 +341,9 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			if ((bool)CheckboxEnableMulticast.IsChecked)
 			{
 				if (!keyvaluepairs.ContainsKey("server"))
-					keyvaluepairs.Add("server", TextBoxHostIPUdp.Text);
+					keyvaluepairs.Add("server", FormatIP(TextBoxHostIPUdp.Text));
 				else
-					keyvaluepairs["server"] = TextBoxHostIPUdp.Text;
+					keyvaluepairs["server"] = FormatIP(TextBoxHostIPUdp.Text);
 
 				if (!keyvaluepairs.ContainsKey("remoteport"))
 					keyvaluepairs.Add("remoteport", TextBoxRemotePort.Text);
@@ -404,10 +406,12 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 		void ButtonSaveTCP_Click(object sender, RoutedEventArgs e)
 		{
+			string hostIP = String.IsNullOrEmpty(TextBoxHostIP.Text) ? "127.0.0.1" : TextBoxHostIP.Text;			
+
 			if (!keyvaluepairs.ContainsKey("server"))
-				keyvaluepairs.Add("server", String.IsNullOrEmpty(TextBoxHostIP.Text) ? "127.0.0.1" : TextBoxHostIP.Text);
+				keyvaluepairs.Add("server", FormatIP(hostIP));
 			else
-				keyvaluepairs["server"] = String.IsNullOrEmpty(TextBoxHostIP.Text) ? "127.0.0.1" : TextBoxHostIP.Text;
+				keyvaluepairs["server"] = FormatIP(hostIP);
 
 			if (!keyvaluepairs.ContainsKey("port"))
 				keyvaluepairs.Add("port", String.IsNullOrEmpty(TextBoxPort.Text) ? "4712" : TextBoxPort.Text);
@@ -450,6 +454,35 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			this.DialogResult = true;
 		}
 
+		void ButtonSaveUdpServer_Click(object sender, RoutedEventArgs e)
+		{
+			if (!keyvaluepairs.ContainsKey("port"))
+				keyvaluepairs.Add("port", "-1");
+			else
+				keyvaluepairs["port"] = "-1";
+
+			if (!keyvaluepairs.ContainsKey("clients"))
+				keyvaluepairs.Add("clients", "");
+
+			string clients = string.Empty;
+			if (!string.IsNullOrEmpty(TextBoxHostIP1.Text))
+				clients += FormatIP(TextBoxHostIP1.Text) + ":" + (string.IsNullOrEmpty(TextBoxHostPort1.Text) ? "4712" : TextBoxHostPort1.Text) + ",";
+
+			if (!string.IsNullOrEmpty(TextBoxHostIP2.Text))
+				clients += FormatIP(TextBoxHostIP2.Text) + ":" + (string.IsNullOrEmpty(TextBoxHostPort2.Text) ? "4712" : TextBoxHostPort2.Text) + ",";
+
+			if (!string.IsNullOrEmpty(TextBoxHostIP3.Text))
+				clients += FormatIP(TextBoxHostIP3.Text) + ":" + (string.IsNullOrEmpty(TextBoxHostPort3.Text) ? "4712" : TextBoxHostPort3.Text) + ",";
+
+			while (clients.EndsWith(","))
+				clients = clients.Substring(0, clients.LastIndexOf(','));
+						
+			keyvaluepairs["clients"] = clients;
+
+			SetConnectionString(TransportProtocol.udpserver);
+			this.DialogResult = true;
+		}
+
 		void TabControlOptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			
@@ -477,14 +510,16 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				TabItemUDP.Visibility = Visibility.Collapsed;
 				TabItemSerial.Visibility = Visibility.Visible;
 				TabItemFile.Visibility = Visibility.Collapsed;
+				TabItemUdpServer.Visibility = Visibility.Collapsed;
 			}
 			else if (m_connectionType == ConnectionType.DataChannel)
 			{
-				TabControlOptions.SelectedIndex = 1;
+				TabControlOptions.SelectedIndex = 4;
 				TabItemTCP.Visibility = Visibility.Collapsed;
-				TabItemUDP.Visibility = Visibility.Visible;
+				TabItemUDP.Visibility = Visibility.Collapsed;
 				TabItemSerial.Visibility = Visibility.Collapsed;
-				TabItemFile.Visibility = Visibility.Collapsed;				
+				TabItemFile.Visibility = Visibility.Collapsed;
+				TabItemUdpServer.Visibility = Visibility.Visible;
 			}
 			else
 			{
@@ -492,6 +527,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				TabItemUDP.Visibility = Visibility.Visible;
 				TabItemSerial.Visibility = Visibility.Visible;
 				TabItemFile.Visibility = Visibility.Visible;
+				TabItemUdpServer.Visibility = Visibility.Collapsed;
 			}
 
 			keyvaluepairs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -534,18 +570,56 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		void ParseConnectionString()
 		{
 			if (!string.IsNullOrEmpty(this.ConnectionString))
-			{
-				string[] keyvalues = this.ConnectionString.ToLower().Split(new char[] { ';' }, System.StringSplitOptions.RemoveEmptyEntries);				
+			{				
+				string[] keyvalues = this.ConnectionString.ToLower().Replace("[", "").Replace("]", "").Split(new char[] { ';' }, System.StringSplitOptions.RemoveEmptyEntries);				
 				foreach (string keyvalue in keyvalues)
 				{
-					string[] keyvaluepair = keyvalue.Split(new char[] { '=' });
+					string[] keyvaluepair = keyvalue.Split('=');
 					if (keyvaluepair.GetLength(0) == 2)
 					{
 						keyvaluepairs.Add(keyvaluepair[0].Trim(), keyvaluepair[1].Trim());
 					}
 				}
-				
-				if ((keyvaluepairs.ContainsKey("transportprotocol") && keyvaluepairs["transportprotocol"].ToLower() == "tcp") || (keyvaluepairs.ContainsKey("protocol") && keyvaluepairs["protocol"].ToLower() == "tcp"))
+
+				if (m_connectionType == ConnectionType.DataChannel) //then it is UDP server.
+				{
+					TabControlOptions.SelectedIndex = 4;
+					if (keyvaluepairs.ContainsKey("clients"))	
+					{						
+						string[] clients = keyvaluepairs["clients"].Split(',');
+						int count = 0;
+						foreach (string client in clients)
+						{
+							string port = "4712";
+							string hostIp = string.Empty;
+							if (client.Contains(":"))
+							{
+								hostIp = client.Substring(0, client.LastIndexOf(':'));
+								port = client.Substring(client.LastIndexOf(':') + 1);
+							}
+							else
+								hostIp = client;
+
+							if (count == 0)
+							{
+								TextBoxHostIP1.Text = hostIp;
+								TextBoxHostPort1.Text = port;
+							}
+							else if (count == 1)
+							{
+								TextBoxHostIP2.Text = hostIp;
+								TextBoxHostPort2.Text = port;
+							}
+							else if (count == 2)
+							{
+								TextBoxHostIP3.Text = hostIp;
+								TextBoxHostPort3.Text = port;
+							}
+							count += 1;
+						}
+					}
+				}
+				else if ((keyvaluepairs.ContainsKey("transportprotocol") && keyvaluepairs["transportprotocol"].ToLower() == "tcp") || (keyvaluepairs.ContainsKey("protocol") && keyvaluepairs["protocol"].ToLower() == "tcp"))
 				{
 					TabControlOptions.SelectedIndex = 0;
 					if (keyvaluepairs.ContainsKey("server"))
@@ -558,8 +632,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 						CheckboxEstablishServer.IsChecked = false;
 				}
 				else if ((keyvaluepairs.ContainsKey("transportprotocol") && keyvaluepairs["transportprotocol"].ToLower() == "udp") || 
-							(keyvaluepairs.ContainsKey("protocol") && keyvaluepairs["protocol"].ToLower() == "udp") ||
-							(m_connectionType == ConnectionType.DataChannel))
+							(keyvaluepairs.ContainsKey("protocol") && keyvaluepairs["protocol"].ToLower() == "udp"))
 				{
 					TabControlOptions.SelectedIndex = 1;
 					if (keyvaluepairs.ContainsKey("localport"))
@@ -576,7 +649,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 						CheckboxEnableMulticast.IsChecked = false;
 						TextBoxHostIPUdp.Text = string.Empty;
 						TextBoxRemotePort.Text = string.Empty;
-					}
+					}					
 				}
 				else if ((keyvaluepairs.ContainsKey("transportprotocol") && keyvaluepairs["transportprotocol"].ToLower() == "serial") || (keyvaluepairs.ContainsKey("protocol") && keyvaluepairs["protocol"].ToLower() == "serial"))
 				{
@@ -614,7 +687,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 					if (keyvaluepairs.ContainsKey("autorepeatfile") && keyvaluepairs["autorepeatfile"].ToLower() == "false")						
 						CheckboxAutoRepeat.IsChecked = false;
-				}
+				}				
 				else
 					TabControlOptions.SelectedIndex = 0;
 				
@@ -655,6 +728,14 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			{
 				m_connectionString += keyvalue.Key + "=" + keyvalue.Value + "; ";
 			}
+		}
+
+		string FormatIP(string ipAddress)
+		{
+			if (ipAddress.Contains(":"))
+				ipAddress = "[" + ipAddress + "]";
+
+			return ipAddress;
 		}
 
 		#endregion

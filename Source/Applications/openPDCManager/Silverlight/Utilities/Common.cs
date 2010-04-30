@@ -238,6 +238,8 @@ using System.Windows.Browser;
 using System.Xml.Linq;
 using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using System.Collections.Generic;
+using System.Text;
 
 namespace openPDCManager.Silverlight.Utilities
 {
@@ -348,6 +350,120 @@ namespace openPDCManager.Silverlight.Utilities
 
 			if (!IsolatedStorageManager.Contains("NumberOfMessagesOnMonitor") || overWrite)
 				IsolatedStorageManager.SaveIntoIsolatedStorage("NumberOfMessagesOnMonitor", 75);
+		}
+
+		// This fuction is copied from Framework solution as Silverlight doesn't support adding reference to that assembly.
+		public static Dictionary<string, string> ParseKeyValuePairs(this string value, char parameterDelimeter, char keyValueDelimeter, char startValueDelimeter, char endValueDelimeter)
+		{
+			if (value == (string)null)
+				throw new ArgumentNullException("value");
+
+			if (parameterDelimeter == keyValueDelimeter ||
+				parameterDelimeter == startValueDelimeter ||
+				parameterDelimeter == endValueDelimeter ||
+				keyValueDelimeter == startValueDelimeter ||
+				keyValueDelimeter == endValueDelimeter ||
+				startValueDelimeter == endValueDelimeter)
+				throw new ArgumentException("All delimeters must be unique");
+
+			Dictionary<string, string> keyValuePairs = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+			string[] elements;
+			string escapedParameterDelimeter = parameterDelimeter.RegexEncode();
+			string escapedKeyValueDelimeter = keyValueDelimeter.RegexEncode();
+			StringBuilder escapedValue = new StringBuilder();
+			bool valueEscaped = false;
+			char character;
+
+			// Escape any parameter or key value delimeters within tagged value sequences
+			//      For example, the following string:
+			//          "normalKVP=-1; nestedKVP={p1=true; p2=false}")
+			//      would be encoded as:
+			//          "normalKVP=-1; nestedKVP=p1\\u003dtrue\\u003b p2\\u003dfalse")
+			for (int x = 0; x < value.Length; x++)
+			{
+				character = value[x];
+
+				if (character == startValueDelimeter)
+				{
+					if (!valueEscaped)
+					{
+						valueEscaped = true;
+						continue;   // Don't add tag start delimeter to final value
+					}
+					else
+					{
+						throw new FormatException("Only one level of tagged value expressions are allowed");
+					}
+				}
+
+				if (character == endValueDelimeter)
+				{
+					if (valueEscaped)
+					{
+						valueEscaped = false;
+						continue;   // Don't add tag stop delimeter to final value
+					}
+					else
+					{
+						throw new FormatException(string.Format("Encountered end value delimeter \'{0}\' before start value delimeter \'{1}\'", endValueDelimeter, startValueDelimeter));
+					}
+				}
+
+				if (valueEscaped)
+				{
+					// Escape any parameter or key value delimeters
+					if (character == parameterDelimeter)
+						escapedValue.Append(escapedParameterDelimeter);
+					else if (character == keyValueDelimeter)
+						escapedValue.Append(escapedKeyValueDelimeter);
+					else
+						escapedValue.Append(character);
+				}
+				else
+				{
+					escapedValue.Append(character);
+				}
+			}
+
+			// Parse out key/value pairs
+			foreach (string parameter in escapedValue.ToString().Split(parameterDelimeter))
+			{
+				// Parse out parameter's key/value elements
+				elements = parameter.Split(keyValueDelimeter);
+				if (elements.Length == 2)
+				{
+					// Add key/value pair, unescaping value expression as needed
+					keyValuePairs.Add(
+						elements[0].ToString().Trim(),
+						elements[1].ToString().Trim().
+							Replace(escapedParameterDelimeter, parameterDelimeter.ToString()).
+							Replace(escapedKeyValueDelimeter, keyValueDelimeter.ToString()));
+				}
+			}
+
+			return keyValuePairs;
+		}
+
+		// This fuction is copied from Framework solution as Silverlight doesn't support adding reference to that assembly.
+		public static string JoinKeyValuePairs(this Dictionary<string, string> pairs, char parameterDelimeter, char keyValueDelimeter)
+		{
+			// <pex>
+			if (pairs == (Dictionary<string, string>)null)
+				throw new ArgumentNullException("pairs");
+			// </pex>
+			StringBuilder result = new StringBuilder();
+
+			foreach (string key in pairs.Keys)
+			{
+				result.AppendFormat("{0}{1}{2}{3}", key, keyValueDelimeter, pairs[key], parameterDelimeter);
+			}
+
+			return result.ToString();
+		}
+
+		public static string RegexEncode(this char item)
+		{
+			return "\\u" + Convert.ToUInt16(item).ToString("x").PadLeft(4, '0');
 		}
 
 		#endregion

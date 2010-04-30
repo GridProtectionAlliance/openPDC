@@ -295,6 +295,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			ButtonPrevious.Click += new RoutedEventHandler(ButtonPrevious_Click);
 			ButtonRequestConfiguration.Click += new RoutedEventHandler(ButtonRequestConfiguration_Click);
 			ButtonBuildConnectionString.Click += new RoutedEventHandler(ButtonBuildConnectionString_Click);
+			ButtonBuildCommandChannel.Click += new RoutedEventHandler(ButtonBuildCommandChannel_Click);
 			AccordianWizard.SelectionChanged += new SelectionChangedEventHandler(AccordianWizard_SelectionChanged);			
 			CheckboxConnectToPDC.Checked += new RoutedEventHandler(CheckboxConnectToPDC_Checked);
 			CheckboxConnectToPDC.Unchecked += new RoutedEventHandler(CheckboxConnectToPDC_Unchecked);
@@ -485,8 +486,16 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			{
 				m_connectionSettings = e.Result;
 				if (m_connectionSettings != null)
-				{
-					TextBoxConnectionString.Text = "TransportProtocol=" + m_connectionSettings.TransportProtocol.ToString() + ";" + m_connectionSettings.ConnectionString;
+				{				
+					string connectionString = m_connectionSettings.ConnectionString.ToLower();
+					Dictionary<string, string> connectionSettings = connectionString.ParseKeyValuePairs(';', '=', '{', '}');
+
+					if (connectionSettings.ContainsKey("commandchannel"))
+						TextBoxAlternateCommandChannel.Text = connectionSettings["commandchannel"];
+
+					connectionSettings.Remove("commandchannel");
+
+					TextBoxConnectionString.Text = "TransportProtocol=" + m_connectionSettings.TransportProtocol.ToString() + ";" + connectionSettings.JoinKeyValuePairs(';', '=');
 
 					if (m_connectionSettings.ConnectionParameters != null)
 					{
@@ -592,7 +601,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					device.ProtocolID = ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key;
 					device.HistorianID = ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key;
 					device.InterconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
-					device.ConnectionString = TextBoxConnectionString.Text;
+					device.ConnectionString = this.ConnectionString();					
 					device.TimeZone = string.Empty;
 					device.TimeAdjustmentTicks = 0;
 					device.DataLossInterval = 35;
@@ -866,7 +875,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					int? companyID = ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key;
 					int? historianID = ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key;
 					int? interconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
-					m_client.SaveWizardConfigurationInfoAsync(app.NodeValue, m_wizardDeviceInfoList, TextBoxConnectionString.Text, protocolID, companyID, historianID, interconnectionID, m_parentID);
+					m_client.SaveWizardConfigurationInfoAsync(app.NodeValue, m_wizardDeviceInfoList, this.ConnectionString(), protocolID, companyID, historianID, interconnectionID, m_parentID);
 				}
 				else
 				{
@@ -987,9 +996,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
 			Storyboard.SetTarget(sb, ButtonRequestConfigurationTransform);
 			sb.Begin();
-
+						
 			if (!string.IsNullOrEmpty(	((App)Application.Current).RemoteStatusServiceUrl))
-				m_client.RetrieveConfigurationFrameAsync(((App)Application.Current).RemoteStatusServiceUrl, TextBoxConnectionString.Text, ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key);
+				m_client.RetrieveConfigurationFrameAsync(((App)Application.Current).RemoteStatusServiceUrl, this.ConnectionString(), ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key);
 			else
 			{
 			}
@@ -1004,6 +1013,19 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			{
 				if ((bool)csb.DialogResult)
 					TextBoxConnectionString.Text = csb.ConnectionString;
+			});
+			csb.Show();
+		}
+
+		void ButtonBuildCommandChannel_Click(object sender, RoutedEventArgs e)
+		{
+			ConnectionStringBuilder csb = new ConnectionStringBuilder(ConnectionStringBuilder.ConnectionType.CommandChannel);
+			if (!string.IsNullOrEmpty(TextBoxAlternateCommandChannel.Text))
+				csb.ConnectionString = TextBoxAlternateCommandChannel.Text;
+			csb.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+			{
+				if ((bool)csb.DialogResult)
+					TextBoxAlternateCommandChannel.Text = csb.ConnectionString;
 			});
 			csb.Show();
 		}
@@ -1099,7 +1121,19 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			T deserializedObject = (T)serializer.ReadObject(inputStream);
 			return deserializedObject;
 		}
-		
+
+		string ConnectionString()
+		{
+			string connectionString = TextBoxConnectionString.Text;
+			if (!string.IsNullOrEmpty(TextBoxAlternateCommandChannel.Text))
+			{
+				if (!connectionString.EndsWith(";"))
+					connectionString += ";";
+
+				connectionString += "commandchannel={" + TextBoxAlternateCommandChannel.Text + "}";
+			}
+			return connectionString;
+		}
 		#endregion
 
 		#region [ Page Event Handlers ]

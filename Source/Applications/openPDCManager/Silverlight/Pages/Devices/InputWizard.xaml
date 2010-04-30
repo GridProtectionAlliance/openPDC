@@ -52,7 +52,7 @@
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Connection String" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
                                     <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="1">                                        
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBox x:Name="TextBoxConnectionString" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource SmallerItemSize}" HorizontalAlignment="Left" 
+                                            <TextBox x:Name="TextBoxConnectionString" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" 
                                              TextAlignment="Left" VerticalAlignment="Center" Margin="2" TextWrapping="Wrap" />
                                             <Button x:Name="ButtonBuildConnectionString" Content="../../Images/Add.png" Tag="Build..." Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
                                                 <Button.RenderTransform>
@@ -62,10 +62,24 @@
                                         </StackPanel>
                                         <TextBlock Text="Connection information is relative to the openPDC node." FontStyle="Italic" HorizontalAlignment="Left" Margin="2" />
                                     </StackPanel>
-                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Device Protocol" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                    <ComboBox x:Name="ComboboxProtocol" Grid.Row="3" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
-                                    <TextBlock Grid.Row="4" Grid.Column="0" x:Name="TextBlockIniFile" Text="Select INI File" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                    <StackPanel x:Name="StackPanelIniFile" Orientation="Horizontal" Grid.Row="4" Grid.Column="1">
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Alternate Command Channel" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" TextWrapping="Wrap"/>
+                                    <StackPanel Orientation="Vertical" Grid.Row="3" Grid.Column="1">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox x:Name="TextBoxAlternateCommandChannel" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" 
+                                             TextAlignment="Left" VerticalAlignment="Center" Margin="2" TextWrapping="Wrap" />
+                                            <Button x:Name="ButtonBuildCommandChannel" Content="../../Images/Add.png" Tag="Build..." Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
+                                                <Button.RenderTransform>
+                                                    <ScaleTransform x:Name="ButtonBuildCommandChannelTransform" ScaleX="1" ScaleY="1" />
+                                                </Button.RenderTransform>
+                                            </Button>
+                                        </StackPanel>                                        
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Device Protocol" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
+                                    <ComboBox x:Name="ComboboxProtocol" Grid.Row="4" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
+                                    <TextBlock Grid.Row="5" Grid.Column="0" x:Name="TextBlockIniFile" Text="Select INI File" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
+                                    <StackPanel x:Name="StackPanelIniFile" Orientation="Horizontal" Grid.Row="5" Grid.Column="1">
                                         <TextBox x:Name="TextBoxIniFile" Width="{StaticResource XXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
                                         <Button x:Name="ButtonBrowseIniFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
                                             <Button.RenderTransform>
