@@ -88,6 +88,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{F92C9476-E7E7-458C-B6C4-2E4707052345}"
 	ProjectSection(SolutionItems) = preProject
 		Documentation\Images\Data Structure Relationship Diagram.png = Documentation\Images\Data Structure Relationship Diagram.png
+		Documentation\Images\IaonAdapters.png = Documentation\Images\IaonAdapters.png
 		Documentation\Images\openPDCLogo_basefigure.png = Documentation\Images\openPDCLogo_basefigure.png
 		Documentation\Images\TVA Phasor Data Concentrator.png = Documentation\Images\TVA Phasor Data Concentrator.png
 	EndProjectSection
