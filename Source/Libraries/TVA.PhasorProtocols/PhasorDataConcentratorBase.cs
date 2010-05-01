@@ -731,17 +731,20 @@ namespace TVA.PhasorProtocols
                 if (m_dataChannel != null)
                 {
                     status.AppendLine();
-                    status.AppendLine("       Data Channel Status:");
+                    status.AppendLine("Data Channel Status".CenterText(50));
+                    status.AppendLine("-------------------".CenterText(50));
                     status.Append(m_dataChannel.Status);
                 }
 
                 if (m_commandChannel != null)
                 {
                     status.AppendLine();
-                    status.AppendLine("    Command Channel Status:");
+                    status.AppendLine("Command Channel Status".CenterText(50));
+                    status.AppendLine("----------------------".CenterText(50));
                     status.Append(m_commandChannel.Status);
                 }
 
+                status.AppendLine();
                 status.Append(base.Status);
 
                 return status.ToString();

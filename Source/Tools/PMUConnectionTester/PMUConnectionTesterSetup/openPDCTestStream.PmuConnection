@@ -3,7 +3,7 @@
 <a1:ConnectionSettings id="ref-1" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/ConnectionTester/PMUConnectionTester">
 <PhasorProtocol>IeeeC37_118V1</PhasorProtocol>
 <TransportProtocol>Udp</TransportProtocol>
-<ConnectionString id="ref-5">localport=8800; commandchannel={protocol=Tcp; server=::1; port=8900}; skipDisableRealTimeData = true</ConnectionString>
+<ConnectionString id="ref-5">localport=8800; commandchannel={protocol=Tcp; server=localhost; port=8900}; skipDisableRealTimeData = true</ConnectionString>
 <PmuID>235</PmuID>
 <FrameRate>30</FrameRate>
 <AutoRepeatPlayback>true</AutoRepeatPlayback>
