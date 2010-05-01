@@ -370,9 +370,6 @@ namespace TVA.PhasorProtocols
 
             // Synchrophasor protocols should default to millisecond resolution
             base.TimeResolution = Ticks.PerMillisecond;
-
-            // Subscribe to discarding measurements event of base class
-            //base.DiscardingMeasurements += 
         }
 
         #endregion
@@ -785,7 +782,11 @@ namespace TVA.PhasorProtocols
         /// </summary>
         public override void Start()
         {
-            // Wait for initialization to complete.
+            // Make sure we are stopped before attempting to start
+            if (Enabled)
+                Stop();
+
+            // Wait for initialization to complete
             if (WaitForInitialize(InitializationTimeout))
             {
                 // Start communications servers
