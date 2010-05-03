@@ -248,7 +248,7 @@ namespace openPDCManager.Services.DuplexService
     /// </summary>
     public class LivePhasorDataService : DuplexService
     {
-        #region [ Members ]		      
+        #region [ Members ]	
         // This timer will be used to retrieve fresh data from the database and then push to all clients.
         Timer livePhasorDataTimer;
         Timer timeSeriesDataTimer;
@@ -269,7 +269,7 @@ namespace openPDCManager.Services.DuplexService
 			List<Node> nodeList = new List<Node>();
             livePhasorDataTimer = new Timer(LivePhasorDataUpdate, null, 0, 30000);
             timeSeriesDataTimer = new Timer(TimeSeriesDataUpdate, null, 0, 1000);			
-			serviceClientListTimer = new Timer(RefreshServiceClientList, null, 0, 60000);
+			serviceClientListTimer = new Timer(RefreshServiceClientList, null, 0, 30000);
 			timeTaggedMeasurementDataTimer = new Timer(TimeTaggedMeasurementDataUpdate, null, 0, 30000);
 			nodeList = CommonFunctions.GetNodeList(true);
         }
@@ -325,6 +325,7 @@ namespace openPDCManager.Services.DuplexService
 
 		private void RefreshServiceClientList(object obj)
 		{
+			System.Diagnostics.Debug.WriteLine("Refreshing Service Clients List");
 			nodeList = CommonFunctions.GetNodeList(true);
 			
 			//For each node defined in the database, we need to have a TCP client created to listen to the events.
@@ -335,26 +336,60 @@ namespace openPDCManager.Services.DuplexService
 					if (serviceClientList.ContainsKey(node.ID))
 					{
 						if (node.RemoteStatusServiceUrl != serviceClientList[node.ID].Helper.RemotingClient.ConnectionString)
-							serviceClientList[node.ID].Helper.RemotingClient.ConnectionString = node.RemoteStatusServiceUrl;
+						{
+							System.Diagnostics.Debug.WriteLine("Resetting Service Client for Node: " + node.ID);
+							serviceClientList[node.ID].Helper.ReceivedServiceUpdate -= ClientHelper_ReceivedServiceUpdate;
+							serviceClientList[node.ID].Helper.ReceivedServiceResponse -= ClientHelper_ReceivedServiceResponse;
+							serviceClientList[node.ID].Dispose();
+							if (!string.IsNullOrEmpty(node.RemoteStatusServiceUrl))
+							{
+								System.Diagnostics.Debug.WriteLine("Reconnecting Service Client for Node: " + node.ID);
+								serviceClientList[node.ID] = null;
+								serviceClient = new WindowsServiceClient(node.RemoteStatusServiceUrl);
+								serviceClient.Helper.RemotingClient.MaxConnectionAttempts = 10;
+								serviceClientList[node.ID] = serviceClient;
+								serviceClient.Helper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;
+								serviceClient.Helper.ReceivedServiceResponse += ClientHelper_ReceivedServiceResponse;
+								ThreadPool.QueueUserWorkItem(ConnectWindowsServiceClient, serviceClient);
+							}
+							else
+							{
+								System.Diagnostics.Debug.WriteLine("Removing Service Client for Node: " + node.ID);
+								serviceClientList.Remove(node.ID);
+							}							
+						}
+						else if (!serviceClientList[node.ID].Helper.RemotingClient.Enabled)
+						{
+							ThreadPool.QueueUserWorkItem(ConnectWindowsServiceClient, serviceClientList[node.ID]);
+						}
 					}
 					else
 					{
 						if (!string.IsNullOrEmpty(node.RemoteStatusServiceUrl))
 						{
+							System.Diagnostics.Debug.WriteLine("Adding New Service Client for Node: " + node.ID);
 							serviceClient = new WindowsServiceClient(node.RemoteStatusServiceUrl);
+							serviceClient.Helper.RemotingClient.MaxConnectionAttempts = 10;
 							serviceClientList.Add(node.ID, serviceClient);
 							serviceClient.Helper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;
-							serviceClient.Helper.ReceivedServiceResponse += ClientHelper_ReceivedServiceResponse;
+							serviceClient.Helper.ReceivedServiceResponse += ClientHelper_ReceivedServiceResponse;		
 							ThreadPool.QueueUserWorkItem(ConnectWindowsServiceClient, serviceClient);
 						}
 					}
 				}
 			}
 		}
-
+				
 		private void ConnectWindowsServiceClient(object state)
 		{
-			((WindowsServiceClient)state).Helper.Connect();
+			try
+			{
+				((WindowsServiceClient)state).Helper.Connect();
+			}
+			catch 
+			{ 
+				
+			}
 		}
 
         private void ClientHelper_ReceivedServiceUpdate(object sender, EventArgs<UpdateType, string> e)

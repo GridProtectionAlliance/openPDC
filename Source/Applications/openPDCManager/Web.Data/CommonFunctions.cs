@@ -883,7 +883,8 @@ namespace openPDCManager.Web.Data
 				IDataReader reader = command.ExecuteReader();
 				while (reader.Read())
 				{
-					minMaxPointIDs = new KeyValuePair<int, int>(reader.GetInt32(0), reader.GetInt32(1));
+
+					minMaxPointIDs = new KeyValuePair<int, int>(reader["MinPointID"] == null ? 0 : reader.GetInt32(0), reader["MaxPointID"] == null ? 0 : reader.GetInt32(1));
 				}
 			}
 			catch (Exception ex)

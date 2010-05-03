@@ -344,6 +344,10 @@ namespace openPDCManager.Services.DuplexService
                 {
                     if (!clients.ContainsKey(session))	// new client
                     {
+						System.Diagnostics.Debug.WriteLine("New client connected: ");
+						System.Diagnostics.Debug.WriteLine("          " + (msg as ConnectMessage).NodeID);
+						System.Diagnostics.Debug.WriteLine("          " + (msg as ConnectMessage).TimeSeriesDataRootUrl);
+						System.Diagnostics.Debug.WriteLine("          " + (msg as ConnectMessage).CurrentDisplayType.ToString());
                         Client client = new Client();
                         client.Channel = ch;
                         client.NodeID = (msg as ConnectMessage).NodeID;
@@ -389,19 +393,37 @@ namespace openPDCManager.Services.DuplexService
 				}
 				else if (currentClient.CurrentDisplayType == DisplayType.ServiceClient)
 				{
-					PushMessageToClient(session, new ServiceUpdateMessage()
+					//if (serviceClientList[clients[session].NodeID].Helper.RemotingClient.Enabled) //if service client is connected to openPDC windows service then only send data to client upon connection.
+					//{
+						System.Diagnostics.Debug.WriteLine("Sending Cached Status to Client Connected on System Monitor Page.");
+						PushMessageToClient(session, new ServiceUpdateMessage()
 												{
-													 ServiceUpdateType = TVA.Services.UpdateType.Information,
-													 ServiceUpdate = serviceClientList[clients[session].NodeID].CachedStatus
+													ServiceUpdateType = TVA.Services.UpdateType.Information,
+													ServiceUpdate = serviceClientList[clients[session].NodeID].CachedStatus
 												});
+					//}
+					//else
+					//{
+					//    System.Diagnostics.Debug.WriteLine("Sending Empty Message to Client Connected on System Monitor Page.");
+					//    PushMessageToClient(session, new ServiceUpdateMessage());
+					//}
 				}
 				else if (currentClient.CurrentDisplayType == DisplayType.DeviceMeasurements)
 				{
 					KeyValuePair<int, int> minMaxPointID = minMaxPointIDsPerNode[currentClient.NodeID];
-					PushMessageToClient(session, new TimeTaggedDataMessage()
+					if (!string.IsNullOrEmpty(currentClient.TimeSeriesDataRootUrl))	// if TimeSeriesDataRootUrl is defined for the node, then only try to send data to client upon connection.
+					{
+						System.Diagnostics.Debug.WriteLine("Sending Measurements to Client Connected on Device Measurements Page.");
+						PushMessageToClient(session, new TimeTaggedDataMessage()
 												{
 													TimeTaggedMeasurements = CommonFunctions.GetTimeTaggedMeasurements(currentClient.TimeSeriesDataRootUrl + "/timeseriesdata/read/current/" + minMaxPointID.Key.ToString() + "-" + minMaxPointID.Value.ToString() + "/XML")
 												});
+					}
+					else
+					{
+						System.Diagnostics.Debug.WriteLine("Sending Empty Message to Client Connected on Device Measurements Page.");
+						PushMessageToClient(session, new TimeTaggedDataMessage());
+					}
 				}
             }
 			else if (msg is ServiceRequestMessage)
@@ -464,10 +486,15 @@ namespace openPDCManager.Services.DuplexService
 				foreach (Node node in nodesInDatabase)
 				{
 					KeyValuePair<int, int> minMaxPointID = minMaxPointIDsPerNode[node.ID];				
-					TimeTaggedDataMessage message = new TimeTaggedDataMessage()
+					TimeTaggedDataMessage message;
+					if (!string.IsNullOrEmpty(node.TimeSeriesDataServiceUrl))
+						message = new TimeTaggedDataMessage()
 													{
 														TimeTaggedMeasurements = CommonFunctions.GetTimeTaggedMeasurements(node.TimeSeriesDataServiceUrl + "/timeseriesdata/read/current/" + minMaxPointID.Key.ToString() + "-" + minMaxPointID.Value.ToString() + "/XML")
 													};
+					else
+						message = new TimeTaggedDataMessage();
+
 					if (timeTaggedMeasurementsPerNode.ContainsKey(node.ID))
 						timeTaggedMeasurementsPerNode[node.ID] = message;
 					else
