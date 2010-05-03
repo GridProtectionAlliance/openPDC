@@ -489,6 +489,7 @@ namespace openPDC
             m_allAdapters = new AllAdaptersCollection();
             m_allAdapters.StatusMessage += StatusMessageHandler;
             m_allAdapters.ProcessException += ProcessExceptionHandler;
+            m_allAdapters.Disposed += DisposedHandler;
 
             // Create input adapters collection
             m_inputAdapters = new InputAdapterCollection();
@@ -586,6 +587,7 @@ namespace openPDC
             {
                 m_allAdapters.StatusMessage -= StatusMessageHandler;
                 m_allAdapters.ProcessException -= ProcessExceptionHandler;
+                m_allAdapters.Disposed -= DisposedHandler;
                 m_allAdapters.Dispose();
             }
             m_allAdapters = null;
@@ -870,7 +872,7 @@ namespace openPDC
             }
         }
 
-        // Handle status message events
+        // Handle status message events from all adapters
         private void StatusMessageHandler(object sender, EventArgs<string> e)
         {
             DisplayStatusMessage("[{0}] {1}", UpdateType.Information, GetDerivedName(sender), e.Argument);
@@ -883,6 +885,12 @@ namespace openPDC
 
             m_serviceHelper.ErrorLogger.Log(ex, false);
             DisplayStatusMessage("[{0}] {1}", UpdateType.Alarm, GetDerivedName(sender), ex.Message);
+        }
+
+        // Handle disposed events from all adapters
+        private void DisposedHandler(object sender, EventArgs e)
+        {
+            DisplayStatusMessage("[{0}] Disposed.", UpdateType.Information, GetDerivedName(sender));
         }
 
         // Handle health monitoring processing
@@ -948,30 +956,33 @@ namespace openPDC
             string adapterID = requestInfo.Request.Arguments["OrderedArg1"];
             collection = GetRequestedCollection(requestInfo);
 
-            if (adapterID.IsAllNumbers())
+            if (!string.IsNullOrEmpty(adapterID))
             {
-                // Adapter ID is numeric, lookup by adapter ID
-                uint id = uint.Parse(adapterID);
+                if (adapterID.IsAllNumbers())
+                {
+                    // Adapter ID is numeric, lookup by adapter ID
+                    uint id = uint.Parse(adapterID);
 
-                // Try requested collection
-                if (collection.TryGetAdapterByID(id, out adapter))
-                    return adapter;
-                // Try looking for ID in any collection if all runtime ID's are unique
-                else if (m_uniqueAdapterIDs && m_allAdapters.TryGetAnyAdapterByID(id, out adapter, out collection))
-                    return adapter;
+                    // Try requested collection
+                    if (collection.TryGetAdapterByID(id, out adapter))
+                        return adapter;
+                    // Try looking for ID in any collection if all runtime ID's are unique
+                    else if (m_uniqueAdapterIDs && m_allAdapters.TryGetAnyAdapterByID(id, out adapter, out collection))
+                        return adapter;
+                    else
+                    {
+                        collection = GetRequestedCollection(requestInfo);
+                        SendResponse(requestInfo, false, "Failed to find adapter with ID \"{0}\" in {1}.", id, collection.Name);
+                    }
+                }
                 else
                 {
-                    collection = GetRequestedCollection(requestInfo);
-                    SendResponse(requestInfo, false, "Failed to find adapter with ID \"{0}\" in {1}.", id, collection.Name);
+                    // Adapter ID is alpha-numeric, lookup by adapter name
+                    if (collection.TryGetAdapterByName(adapterID, out adapter))
+                        return adapter;
+                    else
+                        SendResponse(requestInfo, false, "Failed to find adapter \"{0}\" in {1}.", adapterID, collection.Name);
                 }
-            }
-            else
-            {
-                // Adapter ID is alpha-numeric, lookup by adapter name
-                if (collection.TryGetAdapterByName(adapterID, out adapter))
-                    return adapter;
-                else
-                    SendResponse(requestInfo, false, "Failed to find adapter \"{0}\" in {1}.", adapterID, collection.Name);
             }
 
             return null;
@@ -1156,11 +1167,13 @@ namespace openPDC
                 helpMessage.AppendLine();
                 helpMessage.Append("   Usage:");
                 helpMessage.AppendLine();
-                helpMessage.Append("       Invoke ID Command [Params] [Options]");
+                helpMessage.Append("       Invoke [ID] Command [Params] [Options]");
                 helpMessage.AppendLine();
                 helpMessage.AppendLine();
                 helpMessage.Append("   ID:".PadRight(20));
                 helpMessage.Append("ID of the adapter to execute command on");
+                helpMessage.AppendLine();
+                helpMessage.AppendLine("   If ID is not specified, action will be on collection itself.");
                 helpMessage.AppendLine();
                 helpMessage.Append("   Command:".PadRight(20));
                 helpMessage.Append("Name of the adapter command (i.e., method) to invoke");
@@ -1187,85 +1200,97 @@ namespace openPDC
             }
             else
             {
-                if (requestInfo.Request.Arguments.Exists("OrderedArg2"))
+                IAdapter adapter = null;
+                string command = null;
+
+                // See if specific ID for an adapter was requested
+                if (requestInfo.Request.Arguments.Exists("OrderedArg1"))
                 {
-                    IAdapter adapter = GetRequestedAdapter(requestInfo);
-                    string command = requestInfo.Request.Arguments["OrderedArg2"];
-
-                    if (adapter != null)
+                    if (requestInfo.Request.Arguments.Exists("OrderedArg2"))
                     {
-                        try
-                        {
-                            // See if method exists with specified name using reflection
-                            MethodInfo method = adapter.GetType().GetMethod(command, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.IgnoreCase);
-
-                            // Invoke method
-                            if (method != null)
-                            {
-                                AdapterCommandAttribute commandAttribute;
-
-                                // Make sure method is marked as invokable (i.e., AdapterCommandAttribute exists on method)
-                                if (method.TryGetAttribute(out commandAttribute))
-                                {
-                                    ParameterInfo[] parameterInfo = method.GetParameters();
-                                    object returnValue = null;
-                                    bool success = true;
-
-                                    if (parameterInfo == null || (parameterInfo != null && parameterInfo.Length == 0))
-                                    {
-                                        // Invoke parameterless adapter command
-                                        returnValue = method.Invoke(adapter, null);
-                                    }
-                                    else
-                                    {
-                                        // Create typed parameters for method and invoke
-                                        if (requestInfo.Request.Arguments.OrderedArgCount - 2 >= parameterInfo.Length)
-                                        {
-                                            // Attempt to convert command parameters to the method parameter types
-                                            object[] parameters = new object[parameterInfo.Length];
-                                            string parameterValue;
-
-                                            for (int i = 0; i < parameterInfo.Length; i++)
-                                            {
-                                                parameterValue = requestInfo.Request.Arguments["OrderedArg" + (3 + i)];
-                                                parameters[i] = parameterValue.ConvertToType(parameterInfo[i].ParameterType);
-                                            }
-
-                                            // Invoke adapter command with specified parameters
-                                            returnValue = method.Invoke(adapter, parameters);
-                                        }
-                                        else
-                                        {
-                                            success = false;
-                                            SendResponse(requestInfo, false, "Parameter count mismatch, \"{0}\" command expects {1} parameters.", command, parameterInfo.Length);
-                                        }
-                                    }
-
-                                    // If invoke was successful, return actionable response
-                                    if (success)
-                                    {
-                                        // Return value, if any, will be returned to requesting client as a response attachment
-                                        if (returnValue == null)
-                                            SendResponse(requestInfo, true, "Command \"{0}\" successfully invoked.", command);
-                                        else
-                                            SendResponseWithAttachment(requestInfo, returnValue, "Command \"{0}\" successfully invoked, return value = {1}", command, returnValue.ToNonNullString("null"));
-                                    }
-                                }
-                                else
-                                    SendResponse(requestInfo, false, "Specified command \"{0}\" is not marked as invokable for adapter \"{1}\" [Type = {2}].", command, adapter.Name, adapter.GetType().Name);
-                            }
-                            else
-                                SendResponse(requestInfo, false, "Specified command \"{0}\" does not exist for adapter \"{1}\" [Type = {2}].", command, adapter.Name, adapter.GetType().Name);
-                        }
-                        catch (Exception ex)
-                        {
-                            SendResponse(requestInfo, false, "Failed to invoke command: {0}", ex.Message);
-                            m_serviceHelper.ErrorLogger.Log(ex);
-                        }
+                        adapter = GetRequestedAdapter(requestInfo);
+                        command = requestInfo.Request.Arguments["OrderedArg2"];
+                    }
+                    else
+                    {
+                        adapter = GetRequestedCollection(requestInfo);
+                        command = requestInfo.Request.Arguments["OrderedArg1"];
                     }
                 }
                 else
-                    SendResponse(requestInfo, false, "No command was specified.");
+                    SendResponse(requestInfo, false, "No command was specified to invoke.");
+
+                if (adapter != null)
+                {
+                    try
+                    {
+                        // See if method exists with specified name using reflection
+                        MethodInfo method = adapter.GetType().GetMethod(command, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.IgnoreCase);
+
+                        // Invoke method
+                        if (method != null)
+                        {
+                            AdapterCommandAttribute commandAttribute;
+
+                            // Make sure method is marked as invokable (i.e., AdapterCommandAttribute exists on method)
+                            if (method.TryGetAttribute(out commandAttribute))
+                            {
+                                ParameterInfo[] parameterInfo = method.GetParameters();
+                                object returnValue = null;
+                                bool success = true;
+
+                                if (parameterInfo == null || (parameterInfo != null && parameterInfo.Length == 0))
+                                {
+                                    // Invoke parameterless adapter command
+                                    returnValue = method.Invoke(adapter, null);
+                                }
+                                else
+                                {
+                                    // Create typed parameters for method and invoke
+                                    if (requestInfo.Request.Arguments.OrderedArgCount - 2 >= parameterInfo.Length)
+                                    {
+                                        // Attempt to convert command parameters to the method parameter types
+                                        object[] parameters = new object[parameterInfo.Length];
+                                        string parameterValue;
+
+                                        for (int i = 0; i < parameterInfo.Length; i++)
+                                        {
+                                            parameterValue = requestInfo.Request.Arguments["OrderedArg" + (3 + i)];
+                                            parameters[i] = parameterValue.ConvertToType(parameterInfo[i].ParameterType);
+                                        }
+
+                                        // Invoke adapter command with specified parameters
+                                        returnValue = method.Invoke(adapter, parameters);
+                                    }
+                                    else
+                                    {
+                                        success = false;
+                                        SendResponse(requestInfo, false, "Parameter count mismatch, \"{0}\" command expects {1} parameters.", command, parameterInfo.Length);
+                                    }
+                                }
+
+                                // If invoke was successful, return actionable response
+                                if (success)
+                                {
+                                    // Return value, if any, will be returned to requesting client as a response attachment
+                                    if (returnValue == null)
+                                        SendResponse(requestInfo, true, "Command \"{0}\" successfully invoked.", command);
+                                    else
+                                        SendResponseWithAttachment(requestInfo, returnValue, "Command \"{0}\" successfully invoked, return value = {1}", command, returnValue.ToNonNullString("null"));
+                                }
+                            }
+                            else
+                                SendResponse(requestInfo, false, "Specified command \"{0}\" is not marked as invokable for adapter \"{1}\" [Type = {2}].", command, adapter.Name, adapter.GetType().Name);
+                        }
+                        else
+                            SendResponse(requestInfo, false, "Specified command \"{0}\" does not exist for adapter \"{1}\" [Type = {2}].", command, adapter.Name, adapter.GetType().Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        SendResponse(requestInfo, false, "Failed to invoke command: {0}", ex.Message);
+                        m_serviceHelper.ErrorLogger.Log(ex);
+                    }
+                }
             }
         }
 
@@ -1281,11 +1306,13 @@ namespace openPDC
                 helpMessage.AppendLine();
                 helpMessage.Append("   Usage:");
                 helpMessage.AppendLine();
-                helpMessage.Append("       ListCommands ID [Options]");
+                helpMessage.Append("       ListCommands [ID] [Options]");
                 helpMessage.AppendLine();
                 helpMessage.AppendLine();
                 helpMessage.Append("   ID:".PadRight(20));
                 helpMessage.Append("ID of the adapter to execute command on");
+                helpMessage.AppendLine();
+                helpMessage.AppendLine("   If ID is not specified, action will be on collection itself.");
                 helpMessage.AppendLine();
                 helpMessage.Append("   Options:");
                 helpMessage.AppendLine();
@@ -1306,7 +1333,13 @@ namespace openPDC
             }
             else
             {
-                IAdapter adapter = GetRequestedAdapter(requestInfo);
+                IAdapter adapter;
+
+                // See if specific ID for an adapter was requested
+                if (requestInfo.Request.Arguments.Exists("OrderedArg1"))
+                    adapter = GetRequestedAdapter(requestInfo);
+                else
+                    adapter = GetRequestedCollection(requestInfo);
 
                 if (adapter != null)
                 {
