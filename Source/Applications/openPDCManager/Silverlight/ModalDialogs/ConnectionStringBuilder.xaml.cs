@@ -406,22 +406,24 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 		void ButtonSaveTCP_Click(object sender, RoutedEventArgs e)
 		{
-			string hostIP = String.IsNullOrEmpty(TextBoxHostIP.Text) ? "127.0.0.1" : TextBoxHostIP.Text;			
+			if (m_connectionType != ConnectionType.CommandChannel)
+			{
+				string hostIP = String.IsNullOrEmpty(TextBoxHostIP.Text) ? "127.0.0.1" : TextBoxHostIP.Text;
+				if (!keyvaluepairs.ContainsKey("server"))
+					keyvaluepairs.Add("server", FormatIP(hostIP));
+				else
+					keyvaluepairs["server"] = FormatIP(hostIP);
 
-			if (!keyvaluepairs.ContainsKey("server"))
-				keyvaluepairs.Add("server", FormatIP(hostIP));
-			else
-				keyvaluepairs["server"] = FormatIP(hostIP);
+				if (!keyvaluepairs.ContainsKey("islistener"))
+					keyvaluepairs.Add("islistener", CheckboxEstablishServer.IsChecked.ToString().ToLower());
+				else
+					keyvaluepairs["islistener"] = CheckboxEstablishServer.IsChecked.ToString().ToLower();
+			}
 
 			if (!keyvaluepairs.ContainsKey("port"))
 				keyvaluepairs.Add("port", String.IsNullOrEmpty(TextBoxPort.Text) ? "4712" : TextBoxPort.Text);
 			else
 				keyvaluepairs["port"] = String.IsNullOrEmpty(TextBoxPort.Text) ? "4712" : TextBoxPort.Text;
-
-			if (!keyvaluepairs.ContainsKey("islistener"))
-				keyvaluepairs.Add("islistener", CheckboxEstablishServer.IsChecked.ToString().ToLower());
-			else
-				keyvaluepairs["islistener"] = CheckboxEstablishServer.IsChecked.ToString().ToLower();
 
 			SetConnectionString(TransportProtocol.tcp);						
 			this.DialogResult = true;
@@ -508,9 +510,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			{
 				TabItemTCP.Visibility = Visibility.Visible;
 				TabItemUDP.Visibility = Visibility.Collapsed;
-				TabItemSerial.Visibility = Visibility.Visible;
+				TabItemSerial.Visibility = Visibility.Collapsed;
 				TabItemFile.Visibility = Visibility.Collapsed;
 				TabItemUdpServer.Visibility = Visibility.Collapsed;
+				TextBoxHostIP.IsEnabled = false;
+				CheckboxEstablishServer.IsEnabled = false;
 			}
 			else if (m_connectionType == ConnectionType.DataChannel)
 			{

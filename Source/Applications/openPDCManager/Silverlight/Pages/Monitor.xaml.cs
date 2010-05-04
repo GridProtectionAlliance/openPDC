@@ -356,7 +356,13 @@ namespace openPDCManager.Silverlight.Pages
 		protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
 		{
 			if (m_connected)
-				m_duplexClient.SendToServiceAsync(new DisconnectMessage());
+			{
+				try
+				{
+					m_duplexClient.SendToServiceAsync(new DisconnectMessage());
+				}
+				catch { }
+			}			
 			base.OnNavigatingFrom(e);
 		}
 

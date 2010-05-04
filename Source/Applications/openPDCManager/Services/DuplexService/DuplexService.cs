@@ -393,20 +393,20 @@ namespace openPDCManager.Services.DuplexService
 				}
 				else if (currentClient.CurrentDisplayType == DisplayType.ServiceClient)
 				{
-					//if (serviceClientList[clients[session].NodeID].Helper.RemotingClient.Enabled) //if service client is connected to openPDC windows service then only send data to client upon connection.
-					//{
+					if (serviceClientList.ContainsKey(clients[session].NodeID))
+					{
 						System.Diagnostics.Debug.WriteLine("Sending Cached Status to Client Connected on System Monitor Page.");
 						PushMessageToClient(session, new ServiceUpdateMessage()
 												{
 													ServiceUpdateType = TVA.Services.UpdateType.Information,
 													ServiceUpdate = serviceClientList[clients[session].NodeID].CachedStatus
 												});
-					//}
-					//else
-					//{
-					//    System.Diagnostics.Debug.WriteLine("Sending Empty Message to Client Connected on System Monitor Page.");
-					//    PushMessageToClient(session, new ServiceUpdateMessage());
-					//}
+					}					
+					else
+					{
+						System.Diagnostics.Debug.WriteLine("Sending Empty Message to Client Connected on System Monitor Page.");
+						PushMessageToClient(session, new ServiceUpdateMessage());
+					}
 				}
 				else if (currentClient.CurrentDisplayType == DisplayType.DeviceMeasurements)
 				{
