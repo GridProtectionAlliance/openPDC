@@ -557,13 +557,17 @@ namespace openPDCManager.Services.DuplexService
         /// <param name="message">The message to push</param>
         protected void PushMessageToClient(string clientSessionId, DuplexMessage message)
         {
-            IUniversalDuplexCallbackContract ch = (clients[clientSessionId]).Channel;
+			try		//try to send message to client if it is still connected. Otherwise dont worry about it.
+			{
+				IUniversalDuplexCallbackContract ch = (clients[clientSessionId]).Channel;
 
-            IAsyncResult iar = ch.BeginSendToClient(message, new AsyncCallback(OnPushMessageComplete), new PushMessageState(ch, clientSessionId));
-            if (iar.CompletedSynchronously)
-            {
-                CompletePushMessage(iar);
-            }
+				IAsyncResult iar = ch.BeginSendToClient(message, new AsyncCallback(OnPushMessageComplete), new PushMessageState(ch, clientSessionId));
+				if (iar.CompletedSynchronously)
+				{
+					CompletePushMessage(iar);
+				}
+			}
+			catch { }
         }
 
         /// <summary>

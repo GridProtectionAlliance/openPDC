@@ -803,7 +803,7 @@ namespace openPDCManager.Web.Data
 			List<TimeSeriesDataPoint> timeSeriesData = new List<TimeSeriesDataPoint>();
 			try
 			{				
-				HttpWebRequest request = WebRequest.Create(timeSeriesDataUrl) as HttpWebRequest;
+				HttpWebRequest request = WebRequest.Create(timeSeriesDataUrl) as HttpWebRequest;				
 				using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
 				{
 					if (response.StatusCode == HttpStatusCode.OK)
