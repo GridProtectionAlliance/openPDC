@@ -238,6 +238,7 @@ using MySql.Data.MySqlClient;
 using TVA;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
+using System.Data;
 
 namespace MySqlAdapters
 {
@@ -257,6 +258,7 @@ namespace MySqlAdapters
         private int m_measurementsPerInput;
         private int m_startingMeasurement;
         private bool m_fakeTimestamps;
+        private bool m_disposed;
 
         #endregion
 
@@ -344,6 +346,7 @@ namespace MySqlAdapters
 
             // Create a new MySql connection object
             m_connection = new MySqlConnection(m_mySqlConnectionString);
+            m_connection.StateChange += m_connection_StateChange;
 
             // Set up the timer to trigger inputs
             m_timer.Interval = m_inputInterval;
@@ -379,6 +382,41 @@ namespace MySqlAdapters
             return string.Format("{0} measurements read from database.", ProcessedMeasurements).CenterText(maxLength);
         }
 
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="MySqlInputAdapter"/> object and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (!m_disposed)
+            {
+                try
+                {
+                    if (disposing)
+                    {
+                        if (m_connection != null)
+                        {
+                            m_connection.StateChange -= m_connection_StateChange;
+                            m_connection.Dispose();
+                        }
+                        m_connection = null;
+
+                        if (m_timer != null)
+                        {
+                            m_timer.Elapsed -= m_timer_Elapsed;
+                            m_timer.Dispose();
+                        }
+                        m_timer = null;
+                    }
+                }
+                finally
+                {
+                    base.Dispose(disposing);    // Call base class Dispose().
+                    m_disposed = true;          // Prevent duplicate dispose.
+                }
+            }
+        }
+
         private void m_timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             string commandString = "SELECT SignalID,Timestamp,Value FROM Measurement LIMIT " + m_startingMeasurement + "," + m_measurementsPerInput;
@@ -395,6 +433,16 @@ namespace MySqlAdapters
             reader.Close();
             OnNewMeasurements(measurements);
             m_startingMeasurement += m_measurementsPerInput;
+        }
+
+        private void m_connection_StateChange(object sender, System.Data.StateChangeEventArgs e)
+        {
+            if (e.CurrentState == ConnectionState.Closed && Enabled)
+            {
+                // Connection lost,
+                // attempt to reconnect
+                Start();
+            }
         }
 
         #endregion
