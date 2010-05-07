@@ -299,9 +299,11 @@ namespace openPDCManager.Services.DuplexService
 							foreach (KeyValuePair<string, WindowsServiceClient> item in serviceClientList)
 							{
 								item.Value.Helper.ReceivedServiceUpdate -= ClientHelper_ReceivedServiceUpdate;
+								item.Value.Helper.ReceivedServiceResponse -= ClientHelper_ReceivedServiceResponse;
 								item.Value.Dispose();
 							}
 						}
+						serviceClientList.Clear();
                     }
                 }
                 finally

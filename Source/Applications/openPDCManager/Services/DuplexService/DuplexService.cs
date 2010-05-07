@@ -288,9 +288,7 @@ namespace openPDCManager.Services.DuplexService
 
         // Fields
         object syncRoot = new object();
-        Dictionary<string, Client> clients;
-        //Will also maintain list of Nodes
-		protected List<Node> nodesInDatabase;
+        Dictionary<string, Client> clients;        
 		protected Dictionary<string, WindowsServiceClient> serviceClientList;
         //Will maintain data for each node in a dictionary to serve to any number of clients. This would eliminate database hit for each client.
         Dictionary<string, LivePhasorDataMessage> dataPerNode;	//stores vendor device distribution and interconnectionstatus per node.
@@ -304,8 +302,7 @@ namespace openPDCManager.Services.DuplexService
 
         public DuplexService()
         {
-            clients = new Dictionary<string, Client>();
-            nodesInDatabase = new List<Node>();
+            clients = new Dictionary<string, Client>();            
             dataPerNode = new Dictionary<string, LivePhasorDataMessage>();
 			timeTaggedMeasurementsPerNode = new Dictionary<string, TimeTaggedDataMessage>();
 			minMaxPointIDsPerNode = new Dictionary<string, KeyValuePair<int, int>>();
@@ -340,7 +337,8 @@ namespace openPDCManager.Services.DuplexService
 
             if (msg is ConnectMessage)
             {
-                lock (syncRoot)
+                //lock (syncRoot)
+				lock (clients)
                 {
                     if (!clients.ContainsKey(session))	// new client
                     {
@@ -393,13 +391,13 @@ namespace openPDCManager.Services.DuplexService
 				}
 				else if (currentClient.CurrentDisplayType == DisplayType.ServiceClient)
 				{
-					if (serviceClientList.ContainsKey(clients[session].NodeID))
+					if (serviceClientList.ContainsKey(currentClient.NodeID))
 					{
 						System.Diagnostics.Debug.WriteLine("Sending Cached Status to Client Connected on System Monitor Page.");
 						PushMessageToClient(session, new ServiceUpdateMessage()
 												{
 													ServiceUpdateType = TVA.Services.UpdateType.Information,
-													ServiceUpdate = serviceClientList[clients[session].NodeID].CachedStatus
+													ServiceUpdate = serviceClientList[currentClient.NodeID].CachedStatus
 												});
 					}					
 					else
@@ -447,32 +445,38 @@ namespace openPDCManager.Services.DuplexService
 		}
 
         protected void RefreshDataPerNode()
-        {
-            lock (syncRoot)
+        {   			
+			//nodesInDatabase = CommonFunctions.GetNodeList(true);
+			List<Node> nodeList = new List<Node>();
+			nodeList = CommonFunctions.GetNodeList(true);
+			foreach (Node node in nodeList)
             {
-                nodesInDatabase = CommonFunctions.GetNodeList(true);
-                foreach (Node node in nodesInDatabase)
+				LivePhasorDataMessage message = new LivePhasorDataMessage()
                 {
-                    LivePhasorDataMessage message = new LivePhasorDataMessage()
-                    {
-                        //PmuDistributionList = CommonFunctions.GetPmuDistribution(),
-                        DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(node.ID),
-                        InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus(node.ID)
-                    };
-
-                    if (dataPerNode.ContainsKey(node.ID))
-                        dataPerNode[node.ID] = message;
-                    else
-                        dataPerNode.Add(node.ID, message);
-                }
+					//PmuDistributionList = CommonFunctions.GetPmuDistribution(),
+                    DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(node.ID),
+                    InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus(node.ID)
+                };
+			
+				//lock (syncRoot)
+				lock (dataPerNode)
+				{
+					if (dataPerNode.ContainsKey(node.ID))
+						dataPerNode[node.ID] = message;
+					else
+						dataPerNode.Add(node.ID, message);
+				}
             }
         }
 
 		protected void RefreshTimeTaggedMeasurementsPerNode()
 		{
-			lock (syncRoot)
+			List<Node> nodeList = new List<Node>();
+			nodeList = CommonFunctions.GetNodeList(true);
+			foreach (Node node in nodeList)
 			{
-				foreach (Node node in nodesInDatabase)
+				//lock (syncRoot)
+				lock (minMaxPointIDsPerNode)
 				{
 					if (minMaxPointIDsPerNode.ContainsKey(node.ID))
 						minMaxPointIDsPerNode[node.ID] = CommonFunctions.GetMinMaxPointIDs(node.ID);
@@ -480,21 +484,22 @@ namespace openPDCManager.Services.DuplexService
 						minMaxPointIDsPerNode.Add(node.ID, CommonFunctions.GetMinMaxPointIDs(node.ID));
 				}
 			}
-
-			lock (syncRoot)
+					
+			foreach (Node node in nodeList)
 			{
-				foreach (Node node in nodesInDatabase)
-				{
-					KeyValuePair<int, int> minMaxPointID = minMaxPointIDsPerNode[node.ID];				
-					TimeTaggedDataMessage message;
-					if (!string.IsNullOrEmpty(node.TimeSeriesDataServiceUrl))
-						message = new TimeTaggedDataMessage()
-													{
-														TimeTaggedMeasurements = CommonFunctions.GetTimeTaggedMeasurements(node.TimeSeriesDataServiceUrl + "/timeseriesdata/read/current/" + minMaxPointID.Key.ToString() + "-" + minMaxPointID.Value.ToString() + "/XML")
-													};
-					else
-						message = new TimeTaggedDataMessage();
+				KeyValuePair<int, int> minMaxPointID = minMaxPointIDsPerNode[node.ID];				
+				TimeTaggedDataMessage message;
+				if (!string.IsNullOrEmpty(node.TimeSeriesDataServiceUrl))
+					message = new TimeTaggedDataMessage()
+								{
+										TimeTaggedMeasurements = CommonFunctions.GetTimeTaggedMeasurements(node.TimeSeriesDataServiceUrl + "/timeseriesdata/read/current/" + minMaxPointID.Key.ToString() + "-" + minMaxPointID.Value.ToString() + "/XML")
+								};
+				else
+					message = new TimeTaggedDataMessage();
 
+				//lock (syncRoot)
+				lock (timeTaggedMeasurementsPerNode)
+				{
 					if (timeTaggedMeasurementsPerNode.ContainsKey(node.ID))
 						timeTaggedMeasurementsPerNode[node.ID] = message;
 					else
@@ -504,50 +509,92 @@ namespace openPDCManager.Services.DuplexService
 		}
 
 		protected void PushServiceStatusToClients(string nodeID, DuplexMessage message)
-		{
-			lock (syncRoot)
+		{			
+			Dictionary<string, Client> clientsList = new Dictionary<string, Client>();
+			lock (clients)
 			{
-				foreach (string session in clients.Keys)
-				{
-					if (clients[session].CurrentDisplayType == DisplayType.ServiceClient && clients[session].NodeID == nodeID)
-						PushMessageToClient(session, message);
-				}
+				clientsList = clients;	// we will take a copy of the global collection locally to avoid locking of the resource.
 			}
+			
+			foreach (string session in clientsList.Keys)
+			{
+				if (clientsList[session].CurrentDisplayType == DisplayType.ServiceClient && clientsList[session].NodeID == nodeID)
+					PushMessageToClient(session, message);
+			}			
 		}
 
         protected void PushToAllClients(MessageType messageType)
         {
-            lock (syncRoot)
-            {
-                foreach (string session in clients.Keys)
-                {
-					if (clients[session].CurrentDisplayType == DisplayType.Home)
+			//This is not the best way to check for measurementType and have individual local collection of clients and foreach loop but
+			//since this method is being called by different threads and timers, I have implemented it this way. --Mehul Thakkar.
+			if (messageType == MessageType.LivePhasorDataMessage)
+			{
+				Dictionary<string, Client> clientsList = new Dictionary<string, Client>();
+				lock (clients)
+				{
+					clientsList = clients;	// we will take a copy of the global collection locally to avoid locking of the resource.
+				}
+
+				lock (clientsList)
+				{
+					foreach (string session in clientsList.Keys)
 					{
-						if (messageType == MessageType.LivePhasorDataMessage)
+						if (clientsList[session].CurrentDisplayType == DisplayType.Home)
 						{
-							if (dataPerNode.ContainsKey(clients[session].NodeID))
-								PushMessageToClient(session, dataPerNode[clients[session].NodeID]);
+							if (dataPerNode.ContainsKey(clientsList[session].NodeID))
+								PushMessageToClient(session, dataPerNode[clientsList[session].NodeID]);
 							else
 								PushMessageToClient(session, new LivePhasorDataMessage());
 						}
-						else if (messageType == MessageType.TimeSeriesDataMessage && !string.IsNullOrEmpty(clients[session].TimeSeriesDataRootUrl))
+					}
+				}
+			}
+			else if (messageType == MessageType.TimeSeriesDataMessage)
+			{
+				Dictionary<string, Client> clientsList = new Dictionary<string, Client>();
+				lock (clients)
+				{
+					clientsList = clients;	// we will take a copy of the global collection locally to avoid locking of the resource.
+				}
+
+				lock (clientsList)
+				{
+					foreach (string session in clientsList.Keys)
+					{
+						if (clientsList[session].CurrentDisplayType == DisplayType.Home && !string.IsNullOrEmpty(clientsList[session].TimeSeriesDataRootUrl))
 						{
 							TimeSeriesDataMessage message = new TimeSeriesDataMessage()
 							{
-								TimeSeriesData = CommonFunctions.GetTimeSeriesData(clients[session].TimeSeriesDataRootUrl + "/timeseriesdata/read/current/" + clients[session].DataPointID.ToString() + "/XML")
+								TimeSeriesData = CommonFunctions.GetTimeSeriesData(clientsList[session].TimeSeriesDataRootUrl + "/timeseriesdata/read/current/" + clientsList[session].DataPointID.ToString() + "/XML")
 							};
 							PushMessageToClient(session, message);
 						}
 					}
-					else if (clients[session].CurrentDisplayType == DisplayType.DeviceMeasurements && messageType == MessageType.TimeTaggedDataMessage)
+				}
+			}
+			else if (messageType == MessageType.TimeTaggedDataMessage)
+			{
+				Dictionary<string, Client> clientsList = new Dictionary<string, Client>();
+				lock (clients)
+				{
+					clientsList = clients;	// we will take a copy of the global collection locally to avoid locking of the resource.
+				}
+				
+				lock (clientsList)
+				{
+					foreach (string session in clientsList.Keys)
 					{
-						if (timeTaggedMeasurementsPerNode.ContainsKey(clients[session].NodeID))
-							PushMessageToClient(session, timeTaggedMeasurementsPerNode[clients[session].NodeID]);
-						else
-							PushMessageToClient(session, new TimeTaggedDataMessage());
+						if (clientsList[session].CurrentDisplayType == DisplayType.DeviceMeasurements)
+						{
+							if (timeTaggedMeasurementsPerNode.ContainsKey(clientsList[session].NodeID))
+								PushMessageToClient(session, timeTaggedMeasurementsPerNode[clientsList[session].NodeID]);
+							else
+								PushMessageToClient(session, new TimeTaggedDataMessage());
+						}
 					}
-                }
-            }
+				}
+			}
+            
         }
 
         /// <summary>
@@ -659,7 +706,8 @@ namespace openPDCManager.Services.DuplexService
 
         private void ClientDisconnected(string sessionId)
         {
-            lock (syncRoot)
+            //lock (syncRoot)
+			lock (clients)
             {
                 if (clients.ContainsKey(sessionId))
                     clients.Remove(sessionId);
