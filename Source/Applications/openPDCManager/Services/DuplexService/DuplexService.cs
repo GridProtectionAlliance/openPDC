@@ -529,10 +529,10 @@ namespace openPDCManager.Services.DuplexService
 			//since this method is being called by different threads and timers, I have implemented it this way. --Mehul Thakkar.
 			if (messageType == MessageType.LivePhasorDataMessage)
 			{
-				Dictionary<string, Client> clientsList = new Dictionary<string, Client>();
+				Dictionary<string, Client> clientsList;
 				lock (clients)
 				{
-					clientsList = clients;	// we will take a copy of the global collection locally to avoid locking of the resource.
+					clientsList = new Dictionary<string, Client>(clients);	// we will take a copy of the global collection locally to avoid locking of the resource.
 				}
 
 				lock (clientsList)
@@ -551,10 +551,10 @@ namespace openPDCManager.Services.DuplexService
 			}
 			else if (messageType == MessageType.TimeSeriesDataMessage)
 			{
-				Dictionary<string, Client> clientsList = new Dictionary<string, Client>();
+				Dictionary<string, Client> clientsList;
 				lock (clients)
 				{
-					clientsList = clients;	// we will take a copy of the global collection locally to avoid locking of the resource.
+					clientsList = new Dictionary<string, Client>(clients);	// we will take a copy of the global collection locally to avoid locking of the resource.
 				}
 
 				lock (clientsList)
@@ -574,10 +574,10 @@ namespace openPDCManager.Services.DuplexService
 			}
 			else if (messageType == MessageType.TimeTaggedDataMessage)
 			{
-				Dictionary<string, Client> clientsList = new Dictionary<string, Client>();
+				Dictionary<string, Client> clientsList;
 				lock (clients)
 				{
-					clientsList = clients;	// we will take a copy of the global collection locally to avoid locking of the resource.
+					clientsList  = new Dictionary<string, Client>(clients);	// we will take a copy of the global collection locally to avoid locking of the resource.
 				}
 				
 				lock (clientsList)
