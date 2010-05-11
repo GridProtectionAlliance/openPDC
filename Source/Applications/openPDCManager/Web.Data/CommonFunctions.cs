@@ -3937,7 +3937,7 @@ namespace openPDCManager.Web.Data
 												   select new Adapter()
 												   {
 													   NodeID = obj.Field<object>("NodeID").ToString(),
-													   ID = obj.Field<int>("ID"),
+													   ID = Convert.ToInt32(obj.Field<object>("ID")),
 													   AdapterName = obj.Field<string>("AdapterName"),
 													   AssemblyName = obj.Field<string>("AssemblyName"),
 													   TypeName = obj.Field<string>("TypeName"),

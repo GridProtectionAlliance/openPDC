@@ -509,11 +509,11 @@ namespace openPDCManager.Services.DuplexService
 		}
 
 		protected void PushServiceStatusToClients(string nodeID, DuplexMessage message)
-		{			
-			Dictionary<string, Client> clientsList = new Dictionary<string, Client>();
+		{
+			Dictionary<string, Client> clientsList;
 			lock (clients)
 			{
-				clientsList = clients;	// we will take a copy of the global collection locally to avoid locking of the resource.
+				clientsList = new Dictionary<string, Client>(clients);	// we will take a copy of the global collection locally to avoid locking of the resource.
 			}
 			
 			foreach (string session in clientsList.Keys)

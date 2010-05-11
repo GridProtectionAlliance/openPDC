@@ -7,7 +7,7 @@
            mc:Ignorable="d"
            xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"     
            xmlns:converter="clr-namespace:openPDCManager.Silverlight.Converters"                 
-           Title="Device Configuration Wizard">
+           Title="Device Configuration Wizard" TabNavigation="Cycle">
            
     <Grid x:Name="GridConfigurationWizard">        
         <Border Style="{StaticResource PortletBorderStyle}">
@@ -16,7 +16,7 @@
                 <Border Style="{StaticResource HeaderRowBorderStyle}">
                     <layoutToolkit:Accordion x:Name="AccordianWizard" HorizontalAlignment="Center" Style="{StaticResource AccordionStyle}" 
                                             SelectionMode="One" ItemContainerStyle="{StaticResource AccordionItemStyle}" AccordionButtonStyle="{StaticResource AccordionButtonStyle}">
-                        <layoutToolkit:AccordionItem Header="Step 1: Configure Connection Settings">
+                        <layoutToolkit:AccordionItem Header="Step 1: Configure Connection Settings" IsTabStop="False">
                             <layoutToolkit:AccordionItem.Content>
                                 <Grid HorizontalAlignment="Center" Width="{StaticResource ApplicationStartupHeight}" Height="{StaticResource XXXLargeItemSize}" Margin="5">
                                     <Grid.ColumnDefinitions>
@@ -42,8 +42,8 @@
                                     <TextBlock Grid.Row="0" Grid.Column="1" Text="Select PMU Connection File (from PMU Connection Tester)" HorizontalAlignment="Left" Margin="2" />
                                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Connection File" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
                                     <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
-                                        <TextBox x:Name="TextBoxConnectionFile" Width="{StaticResource XXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
-                                        <Button x:Name="ButtonBrowseConnectionFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
+                                        <TextBox x:Name="TextBoxConnectionFile" Width="{StaticResource XXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" IsTabStop="True" TabIndex="0"/>
+                                        <Button x:Name="ButtonBrowseConnectionFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand" IsTabStop="True" TabIndex="1">
                                             <Button.RenderTransform>
                                                 <ScaleTransform x:Name="ButtonBrowseConnectionFileTransform" ScaleX="1" ScaleY="1" />
                                             </Button.RenderTransform>
@@ -53,8 +53,8 @@
                                     <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="1">                                        
                                         <StackPanel Orientation="Horizontal">
                                             <TextBox x:Name="TextBoxConnectionString" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" 
-                                             TextAlignment="Left" VerticalAlignment="Center" Margin="2" TextWrapping="Wrap" />
-                                            <Button x:Name="ButtonBuildConnectionString" Content="../../Images/Add.png" Tag="Build..." Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
+                                             TextAlignment="Left" VerticalAlignment="Center" Margin="2" TextWrapping="Wrap" IsTabStop="True" TabIndex="2" />
+                                            <Button x:Name="ButtonBuildConnectionString" Content="../../Images/Add.png" Tag="Build..." Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="2" Cursor="Hand" IsTabStop="True" TabIndex="3">
                                                 <Button.RenderTransform>
                                                     <ScaleTransform x:Name="ButtonBuildConnectionStringTransform" ScaleX="1" ScaleY="1" />
                                                 </Button.RenderTransform>
@@ -67,8 +67,8 @@
                                     <StackPanel Orientation="Vertical" Grid.Row="3" Grid.Column="1">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBox x:Name="TextBoxAlternateCommandChannel" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" 
-                                             TextAlignment="Left" VerticalAlignment="Center" Margin="2" TextWrapping="Wrap" />
-                                            <Button x:Name="ButtonBuildCommandChannel" Content="../../Images/Add.png" Tag="Build..." Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
+                                             TextAlignment="Left" VerticalAlignment="Center" Margin="2" TextWrapping="Wrap" IsTabStop="True" TabIndex="4" />
+                                            <Button x:Name="ButtonBuildCommandChannel" Content="../../Images/Add.png" Tag="Build..." Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="2" Cursor="Hand" IsTabStop="True" TabIndex="5">
                                                 <Button.RenderTransform>
                                                     <ScaleTransform x:Name="ButtonBuildCommandChannelTransform" ScaleX="1" ScaleY="1" />
                                                 </Button.RenderTransform>
@@ -77,29 +77,29 @@
                                     </StackPanel>
 
                                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Device Protocol" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                    <ComboBox x:Name="ComboboxProtocol" Grid.Row="4" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
+                                    <ComboBox x:Name="ComboboxProtocol" Grid.Row="4" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" IsTabStop="True" TabIndex="6"/>
                                     <TextBlock Grid.Row="5" Grid.Column="0" x:Name="TextBlockIniFile" Text="Select INI File" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
                                     <StackPanel x:Name="StackPanelIniFile" Orientation="Horizontal" Grid.Row="5" Grid.Column="1">
-                                        <TextBox x:Name="TextBoxIniFile" Width="{StaticResource XXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
-                                        <Button x:Name="ButtonBrowseIniFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
+                                        <TextBox x:Name="TextBoxIniFile" Width="{StaticResource XXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" IsTabStop="True" TabIndex="7"/>
+                                        <Button x:Name="ButtonBrowseIniFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand" IsTabStop="True" TabIndex="8">
                                             <Button.RenderTransform>
                                                 <ScaleTransform x:Name="ButtonBrowseIniFileTransform" ScaleX="1" ScaleY="1" />
                                             </Button.RenderTransform>
                                         </Button>
                                     </StackPanel>                                    
                                     
-                                    <CheckBox x:Name="CheckboxConnectToPDC" Content="Connection is to Concentrator" FontSize="{StaticResource XLargeTextSize}" FontWeight="Bold" Grid.Row="6" Grid.Column="1" VerticalAlignment="Bottom" Margin="5"/>
+                                    <CheckBox x:Name="CheckboxConnectToPDC" Content="Connection is to Concentrator" FontSize="{StaticResource XLargeTextSize}" FontWeight="Bold" Grid.Row="6" Grid.Column="1" VerticalAlignment="Bottom" Margin="5" IsTabStop="True" TabIndex="9"/>
                                     <TextBlock Grid.Row="7" Grid.Column="0" x:Name="TextBlockPDCName" Text="PDC Name" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                    <TextBox x:Name="TextBoxPDCName" Grid.Row="7" Grid.Column="1" Width="{StaticResource LargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+                                    <TextBox x:Name="TextBoxPDCName" Grid.Row="7" Grid.Column="1" Width="{StaticResource LargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" IsTabStop="True"  TabIndex="10"/>
                                     <TextBlock Grid.Row="8" Grid.Column="0" x:Name="TextBlockAcronym" Text="Acronym" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                    <TextBox x:Name="TextBoxPDCAcronym" Grid.Row="8" Grid.Column="1" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+                                    <TextBox x:Name="TextBoxPDCAcronym" Grid.Row="8" Grid.Column="1" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" IsTabStop="True" TabIndex="11"/>
                                     <TextBlock Grid.Row="9" Grid.Column="0" x:Name="TextBlockPDCDeviceVendor" Text="PDC Device Vendor" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                    <ComboBox x:Name="ComboboxPDCVendor" Grid.Row="9" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
+                                    <ComboBox x:Name="ComboboxPDCVendor" Grid.Row="9" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" IsTabStop="True" TabIndex="12"/>
         
                                 </Grid>
                             </layoutToolkit:AccordionItem.Content>
                         </layoutToolkit:AccordionItem>
-                        <layoutToolkit:AccordionItem Header="Step 2: Select Device Configuration Settings">
+                        <layoutToolkit:AccordionItem Header="Step 2: Select Device Configuration Settings" IsTabStop="False">
                             <layoutToolkit:AccordionItem.Content>
                                 <Grid Width="{StaticResource ApplicationStartupHeight}" Height="{StaticResource XXXLargeItemSize}" Margin="5" HorizontalAlignment="Center">
                                     <Grid.ColumnDefinitions>
@@ -148,7 +148,7 @@
                                 </Grid>
                             </layoutToolkit:AccordionItem.Content>
                         </layoutToolkit:AccordionItem>
-                        <layoutToolkit:AccordionItem Header="Step 3: Select Devices to Configure">
+                        <layoutToolkit:AccordionItem Header="Step 3: Select Devices to Configure" IsTabStop="False">
                             <layoutToolkit:AccordionItem.Content>
                                 <StackPanel Orientation="Vertical" Width="{StaticResource ApplicationStartupHeight}" Margin="5">
                                     <Border Style="{StaticResource HeaderRowBorderStyle}">

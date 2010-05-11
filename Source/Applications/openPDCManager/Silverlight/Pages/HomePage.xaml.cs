@@ -453,7 +453,7 @@ namespace openPDCManager.Silverlight.Pages
 			m_duplexClient.SendToServiceAsync(msg);
 
 			//reset time series data list
-			timeSeriesDataList = new ObservableCollection<TimeSeriesDataPoint>();
+			timeSeriesDataList = new ObservableCollection<TimeSeriesDataPoint>();			
 		}
 
 		#endregion
@@ -462,11 +462,11 @@ namespace openPDCManager.Silverlight.Pages
 
 		void HomePage_Loaded(object sender, RoutedEventArgs e)
 		{
-			if (!string.IsNullOrEmpty(((App)Application.Current).NodeValue))
-			{
-				//ReconnectToService();
+			//if (!string.IsNullOrEmpty(((App)Application.Current).NodeValue))
+			//{
+				//ReconnectToService();				
 				m_client.GetDevicesAsync(DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, false);
-			}						
+			//}				
 		}
 						
 		// Executes just before a page is no longer the active page in a frame.

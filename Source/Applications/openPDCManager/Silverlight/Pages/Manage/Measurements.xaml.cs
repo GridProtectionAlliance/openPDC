@@ -367,7 +367,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			if (e.Error == null)
 			{
 				ClearForm();
-				(Application.Current.RootVisual as MasterLayoutControl).UserControlSelectNode.RaiseNotification();
+				//(Application.Current.RootVisual as MasterLayoutControl).UserControlSelectNode.RaiseNotification();
 				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
 						ButtonType.OkOnly);
 			}
