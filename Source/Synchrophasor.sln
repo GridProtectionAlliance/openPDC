@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencie
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}"
 	ProjectSection(SolutionItems) = preProject
+		Documentation\Near GPS Quality NTP Settings.reg = Documentation\Near GPS Quality NTP Settings.reg
 		Documentation\PMU Connection Tester Help Documents.zip = Documentation\PMU Connection Tester Help Documents.zip
 	EndProjectSection
 EndProject
