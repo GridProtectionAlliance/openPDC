@@ -161,6 +161,7 @@ CREATE TABLE Device(
 	MeasuredLines INT NULL,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled TINYINT NOT NULL DEFAULT 0,
+	CreatedOn DATETIME NOT NULL DEFAULT NOW(),
 	CONSTRAINT PK_Device PRIMARY KEY (ID ASC),
 	CONSTRAINT IX_Device_Acronym UNIQUE KEY (Acronym ASC)
 );
@@ -798,7 +799,7 @@ SELECT     D.NodeID, D.ID, D.ParentID, D.Acronym, COALESCE(D.Name, '') AS Name, 
                       COALESCE(D.FramesPerSecond, 30) AS FramesPerSecond, D.TimeAdjustmentTicks, D.DataLossInterval, COALESCE(D.ContactList, '') AS ContactList, D.MeasuredLines, D.LoadOrder, D.Enabled, COALESCE(C.Name, '') 
                       AS CompanyName, COALESCE(C.Acronym, '') AS CompanyAcronym, COALESCE(C.MapAcronym, '') AS CompanyMapAcronym, COALESCE(H.Acronym, '') 
                       AS HistorianAcronym, COALESCE(VD.VendorAcronym, '') AS VendorAcronym, COALESCE(VD.Name, '') AS VendorDeviceName, COALESCE(P.Name, '') 
-                      AS ProtocolName, COALESCE(I.Name, '') AS InterconnectionName, N.Name AS NodeName, COALESCE(PD.Acronym, '') AS ParentAcronym
+                      AS ProtocolName, COALESCE(I.Name, '') AS InterconnectionName, N.Name AS NodeName, COALESCE(PD.Acronym, '') AS ParentAcronym, D.CreatedOn
 FROM         Device AS D LEFT OUTER JOIN
                       Company AS C ON C.ID = D.CompanyID LEFT OUTER JOIN
                       Historian AS H ON H.ID = D.HistorianID LEFT OUTER JOIN

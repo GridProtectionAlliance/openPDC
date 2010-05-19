@@ -462,11 +462,14 @@ namespace openPDCManager.Silverlight.Pages
 
 		void HomePage_Loaded(object sender, RoutedEventArgs e)
 		{
-			//if (!string.IsNullOrEmpty(((App)Application.Current).NodeValue))
-			//{
-				//ReconnectToService();				
-				m_client.GetDevicesAsync(DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, false);
-			//}				
+            //if (!string.IsNullOrEmpty(((App)Application.Current).NodeValue))
+                m_client.GetDevicesAsync(DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, false);
+            //else
+            //{
+            //    ReconnectToService();
+            //    if (m_activityWindow != null)
+            //        m_activityWindow.Close();
+            //}
 		}
 						
 		// Executes just before a page is no longer the active page in a frame.

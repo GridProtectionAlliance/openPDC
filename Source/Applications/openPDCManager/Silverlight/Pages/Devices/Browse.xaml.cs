@@ -242,6 +242,7 @@ using openPDCManager.Silverlight.ModalDialogs;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using openPDCManager.Silverlight.Utilities;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace openPDCManager.Silverlight.Pages.Devices
 {
@@ -251,6 +252,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 		PhasorDataServiceClient m_client;
 		ObservableCollection<Device> m_deviceList = new ObservableCollection<Device>();
+        PagedCollectionView m_pagedList;
 		ActivityWindow m_activityWindow;
 		
 		#endregion
@@ -453,13 +455,44 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 		void BindData(IEnumerable<Device> deviceList)
 		{
-			PagedCollectionView pagedList = new PagedCollectionView(deviceList);
-			ListBoxDeviceList.ItemsSource = pagedList;
-			DataPagerDevices.Source = pagedList;
+			m_pagedList = new PagedCollectionView(deviceList);            
+			ListBoxDeviceList.ItemsSource = m_pagedList;
+			DataPagerDevices.Source = m_pagedList;
 			ListBoxDeviceList.SelectedIndex = -1;			
 		}
 
 		#endregion
+
+        private void HyperlinkButtonCreatedOn_Click(object sender, RoutedEventArgs e)
+        {
+            SortData("CreatedOn");
+        }
+
+        private void HyperlinkButtonAcronym_Click(object sender, RoutedEventArgs e)
+        {
+            SortData("Acronym");
+        }
+
+        void SortData(string sortFieldName)
+        {
+            if (m_pagedList.SortDescriptions.Contains(new SortDescription(sortFieldName, ListSortDirection.Ascending)))
+            {
+                //m_pagedList.SortDescriptions.Remove(new SortDescription(sortFieldName, ListSortDirection.Ascending));
+                m_pagedList.SortDescriptions.Clear();
+                m_pagedList.SortDescriptions.Add(new SortDescription(sortFieldName, ListSortDirection.Descending));
+            }
+            else if (m_pagedList.SortDescriptions.Contains(new SortDescription(sortFieldName, ListSortDirection.Descending)))
+            {
+                m_pagedList.SortDescriptions.Clear();
+                m_pagedList.SortDescriptions.Add(new SortDescription(sortFieldName, ListSortDirection.Ascending));
+            }
+            else
+                m_pagedList.SortDescriptions.Add(new SortDescription(sortFieldName, ListSortDirection.Ascending));
+            
+            ListBoxDeviceList.ItemsSource = m_pagedList;
+            DataPagerDevices.Source = m_pagedList;
+            ListBoxDeviceList.SelectedIndex = -1;
+        }
 		
 	}
 }

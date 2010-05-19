@@ -605,7 +605,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					device.TimeZone = string.Empty;
 					device.TimeAdjustmentTicks = 0;
 					device.DataLossInterval = 35;
-					device.MeasuredLines = m_wizardDeviceInfoList.Count;
+                    device.MeasuredLines = 0;   //m_wizardDeviceInfoList.Count;
 					device.LoadOrder = 0;
 					device.ContactList = string.Empty;
 					device.Enabled = true;

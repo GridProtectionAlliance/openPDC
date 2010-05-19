@@ -2,20 +2,12 @@
     <system.serviceModel>
         <bindings>
             <customBinding>
-                <binding name="CustomBinding_IPhasorDataService" closeTimeout="00:20:00" openTimeout="00:20:00" receiveTimeout="00:20:00" sendTimeout="00:20:00">
-                    <!--<binaryMessageEncoding maxReadPoolSize="64" maxWritePoolSize="16"
-                        maxSessionSize="2048">
-                        <readerQuotas maxDepth="0" maxStringContentLength="0" maxArrayLength="0"
-                            maxBytesPerRead="0" maxNameTableCharCount="0" />
-                    </binaryMessageEncoding>
-                    <httpTransport manualAddressing="false" maxBufferPoolSize="524288"
-                        maxReceivedMessageSize="2147483647" allowCookies="false" authenticationScheme="Anonymous"
-                        bypassProxyOnLocal="false" hostNameComparisonMode="StrongWildcard"
-                        keepAliveEnabled="true" maxBufferSize="2147483647" proxyAuthenticationScheme="Anonymous"
-                        realm="" transferMode="Buffered" unsafeConnectionNtlmAuthentication="false"
-                        useDefaultWebProxy="true" /> -->
-					<binaryMessageEncoding/>
-					<httpTransport maxReceivedMessageSize="3276800"/>
+                <binding name="CustomBinding_IPhasorDataService" closeTimeout="00:20:00"
+                    openTimeout="00:20:00" receiveTimeout="00:20:00" sendTimeout="00:20:00">
+                    <binaryMessageEncoding />
+                    <httpTransport maxReceivedMessageSize="3276800">
+                        <extendedProtectionPolicy policyEnforcement="Never" />
+                    </httpTransport>
                 </binding>
             </customBinding>
         </bindings>

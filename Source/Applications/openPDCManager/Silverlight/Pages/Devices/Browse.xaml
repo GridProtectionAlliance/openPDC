@@ -29,8 +29,8 @@
                 </Border>
                 <Border Style="{StaticResource HeaderRowBorderStyle}">
                     <StackPanel Orientation="Horizontal" Margin="2">
-                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Acronym" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">                            
+                            <HyperlinkButton Content="Acronym" HorizontalContentAlignment="Center" Width="{StaticResource SmallItemSize}" FontSize="{StaticResource LargeTextSize}" Foreground="#FF000000" FontWeight="Bold" Click="HyperlinkButtonAcronym_Click" />
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Name" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
@@ -39,10 +39,10 @@
                             <TextBlock Text="Concentrator" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Protocol" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <TextBlock Text="Protocol" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Company Name" Width="{StaticResource LargerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <TextBlock Text="Company" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Vendor Device" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
@@ -55,6 +55,9 @@
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Enabled" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">                            
+                            <HyperlinkButton Content="Created On" HorizontalContentAlignment="Center" Width="{StaticResource LargeItemSize}" FontSize="{StaticResource LargeTextSize}" Foreground="#FF000000" FontWeight="Bold" Click="HyperlinkButtonCreatedOn_Click" />
                         </Border>
                         <TextBlock Text="" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </StackPanel>
@@ -76,10 +79,10 @@
                                                 <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=IsConcentrator}" IsEnabled="False" />
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=ProtocolName}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="0"/>
+                                                <TextBlock Text="{Binding Path=ProtocolName}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=CompanyName}" Width="{StaticResource LargerItemSize}" TextAlignment="Left" Padding="0"/>
+                                                <TextBlock Text="{Binding Path=CompanyAcronym}" ToolTipService.ToolTip="{Binding Path=CompanyName}" Width="{StaticResource XSmallItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <TextBlock Text="{Binding Path=VendorDeviceName}" Width="{StaticResource SmallerItemSize}" TextAlignment="Left" Padding="0"/>
@@ -92,6 +95,9 @@
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
                                                 <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Enabled, Mode=TwoWay}" IsEnabled="True" />
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <TextBlock Text="{Binding Path=CreatedOn}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XXSmallItemSize}">
                                                 <StackPanel Orientation="Horizontal">

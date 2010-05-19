@@ -711,21 +711,24 @@ namespace openPDCManager.Web.Data
 			Dictionary<string, int> deviceDistribution = new Dictionary<string, int>();
 			try
 			{
-				IDbCommand command = connection.Connection.CreateCommand();
-				command.CommandType = CommandType.Text;
-				command.CommandText = "Select * From VendorDeviceDistribution WHERE NodeID = @nodeID Order By VendorName";
-				if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
-					command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
-				else
-					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+                if (!string.IsNullOrEmpty(nodeID))
+                {
+                    IDbCommand command = connection.Connection.CreateCommand();
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "Select * From VendorDeviceDistribution WHERE NodeID = @nodeID Order By VendorName";
+                    if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                        command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+                    else
+                        command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 
-				DataTable resultTable = new DataTable();
-				resultTable.Load(command.ExecuteReader());
+                    DataTable resultTable = new DataTable();
+                    resultTable.Load(command.ExecuteReader());
 
-				foreach (DataRow row in resultTable.Rows)
-				{
-					deviceDistribution.Add(row["VendorName"].ToString(), Convert.ToInt32(row["DeviceCount"]));
-				}								
+                    foreach (DataRow row in resultTable.Rows)
+                    {
+                        deviceDistribution.Add(row["VendorName"].ToString(), Convert.ToInt32(row["DeviceCount"]));
+                    }
+                }			
 			}
 			catch (Exception ex)
 			{
@@ -743,54 +746,58 @@ namespace openPDCManager.Web.Data
 		public static List<InterconnectionStatus> GetInterconnectionStatus(string nodeID)
 		{
 			DataConnection connection = new DataConnection();
-			List<InterconnectionStatus> interConnectionStatusList = new List<InterconnectionStatus>();				
-			try
-			{				
-				DataSet resultSet = new DataSet();
-				resultSet.Tables.Add(new DataTable("InterconnectionSummary"));
-				resultSet.Tables.Add(new DataTable("MemberSummary"));
+			List<InterconnectionStatus> interConnectionStatusList = new List<InterconnectionStatus>();
+            try
+            {
+                if (!string.IsNullOrEmpty(nodeID))
+                {
+                    //throw new ArgumentException("Invalid value of NodeID.");
+                    DataSet resultSet = new DataSet();
+                    resultSet.Tables.Add(new DataTable("InterconnectionSummary"));
+                    resultSet.Tables.Add(new DataTable("MemberSummary"));
 
-				IDbCommand command1 = connection.Connection.CreateCommand();
-				command1.CommandType = CommandType.Text;
-				command1.CommandText = "Select InterconnectionName, Count(*) AS DeviceCount From DeviceDetail WHERE NodeID = @nodeID Group By InterconnectionName";
-				if (command1.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
-					command1.Parameters.Add(AddWithValue(command1, "@nodeID", "{" + nodeID + "}"));
-				else
-					command1.Parameters.Add(AddWithValue(command1, "@nodeID", nodeID));
-				resultSet.Tables["InterconnectionSummary"].Load(command1.ExecuteReader());
+                    IDbCommand command1 = connection.Connection.CreateCommand();
+                    command1.CommandType = CommandType.Text;
+                    command1.CommandText = "Select InterconnectionName, Count(*) AS DeviceCount From DeviceDetail WHERE NodeID = @nodeID Group By InterconnectionName";
+                    if (command1.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                        command1.Parameters.Add(AddWithValue(command1, "@nodeID", "{" + nodeID + "}"));
+                    else
+                        command1.Parameters.Add(AddWithValue(command1, "@nodeID", nodeID));
+                    resultSet.Tables["InterconnectionSummary"].Load(command1.ExecuteReader());
 
-				IDbCommand command2 = connection.Connection.CreateCommand();
-				command2.CommandType = CommandType.Text;
-				command2.CommandText = "Select CompanyAcronym, CompanyName, InterconnectionName, Count(*) AS DeviceCount, Sum(MeasuredLines) AS MeasuredLines " +
-										"From DeviceDetail WHERE NodeID = @nodeID Group By CompanyAcronym, CompanyName, InterconnectionName";
-				if (command2.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
-					command2.Parameters.Add(AddWithValue(command2, "@nodeID", "{" + nodeID + "}"));
-				else
-					command2.Parameters.Add(AddWithValue(command2, "@nodeID", nodeID));
-				resultSet.Tables["MemberSummary"].Load(command2.ExecuteReader());
+                    IDbCommand command2 = connection.Connection.CreateCommand();
+                    command2.CommandType = CommandType.Text;
+                    command2.CommandText = "Select CompanyAcronym, CompanyName, InterconnectionName, Count(*) AS DeviceCount, Sum(MeasuredLines) AS MeasuredLines " +
+                                            "From DeviceDetail WHERE NodeID = @nodeID Group By CompanyAcronym, CompanyName, InterconnectionName";
+                    if (command2.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                        command2.Parameters.Add(AddWithValue(command2, "@nodeID", "{" + nodeID + "}"));
+                    else
+                        command2.Parameters.Add(AddWithValue(command2, "@nodeID", nodeID));
+                    resultSet.Tables["MemberSummary"].Load(command2.ExecuteReader());
 
-				interConnectionStatusList = (from item in resultSet.Tables["InterconnectionSummary"].AsEnumerable()
-											 select new InterconnectionStatus()
-											 {
-												 InterConnection = item.Field<string>("InterconnectionName"),
-												 TotalDevices = "Total " + item.Field<object>("DeviceCount").ToString() + " Devices",
-												 MemberStatusList = (from cs in resultSet.Tables["MemberSummary"].AsEnumerable()
-																	 where cs.Field<string>("InterconnectionName") == item.Field<string>("InterconnectionName")
-																	 select new MemberStatus()
-																	 {
-																		 CompanyAcronym = cs.Field<string>("CompanyAcronym"),
-																		 CompanyName = cs.Field<string>("CompanyName"),
-																		 MeasuredLines = Convert.ToInt32(cs.Field<object>("MeasuredLines")),
-																		 TotalDevices = Convert.ToInt32(cs.Field<object>("DeviceCount"))
-																	 }).ToList()
-											 }).ToList();								
-			}
-			catch (Exception ex)
-			{
-				LogException("GetInterconnectionStatus", ex);
-				//CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Get Interconnection Status", SystemMessage = ex.Message };
-				//throw new FaultException<CustomServiceFault>(fault);
-			}
+                    interConnectionStatusList = (from item in resultSet.Tables["InterconnectionSummary"].AsEnumerable()
+                                                 select new InterconnectionStatus()
+                                                 {
+                                                     InterConnection = item.Field<string>("InterconnectionName"),
+                                                     TotalDevices = "Total " + item.Field<object>("DeviceCount").ToString() + " Devices",
+                                                     MemberStatusList = (from cs in resultSet.Tables["MemberSummary"].AsEnumerable()
+                                                                         where cs.Field<string>("InterconnectionName") == item.Field<string>("InterconnectionName")
+                                                                         select new MemberStatus()
+                                                                         {
+                                                                             CompanyAcronym = cs.Field<string>("CompanyAcronym"),
+                                                                             CompanyName = cs.Field<string>("CompanyName"),
+                                                                             MeasuredLines = Convert.ToInt32(cs.Field<object>("MeasuredLines")),
+                                                                             TotalDevices = Convert.ToInt32(cs.Field<object>("DeviceCount"))
+                                                                         }).ToList()
+                                                 }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException("GetInterconnectionStatus", ex);
+                //CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Get Interconnection Status", SystemMessage = ex.Message };
+                //throw new FaultException<CustomServiceFault>(fault);
+            }
 			finally
 			{
 				connection.Dispose();
@@ -2312,10 +2319,10 @@ namespace openPDCManager.Web.Data
 				IDbCommand command = connection.Connection.CreateCommand();
 				command.CommandType = CommandType.Text;
 				if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
-					command.CommandText = "Select * From DeviceDetail Order By LoadOrder";
+					command.CommandText = "Select * From DeviceDetail Order By Acronym, CreatedOn";
 				else
 				{
-					command.CommandText = "Select * From DeviceDetail Where NodeID = @nodeID Order By LoadOrder";
+					command.CommandText = "Select * From DeviceDetail Where NodeID = @nodeID Order By Acronym, CreatedOn";
 					//command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 					if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
 						command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
@@ -2350,6 +2357,7 @@ namespace openPDCManager.Web.Data
 								  MeasuredLines = item.Field<int?>("MeasuredLines"),
 								  LoadOrder = item.Field<int>("LoadOrder"),
 								  Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+                                  CreatedOn = item.Field<DateTime>("CreatedOn"),
 								  CompanyName = item.Field<string>("CompanyName"),
 								  CompanyAcronym = item.Field<string>("CompanyAcronym"),
 								  HistorianAcronym = item.Field<string>("HistorianAcronym"),
@@ -2584,49 +2592,54 @@ namespace openPDCManager.Web.Data
 		public static Dictionary<int, string> GetDevices(DeviceType deviceType, string nodeID, bool isOptional)
 		{
 			DataConnection connection = new DataConnection();
-			try
-			{
-				Dictionary<int, string> deviceList = new Dictionary<int, string>();
-				if (isOptional)
-					deviceList.Add(0, "Select Device");
+            try
+            {
+                Dictionary<int, string> deviceList = new Dictionary<int, string>();
+                if (!string.IsNullOrEmpty(nodeID))
+                {
+                    //throw new ArgumentException("Invalid value of NodeID.");
+                   
+                    if (isOptional)
+                        deviceList.Add(0, "Select Device");
 
-				IDbCommand command = connection.Connection.CreateCommand();
-				command.CommandType = CommandType.Text;
-				if (deviceType == DeviceType.Concentrator)
-				{
-					command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator AND NodeID = @nodeID Order By LoadOrder";
-					command.Parameters.Add(AddWithValue(command, "@isConcentrator", true));
-				}
-				else if (deviceType == DeviceType.NonConcentrator)
-				{
-					command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator AND NodeID = @nodeID Order By LoadOrder";
-					command.Parameters.Add(AddWithValue(command, "@isConcentrator", false));
-				}
-				else
-					command.CommandText = "Select ID, Acronym From Device Where NodeID = @nodeID Order By LoadOrder";
+                    IDbCommand command = connection.Connection.CreateCommand();
+                    command.CommandType = CommandType.Text;
+                    if (deviceType == DeviceType.Concentrator)
+                    {
+                        command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator AND NodeID = @nodeID Order By LoadOrder";
+                        command.Parameters.Add(AddWithValue(command, "@isConcentrator", true));
+                    }
+                    else if (deviceType == DeviceType.NonConcentrator)
+                    {
+                        command.CommandText = "Select ID, Acronym From Device Where IsConcentrator = @isConcentrator AND NodeID = @nodeID Order By LoadOrder";
+                        command.Parameters.Add(AddWithValue(command, "@isConcentrator", false));
+                    }
+                    else
+                        command.CommandText = "Select ID, Acronym From Device Where NodeID = @nodeID Order By LoadOrder";
 
 
-				if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
-					command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
-				else
-					command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
+                    if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                        command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
+                    else
+                        command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 
-				DataTable resultTable = new DataTable();
-				resultTable.Load(command.ExecuteReader());
+                    DataTable resultTable = new DataTable();
+                    resultTable.Load(command.ExecuteReader());
 
-				foreach (DataRow row in resultTable.Rows)
-				{
-					if (!deviceList.ContainsKey(Convert.ToInt32(row["ID"])))
-						deviceList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
-				}
-				return deviceList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetDevices", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Devices", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+                    foreach (DataRow row in resultTable.Rows)
+                    {
+                        if (!deviceList.ContainsKey(Convert.ToInt32(row["ID"])))
+                            deviceList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
+                    }                    
+                }
+                return deviceList;
+            }
+            catch (Exception ex)
+            {
+                LogException("GetDevices", ex);
+                CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Devices", SystemMessage = ex.Message };
+                throw new FaultException<CustomServiceFault>(fault);
+            }
 			finally
 			{
 				connection.Dispose();

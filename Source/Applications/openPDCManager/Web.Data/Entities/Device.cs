@@ -259,6 +259,7 @@ namespace openPDCManager.Web.Data.Entities
 		public int? MeasuredLines { get; set; }
 		public int LoadOrder { get; set; }
 		public bool Enabled { get; set; }
+        public DateTime CreatedOn { get; set; }
 		public string CompanyName { get; set; }
 		public string CompanyAcronym { get; set; }
 		public string HistorianAcronym { get; set; }
@@ -267,7 +268,7 @@ namespace openPDCManager.Web.Data.Entities
 		public string ProtocolName { get; set; }
 		public string InterconnectionName { get; set; }
 		public string NodeName { get; set; }
-		public string ParentAcronym { get; set; }
+		public string ParentAcronym { get; set; }        
 	}
 
 	public enum DeviceType
