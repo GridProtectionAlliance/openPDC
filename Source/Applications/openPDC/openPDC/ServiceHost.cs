@@ -776,6 +776,37 @@ namespace openPDC
             return configuration;
         }
 
+        // Create newly defined adapters and remove adapters that are no longer present in the adapter collection configurations
+        private void UpdateAdapterCollectionConfigurations()
+        {
+            foreach (IAdapterCollection adapterCollection in m_allAdapters)
+            {
+                string dataMember = adapterCollection.DataMember;
+
+                if (m_configuration.Tables.Contains(dataMember))
+                {
+                    // Remove adapters that are no longer present in the configuration
+                    for (int i = adapterCollection.Count - 1; i >= 0; i--)
+                    {
+                        IAdapter adapter = adapterCollection[i];
+                        DataRow[] adapterRows = m_configuration.Tables[dataMember].Select(string.Format("ID = {0}", adapter.ID));
+
+                        if (adapterRows.Length == 0 && adapter.ID != 0)
+                            adapterCollection.Remove(adapter);
+                    }
+
+                    // Create newly defined adapters
+                    foreach (DataRow adapterRow in m_configuration.Tables[dataMember].Rows)
+                    {
+                        IAdapter adapter;
+
+                        if (!adapterCollection.TryGetAdapterByID(uint.Parse(adapterRow["ID"].ToNonNullString("0")), out adapter) && adapterCollection.TryCreateAdapter(adapterRow, out adapter))
+                            adapterCollection.Add(adapter);
+                    }
+                }
+            }
+        }
+
         // Cache the current system configuration so it can be used if primary configuration source is unavailable
         private void CacheCurrentConfiguration(DataSet configuration)
         {
@@ -1551,10 +1582,13 @@ namespace openPDC
             }
             else
             {
-                if (LoadSystemConfiguration())
-                    SendResponse(requestInfo, true, "System configuration was successfully reloaded.");
-                else
+                if (!LoadSystemConfiguration())
                     SendResponse(requestInfo, false, "System configuration failed to reload.");
+                else
+                {
+                    UpdateAdapterCollectionConfigurations();
+                    SendResponse(requestInfo, true, "System configuration was successfully reloaded.");
+                }
             }
         }
 
