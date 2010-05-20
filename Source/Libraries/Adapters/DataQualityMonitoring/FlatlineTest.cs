@@ -239,6 +239,7 @@ using DataQualityMonitoring.Services;
 using TVA;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
+using System.Data;
 
 namespace DataQualityMonitoring
 {
@@ -300,6 +301,8 @@ namespace DataQualityMonitoring
             m_flatlineService.SettingsCategory = base.Name + m_flatlineService.SettingsCategory;
             m_flatlineService.ServiceProcessException += m_flatlineService_ServiceProcessException;
             m_flatlineService.Initialize();
+
+            InitializeLastChange();
         }
 
         /// <summary>
@@ -391,6 +394,34 @@ namespace DataQualityMonitoring
                     m_disposed = true;          // Prevent duplicate dispose.
                     base.Dispose(disposing);    // Call base class Dispose().
                 }
+            }
+        }
+
+        // Initialize m_lastChange with dummy measurements so the adapter
+        // can detect measurements that have never been published
+        private void InitializeLastChange()
+        {
+            Ticks timestamp = base.RealTime;
+
+            foreach (MeasurementKey key in InputMeasurementKeys)
+            {
+                // Try to find the signal ID and add the measurement to the m_lastChange collection
+                if (DataSource.Tables.Contains("ActiveMeasurements"))
+                {
+                    DataRow[] measurementRows = DataSource.Tables["ActiveMeasurements"].Select(string.Format("Source = {0}", key.ToString()));
+
+                    if (measurementRows.Length > 0)
+                    {
+                        string signalID = measurementRows[0]["SignalID"].ToNonNullString();
+
+                        if (signalID != "")
+                            m_lastChange.Add(key, new Measurement(key.ID, key.Source, new Guid(signalID), double.NaN, 0.0, 1.0, timestamp));
+                    }
+                }
+
+                // If the signal ID could not be found, add the measurement without it
+                if (!m_lastChange.ContainsKey(key))
+                    m_lastChange.Add(key, new Measurement(key.ID, key.Source, double.NaN, timestamp));
             }
         }
 
