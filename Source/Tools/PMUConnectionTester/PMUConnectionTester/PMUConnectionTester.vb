@@ -280,30 +280,6 @@ Public Class PMUConnectionTester
         ExtraParameters
     End Enum
 
-    ' Interface thread delegate signatures
-    Private Delegate Sub ReceivedFrameBufferImageFunctionSignature(ByVal frameType As FundamentalFrameType, ByVal binaryImage() As Byte, ByVal offset As Integer, ByVal length As Integer)
-    Private Delegate Sub ReceivedConfigFrameFunctionSignature(ByVal frame As IConfigurationFrame)
-    Private Delegate Sub ReceivedDataFrameFunctionSignature(ByVal frame As IDataFrame)
-    Private Delegate Sub ReceivedHeaderFrameFunctionSignature(ByVal frame As IHeaderFrame)
-    Private Delegate Sub ReceivedCommandFrameFunctionSignature(ByVal frame As ICommandFrame)
-    Private Delegate Sub ReceivedUndeterminedFrameFunctionSignature(ByVal frame As IChannelFrame)
-    Private Delegate Sub DataStreamExceptionFunctionSignature(ByVal ex As Exception)
-    Private Delegate Sub ConnectionExceptionFunctionSignature(ByVal ex As Exception, ByVal connectionAttempts As Integer)
-    Private Delegate Sub LookupAssociatedChannelNodeFunctionSignature(ByVal associatedKey As String)
-    Private Delegate Sub LoadConnectionSettingsFunctionSignature(ByVal filename As String)
-
-    ' Interface thread delegates
-    Private m_receivedFrameBufferImageFunction As ReceivedFrameBufferImageFunctionSignature
-    Private m_receivedConfigFrameFunction As ReceivedConfigFrameFunctionSignature
-    Private m_receivedDataFrameFunction As ReceivedDataFrameFunctionSignature
-    Private m_receivedHeaderFrameFunction As ReceivedHeaderFrameFunctionSignature
-    Private m_receivedCommandFrameFunction As ReceivedCommandFrameFunctionSignature
-    Private m_receivedUndeterminedFrameFunction As ReceivedUndeterminedFrameFunctionSignature
-    Private m_dataStreamExceptionFunction As DataStreamExceptionFunctionSignature
-    Private m_connectionExceptionFunction As ConnectionExceptionFunctionSignature
-    Private m_lookupAssociatedChannelNodeFunction As LookupAssociatedChannelNodeFunctionSignature
-    Private m_loadConnectionSettingsFunction As LoadConnectionSettingsFunctionSignature
-
     ' Phasor parsing variables
     Private WithEvents m_frameParser As MultiProtocolFrameParser
     Private m_configurationFrame As IConfigurationFrame
@@ -376,18 +352,6 @@ Public Class PMUConnectionTester
             File.Copy(GetAbsolutePath("LastRun.PmuConnection"), m_lastConnectionFileName)
         End If
 
-        ' Intialize interface thread delegates
-        m_receivedFrameBufferImageFunction = New ReceivedFrameBufferImageFunctionSignature(AddressOf ReceivedFrameBufferImage)
-        m_receivedConfigFrameFunction = New ReceivedConfigFrameFunctionSignature(AddressOf ReceivedConfigFrame)
-        m_receivedDataFrameFunction = New ReceivedDataFrameFunctionSignature(AddressOf ReceivedDataFrame)
-        m_receivedHeaderFrameFunction = New ReceivedHeaderFrameFunctionSignature(AddressOf ReceivedHeaderFrame)
-        m_receivedCommandFrameFunction = New ReceivedCommandFrameFunctionSignature(AddressOf ReceivedCommandFrame)
-        m_receivedUndeterminedFrameFunction = New ReceivedUndeterminedFrameFunctionSignature(AddressOf ReceivedUndeterminedFrame)
-        m_dataStreamExceptionFunction = New DataStreamExceptionFunctionSignature(AddressOf DataStreamException)
-        m_connectionExceptionFunction = New ConnectionExceptionFunctionSignature(AddressOf ConnectionException)
-        m_lookupAssociatedChannelNodeFunction = New LookupAssociatedChannelNodeFunctionSignature(AddressOf LookupAssociatedChannelNode)
-        m_loadConnectionSettingsFunction = New LoadConnectionSettingsFunctionSignature(AddressOf LoadConnectionSettings)
-
         With EntryAssembly.Version
             LabelVersion.Text = "Version " & .Major & "." & .Minor & "." & .Build & "." & .Revision
         End With
@@ -434,12 +398,15 @@ Public Class PMUConnectionTester
             ' First address family in addresslist for loopback will determine default IP stack
             If Dns.GetHostEntry(IPAddress.Loopback).AddressList(0).AddressFamily = Sockets.AddressFamily.InterNetworkV6 Then
                 m_ipStackIsIPv6 = True
+                LabelDefaultIPStack.Text = "Default IP Stack: IPv6"
             Else
                 m_ipStackIsIPv6 = False
+                LabelDefaultIPStack.Text = "Default IP Stack: IPv4"
             End If
         Catch
             ' Default to IPv4
             m_ipStackIsIPv6 = False
+            LabelDefaultIPStack.Text = "Default IP Stack: IPv4"
         End Try
 
         ' Setup IP mode
@@ -503,6 +470,21 @@ Public Class PMUConnectionTester
 
     End Sub
 
+    Private Sub PMUConnectionTester_Shown(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Shown
+
+        TimerDelay.Start()
+
+    End Sub
+
+    Private Sub TimerDelay_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TimerDelay.Tick
+
+        ' We show the default IP stack label on startup only after a momentary pause - this prevents the visual side effect
+        ' of having the label's grey backgound stand out over a temporary white background
+        LabelDefaultIPStack.Visible = GroupBoxConnection.Expanded
+        TimerDelay.Stop()
+
+    End Sub
+
     Private Sub PMUConnectionTester_DragEnter(ByVal sender As Object, ByVal e As System.Windows.Forms.DragEventArgs) Handles Me.DragEnter
 
         ' We allow file drops from explorer onto connection tester
@@ -527,7 +509,7 @@ Public Class PMUConnectionTester
                     If Path.GetExtension(fileName).ToLower().Trim() = ".pmuconnection" Then
                         ' Deserializing connection settings may take a moment and explorer thread will be pending,
                         ' so we queue load operation on the form's invocation queue
-                        Me.BeginInvoke(m_loadConnectionSettingsFunction, fileName)
+                        Me.BeginInvoke(New Action(Of String)(AddressOf LoadConnectionSettings), fileName)
                     Else
                         ' All other files are assumed to be a capture file
                         TextBoxFileCaptureName.Text = fileName
@@ -1182,6 +1164,8 @@ Public Class PMUConnectionTester
             GroupBoxHeaderFrame.Top += GroupBoxPanelConnection.Height
         End If
 
+        LabelDefaultIPStack.Visible = Not GroupBoxConnection.Expanded
+
     End Sub
 
     Private Sub GroupBoxHeaderFrame_ExpandedStateChanging(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles GroupBoxHeaderFrame.ExpandedStateChanging
@@ -1223,62 +1207,62 @@ Public Class PMUConnectionTester
     ' These functions are invoked from a separate threads, so you must use the "Invoke" method so you can safely manipulate visual control elements
     Private Sub m_frameParser_ReceivedFrameBufferImage(ByVal sender As Object, ByVal e As EventArgs(Of FundamentalFrameType, Byte(), Integer, Integer)) Handles m_frameParser.ReceivedFrameBufferImage
 
-        BeginInvoke(m_receivedFrameBufferImageFunction, e.Argument1, e.Argument2, e.Argument3, e.Argument4)
+        BeginInvoke(New Action(Of FundamentalFrameType, Byte(), Integer, Integer)(AddressOf ReceivedFrameBufferImage), e.Argument1, e.Argument2, e.Argument3, e.Argument4)
 
     End Sub
 
     Private Sub m_frameParser_ReceivedConfigurationFrame(ByVal sender As Object, ByVal e As EventArgs(Of IConfigurationFrame)) Handles m_frameParser.ReceivedConfigurationFrame
 
-        BeginInvoke(m_receivedConfigFrameFunction, e.Argument)
+        BeginInvoke(New Action(Of IConfigurationFrame)(AddressOf ReceivedConfigFrame), e.Argument)
 
     End Sub
 
     Private Sub m_frameParser_ReceivedDataFrame(ByVal sender As Object, ByVal e As EventArgs(Of IDataFrame)) Handles m_frameParser.ReceivedDataFrame
 
-        BeginInvoke(m_receivedDataFrameFunction, e.Argument)
+        BeginInvoke(New Action(Of IDataFrame)(AddressOf ReceivedDataFrame), e.Argument)
 
     End Sub
 
     Private Sub m_frameParser_ReceivedHeaderFrame(ByVal sender As Object, ByVal e As EventArgs(Of IHeaderFrame)) Handles m_frameParser.ReceivedHeaderFrame
 
-        BeginInvoke(m_receivedHeaderFrameFunction, e.Argument)
+        BeginInvoke(New Action(Of IHeaderFrame)(AddressOf ReceivedHeaderFrame), e.Argument)
 
     End Sub
 
     Private Sub m_frameParser_ReceivedCommandFrame(ByVal sender As Object, ByVal e As EventArgs(Of ICommandFrame)) Handles m_frameParser.ReceivedCommandFrame, m_frameParser.SentCommandFrame
 
         ' Note we use the same function to handle both sent and received command frames...
-        BeginInvoke(m_receivedCommandFrameFunction, e.Argument)
+        BeginInvoke(New Action(Of ICommandFrame)(AddressOf ReceivedCommandFrame), e.Argument)
 
     End Sub
 
     Private Sub m_frameParser_ReceivedUndeterminedFrame(ByVal sender As Object, ByVal e As EventArgs(Of IChannelFrame)) Handles m_frameParser.ReceivedUndeterminedFrame
 
-        BeginInvoke(m_receivedUndeterminedFrameFunction, e.Argument)
+        BeginInvoke(New Action(Of IChannelFrame)(AddressOf ReceivedUndeterminedFrame), e.Argument)
 
     End Sub
 
     Private Sub m_frameParser_DataStreamException(ByVal sender As Object, ByVal e As EventArgs(Of System.Exception)) Handles m_frameParser.ParsingException
 
-        BeginInvoke(m_dataStreamExceptionFunction, e.Argument)
+        BeginInvoke(New Action(Of Exception)(AddressOf DataStreamException), e.Argument)
 
     End Sub
 
     Private Sub m_frameParser_ConfigurationChanged() Handles m_frameParser.ConfigurationChanged
 
-        BeginInvoke(New CrossAppDomainDelegate(AddressOf ConfigurationChanged))
+        BeginInvoke(New Action(AddressOf ConfigurationChanged))
 
     End Sub
 
     Private Sub m_frameParser_Connected() Handles m_frameParser.ConnectionEstablished
 
-        BeginInvoke(New CrossAppDomainDelegate(AddressOf Connected))
+        BeginInvoke(New Action(AddressOf Connected))
 
     End Sub
 
     Private Sub m_frameParser_ConnectionException(ByVal sender As Object, ByVal e As EventArgs(Of System.Exception, Integer)) Handles m_frameParser.ConnectionException
 
-        BeginInvoke(m_connectionExceptionFunction, e.Argument1, e.Argument2)
+        BeginInvoke(New Action(Of Exception, Integer)(AddressOf ConnectionException), e.Argument1, e.Argument2)
 
     End Sub
 
@@ -1290,25 +1274,25 @@ Public Class PMUConnectionTester
 
     Private Sub m_frameParser_Disconnected() Handles m_frameParser.ConnectionTerminated
 
-        BeginInvoke(New CrossAppDomainDelegate(AddressOf Disconnected))
+        BeginInvoke(New Action(AddressOf Disconnected))
 
     End Sub
 
     Private Sub m_frameParser_ServerStarted() Handles m_frameParser.ServerStarted
 
-        BeginInvoke(New CrossAppDomainDelegate(AddressOf ServerStarted))
+        BeginInvoke(New Action(AddressOf ServerStarted))
 
     End Sub
 
     Private Sub m_frameParser_ServerStopped() Handles m_frameParser.ServerStopped
 
-        BeginInvoke(New CrossAppDomainDelegate(AddressOf ServerStopped))
+        BeginInvoke(New Action(AddressOf ServerStopped))
 
     End Sub
 
     Private Sub m_chartSettings_PhaseAngleColorsChanged() Handles m_applicationSettings.PhaseAngleColorsChanged
 
-        BeginInvoke(New CrossAppDomainDelegate(AddressOf PhaseAngleColorsChanged))
+        BeginInvoke(New Action(AddressOf PhaseAngleColorsChanged))
 
     End Sub
 
@@ -2601,7 +2585,7 @@ Public Class PMUConnectionTester
     Private Sub LookupAssociatedChannelNode(ByVal state As Object)
 
         ' UI work must be invoked on UI thread
-        BeginInvoke(m_lookupAssociatedChannelNodeFunction, state)
+        BeginInvoke(New Action(Of String)(AddressOf LookupAssociatedChannelNode), state)
 
     End Sub
 

@@ -16,7 +16,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyConfiguration("Release Build")>
 #End If
 <Assembly: AssemblyTitle("PMU Connection Tester")> 
-<Assembly: AssemblyDescription("openPDC PMU connection tester")> 
+<Assembly: AssemblyDescription("openPDC PMU Connection Tester")> 
 
 ' Other configuration attributes.
 <Assembly: ComVisible(False)> 
