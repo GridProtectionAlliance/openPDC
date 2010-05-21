@@ -237,18 +237,26 @@ namespace openPDCManager.Silverlight.Converters
 {
 	public class BooleanToColorConverter : IValueConverter
 	{
-
 		#region IValueConverter Members
 
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			SolidColorBrush scBrush = new SolidColorBrush();            
-			
-			if ((bool) value)
-				scBrush.Color = Color.FromArgb(255, 10, 255, 25);
-			else
-				scBrush.Color = Color.FromArgb(255, 255, 10, 10);
+			SolidColorBrush scBrush = new SolidColorBrush();
 
+            if (parameter == null)  //if parameter is not supplied then we will return standard red and green color
+            {
+                if ((bool)value)
+                    scBrush.Color = Color.FromArgb(255, 10, 255, 25);
+                else
+                    scBrush.Color = Color.FromArgb(255, 255, 10, 10);
+            }
+            else
+            {
+                if ((bool)value)
+                    scBrush.Color = Color.FromArgb(00, 255, 255, 255);  //Transparent color
+                else
+                    scBrush.Color = Color.FromArgb(155, 10, 255, 25);
+            }
 			return scBrush as Brush;
 		}
 

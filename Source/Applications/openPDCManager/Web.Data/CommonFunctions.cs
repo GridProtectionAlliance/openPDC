@@ -420,6 +420,7 @@ namespace openPDCManager.Web.Data
 												AnalogCount = cell.AnalogDefinitions.Count(),
 												AddDigitals = false,
 												AddAnalogs = false,
+                                                IsNew = GetDeviceByAcronym(cell.StationName.Replace(" ", "").ToUpper()) == null ? true : false,
 												PhasorList = (from phasor in cell.PhasorDefinitions
 															  select new PhasorInfo()
 															  {
@@ -2747,7 +2748,8 @@ namespace openPDCManager.Web.Data
 			DataConnection connection = new DataConnection();
 			try
 			{
-                string deviceAcronym = GetDeviceByDeviceID(deviceID).Acronym;
+                Device device = GetDeviceByDeviceID(deviceID);
+                string deviceAcronym = device.Acronym;
 				IDbCommand command = connection.Connection.CreateCommand();
 				command.CommandType = CommandType.Text;
 				command.CommandText = "Delete From Device Where ID = @id";
@@ -2758,8 +2760,13 @@ namespace openPDCManager.Web.Data
                 {
                     command = connection.Connection.CreateCommand();
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "Delete From OutputStreamDevice Where Acronym = @acronym";
+                    //we will delete device from output stream if a device is in the same node.
+                    command.CommandText = "Delete From OutputStreamDevice Where Acronym = @acronym AND NodeID = @nodeID";
                     command.Parameters.Add(AddWithValue(command, "@acronym", deviceAcronym));
+                    if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                        command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + device.NodeID + "}"));
+                    else
+                        command.Parameters.Add(AddWithValue(command, "@nodeID", device.NodeID));
                     command.ExecuteNonQuery();
                 }
 

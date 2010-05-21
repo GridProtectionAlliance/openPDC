@@ -250,6 +250,7 @@ namespace openPDCManager.Web.Data.BusinessObjects
 		public int AnalogCount { get; set; }
 		public bool AddDigitals { get; set; }
 		public bool AddAnalogs { get; set; }
+        public bool IsNew { get; set; }
 		public List<PhasorInfo> PhasorList {get; set;}
 	}
 

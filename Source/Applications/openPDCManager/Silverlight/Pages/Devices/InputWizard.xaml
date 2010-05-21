@@ -183,7 +183,10 @@
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Vertical">
-                                                        <StackPanel Orientation="Horizontal">
+                                                        <StackPanel.Resources>
+                                                            <converter:BooleanToColorConverter x:Key="booleanToColorConverter" />
+                                                        </StackPanel.Resources>
+                                                        <StackPanel Orientation="Horizontal" Background="{Binding Path=IsNew, Converter={StaticResource booleanToColorConverter}, ConverterParameter=IsNewDevice}">
                                                             <StackPanel.Resources>
                                                                 <converter:StringToDictionaryConverter x:Key="stringToDictionaryConverter" />
                                                             </StackPanel.Resources>

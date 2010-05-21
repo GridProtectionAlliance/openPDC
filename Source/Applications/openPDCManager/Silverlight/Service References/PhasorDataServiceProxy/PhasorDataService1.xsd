@@ -18,6 +18,7 @@
       <xs:element minOccurs="0" name="AnalogCount" type="xs:int" />
       <xs:element minOccurs="0" name="DigitalCount" type="xs:int" />
       <xs:element minOccurs="0" name="Include" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
       <xs:element minOccurs="0" name="Latitude" type="xs:decimal" />
       <xs:element minOccurs="0" name="Longitude" type="xs:decimal" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />

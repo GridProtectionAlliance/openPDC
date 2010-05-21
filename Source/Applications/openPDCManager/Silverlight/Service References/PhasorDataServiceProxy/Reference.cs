@@ -34,6 +34,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private bool IncludeField;
         
+        private bool IsNewField;
+        
         private decimal LatitudeField;
         
         private decimal LongitudeField;
@@ -133,6 +135,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((this.IncludeField.Equals(value) != true)) {
                     this.IncludeField = value;
                     this.RaisePropertyChanged("Include");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsNew {
+            get {
+                return this.IsNewField;
+            }
+            set {
+                if ((this.IsNewField.Equals(value) != true)) {
+                    this.IsNewField = value;
+                    this.RaisePropertyChanged("IsNew");
                 }
             }
         }
