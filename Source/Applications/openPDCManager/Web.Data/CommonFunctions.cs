@@ -2747,11 +2747,21 @@ namespace openPDCManager.Web.Data
 			DataConnection connection = new DataConnection();
 			try
 			{
+                string deviceAcronym = GetDeviceByDeviceID(deviceID).Acronym;
 				IDbCommand command = connection.Connection.CreateCommand();
 				command.CommandType = CommandType.Text;
 				command.CommandText = "Delete From Device Where ID = @id";
 				command.Parameters.Add(AddWithValue(command, "@id", deviceID));
 				command.ExecuteNonQuery();
+
+                if (!string.IsNullOrEmpty(deviceAcronym))
+                {
+                    command = connection.Connection.CreateCommand();
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "Delete From OutputStreamDevice Where Acronym = @acronym";
+                    command.Parameters.Add(AddWithValue(command, "@acronym", deviceAcronym));
+                    command.ExecuteNonQuery();
+                }
 
 				return "Device Deleted Successfully";
 			}
