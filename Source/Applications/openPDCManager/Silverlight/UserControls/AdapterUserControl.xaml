@@ -20,17 +20,29 @@
                     <ColumnDefinition Width="3*" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Adapter Name" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
+                    <TextBlock Text="Adapter Name" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                </StackPanel>
                 <TextBox x:Name="TextBoxAdapterName" Grid.Row="0" Grid.Column="1" Text="{Binding Path=AdapterName}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                <TextBlock Grid.Row="0" Grid.Column="2" Text="Node" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="Node" Style="{StaticResource GenericLabelStyle}"/>
                 <ComboBox x:Name="ComboboxNode" Grid.Row="0" Grid.Column="3" Margin="5" DisplayMemberPath="Value"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Assembly Name" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+                    <TextBlock Text="Assembly Name" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                </StackPanel>
                 <TextBox x:Name="TextBoxAssemblyName" Grid.Row="1" Grid.Column="1" Text="{Binding Path=AssemblyName}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                <TextBlock Grid.Row="1" Grid.Column="2" Text="Type Name" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2">
+                    <TextBlock Text="Type Name" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                </StackPanel>
                 <TextBox x:Name="TextBoxTypeName" Grid.Row="1" Grid.Column="3" Text="{Binding Path=TypeName}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Connection String" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Connection String" Style="{StaticResource GenericLabelStyle}"/>
                 <TextBox x:Name="TextBoxConnectionString" Grid.Row="2" Grid.Column="1" Text="{Binding Path=ConnectionString}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                <TextBlock Grid.Row="2" Grid.Column="2" Text="Load Order" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2">
+                    <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />                
+                </StackPanel>
                 <TextBox x:Name="TextBoxLoadOrder" Grid.Row="2" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                 <CheckBox x:Name="CheckboxEnabled" Grid.Row="3" Grid.Column="3" IsChecked="{Binding Path=Enabled}" Content="Enabled" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                 <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">

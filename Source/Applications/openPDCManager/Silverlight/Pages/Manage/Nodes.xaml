@@ -30,27 +30,32 @@
                             <ColumnDefinition Width="3*" />
                         </Grid.ColumnDefinitions>
                         
-                        <TextBlock Text="Node ID" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Text="Node ID" Grid.Column="0" Grid.Row="0" Style="{StaticResource GenericLabelStyle}" Foreground="#FF666666"/>
                         <TextBox x:Name="TextBoxNodeID" IsReadOnly="True" Text="{Binding Path=ID}" Grid.Column="1" Grid.Row="0" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Name" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+                            <TextBlock Text="Name" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
                         <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Company" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Company" Style="{StaticResource GenericLabelStyle}"/>
                         <ComboBox x:Name="ComboBoxCompany" Grid.Row="1" Grid.Column="3" Margin="5" DisplayMemberPath="Value"/>
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Longitude" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Longitude" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBox x:Name="TextBoxLongitude" Grid.Row="2" Grid.Column="1" Text="{Binding Path=Longitude}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="2" Grid.Column="2" Text="Latitude" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="Latitude" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBox x:Name="TextBoxLatitude" Grid.Row="2" Grid.Column="3" Text="{Binding Path=Latitude}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Description" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Description" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBox x:Name="TextBoxDescription" Grid.Row="3" Grid.Column="1" Text="{Binding Path=Description}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="3" Grid.Column="2" Text="Image" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="3" Grid.Column="2" Text="Image" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBox x:Name="TextBoxImage" Grid.Row="3" Grid.Column="3" Text="{Binding Path=Image}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />                      
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Time Series Data Service URL" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Time Series Data Service URL" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBox x:Name="TextBoxTimeSeriesDataServiceUrl" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Path=TimeSeriesDataServiceUrl}" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Remote Status Service URL" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Remote Status Service URL" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBox x:Name="TextBoxRemoteStatusServiceUrl" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Path=RemoteStatusServiceUrl}" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Load Order" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                        <TextBox x:Name="TextBoxLoadOrder" Grid.Row="6" Grid.Column="1" Text="{Binding Path=LoadOrder}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />                        
+                        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="0">
+                            <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
+                        <TextBox x:Name="TextBoxLoadOrder" Grid.Row="6" Grid.Column="1" Text="{Binding Path=LoadOrder}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />                                                
                         <CheckBox x:Name="CheckboxMaster" Content="Master" IsChecked="{Binding Master}" Grid.Row="6" Grid.Column="2" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                         <CheckBox x:Name="CheckboxEnabled" Content="Enabled" IsChecked="{Binding Enabled}" Grid.Row="6" Grid.Column="3" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>                        
                         <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">

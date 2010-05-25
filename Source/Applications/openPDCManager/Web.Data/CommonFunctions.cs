@@ -2320,10 +2320,10 @@ namespace openPDCManager.Web.Data
 				IDbCommand command = connection.Connection.CreateCommand();
 				command.CommandType = CommandType.Text;
 				if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
-					command.CommandText = "Select * From DeviceDetail Order By Acronym, CreatedOn";
+					command.CommandText = "Select * From DeviceDetail Order By Acronym";
 				else
 				{
-					command.CommandText = "Select * From DeviceDetail Where NodeID = @nodeID Order By Acronym, CreatedOn";
+					command.CommandText = "Select * From DeviceDetail Where NodeID = @nodeID Order By Acronym";
 					//command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
 					if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
 						command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));

@@ -315,6 +315,12 @@
                 <Setter Property="BorderThickness" Value="0,0,1,1"/>
                 <Setter Property="BorderBrush" Value="#FFDDDDDD"/>
             </Style>
+            <Style x:Key="GenericLabelStyle" TargetType="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Margin" Value="5" />                
+            </Style>
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/ResourceMenuItemStyle.xaml" ></ResourceDictionary>

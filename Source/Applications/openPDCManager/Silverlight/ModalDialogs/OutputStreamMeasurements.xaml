@@ -22,15 +22,18 @@
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Source Measurement" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Source Measurement" Style="{StaticResource GenericLabelStyle}"/>
                         <Button Grid.Row="0" Grid.Column="1" Content="..." x:Name="ButtonSourceMeasurement" Margin="5" Width="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left"/>                        
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Historian" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Historian" Style="{StaticResource GenericLabelStyle}"/>                        
                         <TextBlock x:Name="TextBlockHistorian" Grid.Row="1" Grid.Column="1" Text="{Binding Path=HistorianAcronym}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>
-                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Point ID" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Point ID" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock x:Name="TextBlockPointID" Grid.Row="1" Grid.Column="3" Text="{Binding Path=PointID}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>                        
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Signal Reference" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0">
+                            <TextBlock Text="Signal Reference" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
                         <TextBox x:Name="TextBoxSignalReference" Grid.Row="2" Grid.Column="1" Text="{Binding Path=SignalReference}" Width="{StaticResource LargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />                        
-                        <TextBlock Grid.Row="2" Grid.Column="2" Text="Source PointTag" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="Source PointTag" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock x:Name="TextBlockSourcePointTag" Grid.Row="2" Grid.Column="3" Text="{Binding Path=SourcePointTag}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"/>                        
                         <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">

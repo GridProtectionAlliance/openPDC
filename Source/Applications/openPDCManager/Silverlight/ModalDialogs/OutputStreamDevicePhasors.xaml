@@ -21,13 +21,19 @@
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Label" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
+                            <TextBlock Text="Label" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
                         <TextBox x:Name="TextBoxLabel" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Label}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Type" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Type" Style="{StaticResource GenericLabelStyle}"/>
                         <ComboBox x:Name="ComboboxType" Grid.Row="0" Grid.Column="3" Margin="5" DisplayMemberPath="Value"/>
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Phase" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Phase" Style="{StaticResource GenericLabelStyle}"/>
                         <ComboBox x:Name="ComboboxPhase" Grid.Row="1" Grid.Column="1" Margin="5" DisplayMemberPath="Value"/>
-                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Load Order" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2">
+                            <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
                         <TextBox x:Name="TextBoxLoadOrder" Grid.Row="1" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">

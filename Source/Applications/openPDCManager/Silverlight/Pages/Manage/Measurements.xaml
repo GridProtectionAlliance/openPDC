@@ -31,25 +31,37 @@
                         </Grid.ColumnDefinitions>
                         <!--<TextBlock Grid.Row="0" Grid.Column="0" Text="Point ID" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                         <TextBox x:Name="TextBoxPointID" Grid.Row="0" Grid.Column="1" Text="{Binding Path=PointID}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />-->
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Historian" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Historian" Style="{StaticResource GenericLabelStyle}"/>
                         <ComboBox x:Name="ComboBoxHistorian" Grid.Row="0" Grid.Column="1" Margin="5" DisplayMemberPath="Value"></ComboBox>
-                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Device" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Device" Style="{StaticResource GenericLabelStyle}"/>
                         <ComboBox x:Name="ComboBoxDevice" Grid.Row="0" Grid.Column="3" Margin="5" DisplayMemberPath="Value"></ComboBox>
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Signal Type" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Signal Type" Style="{StaticResource GenericLabelStyle}"/>
                         <ComboBox x:Name="ComboBoxSignalType" Grid.Row="1" Grid.Column="1" Margin="5" DisplayMemberPath="Value"></ComboBox>
-                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Point Tag" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2">
+                            <TextBlock Text="Point Tag" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
                         <TextBox x:Name="TextBoxPointTag" Grid.Row="1" Grid.Column="3" Text="{Binding Path=PointTag}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Alternate Tag" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Alternate Tag" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBox x:Name="TextBoxAlternateTag" Grid.Row="2" Grid.Column="1" Text="{Binding Path=AlternateTag}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="2" Grid.Column="2" Text="Signal Reference" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2">
+                            <TextBlock Text="Signal Reference" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
                         <TextBox x:Name="TextBoxSignalReference" Grid.Row="2" Grid.Column="3" Text="{Binding Path=SignalReference}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Phasor Source" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Phasor Source" Style="{StaticResource GenericLabelStyle}"/>
                         <ComboBox x:Name="ComboBoxPhasorSource" Grid.Row="3" Grid.Column="1" Margin="5" DisplayMemberPath="Value"></ComboBox>
-                        <TextBlock Grid.Row="3" Grid.Column="2" Text="Description" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Grid.Row="3" Grid.Column="2" Text="Description" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBox x:Name="TextBoxDescription" Grid.Row="3" Grid.Column="3" Text="{Binding Path=Description}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Adder" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0">
+                            <TextBlock Text="Adder" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
                         <TextBox x:Name="TextBoxAdder" Grid.Row="4" Grid.Column="1" Text="{Binding Path=Adder}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <TextBlock Grid.Row="4" Grid.Column="2" Text="Multiplier" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2">
+                            <TextBlock Text="Multiplier" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
                         <TextBox x:Name="TextBoxMultiplier" Grid.Row="4" Grid.Column="3" Text="{Binding Path=Multiplier}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />                        
                         <CheckBox x:Name="CheckboxEnabled" Grid.Row="5" Grid.Column="3" IsChecked="{Binding Path=Enabled}" Content="Enabled" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                         <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
