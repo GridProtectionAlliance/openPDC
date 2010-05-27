@@ -261,6 +261,8 @@ using TVA.Measurements;
 using TVA.Measurements.Routing;
 using TVA.Reflection;
 using TVA.Services;
+using System.Configuration;
+using System.Xml;
 
 namespace openPDC
 {
@@ -522,6 +524,7 @@ namespace openPDC
             m_serviceHelper.ClientRequestHandlers.Add(new ClientRequestHandler("ListCommands", "Displays possible commands for specified adapter", ListCommandsRequestHandler));
             m_serviceHelper.ClientRequestHandlers.Add(new ClientRequestHandler("Initialize", "Initializes specified adapter or collection", InitializeRequestHandler));
             m_serviceHelper.ClientRequestHandlers.Add(new ClientRequestHandler("ReloadConfig", "Manually reloads the system configuration", ReloadConfigRequstHandler));
+            m_serviceHelper.ClientRequestHandlers.Add(new ClientRequestHandler("UpdateConfigFile", "Updates an option in the configuration file", UpdateConfigFileRequestHandler));
             m_serviceHelper.ClientRequestHandlers.Add(new ClientRequestHandler("Authenticate", "Authenticates network shares for health and status exports", AuthenticateRequestHandler));
 
             // Start system initialization on an independent thread so that service responds in a timely fashion...
@@ -1588,6 +1591,150 @@ namespace openPDC
                 {
                     UpdateAdapterCollectionConfigurations();
                     SendResponse(requestInfo, true, "System configuration was successfully reloaded.");
+                }
+            }
+        }
+
+        // Update configuration file options
+        private void UpdateConfigFileRequestHandler(ClientRequestInfo requestInfo)
+        {
+            int orderedArgCount = requestInfo.Request.Arguments.OrderedArgCount;
+            bool listSetting = requestInfo.Request.Arguments.Exists("list");
+            bool deleteSetting = requestInfo.Request.Arguments.Exists("delete");
+            bool addSetting = requestInfo.Request.Arguments.Exists("add");
+
+            if (requestInfo.Request.Arguments.ContainsHelpRequest || (!listSetting && orderedArgCount < 2) || (!listSetting && !deleteSetting && orderedArgCount < 3))
+            {
+                StringBuilder helpMessage = new StringBuilder();
+
+                helpMessage.Append("Updates an option in the configuration file.");
+                helpMessage.AppendLine();
+                helpMessage.AppendLine();
+                helpMessage.Append("   Usage:");
+                helpMessage.AppendLine();
+                helpMessage.Append("       UpdateConfigFile \"Category Name\" \"Setting Name\" \"Setting Value\" -option");
+                helpMessage.AppendLine();
+                helpMessage.AppendLine();
+                helpMessage.Append("   Options:");
+                helpMessage.AppendLine();
+                helpMessage.Append("       -?".PadRight(20));
+                helpMessage.Append("Displays this help message");
+                helpMessage.AppendLine();
+                helpMessage.Append("       -add".PadRight(20));
+                helpMessage.Append("Adds specified setting to the specified category");
+                helpMessage.AppendLine();
+                helpMessage.Append("       -delete".PadRight(20));
+                helpMessage.Append("Deletes specified setting from the specified category");
+                helpMessage.AppendLine();
+                helpMessage.Append("       -list".PadRight(20));
+                helpMessage.Append("Lists categories or settings under a specified category");
+                helpMessage.AppendLine();
+                helpMessage.AppendLine();
+
+                DisplayResponseMessage(requestInfo, helpMessage.ToString());
+            }
+            else
+            {
+                string categoryName = requestInfo.Request.Arguments["OrderedArg1"];
+                string settingName = requestInfo.Request.Arguments["OrderedArg2"];
+                string settingValue = requestInfo.Request.Arguments["OrderedArg3"];
+
+                ConfigurationFile config = ConfigurationFile.Current;
+
+                if (listSetting)
+                {
+                    if (orderedArgCount == 0)
+                    {
+                        StringBuilder categoryList = new StringBuilder();
+                        categoryList.Append("List of categories in the configuration file:");
+                        categoryList.AppendLine();
+                        categoryList.AppendLine();
+
+                        string xml = config.Settings.SectionInformation.GetRawXml();
+                        XmlDocument xmlDoc = new XmlDocument();
+                        xmlDoc.LoadXml(xml);
+
+                        // List settings categories.
+                        foreach (XmlNode node in xmlDoc.DocumentElement)
+                        {
+                            categoryList.Append("   ");
+                            categoryList.Append(node.Name);
+                            categoryList.AppendLine();
+                        }
+
+                        categoryList.AppendLine();
+                        DisplayResponseMessage(requestInfo, categoryList.ToString());
+                    }
+                    else
+                    {
+                        CategorizedSettingsElementCollection settings = config.Settings[categoryName];
+                        StringBuilder settingsList = new StringBuilder();
+                        settingsList.Append(string.Format("List of settings under the category {0}:", categoryName));
+                        settingsList.AppendLine();
+                        settingsList.AppendLine();
+
+                        // List settings under specified category.
+                        foreach (CategorizedSettingsElement settingsElement in settings)
+                        {
+                            settingsList.Append("   ");
+                            settingsList.Append(settingsElement.Name);
+                            settingsList.AppendLine();
+                            settingsList.Append("       ");
+                            settingsList.Append(settingsElement.Description);
+                            settingsList.AppendLine();
+                        }
+
+                        settingsList.AppendLine();
+                        DisplayResponseMessage(requestInfo, settingsList.ToString());
+                    }
+                }
+                else
+                {
+                    CategorizedSettingsElementCollection settings = config.Settings[categoryName];
+                    CategorizedSettingsElement setting = settings[settingName];
+
+                    if (deleteSetting)
+                    {
+                        // Delete existing setting.
+                        if (setting != null)
+                        {
+                            settings.Remove(setting);
+                            config.Save();
+                            SendResponse(requestInfo, true, "Successfully deleted setting \"{0}\" under category \"{1}\".\r\n\r\n", settingName, categoryName);
+                        }
+                        else
+                        {
+                            SendResponse(requestInfo, false, "Failed to delete setting \"{0}\" under category \"{1}\". Setting does not exist.\r\n\r\n", settingName, categoryName);
+                        }
+                    }
+                    else if (addSetting)
+                    {
+                        // Add new setting.
+                        if (setting == null)
+                        {
+                            settings.Add(settingName, settingValue);
+                            config.Save();
+                            SendResponse(requestInfo, true, "Successfully added setting \"{0}\" under category \"{1}\".\r\n\r\n", settingName, categoryName);
+                        }
+                        else
+                        {
+                            SendResponse(requestInfo, false, "Failed to add setting \"{0}\" under category \"{1}\". Setting already exists.\r\n\r\n", settingName, categoryName);
+                        }
+                    }
+                    else
+                    {
+                        // Update existing setting.
+                        if (setting != null)
+                        {
+                            setting.Value = settingValue;
+                            config.Save();
+                            SendResponse(requestInfo, true, "Successfully updated setting \"{0}\" under category \"{1}\".\r\n\r\n", settingName, categoryName);
+                        }
+                        else
+                        {
+                            SendResponse(requestInfo, false, "Failed to update value of setting \"{0}\" under category \"{1}\" . Setting does not exist.\r\n\r\n", settingName, categoryName);
+                        }
+                    }
                 }
             }
         }
