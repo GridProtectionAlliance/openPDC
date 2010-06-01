@@ -1611,7 +1611,11 @@ namespace openPDC
                 helpMessage.AppendLine();
                 helpMessage.Append("   Usage:");
                 helpMessage.AppendLine();
-                helpMessage.Append("       UpdateConfigFile \"Category Name\" \"Setting Name\" \"Setting Value\" -option");
+                helpMessage.Append("       UpdateConfigFile [Category Name] -list");
+                helpMessage.AppendLine();
+                helpMessage.Append("       UpdateConfigFile \"Category Name\" \"Setting Name\" -delete");
+                helpMessage.AppendLine();
+                helpMessage.Append("       UpdateConfigFile \"Category Name\" \"Setting Name\" \"Setting Value\" [-add]");
                 helpMessage.AppendLine();
                 helpMessage.AppendLine();
                 helpMessage.Append("   Options:");
