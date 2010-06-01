@@ -253,6 +253,7 @@ using System.Reflection;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading;
+using System.Xml;
 using TVA;
 using TVA.Configuration;
 using TVA.Data;
@@ -261,8 +262,6 @@ using TVA.Measurements;
 using TVA.Measurements.Routing;
 using TVA.Reflection;
 using TVA.Services;
-using System.Configuration;
-using System.Xml;
 
 namespace openPDC
 {
@@ -1676,15 +1675,25 @@ namespace openPDC
                         // List settings under specified category.
                         foreach (CategorizedSettingsElement settingsElement in settings)
                         {
-                            settingsList.Append("   ");
+                            // Skip encrypted settings for security purpose.
+                            if (settingsElement.Encrypted)
+                                continue;
+
+                            settingsList.Append("   Name:        ");
                             settingsList.Append(settingsElement.Name);
                             settingsList.AppendLine();
-                            settingsList.Append("       ");
+                            settingsList.Append("   Value:       ");
+                            settingsList.Append(settingsElement.Value);
+                            settingsList.AppendLine();
+                            settingsList.Append("   Description: ");
                             settingsList.Append(settingsElement.Description);
+                            settingsList.AppendLine();
                             settingsList.AppendLine();
                         }
 
-                        settingsList.AppendLine();
+                        settingsList.Replace("{", "{{{{");
+                        settingsList.Replace("}", "}}}}");
+
                         DisplayResponseMessage(requestInfo, settingsList.ToString());
                     }
                 }
