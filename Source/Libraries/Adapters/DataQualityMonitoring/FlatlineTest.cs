@@ -408,7 +408,7 @@ namespace DataQualityMonitoring
                 // Try to find the signal ID and add the measurement to the m_lastChange collection
                 if (DataSource.Tables.Contains("ActiveMeasurements"))
                 {
-                    DataRow[] measurementRows = DataSource.Tables["ActiveMeasurements"].Select(string.Format("Source = {0}", key.ToString()));
+                    DataRow[] measurementRows = DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID = '{0}'", key.ToString()));
 
                     if (measurementRows.Length > 0)
                     {
