@@ -388,43 +388,46 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 				m_inEditMode = true;
 			}
 		}
-		
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
 
-			OutputStream outputStream = new OutputStream();
-			outputStream.NodeID = ((KeyValuePair<string, string>)ComboBoxNode.SelectedItem).Key;
-			outputStream.Acronym = TextBoxAcronym.Text;
-			outputStream.Name = TextBoxName.Text;
-			outputStream.Type = ((KeyValuePair<int, string>)ComboBoxType.SelectedItem).Key;
-			outputStream.ConnectionString = TextBoxConnectionString.Text;
-			outputStream.IDCode = Convert.ToInt32(TextBoxIDCode.Text);
-			outputStream.CommandChannel = TextBoxCommandChannel.Text;
-			outputStream.DataChannel = TextBoxDataChannel.Text;
-			outputStream.AutoPublishConfigFrame = (bool)CheckBoxAutoPublishConfigFrame.IsChecked;
-			outputStream.AutoStartDataChannel = (bool)CheckBoxAutoStartDataChannel.IsChecked;
-			outputStream.NominalFrequency = Convert.ToInt32(TextBoxNominalFrequency.Text);
-			outputStream.FramesPerSecond = Convert.ToInt32(TextBoxFramesPerSecond.Text);
-			outputStream.LagTime = Convert.ToDouble(TextBoxLagTime.Text);
-			outputStream.LeadTime = Convert.ToDouble(TextBoxLeadTime.Text);
-			outputStream.UseLocalClockAsRealTime = (bool)CheckBoxUseLocalClockAsRealTime.IsChecked;
-			outputStream.AllowSortsByArrival = (bool)CheckBoxAllowSortsByArrival.IsChecked;
-			outputStream.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
-			outputStream.Enabled = (bool)CheckBoxEnabled.IsChecked;
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
 
-			if (m_inEditMode == true && m_outputStreamID > 0)
-			{
-				outputStream.ID = m_outputStreamID;
-				m_client.SaveOutputStreamAsync(outputStream, false);
-			}
-			else
-				m_client.SaveOutputStreamAsync(outputStream, true);
-		}
+            if (IsValid())
+            {
+                OutputStream outputStream = new OutputStream();
+                outputStream.NodeID = ((KeyValuePair<string, string>)ComboBoxNode.SelectedItem).Key;
+                outputStream.Acronym = TextBoxAcronym.Text.CleanText();
+                outputStream.Name = TextBoxName.Text.CleanText();
+                outputStream.Type = ((KeyValuePair<int, string>)ComboBoxType.SelectedItem).Key;
+                outputStream.ConnectionString = TextBoxConnectionString.Text.CleanText();
+                outputStream.IDCode = TextBoxIDCode.Text.ToInteger();
+                outputStream.CommandChannel = TextBoxCommandChannel.Text.CleanText();
+                outputStream.DataChannel = TextBoxDataChannel.Text.CleanText();
+                outputStream.AutoPublishConfigFrame = (bool)CheckBoxAutoPublishConfigFrame.IsChecked;
+                outputStream.AutoStartDataChannel = (bool)CheckBoxAutoStartDataChannel.IsChecked;
+                outputStream.NominalFrequency = TextBoxNominalFrequency.Text.ToInteger();
+                outputStream.FramesPerSecond = TextBoxFramesPerSecond.Text.ToInteger();
+                outputStream.LagTime = TextBoxLagTime.Text.ToDouble();
+                outputStream.LeadTime = TextBoxLeadTime.Text.ToDouble();
+                outputStream.UseLocalClockAsRealTime = (bool)CheckBoxUseLocalClockAsRealTime.IsChecked;
+                outputStream.AllowSortsByArrival = (bool)CheckBoxAllowSortsByArrival.IsChecked;
+                outputStream.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
+                outputStream.Enabled = (bool)CheckBoxEnabled.IsChecked;
+
+                if (m_inEditMode == true && m_outputStreamID > 0)
+                {
+                    outputStream.ID = m_outputStreamID;
+                    m_client.SaveOutputStreamAsync(outputStream, false);
+                }
+                else
+                    m_client.SaveOutputStreamAsync(outputStream, true);
+            }
+        }
 		
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -490,6 +493,104 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		#endregion
 
 		#region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxAcronym.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Acronym", SystemMessage = "Please provide valid Acronym.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxAcronym.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxIDCode.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid ID Code", SystemMessage = "Please provide valid integer value for ID Code.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxIDCode.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxNominalFrequency.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Nominal Frequency", SystemMessage = "Please provide valid integer value for Nominal Frequency.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxNominalFrequency.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxFramesPerSecond.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Frames Per Second", SystemMessage = "Please provide valid integer value for Frames Per Second.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxFramesPerSecond.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxLagTime.Text.IsDouble())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Lag Time", SystemMessage = "Please provide valid floating point value for Lag Time.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLagTime.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxLeadTime.Text.IsDouble())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Lead Time", SystemMessage = "Please provide valid floating point value for Lead Time.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLeadTime.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxLoadOrder.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Load Order", SystemMessage = "Please provide valid integer value for Load Order.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLoadOrder.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
 
 		void ClearForm()
 		{

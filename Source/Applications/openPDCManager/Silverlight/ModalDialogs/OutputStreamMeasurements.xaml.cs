@@ -414,7 +414,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 			if (m_inEditMode)
 			{
-				m_selectedOutputStreamMeasurement.SignalReference = TextBoxSignalReference.Text;
+				m_selectedOutputStreamMeasurement.SignalReference = TextBoxSignalReference.Text.CleanText();
 				m_client.SaveOutputStreamMeasurementAsync(m_selectedOutputStreamMeasurement, false);
 			}
 		}
@@ -437,6 +437,26 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		#endregion
 
 		#region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxSignalReference.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Signal Reference", SystemMessage = "Please provide valid Signal Reference.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxSignalReference.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
 
 		void ClearForm()
 		{

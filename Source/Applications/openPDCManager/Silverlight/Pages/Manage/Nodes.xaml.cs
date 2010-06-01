@@ -359,37 +359,39 @@ namespace openPDCManager.Silverlight.Pages.Manage
 				m_nodeID = selectedNode.ID;
 			}
 		}
-		
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
 
-			Node node = new Node();
-			node.Name = TextBoxName.Text;
-			node.CompanyID = ((KeyValuePair<int, string>)ComboBoxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxCompany.SelectedItem).Key;
-			node.Longitude = string.IsNullOrEmpty(TextBoxLongitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLongitude.Text);
-			node.Latitude = string.IsNullOrEmpty(TextBoxLatitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLatitude.Text);
-			node.Description = TextBoxDescription.Text;
-			node.Image = TextBoxImage.Text;
-			node.Master = (bool)CheckboxMaster.IsChecked;
-			node.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
-			node.Enabled = (bool)CheckboxEnabled.IsChecked;
-			node.TimeSeriesDataServiceUrl = TextBoxTimeSeriesDataServiceUrl.Text;
-			node.RemoteStatusServiceUrl = TextBoxRemoteStatusServiceUrl.Text;
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
 
-			if (m_inEditMode == true && !string.IsNullOrEmpty(m_nodeID))
-			{
-				node.ID = m_nodeID;
-				m_client.SaveNodeAsync(node, false);
-			}
-			else
-				m_client.SaveNodeAsync(node, true);
-		}
-		
+            if (IsValid())
+            {
+                Node node = new Node();
+                node.Name = TextBoxName.Text.CleanText();
+                node.CompanyID = ((KeyValuePair<int, string>)ComboBoxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxCompany.SelectedItem).Key;
+                node.Longitude = TextBoxLongitude.Text.ToNullableDecimal();
+                node.Latitude = TextBoxLatitude.Text.ToNullableDecimal();
+                node.Description = TextBoxDescription.Text.CleanText();
+                node.Image = TextBoxImage.Text.CleanText();
+                node.Master = (bool)CheckboxMaster.IsChecked;
+                node.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
+                node.Enabled = (bool)CheckboxEnabled.IsChecked;
+                node.TimeSeriesDataServiceUrl = TextBoxTimeSeriesDataServiceUrl.Text.CleanText();
+                node.RemoteStatusServiceUrl = TextBoxRemoteStatusServiceUrl.Text.CleanText();
+
+                if (m_inEditMode == true && !string.IsNullOrEmpty(m_nodeID))
+                {
+                    node.ID = m_nodeID;
+                    m_client.SaveNodeAsync(node, false);
+                }
+                else
+                    m_client.SaveNodeAsync(node, true);
+            }
+        }
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -420,6 +422,39 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		#endregion
 
 		#region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxName.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Name", SystemMessage = "Please provide valid Name for a node.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxName.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxLoadOrder.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Load Order", SystemMessage = "Please provide valid integer value for Load Order.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLoadOrder.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
 
 		void ClearForm()
 		{

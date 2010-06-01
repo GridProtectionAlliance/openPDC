@@ -250,6 +250,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		ActivityWindow m_activityWindow;
 		bool m_inEditMode = false;
 		int m_deviceID = 0;
+        Device m_deviceToEdit;
 
 		#endregion
 
@@ -319,57 +320,65 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 		void client_GetDeviceByDeviceIDCompleted(object sender, GetDeviceByDeviceIDCompletedEventArgs e)
 		{
-			Device deviceToEdit = new Device();
+			m_deviceToEdit = new Device();
 			if (e.Error == null)
 			{
-				System.Threading.Thread.Sleep(3000);
-				deviceToEdit = e.Result;
-				GridDeviceDetail.DataContext = deviceToEdit;
-				ComboboxNode.SelectedItem = new KeyValuePair<string, string>(deviceToEdit.NodeID, deviceToEdit.NodeName);
-				if (deviceToEdit.CompanyID.HasValue)
-					ComboboxCompany.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.CompanyID, deviceToEdit.CompanyName);
-				else
+				//System.Threading.Thread.Sleep(3000);
+				m_deviceToEdit = e.Result;
+				GridDeviceDetail.DataContext = m_deviceToEdit;
+
+                if (ComboboxNode.Items.Count > 0)
+				    ComboboxNode.SelectedItem = new KeyValuePair<string, string>(m_deviceToEdit.NodeID, m_deviceToEdit.NodeName);
+				
+                if (m_deviceToEdit.CompanyID.HasValue)
+					ComboboxCompany.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.CompanyID, m_deviceToEdit.CompanyName);
+				else if (ComboboxCompany.Items.Count > 0)
 					ComboboxCompany.SelectedIndex = 0;
-				if (deviceToEdit.HistorianID.HasValue)
-					ComboboxHistorian.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.HistorianID, deviceToEdit.HistorianAcronym);
+				
+                if (m_deviceToEdit.HistorianID.HasValue)
+					ComboboxHistorian.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.HistorianID, m_deviceToEdit.HistorianAcronym);
 				else if (ComboboxHistorian.Items.Count > 0)
 					ComboboxHistorian.SelectedIndex = 0;
-				if (deviceToEdit.InterconnectionID.HasValue)
-					ComboboxInterconnection.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.InterconnectionID, deviceToEdit.InterconnectionName);
+				
+                if (m_deviceToEdit.InterconnectionID.HasValue)
+					ComboboxInterconnection.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.InterconnectionID, m_deviceToEdit.InterconnectionName);
 				else if (ComboboxInterconnection.Items.Count >0 )
 					ComboboxInterconnection.SelectedIndex = 0;
-				if (deviceToEdit.ParentID.HasValue)
-					ComboboxParent.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.ParentID, deviceToEdit.ParentAcronym);
+				
+                if (m_deviceToEdit.ParentID.HasValue)
+					ComboboxParent.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.ParentID, m_deviceToEdit.ParentAcronym);
 				else if (ComboboxParent.Items.Count > 0)
 					ComboboxParent.SelectedIndex = 0;
-				if (deviceToEdit.ProtocolID.HasValue)
-					ComboboxProtocol.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.ProtocolID, deviceToEdit.ProtocolName);
-				else
+				
+                if (m_deviceToEdit.ProtocolID.HasValue)
+					ComboboxProtocol.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.ProtocolID, m_deviceToEdit.ProtocolName);
+				else if (ComboboxProtocol.Items.Count > 0)
 					ComboboxProtocol.SelectedIndex = 0;
-				if (string.IsNullOrEmpty(deviceToEdit.TimeZone))
+				
+                if (string.IsNullOrEmpty(m_deviceToEdit.TimeZone) && ComboboxTimeZone.Items.Count > 0)
 					ComboboxTimeZone.SelectedIndex = 0;
 				else
 				{
 					foreach (KeyValuePair<string, string> item in ComboboxTimeZone.Items)
 					{
-						if (item.Key == deviceToEdit.TimeZone)
+						if (item.Key == m_deviceToEdit.TimeZone)
 						{
 							ComboboxTimeZone.SelectedItem = item;
 							break;
 						}
 					}
 				}
-				if (deviceToEdit.VendorDeviceID.HasValue)
-					ComboboxVendorDevice.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.VendorDeviceID, deviceToEdit.VendorDeviceName);
-				else
+				if (m_deviceToEdit.VendorDeviceID.HasValue)
+					ComboboxVendorDevice.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.VendorDeviceID, m_deviceToEdit.VendorDeviceName);
+				else if (ComboboxVendorDevice.Items.Count > 0)
 					ComboboxVendorDevice.SelectedIndex = 0;
 
-				if (deviceToEdit.IsConcentrator)	//then display list of devices.
+				if (m_deviceToEdit.IsConcentrator)	//then display list of devices.
 				{
-					m_client.GetDeviceListByParentIDAsync(deviceToEdit.ID);
+					m_client.GetDeviceListByParentIDAsync(m_deviceToEdit.ID);
 					StackPanelDeviceList.Visibility = Visibility.Visible;
 					StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
-					TextBlockTitle.Text = "Devices For Concentrator: " + deviceToEdit.Acronym;
+					TextBlockTitle.Text = "Devices For Concentrator: " + m_deviceToEdit.Acronym;
 				}
 				else
 				{
@@ -443,6 +452,18 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 			if (ComboboxTimeZone.Items.Count > 0)
 				ComboboxTimeZone.SelectedIndex = 0;
+
+            if (m_deviceToEdit != null)
+            {
+                foreach (KeyValuePair<string, string> item in ComboboxTimeZone.Items)
+                {
+                    if (item.Key == m_deviceToEdit.TimeZone)
+                    {
+                        ComboboxTimeZone.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
 		}
 		
 		void client_GetProtocolsCompleted(object sender, GetProtocolsCompletedEventArgs e)
@@ -466,6 +487,10 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 			if (ComboboxProtocol.Items.Count > 0)
 				ComboboxProtocol.SelectedIndex = 0;
+
+            if (m_deviceToEdit != null && m_deviceToEdit.ProtocolID.HasValue)
+                ComboboxProtocol.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.ProtocolID, m_deviceToEdit.ProtocolName);
+
 		}
 		
 		void client_GetVendorDevicesCompleted(object sender, GetVendorDevicesCompletedEventArgs e)
@@ -489,6 +514,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 			if (ComboboxVendorDevice.Items.Count > 0)
 				ComboboxVendorDevice.SelectedIndex = 0;
+
+            if (m_deviceToEdit != null && m_deviceToEdit.VendorDeviceID.HasValue)
+                ComboboxVendorDevice.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.VendorDeviceID, m_deviceToEdit.VendorDeviceName);
 		}
 		
 		void client_GetInterconnectionsCompleted(object sender, GetInterconnectionsCompletedEventArgs e)
@@ -512,6 +540,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 			if (ComboboxInterconnection.Items.Count > 0)
 				ComboboxInterconnection.SelectedIndex = 0;
+
+            if (m_deviceToEdit != null && m_deviceToEdit.InterconnectionID.HasValue)
+                ComboboxInterconnection.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.InterconnectionID, m_deviceToEdit.InterconnectionName);
 		}
 		
 		void client_GetHistoriansCompleted(object sender, GetHistoriansCompletedEventArgs e)
@@ -535,6 +566,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 			if (ComboboxHistorian.Items.Count > 0)
 				ComboboxHistorian.SelectedIndex = 0;
+
+            if (m_deviceToEdit != null && m_deviceToEdit.HistorianID.HasValue)
+                ComboboxHistorian.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.HistorianID, m_deviceToEdit.HistorianAcronym);
 		}
 		
 		void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
@@ -558,6 +592,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 			if (ComboboxNode.Items.Count > 0)
 				ComboboxNode.SelectedIndex = 0;
+
+            if(m_deviceToEdit != null)
+                ComboboxNode.SelectedItem = new KeyValuePair<string, string>(m_deviceToEdit.NodeID, m_deviceToEdit.NodeName);
 		}
 		
 		void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
@@ -581,6 +618,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 			if (ComboboxCompany.Items.Count > 0)
 				ComboboxCompany.SelectedIndex = 0;
+
+            if(m_deviceToEdit != null && m_deviceToEdit.CompanyID.HasValue)
+                ComboboxCompany.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.CompanyID, m_deviceToEdit.CompanyName);
 		}
 		
 		void client_GetDevicesCompleted(object sender, GetDevicesCompletedEventArgs e)
@@ -604,6 +644,9 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			}
 			if (ComboboxParent.Items.Count > 0)
 				ComboboxParent.SelectedIndex = 0;
+
+            if (m_deviceToEdit != null && m_deviceToEdit.ParentID.HasValue)
+                ComboboxParent.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.ParentID, m_deviceToEdit.ParentAcronym);
 		}
 		
 		#endregion
@@ -632,48 +675,122 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 			ClearForm();
 		}
-		
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
 
-			Device device = new Device();
-			device.NodeID = ((KeyValuePair<string, string>)ComboboxNode.SelectedItem).Key;
-			device.ParentID = ((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key;
-			device.Acronym = TextBoxAcronym.Text;
-			device.Name = TextBoxName.Text;
-			device.IsConcentrator = (bool)CheckboxConcentrator.IsChecked;
-			device.CompanyID = ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key;
-			device.HistorianID = ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key;
-			device.AccessID = Convert.ToInt32(TextBoxAccessID.Text);
-			device.VendorDeviceID = ((KeyValuePair<int, string>)ComboboxVendorDevice.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxVendorDevice.SelectedItem).Key;
-			device.ProtocolID = ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key;
-			device.Longitude = string.IsNullOrEmpty(TextBoxLongitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLongitude.Text);
-			device.Latitude = string.IsNullOrEmpty(TextBoxLatitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLatitude.Text);
-			device.InterconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
-			device.ConnectionString = TextBoxConnectionString.Text;
-			device.TimeZone = ((KeyValuePair<string, string>)ComboboxTimeZone.SelectedItem).Key;
-			device.FramesPerSecond = string.IsNullOrEmpty(TextBoxFramesPerSecond.Text) ? 30 : Convert.ToInt32(TextBoxFramesPerSecond.Text);
-			device.TimeAdjustmentTicks = Convert.ToInt64(TextBoxTimeAdjustmentTicks.Text);
-			device.DataLossInterval = Convert.ToDouble(TextBoxDataLossInterval.Text);
-			device.ContactList = TextBoxContactList.Text;
-			device.MeasuredLines = string.IsNullOrEmpty(TextBoxMeasuredLines.Text) ? (int?)null : Convert.ToInt32(TextBoxMeasuredLines.Text);
-			device.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
-			device.Enabled = (bool)CheckboxEnabled.IsChecked;
-			if (m_inEditMode == false && m_deviceID == 0)
-				m_client.SaveDeviceAsync(device, true, 0, 0);
-			else
-			{
-				device.ID = m_deviceID;
-				m_client.SaveDeviceAsync(device, false, 0, 0);
-			}
-		}
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
 
-		void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+            if (IsValid())
+            {
+                Device device = new Device();
+                device.NodeID = ((KeyValuePair<string, string>)ComboboxNode.SelectedItem).Key;
+                device.ParentID = ((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxParent.SelectedItem).Key;
+                device.Acronym = TextBoxAcronym.Text.CleanText();
+                device.Name = TextBoxName.Text.CleanText();
+                device.IsConcentrator = (bool)CheckboxConcentrator.IsChecked;
+                device.CompanyID = ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key;
+                device.HistorianID = ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key;
+                device.AccessID = TextBoxAccessID.Text.ToInteger();
+                device.VendorDeviceID = ((KeyValuePair<int, string>)ComboboxVendorDevice.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxVendorDevice.SelectedItem).Key;
+                device.ProtocolID = ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key;
+                device.Longitude = TextBoxLongitude.Text.ToNullableDecimal(); //string.IsNullOrEmpty(TextBoxLongitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLongitude.Text);
+                device.Latitude = TextBoxLatitude.Text.ToNullableDecimal(); //string.IsNullOrEmpty(TextBoxLatitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLatitude.Text);
+                device.InterconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
+                device.ConnectionString = TextBoxConnectionString.Text.CleanText();
+                device.TimeZone = ((KeyValuePair<string, string>)ComboboxTimeZone.SelectedItem).Key;
+                device.FramesPerSecond = string.IsNullOrEmpty(TextBoxFramesPerSecond.Text.CleanText()) ? 30 : TextBoxFramesPerSecond.Text.ToInteger();
+                device.TimeAdjustmentTicks = TextBoxTimeAdjustmentTicks.Text.ToLong();
+                device.DataLossInterval = TextBoxDataLossInterval.Text.ToDouble();
+                device.ContactList = TextBoxContactList.Text.CleanText();
+                device.MeasuredLines = TextBoxMeasuredLines.Text.ToNullableInteger(); //string.IsNullOrEmpty(TextBoxMeasuredLines.Text) ? (int?)null : Convert.ToInt32(TextBoxMeasuredLines.Text);
+                device.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
+                device.Enabled = (bool)CheckboxEnabled.IsChecked;
+                if (m_inEditMode == false && m_deviceID == 0)
+                    m_client.SaveDeviceAsync(device, true, 0, 0);
+                else
+                {
+                    device.ID = m_deviceID;
+                    m_client.SaveDeviceAsync(device, false, 0, 0);
+                }
+            }
+        }
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxAcronym.Text.CleanText()))
+            {                
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Acronym", SystemMessage = "Please provide valid Acronym for a device.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e) 
+                                                {                                                   
+                                                    TextBoxAcronym.Focus();                      
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxAccessID.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Access ID", SystemMessage = "Please provide valid integer value for Access ID.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxAccessID.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxTimeAdjustmentTicks.Text.IsLong())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Time Adjustment Ticks", SystemMessage = "Please provide valid integer value for Time Adjustment Ticks.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxTimeAdjustmentTicks.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxDataLossInterval.Text.IsDouble())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Data Loss Interval", SystemMessage = "Please provide valid floating point value for Data Loss Interval.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxDataLossInterval.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxLoadOrder.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Load Order", SystemMessage = "Please provide valid integer value for Load Order.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLoadOrder.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
+
+        void HyperlinkButton_Click(object sender, RoutedEventArgs e)
 		{
 			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
 			NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?did=" + deviceId, UriKind.Relative));

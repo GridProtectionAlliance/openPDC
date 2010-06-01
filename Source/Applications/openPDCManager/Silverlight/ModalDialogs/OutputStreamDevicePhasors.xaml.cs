@@ -286,32 +286,34 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			}
 		}
 
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
 
-			OutputStreamDevicePhasor outputStreamDevicePhasor = new OutputStreamDevicePhasor();
-			App app = (App)Application.Current;
-			outputStreamDevicePhasor.NodeID = app.NodeValue;
-			outputStreamDevicePhasor.OutputStreamDeviceID = m_sourceOutputStreamDeviceID;
-			outputStreamDevicePhasor.Label = TextBoxLabel.Text;
-			outputStreamDevicePhasor.Type = ((KeyValuePair<string, string>)ComboboxType.SelectedItem).Key;
-			outputStreamDevicePhasor.Phase = ((KeyValuePair<string, string>)ComboboxPhase.SelectedItem).Key;
-			outputStreamDevicePhasor.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
+            if (IsValid())
+            {
+                OutputStreamDevicePhasor outputStreamDevicePhasor = new OutputStreamDevicePhasor();
+                App app = (App)Application.Current;
+                outputStreamDevicePhasor.NodeID = app.NodeValue;
+                outputStreamDevicePhasor.OutputStreamDeviceID = m_sourceOutputStreamDeviceID;
+                outputStreamDevicePhasor.Label = TextBoxLabel.Text.CleanText();
+                outputStreamDevicePhasor.Type = ((KeyValuePair<string, string>)ComboboxType.SelectedItem).Key;
+                outputStreamDevicePhasor.Phase = ((KeyValuePair<string, string>)ComboboxPhase.SelectedItem).Key;
+                outputStreamDevicePhasor.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
 
-			if (m_inEditMode == true && m_outputStreamDevicePhasorID > 0)
-			{
-				outputStreamDevicePhasor.ID = m_outputStreamDevicePhasorID;
-				m_client.SaveOutputStreamDevicePhasorAsync(outputStreamDevicePhasor, false);
-			}
-			else
-				m_client.SaveOutputStreamDevicePhasorAsync(outputStreamDevicePhasor, true);
-		}
-
+                if (m_inEditMode == true && m_outputStreamDevicePhasorID > 0)
+                {
+                    outputStreamDevicePhasor.ID = m_outputStreamDevicePhasorID;
+                    m_client.SaveOutputStreamDevicePhasorAsync(outputStreamDevicePhasor, false);
+                }
+                else
+                    m_client.SaveOutputStreamDevicePhasorAsync(outputStreamDevicePhasor, true);
+            }
+        }
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
@@ -396,7 +398,40 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		#endregion
 
 		#region [ Methods ]
-		
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxLabel.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Phasor Label", SystemMessage = "Please provide valid Phasor Label.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLabel.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxLoadOrder.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Load Order", SystemMessage = "Please provide valid integer value for Load Order.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLoadOrder.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
+
 		void ClearForm()
 		{
 			GridOutputStreamDevicePhasorDetail.DataContext = new OutputStreamDevicePhasor();

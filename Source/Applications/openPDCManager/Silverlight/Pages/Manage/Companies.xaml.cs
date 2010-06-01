@@ -354,33 +354,95 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			sb.Begin();
 			ClearForm();
 		}
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
 
-			Company company = new Company();
-			company.Acronym = TextBoxAcronym.Text;
-			company.MapAcronym = TextBoxMapAcronym.Text;
-			company.Name = TextBoxName.Text;
-			company.URL = TextBoxURL.Text;
-			company.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
+            if (IsValid())
+            {
+                Company company = new Company();
+                company.Acronym = TextBoxAcronym.Text.CleanText();
+                company.MapAcronym = TextBoxMapAcronym.Text.CleanText();
+                company.Name = TextBoxName.Text.CleanText();
+                company.URL = TextBoxURL.Text.CleanText();
+                company.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
 
-			if (m_inEditMode == true && m_companyID != 0)
-			{
-				company.ID = m_companyID;
-				m_client.SaveCompanyAsync(company, false);
-			}
-			else
-				m_client.SaveCompanyAsync(company, true);
-		}
+                if (m_inEditMode == true && m_companyID != 0)
+                {
+                    company.ID = m_companyID;
+                    m_client.SaveCompanyAsync(company, false);
+                }
+                else
+                    m_client.SaveCompanyAsync(company, true);
+            }
+        }
 
 		#endregion
 
 		#region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxAcronym.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Acronym", SystemMessage = "Please provide valid Acronym for a comapny.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxAcronym.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (string.IsNullOrEmpty(TextBoxMapAcronym.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Map Acronym", SystemMessage = "Please provide valid Map Acronym for a company.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxMapAcronym.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (string.IsNullOrEmpty(TextBoxName.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Name", SystemMessage = "Please provide valid Name for a company.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxName.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxLoadOrder.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Load Order", SystemMessage = "Please provide valid integer value for Load Order.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLoadOrder.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
 
 		void ClearForm()
 		{

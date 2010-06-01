@@ -374,30 +374,33 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ClearForm();
 		}
 
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
 
-			Phasor phasor = new Phasor();
-			phasor.DeviceID = m_sourceDeviceID;
-			phasor.Label = TextBoxLabel.Text;
-			phasor.Type = ((KeyValuePair<string, string>)ComboboxType.SelectedItem).Key;
-			phasor.Phase = ((KeyValuePair<string, string>)ComboboxPhase.SelectedItem).Key;
-			phasor.DestinationPhasorID = ((KeyValuePair<int, string>)ComboboxDestinationPhasor.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxDestinationPhasor.SelectedItem).Key;
-			phasor.SourceIndex = Convert.ToInt32(TextBoxSourceIndex.Text);
+            if (IsValid())
+            {
+                Phasor phasor = new Phasor();
+                phasor.DeviceID = m_sourceDeviceID;
+                phasor.Label = TextBoxLabel.Text.CleanText();
+                phasor.Type = ((KeyValuePair<string, string>)ComboboxType.SelectedItem).Key;
+                phasor.Phase = ((KeyValuePair<string, string>)ComboboxPhase.SelectedItem).Key;
+                phasor.DestinationPhasorID = ((KeyValuePair<int, string>)ComboboxDestinationPhasor.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxDestinationPhasor.SelectedItem).Key;
+                phasor.SourceIndex = TextBoxSourceIndex.Text.ToInteger();
 
-			if (m_inEditMode == true && m_phasorID > 0)
-			{
-				phasor.ID = m_phasorID;
-				m_client.SavePhasorAsync(phasor, false);
-			}
-			else
-				m_client.SavePhasorAsync(phasor, true);
-		}
+                if (m_inEditMode == true && m_phasorID > 0)
+                {
+                    phasor.ID = m_phasorID;
+                    m_client.SavePhasorAsync(phasor, false);
+                }
+                else
+                    m_client.SavePhasorAsync(phasor, true);
+            }
+        }
 		
 		#endregion
 
@@ -422,6 +425,39 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		#endregion
 
 		#region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxLabel.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Phasor Label", SystemMessage = "Please provide valid phasor Label.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLabel.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxSourceIndex.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Phasor Source Index", SystemMessage = "Please provide valid integer value for Phasor Source Index.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxSourceIndex.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
 
 		void ClearForm()
 		{

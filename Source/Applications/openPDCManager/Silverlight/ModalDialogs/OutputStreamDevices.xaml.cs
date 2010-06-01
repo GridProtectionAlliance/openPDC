@@ -350,33 +350,35 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 		#region [ Controls Event Handlers ]
 
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
 
-			OutputStreamDevice outputStreamDevice = new OutputStreamDevice();
-			App app = (App)Application.Current;
+            if (IsValid())
+            {
+                OutputStreamDevice outputStreamDevice = new OutputStreamDevice();
+                App app = (App)Application.Current;
+                outputStreamDevice.NodeID = app.NodeValue;
+                outputStreamDevice.AdapterID = m_sourceOutputStreamID;
+                outputStreamDevice.Acronym = TextBoxAcronym.Text.CleanText();
+                outputStreamDevice.BpaAcronym = TextBoxBPAAcronym.Text.CleanText();
+                outputStreamDevice.Name = TextBoxName.Text.CleanText();
+                outputStreamDevice.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
+                outputStreamDevice.Enabled = (bool)CheckBoxEnabled.IsChecked;
 
-			outputStreamDevice.NodeID = app.NodeValue;
-			outputStreamDevice.AdapterID = m_sourceOutputStreamID;
-			outputStreamDevice.Acronym = TextBoxAcronym.Text;
-			outputStreamDevice.BpaAcronym = TextBoxBPAAcronym.Text;
-			outputStreamDevice.Name = TextBoxName.Text;
-			outputStreamDevice.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
-			outputStreamDevice.Enabled = (bool)CheckBoxEnabled.IsChecked;
-
-			if (m_inEditMode == true && m_outputStreamDeviceID > 0)
-			{
-				outputStreamDevice.ID = m_outputStreamDeviceID;
-				m_client.SaveOutputStreamDeviceAsync(outputStreamDevice, false, m_selectedOutputStreamDevice.Acronym);
-			}
-			else
-				m_client.SaveOutputStreamDeviceAsync(outputStreamDevice, true, string.Empty);
-		}
+                if (m_inEditMode == true && m_outputStreamDeviceID > 0)
+                {
+                    outputStreamDevice.ID = m_outputStreamDeviceID;
+                    m_client.SaveOutputStreamDeviceAsync(outputStreamDevice, false, m_selectedOutputStreamDevice.Acronym);
+                }
+                else
+                    m_client.SaveOutputStreamDeviceAsync(outputStreamDevice, true, string.Empty);
+            }
+        }
 		
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -451,6 +453,39 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		#endregion
 
 		#region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxAcronym.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Acronym", SystemMessage = "Please provide valid Acronym.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxAcronym.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxLoadOrder.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Load Order", SystemMessage = "Please provide valid integer value for Load Order.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLoadOrder.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
 
 		void ClearForm()
 		{

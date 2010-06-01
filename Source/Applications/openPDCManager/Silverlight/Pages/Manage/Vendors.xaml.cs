@@ -330,30 +330,33 @@ namespace openPDCManager.Silverlight.Pages.Manage
 				m_vendorID = selectedVendor.ID;
 			}
 		}
-		
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
 
-			Vendor vendor = new Vendor();			
-			vendor.Acronym = TextBoxAcronym.Text;
-			vendor.Name = TextBoxName.Text;
-			vendor.PhoneNumber = TextBoxPhoneNumber.Text;
-			vendor.ContactEmail = TextBoxContactEmail.Text;
-			vendor.URL = TextBoxUrl.Text;
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
 
-			if (m_vendorID != 0 && m_inEditMode == true)		//i.e. It is an update to existing item.
-			{
-				vendor.ID = m_vendorID;
-				m_client.SaveVendorAsync(vendor, false);
-			}
-			else	//i.e. It is a new item			
-				m_client.SaveVendorAsync(vendor, true);			
-		}
+            if (IsValid())
+            {
+                Vendor vendor = new Vendor();
+                vendor.Acronym = TextBoxAcronym.Text.CleanText();
+                vendor.Name = TextBoxName.Text.CleanText();
+                vendor.PhoneNumber = TextBoxPhoneNumber.Text.CleanText();
+                vendor.ContactEmail = TextBoxContactEmail.Text.CleanText();
+                vendor.URL = TextBoxUrl.Text.CleanText();
+
+                if (m_vendorID != 0 && m_inEditMode == true)		//i.e. It is an update to existing item.
+                {
+                    vendor.ID = m_vendorID;
+                    m_client.SaveVendorAsync(vendor, false);
+                }
+                else	//i.e. It is a new item			
+                    m_client.SaveVendorAsync(vendor, true);
+            }
+        }
 		
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -383,6 +386,26 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		#endregion
 
 		#region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxName.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Name", SystemMessage = "Please provide valid Name.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxName.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
 
 		void ClearForm()
 		{

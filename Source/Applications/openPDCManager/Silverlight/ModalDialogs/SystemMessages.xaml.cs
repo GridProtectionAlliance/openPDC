@@ -281,8 +281,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			}
 			else if (message.UserMessageType == MessageType.Confirmation)
 			{
-				this.Title = "openPDCManager: Conformation!";
-				TextBlockMessageType.Text = "CONFORMATION";
+				this.Title = "openPDCManager: Confirmation!";
+				TextBlockMessageType.Text = "CONFIRMATION";
 				ImageMessageType.Source = new BitmapImage(new Uri(@"../Images/Warning.png", UriKind.Relative));
 				BorderMain.Background = Application.Current.Resources["YellowRadialGradientBrush"] as Brush;
 			}

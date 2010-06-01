@@ -466,6 +466,99 @@ namespace openPDCManager.Silverlight.Utilities
 			return "\\u" + Convert.ToUInt16(item).ToString("x").PadLeft(4, '0');
 		}
 
+        public static string CleanText(this string value)
+        {
+            return value.Trim().Replace("'", "").Replace("%", "");
+        }
+
+        public static bool IsInteger(this string value)
+        {
+            int temp;
+            return int.TryParse(value.CleanText(), out temp);
+        }
+
+        public static bool IsLong(this string value)
+        {
+            long temp;
+            return long.TryParse(value.CleanText(), out temp);
+        }
+
+        public static bool IsDecimal(this string value)
+        {
+            decimal temp;
+            return decimal.TryParse(value.CleanText(), out temp);
+        }
+
+        public static bool IsDouble(this string value)
+        {
+            double temp;
+            return double.TryParse(value.CleanText(), out temp);
+        }
+
+        public static int ToInteger(this string value)
+        {
+            int temp = 0;
+            int.TryParse(value.CleanText(), out temp);
+            return temp;
+        }
+
+        public static long ToLong(this string value)
+        {
+            long temp = 0;
+            long.TryParse(value.CleanText(), out temp);
+            return temp;
+        }
+
+        public static decimal ToDecimal(this string value)
+        {
+            decimal temp = 0;
+            decimal.TryParse(value.CleanText(), out temp);
+            return temp;
+        }
+
+        public static double ToDouble(this string value)
+        {
+            double temp = 0;
+            double.TryParse(value.CleanText(), out temp);
+            return temp;
+        }
+
+        public static int? ToNullableInteger(this string value)
+        {
+            int temp = 0;
+            if (int.TryParse(value.CleanText(), out temp))
+                return temp;
+            else
+                return (int?)null;
+        }
+
+        public static long? ToNullableLong(this string value)
+        {
+            long temp = 0;
+            if (long.TryParse(value.CleanText(), out temp))
+                return temp;
+            else
+                return (long?)null;
+        }
+
+        public static decimal? ToNullableDecimal(this string value)
+        {
+            decimal temp = 0;
+            if (decimal.TryParse(value.CleanText(), out temp))
+                return temp;
+            else
+                return (decimal?)null;
+        }
+
+        public static double? ToNullableDouble(this string value)
+        {
+            double temp = 0;
+            if (double.TryParse(value.CleanText(), out temp))
+                return temp;
+            else
+                return (double?)null;
+        }
+
 		#endregion
 
 	}

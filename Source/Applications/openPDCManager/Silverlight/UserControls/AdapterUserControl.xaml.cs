@@ -366,32 +366,36 @@ namespace openPDCManager.Silverlight.UserControls
 			sb.Begin();
 			ClearForm();
 		}
-		
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
-			Adapter adapter = new Adapter();
-			adapter.adapterType = m_adapterType;
-			adapter.NodeID = ((KeyValuePair<string, string>)ComboboxNode.SelectedItem).Key;
-			adapter.AdapterName = TextBoxAdapterName.Text;
-			adapter.AssemblyName = TextBoxAssemblyName.Text;
-			adapter.TypeName = TextBoxTypeName.Text;
-			adapter.ConnectionString = TextBoxConnectionString.Text;
-			adapter.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
-			adapter.Enabled = (bool)CheckboxEnabled.IsChecked;
 
-			if (m_inEditMode == true && m_adapterID > 0)
-			{
-				adapter.ID = m_adapterID;
-				m_client.SaveAdapterAsync(adapter, false);
-			}
-			else
-				m_client.SaveAdapterAsync(adapter, true);
-		}
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
+
+            if (IsValid())
+            {
+                Adapter adapter = new Adapter();
+                adapter.adapterType = m_adapterType;
+                adapter.NodeID = ((KeyValuePair<string, string>)ComboboxNode.SelectedItem).Key;
+                adapter.AdapterName = TextBoxAdapterName.Text.CleanText();
+                adapter.AssemblyName = TextBoxAssemblyName.Text.CleanText();
+                adapter.TypeName = TextBoxTypeName.Text.CleanText();
+                adapter.ConnectionString = TextBoxConnectionString.Text.CleanText();
+                adapter.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
+                adapter.Enabled = (bool)CheckboxEnabled.IsChecked;
+
+                if (m_inEditMode == true && m_adapterID > 0)
+                {
+                    adapter.ID = m_adapterID;
+                    m_client.SaveAdapterAsync(adapter, false);
+                }
+                else
+                    m_client.SaveAdapterAsync(adapter, true);
+            }
+        }
 
 		#endregion
 
@@ -408,6 +412,65 @@ namespace openPDCManager.Silverlight.UserControls
 		#endregion
 
 		#region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxAdapterName.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Adapter Name", SystemMessage = "Please provide valid Adapter Name.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxAdapterName.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (string.IsNullOrEmpty(TextBoxAssemblyName.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Assembly Name", SystemMessage = "Please provide valid Assembly Name.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxAssemblyName.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (string.IsNullOrEmpty(TextBoxTypeName.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Type Name", SystemMessage = "Please provide valid Type Name.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxTypeName.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxLoadOrder.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Load Order", SystemMessage = "Please provide valid integer value for Load Order.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLoadOrder.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
 
 		void ClearForm()
 		{

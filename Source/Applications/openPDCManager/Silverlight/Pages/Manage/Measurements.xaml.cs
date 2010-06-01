@@ -564,26 +564,29 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			Storyboard.SetTarget(sb, ButtonSaveTransform);
 			sb.Begin();
 
-			Measurement measurement = new Measurement();
-			measurement.HistorianID = ((KeyValuePair<int, string>)ComboBoxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxHistorian.SelectedItem).Key;			
-			measurement.DeviceID = ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key;
-			measurement.PointTag = TextBoxPointTag.Text;
-			measurement.AlternateTag = TextBoxAlternateTag.Text;
-			measurement.SignalTypeID = ((KeyValuePair<int, string>)ComboBoxSignalType.SelectedItem).Key;
-			measurement.PhasorSourceIndex = ((KeyValuePair<int, string>)ComboBoxPhasorSource.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxPhasorSource.SelectedItem).Key;
-			measurement.SignalReference = TextBoxSignalReference.Text;
-			measurement.Adder = Convert.ToDouble(TextBoxAdder.Text);
-			measurement.Multiplier = Convert.ToDouble(TextBoxMultiplier.Text);
-			measurement.Description = TextBoxDescription.Text;
-			measurement.Enabled = (bool)CheckboxEnabled.IsChecked;
+            if (IsValid())
+            {
+                Measurement measurement = new Measurement();
+                measurement.HistorianID = ((KeyValuePair<int, string>)ComboBoxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxHistorian.SelectedItem).Key;
+                measurement.DeviceID = ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key;
+                measurement.PointTag = TextBoxPointTag.Text.CleanText();
+                measurement.AlternateTag = TextBoxAlternateTag.Text.CleanText();
+                measurement.SignalTypeID = ((KeyValuePair<int, string>)ComboBoxSignalType.SelectedItem).Key;
+                measurement.PhasorSourceIndex = ((KeyValuePair<int, string>)ComboBoxPhasorSource.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboBoxPhasorSource.SelectedItem).Key;
+                measurement.SignalReference = TextBoxSignalReference.Text.CleanText();
+                measurement.Adder = TextBoxAdder.Text.ToDouble();
+                measurement.Multiplier = TextBoxMultiplier.Text.ToDouble();
+                measurement.Description = TextBoxDescription.Text.CleanText();
+                measurement.Enabled = (bool)CheckboxEnabled.IsChecked;
 
-			if (m_inEditMode == true && !string.IsNullOrEmpty(m_signalID))
-			{
-				measurement.SignalID = m_signalID;
-				m_client.SaveMeasurementAsync(measurement, false);
-			}
-			else
-				m_client.SaveMeasurementAsync(measurement, true);
+                if (m_inEditMode == true && !string.IsNullOrEmpty(m_signalID))
+                {
+                    measurement.SignalID = m_signalID;
+                    m_client.SaveMeasurementAsync(measurement, false);
+                }
+                else
+                    m_client.SaveMeasurementAsync(measurement, true);
+            }
 		}
 		
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
@@ -661,6 +664,65 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		#endregion
 
 		#region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxPointTag.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Point Tag", SystemMessage = "Please provide valid Point Tag value.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxPointTag.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (string.IsNullOrEmpty(TextBoxSignalReference.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Signal Reference", SystemMessage = "Please provide valid Signal Reference value.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxSignalReference.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxAdder.Text.IsDouble())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Adder", SystemMessage = "Please provide valid floating point value for Adder.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxAdder.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxMultiplier.Text.IsDouble())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Multiplier", SystemMessage = "Please provide valid floating point value for Multiplier.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxMultiplier.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
 
 		void ClearForm()
 		{

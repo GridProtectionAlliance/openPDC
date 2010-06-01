@@ -366,30 +366,33 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			sb.Begin();
 			ClearForm();
 		}
-		
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
 
-			VendorDevice vendorDevice = new VendorDevice();
-			KeyValuePair<int, string> selectedVendor = (KeyValuePair<int, string>)ComboBoxVendor.SelectedItem;
-			vendorDevice.VendorID = selectedVendor.Key;
-			vendorDevice.Name = TextBoxName.Text;
-			vendorDevice.Description = TextBoxDescription.Text;
-			vendorDevice.URL = TextBoxUrl.Text;
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
 
-			if (m_vendorDeviceID != 0 && m_inEditMode == true)
-			{
-				vendorDevice.ID = m_vendorDeviceID;
-				m_client.SaveVendorDeviceAsync(vendorDevice, false);
-			}
-			else
-				m_client.SaveVendorDeviceAsync(vendorDevice, true);
-		}
+            if (IsValid())
+            {
+                VendorDevice vendorDevice = new VendorDevice();
+                KeyValuePair<int, string> selectedVendor = (KeyValuePair<int, string>)ComboBoxVendor.SelectedItem;
+                vendorDevice.VendorID = selectedVendor.Key;
+                vendorDevice.Name = TextBoxName.Text.CleanText();
+                vendorDevice.Description = TextBoxDescription.Text.CleanText();
+                vendorDevice.URL = TextBoxUrl.Text.CleanText();
+
+                if (m_vendorDeviceID != 0 && m_inEditMode == true)
+                {
+                    vendorDevice.ID = m_vendorDeviceID;
+                    m_client.SaveVendorDeviceAsync(vendorDevice, false);
+                }
+                else
+                    m_client.SaveVendorDeviceAsync(vendorDevice, true);
+            }
+        }
 
 		#endregion
 
@@ -410,6 +413,26 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		#endregion
 
 		#region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxName.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Name", SystemMessage = "Please provide valid Name.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxName.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
 
 		void ClearForm()
 		{

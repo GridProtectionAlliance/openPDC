@@ -367,42 +367,45 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 			ClearForm();
 		}
-		
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
 
-			CalculatedMeasurement calculatedMeasurement = new CalculatedMeasurement();
-			calculatedMeasurement.NodeId = ((KeyValuePair<string, string>)ComboBoxNode.SelectedItem).Key;
-			calculatedMeasurement.Acronym = TextBoxAcronym.Text;
-			calculatedMeasurement.Name = TextBoxName.Text;
-			calculatedMeasurement.AssemblyName = TextBoxAssemblyName.Text;
-			calculatedMeasurement.TypeName = TextBoxTypeName.Text;
-			calculatedMeasurement.ConnectionString = TextBoxConnectionString.Text;
-			calculatedMeasurement.ConfigSection = TextBoxConfigSection.Text;
-			calculatedMeasurement.InputMeasurements = TextBoxInputMeasurements.Text;
-			calculatedMeasurement.OutputMeasurements = TextBoxOutputMeasurements.Text;
-			calculatedMeasurement.MinimumMeasurementsToUse = string.IsNullOrEmpty(TextBoxMinMeasurements.Text) ? 0 : Convert.ToInt32(TextBoxMinMeasurements.Text);
-			calculatedMeasurement.FramesPerSecond = Convert.ToInt32(TextBoxFramesPerSecond.Text);
-			calculatedMeasurement.LagTime = Convert.ToDouble(TextBoxLagTime.Text);
-			calculatedMeasurement.LeadTime = Convert.ToDouble(TextBoxLeadTime.Text);
-			calculatedMeasurement.UseLocalClockAsRealTime = (bool)CheckBoxUseLocalClock.IsChecked;
-			calculatedMeasurement.AllowSortsByArrival = (bool)CheckBoxAllowSorts.IsChecked;
-			calculatedMeasurement.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
-			calculatedMeasurement.Enabled = (bool)CheckBoxEnabled.IsChecked;
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
 
-			if (m_inEditMode == true && m_calculatedMeasurementID > 0)
-			{
-				calculatedMeasurement.ID = m_calculatedMeasurementID;
-				m_client.SaveCalculatedMeasurementAsync(calculatedMeasurement, false);
-			}
-			else
-				m_client.SaveCalculatedMeasurementAsync(calculatedMeasurement, true);
-		}
+            if (IsValid())
+            {
+                CalculatedMeasurement calculatedMeasurement = new CalculatedMeasurement();
+                calculatedMeasurement.NodeId = ((KeyValuePair<string, string>)ComboBoxNode.SelectedItem).Key;
+                calculatedMeasurement.Acronym = TextBoxAcronym.Text.CleanText();
+                calculatedMeasurement.Name = TextBoxName.Text.CleanText();
+                calculatedMeasurement.AssemblyName = TextBoxAssemblyName.Text.CleanText();
+                calculatedMeasurement.TypeName = TextBoxTypeName.Text.CleanText();
+                calculatedMeasurement.ConnectionString = TextBoxConnectionString.Text.CleanText();
+                calculatedMeasurement.ConfigSection = TextBoxConfigSection.Text.CleanText();
+                calculatedMeasurement.InputMeasurements = TextBoxInputMeasurements.Text.CleanText();
+                calculatedMeasurement.OutputMeasurements = TextBoxOutputMeasurements.Text.CleanText();
+                calculatedMeasurement.MinimumMeasurementsToUse = TextBoxMinMeasurements.Text.ToInteger();
+                calculatedMeasurement.FramesPerSecond = TextBoxFramesPerSecond.Text.ToInteger();
+                calculatedMeasurement.LagTime = TextBoxLagTime.Text.ToDouble();
+                calculatedMeasurement.LeadTime = TextBoxLeadTime.Text.ToDouble();
+                calculatedMeasurement.UseLocalClockAsRealTime = (bool)CheckBoxUseLocalClock.IsChecked;
+                calculatedMeasurement.AllowSortsByArrival = (bool)CheckBoxAllowSorts.IsChecked;
+                calculatedMeasurement.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
+                calculatedMeasurement.Enabled = (bool)CheckBoxEnabled.IsChecked;
+
+                if (m_inEditMode == true && m_calculatedMeasurementID > 0)
+                {
+                    calculatedMeasurement.ID = m_calculatedMeasurementID;
+                    m_client.SaveCalculatedMeasurementAsync(calculatedMeasurement, false);
+                }
+                else
+                    m_client.SaveCalculatedMeasurementAsync(calculatedMeasurement, true);
+            }
+        }
 
 		#endregion
 
@@ -424,6 +427,117 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		#endregion
 
 		#region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxAcronym.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Acronym", SystemMessage = "Please provide valid Acronym.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxAcronym.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (string.IsNullOrEmpty(TextBoxAssemblyName.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Assembly Name", SystemMessage = "Please provide valid Assembly Name.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxAssemblyName.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (string.IsNullOrEmpty(TextBoxTypeName.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Type Name", SystemMessage = "Please provide valid Type Name.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxTypeName.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxMinMeasurements.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Minimum Measurements to Use", SystemMessage = "Please provide valid integer value for Minimum Measurements to Use.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxMinMeasurements.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxFramesPerSecond.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Frames Per Second", SystemMessage = "Please provide valid integer value for Frames Per Second.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxFramesPerSecond.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxLagTime.Text.IsDouble())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Lag Time", SystemMessage = "Please provide valid floating point value for Lag Time.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLagTime.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxLeadTime.Text.IsDouble())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Lead Time", SystemMessage = "Please provide valid floating point value for Lead Time.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLeadTime.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxLoadOrder.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Load Order", SystemMessage = "Please provide valid integer value for Load Order.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLoadOrder.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
 
 		void ClearForm()
 		{

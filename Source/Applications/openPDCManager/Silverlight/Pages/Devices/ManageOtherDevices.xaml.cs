@@ -416,35 +416,38 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 			ClearForm();
 		}
-		
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
 
-			OtherDevice otherDevice = new OtherDevice();
-			otherDevice.Acronym = TextBoxAcronym.Text;
-			otherDevice.Name = TextBoxName.Text;
-			otherDevice.IsConcentrator = (bool)CheckboxConcentrator.IsChecked;
-			otherDevice.CompanyID = ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key;
-			otherDevice.VendorDeviceID = ((KeyValuePair<int, string>)ComboboxVendorDevice.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxVendorDevice.SelectedItem).Key;
-			otherDevice.Longitude = string.IsNullOrEmpty(TextBoxLongitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLongitude.Text);
-			otherDevice.Latitude = string.IsNullOrEmpty(TextBoxLatitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLatitude.Text);
-			otherDevice.InterconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
-			otherDevice.Planned = (bool)CheckboxPlanned.IsChecked;
-			otherDevice.Desired = (bool)CheckboxDesired.IsChecked;
-			otherDevice.InProgress = (bool)CheckboxInProgress.IsChecked;
-			if (m_inEditMode == false && m_deviceID == 0)
-				m_client.SaveOtherDeviceAsync(otherDevice, true);
-			else
-			{
-				otherDevice.ID = m_deviceID;
-				m_client.SaveOtherDeviceAsync(otherDevice, false);
-			}
-		}
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
+
+            if (IsValid())
+            {
+                OtherDevice otherDevice = new OtherDevice();
+                otherDevice.Acronym = TextBoxAcronym.Text.CleanText();
+                otherDevice.Name = TextBoxName.Text.CleanText();
+                otherDevice.IsConcentrator = (bool)CheckboxConcentrator.IsChecked;
+                otherDevice.CompanyID = ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key;
+                otherDevice.VendorDeviceID = ((KeyValuePair<int, string>)ComboboxVendorDevice.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxVendorDevice.SelectedItem).Key;
+                otherDevice.Longitude = TextBoxLongitude.Text.ToNullableDecimal();
+                otherDevice.Latitude = TextBoxLatitude.Text.ToNullableDecimal();
+                otherDevice.InterconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
+                otherDevice.Planned = (bool)CheckboxPlanned.IsChecked;
+                otherDevice.Desired = (bool)CheckboxDesired.IsChecked;
+                otherDevice.InProgress = (bool)CheckboxInProgress.IsChecked;
+                if (m_inEditMode == false && m_deviceID == 0)
+                    m_client.SaveOtherDeviceAsync(otherDevice, true);
+                else
+                {
+                    otherDevice.ID = m_deviceID;
+                    m_client.SaveOtherDeviceAsync(otherDevice, false);
+                }
+            }
+        }
 
 		#endregion
 
@@ -471,6 +474,26 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		#endregion
 
 		#region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxAcronym.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Acronym", SystemMessage = "Please provide valid Acronym for a device.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxAcronym.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
 
 		void ClearForm()
 		{

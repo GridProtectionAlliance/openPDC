@@ -285,30 +285,33 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			}
 		}
 
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
 
-			OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
-			App app = (App)Application.Current;
+            if (IsValid())
+            {
+                OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
+                App app = (App)Application.Current;
 
-			outputStreamDeviceAnalog.NodeID = app.NodeValue;
-			outputStreamDeviceAnalog.OutputStreamDeviceID = m_sourceOutputStreamDeviceID;
-			outputStreamDeviceAnalog.Type = ((KeyValuePair<int, string>)ComboBoxType.SelectedItem).Key;
-			outputStreamDeviceAnalog.Label = TextBoxLabel.Text;
-			outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
-			if (m_inEditMode == true && m_outputStreamDeviceAnalogID > 0)
-			{
-				outputStreamDeviceAnalog.ID = m_outputStreamDeviceAnalogID;
-				m_client.SaveOutputStreamDeviceAnalogAsync(outputStreamDeviceAnalog, false);
-			}
-			else
-				m_client.SaveOutputStreamDeviceAnalogAsync(outputStreamDeviceAnalog, true);
-		}
+                outputStreamDeviceAnalog.NodeID = app.NodeValue;
+                outputStreamDeviceAnalog.OutputStreamDeviceID = m_sourceOutputStreamDeviceID;
+                outputStreamDeviceAnalog.Type = ((KeyValuePair<int, string>)ComboBoxType.SelectedItem).Key;
+                outputStreamDeviceAnalog.Label = TextBoxLabel.Text.CleanText();
+                outputStreamDeviceAnalog.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
+                if (m_inEditMode == true && m_outputStreamDeviceAnalogID > 0)
+                {
+                    outputStreamDeviceAnalog.ID = m_outputStreamDeviceAnalogID;
+                    m_client.SaveOutputStreamDeviceAnalogAsync(outputStreamDeviceAnalog, false);
+                }
+                else
+                    m_client.SaveOutputStreamDeviceAnalogAsync(outputStreamDeviceAnalog, true);
+            }
+        }
 
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -387,6 +390,39 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		#endregion 
 
 		#region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxLabel.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Phasor Label", SystemMessage = "Please provide valid Phasor Label.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLabel.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxLoadOrder.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Load Order", SystemMessage = "Please provide valid integer value for Load Order.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLoadOrder.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
 
 		void ClearForm()
 		{

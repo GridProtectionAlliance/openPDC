@@ -359,34 +359,37 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			}
 		}
 
-		void ButtonSave_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSaveTransform);
-			sb.Begin();
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
 
-			Historian historian = new Historian();
-			historian.NodeID = ((KeyValuePair<string, string>)ComboBoxNode.SelectedItem).Key;
-			historian.Acronym = TextBoxAcronym.Text;
-			historian.Name = TextBoxName.Text;
-			historian.AssemblyName = TextBoxAssemblyName.Text;
-			historian.TypeName = TextBoxTypeName.Text;
-			historian.ConnectionString = TextBoxConnectionString.Text;
-			historian.IsLocal = (bool)CheckboxIsLocal.IsChecked;
-			historian.Description = TextBoxDescription.Text;
-			historian.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
-			historian.Enabled = (bool)CheckboxEnabled.IsChecked;
+            if (IsValid())
+            {
+                Historian historian = new Historian();
+                historian.NodeID = ((KeyValuePair<string, string>)ComboBoxNode.SelectedItem).Key;
+                historian.Acronym = TextBoxAcronym.Text;
+                historian.Name = TextBoxName.Text;
+                historian.AssemblyName = TextBoxAssemblyName.Text;
+                historian.TypeName = TextBoxTypeName.Text;
+                historian.ConnectionString = TextBoxConnectionString.Text;
+                historian.IsLocal = (bool)CheckboxIsLocal.IsChecked;
+                historian.Description = TextBoxDescription.Text;
+                historian.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
+                historian.Enabled = (bool)CheckboxEnabled.IsChecked;
 
-			if (m_inEditMode == true && m_historianID > 0)
-			{
-				historian.ID = m_historianID;
-				m_client.SaveHistorianAsync(historian, false);
-			}
-			else
-				m_client.SaveHistorianAsync(historian, true);
-		}
+                if (m_inEditMode == true && m_historianID > 0)
+                {
+                    historian.ID = m_historianID;
+                    m_client.SaveHistorianAsync(historian, false);
+                }
+                else
+                    m_client.SaveHistorianAsync(historian, true);
+            }
+        }
 		
 		void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -419,6 +422,39 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		#endregion
 
 		#region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxAcronym.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Acronym", SystemMessage = "Please provide valid Acronym.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxAcronym.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxLoadOrder.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Load Order", SystemMessage = "Please provide valid integer value for Load Order.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                                                {
+                                                    TextBoxLoadOrder.Focus();
+                                                });
+                sm.Show();
+                return isValid;
+            }
+
+            return isValid;
+        }
 
 		void ClearForm()
 		{
