@@ -357,7 +357,6 @@ namespace DataQualityMonitoring
         public override void Start()
         {
             base.Start();
-
             m_purgeTimer.Start();
             m_warningTimer.Start();
         }
@@ -368,7 +367,6 @@ namespace DataQualityMonitoring
         public override void Stop()
         {
             base.Stop();
-
             m_purgeTimer.Stop();
             m_warningTimer.Stop();
         }
@@ -397,18 +395,36 @@ namespace DataQualityMonitoring
                 {
                     if (disposing)
                     {
+                        // Dispose timestamp service.
                         if (m_timestampService != null)
                         {
                             m_timestampService.ServiceProcessException -= m_timestampService_ServiceProcessException;
                             m_timestampService.Dispose();
                         }
+                        m_timestampService = null;
 
+                        // Dispose purge timer.
+                        if (m_purgeTimer != null)
+                        {
+                            m_purgeTimer.Elapsed -= m_purgeTimer_Elapsed;
+                            m_purgeTimer.Dispose();
+                        }
+                        m_purgeTimer = null;
+
+                        // Dispose warning timer.
+                        if (m_warningTimer != null)
+                        {
+                            m_warningTimer.Elapsed -= m_warningTimer_Elapsed;
+                            m_warningTimer.Dispose();
+                        }
+                        m_warningTimer = null;
+
+                        // Dispose discarding adapter.
                         if (m_discardingAdapter != null)
                         {
                             m_discardingAdapter.DiscardingMeasurements -= m_discardingAdapter_DiscardingMeasurements;
                             m_discardingAdapter.Disposed -= m_discardingAdapter_Disposed;
                         }
-
                         m_discardingAdapter = null; 
                     }
                 }
@@ -452,14 +468,17 @@ namespace DataQualityMonitoring
 
         private void m_discardingAdapter_DiscardingMeasurements(object sender, EventArgs<IEnumerable<IMeasurement>> e)
         {
-            Ticks currentTime = DateTime.UtcNow.Ticks;
-
-            lock (m_badTimestampMeasurements)
+            if (Enabled)
             {
-                foreach (IMeasurement measurement in e.Argument)
+                Ticks currentTime = DateTime.UtcNow.Ticks;
+
+                lock (m_badTimestampMeasurements)
                 {
-                    Ticks distance = currentTime - measurement.Timestamp;
-                    AddMeasurementWithBadTimestamp(currentTime, measurement);
+                    foreach (IMeasurement measurement in e.Argument)
+                    {
+                        Ticks distance = currentTime - measurement.Timestamp;
+                        AddMeasurementWithBadTimestamp(currentTime, measurement);
+                    }
                 }
             }
         }
