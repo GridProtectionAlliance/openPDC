@@ -468,7 +468,7 @@ namespace openPDCManager.Silverlight.Utilities
 
         public static string CleanText(this string value)
         {
-            return value.Trim().Replace("'", "").Replace("%", "");
+            return value.Trim().Replace("%", "");   //.Replace("'", "");
         }
 
         public static bool IsInteger(this string value)
