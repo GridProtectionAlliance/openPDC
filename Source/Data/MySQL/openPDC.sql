@@ -490,8 +490,8 @@ ORDER BY OutputStreamMeasurement.HistorianID, OutputStreamMeasurement.PointID;
 CREATE VIEW RuntimeHistorian
 AS
 SELECT Historian.NodeID, Runtime.ID, Historian.Acronym AS AdapterName,
- COALESCE(TRIM(Historian.AssemblyName), N'HistorianAdapters.dll') AS AssemblyName, 
- COALESCE(TRIM(Historian.TypeName), IF(IsLocal = 1, N'HistorianAdapters.LocalOutputAdapter', N'HistorianAdapters.RemoteOutputAdapter')) AS TypeName, 
+ COALESCE(NULLIF(TRIM(Historian.AssemblyName), ''), N'HistorianAdapters.dll') AS AssemblyName, 
+ COALESCE(NULLIF(TRIM(Historian.TypeName), ''), IF(IsLocal = 1, N'HistorianAdapters.LocalOutputAdapter', N'HistorianAdapters.RemoteOutputAdapter')) AS TypeName, 
  CONCAT_WS(';', Historian.ConnectionString, CONCAT(N'instanceName=', Historian.Acronym), CONCAT(N'sourceids=', Historian.Acronym),
  CONCAT(N'measurementReportingInterval=', CAST(Historian.MeasurementReportingInterval AS CHAR))) AS ConnectionString
 FROM Historian LEFT OUTER JOIN
