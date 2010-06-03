@@ -698,7 +698,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
             if (!TextBoxAdder.Text.IsDouble())
             {
                 isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Adder", SystemMessage = "Please provide valid floating point value for Adder.", UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Adder", SystemMessage = "Please provide valid numeric value for Adder.", UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                                                 {
@@ -711,7 +711,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
             if (!TextBoxMultiplier.Text.IsDouble())
             {
                 isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Multiplier", SystemMessage = "Please provide valid floating point value for Multiplier.", UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Multiplier", SystemMessage = "Please provide valid numeric value for Multiplier.", UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                                                 {

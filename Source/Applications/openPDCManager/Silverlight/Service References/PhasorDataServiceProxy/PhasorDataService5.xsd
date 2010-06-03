@@ -349,6 +349,9 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="AccessID" type="xs:int" />
       <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AllowUseOfCachedConfiguration" type="xs:boolean" />
+      <xs:element minOccurs="0" name="AllowedParsingExceptions" type="xs:int" />
+      <xs:element minOccurs="0" name="AutoStartDataParsingSequence" type="xs:boolean" />
       <xs:element minOccurs="0" name="CompanyAcronym" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CompanyID" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="CompanyName" nillable="true" type="xs:string" />
@@ -356,6 +359,7 @@
       <xs:element minOccurs="0" name="ContactList" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CreatedOn" type="xs:dateTime" />
       <xs:element minOccurs="0" name="DataLossInterval" type="xs:double" />
+      <xs:element minOccurs="0" name="DelayedConnectionInterval" type="xs:double" />
       <xs:element minOccurs="0" name="Enabled" type="xs:boolean" />
       <xs:element minOccurs="0" name="FramesPerSecond" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="HistorianAcronym" nillable="true" type="xs:string" />
@@ -368,13 +372,16 @@
       <xs:element minOccurs="0" name="LoadOrder" type="xs:int" />
       <xs:element minOccurs="0" name="Longitude" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="MeasuredLines" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="MeasurementReportingInterval" type="xs:int" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NodeID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NodeName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ParentAcronym" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ParentID" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="ParsingExceptionWindow" type="xs:double" />
       <xs:element minOccurs="0" name="ProtocolID" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="ProtocolName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SkipDisableRealTimeData" type="xs:boolean" />
       <xs:element minOccurs="0" name="TimeAdjustmentTicks" type="xs:long" />
       <xs:element minOccurs="0" name="TimeZone" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="VendorAcronym" nillable="true" type="xs:string" />

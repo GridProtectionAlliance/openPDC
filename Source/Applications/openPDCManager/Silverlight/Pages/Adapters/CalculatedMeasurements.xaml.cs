@@ -500,7 +500,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
             if (!TextBoxLagTime.Text.IsDouble())
             {
                 isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Lag Time", SystemMessage = "Please provide valid floating point value for Lag Time.", UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Lag Time", SystemMessage = "Please provide valid numeric value for Lag Time.", UserMessageType = MessageType.Error },
                     ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                                                 {
@@ -513,7 +513,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
             if (!TextBoxLeadTime.Text.IsDouble())
             {
                 isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Lead Time", SystemMessage = "Please provide valid floating point value for Lead Time.", UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Lead Time", SystemMessage = "Please provide valid numeric value for Lead Time.", UserMessageType = MessageType.Error },
                     ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                                                 {

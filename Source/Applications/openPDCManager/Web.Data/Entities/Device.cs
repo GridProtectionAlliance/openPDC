@@ -260,6 +260,13 @@ namespace openPDCManager.Web.Data.Entities
 		public int LoadOrder { get; set; }
 		public bool Enabled { get; set; }
         public DateTime CreatedOn { get; set; }
+        public int AllowedParsingExceptions { get; set; }
+        public double ParsingExceptionWindow { get; set; }
+        public double DelayedConnectionInterval { get; set; }
+        public bool AllowUseOfCachedConfiguration { get; set; }
+        public bool AutoStartDataParsingSequence { get; set; }
+        public bool SkipDisableRealTimeData { get; set; }
+        public int MeasurementReportingInterval { get; set; }
 		public string CompanyName { get; set; }
 		public string CompanyAcronym { get; set; }
 		public string HistorianAcronym { get; set; }

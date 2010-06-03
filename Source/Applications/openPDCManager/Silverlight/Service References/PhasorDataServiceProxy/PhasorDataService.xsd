@@ -45,6 +45,7 @@
         <xs:element minOccurs="0" name="historianID" nillable="true" type="xs:int" />
         <xs:element minOccurs="0" name="interconnectionID" nillable="true" type="xs:int" />
         <xs:element minOccurs="0" name="parentID" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="skipDisableRealTimeData" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

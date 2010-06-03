@@ -3946,6 +3946,12 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private string AcronymField;
         
+        private bool AllowUseOfCachedConfigurationField;
+        
+        private int AllowedParsingExceptionsField;
+        
+        private bool AutoStartDataParsingSequenceField;
+        
         private string CompanyAcronymField;
         
         private System.Nullable<int> CompanyIDField;
@@ -3959,6 +3965,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         private System.DateTime CreatedOnField;
         
         private double DataLossIntervalField;
+        
+        private double DelayedConnectionIntervalField;
         
         private bool EnabledField;
         
@@ -3984,6 +3992,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.Nullable<int> MeasuredLinesField;
         
+        private int MeasurementReportingIntervalField;
+        
         private string NameField;
         
         private string NodeIDField;
@@ -3994,9 +4004,13 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.Nullable<int> ParentIDField;
         
+        private double ParsingExceptionWindowField;
+        
         private System.Nullable<int> ProtocolIDField;
         
         private string ProtocolNameField;
+        
+        private bool SkipDisableRealTimeDataField;
         
         private long TimeAdjustmentTicksField;
         
@@ -4030,6 +4044,45 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((object.ReferenceEquals(this.AcronymField, value) != true)) {
                     this.AcronymField = value;
                     this.RaisePropertyChanged("Acronym");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool AllowUseOfCachedConfiguration {
+            get {
+                return this.AllowUseOfCachedConfigurationField;
+            }
+            set {
+                if ((this.AllowUseOfCachedConfigurationField.Equals(value) != true)) {
+                    this.AllowUseOfCachedConfigurationField = value;
+                    this.RaisePropertyChanged("AllowUseOfCachedConfiguration");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int AllowedParsingExceptions {
+            get {
+                return this.AllowedParsingExceptionsField;
+            }
+            set {
+                if ((this.AllowedParsingExceptionsField.Equals(value) != true)) {
+                    this.AllowedParsingExceptionsField = value;
+                    this.RaisePropertyChanged("AllowedParsingExceptions");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool AutoStartDataParsingSequence {
+            get {
+                return this.AutoStartDataParsingSequenceField;
+            }
+            set {
+                if ((this.AutoStartDataParsingSequenceField.Equals(value) != true)) {
+                    this.AutoStartDataParsingSequenceField = value;
+                    this.RaisePropertyChanged("AutoStartDataParsingSequence");
                 }
             }
         }
@@ -4121,6 +4174,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((this.DataLossIntervalField.Equals(value) != true)) {
                     this.DataLossIntervalField = value;
                     this.RaisePropertyChanged("DataLossInterval");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double DelayedConnectionInterval {
+            get {
+                return this.DelayedConnectionIntervalField;
+            }
+            set {
+                if ((this.DelayedConnectionIntervalField.Equals(value) != true)) {
+                    this.DelayedConnectionIntervalField = value;
+                    this.RaisePropertyChanged("DelayedConnectionInterval");
                 }
             }
         }
@@ -4282,6 +4348,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public int MeasurementReportingInterval {
+            get {
+                return this.MeasurementReportingIntervalField;
+            }
+            set {
+                if ((this.MeasurementReportingIntervalField.Equals(value) != true)) {
+                    this.MeasurementReportingIntervalField = value;
+                    this.RaisePropertyChanged("MeasurementReportingInterval");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string Name {
             get {
                 return this.NameField;
@@ -4347,6 +4426,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public double ParsingExceptionWindow {
+            get {
+                return this.ParsingExceptionWindowField;
+            }
+            set {
+                if ((this.ParsingExceptionWindowField.Equals(value) != true)) {
+                    this.ParsingExceptionWindowField = value;
+                    this.RaisePropertyChanged("ParsingExceptionWindow");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Nullable<int> ProtocolID {
             get {
                 return this.ProtocolIDField;
@@ -4368,6 +4460,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((object.ReferenceEquals(this.ProtocolNameField, value) != true)) {
                     this.ProtocolNameField = value;
                     this.RaisePropertyChanged("ProtocolName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool SkipDisableRealTimeData {
+            get {
+                return this.SkipDisableRealTimeDataField;
+            }
+            set {
+                if ((this.SkipDisableRealTimeDataField.Equals(value) != true)) {
+                    this.SkipDisableRealTimeDataField = value;
+                    this.RaisePropertyChanged("SkipDisableRealTimeData");
                 }
             }
         }
@@ -4750,7 +4855,7 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfo", ReplyAction="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfoResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfoCustomServiceFau" +
             "ltFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
-        System.IAsyncResult BeginSaveWizardConfigurationInfo(string nodeID, System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> wizardDeviceInfoList, string connectionString, System.Nullable<int> protocolID, System.Nullable<int> companyID, System.Nullable<int> historianID, System.Nullable<int> interconnectionID, System.Nullable<int> parentID, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginSaveWizardConfigurationInfo(string nodeID, System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> wizardDeviceInfoList, string connectionString, System.Nullable<int> protocolID, System.Nullable<int> companyID, System.Nullable<int> historianID, System.Nullable<int> interconnectionID, System.Nullable<int> parentID, bool skipDisableRealTimeData, System.AsyncCallback callback, object asyncState);
         
         string EndSaveWizardConfigurationInfo(System.IAsyncResult result);
         
@@ -7267,8 +7372,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginSaveWizardConfigurationInfo(string nodeID, System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> wizardDeviceInfoList, string connectionString, System.Nullable<int> protocolID, System.Nullable<int> companyID, System.Nullable<int> historianID, System.Nullable<int> interconnectionID, System.Nullable<int> parentID, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginSaveWizardConfigurationInfo(nodeID, wizardDeviceInfoList, connectionString, protocolID, companyID, historianID, interconnectionID, parentID, callback, asyncState);
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginSaveWizardConfigurationInfo(string nodeID, System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> wizardDeviceInfoList, string connectionString, System.Nullable<int> protocolID, System.Nullable<int> companyID, System.Nullable<int> historianID, System.Nullable<int> interconnectionID, System.Nullable<int> parentID, bool skipDisableRealTimeData, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginSaveWizardConfigurationInfo(nodeID, wizardDeviceInfoList, connectionString, protocolID, companyID, historianID, interconnectionID, parentID, skipDisableRealTimeData, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -7285,7 +7390,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             System.Nullable<int> historianID = ((System.Nullable<int>)(inValues[5]));
             System.Nullable<int> interconnectionID = ((System.Nullable<int>)(inValues[6]));
             System.Nullable<int> parentID = ((System.Nullable<int>)(inValues[7]));
-            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginSaveWizardConfigurationInfo(nodeID, wizardDeviceInfoList, connectionString, protocolID, companyID, historianID, interconnectionID, parentID, callback, asyncState);
+            bool skipDisableRealTimeData = ((bool)(inValues[8]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginSaveWizardConfigurationInfo(nodeID, wizardDeviceInfoList, connectionString, protocolID, companyID, historianID, interconnectionID, parentID, skipDisableRealTimeData, callback, asyncState);
         }
         
         private object[] OnEndSaveWizardConfigurationInfo(System.IAsyncResult result) {
@@ -7301,11 +7407,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             }
         }
         
-        public void SaveWizardConfigurationInfoAsync(string nodeID, System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> wizardDeviceInfoList, string connectionString, System.Nullable<int> protocolID, System.Nullable<int> companyID, System.Nullable<int> historianID, System.Nullable<int> interconnectionID, System.Nullable<int> parentID) {
-            this.SaveWizardConfigurationInfoAsync(nodeID, wizardDeviceInfoList, connectionString, protocolID, companyID, historianID, interconnectionID, parentID, null);
+        public void SaveWizardConfigurationInfoAsync(string nodeID, System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> wizardDeviceInfoList, string connectionString, System.Nullable<int> protocolID, System.Nullable<int> companyID, System.Nullable<int> historianID, System.Nullable<int> interconnectionID, System.Nullable<int> parentID, bool skipDisableRealTimeData) {
+            this.SaveWizardConfigurationInfoAsync(nodeID, wizardDeviceInfoList, connectionString, protocolID, companyID, historianID, interconnectionID, parentID, skipDisableRealTimeData, null);
         }
         
-        public void SaveWizardConfigurationInfoAsync(string nodeID, System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> wizardDeviceInfoList, string connectionString, System.Nullable<int> protocolID, System.Nullable<int> companyID, System.Nullable<int> historianID, System.Nullable<int> interconnectionID, System.Nullable<int> parentID, object userState) {
+        public void SaveWizardConfigurationInfoAsync(string nodeID, System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> wizardDeviceInfoList, string connectionString, System.Nullable<int> protocolID, System.Nullable<int> companyID, System.Nullable<int> historianID, System.Nullable<int> interconnectionID, System.Nullable<int> parentID, bool skipDisableRealTimeData, object userState) {
             if ((this.onBeginSaveWizardConfigurationInfoDelegate == null)) {
                 this.onBeginSaveWizardConfigurationInfoDelegate = new BeginOperationDelegate(this.OnBeginSaveWizardConfigurationInfo);
             }
@@ -7323,7 +7429,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                         companyID,
                         historianID,
                         interconnectionID,
-                        parentID}, this.onEndSaveWizardConfigurationInfoDelegate, this.onSaveWizardConfigurationInfoCompletedDelegate, userState);
+                        parentID,
+                        skipDisableRealTimeData}, this.onEndSaveWizardConfigurationInfoDelegate, this.onSaveWizardConfigurationInfoCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -10616,8 +10723,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 return _result;
             }
             
-            public System.IAsyncResult BeginSaveWizardConfigurationInfo(string nodeID, System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> wizardDeviceInfoList, string connectionString, System.Nullable<int> protocolID, System.Nullable<int> companyID, System.Nullable<int> historianID, System.Nullable<int> interconnectionID, System.Nullable<int> parentID, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[8];
+            public System.IAsyncResult BeginSaveWizardConfigurationInfo(string nodeID, System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.WizardDeviceInfo> wizardDeviceInfoList, string connectionString, System.Nullable<int> protocolID, System.Nullable<int> companyID, System.Nullable<int> historianID, System.Nullable<int> interconnectionID, System.Nullable<int> parentID, bool skipDisableRealTimeData, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[9];
                 _args[0] = nodeID;
                 _args[1] = wizardDeviceInfoList;
                 _args[2] = connectionString;
@@ -10626,6 +10733,7 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 _args[5] = historianID;
                 _args[6] = interconnectionID;
                 _args[7] = parentID;
+                _args[8] = skipDisableRealTimeData;
                 System.IAsyncResult _result = base.BeginInvoke("SaveWizardConfigurationInfo", _args, callback, asyncState);
                 return _result;
             }

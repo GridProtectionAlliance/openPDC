@@ -262,6 +262,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		string m_iniFileName = string.Empty;
 		string m_iniFilePath = string.Empty;
 		bool nextButtonClicked = false;
+        bool m_skipDisableRealTimeData = false;
 
 		#endregion
 
@@ -490,10 +491,17 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					string connectionString = m_connectionSettings.ConnectionString.ToLower();
 					Dictionary<string, string> connectionSettings = connectionString.ParseKeyValuePairs(';', '=', '{', '}');
 
-					if (connectionSettings.ContainsKey("commandchannel"))
-						TextBoxAlternateCommandChannel.Text = connectionSettings["commandchannel"];
+                    if (connectionSettings.ContainsKey("commandchannel"))
+                    {
+                        TextBoxAlternateCommandChannel.Text = connectionSettings["commandchannel"];
+                        connectionSettings.Remove("commandchannel");
+                    }
 
-					connectionSettings.Remove("commandchannel");
+                    if (connectionSettings.ContainsKey("skipdisablerealtimedata"))
+                    {
+                        m_skipDisableRealTimeData = Convert.ToBoolean(connectionSettings["skipdisablerealtimedata"]);
+                        connectionSettings.Remove("skipdisablerealtimedata");
+                    }
 
 					TextBoxConnectionString.Text = "TransportProtocol=" + m_connectionSettings.TransportProtocol.ToString() + ";" + connectionSettings.JoinKeyValuePairs(';', '=');
 
@@ -875,7 +883,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					int? companyID = ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key;
 					int? historianID = ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key;
 					int? interconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
-					m_client.SaveWizardConfigurationInfoAsync(app.NodeValue, m_wizardDeviceInfoList, this.ConnectionString(), protocolID, companyID, historianID, interconnectionID, m_parentID);
+					m_client.SaveWizardConfigurationInfoAsync(app.NodeValue, m_wizardDeviceInfoList, this.ConnectionString(), protocolID, companyID, historianID, interconnectionID, m_parentID, m_skipDisableRealTimeData);
 				}
 				else
 				{

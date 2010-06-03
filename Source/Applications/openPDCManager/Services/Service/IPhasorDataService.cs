@@ -598,7 +598,7 @@ namespace openPDCManager.Services.Service
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
-		string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID);
+		string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID, bool skipDisableRealTimeData);
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]

@@ -704,11 +704,19 @@ namespace openPDCManager.Silverlight.Pages.Devices
                 device.TimeZone = ((KeyValuePair<string, string>)ComboboxTimeZone.SelectedItem).Key;
                 device.FramesPerSecond = string.IsNullOrEmpty(TextBoxFramesPerSecond.Text.CleanText()) ? 30 : TextBoxFramesPerSecond.Text.ToInteger();
                 device.TimeAdjustmentTicks = TextBoxTimeAdjustmentTicks.Text.ToLong();
-                device.DataLossInterval = TextBoxDataLossInterval.Text.ToDouble();
+                device.DataLossInterval = TextBoxDataLossInterval.Text.ToDouble() == 0 ? 5 : TextBoxDataLossInterval.Text.ToDouble();
                 device.ContactList = TextBoxContactList.Text.CleanText();
                 device.MeasuredLines = TextBoxMeasuredLines.Text.ToNullableInteger(); //string.IsNullOrEmpty(TextBoxMeasuredLines.Text) ? (int?)null : Convert.ToInt32(TextBoxMeasuredLines.Text);
                 device.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
                 device.Enabled = (bool)CheckboxEnabled.IsChecked;
+                device.AllowedParsingExceptions = TextBoxAllowedParsingExceptions.Text.ToInteger();
+                device.ParsingExceptionWindow = TextBoxParsingExceptionWindow.Text.ToDouble();
+                device.DelayedConnectionInterval = TextBoxDelayedConnectionInterval.Text.ToDouble();
+                device.AllowUseOfCachedConfiguration = (bool)CheckboxAllowUseOfCachedConfiguration.IsChecked;
+                device.AutoStartDataParsingSequence = (bool)CheckboxAutoStartDataParsingSequence.IsChecked;
+                device.SkipDisableRealTimeData = (bool)CheckboxSkipDisableRealTimeData.IsChecked;
+                device.MeasurementReportingInterval = TextBoxMeasurementReportingInterval.Text.ToInteger();
+
                 if (m_inEditMode == false && m_deviceID == 0)
                     m_client.SaveDeviceAsync(device, true, 0, 0);
                 else
@@ -764,7 +772,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
             if (!TextBoxDataLossInterval.Text.IsDouble())
             {
                 isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Data Loss Interval", SystemMessage = "Please provide valid floating point value for Data Loss Interval.", UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Data Loss Interval", SystemMessage = "Please provide valid numeric value for Data Loss Interval.", UserMessageType = MessageType.Error },
                     ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                                                 {
@@ -783,6 +791,58 @@ namespace openPDCManager.Silverlight.Pages.Devices
                                                 {
                                                     TextBoxLoadOrder.Focus();
                                                 });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxAllowedParsingExceptions.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Allowed Parsing Exceptions", SystemMessage = "Please provide valid integer value for Allowed Parsing Exceptions.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxAllowedParsingExceptions.Focus();
+                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxParsingExceptionWindow.Text.IsDouble())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Parsing Exception Window", SystemMessage = "Please provide valid numeric value for Parsing Exception Window.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxParsingExceptionWindow.Focus();
+                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxDelayedConnectionInterval.Text.IsDouble())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Delayed Connection Interval", SystemMessage = "Please provide valid numeric value for Delayed Connection Interval.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxDelayedConnectionInterval.Focus();
+                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxMeasurementReportingInterval.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Measurement Reporting Interval", SystemMessage = "Please provide valid integer value for Measurement Reporting Interval.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxMeasurementReportingInterval.Focus();
+                });
                 sm.Show();
                 return isValid;
             }

@@ -619,9 +619,9 @@ namespace openPDCManager.Services.Service
 			return CommonFunctions.RetrieveConfigurationFrame(nodeConnectionString, deviceConnectionString, protocolID);
 		}
 		
-		public string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID)
+		public string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID, bool skipDisableRealTimeData)
 		{
-			return CommonFunctions.SaveWizardConfigurationInfo(nodeID, wizardDeviceInfoList, connectionString, protocolID, companyID, historianID, interconnectionID, parentID);
+			return CommonFunctions.SaveWizardConfigurationInfo(nodeID, wizardDeviceInfoList, connectionString, protocolID, companyID, historianID, interconnectionID, parentID, skipDisableRealTimeData);
 		}
 		
 		public string GetExecutingAssemblyPath()

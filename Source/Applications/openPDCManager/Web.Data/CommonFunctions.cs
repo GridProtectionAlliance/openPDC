@@ -527,7 +527,7 @@ namespace openPDCManager.Web.Data
 		}
 
 		public static string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, 
-				int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID)
+				int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID, bool skipDisableRealTimeData)
 		{
 			try
 			{
@@ -573,10 +573,17 @@ namespace openPDCManager.Web.Data
 						device.AccessID = info.AccessID;
 						//Please review from here.										
 						device.TimeAdjustmentTicks = 0;
-						device.DataLossInterval = 35;
+						device.DataLossInterval = 5;
 						device.MeasuredLines = 1;
 						device.LoadOrder = loadOrder;
 						device.ContactList = string.Empty;
+                        device.AllowedParsingExceptions = 10;
+                        device.ParsingExceptionWindow = 5;
+                        device.DelayedConnectionInterval = 5;
+                        device.AllowUseOfCachedConfiguration = true;
+                        device.AutoStartDataParsingSequence = true;
+                        device.SkipDisableRealTimeData = skipDisableRealTimeData;
+                        device.MeasurementReportingInterval = 100000;
 
 						//If Add Digitals and Add Analogs is checked for the device then, if digitals and analogs are available i.e. count>0 then add them as measurements.		
 						int digitalCount = 0;
@@ -2359,6 +2366,13 @@ namespace openPDCManager.Web.Data
 								  LoadOrder = item.Field<int>("LoadOrder"),
 								  Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                   CreatedOn = item.Field<DateTime>("CreatedOn"),
+                                  AllowedParsingExceptions = Convert.ToInt32(item.Field<object>("AllowedParsingExceptions")),
+                                  ParsingExceptionWindow = item.Field<double>("ParsingExceptionWindow"),
+                                  DelayedConnectionInterval = item.Field<double>("DelayedConnectionInterval"),
+                                  AllowUseOfCachedConfiguration = item.Field<bool>("AllowUseOfCachedConfiguration"),
+                                  AutoStartDataParsingSequence = item.Field<bool>("AutoStartDataParsingSequence"),
+                                  SkipDisableRealTimeData = item.Field<bool>("SkipDisableRealTimeData"),
+                                  MeasurementReportingInterval = Convert.ToInt32(item.Field<object>("MeasurementReportingInterval")),
 								  CompanyName = item.Field<string>("CompanyName"),
 								  CompanyAcronym = item.Field<string>("CompanyAcronym"),
 								  HistorianAcronym = item.Field<string>("HistorianAcronym"),
@@ -2408,12 +2422,15 @@ namespace openPDCManager.Web.Data
 
 				if (isNew)
 					command.CommandText = "Insert Into Device (NodeID, ParentID, Acronym, Name, IsConcentrator, CompanyID, HistorianID, AccessID, VendorDeviceID, ProtocolID, Longitude, Latitude, InterconnectionID, ConnectionString, TimeZone, FramesPerSecond, TimeAdjustmentTicks, " +
-						"DataLossInterval, ContactList, MeasuredLines, LoadOrder, Enabled) Values (@nodeID, @parentID, @acronym, @name, @isConcentrator, @companyID, @historianID, @accessID, @vendorDeviceID, @protocolID, @longitude, @latitude, @interconnectionID, " +
-						"@connectionString, @timezone, @framesPerSecond, @timeAdjustmentTicks, @dataLossInterval, @contactList, @measuredLines, @loadOrder, @enabled)";
+						"DataLossInterval, ContactList, MeasuredLines, LoadOrder, Enabled, AllowedParsingExceptions, ParsingExceptionWindow, DelayedConnectionInterval, AllowUseOfCachedConfiguration, AutoStartDataParsingSequence, SkipDisableRealTimeData, MeasurementReportingInterval) " +
+                        "Values (@nodeID, @parentID, @acronym, @name, @isConcentrator, @companyID, @historianID, @accessID, @vendorDeviceID, @protocolID, @longitude, @latitude, @interconnectionID, " +
+                        "@connectionString, @timezone, @framesPerSecond, @timeAdjustmentTicks, @dataLossInterval, @contactList, @measuredLines, @loadOrder, @enabled, @allowedParsingExceptions, " + 
+                        "@parsingExceptionWindow, @delayedConnectionInterval, @allowUseOfCachedConfiguration, @autoStartDataParsingSequence, @skipDisableRealTimeData, @measurementReportingInterval)";
 				else
 					command.CommandText = "Update Device Set NodeID = @nodeID, ParentID = @parentID, Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, CompanyID = @companyID, HistorianID = @historianID, AccessID = @accessID, VendorDeviceID = @vendorDeviceID, " +
 						"ProtocolID = @protocolID, Longitude = @longitude, Latitude = @latitude, InterconnectionID = @interconnectionID, ConnectionString = @connectionString, TimeZone = @timezone, FramesPerSecond = @framesPerSecond, TimeAdjustmentTicks = @timeAdjustmentTicks, DataLossInterval = @dataLossInterval, " +
-						"ContactList = @contactList, MeasuredLines = @measuredLines, LoadOrder = @loadOrder, Enabled = @enabled WHERE ID = @id";
+						"ContactList = @contactList, MeasuredLines = @measuredLines, LoadOrder = @loadOrder, Enabled = @enabled, AllowedParsingExceptions = @allowedParsingExceptions, ParsingExceptionWindow = @parsingExceptionWindow, DelayedConnectionInterval = @delayedConnectionInterval, " + 
+                        "AllowUseOfCachedConfiguration = @allowUseOfCachedConfiguration, AutoStartDataParsingSequence = @autoStartDataParsingSequence, SkipDisableRealTimeData = @skipDisableRealTimeData, MeasurementReportingInterval = @measurementReportingInterval WHERE ID = @id";
 
 				command.CommandType = CommandType.Text;
 				command.Parameters.Add(AddWithValue(command, "@nodeID", device.NodeID));
@@ -2438,6 +2455,13 @@ namespace openPDCManager.Web.Data
 				command.Parameters.Add(AddWithValue(command, "@measuredLines", device.MeasuredLines ?? (object)DBNull.Value));
 				command.Parameters.Add(AddWithValue(command, "@loadOrder", device.LoadOrder));
 				command.Parameters.Add(AddWithValue(command, "@enabled", device.Enabled));
+                command.Parameters.Add(AddWithValue(command, "@allowedParsingExceptions", device.AllowedParsingExceptions));
+                command.Parameters.Add(AddWithValue(command, "@parsingExceptionWindow", device.ParsingExceptionWindow));
+                command.Parameters.Add(AddWithValue(command, "@delayedConnectionInterval", device.DelayedConnectionInterval));
+                command.Parameters.Add(AddWithValue(command, "@allowUseOfCachedConfiguration", device.AllowUseOfCachedConfiguration));
+                command.Parameters.Add(AddWithValue(command, "@autoStartDataParsingSequence", device.AutoStartDataParsingSequence));
+                command.Parameters.Add(AddWithValue(command, "@skipDisableRealTimeData", device.SkipDisableRealTimeData));
+                command.Parameters.Add(AddWithValue(command, "@measurementReportingInterval", device.MeasurementReportingInterval));
 
 				if (!isNew)
 					command.Parameters.Add(AddWithValue(command, "@id", device.ID));
