@@ -386,6 +386,7 @@ namespace CsvAdapters
         private void m_timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             IMeasurement[] newMeasurements = new IMeasurement[m_measurementsPerInterval];
+            Ticks currentTime = DateTime.Now;
 
             for (int i = 0; i < m_measurementsPerInterval; i++)
             {
@@ -405,7 +406,7 @@ namespace CsvAdapters
                 }
 
                 if (m_simulateTimestamp)
-                    measurement.Timestamp = DateTime.Now;
+                    measurement.Timestamp = currentTime;
                 else if (m_columns.ContainsKey("Timestamp"))
                     measurement.Timestamp = long.Parse(fields[m_columns["Timestamp"]]);
 
