@@ -1829,6 +1829,7 @@ namespace openPDCManager.Web.Data
 									 LoadOrder = item.Field<int>("LoadOrder"),
 									 TypeName = item.Field<string>("TypeName"),
 									 AssemblyName = item.Field<string>("AssemblyName"),
+                                     MeasurementReportingInterval = Convert.ToInt32(item.Field<object>("MeasurementReportingInterval")),
 									 NodeName = item.Field<string>("NodeName")
 								 }).ToList();
 				return historianList;
@@ -1893,11 +1894,11 @@ namespace openPDCManager.Web.Data
 				IDbCommand command = connection.Connection.CreateCommand();
 				command.CommandType = CommandType.Text;
 				if (isNew)
-					command.CommandText = "Insert Into Historian (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) Values " +
-						"(@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @isLocal, @description, @loadOrder, @enabled)";
+					command.CommandText = "Insert Into Historian (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, MeasurementReportingInterval, Description, LoadOrder, Enabled) Values " +
+                        "(@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @isLocal, @measurementReportingInterval, @description, @loadOrder, @enabled)";
 				else
 					command.CommandText = "Update Historian Set NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, TypeName = @typeName, " +
-						"ConnectionString = @connectionString, IsLocal = @isLocal, Description = @description, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+                        "ConnectionString = @connectionString, IsLocal = @isLocal, MeasurementReportingInterval = @measurementReportingInterval Description = @description, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
 
 				command.Parameters.Add(AddWithValue(command, "@nodeID", historian.NodeID));
 				command.Parameters.Add(AddWithValue(command, "@acronym", historian.Acronym));
@@ -1906,6 +1907,7 @@ namespace openPDCManager.Web.Data
 				command.Parameters.Add(AddWithValue(command, "@typeName", historian.TypeName));
 				command.Parameters.Add(AddWithValue(command, "@connectionString", historian.ConnectionString));
 				command.Parameters.Add(AddWithValue(command, "@isLocal", historian.IsLocal));
+                command.Parameters.Add(AddWithValue(command, "@measurementReportingInterval", historian.MeasurementReportingInterval));
 				command.Parameters.Add(AddWithValue(command, "@description", historian.Description));
 				command.Parameters.Add(AddWithValue(command, "@loadOrder", historian.LoadOrder));
 				command.Parameters.Add(AddWithValue(command, "@enabled", historian.Enabled));

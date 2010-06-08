@@ -248,6 +248,7 @@ namespace openPDCManager.Web.Data.Entities
         public string Description { get; set; }
 		public int LoadOrder { get; set; }
         public bool Enabled { get; set; }
+        public int MeasurementReportingInterval { get; set; }
 		public string NodeName { get; set; }
         //public string HistorianLongName { get; set; }
     }

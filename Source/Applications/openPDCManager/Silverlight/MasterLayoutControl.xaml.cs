@@ -261,8 +261,10 @@ namespace openPDCManager.Silverlight
 			NetworkChange.NetworkAddressChanged += new NetworkAddressChangedEventHandler(NetworkChange_NetworkAddressChanged);
 			ButtonChangeMode.Click += new RoutedEventHandler(ButtonChangeMode_Click);
 			UserControlSelectNode.NodeCollectionChanged += new SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);
-			UserControlSelectNode.ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
-		}
+			UserControlSelectNode.ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);            
+            ContentFrame.Navigating += new System.Windows.Navigation.NavigatingCancelEventHandler(ContentFrame_Navigating);
+            //ContentFrame.Navigated += new System.Windows.Navigation.NavigatedEventHandler(ContentFrame_Navigated);
+		}              
 
 		#endregion
 
@@ -346,12 +348,32 @@ namespace openPDCManager.Silverlight
 			}
 		}
 
+        void ContentFrame_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            App app = Application.Current as App;
+            if (string.IsNullOrEmpty(app.NodeValue))
+            {
+                Uri nodeUri = new Uri("/Pages/Manage/Nodes.xaml", UriKind.Relative);
+                if (e.Uri != nodeUri)
+                {
+                    e.Cancel = true;
+                    ContentFrame.Navigate(nodeUri);
+                }
+            }
+        }
+        
+
 		#endregion
 
 		#region [ Methods ]
 
 		void ScaleContent(double height, double width)
 		{
+            if ((bool)IsolatedStorageManager.LoadFromIsolatedStorage("MaintainAspectRatio"))
+                StackPanelRoot.HorizontalAlignment = HorizontalAlignment.Center;
+            else
+                StackPanelRoot.HorizontalAlignment = HorizontalAlignment.Left;
+
 			double defaultHeight = IsolatedStorageManager.LoadFromIsolatedStorage("DefaultHeight") == null ? layoutRootHeight : Convert.ToDouble(IsolatedStorageManager.LoadFromIsolatedStorage("DefaultHeight"));
 			double defaultWidth = IsolatedStorageManager.LoadFromIsolatedStorage("DefaultWidth") == null ? layoutRootWidth : Convert.ToDouble(IsolatedStorageManager.LoadFromIsolatedStorage("DefaultWidth"));
 			double minimumHeight = IsolatedStorageManager.LoadFromIsolatedStorage("MinimumHeight") == null ? 600 : Convert.ToDouble(IsolatedStorageManager.LoadFromIsolatedStorage("MinimumHeight"));

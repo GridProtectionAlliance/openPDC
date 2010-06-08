@@ -346,7 +346,7 @@ namespace openPDCManager.Silverlight.Utilities
 				IsolatedStorageManager.SaveIntoIsolatedStorage("ResizeWithBrowser", true);
 
 			if (!IsolatedStorageManager.Contains("MaintainAspectRatio") || overWrite)
-				IsolatedStorageManager.SaveIntoIsolatedStorage("MaintainAspectRatio", false);
+				IsolatedStorageManager.SaveIntoIsolatedStorage("MaintainAspectRatio", true);
 
 			if (!IsolatedStorageManager.Contains("NumberOfMessagesOnMonitor") || overWrite)
 				IsolatedStorageManager.SaveIntoIsolatedStorage("NumberOfMessagesOnMonitor", 75);

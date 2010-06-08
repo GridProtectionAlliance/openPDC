@@ -3553,6 +3553,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private int LoadOrderField;
         
+        private int MeasurementReportingIntervalField;
+        
         private string NameField;
         
         private string NodeIDField;
@@ -3661,6 +3663,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((this.LoadOrderField.Equals(value) != true)) {
                     this.LoadOrderField = value;
                     this.RaisePropertyChanged("LoadOrder");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int MeasurementReportingInterval {
+            get {
+                return this.MeasurementReportingIntervalField;
+            }
+            set {
+                if ((this.MeasurementReportingIntervalField.Equals(value) != true)) {
+                    this.MeasurementReportingIntervalField = value;
+                    this.RaisePropertyChanged("MeasurementReportingInterval");
                 }
             }
         }

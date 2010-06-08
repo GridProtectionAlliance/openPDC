@@ -298,6 +298,7 @@
       <xs:element minOccurs="0" name="ID" type="xs:int" />
       <xs:element minOccurs="0" name="IsLocal" type="xs:boolean" />
       <xs:element minOccurs="0" name="LoadOrder" type="xs:int" />
+      <xs:element minOccurs="0" name="MeasurementReportingInterval" type="xs:int" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NodeID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NodeName" nillable="true" type="xs:string" />

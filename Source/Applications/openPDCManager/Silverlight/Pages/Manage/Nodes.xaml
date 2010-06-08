@@ -93,7 +93,7 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ScrollViewer BorderThickness="0" Padding="0" Height="485">
+                    <ScrollViewer BorderThickness="0" Padding="0" Height="468">
                         <ScrollViewer.Content>
                             <ListBox x:Name="ListBoxNodeList" Margin="0" Padding="0">
                                 <ListBox.ItemTemplate>

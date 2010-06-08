@@ -18,6 +18,7 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
                             <RowDefinition Height="2*" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -48,10 +49,17 @@
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
                         <TextBox x:Name="TextBoxLoadOrder" Grid.Row="4" Grid.Column="1" Text="{Binding Path=LoadOrder}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <CheckBox x:Name="CheckboxIsLocal" Content="Local" IsChecked="{Binding IsLocal}" Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
-                        <CheckBox x:Name="CheckboxEnabled" Content="Enabled" IsChecked="{Binding Enabled}" Grid.Row="4" Grid.Column="3" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                         
-                        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2">
+                            <TextBlock Text="Measurement Reporting Interval" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
+                        <TextBox x:Name="TextBoxMeasurementReportingInterval" Grid.Row="4" Grid.Column="3" Text="{Binding Path=MeasurementReportingInterval}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        
+                        <CheckBox x:Name="CheckboxIsLocal" Content="Local" IsChecked="{Binding IsLocal}" Grid.Row="5" Grid.Column="2" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                        <CheckBox x:Name="CheckboxEnabled" Content="Enabled" IsChecked="{Binding Enabled}" Grid.Row="5" Grid.Column="3" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                        
+                        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
                                 <Button.RenderTransform>
                                     <ScaleTransform x:Name="ButtonClearTransform" ScaleX="1" ScaleY="1" />
@@ -64,7 +72,7 @@
                                 </Button.RenderTransform>
                             </Button>
                         </StackPanel>
-                        <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5"/>
+                        <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="6"/>
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource HeaderRowBorderStyle}">
@@ -82,7 +90,7 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ScrollViewer BorderThickness="0" Padding="0" Height="540">
+                    <ScrollViewer BorderThickness="0" Padding="0" Height="515">
                         <ScrollViewer.Content>
                             <ListBox x:Name="ListBoxHistorianList" Margin="0" Padding="0">
                                 <ListBox.ItemTemplate>

@@ -378,9 +378,10 @@ namespace openPDCManager.Silverlight.Pages.Adapters
                 historian.ConnectionString = TextBoxConnectionString.Text;
                 historian.IsLocal = (bool)CheckboxIsLocal.IsChecked;
                 historian.Description = TextBoxDescription.Text;
-                historian.LoadOrder = Convert.ToInt32(TextBoxLoadOrder.Text);
+                historian.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
+                historian.MeasurementReportingInterval = TextBoxMeasurementReportingInterval.Text.ToInteger();
                 historian.Enabled = (bool)CheckboxEnabled.IsChecked;
-
+                
                 if (m_inEditMode == true && m_historianID > 0)
                 {
                     historian.ID = m_historianID;
@@ -449,6 +450,20 @@ namespace openPDCManager.Silverlight.Pages.Adapters
                                                 {
                                                     TextBoxLoadOrder.Focus();
                                                 });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxMeasurementReportingInterval.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Measurement Reporting Interval", SystemMessage = "Please provide valid integer value for Measurement Reporting Interval.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxMeasurementReportingInterval.Text = "100000";
+                    TextBoxMeasurementReportingInterval.Focus();
+                });
                 sm.Show();
                 return isValid;
             }

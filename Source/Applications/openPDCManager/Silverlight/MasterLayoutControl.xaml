@@ -6,8 +6,9 @@
     xmlns:nodesControl="clr-namespace:openPDCManager.Silverlight.UserControls"
     >
     
-    <Grid x:Name="GridLayoutRoot" Background="{StaticResource PageBackgroundBrush}">        
-        <Canvas x:Name="LayoutRoot" Background="Transparent" VerticalAlignment="Top" HorizontalAlignment="Left" Height="900" Width="1200">
+    <Grid x:Name="GridLayoutRoot" Background="{StaticResource PageBackgroundBrush}" HorizontalAlignment="Stretch">        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" x:Name="StackPanelRoot">
+            <Canvas x:Name="LayoutRoot" Background="Transparent" VerticalAlignment="Top" HorizontalAlignment="Left" Height="900" Width="1200">
             <Canvas.RenderTransform>
                 <ScaleTransform x:Name="LayoutRootScale" ScaleX="1" ScaleY="1"/>
             </Canvas.RenderTransform>
@@ -181,7 +182,7 @@
             </Grid>
 
         </Canvas>
-    
+        </StackPanel>
     </Grid>
     
 </UserControl>
