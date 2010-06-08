@@ -254,6 +254,7 @@ namespace CsvAdapters
         private Dictionary<string, int> m_columns;
         private double m_inputInterval;
         private int m_measurementsPerInterval;
+        private bool m_simulateTimestamp;
         private System.Timers.Timer m_timer;
 
         #endregion
@@ -266,7 +267,7 @@ namespace CsvAdapters
         public CsvInputAdapter()
         {
             m_fileName = "measurements.csv";
-            m_columns = new Dictionary<string, int>();
+            m_columns = new Dictionary<string, int>(StringComparer.CurrentCultureIgnoreCase);
             m_inputInterval = 33.333333;
             m_measurementsPerInterval = 5;
             m_timer = new System.Timers.Timer();
@@ -337,6 +338,9 @@ namespace CsvAdapters
             if (settings.TryGetValue("measurementsPerInterval", out setting))
                 m_measurementsPerInterval = int.Parse(setting);
 
+            if (settings.TryGetValue("simulateTimestamp", out setting))
+                m_simulateTimestamp = setting.ParseBoolean();
+
             m_timer.Interval = m_inputInterval;
             m_timer.AutoReset = true;
             m_timer.Elapsed += m_timer_Elapsed;
@@ -400,7 +404,9 @@ namespace CsvAdapters
                     measurement.ID = uint.Parse(splitKey[1]);
                 }
 
-                if (m_columns.ContainsKey("Timestamp"))
+                if (m_simulateTimestamp)
+                    measurement.Timestamp = DateTime.Now;
+                else if (m_columns.ContainsKey("Timestamp"))
                     measurement.Timestamp = long.Parse(fields[m_columns["Timestamp"]]);
 
                 if (m_columns.ContainsKey("Value"))
