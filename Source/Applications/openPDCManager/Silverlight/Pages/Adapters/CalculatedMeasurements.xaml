@@ -21,7 +21,10 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="2*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -76,16 +79,30 @@
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
                         <TextBox x:Name="TextBoxFramesPerSecond" Grid.Row="6" Grid.Column="1" Text="{Binding Path=FramesPerSecond}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        
                         <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="2">
+                            <TextBlock Text="Time Resolution" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
+                        <TextBox x:Name="TextBoxTimeResolution" Grid.Row="6" Grid.Column="3" Text="{Binding Path=TimeResolution}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        
+                        <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="0">
+                            <TextBlock Text="Downsampling Method" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
+                        <TextBox x:Name="TextBoxDownsamplingMethod" Grid.Row="7" Grid.Column="1" Text="{Binding Path=DownsamplingMethod}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        
+                        <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="2">
                             <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
-                        <TextBox x:Name="TextBoxLoadOrder" Grid.Row="6" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <CheckBox x:Name="CheckBoxUseLocalClock" Grid.Row="7" Grid.Column="1" Content="Use Local Clock As Real-Time" IsChecked="{Binding Path=UseLocalClockAsRealTime}" FontWeight="Bold" VerticalAlignment="Center"/>
-                        <CheckBox x:Name="CheckBoxAllowSorts" Grid.Row="7" Grid.Column="3" Content="Allow Sorts By Arrival" IsChecked="{Binding Path=AllowSortsByArrival}" FontWeight="Bold" VerticalAlignment="Center"/>
-                        <CheckBox x:Name="CheckBoxEnabled" Grid.Row="7" Grid.Column="2" Content="Enabled" IsChecked="{Binding Path=Enabled}" FontWeight="Bold" VerticalAlignment="Center"/>
-                        
-                        <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <TextBox x:Name="TextBoxLoadOrder" Grid.Row="7" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <CheckBox x:Name="CheckBoxUseLocalClock" Grid.Row="8" Grid.Column="1" Content="Use Local Clock As Real-Time" IsChecked="{Binding Path=UseLocalClockAsRealTime}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <CheckBox x:Name="CheckBoxAllowSorts" Grid.Row="8" Grid.Column="3" Content="Allow Sorts By Arrival" IsChecked="{Binding Path=AllowSortsByArrival}" FontWeight="Bold" VerticalAlignment="Center"/>                        
+                        <CheckBox x:Name="CheckBoxIgnoreBadTimeStamps" Grid.Row="9" Grid.Column="1" Content="Ignore Bad Time Stamps" IsChecked="{Binding Path=IgnoreBadTimeStamps}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <CheckBox x:Name="CheckBoxAllowPreemptivePublishing" Grid.Row="9" Grid.Column="3" Content="Allow Preemptive Publishing" IsChecked="{Binding Path=AllowPreemptivePublishing}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <CheckBox x:Name="CheckBoxEnabled" Grid.Row="10" Grid.Column="3" Content="Enabled" IsChecked="{Binding Path=Enabled}" FontWeight="Bold" VerticalAlignment="Center"/>                        
+                        <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
                                 <Button.RenderTransform>
                                     <ScaleTransform x:Name="ButtonClearTransform" ScaleX="1" ScaleY="1" />
@@ -98,7 +115,7 @@
                                 </Button.RenderTransform>
                             </Button>
                         </StackPanel>
-                        <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="8"/>                        
+                        <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="11"/>
                     </Grid>
                 </Border>
                 
@@ -117,7 +134,7 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ScrollViewer BorderThickness="0" Padding="0" Height="400">
+                    <ScrollViewer BorderThickness="0" Padding="0" Height="330">
                         <ScrollViewer.Content>
                             <ListBox x:Name="ListBoxCalculatedMeasurementList" Margin="0" Padding="0">
                                 <ListBox.ItemTemplate>

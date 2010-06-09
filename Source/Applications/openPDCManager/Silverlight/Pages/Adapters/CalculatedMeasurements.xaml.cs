@@ -396,6 +396,10 @@ namespace openPDCManager.Silverlight.Pages.Adapters
                 calculatedMeasurement.AllowSortsByArrival = (bool)CheckBoxAllowSorts.IsChecked;
                 calculatedMeasurement.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
                 calculatedMeasurement.Enabled = (bool)CheckBoxEnabled.IsChecked;
+                calculatedMeasurement.IgnoreBadTimeStamps = (bool)CheckBoxIgnoreBadTimeStamps.IsChecked;
+                calculatedMeasurement.TimeResolution = TextBoxTimeResolution.Text.ToInteger();
+                calculatedMeasurement.AllowPreemptivePublishing = (bool)CheckBoxAllowPreemptivePublishing.IsChecked;
+                calculatedMeasurement.DownSamplingMethod = TextBoxDownsamplingMethod.Text.CleanText();
 
                 if (m_inEditMode == true && m_calculatedMeasurementID > 0)
                 {
@@ -532,6 +536,34 @@ namespace openPDCManager.Silverlight.Pages.Adapters
                                                 {
                                                     TextBoxLoadOrder.Focus();
                                                 });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxTimeResolution.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Time Resolution", SystemMessage = "Please provide valid integer value for Time Resolution.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxTimeResolution.Text = "10000";
+                    TextBoxTimeResolution.Focus();
+                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (string.IsNullOrEmpty(TextBoxDownsamplingMethod.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Downsampling Method", SystemMessage = "Please provide valid Downsampling Method.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxDownsamplingMethod.Text = "LastReceived";
+                    TextBoxDownsamplingMethod.Focus();
+                });
                 sm.Show();
                 return isValid;
             }

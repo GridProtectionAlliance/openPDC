@@ -3757,6 +3757,10 @@ namespace openPDCManager.Web.Data
 												 AllowSortsByArrival = Convert.ToBoolean(item.Field<object>("AllowSortsByArrival")),
 												 LoadOrder = item.Field<int>("LoadOrder"),
 												 Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+                                                 IgnoreBadTimeStamps = Convert.ToBoolean(item.Field<object>("IgnoreBadTimeStamps")),
+                                                 TimeResolution = Convert.ToInt32(item.Field<object>("TimeResolution")),
+                                                 AllowPreemptivePublishing = Convert.ToBoolean(item.Field<object>("AllowPreemptivePublishing")),
+                                                 DownSamplingMethod = item.Field<string>("DownSamplingMethod"),
 												 NodeName = item.Field<string>("NodeName")
 											 }).ToList();
 								
@@ -3784,12 +3788,13 @@ namespace openPDCManager.Web.Data
 
 				if (isNew)
 					command.CommandText = "Insert Into CalculatedMeasurement (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, ConfigSection, InputMeasurements, OutputMeasurements, MinimumMeasurementsToUse, FramesPerSecond, LagTime, LeadTime, " +
-						"UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled) Values (@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @configSection, @inputMeasurements, @outputMeasurements, @minimumMeasurementsToUse, " +
-						"@framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled)";
+						"UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, DownsamplingMethod) Values (@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @configSection, @inputMeasurements, @outputMeasurements, @minimumMeasurementsToUse, " +
+                        "@framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled, @ignoreBadTimeStamps, @timeResolution, @allowPreemptivePublishing, @downsamplingMethod)";
 				else
 					command.CommandText = "Update CalculatedMeasurement Set NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, TypeName = @typeName, ConnectionString = @connectionString, ConfigSection = @configSection, " +
 						"InputMeasurements = @inputMeasurements, OutputMeasurements = @outputMeasurements, MinimumMeasurementsToUse = @minimumMeasurementsToUse, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, " +
-						"UseLocalClockAsRealTime = @useLocalClockAsRealTime, AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+						"UseLocalClockAsRealTime = @useLocalClockAsRealTime, AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled, " +
+                        "IgnoreBadTimeStamps = @ignoreBadTimeStamps, TimeResolution = @timeResolution, AllowPreemptivePublishing = @allowPreemptivePublishing, DownsamplingMethod = @downsamplingMethod Where ID = @id";
 
 				command.Parameters.Add(AddWithValue(command, "@nodeID", calculatedMeasurement.NodeId));
 				command.Parameters.Add(AddWithValue(command, "@acronym", calculatedMeasurement.Acronym));
@@ -3808,6 +3813,10 @@ namespace openPDCManager.Web.Data
 				command.Parameters.Add(AddWithValue(command, "@allowSortsByArrival", calculatedMeasurement.AllowSortsByArrival));
 				command.Parameters.Add(AddWithValue(command, "@loadOrder", calculatedMeasurement.LoadOrder));
 				command.Parameters.Add(AddWithValue(command, "@enabled", calculatedMeasurement.Enabled));
+                command.Parameters.Add(AddWithValue(command, "@ignoreBadTimeStamps", calculatedMeasurement.IgnoreBadTimeStamps));
+                command.Parameters.Add(AddWithValue(command, "@timeResolution", calculatedMeasurement.TimeResolution));
+                command.Parameters.Add(AddWithValue(command, "@allowPreemptivePublishing", calculatedMeasurement.AllowPreemptivePublishing));
+                command.Parameters.Add(AddWithValue(command, "@downsamplingMethod", calculatedMeasurement.DownSamplingMethod));
 
 				if (!isNew)
 					command.Parameters.Add(AddWithValue(command, "@id", calculatedMeasurement.ID));

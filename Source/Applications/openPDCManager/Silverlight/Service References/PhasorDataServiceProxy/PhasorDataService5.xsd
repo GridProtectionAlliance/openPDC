@@ -66,13 +66,16 @@
   <xs:complexType name="CalculatedMeasurement">
     <xs:sequence>
       <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AllowPreemptivePublishing" type="xs:boolean" />
       <xs:element minOccurs="0" name="AllowSortsByArrival" type="xs:boolean" />
       <xs:element minOccurs="0" name="AssemblyName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ConfigSection" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ConnectionString" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DownSamplingMethod" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Enabled" type="xs:boolean" />
       <xs:element minOccurs="0" name="FramesPerSecond" type="xs:int" />
       <xs:element minOccurs="0" name="ID" type="xs:int" />
+      <xs:element minOccurs="0" name="IgnoreBadTimeStamps" type="xs:boolean" />
       <xs:element minOccurs="0" name="InputMeasurements" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="LagTime" type="xs:double" />
       <xs:element minOccurs="0" name="LeadTime" type="xs:double" />
@@ -82,6 +85,7 @@
       <xs:element minOccurs="0" name="NodeId" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NodeName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="OutputMeasurements" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TimeResolution" type="xs:int" />
       <xs:element minOccurs="0" name="TypeName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="UseLocalClockAsRealTime" type="xs:boolean" />
     </xs:sequence>

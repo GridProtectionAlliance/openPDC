@@ -93,7 +93,7 @@
 </head>
 <body onload="javascript:resizeContent();">
     <form id="form1" runat="server">        <!-- style="width:100%; height:100%;"> -->
-        <div id="silverlightControlHost" style="height: 100%; width: 100%;">
+        <div id="silverlightControlHost" style="height: 99%; width: 100%;">
             <object id="PcsSilverlightApp" data="data:application/x-silverlight-2," type="application/x-silverlight-2" width="100%" height="100%">            
 		        <param name="source" value="ClientBin/openPDCManager.Silverlight.xap"/>
 		        <param name="onError" value="onSilverlightError" />		        

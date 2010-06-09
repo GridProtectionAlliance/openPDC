@@ -255,6 +255,10 @@ namespace openPDCManager.Web.Data.Entities
 		public bool AllowSortsByArrival { get; set; }
 		public int LoadOrder { get; set; }
         public bool Enabled { get; set; }
+        public bool IgnoreBadTimeStamps { get; set; }
+        public int TimeResolution { get; set; }
+        public bool AllowPreemptivePublishing { get; set; }
+        public string DownSamplingMethod { get; set; }
 		public string NodeName { get; set; }
     }
 }

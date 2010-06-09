@@ -892,6 +892,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private string AcronymField;
         
+        private bool AllowPreemptivePublishingField;
+        
         private bool AllowSortsByArrivalField;
         
         private string AssemblyNameField;
@@ -900,11 +902,15 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private string ConnectionStringField;
         
+        private string DownSamplingMethodField;
+        
         private bool EnabledField;
         
         private int FramesPerSecondField;
         
         private int IDField;
+        
+        private bool IgnoreBadTimeStampsField;
         
         private string InputMeasurementsField;
         
@@ -924,6 +930,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private string OutputMeasurementsField;
         
+        private int TimeResolutionField;
+        
         private string TypeNameField;
         
         private bool UseLocalClockAsRealTimeField;
@@ -937,6 +945,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((object.ReferenceEquals(this.AcronymField, value) != true)) {
                     this.AcronymField = value;
                     this.RaisePropertyChanged("Acronym");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool AllowPreemptivePublishing {
+            get {
+                return this.AllowPreemptivePublishingField;
+            }
+            set {
+                if ((this.AllowPreemptivePublishingField.Equals(value) != true)) {
+                    this.AllowPreemptivePublishingField = value;
+                    this.RaisePropertyChanged("AllowPreemptivePublishing");
                 }
             }
         }
@@ -994,6 +1015,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string DownSamplingMethod {
+            get {
+                return this.DownSamplingMethodField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DownSamplingMethodField, value) != true)) {
+                    this.DownSamplingMethodField = value;
+                    this.RaisePropertyChanged("DownSamplingMethod");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public bool Enabled {
             get {
                 return this.EnabledField;
@@ -1028,6 +1062,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((this.IDField.Equals(value) != true)) {
                     this.IDField = value;
                     this.RaisePropertyChanged("ID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IgnoreBadTimeStamps {
+            get {
+                return this.IgnoreBadTimeStampsField;
+            }
+            set {
+                if ((this.IgnoreBadTimeStampsField.Equals(value) != true)) {
+                    this.IgnoreBadTimeStampsField = value;
+                    this.RaisePropertyChanged("IgnoreBadTimeStamps");
                 }
             }
         }
@@ -1145,6 +1192,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((object.ReferenceEquals(this.OutputMeasurementsField, value) != true)) {
                     this.OutputMeasurementsField = value;
                     this.RaisePropertyChanged("OutputMeasurements");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int TimeResolution {
+            get {
+                return this.TimeResolutionField;
+            }
+            set {
+                if ((this.TimeResolutionField.Equals(value) != true)) {
+                    this.TimeResolutionField = value;
+                    this.RaisePropertyChanged("TimeResolution");
                 }
             }
         }
