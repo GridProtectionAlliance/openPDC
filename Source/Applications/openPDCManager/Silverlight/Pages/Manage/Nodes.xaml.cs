@@ -249,6 +249,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		PhasorDataServiceClient m_client;
 		bool m_inEditMode = false;
 		string m_nodeID = string.Empty;
+        ActivityWindow m_activityWindow;
 
 		#endregion
 
@@ -339,6 +340,9 @@ namespace openPDCManager.Silverlight.Pages.Manage
 
 				sm.Show();
 			}
+
+            if (m_activityWindow != null)
+                m_activityWindow.Close();
 		}
 
 		#endregion
@@ -417,6 +421,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
+            m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+            m_activityWindow.Show();
 			m_client.GetNodeListAsync(false);
 			m_client.GetCompaniesAsync(true);
 		}
