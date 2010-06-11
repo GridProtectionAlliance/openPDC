@@ -1047,7 +1047,7 @@ namespace TVA.PhasorProtocols
                         {
                             order = int.Parse(analogRow["LoadOrder"].ToNonNullString("0"));
                             label = analogRow["Label"].ToNonNullString("Analog " + order).Trim().RemoveDuplicateWhiteSpace().TruncateRight(labelLength);
-                            analogType = analogRow["AnalogType"].ToNonNullString("SinglePointOnWave").ConvertToType<AnalogType>();
+                            analogType = (AnalogType)int.Parse(analogRow["Type"].ToNonNullString("0"));
                             scale = analogRow["ScalingValue"].ToNonNullString("0");
 
                             // Scale can be defined as a negative value in database, so check both formatting styles
