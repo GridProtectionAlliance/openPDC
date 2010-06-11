@@ -410,8 +410,8 @@ namespace openPDCManager.Web.Data
 											{
 												Acronym = cell.StationName.Replace(" ", "").ToUpper(),
 												Name = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(cell.StationName.ToLower()),
-												Longitude = 0,
-												Latitude = 0,
+												Longitude = -98.6m,
+												Latitude = 37.5m,
 												VendorDeviceID = (int?)null,
 												AccessID = cell.IDCode,
 												ParentAccessID = parentAccessID,
@@ -1110,7 +1110,17 @@ namespace openPDCManager.Web.Data
 										LoadOrder = item.Field<int>("LoadOrder"),
 										Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
 										NodeName = item.Field<string>("NodeName"),
-										TypeName = item.Field<int>("Type") == 0 ? "IEEE C37.118" : "BPA"
+										TypeName = item.Field<int>("Type") == 0 ? "IEEE C37.118" : "BPA",
+                                        IgnoreBadTimeStamps = Convert.ToBoolean(item.Field<object>("IgnoreBadTimeStamps")),
+                                        TimeResolution = Convert.ToInt32(item.Field<object>("TimeResolution")),
+                                        AllowPreemptivePublishing = Convert.ToBoolean(item.Field<object>("AllowPreemptivePublishing")),
+                                        DownsamplingMethod = item.Field<string>("DownsamplingMethod"),
+                                        DataFormat = item.Field<string>("DataFormat"),
+                                        CoordinateFormat = item.Field<string>("CoordinateFormat"),
+                                        CurrentScalingValue = Convert.ToInt32(item.Field<object>("CurrentScalingValue")),
+                                        VoltageScalingValue = Convert.ToInt32(item.Field<object>("VoltageScalingValue")),
+                                        AnalogScalingValue = Convert.ToInt32(item.Field<object>("AnalogScalingValue")),
+                                        DigitalMaskValue = Convert.ToInt32(item.Field<object>("DigitalMaskValue"))
 									}).ToList();
 				return outputStreamList;
 			}
@@ -1136,12 +1146,16 @@ namespace openPDCManager.Web.Data
 
 				if (isNew)
 					command.CommandText = "INSERT INTO OutputStream (NodeID, Acronym, Name, Type, ConnectionString, IDCode, CommandChannel, DataChannel, AutoPublishConfigFrame, AutoStartDataChannel, NominalFrequency, FramesPerSecond, LagTime, LeadTime, " +
-										"UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled) VALUES (@nodeID, @acronym, @name, @type, @connectionString, @idCode, @commandChannel, @dataChannel, @autoPublishConfigFrame, @autoStartDataChannel, " +
-										"@nominalFrequency, @framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled)";
+										"UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, DownsamplingMethod, DataFormat, CoordinateFormat, CurrentScalingValue, VoltageScalingValue, " +
+                                        "AnalogScalingValue, DigitalMaskValue) VALUES (@nodeID, @acronym, @name, @type, @connectionString, @idCode, @commandChannel, @dataChannel, @autoPublishConfigFrame, @autoStartDataChannel, @nominalFrequency, @framesPerSecond, " +
+                                        "@lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled, @ignoreBadTimeStamps, @timeResolution, @allowPreemptivePublishing, @downsamplingMethod, @dataFormat, @coordinateFormat, " +
+                                        "@currentScalingValue, @voltageScalingValue, @analogScalingValue, @digitalMaskValue)";
 				else
 					command.CommandText = "UPDATE OutputStream SET NodeID = @nodeID, Acronym = @acronym, Name = @name, Type = @type, ConnectionString = @connectionString, IDCode = @idCode, CommandChannel = @commandChannel, DataChannel = @dataChannel, AutoPublishConfigFrame = @autoPublishConfigFrame, " +
 										"AutoStartDataChannel = @autoStartDataChannel, NominalFrequency = @nominalFrequency, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, UseLocalClockAsRealTime = @useLocalClockAsRealTime, " +
-										"AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled WHERE ID = @id";
+                                        "AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled, IgnoreBadTimeStamps = @ignoreBadTimeStamps, TimeResolution = @timeResolution, AllowPreemptivePublishing = @allowPreemptivePublishing, " +
+                                        "DownsamplingMethod = @downsamplingMethod, DataFormat = @dataFormat, CoordinateFormat = @coordinateFormat, CurrentScalingValue = @currentScalingValue, VoltageScalingValue = @voltageScalingValue, " +
+                                        "AnalogScalingValue = @analogScalingValue, DigitalMaskValue = @digitalMaskValue WHERE ID = @id";
 
 				command.Parameters.Add(AddWithValue(command, "@nodeID", outputStream.NodeID));
 				command.Parameters.Add(AddWithValue(command, "@acronym", outputStream.Acronym));
@@ -1161,6 +1175,16 @@ namespace openPDCManager.Web.Data
 				command.Parameters.Add(AddWithValue(command, "@allowSortsByArrival", outputStream.AllowSortsByArrival));
 				command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStream.LoadOrder));
 				command.Parameters.Add(AddWithValue(command, "@enabled", outputStream.Enabled));
+                command.Parameters.Add(AddWithValue(command, "@ignoreBadTimeStamps", outputStream.IgnoreBadTimeStamps));
+                command.Parameters.Add(AddWithValue(command, "@timeResolution", outputStream.TimeResolution));
+                command.Parameters.Add(AddWithValue(command, "@allowPreemptivePublishing", outputStream.AllowPreemptivePublishing));
+                command.Parameters.Add(AddWithValue(command, "@downsamplingMethod", outputStream.DownsamplingMethod));
+                command.Parameters.Add(AddWithValue(command, "@dataFormat", outputStream.DataFormat));
+                command.Parameters.Add(AddWithValue(command, "@coordinateFormat", outputStream.CoordinateFormat));
+                command.Parameters.Add(AddWithValue(command, "@currentScalingValue", outputStream.CurrentScalingValue));
+                command.Parameters.Add(AddWithValue(command, "@voltageScalingValue", outputStream.VoltageScalingValue));
+                command.Parameters.Add(AddWithValue(command, "@analogScalingValue", outputStream.AnalogScalingValue));
+                command.Parameters.Add(AddWithValue(command, "@digitalMaskValue", outputStream.DigitalMaskValue));
 
 				if (!isNew)
 					command.Parameters.Add(AddWithValue(command, "@id", outputStream.ID));
@@ -1324,6 +1348,10 @@ namespace openPDCManager.Web.Data
 											  BpaAcronym = item.Field<string>("BpaAcronym"),
 											  LoadOrder = item.Field<int>("LoadOrder"),
 											  Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+                                              PhasorDataFormat = item.Field<string>("PhasorDataFormat"),
+                                              FrequencyDataFormat = item.Field<string>("FrequencyDataFormat"),
+                                              AnalogDataFormat = item.Field<string>("AnalogDataFormat"),
+                                              CoordinateFormat = item.Field<string>("CoordinateFormat"),
 											  Virtual = Convert.ToBoolean(item.Field<object>("Virtual"))
 										  }).ToList();
 				return outputStreamDeviceList;
@@ -1369,11 +1397,12 @@ namespace openPDCManager.Web.Data
 				command.CommandType = CommandType.Text;
 
 				if (isNew)
-					command.CommandText = "Insert Into OutputStreamDevice (NodeID, AdapterID, Acronym, BpaAcronym, Name, LoadOrder, Enabled) " +
-						"Values (@nodeID, @adapterID, @acronym, @bpaAcronym, @name, @loadOrder, @enabled)";
+					command.CommandText = "Insert Into OutputStreamDevice (NodeID, AdapterID, Acronym, BpaAcronym, Name, LoadOrder, Enabled, PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat) " +
+                        "Values (@nodeID, @adapterID, @acronym, @bpaAcronym, @name, @loadOrder, @enabled, @phasorDataFormat, @frequencyDataFormat, @analogDataFormat, @coordinateFormat)";
 				else
 					command.CommandText = "Update OutputStreamDevice Set NodeID = @nodeID, AdapterID = @adapterID, Acronym = @acronym, " +
-						"BpaAcronym = @bpaAcronym, Name = @name, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+                        "BpaAcronym = @bpaAcronym, Name = @name, LoadOrder = @loadOrder, Enabled = @enabled, PhasorDataFormat = @phasorDataFormat, " +
+                        "FrequencyDataFormat = @frequencyDataFormat, AnalogDataFormat = @analogDataFormat, CoordinateFormat = @coordinateFormat Where ID = @id";
 
 				command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDevice.NodeID));
 				command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamDevice.AdapterID));
@@ -1382,6 +1411,11 @@ namespace openPDCManager.Web.Data
 				command.Parameters.Add(AddWithValue(command, "@name", outputStreamDevice.Name));
 				command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDevice.LoadOrder));
 				command.Parameters.Add(AddWithValue(command, "@enabled", outputStreamDevice.Enabled));
+                command.Parameters.Add(AddWithValue(command, "@phasorDataFormat", outputStreamDevice.PhasorDataFormat));
+                command.Parameters.Add(AddWithValue(command, "@frequencyDataFormat", outputStreamDevice.FrequencyDataFormat));
+                command.Parameters.Add(AddWithValue(command, "@analogDataFormat", outputStreamDevice.AnalogDataFormat));
+                command.Parameters.Add(AddWithValue(command, "@coordinateFormat", outputStreamDevice.CoordinateFormat));
+
 				if (!isNew)
 				{
 					command.Parameters.Add(AddWithValue(command, "@id", outputStreamDevice.ID));
@@ -1468,6 +1502,10 @@ namespace openPDCManager.Web.Data
 					outputStreamDevice.Name = device.Name;
 					outputStreamDevice.LoadOrder = device.LoadOrder;
 					outputStreamDevice.Enabled = true;
+                    outputStreamDevice.PhasorDataFormat = string.Empty;
+                    outputStreamDevice.FrequencyDataFormat = string.Empty;
+                    outputStreamDevice.AnalogDataFormat = string.Empty;
+                    outputStreamDevice.CoordinateFormat = string.Empty;
 					SaveOutputStreamDevice(outputStreamDevice, true, string.Empty);	//save in to OutputStreamDevice Table.
 
 					int savedOutputStreamDeviceID = GetOutputStreamDevice(outputStreamID, device.Acronym).ID;
@@ -1486,6 +1524,7 @@ namespace openPDCManager.Web.Data
 						outputStreamDevicePhasor.Type = phasor.Type;
 						outputStreamDevicePhasor.Phase = phasor.Phase;
 						outputStreamDevicePhasor.LoadOrder = phasor.SourceIndex;
+                        outputStreamDevicePhasor.ScalingValue = 0;
 						SaveOutputStreamDevicePhasor(outputStreamDevicePhasor, true);
 					}
 					//********************************************
@@ -1507,6 +1546,7 @@ namespace openPDCManager.Web.Data
 								outputStreamDeviceAnalog.Label = measurement.PointTag;
 								outputStreamDeviceAnalog.Type = 0;	//default
 								outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
+                                outputStreamDeviceAnalog.ScalingValue = 0;
 								SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, true);
 							}
 						}
@@ -1519,6 +1559,7 @@ namespace openPDCManager.Web.Data
 								outputStreamDeviceDigital.OutputStreamDeviceID = savedOutputStreamDeviceID;
 								outputStreamDeviceDigital.Label = measurement.PointTag;
 								outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
+                                outputStreamDeviceDigital.MaskValue = 0;
 								SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, true);
 							}
 						}
@@ -1573,6 +1614,7 @@ namespace openPDCManager.Web.Data
 													Type = item.Field<string>("Type"),
 													Phase = item.Field<string>("Phase"),
 													LoadOrder = item.Field<int>("LoadOrder"),
+                                                    ScalingValue = Convert.ToInt32(item.Field<object>("ScalingValue")),
 													PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
 													PhaseType = item.Field<string>("Phase") == "+" ? "Positive" : item.Field<string>("Phase") == "-" ? "Negative" :
 																item.Field<string>("Phase") == "A" ? "Phase A" : item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
@@ -1600,11 +1642,11 @@ namespace openPDCManager.Web.Data
 				command.CommandType = CommandType.Text;
 
 				if (isNew)
-					command.CommandText = "Insert Into OutputStreamDevicePhasor (NodeID, OutputStreamDeviceID, Label, Type, Phase, LoadOrder) " +
-						"Values (@nodeID, @outputStreamDeviceID, @label, @type, @phase, @loadOrder)";
+					command.CommandText = "Insert Into OutputStreamDevicePhasor (NodeID, OutputStreamDeviceID, Label, Type, Phase, LoadOrder, ScalingValue) " +
+						"Values (@nodeID, @outputStreamDeviceID, @label, @type, @phase, @loadOrder, @scalingValue)";
 				else
 					command.CommandText = "Update OutputStreamDevicePhasor Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
-						"Type = @type, Phase = @phase, LoadOrder = @loadOrder Where ID = @id";
+						"Type = @type, Phase = @phase, LoadOrder = @loadOrder, ScalingValue = @scalingValue Where ID = @id";
 
 				command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDevicePhasor.NodeID));
 				command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDevicePhasor.OutputStreamDeviceID));
@@ -1612,6 +1654,8 @@ namespace openPDCManager.Web.Data
 				command.Parameters.Add(AddWithValue(command, "@type", outputStreamDevicePhasor.Type));
 				command.Parameters.Add(AddWithValue(command, "@phase", outputStreamDevicePhasor.Phase));
 				command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDevicePhasor.LoadOrder));
+                command.Parameters.Add(AddWithValue(command, "@scalingValue", outputStreamDevicePhasor.ScalingValue));
+
 				if (!isNew)
 					command.Parameters.Add(AddWithValue(command, "@id", outputStreamDevicePhasor.ID));
 
@@ -1657,6 +1701,7 @@ namespace openPDCManager.Web.Data
 													Label = item.Field<string>("Label"),
 													Type = item.Field<int>("Type"),
 													LoadOrder = item.Field<int>("LoadOrder"),
+                                                    ScalingValue = Convert.ToInt32(item.Field<object>("ScalingValue")),
 													TypeName = item.Field<int>("Type") == 0 ? "Single point-on-wave" : item.Field<int>("Type") == 1 ? "RMS of analog input" : "Peak of analog input"
 												}).ToList();
 				return outputStreamDeviceAnalogList;
@@ -1682,17 +1727,19 @@ namespace openPDCManager.Web.Data
 				command.CommandType = CommandType.Text;
 
 				if (isNew)
-					command.CommandText = "Insert Into OutputStreamDeviceAnalog (NodeID, OutputStreamDeviceID, Label, Type, LoadOrder) " +
-						"Values (@nodeID, @outputStreamDeviceID, @label, @type, @loadOrder)";
+					command.CommandText = "Insert Into OutputStreamDeviceAnalog (NodeID, OutputStreamDeviceID, Label, Type, LoadOrder, ScalingValue) " +
+						"Values (@nodeID, @outputStreamDeviceID, @label, @type, @loadOrder, @scalingValue)";
 				else
 					command.CommandText = "Update OutputStreamDeviceAnalog Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
-						"Type = @type, LoadOrder = @loadOrder Where ID = @id";
+						"Type = @type, LoadOrder = @loadOrder, ScalingValue = @scalingValue Where ID = @id";
 
 				command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDeviceAnalog.NodeID));
 				command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceAnalog.OutputStreamDeviceID));
 				command.Parameters.Add(AddWithValue(command, "@label", outputStreamDeviceAnalog.Label));
 				command.Parameters.Add(AddWithValue(command, "@type", outputStreamDeviceAnalog.Type));
 				command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDeviceAnalog.LoadOrder));
+                command.Parameters.Add(AddWithValue(command, "@scalingValue", outputStreamDeviceAnalog.ScalingValue));
+
 				if (!isNew)
 					command.Parameters.Add(AddWithValue(command, "@id", outputStreamDeviceAnalog.ID));
 
@@ -1736,7 +1783,8 @@ namespace openPDCManager.Web.Data
 													 OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
 													 ID = item.Field<int>("ID"),
 													 Label = item.Field<string>("Label"),
-													 LoadOrder = item.Field<int>("LoadOrder")
+													 LoadOrder = item.Field<int>("LoadOrder"),
+                                                     MaskValue = Convert.ToInt32(item.Field<object>("MaskValue"))
 												 }).ToList();
 				return outputStreamDeviceDigitalList;
 			}
@@ -1761,16 +1809,17 @@ namespace openPDCManager.Web.Data
 				command.CommandType = CommandType.Text;
 
 				if (isNew)
-					command.CommandText = "Insert Into OutputStreamDeviceDigital (NodeID, OutputStreamDeviceID, Label, LoadOrder) " +
-						"Values (@nodeID, @outputStreamDeviceID, @label, @loadOrder)";
+					command.CommandText = "Insert Into OutputStreamDeviceDigital (NodeID, OutputStreamDeviceID, Label, LoadOrder, MaskValue) " +
+						"Values (@nodeID, @outputStreamDeviceID, @label, @loadOrder, @maskValue)";
 				else
 					command.CommandText = "Update OutputStreamDeviceDigital Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
-						"LoadOrder = @loadOrder Where ID = @id";
+						"LoadOrder = @loadOrder, MaskValue = @maskValue Where ID = @id";
 
 				command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDeviceDigital.NodeID));
 				command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceDigital.OutputStreamDeviceID));
 				command.Parameters.Add(AddWithValue(command, "@label", outputStreamDeviceDigital.Label));
 				command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDeviceDigital.LoadOrder));
+                command.Parameters.Add(AddWithValue(command, "@maskValue", outputStreamDeviceDigital.MaskValue));
 				if (!isNew)
 					command.Parameters.Add(AddWithValue(command, "@id", outputStreamDeviceDigital.ID));
 
@@ -1898,7 +1947,7 @@ namespace openPDCManager.Web.Data
                         "(@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @isLocal, @measurementReportingInterval, @description, @loadOrder, @enabled)";
 				else
 					command.CommandText = "Update Historian Set NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, TypeName = @typeName, " +
-                        "ConnectionString = @connectionString, IsLocal = @isLocal, MeasurementReportingInterval = @measurementReportingInterval Description = @description, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+                        "ConnectionString = @connectionString, IsLocal = @isLocal, MeasurementReportingInterval = @measurementReportingInterval, Description = @description, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
 
 				command.Parameters.Add(AddWithValue(command, "@nodeID", historian.NodeID));
 				command.Parameters.Add(AddWithValue(command, "@acronym", historian.Acronym));
@@ -3760,7 +3809,7 @@ namespace openPDCManager.Web.Data
                                                  IgnoreBadTimeStamps = Convert.ToBoolean(item.Field<object>("IgnoreBadTimeStamps")),
                                                  TimeResolution = Convert.ToInt32(item.Field<object>("TimeResolution")),
                                                  AllowPreemptivePublishing = Convert.ToBoolean(item.Field<object>("AllowPreemptivePublishing")),
-                                                 DownSamplingMethod = item.Field<string>("DownSamplingMethod"),
+                                                 DownsamplingMethod = item.Field<string>("DownSamplingMethod"),
 												 NodeName = item.Field<string>("NodeName")
 											 }).ToList();
 								
@@ -3816,7 +3865,7 @@ namespace openPDCManager.Web.Data
                 command.Parameters.Add(AddWithValue(command, "@ignoreBadTimeStamps", calculatedMeasurement.IgnoreBadTimeStamps));
                 command.Parameters.Add(AddWithValue(command, "@timeResolution", calculatedMeasurement.TimeResolution));
                 command.Parameters.Add(AddWithValue(command, "@allowPreemptivePublishing", calculatedMeasurement.AllowPreemptivePublishing));
-                command.Parameters.Add(AddWithValue(command, "@downsamplingMethod", calculatedMeasurement.DownSamplingMethod));
+                command.Parameters.Add(AddWithValue(command, "@downsamplingMethod", calculatedMeasurement.DownsamplingMethod));
 
 				if (!isNew)
 					command.Parameters.Add(AddWithValue(command, "@id", calculatedMeasurement.ID));

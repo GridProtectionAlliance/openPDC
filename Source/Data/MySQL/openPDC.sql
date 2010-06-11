@@ -828,7 +828,9 @@ CREATE VIEW OutputStreamDetail AS
 SELECT     OS.NodeID, OS.ID, OS.Acronym, COALESCE(OS.Name, '') AS Name, OS.Type, COALESCE(OS.ConnectionString, '') AS ConnectionString, OS.IDCode, 
                       COALESCE(OS.CommandChannel, '') AS CommandChannel, COALESCE(OS.DataChannel, '') AS DataChannel, OS.AutoPublishConfigFrame, 
                       OS.AutoStartDataChannel, OS.NominalFrequency, OS.FramesPerSecond, OS.LagTime, OS.LeadTime, OS.UseLocalClockAsRealTime, 
-                      OS.AllowSortsByArrival, OS.LoadOrder, OS.Enabled, N.Name AS NodeName
+                      OS.AllowSortsByArrival, OS.LoadOrder, OS.Enabled, N.Name AS NodeName, OS.DigitalMaskValue, OS.AnalogScalingValue, 
+                      OS.VoltageScalingValue, OS.CurrentScalingValue, OS.CoordinateFormat, OS.DataFormat, OS.DownsamplingMethod, 
+                      OS.AllowPreemptivePublishing, OS.TimeResolution, OS.IgnoreBadTimeStamps
 FROM         OutputStream AS OS INNER JOIN
                       Node AS N ON OS.NodeID = N.ID;
                       
@@ -841,6 +843,8 @@ FROM         OutputStreamMeasurement AS OSM INNER JOIN
       
 CREATE VIEW OutputStreamDeviceDetail AS
 SELECT OSD.NodeID, OSD.AdapterID, OSD.ID, OSD.Acronym, COALESCE(OSD.BpaAcronym, '') AS BpaAcronym, OSD.Name, OSD.LoadOrder, OSD.Enabled, 
+			COALESCE(PhasorDataFormat, '') AS PhasorDataFormat, COALESCE(FrequencyDataFormat, '') AS FrequencyDataFormat, 
+			COALESCE(AnalogDataFormat, '') AS AnalogDataFormat, COALESCE(CoordinateFormat, '') AS CoordinateFormat,
                     CASE 
                         WHEN EXISTS (Select Acronym From Device Where Acronym = OSD.Acronym) THEN FALSE 
                         ELSE TRUE 

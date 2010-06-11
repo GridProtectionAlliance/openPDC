@@ -241,6 +241,7 @@ namespace openPDCManager.Web.Data.Entities
 		public string Label { get; set; }
 		public string Type { get; set; }
 		public string Phase { get; set; }
+        public int ScalingValue { get; set; }
 		public int LoadOrder { get; set; }
 		public string PhasorType { get; set; }
 		public string PhaseType { get; set; }

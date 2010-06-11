@@ -71,7 +71,7 @@
       <xs:element minOccurs="0" name="AssemblyName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ConfigSection" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ConnectionString" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="DownSamplingMethod" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DownsamplingMethod" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Enabled" type="xs:boolean" />
       <xs:element minOccurs="0" name="FramesPerSecond" type="xs:int" />
       <xs:element minOccurs="0" name="ID" type="xs:int" />
@@ -129,16 +129,24 @@
   <xs:complexType name="OutputStream">
     <xs:sequence>
       <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AllowPreemptivePublishing" type="xs:boolean" />
       <xs:element minOccurs="0" name="AllowSortsByArrival" type="xs:boolean" />
+      <xs:element minOccurs="0" name="AnalogScalingValue" type="xs:int" />
       <xs:element minOccurs="0" name="AutoPublishConfigFrame" type="xs:boolean" />
       <xs:element minOccurs="0" name="AutoStartDataChannel" type="xs:boolean" />
       <xs:element minOccurs="0" name="CommandChannel" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ConnectionString" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CoordinateFormat" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CurrentScalingValue" type="xs:int" />
       <xs:element minOccurs="0" name="DataChannel" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DataFormat" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DigitalMaskValue" type="xs:int" />
+      <xs:element minOccurs="0" name="DownsamplingMethod" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Enabled" type="xs:boolean" />
       <xs:element minOccurs="0" name="FramesPerSecond" type="xs:int" />
       <xs:element minOccurs="0" name="ID" type="xs:int" />
       <xs:element minOccurs="0" name="IDCode" type="xs:int" />
+      <xs:element minOccurs="0" name="IgnoreBadTimeStamps" type="xs:boolean" />
       <xs:element minOccurs="0" name="LagTime" type="xs:double" />
       <xs:element minOccurs="0" name="LeadTime" type="xs:double" />
       <xs:element minOccurs="0" name="LoadOrder" type="xs:int" />
@@ -146,9 +154,11 @@
       <xs:element minOccurs="0" name="NodeID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NodeName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NominalFrequency" type="xs:int" />
+      <xs:element minOccurs="0" name="TimeResolution" type="xs:int" />
       <xs:element minOccurs="0" name="Type" type="xs:int" />
       <xs:element minOccurs="0" name="TypeName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="UseLocalClockAsRealTime" type="xs:boolean" />
+      <xs:element minOccurs="0" name="VoltageScalingValue" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="OutputStream" nillable="true" type="tns:OutputStream" />
@@ -162,12 +172,16 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="AdapterID" type="xs:int" />
+      <xs:element minOccurs="0" name="AnalogDataFormat" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="BpaAcronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CoordinateFormat" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Enabled" type="xs:boolean" />
+      <xs:element minOccurs="0" name="FrequencyDataFormat" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ID" type="xs:int" />
       <xs:element minOccurs="0" name="LoadOrder" type="xs:int" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NodeID" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PhasorDataFormat" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Virtual" type="xs:boolean" />
     </xs:sequence>
   </xs:complexType>
@@ -207,6 +221,7 @@
       <xs:element minOccurs="0" name="Phase" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PhaseType" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PhasorType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ScalingValue" type="xs:int" />
       <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
@@ -224,6 +239,7 @@
       <xs:element minOccurs="0" name="LoadOrder" type="xs:int" />
       <xs:element minOccurs="0" name="NodeID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="OutputStreamDeviceID" type="xs:int" />
+      <xs:element minOccurs="0" name="ScalingValue" type="xs:int" />
       <xs:element minOccurs="0" name="Type" type="xs:int" />
       <xs:element minOccurs="0" name="TypeName" nillable="true" type="xs:string" />
     </xs:sequence>
@@ -240,6 +256,7 @@
       <xs:element minOccurs="0" name="ID" type="xs:int" />
       <xs:element minOccurs="0" name="Label" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="LoadOrder" type="xs:int" />
+      <xs:element minOccurs="0" name="MaskValue" type="xs:int" />
       <xs:element minOccurs="0" name="NodeID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="OutputStreamDeviceID" type="xs:int" />
     </xs:sequence>

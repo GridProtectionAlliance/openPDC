@@ -726,6 +726,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
                 }
             }
         }
+        
         bool IsValid()
         {
             bool isValid = true;
@@ -889,6 +890,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 		void AddNew_Loaded(object sender, RoutedEventArgs e)
 		{
+            ClearForm();
 			if (this.NavigationContext.QueryString.ContainsKey("did"))
 			{
 				m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
@@ -896,7 +898,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				m_deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
 				m_inEditMode = true;				
 				m_client.GetDeviceByDeviceIDAsync(m_deviceID);
-			}
+			}            
 		}
 
 		// Executes when the user navigates to this page.
@@ -911,7 +913,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			m_client.GetInterconnectionsAsync(true);
 			m_client.GetVendorDevicesAsync(true);
 			m_client.GetProtocolsAsync(true);
-			m_client.GetTimeZonesAsync(true);
+			m_client.GetTimeZonesAsync(true);            
 		}
 
 		#endregion
@@ -920,15 +922,38 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 		void ClearForm()
 		{
-			GridDeviceDetail.DataContext = new Device();
-			ComboboxCompany.SelectedIndex = 0;
-			ComboboxHistorian.SelectedIndex = 0;
-			ComboboxInterconnection.SelectedIndex = 0;
-			ComboboxNode.SelectedIndex = 0;
-			ComboboxParent.SelectedIndex = 0;
-			ComboboxProtocol.SelectedIndex = 0;
-			ComboboxTimeZone.SelectedIndex = 0;
-			ComboboxVendorDevice.SelectedIndex = 0;
+            GridDeviceDetail.DataContext = new Device() { Longitude = -98.6m, Latitude = 37.5m, FramesPerSecond = 30, DataLossInterval = 5, AllowedParsingExceptions = 10, ParsingExceptionWindow = 5,
+                                                          DelayedConnectionInterval = 5,
+                                                          AllowUseOfCachedConfiguration = true,
+                                                          AutoStartDataParsingSequence = true,
+                                                          MeasurementReportingInterval = 100000,
+                                                          MeasuredLines = 1            
+                                                        };
+
+            if (ComboboxCompany.Items.Count > 0)
+			    ComboboxCompany.SelectedIndex = 0;
+
+            if (ComboboxHistorian.Items.Count > 0)
+			    ComboboxHistorian.SelectedIndex = 0;
+			
+            if (ComboboxInterconnection.Items.Count > 0)
+                ComboboxInterconnection.SelectedIndex = 0;
+
+            if (ComboboxNode.Items.Count > 0)
+			    ComboboxNode.SelectedIndex = 0;
+
+            if (ComboboxParent.Items.Count > 0)
+			    ComboboxParent.SelectedIndex = 0;
+
+            if (ComboboxProtocol.Items.Count > 0)
+			    ComboboxProtocol.SelectedIndex = 0;
+
+            if (ComboboxTimeZone.Items.Count > 0)
+			    ComboboxTimeZone.SelectedIndex = 0;
+
+            if (ComboboxVendorDevice.Items.Count > 0)
+			    ComboboxVendorDevice.SelectedIndex = 0;
+
 			m_inEditMode = false;
 			m_deviceID = 0;
 		}

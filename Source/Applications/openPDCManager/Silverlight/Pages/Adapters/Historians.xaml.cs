@@ -409,6 +409,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 		void Historians_Loaded(object sender, RoutedEventArgs e)
 		{
+            ClearForm();
 		}
 
 		// Executes when the user navigates to this page.
@@ -473,7 +474,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 		void ClearForm()
 		{
-			GridHistorianDetail.DataContext = new Historian();	// bind an empty historian.
+            GridHistorianDetail.DataContext = new Historian() { IsLocal = true, MeasurementReportingInterval = 100000 };	
 			if (ComboBoxNode.Items.Count > 0)
 				ComboBoxNode.SelectedIndex = 0;
 			CheckboxEnabled.IsChecked = false;

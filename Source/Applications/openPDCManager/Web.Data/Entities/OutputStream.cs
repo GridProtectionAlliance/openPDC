@@ -256,6 +256,16 @@ namespace openPDCManager.Web.Data.Entities
 		public bool AllowSortsByArrival { get; set; }
 		public int LoadOrder { get; set; }
         public bool Enabled { get; set; }
+        public bool IgnoreBadTimeStamps { get; set; }
+        public int TimeResolution { get; set; }
+        public bool AllowPreemptivePublishing { get; set; }
+        public string DownsamplingMethod { get; set; }
+        public string DataFormat { get; set; }
+        public string CoordinateFormat { get; set; }
+        public int CurrentScalingValue { get; set; }
+        public int VoltageScalingValue { get; set; }
+        public int AnalogScalingValue { get; set; }
+        public int DigitalMaskValue { get; set; }
 		public string NodeName { get; set; }
 		public string TypeName { get; set; }
     }

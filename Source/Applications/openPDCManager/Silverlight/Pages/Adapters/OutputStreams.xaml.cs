@@ -350,7 +350,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 		void OutputStreams_Loaded(object sender, RoutedEventArgs e)
 		{
-
+            ClearForm();
 		}
 
 		// Executes when the user navigates to this page.
@@ -361,6 +361,16 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			ComboBoxType.Items.Add(new KeyValuePair<int, string>(0, "IEEE C37.118"));
 			ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "BPA"));
 			ComboBoxType.SelectedIndex = 0;
+            ComboboxDownsamplingMethod.Items.Add("LastReceived");
+            ComboboxDownsamplingMethod.Items.Add("Closest");
+            ComboboxDownsamplingMethod.Items.Add("Filtered");
+            ComboboxDownsamplingMethod.SelectedIndex = 0;
+            ComboboxDataFormat.Items.Add("FloatingPoint");
+            ComboboxDataFormat.Items.Add("FixedInteger");
+            ComboboxDataFormat.SelectedIndex = 0;
+            ComboboxCoordinateFormat.Items.Add("Polar");
+            ComboboxCoordinateFormat.Items.Add("Rectangular");
+            ComboboxCoordinateFormat.SelectedIndex = 0;
 			m_client.GetOutputStreamListAsync(false, m_nodeValue);
 		}
 
@@ -379,6 +389,9 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 					ComboBoxType.SelectedItem = new KeyValuePair<int, string>(0, "IEEE C37.118");
 				else
 					ComboBoxType.SelectedItem = new KeyValuePair<int, string>(1, "BPA");
+                ComboboxCoordinateFormat.SelectedItem = selectedOutputStream.CoordinateFormat;
+                ComboboxDownsamplingMethod.SelectedItem = selectedOutputStream.DownsamplingMethod;
+                ComboboxDataFormat.SelectedItem = selectedOutputStream.DataFormat;
 				CheckBoxAllowSortsByArrival.IsChecked = selectedOutputStream.AllowSortsByArrival;
 				CheckBoxAutoPublishConfigFrame.IsChecked = selectedOutputStream.AutoPublishConfigFrame;
 				CheckBoxAutoStartDataChannel.IsChecked = selectedOutputStream.AutoStartDataChannel;
@@ -418,6 +431,16 @@ namespace openPDCManager.Silverlight.Pages.Adapters
                 outputStream.AllowSortsByArrival = (bool)CheckBoxAllowSortsByArrival.IsChecked;
                 outputStream.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
                 outputStream.Enabled = (bool)CheckBoxEnabled.IsChecked;
+                outputStream.IgnoreBadTimeStamps = (bool)CheckBoxIgnoreBadTimeStamps.IsChecked;
+                outputStream.TimeResolution = TextBoxTimeResolution.Text.ToInteger();
+                outputStream.AllowPreemptivePublishing = (bool)CheckBoxAllowPreemptivePublishing.IsChecked;
+                outputStream.DownsamplingMethod = ComboboxDownsamplingMethod.SelectedItem.ToString();
+                outputStream.DataFormat = ComboboxDataFormat.SelectedItem.ToString();
+                outputStream.CoordinateFormat = ComboboxCoordinateFormat.SelectedItem.ToString();
+                outputStream.CurrentScalingValue = TextBoxCurrentScalingValue.Text.ToInteger();
+                outputStream.VoltageScalingValue = TextBoxVoltageScalingValue.Text.ToInteger();
+                outputStream.AnalogScalingValue = TextBoxAnalogScalingValue.Text.ToInteger();
+                outputStream.DigitalMaskValue = TextBoxDigitalMaskValue.Text.ToInteger();
 
                 if (m_inEditMode == true && m_outputStreamID > 0)
                 {
@@ -589,16 +612,99 @@ namespace openPDCManager.Silverlight.Pages.Adapters
                 return isValid;
             }
 
+            if (!TextBoxTimeResolution.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Time Resolution", SystemMessage = "Please provide valid integer value for Time Resolution.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxTimeResolution.Focus();
+                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxCurrentScalingValue.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Current Scaling Value", SystemMessage = "Please provide valid integer value for Current Scaling Value.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxCurrentScalingValue.Focus();
+                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxVoltageScalingValue.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Voltage Scaling Value", SystemMessage = "Please provide valid integer value for Voltage Scaling Value.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxVoltageScalingValue.Focus();
+                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxAnalogScalingValue.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Analog Scaling Value", SystemMessage = "Please provide valid integer value for Analog Scaling Value.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxAnalogScalingValue.Focus();
+                });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxDigitalMaskValue.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Digital Mask Value", SystemMessage = "Please provide valid integer value for Digital Mask Value.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxDigitalMaskValue.Focus();
+                });
+                sm.Show();
+                return isValid;
+            }
+
             return isValid;
         }
 
 		void ClearForm()
 		{
-			GridOutputStreamDetail.DataContext = new OutputStream();
+            GridOutputStreamDetail.DataContext = new OutputStream() { AutoStartDataChannel = true, 
+                                                                      NominalFrequency = 60, 
+                                                                      FramesPerSecond = 30, 
+                                                                      LagTime = 3, 
+                                                                      LeadTime = 1, 
+                                                                      AllowSortsByArrival = true,
+                                                                      TimeResolution = 10000,
+                                                                      AllowPreemptivePublishing = true,
+                                                                      CurrentScalingValue = 2423,
+                                                                      VoltageScalingValue = 2725785,
+                                                                      AnalogScalingValue = 1373291,
+                                                                      DigitalMaskValue = -65536
+                                                                    };
 			if (ComboBoxNode.Items.Count > 0)
 				ComboBoxNode.SelectedIndex = 0;
 			if (ComboBoxType.Items.Count > 0)
 				ComboBoxType.SelectedIndex = 0;
+            if (ComboboxDownsamplingMethod.Items.Count > 0)
+                ComboboxDownsamplingMethod.SelectedIndex = 0;
+            if (ComboboxCoordinateFormat.Items.Count > 0)
+                ComboboxCoordinateFormat.SelectedIndex = 0;
+            if (ComboboxDataFormat.Items.Count > 0)
+                ComboboxDataFormat.SelectedIndex = 0;
 			CheckBoxAllowSortsByArrival.IsChecked = false;
 			CheckBoxAutoPublishConfigFrame.IsChecked = false;
 			CheckBoxAutoStartDataChannel.IsChecked = false;

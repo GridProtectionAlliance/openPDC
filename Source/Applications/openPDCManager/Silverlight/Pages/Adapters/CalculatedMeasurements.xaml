@@ -38,9 +38,9 @@
                             <TextBlock Text="Acronym" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
-                        <TextBox x:Name="TextBoxAcronym" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Acronym}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBox x:Name="TextBoxAcronym" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Acronym}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="50"/>
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Name" Style="{StaticResource GenericLabelStyle}"/>
-                        <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="100"/>
                         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2">
                             <TextBlock Text="Assembly Name" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
@@ -54,7 +54,7 @@
                         <TextBlock Grid.Row="2" Grid.Column="2" Text="Connection String" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBox x:Name="TextBoxConnectionString" Grid.Row="2" Grid.Column="3" Text="{Binding Path=ConnectionString}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="Config Section" Style="{StaticResource GenericLabelStyle}"/>
-                        <TextBox x:Name="TextBoxConfigSection" Grid.Row="3" Grid.Column="1" Text="{Binding Path=ConfigSection}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBox x:Name="TextBoxConfigSection" Grid.Row="3" Grid.Column="1" Text="{Binding Path=ConfigSection}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="100" />
                         <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="2">
                             <TextBlock Text="Min Measurements" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
@@ -90,7 +90,8 @@
                             <TextBlock Text="Downsampling Method" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
-                        <TextBox x:Name="TextBoxDownsamplingMethod" Grid.Row="7" Grid.Column="1" Text="{Binding Path=DownsamplingMethod}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <ComboBox x:Name="ComboboxDownsamplingMethod" Grid.Row="7" Grid.Column="1" Margin="5"/>
+                        <!--<TextBox x:Name="TextBoxDownsamplingMethod" Grid.Row="7" Grid.Column="1" Text="{Binding Path=DownsamplingMethod}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />-->
                         
                         <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="2">
                             <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>

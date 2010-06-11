@@ -303,6 +303,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
                 outputStreamDeviceAnalog.Type = ((KeyValuePair<int, string>)ComboBoxType.SelectedItem).Key;
                 outputStreamDeviceAnalog.Label = TextBoxLabel.Text.CleanText();
                 outputStreamDeviceAnalog.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
+                outputStreamDeviceAnalog.ScalingValue = TextBoxScalingValue.Text.ToInteger();
                 if (m_inEditMode == true && m_outputStreamDeviceAnalogID > 0)
                 {
                     outputStreamDeviceAnalog.ID = m_outputStreamDeviceAnalogID;
@@ -385,6 +386,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "RMS of analog input"));
 			ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "Peak of analog input"));
 			ComboBoxType.SelectedIndex = 0;
+            ClearForm();
 		}
 
 		#endregion 
@@ -398,7 +400,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
             if (string.IsNullOrEmpty(TextBoxLabel.Text.CleanText()))
             {
                 isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Phasor Label", SystemMessage = "Please provide valid Phasor Label.", UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Label", SystemMessage = "Please provide valid Label.", UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                                                 {
@@ -415,8 +417,23 @@ namespace openPDCManager.Silverlight.ModalDialogs
                     ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                                                 {
+                                                    TextBoxLoadOrder.Text = "0";
                                                     TextBoxLoadOrder.Focus();
                                                 });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxScalingValue.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Scaling Value", SystemMessage = "Please provide valid integer value for Scaling Value.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxScalingValue.Text = "0";
+                    TextBoxScalingValue.Focus();
+                });
                 sm.Show();
                 return isValid;
             }
@@ -427,7 +444,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		void ClearForm()
 		{
 			GridOutputStreamDeviceAnalogDetail.DataContext = new OutputStreamDeviceAnalog();
-			ComboBoxType.SelectedIndex = 0;
+			if (ComboBoxType.Items.Count > 0)
+                ComboBoxType.SelectedIndex = 0;
 			m_inEditMode = false;
 			m_outputStreamDeviceAnalogID = 0;
 			ListBoxOutputStreamDeviceAnalogList.SelectedIndex = -1;

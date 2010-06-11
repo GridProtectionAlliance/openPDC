@@ -24,7 +24,7 @@
                     <TextBlock Text="Adapter Name" Style="{StaticResource GenericLabelStyle}"/>
                     <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                 </StackPanel>
-                <TextBox x:Name="TextBoxAdapterName" Grid.Row="0" Grid.Column="1" Text="{Binding Path=AdapterName}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                <TextBox x:Name="TextBoxAdapterName" Grid.Row="0" Grid.Column="1" Text="{Binding Path=AdapterName}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="50"/>
                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Node" Style="{StaticResource GenericLabelStyle}"/>
                 <ComboBox x:Name="ComboboxNode" Grid.Row="0" Grid.Column="3" Margin="5" DisplayMemberPath="Value"/>
                 <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">

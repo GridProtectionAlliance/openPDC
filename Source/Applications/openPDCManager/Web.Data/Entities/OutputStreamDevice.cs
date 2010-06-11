@@ -241,6 +241,10 @@ namespace openPDCManager.Web.Data.Entities
 		public string Acronym { get; set; }
 		public string BpaAcronym { get; set; }
 		public string Name { get; set; }
+        public string PhasorDataFormat { get; set; }
+        public string FrequencyDataFormat { get; set; }
+        public string AnalogDataFormat { get; set; }
+        public string CoordinateFormat { get; set; }
 		public int LoadOrder { get; set; }
 		public bool Enabled { get; set; }
 		public bool Virtual { get; set; }

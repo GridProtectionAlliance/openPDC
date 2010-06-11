@@ -267,6 +267,9 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			m_client.GetOutputStreamDevicePhasorListCompleted += new EventHandler<GetOutputStreamDevicePhasorListCompletedEventArgs>(client_GetOutputStreamDevicePhasorListCompleted);
 			m_client.SaveOutputStreamDevicePhasorCompleted += new EventHandler<SaveOutputStreamDevicePhasorCompletedEventArgs>(client_SaveOutputStreamDevicePhasorCompleted);
 			ListBoxOutputStreamDevicePhasorList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDevicePhasorList_SelectionChanged);
+
+            ////Set Default Values
+            //TextBoxLoadOrder.Text = "0";
 		}
 
 		#endregion
@@ -304,6 +307,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
                 outputStreamDevicePhasor.Type = ((KeyValuePair<string, string>)ComboboxType.SelectedItem).Key;
                 outputStreamDevicePhasor.Phase = ((KeyValuePair<string, string>)ComboboxPhase.SelectedItem).Key;
                 outputStreamDevicePhasor.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
+                outputStreamDevicePhasor.ScalingValue = TextBoxScalingValue.Text.ToInteger();
 
                 if (m_inEditMode == true && m_outputStreamDevicePhasorID > 0)
                 {
@@ -314,7 +318,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
                     m_client.SaveOutputStreamDevicePhasorAsync(outputStreamDevicePhasor, true);
             }
         }
-		void ButtonClear_Click(object sender, RoutedEventArgs e)
+		
+        void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
 			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
@@ -393,6 +398,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ComboboxType.Items.Add(new KeyValuePair<string, string>("I", "Current"));
 			ComboboxType.SelectedIndex = 0;
 
+            ClearForm();
 		}
 
 		#endregion
@@ -423,20 +429,37 @@ namespace openPDCManager.Silverlight.ModalDialogs
                     ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                                                 {
+                                                    TextBoxLoadOrder.Text = "0";
                                                     TextBoxLoadOrder.Focus();
                                                 });
                 sm.Show();
                 return isValid;
             }
 
+            if (!TextBoxScalingValue.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Scaling Value", SystemMessage = "Please provide valid integer value for Scaling Value.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxScalingValue.Text = "0";
+                    TextBoxScalingValue.Focus();
+                });
+                sm.Show();
+                return isValid;
+            }
+    
             return isValid;
         }
 
 		void ClearForm()
 		{
 			GridOutputStreamDevicePhasorDetail.DataContext = new OutputStreamDevicePhasor();
-			ComboboxPhase.SelectedIndex = 0;
-			ComboboxType.SelectedIndex = 0;
+			if (ComboboxPhase.Items.Count > 0)
+                ComboboxPhase.SelectedIndex = 0;
+			if (ComboboxType.Items.Count > 0)
+                ComboboxType.SelectedIndex = 0;
 			m_inEditMode = false;
 			m_outputStreamDevicePhasorID = 0;
 			ListBoxOutputStreamDevicePhasorList.SelectedIndex = -1;

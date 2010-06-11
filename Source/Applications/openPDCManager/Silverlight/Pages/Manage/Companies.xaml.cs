@@ -322,7 +322,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 
 		void Companies_Loaded(object sender, RoutedEventArgs e)
 		{
-
+            ClearForm();
 		}
 
 		// Executes when the user navigates to this page.
@@ -345,7 +345,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 				m_companyID = selectedCompany.ID;
 			}
 		}
-		void ButtonClear_Click(object sender, RoutedEventArgs e)
+		
+        void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
 			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
@@ -354,6 +355,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			sb.Begin();
 			ClearForm();
 		}
+        
         void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
             Storyboard sb = new Storyboard();
@@ -435,6 +437,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
                     ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                                                 {
+                                                    TextBoxLoadOrder.Text = "0";
                                                     TextBoxLoadOrder.Focus();
                                                 });
                 sm.Show();

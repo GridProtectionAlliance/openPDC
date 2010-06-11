@@ -33,9 +33,9 @@
                             <TextBlock Text="Acronym" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
-                        <TextBox x:Name="TextBoxAcronym" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Acronym}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBox x:Name="TextBoxAcronym" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Acronym}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="50"/>
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="Name" Style="{StaticResource GenericLabelStyle}"/>
-                        <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="3" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />                        
+                        <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="3" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="100"/>
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Type Name" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBox x:Name="TextBoxTypeName" Grid.Row="2" Grid.Column="1" Text="{Binding Path=TypeName}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                         <TextBlock Grid.Row="2" Grid.Column="2" Text="Assembly Name" Style="{StaticResource GenericLabelStyle}"/>

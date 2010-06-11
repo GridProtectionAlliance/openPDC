@@ -392,7 +392,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
                     m_client.SaveNodeAsync(node, true);
             }
         }
-		void ButtonClear_Click(object sender, RoutedEventArgs e)
+		
+        void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
 			Storyboard sb = new Storyboard();
 			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
@@ -409,6 +410,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 
 		void Nodes_Loaded(object sender, RoutedEventArgs e)
 		{
+            ClearForm();
 			//m_client.GetRealTimeDataAsync(((App)Application.Current).TimeSeriesDataServiceUrl);
 		}
 		
@@ -458,7 +460,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 
 		void ClearForm()
 		{
-			GridNodeDetail.DataContext = new Node();
+            GridNodeDetail.DataContext = new Node() { Longitude = -98.6m, Latitude = 37.5m };
 			if (ComboBoxCompany.Items.Count > 0)
 				ComboBoxCompany.SelectedIndex = 0;
 			m_inEditMode = false;

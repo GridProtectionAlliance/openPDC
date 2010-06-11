@@ -37,7 +37,7 @@
                             <TextBlock Text="Name" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
-                        <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Name}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Name}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="100"/>
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="Description" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBox x:Name="TextBoxDescription" Grid.Row="1" Grid.Column="3" Text="{Binding Path=Description}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />                        
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="URL" Style="{StaticResource GenericLabelStyle}"/>

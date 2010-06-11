@@ -469,6 +469,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 			m_client.GetCompaniesAsync(true);
 			m_client.GetVendorDevicesAsync(true);
 			m_client.GetInterconnectionsAsync(true);
+            ClearForm();
 		}
 
 		#endregion
@@ -497,10 +498,13 @@ namespace openPDCManager.Silverlight.Pages.Devices
 
 		void ClearForm()
 		{
-			GridOtherDeviceDetail.DataContext = new OtherDevice();
-			ComboboxCompany.SelectedIndex = 0;
-			ComboboxInterconnection.SelectedIndex = 0;
-			ComboboxVendorDevice.SelectedIndex = 0;
+            GridOtherDeviceDetail.DataContext = new OtherDevice() { Longitude = -98.6m, Latitude = 37.5m };
+			if (ComboboxCompany.Items.Count > 0)
+                ComboboxCompany.SelectedIndex = 0;
+			if (ComboboxInterconnection.Items.Count > 0)
+                ComboboxInterconnection.SelectedIndex = 0;
+			if (ComboboxVendorDevice.Items.Count > 0)
+                ComboboxVendorDevice.SelectedIndex = 0;
 			m_inEditMode = false;
 			m_deviceID = 0;
 		}

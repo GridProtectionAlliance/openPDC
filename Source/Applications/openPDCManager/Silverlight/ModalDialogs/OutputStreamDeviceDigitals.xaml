@@ -23,12 +23,19 @@
                             <TextBlock Text="Label" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
-                        <TextBox x:Name="TextBoxLabel" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Label}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />                        
+                        <TextBox x:Name="TextBoxLabel" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Label}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="256"/>
                         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">
                             <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
                         <TextBox x:Name="TextBoxLoadOrder" Grid.Row="0" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+                            <TextBlock Text="Mask Value" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
+                        <TextBox x:Name="TextBoxMaskValue" Grid.Row="1" Grid.Column="1" Text="{Binding Path=MaskValue}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+
                         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
                                 <Button.RenderTransform>
@@ -41,8 +48,7 @@
                                     <ScaleTransform x:Name="ButtonSaveTransform" ScaleX="1" ScaleY="1" />
                                 </Button.RenderTransform>
                             </Button>
-                        </StackPanel>
-                        <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"/>
+                        </StackPanel>                        
                     </Grid>
                 </Border>
 
@@ -50,7 +56,10 @@
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Label" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
-                        </Border>                        
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Mask Value" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
                         <TextBlock Text="Load Order" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </StackPanel>
                 </Border>
@@ -63,6 +72,9 @@
                                         <StackPanel Orientation="Horizontal">
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <TextBlock Text="{Binding Path=Label}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <TextBlock Text="{Binding Path=MaskValue}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <TextBlock Text="{Binding Path=LoadOrder}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>

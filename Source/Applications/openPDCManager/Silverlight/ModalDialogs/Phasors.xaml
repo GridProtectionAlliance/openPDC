@@ -25,7 +25,7 @@
                             <TextBlock Text="Label" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
-                        <TextBox x:Name="TextBoxLabel" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Label}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBox x:Name="TextBoxLabel" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Label}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="256"/>
                         <TextBlock Grid.Row="0" Grid.Column="2" Text="Type" Style="{StaticResource GenericLabelStyle}"/>
                         <ComboBox x:Name="ComboboxType" Grid.Row="0" Grid.Column="3" Margin="5" DisplayMemberPath="Value"/>
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Phase" Style="{StaticResource GenericLabelStyle}"/>

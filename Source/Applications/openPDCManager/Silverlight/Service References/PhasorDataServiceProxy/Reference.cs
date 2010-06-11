@@ -902,7 +902,7 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private string ConnectionStringField;
         
-        private string DownSamplingMethodField;
+        private string DownsamplingMethodField;
         
         private bool EnabledField;
         
@@ -1015,14 +1015,14 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string DownSamplingMethod {
+        public string DownsamplingMethod {
             get {
-                return this.DownSamplingMethodField;
+                return this.DownsamplingMethodField;
             }
             set {
-                if ((object.ReferenceEquals(this.DownSamplingMethodField, value) != true)) {
-                    this.DownSamplingMethodField = value;
-                    this.RaisePropertyChanged("DownSamplingMethod");
+                if ((object.ReferenceEquals(this.DownsamplingMethodField, value) != true)) {
+                    this.DownsamplingMethodField = value;
+                    this.RaisePropertyChanged("DownsamplingMethod");
                 }
             }
         }
@@ -1476,7 +1476,11 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private string AcronymField;
         
+        private bool AllowPreemptivePublishingField;
+        
         private bool AllowSortsByArrivalField;
+        
+        private int AnalogScalingValueField;
         
         private bool AutoPublishConfigFrameField;
         
@@ -1486,7 +1490,17 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private string ConnectionStringField;
         
+        private string CoordinateFormatField;
+        
+        private int CurrentScalingValueField;
+        
         private string DataChannelField;
+        
+        private string DataFormatField;
+        
+        private int DigitalMaskValueField;
+        
+        private string DownsamplingMethodField;
         
         private bool EnabledField;
         
@@ -1495,6 +1509,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         private int IDField;
         
         private int IDCodeField;
+        
+        private bool IgnoreBadTimeStampsField;
         
         private double LagTimeField;
         
@@ -1510,11 +1526,15 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private int NominalFrequencyField;
         
+        private int TimeResolutionField;
+        
         private int TypeField;
         
         private string TypeNameField;
         
         private bool UseLocalClockAsRealTimeField;
+        
+        private int VoltageScalingValueField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string Acronym {
@@ -1530,6 +1550,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool AllowPreemptivePublishing {
+            get {
+                return this.AllowPreemptivePublishingField;
+            }
+            set {
+                if ((this.AllowPreemptivePublishingField.Equals(value) != true)) {
+                    this.AllowPreemptivePublishingField = value;
+                    this.RaisePropertyChanged("AllowPreemptivePublishing");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public bool AllowSortsByArrival {
             get {
                 return this.AllowSortsByArrivalField;
@@ -1538,6 +1571,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((this.AllowSortsByArrivalField.Equals(value) != true)) {
                     this.AllowSortsByArrivalField = value;
                     this.RaisePropertyChanged("AllowSortsByArrival");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int AnalogScalingValue {
+            get {
+                return this.AnalogScalingValueField;
+            }
+            set {
+                if ((this.AnalogScalingValueField.Equals(value) != true)) {
+                    this.AnalogScalingValueField = value;
+                    this.RaisePropertyChanged("AnalogScalingValue");
                 }
             }
         }
@@ -1595,6 +1641,32 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CoordinateFormat {
+            get {
+                return this.CoordinateFormatField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CoordinateFormatField, value) != true)) {
+                    this.CoordinateFormatField = value;
+                    this.RaisePropertyChanged("CoordinateFormat");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int CurrentScalingValue {
+            get {
+                return this.CurrentScalingValueField;
+            }
+            set {
+                if ((this.CurrentScalingValueField.Equals(value) != true)) {
+                    this.CurrentScalingValueField = value;
+                    this.RaisePropertyChanged("CurrentScalingValue");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string DataChannel {
             get {
                 return this.DataChannelField;
@@ -1603,6 +1675,45 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((object.ReferenceEquals(this.DataChannelField, value) != true)) {
                     this.DataChannelField = value;
                     this.RaisePropertyChanged("DataChannel");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string DataFormat {
+            get {
+                return this.DataFormatField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DataFormatField, value) != true)) {
+                    this.DataFormatField = value;
+                    this.RaisePropertyChanged("DataFormat");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int DigitalMaskValue {
+            get {
+                return this.DigitalMaskValueField;
+            }
+            set {
+                if ((this.DigitalMaskValueField.Equals(value) != true)) {
+                    this.DigitalMaskValueField = value;
+                    this.RaisePropertyChanged("DigitalMaskValue");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string DownsamplingMethod {
+            get {
+                return this.DownsamplingMethodField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DownsamplingMethodField, value) != true)) {
+                    this.DownsamplingMethodField = value;
+                    this.RaisePropertyChanged("DownsamplingMethod");
                 }
             }
         }
@@ -1655,6 +1766,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((this.IDCodeField.Equals(value) != true)) {
                     this.IDCodeField = value;
                     this.RaisePropertyChanged("IDCode");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IgnoreBadTimeStamps {
+            get {
+                return this.IgnoreBadTimeStampsField;
+            }
+            set {
+                if ((this.IgnoreBadTimeStampsField.Equals(value) != true)) {
+                    this.IgnoreBadTimeStampsField = value;
+                    this.RaisePropertyChanged("IgnoreBadTimeStamps");
                 }
             }
         }
@@ -1751,6 +1875,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public int TimeResolution {
+            get {
+                return this.TimeResolutionField;
+            }
+            set {
+                if ((this.TimeResolutionField.Equals(value) != true)) {
+                    this.TimeResolutionField = value;
+                    this.RaisePropertyChanged("TimeResolution");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public int Type {
             get {
                 return this.TypeField;
@@ -1789,6 +1926,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             }
         }
         
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int VoltageScalingValue {
+            get {
+                return this.VoltageScalingValueField;
+            }
+            set {
+                if ((this.VoltageScalingValueField.Equals(value) != true)) {
+                    this.VoltageScalingValueField = value;
+                    this.RaisePropertyChanged("VoltageScalingValue");
+                }
+            }
+        }
+        
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -1808,9 +1958,15 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private int AdapterIDField;
         
+        private string AnalogDataFormatField;
+        
         private string BpaAcronymField;
         
+        private string CoordinateFormatField;
+        
         private bool EnabledField;
+        
+        private string FrequencyDataFormatField;
         
         private int IDField;
         
@@ -1819,6 +1975,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         private string NameField;
         
         private string NodeIDField;
+        
+        private string PhasorDataFormatField;
         
         private bool VirtualField;
         
@@ -1849,6 +2007,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string AnalogDataFormat {
+            get {
+                return this.AnalogDataFormatField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AnalogDataFormatField, value) != true)) {
+                    this.AnalogDataFormatField = value;
+                    this.RaisePropertyChanged("AnalogDataFormat");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string BpaAcronym {
             get {
                 return this.BpaAcronymField;
@@ -1862,6 +2033,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CoordinateFormat {
+            get {
+                return this.CoordinateFormatField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CoordinateFormatField, value) != true)) {
+                    this.CoordinateFormatField = value;
+                    this.RaisePropertyChanged("CoordinateFormat");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public bool Enabled {
             get {
                 return this.EnabledField;
@@ -1870,6 +2054,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((this.EnabledField.Equals(value) != true)) {
                     this.EnabledField = value;
                     this.RaisePropertyChanged("Enabled");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FrequencyDataFormat {
+            get {
+                return this.FrequencyDataFormatField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FrequencyDataFormatField, value) != true)) {
+                    this.FrequencyDataFormatField = value;
+                    this.RaisePropertyChanged("FrequencyDataFormat");
                 }
             }
         }
@@ -1922,6 +2119,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((object.ReferenceEquals(this.NodeIDField, value) != true)) {
                     this.NodeIDField = value;
                     this.RaisePropertyChanged("NodeID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string PhasorDataFormat {
+            get {
+                return this.PhasorDataFormatField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PhasorDataFormatField, value) != true)) {
+                    this.PhasorDataFormatField = value;
+                    this.RaisePropertyChanged("PhasorDataFormat");
                 }
             }
         }
@@ -2105,6 +2315,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private string PhasorTypeField;
         
+        private int ScalingValueField;
+        
         private string TypeField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
@@ -2212,6 +2424,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ScalingValue {
+            get {
+                return this.ScalingValueField;
+            }
+            set {
+                if ((this.ScalingValueField.Equals(value) != true)) {
+                    this.ScalingValueField = value;
+                    this.RaisePropertyChanged("ScalingValue");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string Type {
             get {
                 return this.TypeField;
@@ -2248,6 +2473,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         private string NodeIDField;
         
         private int OutputStreamDeviceIDField;
+        
+        private int ScalingValueField;
         
         private int TypeField;
         
@@ -2319,6 +2546,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ScalingValue {
+            get {
+                return this.ScalingValueField;
+            }
+            set {
+                if ((this.ScalingValueField.Equals(value) != true)) {
+                    this.ScalingValueField = value;
+                    this.RaisePropertyChanged("ScalingValue");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public int Type {
             get {
                 return this.TypeField;
@@ -2365,6 +2605,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private int LoadOrderField;
         
+        private int MaskValueField;
+        
         private string NodeIDField;
         
         private int OutputStreamDeviceIDField;
@@ -2404,6 +2646,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((this.LoadOrderField.Equals(value) != true)) {
                     this.LoadOrderField = value;
                     this.RaisePropertyChanged("LoadOrder");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int MaskValue {
+            get {
+                return this.MaskValueField;
+            }
+            set {
+                if ((this.MaskValueField.Equals(value) != true)) {
+                    this.MaskValueField = value;
+                    this.RaisePropertyChanged("MaskValue");
                 }
             }
         }

@@ -300,6 +300,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
                 outputStreamDeviceDigital.OutputStreamDeviceID = m_sourceOutputStreamDeviceID;
                 outputStreamDeviceDigital.Label = TextBoxLabel.Text.CleanText();
                 outputStreamDeviceDigital.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
+                outputStreamDeviceDigital.MaskValue = TextBoxMaskValue.Text.ToInteger();
                 if (m_inEditMode == true && m_outputStreamDeviceDigitalID > 0)
                 {
                     outputStreamDeviceDigital.ID = m_outputStreamDeviceDigitalID;
@@ -378,6 +379,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		void OutputStreamDeviceDigitals_Loaded(object sender, RoutedEventArgs e)
 		{
 			m_client.GetOutputStreamDeviceDigitalListAsync(m_sourceOutputStreamDeviceID);
+            ClearForm();
 		}
 
 		#endregion
@@ -391,7 +393,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
             if (string.IsNullOrEmpty(TextBoxLabel.Text.CleanText()))
             {
                 isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Phasor Label", SystemMessage = "Please provide valid Phasor Label.", UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Label", SystemMessage = "Please provide valid Label.", UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                                                 {
@@ -408,8 +410,23 @@ namespace openPDCManager.Silverlight.ModalDialogs
                     ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                                                 {
+                                                    TextBoxLoadOrder.Text = "0";
                                                     TextBoxLoadOrder.Focus();
                                                 });
+                sm.Show();
+                return isValid;
+            }
+
+            if (!TextBoxMaskValue.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Mask Value", SystemMessage = "Please provide valid integer value for Mask Value.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxMaskValue.Text = "0";
+                    TextBoxMaskValue.Focus();
+                });
                 sm.Show();
                 return isValid;
             }

@@ -41,14 +41,14 @@
                             <TextBlock Text="Point Tag" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
-                        <TextBox x:Name="TextBoxPointTag" Grid.Row="1" Grid.Column="3" Text="{Binding Path=PointTag}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBox x:Name="TextBoxPointTag" Grid.Row="1" Grid.Column="3" Text="{Binding Path=PointTag}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="50"/>
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Alternate Tag" Style="{StaticResource GenericLabelStyle}"/>
-                        <TextBox x:Name="TextBoxAlternateTag" Grid.Row="2" Grid.Column="1" Text="{Binding Path=AlternateTag}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBox x:Name="TextBoxAlternateTag" Grid.Row="2" Grid.Column="1" Text="{Binding Path=AlternateTag}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="50"/>
                         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2">
                             <TextBlock Text="Signal Reference" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
-                        <TextBox x:Name="TextBoxSignalReference" Grid.Row="2" Grid.Column="3" Text="{Binding Path=SignalReference}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBox x:Name="TextBoxSignalReference" Grid.Row="2" Grid.Column="3" Text="{Binding Path=SignalReference}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="24"/>
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="Phasor Source" Style="{StaticResource GenericLabelStyle}"/>
                         <ComboBox x:Name="ComboBoxPhasorSource" Grid.Row="3" Grid.Column="1" Margin="5" DisplayMemberPath="Value"></ComboBox>
                         <TextBlock Grid.Row="3" Grid.Column="2" Text="Description" Style="{StaticResource GenericLabelStyle}"/>

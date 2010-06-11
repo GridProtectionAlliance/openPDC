@@ -635,7 +635,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 
 		void Measurements_Loaded(object sender, RoutedEventArgs e)
 		{
-		
+            
 		}
 						
 		// Executes when the user navigates to this page.
@@ -648,7 +648,8 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			m_client.GetHistoriansAsync(true, true);
 			m_client.GetDevicesAsync(DeviceType.NonConcentrator, app.NodeValue, true);
 			m_client.GetSignalTypesAsync(false);
-			
+
+            ClearForm();
 			if (this.NavigationContext.QueryString.ContainsKey("did"))
 			{
 				m_deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
@@ -726,7 +727,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 
 		void ClearForm()
 		{
-			GridMeasurementDetail.DataContext = new Measurement();
+            GridMeasurementDetail.DataContext = new Measurement() { Adder = 0, Multiplier = 1 };
 			if (ComboBoxDevice.Items.Count > 0)
 				ComboBoxDevice.SelectedIndex = 0;
 			if (ComboBoxHistorian.Items.Count > 0)

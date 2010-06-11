@@ -22,7 +22,12 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />                            
-                            <RowDefinition Height="2*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -37,9 +42,9 @@
                             <TextBlock Text="Acronym" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
-                        <TextBox x:Name="TextBoxAcronym" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Acronym}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />                       
+                        <TextBox x:Name="TextBoxAcronym" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Acronym}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="50"/>
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Name" Style="{StaticResource GenericLabelStyle}"/>
-                        <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />                        
+                        <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="100"/>
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="Type" Style="{StaticResource GenericLabelStyle}"/>
                         <ComboBox x:Name="ComboBoxType" Grid.Row="1" Grid.Column="3" DisplayMemberPath="Value" Margin="5"/>                        
                         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0">
@@ -78,18 +83,69 @@
                             <TextBlock Text="Lead Time" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
-                        <TextBox x:Name="TextBoxLeadTime" Grid.Row="5" Grid.Column="3" Text="{Binding Path=LeadTime}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />                        
-                        <CheckBox x:Name="CheckBoxAutoPublishConfigFrame" Grid.Row="6" Grid.Column="1" Content="Auto Publish Config Frame" IsChecked="{Binding Path=AutoPublishConfigFrame}" FontWeight="Bold" VerticalAlignment="Center"/>
-                        <CheckBox x:Name="CheckBoxAutoStartDataChannel" Grid.Row="6" Grid.Column="3" Content="Auto Start Data Channel" IsChecked="{Binding Path=AutoStartDataChannel}" FontWeight="Bold" VerticalAlignment="Center"/>
-                        <CheckBox x:Name="CheckBoxUseLocalClockAsRealTime" Grid.Row="7" Grid.Column="1" Content="Use Local Clock As Real Time" IsChecked="{Binding Path=UseLocalClockAsRealTime}" FontWeight="Bold" VerticalAlignment="Center"/>
-                        <CheckBox x:Name="CheckBoxAllowSortsByArrival" Grid.Row="7" Grid.Column="3" Content="Allow Sorts By Arrival" IsChecked="{Binding Path=AllowSortsByArrival}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBox x:Name="TextBoxLeadTime" Grid.Row="5" Grid.Column="3" Text="{Binding Path=LeadTime}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+
+
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="0">
+                            <TextBlock Text="Time Resolution" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
+                        <TextBox x:Name="TextBoxTimeResolution" Grid.Row="6" Grid.Column="1" Text="{Binding Path=TimeResolution}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="2">
+                            <TextBlock Text="Downsampling Method" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
+                        <ComboBox x:Name="ComboboxDownsamplingMethod" Grid.Row="6" Grid.Column="3" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="0">
+                            <TextBlock Text="Data Format" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
+                        <ComboBox x:Name="ComboboxDataFormat" Grid.Row="7" Grid.Column="1" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="2">
+                            <TextBlock Text="Coordinate Format" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
+                        <ComboBox x:Name="ComboboxCoordinateFormat" Grid.Row="7" Grid.Column="3" Margin="5"/>
                         <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0">
+                            <TextBlock Text="Current Scaling Value" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
+                        <TextBox x:Name="TextBoxCurrentScalingValue" Grid.Row="8" Grid.Column="1" Text="{Binding Path=CurrentScalingValue}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="2">
+                            <TextBlock Text="Voltage Scaling Value" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
+                        <TextBox x:Name="TextBoxVoltageScalingValue" Grid.Row="8" Grid.Column="3" Text="{Binding Path=VoltageScalingValue}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="0">
+                            <TextBlock Text="Analog Scaling Value" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
+                        <TextBox x:Name="TextBoxAnalogScalingValue" Grid.Row="9" Grid.Column="1" Text="{Binding Path=AnalogScalingValue}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="2">
+                            <TextBlock Text="Digital Mask Value" Style="{StaticResource GenericLabelStyle}"/>
+                            <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                        </StackPanel>
+                        <TextBox x:Name="TextBoxDigitalMaskValue" Grid.Row="9" Grid.Column="3" Text="{Binding Path=DigitalMaskValue}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        
+                        
+
+                        <CheckBox x:Name="CheckBoxAutoStartDataChannel" Grid.Row="10" Grid.Column="1" Content="Auto Start Data Channel" IsChecked="{Binding Path=AutoStartDataChannel}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <CheckBox x:Name="CheckBoxAutoPublishConfigFrame" Grid.Row="10" Grid.Column="3" Content="Auto Publish Config Frame" IsChecked="{Binding Path=AutoPublishConfigFrame}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        
+                        
+                        <CheckBox x:Name="CheckBoxAllowSortsByArrival" Grid.Row="11" Grid.Column="1" Content="Allow Sorts By Arrival" IsChecked="{Binding Path=AllowSortsByArrival}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <CheckBox x:Name="CheckBoxUseLocalClockAsRealTime" Grid.Row="11" Grid.Column="3" Content="Use Local Clock As Real Time" IsChecked="{Binding Path=UseLocalClockAsRealTime}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <CheckBox x:Name="CheckBoxAllowPreemptivePublishing" Grid.Row="12" Grid.Column="1" Content="Allow Preemptive Publishing" IsChecked="{Binding Path=AllowPreemptivePublishing}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <CheckBox x:Name="CheckBoxIgnoreBadTimeStamps" Grid.Row="12" Grid.Column="3" Content="Ignore Bad Time Stamps" IsChecked="{Binding Path=IgnoreBadTimeStamps}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        
+                        <StackPanel Orientation="Horizontal" Grid.Row="13" Grid.Column="0">
                             <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
-                        <TextBox x:Name="TextBoxLoadOrder" Grid.Row="8" Grid.Column="1" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <CheckBox x:Name="CheckBoxEnabled" Grid.Row="8" Grid.Column="3" Content="Enabled" IsChecked="{Binding Path=Enabled}" FontWeight="Bold" VerticalAlignment="Center"/>
-                        <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <TextBox x:Name="TextBoxLoadOrder" Grid.Row="13" Grid.Column="1" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <CheckBox x:Name="CheckBoxEnabled" Grid.Row="13" Grid.Column="3" Content="Enabled" IsChecked="{Binding Path=Enabled}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="14" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
                                 <Button.RenderTransform>
                                     <ScaleTransform x:Name="ButtonClearTransform" ScaleX="1" ScaleY="1" />
@@ -102,7 +158,7 @@
                                 </Button.RenderTransform>
                             </Button>
                         </StackPanel>
-                        <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="9"/>
+                        <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="14"/>
                     </Grid>
                 </Border>
                 
@@ -130,7 +186,7 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ScrollViewer BorderThickness="0" Padding="0" Height="433">
+                    <ScrollViewer BorderThickness="0" Padding="0" Height="280">
                         <ScrollViewer.Content>
                             <ListBox x:Name="ListBoxOutputStreamList" Margin="0" Padding="0">
                                 <ListBox.ItemTemplate>

@@ -15,7 +15,9 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="2*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -31,21 +33,29 @@
                             <TextBlock Text="Acronym" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
-                        <TextBox x:Name="TextBoxAcronym" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Acronym}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBox x:Name="TextBoxAcronym" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Acronym}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5"/>
                         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2">
                             <TextBlock Text="Name" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
                         <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="3" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="BPA Acronym" Style="{StaticResource GenericLabelStyle}"/>
-                        <TextBox x:Name="TextBoxBPAAcronym" Grid.Row="2" Grid.Column="1" Text="{Binding Path=BpaAcronym}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <TextBox x:Name="TextBoxBPAAcronym" Grid.Row="2" Grid.Column="1" Text="{Binding Path=BpaAcronym}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="4" />
                         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2">
                             <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>
                             <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                         </StackPanel>
-                        <TextBox x:Name="TextBoxLoadOrder" Grid.Row="2" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                        <CheckBox x:Name="CheckBoxEnabled" Grid.Row="3" Grid.Column="3" Content="Enabled" IsChecked="{Binding Path=Enabled}" FontWeight="Bold" VerticalAlignment="Center"/>
-                        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <TextBox x:Name="TextBoxLoadOrder" Grid.Row="2" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />                        
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Phasor Data Format" Style="{StaticResource GenericLabelStyle}"/>
+                        <ComboBox x:Name="ComboboxPhasorDataFormat" Grid.Row="3" Grid.Column="1" Margin="5" Width="{StaticResource LargerItemSize}"/>
+                        <TextBlock Grid.Row="3" Grid.Column="2" Text="Frequency Data Format" Style="{StaticResource GenericLabelStyle}"/>
+                        <ComboBox x:Name="ComboboxFrequencyDataFormat" Grid.Row="3" Grid.Column="3" Margin="5" Width="{StaticResource LargerItemSize}"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Analog Data Format" Style="{StaticResource GenericLabelStyle}"/>
+                        <ComboBox x:Name="ComboboxAnalogDataFormat" Grid.Row="4" Grid.Column="1" Margin="5" Width="{StaticResource LargerItemSize}"/>
+                        <TextBlock Grid.Row="4" Grid.Column="2" Text="Coordinate Format" Style="{StaticResource GenericLabelStyle}"/>
+                        <ComboBox x:Name="ComboboxCoordinateFormat" Grid.Row="4" Grid.Column="3" Margin="5" Width="{StaticResource LargerItemSize}"/>
+                        <CheckBox x:Name="CheckBoxEnabled" Grid.Row="5" Grid.Column="3" Content="Enabled" IsChecked="{Binding Path=Enabled}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
                                 <Button.RenderTransform>
                                     <ScaleTransform x:Name="ButtonClearTransform" ScaleX="1" ScaleY="1" />
@@ -57,8 +67,7 @@
                                     <ScaleTransform x:Name="ButtonSaveTransform" ScaleX="1" ScaleY="1" />
                                 </Button.RenderTransform>
                             </Button>
-                        </StackPanel>
-                        <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4"/>
+                        </StackPanel>                        
                     </Grid>
                 </Border>
 

@@ -352,6 +352,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 				CalculatedMeasurement selectedCalculatedMeasurement = ListBoxCalculatedMeasurementList.SelectedItem as CalculatedMeasurement;
 				GridCalculatedMeasurementDetail.DataContext = selectedCalculatedMeasurement;
 				ComboBoxNode.SelectedItem = new KeyValuePair<string, string>(selectedCalculatedMeasurement.NodeId, selectedCalculatedMeasurement.NodeName);
+                ComboboxDownsamplingMethod.SelectedItem = selectedCalculatedMeasurement.DownsamplingMethod;
 				m_calculatedMeasurementID = selectedCalculatedMeasurement.ID;
 				m_inEditMode = true;
 			}
@@ -399,7 +400,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
                 calculatedMeasurement.IgnoreBadTimeStamps = (bool)CheckBoxIgnoreBadTimeStamps.IsChecked;
                 calculatedMeasurement.TimeResolution = TextBoxTimeResolution.Text.ToInteger();
                 calculatedMeasurement.AllowPreemptivePublishing = (bool)CheckBoxAllowPreemptivePublishing.IsChecked;
-                calculatedMeasurement.DownSamplingMethod = TextBoxDownsamplingMethod.Text.CleanText();
+                calculatedMeasurement.DownsamplingMethod = ComboboxDownsamplingMethod.SelectedItem.ToString();
 
                 if (m_inEditMode == true && m_calculatedMeasurementID > 0)
                 {
@@ -417,6 +418,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 		void CalculatedMeasurements_Loaded(object sender, RoutedEventArgs e)
 		{
+            ClearForm();
 		}
 
 		// Executes when the user navigates to this page.
@@ -426,6 +428,11 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			m_nodeID = app.NodeValue;
 			m_client.GetCalculatedMeasurementListAsync(m_nodeID);
 			m_client.GetNodesAsync(true, false);
+
+            ComboboxDownsamplingMethod.Items.Add("LastReceived");
+            ComboboxDownsamplingMethod.Items.Add("Closest");
+            ComboboxDownsamplingMethod.Items.Add("Filtered");
+            ComboboxDownsamplingMethod.SelectedIndex = 0;
 		}
 
 		#endregion
@@ -552,30 +559,19 @@ namespace openPDCManager.Silverlight.Pages.Adapters
                 });
                 sm.Show();
                 return isValid;
-            }
-
-            if (string.IsNullOrEmpty(TextBoxDownsamplingMethod.Text.CleanText()))
-            {
-                isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Downsampling Method", SystemMessage = "Please provide valid Downsampling Method.", UserMessageType = MessageType.Error },
-                    ButtonType.OkOnly);
-                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
-                {
-                    TextBoxDownsamplingMethod.Text = "LastReceived";
-                    TextBoxDownsamplingMethod.Focus();
-                });
-                sm.Show();
-                return isValid;
-            }
+            }                       
 
             return isValid;
         }
 
 		void ClearForm()
 		{
-			GridCalculatedMeasurementDetail.DataContext = new CalculatedMeasurement();
+            GridCalculatedMeasurementDetail.DataContext = new CalculatedMeasurement() { AllowPreemptivePublishing = true, TimeResolution = 10000, 
+                AllowSortsByArrival = true, LeadTime = 1.0, LagTime = 3.0, FramesPerSecond = 30, MinimumMeasurementsToUse = -1 };
 			if (ComboBoxNode.Items.Count > 0)
 				ComboBoxNode.SelectedIndex = 0;
+            if (ComboboxDownsamplingMethod.Items.Count > 0)
+                ComboboxDownsamplingMethod.SelectedIndex = 0;
 			m_inEditMode = false;
 			m_calculatedMeasurementID = 0;
 			ListBoxCalculatedMeasurementList.SelectedIndex = -1;

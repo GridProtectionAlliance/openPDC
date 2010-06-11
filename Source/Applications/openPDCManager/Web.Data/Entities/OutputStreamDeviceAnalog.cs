@@ -240,6 +240,7 @@ namespace openPDCManager.Web.Data.Entities
 		public int ID { get; set; }
 		public string Label { get; set; }
 		public int Type { get; set; }
+        public int ScalingValue { get; set; }
 		public int LoadOrder { get; set; }
 		public string TypeName { get; set; }
 	}

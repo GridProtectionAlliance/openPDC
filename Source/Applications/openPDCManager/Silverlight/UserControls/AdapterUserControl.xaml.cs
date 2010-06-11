@@ -407,6 +407,7 @@ namespace openPDCManager.Silverlight.UserControls
 			m_nodeID = app.NodeValue;
 			m_client.GetNodesAsync(true, false);
 			m_client.GetAdapterListAsync(false, m_adapterType, m_nodeID);
+            ClearForm();
 		}
 
 		#endregion

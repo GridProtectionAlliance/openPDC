@@ -420,6 +420,8 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ComboboxType.Items.Add(new KeyValuePair<string, string>("V", "Voltage"));
 			ComboboxType.Items.Add(new KeyValuePair<string, string>("I", "Current"));
 			ComboboxType.SelectedIndex = 0;
+
+            ClearForm();
 		}
 
 		#endregion
@@ -462,9 +464,12 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		void ClearForm()
 		{
 			GridPhasorDetail.DataContext = new Phasor();
-			ComboboxPhase.SelectedIndex = 0;
-			ComboboxType.SelectedIndex = 0;
-			ComboboxDestinationPhasor.SelectedIndex = 0;
+			if (ComboboxPhase.Items.Count > 0)
+                ComboboxPhase.SelectedIndex = 0;
+			if (ComboboxType.Items.Count > 0)
+                ComboboxType.SelectedIndex = 0;
+			if (ComboboxDestinationPhasor.Items.Count > 0)
+                ComboboxDestinationPhasor.SelectedIndex = 0;
 			ListBoxPhasorList.SelectedIndex = -1;
 			m_inEditMode = false;
 			m_phasorID = 0;

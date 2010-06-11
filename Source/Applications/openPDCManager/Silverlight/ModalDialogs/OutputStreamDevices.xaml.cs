@@ -270,6 +270,9 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ListBoxOutputStreamDeviceList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDeviceList_SelectionChanged);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
+
+            //Set Default Values
+            //TextBoxLoadOrder.Text = "0";
 		}
 
 		#endregion
@@ -369,6 +372,10 @@ namespace openPDCManager.Silverlight.ModalDialogs
                 outputStreamDevice.Name = TextBoxName.Text.CleanText();
                 outputStreamDevice.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
                 outputStreamDevice.Enabled = (bool)CheckBoxEnabled.IsChecked;
+                outputStreamDevice.PhasorDataFormat = ComboboxPhasorDataFormat.SelectedIndex == 0 ? string.Empty : ComboboxPhasorDataFormat.SelectedItem.ToString();
+                outputStreamDevice.FrequencyDataFormat = ComboboxFrequencyDataFormat.SelectedIndex == 0 ? string.Empty : ComboboxFrequencyDataFormat.SelectedItem.ToString();
+                outputStreamDevice.AnalogDataFormat = ComboboxAnalogDataFormat.SelectedIndex == 0 ? string.Empty : ComboboxAnalogDataFormat.SelectedItem.ToString();
+                outputStreamDevice.CoordinateFormat = ComboboxCoordinateFormat.SelectedIndex == 0 ? string.Empty : ComboboxCoordinateFormat.SelectedItem.ToString();
 
                 if (m_inEditMode == true && m_outputStreamDeviceID > 0)
                 {
@@ -398,6 +405,26 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				m_selectedOutputStreamDevice = ListBoxOutputStreamDeviceList.SelectedItem as OutputStreamDevice;
 				GridOutputStreamDeviceDetail.DataContext = m_selectedOutputStreamDevice;
 				CheckBoxEnabled.IsChecked = m_selectedOutputStreamDevice.Enabled;
+
+                if (string.IsNullOrEmpty(m_selectedOutputStreamDevice.AnalogDataFormat))
+                    ComboboxAnalogDataFormat.SelectedIndex = 0;
+                else
+                    ComboboxAnalogDataFormat.SelectedItem = m_selectedOutputStreamDevice.AnalogDataFormat;
+
+                if (string.IsNullOrEmpty(m_selectedOutputStreamDevice.CoordinateFormat))
+                    ComboboxCoordinateFormat.SelectedIndex = 0;
+                else
+                    ComboboxCoordinateFormat.SelectedItem = m_selectedOutputStreamDevice.CoordinateFormat;
+
+                if (string.IsNullOrEmpty(m_selectedOutputStreamDevice.FrequencyDataFormat))
+                    ComboboxFrequencyDataFormat.SelectedIndex = 0;
+                else
+                    ComboboxFrequencyDataFormat.SelectedItem = m_selectedOutputStreamDevice.FrequencyDataFormat;
+
+                if (string.IsNullOrEmpty(m_selectedOutputStreamDevice.PhasorDataFormat))
+                    ComboboxPhasorDataFormat.SelectedIndex = 0;
+                else
+                    ComboboxPhasorDataFormat.SelectedItem = m_selectedOutputStreamDevice.PhasorDataFormat;
 				m_inEditMode = true;
 				m_outputStreamDeviceID = m_selectedOutputStreamDevice.ID;
 			}
@@ -446,8 +473,28 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		#region [ Page Event Handlers ]
 
 		void OutputStreamDevices_Loaded(object sender, RoutedEventArgs e)
-		{
+		{            
 			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, false);
+            ComboboxPhasorDataFormat.Items.Add("Select Phasor Data Format");
+            ComboboxPhasorDataFormat.Items.Add("FloatingPoint");
+            ComboboxPhasorDataFormat.Items.Add("FixedInteger");
+            ComboboxPhasorDataFormat.SelectedIndex = 0;
+
+            ComboboxFrequencyDataFormat.Items.Add("Select Frequency Data Format");
+            ComboboxFrequencyDataFormat.Items.Add("FloatingPoint");
+            ComboboxFrequencyDataFormat.Items.Add("FixedInteger");
+            ComboboxFrequencyDataFormat.SelectedIndex = 0;
+
+
+            ComboboxAnalogDataFormat.Items.Add("Select Analog Data Format");
+            ComboboxAnalogDataFormat.Items.Add("FloatingPoint");
+            ComboboxAnalogDataFormat.Items.Add("FixedInteger");
+            ComboboxAnalogDataFormat.SelectedIndex = 0;
+
+            ComboboxCoordinateFormat.Items.Add("Select Coordinate Format");
+            ComboboxCoordinateFormat.Items.Add("Polar");
+            ComboboxCoordinateFormat.Items.Add("Rectangular");
+            ComboboxCoordinateFormat.SelectedIndex = 0;
 		}
 
 		#endregion
@@ -490,7 +537,11 @@ namespace openPDCManager.Silverlight.ModalDialogs
 		void ClearForm()
 		{
 			GridOutputStreamDeviceDetail.DataContext = new OutputStreamDevice();
-			CheckBoxEnabled.IsChecked = false;
+            ComboboxCoordinateFormat.SelectedIndex = 0;
+            ComboboxAnalogDataFormat.SelectedIndex = 0;
+            ComboboxFrequencyDataFormat.SelectedIndex = 0;
+            ComboboxPhasorDataFormat.SelectedIndex = 0;
+			CheckBoxEnabled.IsChecked = true;
 			m_inEditMode = false;
 			m_outputStreamDeviceID = 0;
 			ListBoxOutputStreamDeviceList.SelectedIndex = -1;

@@ -241,7 +241,8 @@ namespace openPDCManager.Web.Data.Entities
 		public string NodeID { get; set; }
 		public int OutputStreamDeviceID { get; set; }
 		public int ID { get; set; }
-		public string Label { get; set; }		
+		public string Label { get; set; }
+        public int MaskValue { get; set; }
 		public int LoadOrder { get; set; }
 	}
 }

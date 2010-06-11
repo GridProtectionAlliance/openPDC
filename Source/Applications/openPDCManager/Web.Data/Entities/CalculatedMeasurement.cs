@@ -258,7 +258,7 @@ namespace openPDCManager.Web.Data.Entities
         public bool IgnoreBadTimeStamps { get; set; }
         public int TimeResolution { get; set; }
         public bool AllowPreemptivePublishing { get; set; }
-        public string DownSamplingMethod { get; set; }
+        public string DownsamplingMethod { get; set; }
 		public string NodeName { get; set; }
     }
 }
