@@ -552,8 +552,8 @@ ORDER BY CustomInputAdapter.LoadOrder;
 CREATE VIEW RuntimeOutputStreamDevice
 AS
 SELECT OutputStreamDevice.NodeID, Runtime.ID AS ParentID, OutputStreamDevice.ID, OutputStreamDevice.Acronym, 
- OutputStreamDevice.BpaAcronym, OutputStreamDevice.Name, OutputStreamDevice.PhasorDataFormat, OutputStreamDevice.FrequencyDataFormat,
- OutputStreamDevice.AnalogDataFormat, OutputStreamDevice.CoordinateFormat, OutputStreamDevice.LoadOrder
+ OutputStreamDevice.BpaAcronym, OutputStreamDevice.Name, NULLIF(OutputStreamDevice.PhasorDataFormat, '') AS PhasorDataFormat, NULLIF(OutputStreamDevice.FrequencyDataFormat, '') AS FrequencyDataFormat,
+ NULLIF(OutputStreamDevice.AnalogDataFormat, '') AS AnalogDataFormat, NULLIF(OutputStreamDevice.CoordinateFormat, '') AS CoordinateFormat, OutputStreamDevice.LoadOrder
 FROM OutputStreamDevice LEFT OUTER JOIN
  Runtime ON OutputStreamDevice.AdapterID = Runtime.SourceID AND Runtime.SourceTable = N'OutputStream'
 WHERE (OutputStreamDevice.Enabled <> 0)
