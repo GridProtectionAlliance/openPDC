@@ -1535,11 +1535,19 @@ namespace openPDCManager.Web.Data
 
 					foreach (Measurement measurement in measurementList)
 					{
+                        OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
+                        outputStreamMeasurement.NodeID = device.NodeID;
+                        outputStreamMeasurement.AdapterID = outputStreamID;
+                        outputStreamMeasurement.HistorianID = measurement.HistorianID;
+                        outputStreamMeasurement.PointID = measurement.PointID;
+                        outputStreamMeasurement.SignalReference = measurement.SignalReference;
 
 						if (measurement.SignalSuffix == "AV")
 						{
 							if (addAnalogs)
 							{
+                                SaveOutputStreamMeasurement(outputStreamMeasurement, true);
+
 								OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
 								outputStreamDeviceAnalog.NodeID = device.NodeID;
 								outputStreamDeviceAnalog.OutputStreamDeviceID = savedOutputStreamDeviceID;
@@ -1554,6 +1562,8 @@ namespace openPDCManager.Web.Data
 						{
 							if (addDigitals)
 							{
+                                SaveOutputStreamMeasurement(outputStreamMeasurement, true);
+
 								OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
 								outputStreamDeviceDigital.NodeID = device.NodeID;
 								outputStreamDeviceDigital.OutputStreamDeviceID = savedOutputStreamDeviceID;
@@ -1564,15 +1574,8 @@ namespace openPDCManager.Web.Data
 							}
 						}
 						else
-						{
-							OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
-							outputStreamMeasurement.NodeID = device.NodeID;
-							outputStreamMeasurement.AdapterID = outputStreamID;
-							outputStreamMeasurement.HistorianID = measurement.HistorianID;
-							outputStreamMeasurement.PointID = measurement.PointID;
-							outputStreamMeasurement.SignalReference = measurement.SignalReference;
 							SaveOutputStreamMeasurement(outputStreamMeasurement, true);
-						}						
+											
 					}
 					//********************************************
 				}
