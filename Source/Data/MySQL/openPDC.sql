@@ -114,6 +114,17 @@ CREATE TABLE Node(
 CREATE TRIGGER UpdateNodeGuid BEFORE INSERT ON Node FOR EACH ROW
 SET NEW.ID = UUID();
 
+CREATE TABLE DataOperation(
+	NodeID NCHAR(36) NULL,
+	Description LONGTEXT NULL,
+	AssemblyName TEXT NOT NULL,
+	TypeName TEXT NOT NULL,
+	MethodName NVARCHAR(255) NOT NULL,
+	Arguments LONGTEXT NULL,
+	LoadOrder INT NOT NULL DEFAULT 0,
+	Enabled TINYINT NOT NULL DEFAULT 0
+);
+
 CREATE TABLE OtherDevice(
 	ID INT AUTO_INCREMENT NOT NULL,
 	Acronym NVARCHAR(16) NOT NULL,
@@ -256,6 +267,21 @@ CREATE TABLE ImportedMeasurement(
 	Latitude DECIMAL(9, 6) NULL,
 	Description LONGTEXT NULL,
 	Enabled TINYINT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE Statistic(
+	ID INT AUTO_INCREMENT NOT NULL,
+	Source NVARCHAR(20) NOT NULL,
+	SignalIndex INT NOT NULL,
+	Name NVARCHAR(100) NOT NULL,
+	Description LONGTEXT NULL,
+	AssemblyName TEXT NOT NULL,
+	TypeName TEXT NOT NULL,
+	MethodName NVARCHAR(255) NOT NULL,
+	Arguments LONGTEXT NULL,
+	Enabled TINYINT NOT NULL DEFAULT 0,
+	CONSTRAINT PK_Statistic PRIMARY KEY (ID ASC),
+	CONSTRAINT IX_Statistic_Source_SignalIndex UNIQUE KEY (Source ASC, SignalIndex ASC)
 );
 
 CREATE TABLE OutputStreamMeasurement(
@@ -407,6 +433,8 @@ CREATE TABLE CustomOutputAdapter(
 );
 
 ALTER TABLE Node ADD CONSTRAINT FK_Node_Company FOREIGN KEY(CompanyID) REFERENCES Company (ID);
+
+ALTER TABLE DataOperation ADD CONSTRAINT FK_DataOperation_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
 
 ALTER TABLE OtherDevice ADD CONSTRAINT FK_OtherDevice_Company FOREIGN KEY(CompanyID) REFERENCES Company (ID);
 
@@ -644,6 +672,12 @@ SELECT NodeID, SourceNodeID, CONCAT_WS(':', Source, CAST(PointID AS CHAR)) AS ID
 	CompanyAcronym AS Company, Longitude, Latitude, Description
 FROM ImportedMeasurement
 WHERE ImportedMeasurement.Enabled <> 0;
+
+CREATE VIEW RuntimeStatistic
+AS
+SELECT Node.ID AS NodeID, Statistic.ID AS ID, Statistic.Source, Statistic.SignalIndex, Statistic.Name, Statistic.Description,
+	Statistic.AssemblyName, Statistic.TypeName, Statistic.MethodName, Statistic.Arguments, Statistic.Enabled
+FROM Statistic, Node;
 
 CREATE VIEW IaonOutputAdapter
 AS
