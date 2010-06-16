@@ -260,16 +260,19 @@ namespace TVA.PhasorProtocols
         private Dictionary<ushort, ConfigurationCell> m_definedDevices;
         private Dictionary<string, ConfigurationCell> m_labelDefinedDevices;
         private Dictionary<string, long> m_undefinedDevices;
+        private Dictionary<FundamentalSignalType, string[]> m_cachedSignalReferences;
         private System.Timers.Timer m_dataStreamMonitor;
         private bool m_allowUseOfCachedConfiguration;
         private bool m_cachedConfigLoadAttempted;
         private TimeZoneInfo m_timezone;
         private Ticks m_timeAdjustmentTicks;
         private Ticks m_lastReportTime;
+        private long m_outOfOrderFrames;
         private ushort m_accessID;
         private bool m_isConcentrator;
         private bool m_receivedConfigFrame;
         private long m_bytesReceived;
+        private int m_hashCode;
         private bool m_disposed;
 
         #endregion
@@ -281,6 +284,10 @@ namespace TVA.PhasorProtocols
         /// </summary>
         public PhasorMeasurementMapper()
         {
+            // Create a cached signal reference dictionary for generated signal referencs
+            m_cachedSignalReferences = new Dictionary<FundamentalSignalType, string[]>();
+
+            // Create data stream monitoring timer
             m_dataStreamMonitor = new System.Timers.Timer();
             m_dataStreamMonitor.Elapsed += m_dataStreamMonitor_Elapsed;
             m_dataStreamMonitor.AutoReset = true;
@@ -317,6 +324,20 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_accessID = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets an enumeration of all defined system devices (regardless of ID or label based definition)
+        /// </summary>
+        public IEnumerable<ConfigurationCell> DefinedDevices
+        {
+            get
+            {
+                if (m_labelDefinedDevices != null)
+                    return m_definedDevices.Values.Concat(m_labelDefinedDevices.Values);
+
+                return m_definedDevices.Values;
             }
         }
 
@@ -382,6 +403,20 @@ namespace TVA.PhasorProtocols
             {
                 m_timeAdjustmentTicks = value;
             }
+        }       
+
+        /// <summary>
+        /// Gets the the total number of frames that have been received by the current mapper connection.
+        /// </summary>
+        public long TotalFrames
+        {
+            get
+            {
+                if (m_frameParser != null)
+                    return m_frameParser.TotalFramesReceived;
+
+                return 0;
+            }
         }
 
         /// <summary>
@@ -396,6 +431,45 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_lastReportTime = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total number of frames that have been missed by the current mapper connection.
+        /// </summary>
+        public long MissingFrames
+        {
+            get
+            {
+                if (m_frameParser != null)
+                    return m_frameParser.TotalMissingFrames;
+
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total number of CRC errors that have been encountered by the the current mapper connection.
+        /// </summary>
+        public long CRCErrors
+        {
+            get
+            {
+                if (m_frameParser != null)
+                    return m_frameParser.TotalCrcExceptions;
+
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total number frames that came in out of order from the current mapper connection.
+        /// </summary>
+        public long OutOfOrderFrames
+        {
+            get
+            {
+                return m_outOfOrderFrames;
             }
         }
 
@@ -436,6 +510,9 @@ namespace TVA.PhasorProtocols
                     status.AppendFormat("   Cached config file name: {0}", FilePath.TrimFileName(ConfigurationCacheFileName, 51));
                     status.AppendLine();
                 }
+
+                status.AppendFormat("       Out of order frames: {0}", m_outOfOrderFrames);
+                status.AppendLine();
 
                 if (m_frameParser != null)
                     status.Append(m_frameParser.Status);
@@ -478,11 +555,11 @@ namespace TVA.PhasorProtocols
 
                     status.Append(stationName.TruncateRight(22).PadRight(22));
                     status.Append(' ');
-                    status.Append(definedDevice.TotalDataQualityErrors.ToString().CenterText(10));
+                    status.Append(definedDevice.DataQualityErrors.ToString().CenterText(10));
                     status.Append(' ');
-                    status.Append(definedDevice.TotalTimeQualityErrors.ToString().CenterText(10));
+                    status.Append(definedDevice.TimeQualityErrors.ToString().CenterText(10));
                     status.Append(' ');
-                    status.Append(definedDevice.TotalDeviceErrors.ToString().CenterText(10));
+                    status.Append(definedDevice.DeviceErrors.ToString().CenterText(10));
                     status.Append(' ');
                     status.Append(definedDevice.TotalFrames.ToString().CenterText(10));
                     status.Append(' ');
@@ -555,20 +632,6 @@ namespace TVA.PhasorProtocols
                     m_frameParser.ReceivedDataFrame += m_frameParser_ReceivedDataFrame;
                     m_frameParser.ReceivedFrameBufferImage += m_frameParser_ReceivedFrameBufferImage;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Gets an enumeration of all defined system devices (regardless of ID or label based definition)
-        /// </summary>
-        protected IEnumerable<ConfigurationCell> DefinedDevices
-        {
-            get
-            {
-                if (m_labelDefinedDevices != null)
-                    return m_definedDevices.Values.Concat(m_labelDefinedDevices.Values);
-
-                return m_definedDevices.Values;
             }
         }
 
@@ -760,6 +823,7 @@ namespace TVA.PhasorProtocols
                     definedDevice = new ConfigurationCell(ushort.Parse(row["AccessID"].ToString()));
                     definedDevice.IDLabel = row["Acronym"].ToString().Trim();
                     definedDevice.Tag = uint.Parse(row["ID"].ToString());
+                    definedDevice.Source = this;
                     devicedAdded = false;
 
                     // See if key already exists in this collection
@@ -810,6 +874,7 @@ namespace TVA.PhasorProtocols
                 definedDevice = new ConfigurationCell(m_accessID);
                 definedDevice.IDLabel = Name;
                 definedDevice.Tag = ID;
+                definedDevice.Source = this;
                 m_definedDevices.Add(definedDevice.IDCode, definedDevice);
             }
         }
@@ -884,11 +949,13 @@ namespace TVA.PhasorProtocols
             {
                 foreach (ConfigurationCell definedDevice in DefinedDevices)
                 {
-                    definedDevice.TotalDataQualityErrors = 0;
-                    definedDevice.TotalDeviceErrors = 0;
+                    definedDevice.DataQualityErrors = 0;
+                    definedDevice.DeviceErrors = 0;
                     definedDevice.TotalFrames = 0;
-                    definedDevice.TotalTimeQualityErrors = 0;
+                    definedDevice.TimeQualityErrors = 0;
                 }
+             
+                m_outOfOrderFrames = 0;
 
                 OnStatusMessage("Statistics reset for all devices associated with this connection.");
             }
@@ -909,10 +976,10 @@ namespace TVA.PhasorProtocols
 
                 if (m_definedDevices.TryGetValue(idCode, out definedDevice))
                 {
-                    definedDevice.TotalDataQualityErrors = 0;
-                    definedDevice.TotalDeviceErrors = 0;
+                    definedDevice.DataQualityErrors = 0;
+                    definedDevice.DeviceErrors = 0;
                     definedDevice.TotalFrames = 0;
-                    definedDevice.TotalTimeQualityErrors = 0;
+                    definedDevice.TimeQualityErrors = 0;
 
                     OnStatusMessage("Statistics reset for device with ID code \"{0}\" associated with this connection.", idCode);
                 }
@@ -999,7 +1066,7 @@ namespace TVA.PhasorProtocols
 
                     foreach (ConfigurationCell definedDevice in DefinedDevices)
                     {
-                        totalDataErrors += definedDevice.TotalDataQualityErrors;
+                        totalDataErrors += definedDevice.DataQualityErrors;
                     }
 
                     // Generate a short connect time
@@ -1026,7 +1093,7 @@ namespace TVA.PhasorProtocols
 
                     string runtimeStats = string.Format(" {0} {1} fps",
                         ((DateTime)m_lastReportTime).ToString("MM/dd/yyyy HH:mm:ss.fff"),
-                        m_frameParser.FrameRate.ToString("0.00"));
+                        m_frameParser.CalculatedFrameRate.ToString("0.00"));
 
                     uptimeStats = uptimeStats.TruncateRight(maxLength - runtimeStats.Length).PadLeft(maxLength - runtimeStats.Length, '\xA0');
 
@@ -1059,6 +1126,7 @@ namespace TVA.PhasorProtocols
         {
             m_lastReportTime = 0;
             m_bytesReceived = 0;
+            m_outOfOrderFrames = 0;
             m_receivedConfigFrame = false;
             m_cachedConfigLoadAttempted = false;
 
@@ -1147,6 +1215,8 @@ namespace TVA.PhasorProtocols
             // Track latest reporting time for mapper
             if (timestamp > m_lastReportTime)
                 m_lastReportTime = timestamp;
+            else
+                m_outOfOrderFrames++;
 
             // Loop through each parsed device in the data frame
             foreach (IDataCell parsedDevice in frame.Cells)
@@ -1166,13 +1236,13 @@ namespace TVA.PhasorProtocols
                         definedDevice.TotalFrames++;
 
                         if (!parsedDevice.DataIsValid)
-                            definedDevice.TotalDataQualityErrors++;
+                            definedDevice.DataQualityErrors++;
 
                         if (!parsedDevice.SynchronizationIsValid)
-                            definedDevice.TotalTimeQualityErrors++;
+                            definedDevice.TimeQualityErrors++;
 
                         if (parsedDevice.DeviceError)
-                            definedDevice.TotalDeviceErrors++;
+                            definedDevice.DeviceErrors++;
 
                         // Map status flags (SF) from device data cell itself (IDataCell implements IMeasurement
                         // and exposes the status flags as its value)
@@ -1251,6 +1321,84 @@ namespace TVA.PhasorProtocols
 
             // Provide real-time measurements where needed
             OnNewMeasurements(mappedMeasurements);
+        }
+
+        /// <summary>
+        /// Get signal reference for specified <see cref="FundamentalSignalType"/>.
+        /// </summary>
+        /// <param name="type"><see cref="FundamentalSignalType"/> to request signal reference for.</param>
+        /// <returns>Signal reference of given <see cref="FundamentalSignalType"/>.</returns>
+        public string GetSignalReference(FundamentalSignalType type)
+        {
+            // We cache non-indexed signal reference strings so they don't need to be generated at each mapping call.
+            string[] references;
+
+            // Look up synonym in dictionary based on signal type, if found return single element
+            if (m_cachedSignalReferences.TryGetValue(type, out references))
+                return references[0];
+
+            // Create a new signal reference array (for single element)
+            references = new string[1];
+
+            // Create and cache new non-indexed signal reference
+            references[0] = SignalReference.ToString(Name + "!IS", type);
+
+            // Cache generated signal synonym
+            m_cachedSignalReferences.Add(type, references);
+
+            return references[0];
+        }
+
+        /// <summary>
+        /// Get signal reference for specified <see cref="FundamentalSignalType"/> and <paramref name="signalIndex"/>.
+        /// </summary>
+        /// <param name="type"><see cref="FundamentalSignalType"/> to request signal reference for.</param>
+        /// <param name="index">Index <see cref="FundamentalSignalType"/> to request signal reference for.</param>
+        /// <param name="count">Number of signals defined for this <see cref="FundamentalSignalType"/>.</param>
+        /// <returns>Signal reference of given <see cref="FundamentalSignalType"/> and <paramref name="signalIndex"/>.</returns>
+        public string GetSignalReference(FundamentalSignalType type, int index, int count)
+        {
+            // We cache indexed signal reference strings so they don't need to be generated at each mapping call.
+            // For speed purposes we intentionally do not validate that signalIndex falls within signalCount, be
+            // sure calling procedures are very careful with parameters...
+            string[] references;
+
+            // Look up synonym in dictionary based on signal type
+            if (m_cachedSignalReferences.TryGetValue(type, out references))
+            {
+                // Verify signal count has not changed (we may have received new configuration from device)
+                if (count == references.Length)
+                {
+                    // Create and cache new signal reference if it doesn't exist
+                    if (references[index] == null)
+                        references[index] = SignalReference.ToString(Name + "!IS", type, index + 1);
+
+                    return references[index];
+                }
+            }
+
+            // Create a new indexed signal reference array
+            references = new string[count];
+
+            // Create and cache new signal reference
+            references[index] = SignalReference.ToString(Name + "!IS", type, index + 1);
+
+            // Cache generated signal synonym array
+            m_cachedSignalReferences.Add(type, references);
+
+            return references[index];
+        }
+
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
+        /// <returns>A 32-bit signed integer hash code.</returns>
+        public override int GetHashCode()
+        {
+            if (m_hashCode == 0)
+                m_hashCode = Guid.NewGuid().GetHashCode();
+
+            return m_hashCode;
         }
 
         private void m_frameParser_ReceivedDataFrame(object sender, EventArgs<IDataFrame> e)

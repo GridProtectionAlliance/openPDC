@@ -242,9 +242,16 @@ namespace TVA.PhasorProtocols.Anonymous
     /// Represents a protocol independent implementation of a <see cref="IConfigurationCell"/> that can be sent or received.
     /// </summary>
     [Serializable()]
-    public class ConfigurationCell : ConfigurationCellBase
+    public class ConfigurationCell : ConfigurationCellBase, IDisposable
 	{
         #region [ Members ]
+
+        // Events
+
+        /// <summary>
+        /// Event is raised when <see cref="ConfigurationCell"/> is disposed.
+        /// </summary>
+        public event EventHandler Disposed;
 
         // Fields
         private DataFormat m_analogDataFormat;
@@ -253,12 +260,14 @@ namespace TVA.PhasorProtocols.Anonymous
         private CoordinateFormat m_phasorCoordinateFormat;
 
         // We add cached signal type and statistical tracking information to our protocol independent configuration cell
-        private Dictionary<FundamentalSignalType, string[]> m_signalReferences;
+        private Dictionary<FundamentalSignalType, string[]> m_cachedSignalReferences;
         private Ticks m_lastReportTime;
         private long m_totalFrames;
-        private long m_totalDataQualityErrors;
-        private long m_totalTimeQualityErrors;
-        private long m_totalDeviceErrors;
+        private long m_dataQualityErrors;
+        private long m_timeQualityErrors;
+        private long m_deviceErrors;
+        private object m_source;
+        private bool m_disposed;
 
         #endregion
 
@@ -281,7 +290,7 @@ namespace TVA.PhasorProtocols.Anonymous
         public ConfigurationCell(ConfigurationFrame parent, ushort idCode)
             : base(parent, idCode, int.MaxValue, int.MaxValue, int.MaxValue)
 		{			
-			m_signalReferences = new Dictionary<FundamentalSignalType, string[]>();
+			m_cachedSignalReferences = new Dictionary<FundamentalSignalType, string[]>();
 			m_analogDataFormat = DataFormat.FloatingPoint;
 			m_frequencyDataFormat = DataFormat.FloatingPoint;
 			m_phasorDataFormat = DataFormat.FloatingPoint;
@@ -298,11 +307,19 @@ namespace TVA.PhasorProtocols.Anonymous
         {
             // Deserialize configuration cell
             m_lastReportTime = info.GetInt64("lastReportTime");
-            m_signalReferences = (Dictionary<FundamentalSignalType, string[]>)info.GetValue("signalReferences", typeof(Dictionary<FundamentalSignalType, string[]>));
+            m_cachedSignalReferences = (Dictionary<FundamentalSignalType, string[]>)info.GetValue("signalReferences", typeof(Dictionary<FundamentalSignalType, string[]>));
             m_analogDataFormat = (DataFormat)info.GetValue("analogDataFormat", typeof(DataFormat));
             m_frequencyDataFormat = (DataFormat)info.GetValue("frequencyDataFormat", typeof(DataFormat));
             m_phasorDataFormat = (DataFormat)info.GetValue("phasorDataFormat", typeof(DataFormat));
             m_phasorCoordinateFormat = (CoordinateFormat)info.GetValue("phasorCoordinateFormat", typeof(CoordinateFormat));
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources before the <see cref="ConfigurationCell"/> object is reclaimed by <see cref="GC"/>.
+        /// </summary>
+        ~ConfigurationCell()
+        {
+            Dispose(false);
         }
 
         #endregion
@@ -402,51 +419,103 @@ namespace TVA.PhasorProtocols.Anonymous
         /// <summary>
         /// Gets or sets total data quality errors of this <see cref="ConfigurationCell"/>.
         /// </summary>
-        public long TotalDataQualityErrors
+        public long DataQualityErrors
         {
             get
             {
-                return m_totalDataQualityErrors;
+                return m_dataQualityErrors;
             }
             set
             {
-                m_totalDataQualityErrors = value;
+                m_dataQualityErrors = value;
             }
         }
 
         /// <summary>
         /// Gets or sets total time quality errors of this <see cref="ConfigurationCell"/>.
         /// </summary>
-        public long TotalTimeQualityErrors
+        public long TimeQualityErrors
         {
             get
             {
-                return m_totalTimeQualityErrors;
+                return m_timeQualityErrors;
             }
             set
             {
-                m_totalTimeQualityErrors = value;
+                m_timeQualityErrors = value;
             }
         }
 
         /// <summary>
-        /// Gets or set total device errors of this <see cref="ConfigurationCell"/>.
+        /// Gets or sets total device errors of this <see cref="ConfigurationCell"/>.
         /// </summary>
-        public long TotalDeviceErrors
+        public long DeviceErrors
         {
             get
             {
-                return m_totalDeviceErrors;
+                return m_deviceErrors;
             }
             set
             {
-                m_totalDeviceErrors = value;
+                m_deviceErrors = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the reference to the source of this <see cref="ConfigurationCell"/>.
+        /// </summary>
+        public object Source
+        {
+            get
+            {
+                return m_source;
+            }
+            set
+            {
+                m_source = value;
             }
         }
 
         #endregion
 
         #region [ Methods ]
+
+        /// <summary>
+        /// Releases all the resources used by the <see cref="ConfigurationCell"/> object.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="ConfigurationCell"/> object and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!m_disposed)
+            {
+                try
+                {
+                    if (disposing)
+                    {
+                        if (m_cachedSignalReferences != null)
+                            m_cachedSignalReferences.Clear();
+
+                        m_cachedSignalReferences = null;
+                    }
+                }
+                finally
+                {
+                    m_disposed = true;  // Prevent duplicate dispose.
+
+                    if (Disposed != null)
+                        Disposed(this, EventArgs.Empty);
+                }
+            }
+        }
 
         /// <summary>
         /// Get signal reference for specified <see cref="FundamentalSignalType"/>.
@@ -460,7 +529,7 @@ namespace TVA.PhasorProtocols.Anonymous
             string[] references;
 
             // Look up synonym in dictionary based on signal type, if found return single element
-            if (m_signalReferences.TryGetValue(type, out references))
+            if (m_cachedSignalReferences.TryGetValue(type, out references))
                 return references[0];
 
             // Create a new signal reference array (for single element)
@@ -470,7 +539,7 @@ namespace TVA.PhasorProtocols.Anonymous
             references[0] = SignalReference.ToString(IDLabel, type);
 
             // Cache generated signal synonym
-            m_signalReferences.Add(type, references);
+            m_cachedSignalReferences.Add(type, references);
 
             return references[0];
         }
@@ -491,7 +560,7 @@ namespace TVA.PhasorProtocols.Anonymous
             string[] references;
 
             // Look up synonym in dictionary based on signal type
-            if (m_signalReferences.TryGetValue(type, out references))
+            if (m_cachedSignalReferences.TryGetValue(type, out references))
             {
                 // Verify signal count has not changed (we may have received new configuration from device)
                 if (count == references.Length)
@@ -511,7 +580,7 @@ namespace TVA.PhasorProtocols.Anonymous
             references[index] = SignalReference.ToString(IDLabel, type, index + 1);
 
             // Cache generated signal synonym array
-            m_signalReferences.Add(type, references);
+            m_cachedSignalReferences.Add(type, references);
 
             return references[index];
         }
@@ -528,7 +597,7 @@ namespace TVA.PhasorProtocols.Anonymous
 
             // Serialize configuration cell
             info.AddValue("lastReportTime", (long)m_lastReportTime);
-            info.AddValue("signalReferences", m_signalReferences, typeof(Dictionary<FundamentalSignalType, string[]>));
+            info.AddValue("signalReferences", m_cachedSignalReferences, typeof(Dictionary<FundamentalSignalType, string[]>));
             info.AddValue("analogDataFormat", m_analogDataFormat, typeof(DataFormat));
             info.AddValue("frequencyDataFormat", m_frequencyDataFormat, typeof(DataFormat));
             info.AddValue("phasorDataFormat", m_phasorDataFormat, typeof(DataFormat));

@@ -281,6 +281,10 @@ namespace TVA.PhasorProtocols
         /// </summary>
         Calculation,
         /// <summary>
+        /// Statistical value.
+        /// </summary>
+        Statistic,
+        /// <summary>
         /// Undetermined signal type.
         /// </summary>
         Unknown
@@ -542,6 +546,8 @@ namespace TVA.PhasorProtocols
                     return FundamentalSignalType.Analog;
                 case "CV": // Calculated Value
                     return FundamentalSignalType.Calculation;
+                case "ST": // Statistical Value
+                    return FundamentalSignalType.Statistic;
                 default:
                     return FundamentalSignalType.Unknown;
             }
@@ -572,8 +578,10 @@ namespace TVA.PhasorProtocols
                     return "AV"; // Analog Value
                 case FundamentalSignalType.Calculation:
                     return "CV"; // Calculated Value
+                case FundamentalSignalType.Statistic:
+                    return "ST"; // Statistical Value
                 default:
-                    return "?";
+                    return "??";
             }
         }
 

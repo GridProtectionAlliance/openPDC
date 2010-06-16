@@ -283,7 +283,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Status flags.
         /// </summary>
-        STAT = 8,
+        FLAG = 8,
         /// <summary>
         /// Digital value.
         /// </summary>
@@ -292,6 +292,10 @@ namespace TVA.PhasorProtocols
         /// Calculated value.
         /// </summary>
         CALC = 10,
+        /// <summary>
+        /// Statistical value.
+        /// </summary>
+        STAT = 11,
         /// <summary>
         /// Undefined signal.
         /// </summary>

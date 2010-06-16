@@ -343,6 +343,7 @@ namespace TVA.PhasorProtocols
         private IConfigurationFrame m_configurationFrame;
         private ConfigurationFrame m_baseConfigurationFrame;
         private Dictionary<MeasurementKey, SignalReference[]> m_signalReferences;
+        private Dictionary<FundamentalSignalType, string[]> m_cachedSignalReferences;
         private LineFrequency m_nominalFrequency;
         private DataFormat m_dataFormat;
         private CoordinateFormat m_coordinateFormat;
@@ -354,6 +355,7 @@ namespace TVA.PhasorProtocols
         private bool m_autoStartDataChannel;
         private bool m_processDataValidFlag;
         private ushort m_idCode;
+        private int m_hashCode;
         private bool m_disposed;
 
         #endregion
@@ -367,6 +369,9 @@ namespace TVA.PhasorProtocols
         {
             // Create a new signal reference dictionary indexed on measurement keys
             m_signalReferences = new Dictionary<MeasurementKey, SignalReference[]>();
+
+            // Create a cached signal reference dictionary for generated signal referencs
+            m_cachedSignalReferences = new Dictionary<FundamentalSignalType, string[]>();
 
             // Synchrophasor protocols should default to millisecond resolution
             base.TimeResolution = Ticks.PerMillisecond;
@@ -1379,6 +1384,84 @@ namespace TVA.PhasorProtocols
             // Cache configuration on an independent thread in case this takes some time
             ThreadPool.QueueUserWorkItem(TVA.PhasorProtocols.Anonymous.ConfigurationFrame.Cache,
                 new EventArgs<IConfigurationFrame, Action<Exception>, string>(configurationFrame, OnProcessException, name));
+        }
+
+        /// <summary>
+        /// Get signal reference for specified <see cref="FundamentalSignalType"/>.
+        /// </summary>
+        /// <param name="type"><see cref="FundamentalSignalType"/> to request signal reference for.</param>
+        /// <returns>Signal reference of given <see cref="FundamentalSignalType"/>.</returns>
+        public string GetSignalReference(FundamentalSignalType type)
+        {
+            // We cache non-indexed signal reference strings so they don't need to be generated at each mapping call.
+            string[] references;
+
+            // Look up synonym in dictionary based on signal type, if found return single element
+            if (m_cachedSignalReferences.TryGetValue(type, out references))
+                return references[0];
+
+            // Create a new signal reference array (for single element)
+            references = new string[1];
+
+            // Create and cache new non-indexed signal reference
+            references[0] = SignalReference.ToString(Name + "!OS", type);
+
+            // Cache generated signal synonym
+            m_cachedSignalReferences.Add(type, references);
+
+            return references[0];
+        }
+
+        /// <summary>
+        /// Get signal reference for specified <see cref="FundamentalSignalType"/> and <paramref name="signalIndex"/>.
+        /// </summary>
+        /// <param name="type"><see cref="FundamentalSignalType"/> to request signal reference for.</param>
+        /// <param name="index">Index <see cref="FundamentalSignalType"/> to request signal reference for.</param>
+        /// <param name="count">Number of signals defined for this <see cref="FundamentalSignalType"/>.</param>
+        /// <returns>Signal reference of given <see cref="FundamentalSignalType"/> and <paramref name="signalIndex"/>.</returns>
+        public string GetSignalReference(FundamentalSignalType type, int index, int count)
+        {
+            // We cache indexed signal reference strings so they don't need to be generated at each mapping call.
+            // For speed purposes we intentionally do not validate that signalIndex falls within signalCount, be
+            // sure calling procedures are very careful with parameters...
+            string[] references;
+
+            // Look up synonym in dictionary based on signal type
+            if (m_cachedSignalReferences.TryGetValue(type, out references))
+            {
+                // Verify signal count has not changed (we may have received new configuration from device)
+                if (count == references.Length)
+                {
+                    // Create and cache new signal reference if it doesn't exist
+                    if (references[index] == null)
+                        references[index] = SignalReference.ToString(Name + "!OS", type, index + 1);
+
+                    return references[index];
+                }
+            }
+
+            // Create a new indexed signal reference array
+            references = new string[count];
+
+            // Create and cache new signal reference
+            references[index] = SignalReference.ToString(Name + "!OS", type, index + 1);
+
+            // Cache generated signal synonym array
+            m_cachedSignalReferences.Add(type, references);
+
+            return references[index];
+        }
+
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
+        /// <returns>A 32-bit signed integer hash code.</returns>
+        public override int GetHashCode()
+        {
+            if (m_hashCode == 0)
+                m_hashCode = Guid.NewGuid().GetHashCode();
+
+            return m_hashCode;
         }
 
         #region [ Data Channel Event Handlers ]

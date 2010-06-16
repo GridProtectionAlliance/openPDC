@@ -231,29 +231,254 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using TVA.Communication;
+using TVA.Configuration;
+using TVA.Data;
+using TVA.IO;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
+using TVA.PhasorProtocols.Anonymous;
 
 namespace TVA.PhasorProtocols
 {
+    /// <summary>
+    /// Method signature for function used to calculate a statistic for a given object.
+    /// </summary>
+    /// <param name="source">Source object.</param>
+    /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+    /// <returns>Actual calculated statistic.</returns>
+    public delegate double StatisticCalculationFunction(object source, string arguments);
+
     /// <summary>
     /// Provides common phasor services.
     /// </summary>
     /// <remarks>
     /// Typically class should be implemented as a singleton since one instance will suffice.
     /// </remarks>
-    public class CommonPhasorServices : FacileActionAdapterBase
+    public class CommonPhasorServices : IActionAdapter
     {
         #region [ Members ]
 
+        // Nested Types
+
+        // Statistic calculation definition
+        private class Statistic
+        {
+            public StatisticCalculationFunction Method;
+            public string Source;
+            public int Index;
+            public string Arguments;
+        }
+
+        // Statistic value state
+        private class StatisticValueState : ObjectState<double>
+        {
+            /// <summary>
+            /// Creates a new <see cref="StatisticValueState"/>.
+            /// </summary>
+            /// <param name="name">Name of statistic.</param>
+            public StatisticValueState(string name) : base(name) { }
+
+            /// <summary>
+            /// Gets the statistical difference between current and previous statistic value.
+            /// </summary>
+            /// <returns>Difference from last cached statistic value.</returns>
+            public double GetDifference()
+            {
+                double value = CurrentState - PreviousState;
+
+                // If value is negative, statistics may have been reset by user
+                if (value < 0.0D)
+                    value = CurrentState;
+
+                // Track last value
+                PreviousState = CurrentState;
+
+                return value;
+            }
+        }
+
+        // Statistical value state cache
+        private class StatisticValueStateCache
+        {
+            #region [ Members ]
+
+            // Fields
+            private Dictionary<object, Dictionary<string, StatisticValueState>> m_statisticValueStates;
+
+            #endregion
+
+            #region [ Constructors ]
+
+            /// <summary>
+            /// Creates a new instance of the <see cref="StatisticValueStateCache"/>.
+            /// </summary>
+            public StatisticValueStateCache()
+            {
+                m_statisticValueStates = new Dictionary<object, Dictionary<string, StatisticValueState>>();
+            }
+
+            #endregion
+
+            #region [ Methods ]
+
+            /// <summary>
+            /// Gets the statistical difference between current and previous statistic value.
+            /// </summary>
+            /// <param name="source">Source Device.</param>
+            /// <param name="statistic">Current statistic value.</param>
+            /// <param name="name">Name of statistic calculation.</param>
+            /// <returns>Difference from last cached statistic value.</returns>
+            public double GetDifference(object source, double statistic, string name)
+            {
+                Dictionary<string, StatisticValueState> valueStates;
+                StatisticValueState valueState;
+
+                lock (m_statisticValueStates)
+                {
+                    if (m_statisticValueStates.TryGetValue(source, out valueStates))
+                    {
+                        if (valueStates.TryGetValue(name, out valueState))
+                        {
+                            valueState.CurrentState = statistic;
+                            statistic = valueState.GetDifference();
+                        }
+                        else
+                        {
+                            valueState = new StatisticValueState(name);
+                            valueState.PreviousState = statistic;
+                            valueStates.Add(name, valueState);
+                        }
+                    }
+                    else
+                    {
+                        valueStates = new Dictionary<string, StatisticValueState>();
+
+                        valueState = new StatisticValueState(name);
+                        valueState.PreviousState = statistic;
+                        valueStates.Add(name, valueState);
+
+                        m_statisticValueStates.Add(source, valueStates);
+
+                        // Attach to Disposed event of source, if defined
+                        EventInfo disposedEvent = source.GetType().GetEvent("Disposed");
+
+                        if (disposedEvent != null)
+                            disposedEvent.GetAddMethod().Invoke(source, new object[] { new EventHandler(StatisticSourceDisposed) });
+                    }
+                }
+
+                return statistic;
+            }
+
+            // Remove value states cache when statistic source is disposed
+            private void StatisticSourceDisposed(object sender, EventArgs e)
+            {
+                lock (m_statisticValueStates)
+                {
+                    m_statisticValueStates.Remove(sender);
+                }
+            }
+
+            #endregion
+        }
+
+        // Constants
+        private const int DefaultMeasurementReportingInterval = 100000;
+        private const int DefaultInitializationTimeout = 15000;
+
+        // Events
+
+        /// <summary>
+        /// Provides status messages to consumer.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="EventArgs{T}.Argument"/> is new status message.
+        /// </remarks>
+        public event EventHandler<EventArgs<string>> StatusMessage;
+
+        /// <summary>
+        /// Event is raised when there is an exception encountered while processing.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="EventArgs{T}.Argument"/> is the exception that was thrown.
+        /// </remarks>
+        public event EventHandler<EventArgs<Exception>> ProcessException;
+
+        /// <summary>
+        /// Provides new measurements from action adapter.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="EventArgs{T}.Argument"/> is a collection of new measurements for host to process.
+        /// </remarks>
+        public event EventHandler<EventArgs<ICollection<IMeasurement>>> NewMeasurements;
+
+        /// <summary>
+        /// This event is raised, if needed, to track current number of unpublished seconds of data in the queue.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="EventArgs{T}.Argument"/> is the total number of unpublished seconds of data.
+        /// </remarks>
+        public event EventHandler<EventArgs<int>> UnpublishedSamples;
+
+        /// <summary>
+        /// This event is raised if there are any measurements being discarded during the sorting process.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="EventArgs{T}.Argument"/> is the enumeration of <see cref="IMeasurement"/> values that are being discarded during the sorting process.
+        /// </remarks>
+        public event EventHandler<EventArgs<IEnumerable<IMeasurement>>> DiscardingMeasurements;
+
+        /// <summary>
+        /// Event is raised when <see cref="CommonPhasorServices"/> is disposed.
+        /// </summary>
+        /// <remarks>
+        /// If an adapter references another adapter by enumerating the <see cref="Parent"/> collection, this
+        /// event should be monitored to release the reference.
+        /// </remarks>
+        public event EventHandler Disposed;
+
         // Fields
+        private string m_name;
+        private uint m_id;
+        private string m_connectionString;
+        private IAdapterCollection m_parent;
+        private InputAdapterCollection m_inputAdapters;
+        private ActionAdapterCollection m_actionAdapters;
+        //private OutputAdapterCollection m_outputAdapters;
+        private Dictionary<string, string> m_settings;
+        private DataSet m_dataSource;
+        private int m_initializationTimeout;
+        private ManualResetEvent m_initializeWaitHandle;
+        private MeasurementKey[] m_inputMeasurementKeys;
+        private IMeasurement[] m_outputMeasurements;
+        private List<MeasurementKey> m_inputMeasurementKeysHash;
+        private long m_processedMeasurements;
+        private int m_measurementReportingInterval;
+        private int m_framesPerSecond;
         private ManualResetEvent m_configurationWaitHandle;
         private MultiProtocolFrameParser m_frameParser;
         private IConfigurationFrame m_configurationFrame;
+        private Statistic[] m_deviceStatistics;
+        private Statistic[] m_inputStreamStatistics;
+        private Statistic[] m_outputStreamStatistics;
+        private int m_deviceStatisticsMaxIndex;
+        private int m_inputStreamStatisticsMaxIndex;
+        private int m_outputStreamStatisticsMaxIndex;
+        private Dictionary<string, IMeasurement> m_definedMeasurements;
+        private System.Timers.Timer m_statisticCalculationTimer;
+        private bool m_enabled;
+        private bool m_initialized;
         private bool m_disposed;
 
         #endregion
@@ -265,6 +490,12 @@ namespace TVA.PhasorProtocols
         /// </summary>
         public CommonPhasorServices()
         {
+            // Initialize default adapter settings
+            m_name = this.GetType().Name;
+            m_initializeWaitHandle = new ManualResetEvent(false);
+            m_settings = new Dictionary<string, string>();
+            m_initializationTimeout = DefaultInitializationTimeout;
+
             // Create wait handle to use to wait for configuration frame
             m_configurationWaitHandle = new ManualResetEvent(false);
 
@@ -283,10 +514,371 @@ namespace TVA.PhasorProtocols
 
             // We only want to try to connect to device and retrieve configuration as quickly as possible
             m_frameParser.MaximumConnectionAttempts = 1;
-            m_frameParser.SourceName = Name;
+            m_frameParser.SourceName = m_name;
             m_frameParser.AutoRepeatCapturedPlayback = false;
             m_frameParser.AutoStartDataParsingSequence = false;
             m_frameParser.SkipDisableRealTimeData = true;
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources before the <see cref="CommonPhasorServices"/> object is reclaimed by <see cref="GC"/>.
+        /// </summary>
+        ~CommonPhasorServices()
+        {
+            Dispose(false);
+        }
+
+        #endregion
+
+        #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets the name of this <see cref="CommonPhasorServices"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// Derived classes should provide a name for the adapter.
+        /// </remarks>
+        public string Name
+        {
+            get
+            {
+                return m_name;
+            }
+            set
+            {
+                m_name = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets numeric ID associated with this <see cref="CommonPhasorServices"/> instance.
+        /// </summary>
+        public uint ID
+        {
+            get
+            {
+                return m_id;
+            }
+            set
+            {
+                m_id = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets key/value pair connection information specific to this <see cref="CommonPhasorServices"/> instance.
+        /// </summary>
+        public string ConnectionString
+        {
+            get
+            {
+                return m_connectionString;
+            }
+            set
+            {
+                m_connectionString = value;
+
+                // Preparse settings upon connection string assignment
+                if (string.IsNullOrEmpty(m_connectionString))
+                    m_settings = new Dictionary<string, string>();
+                else
+                    m_settings = m_connectionString.ParseKeyValuePairs();
+            }
+        }
+
+        /// <summary>
+        /// Gets a read-only reference to the collection that contains this <see cref="CommonPhasorServices"/> instance.
+        /// </summary>
+        public ReadOnlyCollection<IAdapter> Parent
+        {
+            get
+            {
+                return new ReadOnlyCollection<IAdapter>(m_parent);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets <see cref="DataSet"/> based data source available to this <see cref="CommonPhasorServices"/> instance.
+        /// </summary>
+        public DataSet DataSource
+        {
+            get
+            {
+                return m_dataSource;
+            }
+            set
+            {
+                m_dataSource = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets maximum time system will wait during <see cref="Start"/> for initialization.
+        /// </summary>
+        /// <remarks>
+        /// Set to <see cref="Timeout.Infinite"/> to wait indefinitely.
+        /// </remarks>
+        public int InitializationTimeout
+        {
+            get
+            {
+                return m_initializationTimeout;
+            }
+            set
+            {
+                m_initializationTimeout = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets output measurements that the <see cref="CommonPhasorServices"/> will produce, if any.
+        /// </summary>
+        public IMeasurement[] OutputMeasurements
+        {
+            get
+            {
+                return m_outputMeasurements;
+            }
+            set
+            {
+                m_outputMeasurements = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets primary keys of input measurements the <see cref="CommonPhasorServices"/> expects, if any.
+        /// </summary>
+        public MeasurementKey[] InputMeasurementKeys
+        {
+            get
+            {
+                return m_inputMeasurementKeys;
+            }
+            set
+            {
+                m_inputMeasurementKeys = value;
+
+                // Update input key lookup hash table
+                if (value != null)
+                {
+                    m_inputMeasurementKeysHash = new List<MeasurementKey>(value);
+                    m_inputMeasurementKeysHash.Sort();
+                }
+                else
+                    m_inputMeasurementKeysHash = null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total number of measurements handled thus far by the <see cref="CommonPhasorServices"/>.
+        /// </summary>
+        public long ProcessedMeasurements
+        {
+            get
+            {
+                return m_processedMeasurements;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the measurement reporting interval.
+        /// </summary>
+        /// <remarks>
+        /// This is used to determined how many measurements should be processed before reporting status.
+        /// </remarks>
+        public int MeasurementReportingInterval
+        {
+            get
+            {
+                return m_measurementReportingInterval;
+            }
+            set
+            {
+                m_measurementReportingInterval = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets flag indicating if the adapter has been initialized successfully.
+        /// </summary>
+        public bool Initialized
+        {
+            get
+            {
+                return m_initialized;
+            }
+            set
+            {
+                m_initialized = value;
+
+                // When initialization is complete we send notification
+                if (m_initializeWaitHandle != null)
+                {
+                    if (value)
+                        m_initializeWaitHandle.Set();
+                    else
+                        m_initializeWaitHandle.Reset();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets enabled state of this <see cref="CommonPhasorServices"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// Base class simply starts or stops <see cref="CommonPhasorServices"/> based on flag value. Derived classes should
+        /// extend this if needed to enable or disable operational state of the adapter based on flag value.
+        /// </remarks>
+        public bool Enabled
+        {
+            get
+            {
+                return m_enabled;
+            }
+            set
+            {
+                if (m_enabled && !value)
+                    Stop();
+                else if (!m_enabled && value)
+                    Start();
+            }
+        }
+
+        /// <summary>
+        /// Gets settings <see cref="Dictionary{TKey,TValue}"/> parsed when <see cref="ConnectionString"/> was assigned.
+        /// </summary>
+        public Dictionary<string, string> Settings
+        {
+            get
+            {
+                return m_settings;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the frames per second to be used by the <see cref="CommonPhasorServices"/>.
+        /// </summary>
+        /// <remarks>
+        /// This value is only tracked in the <see cref="CommonPhasorServices"/>.
+        /// </remarks>
+        public int FramesPerSecond
+        {
+            get
+            {
+                return m_framesPerSecond;
+            }
+            set
+            {
+                m_framesPerSecond = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the status of this <see cref="CommonPhasorServices"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// Derived classes should provide current status information about the adapter for display purposes.
+        /// </remarks>
+        public string Status
+        {
+            get
+            {
+                const int MaxMeasurementsToShow = 10;
+
+                StringBuilder status = new StringBuilder();
+                DataSet dataSource = this.DataSource;
+
+                status.AppendFormat("       Data source defined: {0}", (dataSource != null));
+                status.AppendLine();
+                if (dataSource != null)
+                {
+                    status.AppendFormat("    Referenced data source: {0}, {1} tables", dataSource.DataSetName, dataSource.Tables.Count);
+                    status.AppendLine();
+                }
+                status.AppendFormat("    Initialization timeout: {0}", InitializationTimeout < 0 ? "Infinite" : InitializationTimeout.ToString() + " milliseconds");
+                status.AppendLine();
+                status.AppendFormat("       Adapter initialized: {0}", Initialized);
+                status.AppendLine();
+                status.AppendFormat("         Parent collection: {0}", m_parent == null ? "Undefined" : m_parent.Name);
+                status.AppendLine();
+                status.AppendFormat("         Operational state: {0}", Enabled ? "Running" : "Stopped");
+                status.AppendLine();
+                status.AppendFormat("    Processed measurements: {0}", ProcessedMeasurements);
+                status.AppendLine();
+                status.AppendFormat("   Item reporting interval: {0}", MeasurementReportingInterval);
+                status.AppendLine();
+                status.AppendFormat("                Adpater ID: {0}", ID);
+                status.AppendLine();
+
+                Dictionary<string, string> keyValuePairs = Settings;
+                char[] keyChars;
+                string value;
+
+                status.AppendFormat("         Connection string: {0} key/value pairs", keyValuePairs.Count);
+                //                            1         2         3         4         5         6         7
+                //                   123456789012345678901234567890123456789012345678901234567890123456789012345678
+                //                                         Key = Value
+                //                                                        1         2         3         4         5
+                //                                               12345678901234567890123456789012345678901234567890
+                status.AppendLine();
+                status.AppendLine();
+
+                foreach (KeyValuePair<string, string> item in keyValuePairs)
+                {
+                    keyChars = item.Key.Trim().ToCharArray();
+                    keyChars[0] = char.ToUpper(keyChars[0]);
+
+                    value = item.Value.Trim();
+                    if (value.Length > 50)
+                        value = value.TruncateRight(47) + "...";
+
+                    status.AppendFormat("{0} = {1}", (new string(keyChars)).TruncateRight(25).PadLeft(25), value.PadRight(50));
+                    status.AppendLine();
+                }
+
+                status.AppendLine();
+
+                if (OutputMeasurements != null)
+                {
+                    status.AppendFormat("       Output measurements: {0} defined measurements", OutputMeasurements.Length);
+                    status.AppendLine();
+                    status.AppendLine();
+
+                    for (int i = 0; i < TVA.Common.Min(OutputMeasurements.Length, MaxMeasurementsToShow); i++)
+                    {
+                        status.Append(OutputMeasurements[i].ToString().TruncateRight(25).PadLeft(25));
+                        status.Append(" ");
+                        status.AppendLine(OutputMeasurements[i].SignalID.ToString());
+                    }
+
+                    if (OutputMeasurements.Length > MaxMeasurementsToShow)
+                        status.AppendLine("...".PadLeft(26));
+
+                    status.AppendLine();
+                }
+
+                if (InputMeasurementKeys != null)
+                {
+                    status.AppendFormat("        Input measurements: {0} defined measurements", InputMeasurementKeys.Length);
+                    status.AppendLine();
+                    status.AppendLine();
+
+                    for (int i = 0; i < TVA.Common.Min(InputMeasurementKeys.Length, MaxMeasurementsToShow); i++)
+                    {
+                        status.AppendLine(InputMeasurementKeys[i].ToString().TruncateRight(25).CenterText(50));
+                    }
+
+                    if (InputMeasurementKeys.Length > MaxMeasurementsToShow)
+                        status.AppendLine("...".CenterText(50));
+
+                    status.AppendLine();
+                }
+
+                status.AppendFormat("        Defined frame rate: {0} frames/sec", FramesPerSecond);
+                status.AppendLine();
+
+                return status.ToString();
+            }
         }
 
         #endregion
@@ -294,10 +886,19 @@ namespace TVA.PhasorProtocols
         #region [ Methods ]
 
         /// <summary>
+        /// Releases all the resources used by the <see cref="CommonPhasorServices"/> object.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
         /// Releases the unmanaged resources used by the <see cref="CommonPhasorServices"/> object and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        protected override void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (!m_disposed)
             {
@@ -305,6 +906,12 @@ namespace TVA.PhasorProtocols
                 {
                     if (disposing)
                     {
+                        // Dispose of initialization wait handle
+                        if (m_initializeWaitHandle != null)
+                            m_initializeWaitHandle.Close();
+
+                        m_initializeWaitHandle = null;
+
                         // Detach from frame parser events and dispose
                         if (m_frameParser != null)
                         {
@@ -319,21 +926,174 @@ namespace TVA.PhasorProtocols
                         }
                         m_frameParser = null;
 
-                        // Dispose of wait handle
+                        // Dispose configuration of wait handle
                         if (m_configurationWaitHandle != null)
                             m_configurationWaitHandle.Close();
 
                         m_configurationWaitHandle = null;
 
                         m_configurationFrame = null;
+
+                        // Dispose of statistic calculation timer
+                        if (m_statisticCalculationTimer != null)
+                        {
+                            m_statisticCalculationTimer.Elapsed -= m_statisticCalculationTimer_Elapsed;
+                            m_statisticCalculationTimer.Dispose();
+                        }
+                        m_statisticCalculationTimer = null;
                     }
                 }
                 finally
                 {
-                    m_disposed = true;          // Prevent duplicate dispose.
-                    base.Dispose(disposing);    // Call base class Dispose().
+                    m_disposed = true;  // Prevent duplicate dispose.
+
+                    if (Disposed != null)
+                        Disposed(this, EventArgs.Empty);
                 }
             }
+        }
+
+        /// <summary>
+        /// Intializes <see cref="CommonPhasorServices"/>.
+        /// </summary>
+        public void Initialize()
+        {
+            Initialized = false;
+
+            Dictionary<string, string> settings = Settings;
+            string setting;
+            double reportingInterval;
+
+            // Initialize standard adapter settings
+            if (settings.TryGetValue("inputMeasurementKeys", out setting))
+                InputMeasurementKeys = AdapterBase.ParseInputMeasurementKeys(DataSource, setting);
+
+            if (settings.TryGetValue("outputMeasurements", out setting))
+                OutputMeasurements = AdapterBase.ParseOutputMeasurements(DataSource, setting);
+
+            if (settings.TryGetValue("measurementReportingInterval", out setting))
+                MeasurementReportingInterval = int.Parse(setting);
+            else
+                MeasurementReportingInterval = DefaultMeasurementReportingInterval;
+
+            if (settings.TryGetValue("framesPerSecond", out setting))
+                m_framesPerSecond = int.Parse(setting);
+
+            // Load the statistic reporting interval - note that the CommonPhasorServices instance
+            // is usually loaded from the configuration data source so changes in this value should
+            // be applied in the connection string from there, typically the IaonActionAdapter view.
+            if (settings.TryGetValue("statisticReportingInverval", out setting))
+                reportingInterval = double.Parse(setting) * 1000.0D;
+            else
+                reportingInterval = 10000.0D; // Default statistic reporting interval is 10 seconds
+
+            // Setup the statistic calculation timer
+            m_statisticCalculationTimer = new System.Timers.Timer();
+            m_statisticCalculationTimer.Elapsed += m_statisticCalculationTimer_Elapsed;
+            m_statisticCalculationTimer.Interval = reportingInterval;
+            m_statisticCalculationTimer.AutoReset = true;
+            m_statisticCalculationTimer.Enabled = false;
+
+            ReloadStatistics();
+        }
+
+        /// <summary>
+        /// Starts the <see cref="CommonPhasorServices"/> or restarts it if it is already running.
+        /// </summary>
+        [AdapterCommand("Starts the common phasor services adapter or restarts it if it is already running.")]
+        public void Start()
+        {
+            // Make sure we are stopped (e.g., disconnected) before attempting to start (e.g., connect)
+            if (m_enabled)
+                Stop();
+
+            // Wait for adapter intialization to complete...
+            m_enabled = WaitForInitialize(InitializationTimeout);
+
+            if (!m_enabled)
+                OnProcessException(new TimeoutException("Failed to start adapter due to timeout waiting for initialization."));
+        }
+
+        /// <summary>
+        /// Stops the <see cref="CommonPhasorServices"/>.
+        /// </summary>		
+        [AdapterCommand("Stops the common phasor services adapter.")]
+        public void Stop()
+        {
+            m_enabled = false;
+        }
+
+        // Assigns the reference to the parent adapter collection that will contain this adapter.
+        void IAdapter.AssignParentCollection(IAdapterCollection parent)
+        {
+            // The common phasor servies class does not inherit from the FacileActionAdapterBase (or ActionAdapterBase) since
+            // it needs an internal reference to the IAdapter collections. With this internal reference all adapter collections
+            // in the AllAdaptersCollection (the parent of the ActionAdapterCollection) can be referenced. This is needed so
+            // that the common phasor services instance can cross reference the input adapter collection for monitoring devices
+            // for statistic collection. As such this painfully requires full implementation of IAdapter and IActionAdapter, as
+            // you see inside this class.
+            m_parent = parent;
+
+            if (parent != null)
+            {
+                // Dereference primary Iaon adapter collections
+                m_inputAdapters = m_parent.Parent.Where(collection => collection is InputAdapterCollection).First() as InputAdapterCollection;
+                m_actionAdapters = m_parent.Parent.Where(collection => collection is ActionAdapterCollection).First() as ActionAdapterCollection;
+                //m_outputAdapters = m_parent.Parent.Where(collection => collection is OutputAdapterCollection).First() as OutputAdapterCollection;
+            }
+            else
+            {
+                m_inputAdapters = null;
+                m_actionAdapters = null;
+                //m_outputAdapters = null;
+            }
+        }
+
+        /// <summary>
+        /// Manually sets the intialized state of the <see cref="CommonPhasorServices"/>.
+        /// </summary>
+        /// <param name="initialized">Desired initialized state.</param>
+        [AdapterCommand("Manually sets the intialized state of the adapter.")]
+        public void SetInitializedState(bool initialized)
+        {
+            this.Initialized = initialized;
+        }
+
+        /// <summary>
+        /// Gets a short one-line status of this <see cref="CommonPhasorServices"/>.
+        /// </summary>
+        /// <param name="maxLength">Maximum number of available characters for display.</param>
+        /// <returns>A short one-line summary of the current status of the <see cref="CommonPhasorServices"/>.</returns>
+        public string GetShortStatus(int maxLength)
+        {
+            return "Type \"LISTCOMMANDS 0\" to enumerate service commands.".CenterText(maxLength);
+        }
+
+        /// <summary>
+        /// Determines if specified measurement key is defined in <see cref="InputMeasurementKeys"/>.
+        /// </summary>
+        /// <param name="item">Primary key of measurement to find.</param>
+        /// <returns>true if specified measurement key is defined in <see cref="InputMeasurementKeys"/>.</returns>
+        public bool IsInputMeasurement(MeasurementKey item)
+        {
+            if (m_inputMeasurementKeysHash != null)
+                return (m_inputMeasurementKeysHash.BinarySearch(item) >= 0);
+
+            // If no input measurements are defined we must assume user wants to accept all measurements - yikes!
+            return true;
+        }
+
+        /// <summary>
+        /// Blocks the <see cref="Thread.CurrentThread"/> until the adapter is <see cref="Initialized"/>.
+        /// </summary>
+        /// <param name="timeout">The number of milliseconds to wait.</param>
+        /// <returns><c>true</c> if the initialization succeeds; otherwise, <c>false</c>.</returns>
+        public bool WaitForInitialize(int timeout)
+        {
+            if (m_initializeWaitHandle != null)
+                return m_initializeWaitHandle.WaitOne(timeout);
+
+            return false;
         }
 
         /// <summary>
@@ -418,7 +1178,7 @@ namespace TVA.PhasorProtocols
                 }
             }
             else
-                OnStatusMessage("ERROR: Cannot process simultaneous requests for device configurations, please try again in a few seconds...");
+                OnStatusMessage("ERROR: Cannot process simultaneous requests for device configurations, please try again in a few seconds..");
 
             return new ConfigurationErrorFrame();
         }
@@ -439,6 +1199,19 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Queues a single measurement for processing.
+        /// </summary>
+        /// <param name="measurement">Measurement to queue for processing.</param>
+        /// <remarks>
+        /// The <see cref="CommonPhasorServices"/> adapter doesn't process any measurements.
+        /// </remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void QueueMeasurementForProcessing(IMeasurement measurement)
+        {
+            QueueMeasurementsForProcessing(new IMeasurement[] { measurement });
+        }
+
+        /// <summary>
         /// Queues a collection of measurements for processing.
         /// </summary>
         /// <param name="measurements">Collection of measurements to queue for processing.</param>
@@ -446,19 +1219,375 @@ namespace TVA.PhasorProtocols
         /// The <see cref="CommonPhasorServices"/> adapter doesn't process any measurements.
         /// </remarks>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override void QueueMeasurementsForProcessing(IEnumerable<IMeasurement> measurements)
+        public void QueueMeasurementsForProcessing(IEnumerable<IMeasurement> measurements)
         {
             // The common phasor services doesn't have a need to process any measurements
         }
 
         /// <summary>
-        /// Gets a short one-line status of this <see cref="CommonPhasorServices"/>.
+        /// Raises the <see cref="StatusMessage"/> event.
         /// </summary>
-        /// <param name="maxLength">Maximum number of available characters for display.</param>
-        /// <returns>A short one-line summary of the current status of the <see cref="CommonPhasorServices"/>.</returns>
-        public override string GetShortStatus(int maxLength)
+        /// <param name="status">New status message.</param>
+        protected virtual void OnStatusMessage(string status)
         {
-            return "Type \"LISTCOMMANDS 0\" to enumerate service commands.".CenterText(maxLength);
+            if (StatusMessage != null)
+                StatusMessage(this, new EventArgs<string>(status));
+        }
+
+        /// <summary>
+        /// Raises the <see cref="StatusMessage"/> event with a formatted status message.
+        /// </summary>
+        /// <param name="formattedStatus">Formatted status message.</param>
+        /// <param name="args">Arguments for <paramref name="formattedStatus"/>.</param>
+        /// <remarks>
+        /// This overload combines string.Format and SendStatusMessage for convienence.
+        /// </remarks>
+        protected virtual void OnStatusMessage(string formattedStatus, params object[] args)
+        {
+            if (StatusMessage != null)
+                StatusMessage(this, new EventArgs<string>(string.Format(formattedStatus, args)));
+        }
+
+        /// <summary>
+        /// Raises <see cref="ProcessException"/> event.
+        /// </summary>
+        /// <param name="ex">Processing <see cref="Exception"/>.</param>
+        protected virtual void OnProcessException(Exception ex)
+        {
+            if (ProcessException != null)
+                ProcessException(this, new EventArgs<Exception>(ex));
+        }
+
+        /// <summary>
+        /// Raises the <see cref="NewMeasurements"/> event.
+        /// </summary>
+        protected virtual void OnNewMeasurements(ICollection<IMeasurement> measurements)
+        {
+            if (NewMeasurements != null)
+                NewMeasurements(this, new EventArgs<ICollection<IMeasurement>>(measurements));
+
+            IncrementProcessedMeasurements(measurements.Count);
+        }
+
+        /// <summary>
+        /// Raises the <see cref="UnpublishedSamples"/> event.
+        /// </summary>
+        /// <param name="seconds">Total number of unpublished seconds of data.</param>
+        protected virtual void OnUnpublishedSamples(int seconds)
+        {
+            if (UnpublishedSamples != null)
+                UnpublishedSamples(this, new EventArgs<int>(seconds));
+        }
+
+        /// <summary>
+        /// Raises the <see cref="DiscardingMeasurements"/> event.
+        /// </summary>
+        /// <param name="measurements">Enumeration of <see cref="IMeasurement"/> values being discarded.</param>
+        protected virtual void OnDiscardingMeasurements(IEnumerable<IMeasurement> measurements)
+        {
+            if (DiscardingMeasurements != null)
+                DiscardingMeasurements(this, new EventArgs<IEnumerable<IMeasurement>>(measurements));
+        }
+
+        /// <summary>
+        /// Safely increments the total processed measurements.
+        /// </summary>
+        /// <param name="totalAdded"></param>
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        protected virtual void IncrementProcessedMeasurements(long totalAdded)
+        {
+            // Check to see if total number of added points will exceed process interval used to show periodic
+            // messages of how many points have been archived so far...
+            int interval = MeasurementReportingInterval;
+
+            if (interval > 0)
+            {
+                bool showMessage = m_processedMeasurements + totalAdded >= (m_processedMeasurements / interval + 1) * interval;
+
+                m_processedMeasurements += totalAdded;
+
+                if (showMessage)
+                    OnStatusMessage("{0:N0} measurements have been processed so far...", m_processedMeasurements);
+            }
+        }
+
+        /// <summary>
+        /// Loads or reloads system statistics.
+        /// </summary>
+        [AdapterCommand("Reloads system statistics."), SuppressMessage("Microsoft.Reliability", "CA2001")]
+        public void ReloadStatistics()
+        {
+            // Make sure setting exists to allow user to by-pass phasor data source validation at startup
+            ConfigurationFile configFile = ConfigurationFile.Current;
+            CategorizedSettingsElementCollection settings = configFile.Settings["systemSettings"];
+            settings.Add("ProcessPhasorStatistics", true, "Determines if the phasor statistics should be processed during operation");
+
+            // See if statistics should be processed
+            if (settings["ProcessPhasorStatistics"].ValueAsBoolean())
+            {
+                List<Statistic> statistics = new List<Statistic>();
+                Statistic statistic;
+                Assembly assembly;
+                Type type;
+                MethodInfo method;
+                Measurement definedMeasurement;
+                MeasurementKey pointID;
+                string assemblyName, typeName, methodName, signalReference;
+
+                lock (m_parent)
+                {
+                    // Turn off statistic calculation timer while statistics are being reloaded
+                    m_statisticCalculationTimer.Enabled = false;
+
+                    // Load all defined statistics
+                    foreach (DataRow row in DataSource.Tables["Statistics"].Select("Enabled <> 0", "Source, SignalIndex"))
+                    {
+                        // Create a new statistic
+                        statistic = new Statistic();
+
+                        // Load primary statistic parameters
+                        statistic.Source = row["Source"].ToNonNullString();
+                        statistic.Index = int.Parse(row["SignalIndex"].ToNonNullString("-1"));
+                        statistic.Arguments = row["Arguments"].ToNonNullString();
+
+                        // Load statistic's code location information
+                        assemblyName = row["AssemblyName"].ToNonNullString();
+                        typeName = row["TypeName"].ToNonNullString();
+                        methodName = row["MethodName"].ToNonNullString();
+
+                        if (string.IsNullOrEmpty(assemblyName))
+                            throw new InvalidOperationException("Statistic assembly name was not defined.");
+
+                        if (string.IsNullOrEmpty(typeName))
+                            throw new InvalidOperationException("Statistic type name was not defined.");
+
+                        if (string.IsNullOrEmpty(methodName))
+                            throw new InvalidOperationException("Statistic method name was not defined.");
+
+                        try
+                        {
+                            // See if statistic is defined in this assembly (no need to reload)
+                            if (string.Compare(GetType().Name, typeName, true) == 0)
+                            {
+                                // Assign statistic handler to local method (assumed to be private static)
+                                statistic.Method = (StatisticCalculationFunction)Delegate.CreateDelegate(typeof(StatisticCalculationFunction), GetType().GetMethod(methodName, BindingFlags.IgnoreCase | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.InvokeMethod));
+                            }
+                            else
+                            {
+                                // Load statistic method from containing assembly and type
+                                assembly = Assembly.LoadFrom(assemblyName);
+                                type = assembly.GetType(typeName);
+                                method = type.GetMethod(methodName, BindingFlags.IgnoreCase | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.InvokeMethod);
+
+                                // Assign statistic handler to loaded assembly method
+                                statistic.Method = (StatisticCalculationFunction)Delegate.CreateDelegate(typeof(StatisticCalculationFunction), method);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            OnProcessException(new InvalidOperationException(string.Format("Failed to load statistic handler \"{0}\" from \"{1} [{2}::{3}()]\" due to exception: {4}", row["Name"].ToNonNullString("n/a"), assemblyName, typeName, methodName, ex.Message), ex));
+                        }
+
+                        // Add statistic to list
+                        statistics.Add(statistic);
+                    }
+
+                    OnStatusMessage("Loaded {0} statistic calculation definitions...", statistics.Count);
+
+                    // Filter statistics to device, input stream and output stream types
+                    m_deviceStatistics = statistics.Where(stat => string.Compare(stat.Source, "Device", true) == 0).ToArray();
+                    m_inputStreamStatistics = statistics.Where(stat => string.Compare(stat.Source, "InputStream", true) == 0).ToArray();
+                    m_outputStreamStatistics = statistics.Where(stat => string.Compare(stat.Source, "OutputStream", true) == 0).ToArray();
+
+                    // Calculate maximum signal indicies
+                    m_deviceStatisticsMaxIndex = m_deviceStatistics.Max(stat => stat.Index);
+                    m_inputStreamStatisticsMaxIndex = m_inputStreamStatistics.Max(stat => stat.Index);
+                    m_outputStreamStatisticsMaxIndex = m_outputStreamStatistics.Max(stat => stat.Index);
+
+                    // Load statistical measurements
+                    m_definedMeasurements = new Dictionary<string, IMeasurement>();
+
+                    foreach (DataRow row in DataSource.Tables["ActiveMeasurements"].Select("SignalType='STAT'"))
+                    {
+                        signalReference = row["SignalReference"].ToString();
+
+                        if (!string.IsNullOrEmpty(signalReference))
+                        {
+                            try
+                            {
+                                // Get measurement's point ID formatted as a measurement key
+                                pointID = MeasurementKey.Parse(row["ID"].ToString());
+
+                                // Create a measurement with a reference associated with this adapter
+                                definedMeasurement = new Measurement(
+                                    pointID.ID,
+                                    pointID.Source,
+                                    signalReference,
+                                    double.Parse(row["Adder"].ToNonNullString("0.0")),
+                                    double.Parse(row["Multiplier"].ToNonNullString("1.0")));
+
+                                // Assign signal ID to defined measurement
+                                definedMeasurement.SignalID = new Guid(row["SignalID"].ToNonNullString(Guid.NewGuid().ToString()));
+
+                                // Add measurement to definition list keyed by signal reference
+                                m_definedMeasurements.Add(signalReference, definedMeasurement);
+                            }
+                            catch (Exception ex)
+                            {
+                                OnProcessException(new InvalidOperationException(string.Format("Failed to load signal reference \"{0}\" due to exception: {1}", signalReference, ex.Message), ex));
+                            }
+                        }
+                    }
+
+                    OnStatusMessage("Loaded {0} statistic measurements...", m_definedMeasurements.Count);
+
+                    // Turn on statistic calculation timer
+                    m_statisticCalculationTimer.Enabled = true;
+                }
+            }
+            else
+            {
+                lock (m_parent)
+                {
+                    // Make sure statistic calculation timer is off since statistics aren't being processed
+                    m_statisticCalculationTimer.Enabled = false;
+                }
+            }
+        }
+
+        // Calculate statistics for each device and output stream
+        private void m_statisticCalculationTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            ICollection<IMeasurement> mappedMeasurements = new List<IMeasurement>();
+            Measurement measurement;
+
+            lock (m_parent)
+            {
+                DateTime serverTime = DateTime.UtcNow;
+
+                try
+                {
+                    // Filter action adapter collection down to the phasor measurement mapper input streams
+                    IEnumerable<PhasorMeasurementMapper> inputStreams = m_inputAdapters.Where<IInputAdapter>(adapter => adapter is PhasorMeasurementMapper).Cast<PhasorMeasurementMapper>();
+
+                    // Calculate defined statistics for each input stream
+                    foreach (PhasorMeasurementMapper inputStream in inputStreams)
+                    {
+                        foreach (Statistic statistic in m_inputStreamStatistics)
+                        {
+                            // Create a new measurement that will hold the calculated statistical value
+                            measurement = new Measurement();
+                            measurement.Timestamp = serverTime;
+
+                            try
+                            {
+                                // Calculate statistic
+                                measurement.Value = statistic.Method(inputStream, statistic.Arguments);
+
+                                // Map attributes to new statistic measurement
+                                MapMeasurementAttributes(mappedMeasurements, inputStream.GetSignalReference(FundamentalSignalType.Statistic, statistic.Index - 1, m_inputStreamStatisticsMaxIndex), measurement);
+                            }
+                            catch (Exception ex)
+                            {
+                                OnProcessException(new InvalidOperationException(string.Format("Exception encountered while calculating input stream statistic {0} for \"{1}\": {2}", statistic.Index, inputStream.Name, ex.Message), ex));
+                            }
+                        }
+                    }
+
+                    // Filter input adapter collection down to the configuration cells of each phasor measurement mapper
+                    IEnumerable<ConfigurationCell> devices = inputStreams.SelectMany(mapper => mapper.DefinedDevices);
+
+                    // Calculate defined statistics for each device
+                    foreach (ConfigurationCell device in devices)
+                    {
+                        foreach (Statistic statistic in m_deviceStatistics)
+                        {
+                            // Create a new measurement that will hold the calculated statistical value
+                            measurement = new Measurement();
+                            measurement.Timestamp = serverTime;
+
+                            try
+                            {
+                                // Calculate statistic
+                                measurement.Value = statistic.Method(device, statistic.Arguments);
+
+                                // Map attributes to new statistic measurement
+                                MapMeasurementAttributes(mappedMeasurements, device.GetSignalReference(FundamentalSignalType.Statistic, statistic.Index - 1, m_deviceStatisticsMaxIndex), measurement);
+                            }
+                            catch (Exception ex)
+                            {
+                                OnProcessException(new InvalidOperationException(string.Format("Exception encountered while calculating device statistic {0} for \"{1}\": {2}", statistic.Index, device.IDLabel, ex.Message), ex));
+                            }
+                        }
+                    }
+
+                    // Filter action adapter collection down to the phasor data concentrator output streams
+                    IEnumerable<PhasorDataConcentratorBase> outputStreams = m_actionAdapters.Where<IActionAdapter>(adapter => adapter is PhasorDataConcentratorBase).Cast<PhasorDataConcentratorBase>();
+
+                    // Calculate defined statistics for each output stream
+                    foreach (PhasorDataConcentratorBase outputStream in outputStreams)
+                    {
+                        foreach (Statistic statistic in m_outputStreamStatistics)
+                        {
+                            // Create a new measurement that will hold the calculated statistical value
+                            measurement = new Measurement();
+                            measurement.Timestamp = serverTime;
+
+                            try
+                            {
+                                // Calculate statistic
+                                measurement.Value = statistic.Method(outputStream, statistic.Arguments);
+
+                                // Map attributes to new statistic measurement
+                                MapMeasurementAttributes(mappedMeasurements, outputStream.GetSignalReference(FundamentalSignalType.Statistic, statistic.Index - 1, m_outputStreamStatisticsMaxIndex), measurement);
+                            }
+                            catch (Exception ex)
+                            {
+                                OnProcessException(new InvalidOperationException(string.Format("Exception encountered while calculating output stream statistic {0} for \"{1}\": {2}", statistic.Index, outputStream.Name, ex.Message), ex));
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    OnProcessException(new InvalidOperationException(string.Format("Exception encountered while calculating statistics: {0}", ex.Message), ex));
+                }
+            }
+
+            // Provide real-time measurements where needed
+            OnNewMeasurements(mappedMeasurements);
+        }
+
+        /// <summary>
+        /// Map parsed measurement value to defined measurement attributes (i.e., assign meta-data to parsed measured value).
+        /// </summary>
+        /// <param name="mappedMeasurements">Destination collection for the mapped measurement values.</param>
+        /// <param name="signalReference">Derived <see cref="SignalReference"/> string for the parsed measurement value.</param>
+        /// <param name="parsedMeasurement">The parsed <see cref="IMeasurement"/> value.</param>
+        /// <remarks>
+        /// This procedure is used to identify a parsed measurement value by its derived signal reference and apply the
+        /// additional needed measurement meta-data attributes (i.e., ID, Source, Adder and Multiplier).
+        /// </remarks>
+        protected void MapMeasurementAttributes(ICollection<IMeasurement> mappedMeasurements, string signalReference, IMeasurement parsedMeasurement)
+        {
+            // Coming into this function the parsed measurement value will only have a "value" and a "timestamp"; the measurement
+            // will not yet be associated with an actual historian measurement ID.  We take the generated signal reference and
+            // use that to lookup the actual historian measurement ID, source, adder and multipler.
+            IMeasurement definedMeasurement;
+
+            // Lookup signal reference in defined measurement list
+            if (m_definedMeasurements.TryGetValue(signalReference, out definedMeasurement))
+            {
+                // Assign ID and other relevant attributes to the parsed measurement value
+                parsedMeasurement.ID = definedMeasurement.ID;
+                parsedMeasurement.Source = definedMeasurement.Source;
+                parsedMeasurement.SignalID = definedMeasurement.SignalID;
+                parsedMeasurement.Adder = definedMeasurement.Adder;              // Allows for run-time additive measurement value adjustments
+                parsedMeasurement.Multiplier = definedMeasurement.Multiplier;    // Allows for run-time mulplicative measurement value adjustments
+
+                // Add the updated measurement value to the destination measurement collection
+                mappedMeasurements.Add(parsedMeasurement);
+            }
         }
 
         private void m_frameParser_ReceivedConfigurationFrame(object sender, EventArgs<IConfigurationFrame> e)
@@ -474,7 +1603,7 @@ namespace TVA.PhasorProtocols
 
         private void m_frameParser_ConnectionTerminated(object sender, EventArgs e)
         {
-            // Communications layer closed connection (close not initiated by system) - so we cancel request...
+            // Communications layer closed connection (close not initiated by system) - so we cancel request..
             if (m_frameParser.Enabled)
                 OnStatusMessage("ERROR: Connection closed by remote device, request for configuration canceled.");
 
@@ -515,6 +1644,693 @@ namespace TVA.PhasorProtocols
         {
             OnStatusMessage("Attempting {0} {1} based connection...", m_frameParser.PhasorProtocol.GetFormattedProtocolName(), m_frameParser.TransportProtocol.ToString().ToUpper());
         }
+
+        #endregion
+
+        #region [ Static ]
+
+        // Static Fields
+        private static StatisticValueStateCache s_statisticValueCache = new StatisticValueStateCache();
+
+        // Static Methods
+
+        // Apply start-up phasor data source validations
+        [SuppressMessage("Microsoft.Maintainability", "CA1502")]
+        private static void PhasorDataSourceValidation(IDbConnection connection, Type adapterType, string nodeIDQueryString, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
+        {
+            // Make sure setting exists to allow user to by-pass phasor data source validation at startup
+            ConfigurationFile configFile = ConfigurationFile.Current;
+            CategorizedSettingsElementCollection settings = configFile.Settings["systemSettings"];
+            settings.Add("ProcessPhasorDataSourceValidation", true, "Determines if the phasor data source validation should be processed at startup");
+
+            // See if this node should process phasor source validation
+            if (settings["ProcessPhasorDataSourceValidation"].ValueAsBoolean())
+            {
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating needed signal types exist..."));
+
+                // Validate that the acronym for status flags is FLAG (it was STAT in prior versions)
+                if (connection.ExecuteScalar("SELECT Acronym FROM SignalType WHERE Suffix='SF';").ToNonNullString().ToUpper() == "STAT")
+                    connection.ExecuteNonQuery("UPDATE SignalType SET Acronym='FLAG' WHERE Suffix='SF';");
+
+                // Validate that the calculation and statistic signal types are defined (they did not in initial release)
+                if ((int)connection.ExecuteScalar("SELECT COUNT(*) FROM SignalType WHERE Acronym='CALC';") == 0)
+                    connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Calculated Value', 'CALC', 'CV', 'C', 'PMU', '');");
+
+                if ((int)connection.ExecuteScalar("SELECT COUNT(*) FROM SignalType WHERE Acronym='STAT';") == 0)
+                    connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Statistic', 'STAT', 'ST', 'P', 'Any', '');");
+
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating statistic historian exists..."));
+
+                // Validate that the statistics historian exists
+                if ((int)connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Historian WHERE Acronym='STAT' AND NodeID={0};", nodeIDQueryString)) == 0)
+                    connection.ExecuteNonQuery(string.Format("INSERT INTO Historian(NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) VALUES({0}, 'STAT', 'Statistics Archive', 'HistorianAdapters.dll', 'HistorianAdapters.LocalOutputAdapter', '', 1, 'Local historian used to archive system statistics', 9999, 1);", nodeIDQueryString));
+
+                // Make sure statistics path exists to hold historian files
+                string statisticsPath = FilePath.GetAbsolutePath(FilePath.AddPathSuffix("Statistics"));
+
+                if (!Directory.Exists(statisticsPath))
+                    Directory.CreateDirectory(statisticsPath);
+
+                // Make sure needed statistic historian configuration settings are properly defined
+                settings = configFile.Settings["statMetadataFile"];                
+                settings.Add("FileName", "Statistics\\stat_dbase.dat", "Name of the statistics meta-data file including its path.");
+                settings.Add("LoadOnOpen", true, "True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the statistics meta-data file.");
+                settings.Add("ReloadOnModify", true, "True if file records loaded in memory are to be re-loaded when file is modified on disk; otherwise False - this defaults to True for the statistics meta-data file.");
+
+                settings = configFile.Settings["statStateFile"];                
+                settings.Add("FileName", "Statistics\\stat_startup.dat", "Name of the statistics state file including its path.");
+                settings.Add("AutoSaveInterval", 10000, "Interval in milliseconds at which the file records loaded in memory are to be saved automatically to disk. Use -1 to disable automatic saving - this defaults to 10,000 for the statistics state file.");
+                settings.Add("LoadOnOpen", true, "True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the statistics state file.");
+                settings.Add("SaveOnClose", true, "True if file records loaded in memory are to be saved to disk when file is closed; otherwise False - this defaults to True for the statistics state file.");
+
+                settings = configFile.Settings["statIntercomFile"];                
+                settings.Add("FileName", "Statistics\\scratch.dat", "Name of the statistics intercom file including its path.");
+                settings.Add("AutoSaveInterval", 10000, "Interval in milliseconds at which the file records loaded in memory are to be saved automatically to disk. Use -1 to disable automatic saving - this defaults to 10,000 for the statistics intercom file.");
+                settings.Add("LoadOnOpen", true, "True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the statistics intercom file.");
+                settings.Add("SaveOnClose", true, "True if file records loaded in memory are to be saved to disk when file is closed; otherwise False - this defaults to True for the statistics intercom file.");
+
+                settings = configFile.Settings["statArchiveFile"];
+                settings.Add("FileName", "Statistics\\stat_archive.d", "Name of the statistics working archive file including its path.");
+                settings.Add("CacheWrites", true, "True if writes are to be cached for performance; otherwise False - this defaults to True for the statistics working archive file.");
+                settings.Add("ConserveMemory", false, "True if attempts are to be made to conserve memory; otherwise False - this defaults to False for the statistics working archive file.");
+
+                settings = configFile.Settings["statMetadataService"];
+                settings.Add("Enabled", true, "True if this web service is enabled; otherwise False - this defaults to True for the statistics meta-data service.");
+                settings.Add("ServiceUri", "http://localhost:6051/historian", "URI where this web service is to be hosted - this defaults to http://localhost:6051/historian for the statistics meta-data service.");
+
+                settings = configFile.Settings["statTimeSeriesDataService"];
+                settings.Add("Enabled", true, "True if this web service is enabled; otherwise False - this defaults to True for the statistics time-series data service.");
+                settings.Add("ServiceUri", "http://localhost:6052/historian", "URI where this web service is to be hosted - this defaults to http://localhost:6052/historian for the statistics time-series data service.");
+                
+                configFile.Save();
+
+                // Get the needed statistic related IDs
+                int statSignalTypeID = (int)connection.ExecuteScalar("SELECT ID FROM SignalType WHERE Acronym='STAT';");
+                int statHistorianID = (int)connection.ExecuteScalar(string.Format("SELECT ID FROM Historian WHERE Acronym='STAT' AND NodeID={0};", nodeIDQueryString));
+                int nodeCompanyID = (int)connection.ExecuteScalar(string.Format("SELECT CompanyID FROM Node WHERE ID={0};", nodeIDQueryString));
+
+                // Load the defined system statistics
+                IEnumerable<DataRow> statistics = connection.RetrieveData(adapterType, "SELECT * FROM Statistic ORDER BY Source, SignalIndex;").AsEnumerable();
+
+                // Filter statistics to device, input stream and output stream types            
+                IEnumerable<DataRow> deviceStatistics = statistics.Where(row => string.Compare(row.Field<string>("Source"), "Device", true) == 0);
+                IEnumerable<DataRow> inputStreamStatistics = statistics.Where(row => string.Compare(row.Field<string>("Source"), "InputStream", true) == 0);
+                IEnumerable<DataRow> outputStreamStatistics = statistics.Where(row => string.Compare(row.Field<string>("Source"), "OutputStream", true) == 0);
+
+                string acronym, signalReference, pointTag, company, vendorDevice, description;
+                int signalIndex;
+
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating needed device statistic measurements exists..."));
+
+                // Make sure needed device statistic measurements exist
+                foreach (DataRow device in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE IsConcentrator = 0 AND NodeID = {0};", nodeIDQueryString)).Rows)
+                {
+                    foreach (DataRow statistic in deviceStatistics)
+                    {
+                        acronym = device.Field<string>("Acronym");
+                        signalIndex = statistic.Field<int>("SignalIndex");
+                        signalReference = SignalReference.ToString(acronym, FundamentalSignalType.Statistic, signalIndex);
+
+                        if ((int)connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID)) == 0)
+                        {
+                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", device.Field<int>("CompanyID")));
+                            vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0};", device.Field<int>("VendorDeviceID")));
+                            pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
+                            description = string.Format("{0} {1} Statistic for {2}", device.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
+
+                            connection.ExecuteNonQuery(string.Format("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES({0}, {1}, '{2}', {3}, NULL, '{4}', '{5}', 1);", statHistorianID, device.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description));
+                        }
+                    }
+                }
+
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating needed input stream statistic measurements exists..."));
+
+                // Make sure needed input stream statistic measurements exist
+                foreach (DataRow inputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE ((IsConcentrator <> 0) OR (IsConcentrator = 0 AND ParentID IS NULL)) AND (NodeID = {0});", nodeIDQueryString)).Rows)
+                {
+                    foreach (DataRow statistic in inputStreamStatistics)
+                    {
+                        acronym = inputStream.Field<string>("Acronym") + "!IS";
+                        signalIndex = statistic.Field<int>("SignalIndex");
+                        signalReference = SignalReference.ToString(acronym, FundamentalSignalType.Statistic, signalIndex);
+
+                        if ((int)connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID)) == 0)
+                        {
+                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", inputStream.Field<int>("CompanyID")));
+                            vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0};", inputStream.Field<int>("VendorDeviceID")));
+                            pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
+                            description = string.Format("{0} {1} Statistic for {2}", inputStream.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
+
+                            connection.ExecuteNonQuery(string.Format("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES({0}, {1}, '{2}', {3}, NULL, '{4}', '{5}', 1);", statHistorianID, inputStream.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description));
+                        }
+                    }
+                }
+
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating needed output stream statistic measurements exists..."));
+
+                // Make sure needed output stream statistic measurements exist
+                foreach (DataRow outputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM OutputStream WHERE NodeID = {0};", nodeIDQueryString)).Rows)
+                {
+                    foreach (DataRow statistic in outputStreamStatistics)
+                    {
+                        acronym = outputStream.Field<string>("Acronym") + "!OS";
+                        signalIndex = statistic.Field<int>("SignalIndex");
+                        signalReference = SignalReference.ToString(acronym, FundamentalSignalType.Statistic, signalIndex);
+
+                        if ((int)connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID)) == 0)
+                        {
+                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", nodeCompanyID));
+                            pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
+                            description = string.Format("{0} Statistic for {1}", outputStream.Field<string>("Name"), statistic.Field<string>("Description"));
+
+                            connection.ExecuteNonQuery(string.Format("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES({0}, NULL, '{1}', {2}, NULL, '{3}', '{4}', 1);", statHistorianID, pointTag, statSignalTypeID, signalReference, description));
+                        }
+                    }
+                }
+            }
+        }
+
+        #region [ Device Statistic Calculators ]
+
+        /// <summary>
+        /// Calculates number of data quaility errors reported by device during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source Device.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Data Quality Errors Statistic.</returns>
+        private static double GetDeviceStatistic_DataQualityErrors(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            ConfigurationCell device = source as ConfigurationCell;
+
+            if (device != null)
+                statistic = s_statisticValueCache.GetDifference(device, device.DataQualityErrors, "DataQualityErrors");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of time quality errors reported by device during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source Device.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Time Quality Errors Statistic.</returns>
+        private static double GetDeviceStatistic_TimeQualityErrors(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            ConfigurationCell device = source as ConfigurationCell;
+
+            if (device != null)
+                statistic = s_statisticValueCache.GetDifference(device, device.TimeQualityErrors, "TimeQualityErrors");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of device errors reported by device during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source Device.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Device Errros Statistic.</returns>
+        private static double GetDeviceStatistic_DeviceErrors(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            ConfigurationCell device = source as ConfigurationCell;
+
+            if (device != null)
+                statistic = s_statisticValueCache.GetDifference(device, device.DeviceErrors, "DeviceErrors");
+
+            return statistic;
+        }
+
+        #endregion
+
+        #region [ InputStream Statistic Calculators ]
+
+        /// <summary>
+        /// Calculates total number of frames received from input stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Total Frames Statistic.</returns>
+        private static double GetInputStreamStatistic_TotalFrames(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            if (inputStream != null)
+                statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.TotalFrames, "TotalFrames");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates timestamp of last received data frame from input stream.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Last Report Time Statistic.</returns>
+        private static double GetInputStreamStatistic_LastReportTime(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            if (inputStream != null)
+                statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.LastReportTime, "LastReportTime");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of frames that were not received from input stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Missing Frames Statistic.</returns>
+        private static double GetInputStreamStatistic_MissingFrames(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            if (inputStream != null)
+                statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.MissingFrames, "MissingFrames");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of CRC errors reported from input stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>CRC Errors Statistic.</returns>
+        private static double GetInputStreamStatistic_CRCErrors(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            if (inputStream != null)
+                statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.CRCErrors, "CRCErrors");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of out-of-order frames received from input stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Out of Order Frames Statistic.</returns>
+        private static double GetInputStreamStatistic_OutOfOrderFrames(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            if (inputStream != null)
+                statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.OutOfOrderFrames, "OutOfOrderFrames");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates percentage of variability of latency from input stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Variability in Latency Statistic.</returns>
+        private static double GetInputStreamStatistic_LatencyVariability(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            //if (inputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.LatencyVariability, "LatencyVariability");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates boolean value representing if input stream was continually connected during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Input Stream Connected Statistic.</returns>
+        private static double GetInputStreamStatistic_Connected(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            //if (inputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.Connected, "Connected");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates boolean value representing if input stream has received (or has cached) a configuration frame during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Received Configuration Statistic.</returns>
+        private static double GetInputStreamStatistic_ReceivedConfiguration(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            //if (inputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.ReceivedConfiguration, "ReceivedConfiguration");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of configuration changes reported by input stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Configuration Changes Statistic.</returns>
+        private static double GetInputStreamStatistic_ConfigurationChanges(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            //if (inputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.ConfigurationChanges, "ConfigurationChanges");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of data frames received from input stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Total Data Frames Statistic.</returns>
+        private static double GetInputStreamStatistic_TotalDataFrames(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            //if (inputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.TotalDataFrames, "TotalDataFrames");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of configuration frames received from input stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Total Configuration Frames Statistic.</returns>
+        private static double GetInputStreamStatistic_TotalConfigurationFrames(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            //if (inputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.TotalConfigurationFrames, "TotalConfigurationFrames");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of header frames received from input stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Total Header Frames Statistic.</returns>
+        private static double GetInputStreamStatistic_TotalHeaderFrames(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            //if (inputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.TotalHeaderFrames, "TotalHeaderFrames");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates average latency, in seconds, for data received from input stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Average Latency Statistic.</returns>
+        private static double GetInputStreamStatistic_AverageLatency(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            //if (inputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.AverageLatency, "AverageLatency");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates frame rate as defined by input stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Defined Frame Rate Statistic.</returns>
+        private static double GetInputStreamStatistic_DefinedFrameRate(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            //if (inputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.DefinedFrameRate, "DefinedFrameRate");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates latest actual mean frame rate for data received from input stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Actual Frame Rate Statistic.</returns>
+        private static double GetInputStreamStatistic_ActualFrameRate(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            //if (inputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.ActualFrameRate, "ActualFrameRate");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates latest actual mean Mbps data rate for data received from input stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Actual Data Rate Statistic.</returns>
+        private static double GetInputStreamStatistic_ActualDataRate(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            //if (inputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.ActualDataRate, "ActualDataRate");
+
+            return statistic;
+        }
+
+        #endregion
+
+        #region [ OutputStream Statistic Calculators ]
+
+        /// <summary>
+        /// Calculates number of discarded measurements reported by output stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source OutputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Discarded Measurements Statistic.</returns>
+        private static double GetOutputStreamStatistic_DiscardedMeasurements(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+
+            //if (outputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.DiscardedMeasurements, "DiscardedMeasurements");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of received measurements reported by the output strean during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source OutputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Received Measurements Statistic.</returns>
+        private static double GetOutputStreamStatistic_ReceivedMeasurements(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+
+            //if (outputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.ReceivedMeasurements, "ReceivedMeasurements");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of expected measurements reported by the output stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source OutputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Expected Measurements Statistic.</returns>
+        private static double GetOutputStreamStatistic_ExpectedMeasurements(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+
+            //if (outputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.ExpectedMeasurements, "ExpectedMeasurements");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of processed measurements reported by the output stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source OutputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Processed Measurements Statistic.</returns>
+        private static double GetOutputStreamStatistic_ProcessedMeasurements(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+
+            //if (outputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.ProcessedMeasurements, "ProcessedMeasurements");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of measurments sorted by arrival reported by the output stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source OutputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Measurements Sorted by Arrival Statistic.</returns>
+        private static double GetOutputStreamStatistic_MeasurementsSortedByArrival(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+
+            //if (outputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.MeasurementsSortedByArrival, "MeasurementsSortedByArrival");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of published measurements reported by output stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source OutputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Published Measurements Statistic.</returns>
+        private static double GetOutputStreamStatistic_PublishedMeasurements(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+
+            //if (outputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.PublishedMeasurements, "PublishedMeasurements");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of downsampled measurements reported by the output stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source OutputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Downsampled Measurements Statistic.</returns>
+        private static double GetOutputStreamStatistic_DownsampledMeasurements(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+
+            //if (outputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.DownsampledMeasurements, "DownsampledMeasurements");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of missed sorts by timeout reported by the output stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source OutputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Missed Sorts by Timeout Statistic.</returns>
+        private static double GetOutputStreamStatistic_MissedSortsByTimeout(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+
+            //if (outputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.MissedSortsByTimeout, "MissedSortsByTimeout");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of frames ahead of schedule reported by the output stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source OutputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Frames Ahead of Schedule Statistic.</returns>
+        private static double GetOutputStreamStatistic_FramesAheadOfSchedule(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+
+            //if (outputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.FramesAheadOfSchedule, "FramesAheadOfSchedule");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates number of published frames reported by the output stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source OutputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Published Frames Statistic.</returns>
+        private static double GetOutputStreamStatistic_PublishedFrames(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+
+            //if (outputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.PublishedFrames, "PublishedFrames");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates boolean value representing if the output stream was continually connected during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source OutputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Output Stream Connected Statistic.</returns>
+        private static double GetOutputStreamStatistic_Connected(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+
+            //if (outputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.Connected, "Connected");
+
+            return statistic;
+        }
+
+        #endregion
 
         #endregion
     }

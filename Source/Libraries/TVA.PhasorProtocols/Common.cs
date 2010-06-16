@@ -353,7 +353,7 @@ namespace TVA.PhasorProtocols
                     return "Frequency delta (dF/dt)";
                 case SignalType.ALOG:
                     return "Analog";
-                case SignalType.STAT:
+                case SignalType.FLAG:
                     return "Status flags";
                 case SignalType.DIGI:
                     return "Digital";
