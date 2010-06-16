@@ -860,8 +860,6 @@ namespace HistorianAdapters
                     }              
                 }
 
-                statusMessage("LocalOutputAdapter", new EventArgs<string>("Scanning for unused local historian configuration settings..."));
-
                 // Sort valid historians for binary search
                 validHistorians.Sort();
 

@@ -798,7 +798,7 @@ namespace openPDC
                 Type type;
                 MethodInfo method;
 
-                foreach (DataRow row in connection.RetrieveData(adapterType, "SELECT * FROM DataOperation WHERE Enabled <> 0 ORDER BY LoadOrder").Rows)
+                foreach (DataRow row in connection.RetrieveData(adapterType, string.Format("SELECT * FROM DataOperation WHERE (NodeID IS NULL OR NodeID={0}) AND Enabled <> 0 ORDER BY LoadOrder", m_nodeIDQueryString)).Rows)
                 {
                     try
                     {

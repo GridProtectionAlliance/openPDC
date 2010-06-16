@@ -1666,7 +1666,7 @@ namespace TVA.PhasorProtocols
             // See if this node should process phasor source validation
             if (settings["ProcessPhasorDataSourceValidation"].ValueAsBoolean())
             {
-                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating needed signal types exist..."));
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating signal types..."));
 
                 // Validate that the acronym for status flags is FLAG (it was STAT in prior versions)
                 if (connection.ExecuteScalar("SELECT Acronym FROM SignalType WHERE Suffix='SF';").ToNonNullString().ToUpper() == "STAT")
@@ -1679,7 +1679,7 @@ namespace TVA.PhasorProtocols
                 if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM SignalType WHERE Acronym='STAT';")) == 0)
                     connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Statistic', 'STAT', 'ST', 'P', 'Any', '');");
 
-                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating statistic historian exists..."));
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Verifying statistics archive exists..."));
 
                 // Validate that the statistics historian exists
                 if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Historian WHERE Acronym='STAT' AND NodeID={0};", nodeIDQueryString))) == 0)
@@ -1740,7 +1740,7 @@ namespace TVA.PhasorProtocols
                 string acronym, signalReference, pointTag, company, vendorDevice, description;
                 int signalIndex;
 
-                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating needed device statistic measurements exists..."));
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating device statistic measurements..."));
 
                 // Make sure needed device statistic measurements exist
                 foreach (DataRow device in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE IsConcentrator = 0 AND NodeID = {0};", nodeIDQueryString)).Rows)
@@ -1763,7 +1763,7 @@ namespace TVA.PhasorProtocols
                     }
                 }
 
-                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating needed input stream statistic measurements exists..."));
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating input stream statistic measurements..."));
 
                 // Make sure needed input stream statistic measurements exist
                 foreach (DataRow inputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE ((IsConcentrator <> 0) OR (IsConcentrator = 0 AND ParentID IS NULL)) AND (NodeID = {0});", nodeIDQueryString)).Rows)
@@ -1786,7 +1786,7 @@ namespace TVA.PhasorProtocols
                     }
                 }
 
-                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating needed output stream statistic measurements exists..."));
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating output stream statistic measurements..."));
 
                 // Make sure needed output stream statistic measurements exist
                 foreach (DataRow outputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM OutputStream WHERE NodeID = {0};", nodeIDQueryString)).Rows)
