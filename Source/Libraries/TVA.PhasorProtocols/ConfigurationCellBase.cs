@@ -256,6 +256,7 @@ namespace TVA.PhasorProtocols
         private DigitalDefinitionCollection m_digitalDefinitions;
         private LineFrequency m_nominalFrequency;
         private ushort m_revisionCount;
+        private int m_hashCode;
 
         #endregion
 
@@ -811,7 +812,10 @@ namespace TVA.PhasorProtocols
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
         {
-            return IDCode.GetHashCode();
+            if (m_hashCode == 0)
+                m_hashCode = Guid.NewGuid().GetHashCode();
+
+            return m_hashCode;
         }
 
         /// <summary>
