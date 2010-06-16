@@ -1673,16 +1673,16 @@ namespace TVA.PhasorProtocols
                     connection.ExecuteNonQuery("UPDATE SignalType SET Acronym='FLAG' WHERE Suffix='SF';");
 
                 // Validate that the calculation and statistic signal types are defined (they did not in initial release)
-                if ((int)connection.ExecuteScalar("SELECT COUNT(*) FROM SignalType WHERE Acronym='CALC';") == 0)
+                if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM SignalType WHERE Acronym='CALC';")) == 0)
                     connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Calculated Value', 'CALC', 'CV', 'C', 'PMU', '');");
 
-                if ((int)connection.ExecuteScalar("SELECT COUNT(*) FROM SignalType WHERE Acronym='STAT';") == 0)
+                if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM SignalType WHERE Acronym='STAT';")) == 0)
                     connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Statistic', 'STAT', 'ST', 'P', 'Any', '');");
 
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Validating statistic historian exists..."));
 
                 // Validate that the statistics historian exists
-                if ((int)connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Historian WHERE Acronym='STAT' AND NodeID={0};", nodeIDQueryString)) == 0)
+                if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Historian WHERE Acronym='STAT' AND NodeID={0};", nodeIDQueryString))) == 0)
                     connection.ExecuteNonQuery(string.Format("INSERT INTO Historian(NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) VALUES({0}, 'STAT', 'Statistics Archive', 'HistorianAdapters.dll', 'HistorianAdapters.LocalOutputAdapter', '', 1, 'Local historian used to archive system statistics', 9999, 1);", nodeIDQueryString));
 
                 // Make sure statistics path exists to hold historian files
@@ -1751,7 +1751,7 @@ namespace TVA.PhasorProtocols
                         signalIndex = statistic.Field<int>("SignalIndex");
                         signalReference = SignalReference.ToString(acronym, FundamentalSignalType.Statistic, signalIndex);
 
-                        if ((int)connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID)) == 0)
+                        if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
                         {
                             company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", device.Field<int>("CompanyID")));
                             vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0};", device.Field<int>("VendorDeviceID")));
@@ -1774,7 +1774,7 @@ namespace TVA.PhasorProtocols
                         signalIndex = statistic.Field<int>("SignalIndex");
                         signalReference = SignalReference.ToString(acronym, FundamentalSignalType.Statistic, signalIndex);
 
-                        if ((int)connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID)) == 0)
+                        if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
                         {
                             company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", inputStream.Field<int>("CompanyID")));
                             vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0};", inputStream.Field<int>("VendorDeviceID")));
@@ -1797,7 +1797,7 @@ namespace TVA.PhasorProtocols
                         signalIndex = statistic.Field<int>("SignalIndex");
                         signalReference = SignalReference.ToString(acronym, FundamentalSignalType.Statistic, signalIndex);
 
-                        if ((int)connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID)) == 0)
+                        if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
                         {
                             company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", nodeCompanyID));
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
