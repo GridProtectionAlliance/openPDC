@@ -22,6 +22,8 @@
 //       Removed code that updated an obsolete setting in the config file.
 //  01/08/2010 - Pinal C. Patel
 //       Modified ProcessExceptionHandler() to log the exception before updating client status.
+//  06/14/2010 - J. Ritchie Carroll
+//       Added startup data operation handlers to service host.
 //
 //*******************************************************************************************************
 
@@ -291,6 +293,11 @@ namespace openPDC
     public partial class ServiceHost : ServiceBase
     {
         #region [ Members ]
+
+        // Delegates
+
+        // Data source operation delegate
+        private delegate void DataOperationFunction(IDbConnection connection, Type adapterType, string nodeIDQueryString, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException);
 
         // Fields
 
@@ -678,6 +685,9 @@ namespace openPDC
 
                         DisplayStatusMessage("Database configuration connection opened.", UpdateType.Information);
 
+                        // Execute any defined startup data operations
+                        ExecuteStartupDataOperations(connection, adapterType);
+
                         configuration = new DataSet("Iaon");
 
                         // Load configuration entities defined in database
@@ -776,6 +786,59 @@ namespace openPDC
             }
 
             return configuration;
+        }
+
+        // Execute any defined startup data operations
+        private void ExecuteStartupDataOperations(IDbConnection connection, Type adapterType)
+        {
+            try
+            {
+                string assemblyName = "", typeName = "", methodName = "", arguments;
+                Assembly assembly;
+                Type type;
+                MethodInfo method;
+
+                foreach (DataRow row in connection.RetrieveData(adapterType, "SELECT * FROM DataOperation WHERE Enabled <> 0 ORDER BY LoadOrder").Rows)
+                {
+                    try
+                    {
+                        DisplayStatusMessage("Executing startup data operation \"{0}\".", UpdateType.Information, row["Description"].ToNonNullString("Unlabled"));
+
+                        // Load data operation parameters
+                        assemblyName = row["AssemblyName"].ToNonNullString();
+                        typeName = row["TypeName"].ToNonNullString();
+                        methodName = row["MethodName"].ToNonNullString();
+                        arguments = row["Arguments"].ToNonNullString();
+
+                        if (string.IsNullOrEmpty(assemblyName))
+                            throw new InvalidOperationException("Data operation assembly name was not defined.");
+
+                        if (string.IsNullOrEmpty(typeName))
+                            throw new InvalidOperationException("Data operation type name was not defined.");
+
+                        if (string.IsNullOrEmpty(methodName))
+                            throw new InvalidOperationException("Data operation method name was not defined.");
+
+                        // Load data operation from containing assembly and type
+                        assembly = Assembly.LoadFrom(assemblyName);
+                        type = assembly.GetType(typeName);
+                        method = type.GetMethod(methodName, BindingFlags.IgnoreCase | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.InvokeMethod);
+
+                        // Execute data operation via loaded assembly method
+                        ((DataOperationFunction)Delegate.CreateDelegate(typeof(DataOperationFunction), method))(connection, adapterType, m_nodeIDQueryString, new Action<object, EventArgs<string>>(StatusMessageHandler), new Action<object, EventArgs<Exception>>(ProcessExceptionHandler));
+                    }
+                    catch (Exception ex)
+                    {
+                        DisplayStatusMessage("Failed to execute startup data operation \"{0} [{1}::{2}()]\" due to exception: {3}", UpdateType.Warning, assemblyName, typeName, methodName, ex.Message);
+                        m_serviceHelper.ErrorLogger.Log(ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DisplayStatusMessage("Failed to execute startup data operations due to exception: {0}", UpdateType.Warning, ex.Message);
+                m_serviceHelper.ErrorLogger.Log(ex);
+            }
         }
 
         // Create newly defined adapters and remove adapters that are no longer present in the adapter collection configurations
@@ -956,6 +1019,9 @@ namespace openPDC
 
             if (statusProvider != null)
                 return statusProvider.Name.NotEmpty(sender.GetType().Name);
+
+            if (sender != null && sender is string)
+                return (string)sender;
 
             return sender.GetType().Name;
         }

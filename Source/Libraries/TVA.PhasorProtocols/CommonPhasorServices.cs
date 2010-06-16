@@ -2305,10 +2305,10 @@ namespace TVA.PhasorProtocols
         private static double GetOutputStreamStatistic_PublishedFrames(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+            PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
 
-            //if (outputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.PublishedFrames, "PublishedFrames");
+            if (outputStream != null)
+                statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.PublishedFrames, "PublishedFrames");
 
             return statistic;
         }

@@ -33,6 +33,10 @@
 //  04/28/2010 - Pinal C. Patel
 //       Modified ProcessMeasurements() method to not throw an exception if the archive file is not 
 //       open as this will be handled by ArchiveFile.WriteData() method if necessary.
+//  06/13/2010 - J. Ritchie Carroll
+//       Modified loaded plug-in's to use lower-cased instance name for configuration settings for
+//       consistency and better looking configuration categories. Added static data operation to 
+//       automatically optimize settings for defined local historians.
 //
 //*******************************************************************************************************
 
@@ -254,11 +258,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.IO;
 using System.Text;
 using System.Threading;
 using TVA;
 using TVA.Configuration;
+using TVA.Data;
 using TVA.Historian.DataServices;
 using TVA.Historian.Files;
 using TVA.Historian.MetadataProviders;
@@ -266,6 +273,7 @@ using TVA.Historian.Replication;
 using TVA.IO;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
+using System.Configuration;
 
 namespace HistorianAdapters
 {
@@ -282,6 +290,7 @@ namespace HistorianAdapters
         private MetadataProviders m_metadataProviders;
         private ReplicationProviders m_replicationProviders;
         private bool m_refreshMetadata;
+        private string m_instanceName;
         private long m_archivedMeasurements;
         private bool m_disposed;
 
@@ -305,6 +314,42 @@ namespace HistorianAdapters
         #endregion
 
         #region [ Properties ]
+
+        /// <summary>
+        /// Gets instance name defined for this <see cref="LocalOutputAdapter"/>.
+        /// </summary>
+        public string InstanceName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(m_instanceName))
+                    return Name.ToLower();
+
+                return m_instanceName;
+            }
+        }
+
+        /// <summary>
+        /// Returns a flag that determines if measurements sent to this <see cref="LocalOutputAdapter"/> are destined for archival.
+        /// </summary>
+        public override bool OutputIsForArchive
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Gets flag that determines if this <see cref="LocalOutputAdapter"/> uses an asynchronous connection.
+        /// </summary>
+        protected override bool UseAsyncConnect
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         /// <summary>
         /// Returns the detailed status of the data output source.
@@ -334,28 +379,6 @@ namespace HistorianAdapters
             }
         }
 
-        /// <summary>
-        /// Returns a flag that determines if measurements sent to this <see cref="LocalOutputAdapter"/> are destined for archival.
-        /// </summary>
-        public override bool OutputIsForArchive
-        {
-            get 
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Gets flag that determines if this <see cref="LocalOutputAdapter"/> uses an asynchronous connection.
-        /// </summary>
-        protected override bool UseAsyncConnect
-        {
-            get
-            {
-                return true;
-            }
-        }
-
         #endregion
 
         #region [ Methods ]
@@ -370,6 +393,7 @@ namespace HistorianAdapters
             try
             {
                 InternalProcessQueue.Stop();
+
                 // Synchronously refresh the metabase.
                 lock (m_metadataProviders.Adapters)
                 {
@@ -400,14 +424,13 @@ namespace HistorianAdapters
         {
             base.Initialize();
 
-            string instanceName;
             string archivePath;
             string refreshMetadata;
             string errorMessage = "{0} is missing from Settings - Example: instanceName=XX;archivePath=c:\\;refreshMetadata=True";
             Dictionary<string, string> settings = Settings;
 
             // Validate settings.
-            if (!settings.TryGetValue("instancename", out instanceName))
+            if (!settings.TryGetValue("instancename", out m_instanceName))
                 throw new ArgumentException(string.Format(errorMessage, "instanceName"));
             
             if (!settings.TryGetValue("archivepath", out archivePath))
@@ -417,30 +440,30 @@ namespace HistorianAdapters
                 m_refreshMetadata = refreshMetadata.ParseBoolean();
 
             // Initialize metadata file.
-            instanceName = instanceName.ToLower();
-            m_archive.MetadataFile.FileName = Path.Combine(archivePath, instanceName + "_dbase.dat");
+            m_instanceName = m_instanceName.ToLower();
+            m_archive.MetadataFile.FileName = Path.Combine(archivePath, m_instanceName + "_dbase.dat");
             m_archive.MetadataFile.PersistSettings = true;
-            m_archive.MetadataFile.SettingsCategory = Name + m_archive.MetadataFile.SettingsCategory;
+            m_archive.MetadataFile.SettingsCategory = m_instanceName + m_archive.MetadataFile.SettingsCategory;
             m_archive.MetadataFile.Initialize();
 
             // Initialize state file.
-            m_archive.StateFile.FileName = Path.Combine(archivePath, instanceName + "_startup.dat");
+            m_archive.StateFile.FileName = Path.Combine(archivePath, m_instanceName + "_startup.dat");
             m_archive.StateFile.PersistSettings = true;
-            m_archive.StateFile.SettingsCategory = Name + m_archive.StateFile.SettingsCategory;
+            m_archive.StateFile.SettingsCategory = m_instanceName + m_archive.StateFile.SettingsCategory;
             m_archive.StateFile.Initialize();
 
             // Initialize intercom file.
             m_archive.IntercomFile.FileName = Path.Combine(archivePath, "scratch.dat");
             m_archive.IntercomFile.PersistSettings = true;
-            m_archive.IntercomFile.SettingsCategory = Name + m_archive.IntercomFile.SettingsCategory;
+            m_archive.IntercomFile.SettingsCategory = m_instanceName + m_archive.IntercomFile.SettingsCategory;
             m_archive.IntercomFile.Initialize();
 
             // Initialize data archive file.           
-            m_archive.FileName = Path.Combine(archivePath, instanceName + "_archive.d");
+            m_archive.FileName = Path.Combine(archivePath, m_instanceName + "_archive.d");
             m_archive.FileSize = 100;
             m_archive.CompressData = false;
             m_archive.PersistSettings = true;
-            m_archive.SettingsCategory = Name + m_archive.SettingsCategory;
+            m_archive.SettingsCategory = m_instanceName + m_archive.SettingsCategory;
             m_archive.RolloverStart += Archive_RolloverStart;
             m_archive.RolloverComplete += Archive_RolloverComplete;
             m_archive.RolloverException += Archive_RolloverException;
@@ -647,7 +670,7 @@ namespace HistorianAdapters
         private void DataServices_AdapterCreated(object sender, EventArgs<IDataService> e)
         {
             e.Argument.Enabled = true;
-            e.Argument.SettingsCategory = Name + e.Argument.SettingsCategory;
+            e.Argument.SettingsCategory = InstanceName + e.Argument.SettingsCategory;
         }
 
         private void DataServices_AdapterLoaded(object sender, EventArgs<IDataService> e)
@@ -666,7 +689,7 @@ namespace HistorianAdapters
 
         private void MetadataProviders_AdapterCreated(object sender, EventArgs<IMetadataProvider> e)
         {
-            e.Argument.SettingsCategory = Name + e.Argument.SettingsCategory;
+            e.Argument.SettingsCategory = InstanceName + e.Argument.SettingsCategory;
             if (e.Argument.GetType() == typeof(AdoMetadataProvider))
             {
                 // Populate the default configuration for AdoMetadataProvider.
@@ -701,7 +724,7 @@ namespace HistorianAdapters
 
         private void ReplicationProviders_AdapterCreated(object sender, EventArgs<IReplicationProvider> e)
         {
-            e.Argument.SettingsCategory = Name + e.Argument.SettingsCategory;
+            e.Argument.SettingsCategory = InstanceName + e.Argument.SettingsCategory;
         }
 
         private void ReplicationProviders_AdapterLoaded(object sender, EventArgs<IReplicationProvider> e)
@@ -770,6 +793,114 @@ namespace HistorianAdapters
         private void ReplicationProvider_ReplicationException(object sender, EventArgs<Exception> e)
         {
             OnProcessException(e.Argument);
+        }
+
+        #endregion
+
+        #region [ Static ]
+
+        // Static Methods
+
+        // Apply historian configuration optimizations at start-up
+        private static void OptimizeLocalHistorianSettings(IDbConnection connection, Type adapterType, string nodeIDQueryString, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
+        {
+            // Make sure setting exists to allow user to by-pass local historian optimizations at startup
+            ConfigurationFile configFile = ConfigurationFile.Current;
+            CategorizedSettingsElementCollection settings = configFile.Settings["systemSettings"];
+            settings.Add("OptimizeLocalHistorianSettings", true, "Determines if the defined local historians will have their settings optimized at startup");
+
+            // See if this node should optimize local historian settings
+            if (settings["OptimizeLocalHistorianSettings"].ValueAsBoolean())
+            {
+                statusMessage("LocalOutputAdapter", new EventArgs<string>("Optimizing settings for local historians..."));
+
+                // Load the defined local system historians
+                IEnumerable<DataRow> historians = connection.RetrieveData(adapterType, "SELECT * FROM Historian WHERE TypeName = 'HistorianAdapters.LocalOutputAdapter' OR IsLocal <> 0 ORDER BY LoadOrder;").AsEnumerable();
+                List<string> validHistorians = new List<string>();
+                string name, acronym;
+
+                // Apply settings optimizations to local historians
+                foreach (DataRow row in historians)
+                {
+                    name = row.Field<string>("Name");
+                    acronym = row.Field<string>("Acronym").ToLower();
+                    validHistorians.Add(acronym);
+
+                    // We handle the statistics historian as a special case
+                    if (acronym != "stat")
+                    {
+                        // Make sure needed statistic historian configuration settings are properly defined
+                        settings = configFile.Settings[string.Format("{0}MetadataFile", acronym)];
+                        settings.Add("LoadOnOpen", true, string.Format("True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the {0} meta-data file.", name));
+                        settings.Add("ReloadOnModify", true, string.Format("True if file records loaded in memory are to be re-loaded when file is modified on disk; otherwise False - this defaults to True for the {0} meta-data file.", name));
+                        settings["LoadOnOpen"].Update(true);
+                        settings["ReloadOnModify"].Update(true);
+
+                        settings = configFile.Settings[string.Format("{0}StateFile", acronym)];
+                        settings.Add("AutoSaveInterval", 10000, string.Format("Interval in milliseconds at which the file records loaded in memory are to be saved automatically to disk. Use -1 to disable automatic saving - this defaults to 10,000 for the {0} state file.", name));
+                        settings.Add("LoadOnOpen", true, string.Format("True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the {0} state file.", name));
+                        settings.Add("SaveOnClose", true, string.Format("True if file records loaded in memory are to be saved to disk when file is closed; otherwise False - this defaults to True for the {0} state file.", name));
+                        settings["AutoSaveInterval"].Update(10000);
+                        settings["LoadOnOpen"].Update(true);
+                        settings["SaveOnClose"].Update(true);
+
+                        settings = configFile.Settings[string.Format("{0}IntercomFile", acronym)];
+                        settings.Add("AutoSaveInterval", 1000, string.Format("Interval in milliseconds at which the file records loaded in memory are to be saved automatically to disk. Use -1 to disable automatic saving - this defaults to 1,000 for the {0} intercom file.", name));
+                        settings.Add("LoadOnOpen", true, string.Format("True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the {0} intercom file.", name));
+                        settings.Add("SaveOnClose", true, string.Format("True if file records loaded in memory are to be saved to disk when file is closed; otherwise False - this defaults to True for the {0} intercom file.", name));
+                        settings["AutoSaveInterval"].Update(1000);
+                        settings["LoadOnOpen"].Update(true);
+                        settings["SaveOnClose"].Update(true);
+
+                        settings = configFile.Settings[string.Format("{0}ArchiveFile", acronym)];
+                        settings.Add("CacheWrites", true, string.Format("True if writes are to be cached for performance; otherwise False - this defaults to True for the {0} working archive file.", name));
+                        settings.Add("ConserveMemory", false, string.Format("True if attempts are to be made to conserve memory; otherwise False - this defaults to False for the {0} working archive file.", name));
+                        settings["CacheWrites"].Update(true);
+                        settings["ConserveMemory"].Update(false);
+                    }              
+                }
+
+                statusMessage("LocalOutputAdapter", new EventArgs<string>("Scanning for unused local historian configuration settings..."));
+
+                // Sort valid historians for binary search
+                validHistorians.Sort();
+
+                // Create a list to track categories to remove
+                HashSet<string> categoriesToRemove = new HashSet<string>();
+
+                // Search for unused settings categories
+                foreach (PropertyInformation info in configFile.Settings.ElementInformation.Properties)
+                {
+                    name = info.Name;
+
+                    if (name.EndsWith("MetadataFile") && validHistorians.BinarySearch(name.Substring(0, name.IndexOf("MetadataFile"))) < 0)
+                        categoriesToRemove.Add(name);
+                    
+                    if (name.EndsWith("StateFile") && validHistorians.BinarySearch(name.Substring(0, name.IndexOf("StateFile"))) < 0)
+                        categoriesToRemove.Add(name);
+                    
+                    if (name.EndsWith("IntercomFile") && validHistorians.BinarySearch(name.Substring(0, name.IndexOf("IntercomFile"))) < 0)
+                        categoriesToRemove.Add(name);
+
+                    if (name.EndsWith("ArchiveFile") && validHistorians.BinarySearch(name.Substring(0, name.IndexOf("ArchiveFile"))) < 0)
+                        categoriesToRemove.Add(name);
+                }
+
+                if (categoriesToRemove.Count > 0)
+                {
+                    statusMessage("LocalOutputAdapter", new EventArgs<string>("Removing unused local historian configuration settings..."));
+
+                    // Remove any unused settings categories
+                    foreach (string category in categoriesToRemove)
+                    {
+                        // TODO: Uncomment once "Remove" category is working...
+                        //configFile.Settings.Remove(category);
+                    }
+                }
+
+                // Save any applied changes
+                configFile.Save();
+            }
         }
 
         #endregion

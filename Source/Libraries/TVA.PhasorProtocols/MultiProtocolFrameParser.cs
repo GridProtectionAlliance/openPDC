@@ -49,6 +49,8 @@
 //       real-time stream.
 //  03/21/2010 - J. Ritchie Carroll
 //       Added parsing exception threshold settings and consumer event to handle situation.
+//  06/13/2010 - J. Ritchie Carroll
+//       Added several more run-time statistics to the frame parser (e.g., missing frames, CRC errors).
 //
 //*******************************************************************************************************
 
@@ -499,11 +501,14 @@ namespace TVA.PhasorProtocols
         private bool m_autoRepeatCapturedPlayback;
         private bool m_injectSimulatedTimestamp;
         private long m_totalFramesReceived;
+        private long m_totalMissingFrames;
+        private long m_totalCrcExceptions;
         private int m_frameRateTotal;
         private int m_byteRateTotal;
         private long m_totalBytesReceived;
-        private double m_frameRate;
-        private double m_byteRate;
+        private long m_configuredFrameRate;
+        private double m_calculatedFrameRate;
+        private double m_calculatedByteRate;
         private string m_sourceName;
         private double m_definedFrameRate;
         private long m_lastFrameReceivedTime;
@@ -1064,13 +1069,46 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets the calculated frame rate (i.e., frames per second) based on data received from device connection.
+        /// Gets total number of frames that were missing from device so far.
         /// </summary>
-        public double FrameRate
+        public long TotalMissingFrames
         {
             get
             {
-                return m_frameRate;
+                return m_totalMissingFrames;
+            }
+        }
+
+        /// <summary>
+        /// Gets total number of CRC exceptions encountered from device so far.
+        /// </summary>
+        public long TotalCrcExceptions
+        {
+            get
+            {
+                return m_totalCrcExceptions;
+            }
+        }
+
+        /// <summary>
+        /// Gets the configured frame rate as reported by the connected device.
+        /// </summary>
+        public long ConfiguredFrameRate
+        {
+            get
+            {
+                return m_configuredFrameRate;
+            }
+        }
+
+        /// <summary>
+        /// Gets the calculated frame rate (i.e., frames per second) based on data received from device connection.
+        /// </summary>
+        public double CalculatedFrameRate
+        {
+            get
+            {
+                return m_calculatedFrameRate;
             }
         }
 
@@ -1081,7 +1119,7 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return m_byteRate;
+                return m_calculatedByteRate;
             }
         }
 
@@ -1092,7 +1130,7 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return m_byteRate * 8.0D;
+                return m_calculatedByteRate * 8.0D;
             }
         }
 
@@ -1141,9 +1179,13 @@ namespace TVA.PhasorProtocols
                 status.AppendLine();
                 status.AppendFormat("     Total frames received: {0}", m_totalFramesReceived);
                 status.AppendLine();
-                status.AppendFormat("     Calculated frame rate: {0}", m_frameRate);
+                status.AppendFormat("      Total missing frames: {0}", m_totalMissingFrames);
                 status.AppendLine();
-                status.AppendFormat("      Calculated data rate: {0} bytes/sec, {1} Mbps", m_byteRate.ToString("0.0"), MegaBitRate.ToString("0.0000"));
+                status.AppendFormat("      Total CRC exceptions: {0}", m_totalCrcExceptions);
+                status.AppendLine();
+                status.AppendFormat("     Calculated frame rate: {0}", m_calculatedFrameRate);
+                status.AppendLine();
+                status.AppendFormat("      Calculated data rate: {0} bytes/sec, {1} Mbps", m_calculatedByteRate.ToString("0.0"), MegaBitRate.ToString("0.0000"));
                 status.AppendLine();
                 status.AppendFormat("Allowed parsing exceptions: {0}", m_allowedParsingExceptions);
                 status.AppendLine();
@@ -1321,11 +1363,13 @@ namespace TVA.PhasorProtocols
 
             // Reset statistics...
             m_totalFramesReceived = 0;
+            m_totalMissingFrames = 0;
+            m_totalCrcExceptions = 0;
             m_frameRateTotal = 0;
             m_byteRateTotal = 0;
             m_totalBytesReceived = 0;
-            m_frameRate = 0.0D;
-            m_byteRate = 0.0D;
+            m_calculatedFrameRate = 0.0D;
+            m_calculatedByteRate = 0.0D;
             m_lastParsingExceptionTime = 0;
             m_parsingExceptionCount = 0;
 
@@ -1990,9 +2034,10 @@ namespace TVA.PhasorProtocols
         {
             double time = Ticks.ToSeconds(DateTime.Now.Ticks - m_dataStreamStartTime);
 
-            m_frameRate = (double)m_frameRateTotal / time;
-            m_byteRate = (double)m_byteRateTotal / time;
+            m_calculatedFrameRate = (double)m_frameRateTotal / time;
+            m_calculatedByteRate = (double)m_byteRateTotal / time;
 
+            m_totalMissingFrames += (long)(m_configuredFrameRate * m_rateCalcTimer.Interval * SI.Milli) - m_frameRateTotal;
             m_totalFramesReceived += m_frameRateTotal;
             m_totalBytesReceived += m_byteRateTotal;
 
@@ -2160,6 +2205,9 @@ namespace TVA.PhasorProtocols
 
                 if (ReceivedConfigurationFrame != null)
                     ReceivedConfigurationFrame(this, e);
+
+                if (m_configurationFrame != null)
+                    m_configuredFrameRate = m_configurationFrame.FrameRate;
             }
             catch (Exception ex)
             {
@@ -2270,7 +2318,12 @@ namespace TVA.PhasorProtocols
 
         private void m_frameParser_ParsingException(object sender, EventArgs<Exception> e)
         {
-            OnParsingException(e.Argument);
+            Exception ex = e.Argument;
+
+            if (ex is CrcException)
+                m_totalCrcExceptions++;
+
+            OnParsingException(ex);
         }
 
         #endregion

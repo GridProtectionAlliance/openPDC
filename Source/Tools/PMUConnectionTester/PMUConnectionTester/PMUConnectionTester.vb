@@ -1330,7 +1330,7 @@ Public Class PMUConnectionTester
             ' We update statistics after processing about 30 frames of data...
             If m_byteCount >= length * 30 Then
                 StatusBar.Panels(TotalFramesPanel).Text = m_frameParser.TotalFramesReceived.ToString()
-                StatusBar.Panels(FramesPerSecondPanel).Text = m_frameParser.FrameRate.ToString("0.0000")
+                StatusBar.Panels(FramesPerSecondPanel).Text = m_frameParser.CalculatedFrameRate.ToString("0.0000")
                 StatusBar.Panels(TotalBytesPanel).Text = m_frameParser.TotalBytesReceived.ToString()
                 StatusBar.Panels(BitRatePanel).Text = m_frameParser.MegaBitRate.ToString("0.0000")
                 StatusBar.Panels(QueuedBuffersPanel).Text = m_frameParser.QueuedBuffers.ToString()

@@ -586,7 +586,7 @@ namespace TVA.PhasorProtocols
                 // If user selects incorrect protocol, image may be very large - so we don't log the image 
                 //  byte[] binaryImageErr = binaryImage.BlockCopy(startIndex, length);
                 //  + BitConverter.ToString(binaryImageErr)
-                throw new InvalidOperationException("Invalid binary image detected - check sum of " + this.GetType().Name + " did not match");
+                throw new CrcException("Invalid binary image detected - check sum of " + this.GetType().Name + " did not match");
             }
             
             // Include 2 bytes for CRC in returned parsed length
