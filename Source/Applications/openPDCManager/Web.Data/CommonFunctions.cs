@@ -4214,7 +4214,7 @@ namespace openPDCManager.Web.Data
 				//Get Measurements
 				IDbCommand commandMeasurements = connection.Connection.CreateCommand();
 				commandMeasurements.CommandType = CommandType.Text;
-				commandMeasurements.CommandText = "Select DeviceID, SignalID, PointID, PointTag, SignalAcronym From MeasurementDetail Where NodeID = @nodeID";
+				commandMeasurements.CommandText = "Select DeviceID, SignalID, PointID, PointTag, SignalAcronym From MeasurementDetail Where NodeID = @nodeID AND SignalAcronym <> 'STAT'";
 				if (commandMeasurements.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
 					commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", "{" + nodeID + "}"));
 				else
