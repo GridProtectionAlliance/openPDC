@@ -815,15 +815,15 @@ namespace HistorianAdapters
                 statusMessage("LocalOutputAdapter", new EventArgs<string>("Optimizing settings for local historians..."));
 
                 // Load the defined local system historians
-                IEnumerable<DataRow> historians = connection.RetrieveData(adapterType, string.Format("SELECT Historian.Name, Historian.Acronym FROM Historian LEFT OUTER JOIN RuntimeHistorian ON Historian.ID = RuntimeHistorian.ID WHERE Historian.NodeID = {0} AND RuntimeHistorian.TypeName = 'HistorianAdapters.LocalOutputAdapter';", nodeIDQueryString)).AsEnumerable();
+                IEnumerable<DataRow> historians = connection.RetrieveData(adapterType, string.Format("SELECT AdapterName FROM RuntimeHistorian WHERE NodeID = {0} AND TypeName = 'HistorianAdapters.LocalOutputAdapter';", nodeIDQueryString)).AsEnumerable();
                 List<string> validHistorians = new List<string>();
                 string name, acronym;
 
                 // Apply settings optimizations to local historians
                 foreach (DataRow row in historians)
                 {
-                    name = row.Field<string>("Name");
-                    acronym = row.Field<string>("Acronym").ToLower();
+                    acronym = row.Field<string>("AdapterName").ToLower();
+                    name = string.Format("local \'{0}\' historian", acronym);
                     validHistorians.Add(acronym);
 
                     // We handle the statistics historian as a special case
