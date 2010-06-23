@@ -1351,7 +1351,7 @@ namespace TVA.PhasorProtocols
                         statistic.Arguments = row["Arguments"].ToNonNullString();
 
                         // Load statistic's code location information
-                        assemblyName = row["AssemblyName"].ToNonNullString();
+                        assemblyName = FilePath.GetAbsolutePath(row["AssemblyName"].ToNonNullString());
                         typeName = row["TypeName"].ToNonNullString();
                         methodName = row["MethodName"].ToNonNullString();
 
