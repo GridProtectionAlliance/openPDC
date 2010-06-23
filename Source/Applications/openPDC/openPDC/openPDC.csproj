@@ -146,6 +146,7 @@
     <None Include="App.config">
     </None>
     <None Include="App64.config" />
+    <Content Include="Sample1344.PmuCapture" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
