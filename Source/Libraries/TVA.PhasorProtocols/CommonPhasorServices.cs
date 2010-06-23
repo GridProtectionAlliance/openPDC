@@ -1367,7 +1367,7 @@ namespace TVA.PhasorProtocols
                         try
                         {
                             // See if statistic is defined in this assembly (no need to reload)
-                            if (string.Compare(GetType().Name, typeName, true) == 0)
+                            if (string.Compare(GetType().FullName, typeName, true) == 0)
                             {
                                 // Assign statistic handler to local method (assumed to be private static)
                                 statistic.Method = (StatisticCalculationFunction)Delegate.CreateDelegate(typeof(StatisticCalculationFunction), GetType().GetMethod(methodName, BindingFlags.IgnoreCase | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.InvokeMethod));
