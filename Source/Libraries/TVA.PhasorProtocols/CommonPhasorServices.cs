@@ -1467,7 +1467,7 @@ namespace TVA.PhasorProtocols
 
                 try
                 {
-                    // Filter action adapter collection down to the phasor measurement mapper input streams
+                    // Filter input adapter collection down to the phasor measurement mapper input streams
                     IEnumerable<PhasorMeasurementMapper> inputStreams = m_inputAdapters.Where<IInputAdapter>(adapter => adapter is PhasorMeasurementMapper).Cast<PhasorMeasurementMapper>();
 
                     // Calculate defined statistics for each input stream
@@ -1754,7 +1754,7 @@ namespace TVA.PhasorProtocols
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
                         {
                             company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", device.Field<int>("CompanyID")));
-                            vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0};", device.Field<int?>("VendorDeviceID") ?? 0)); // Modified to retrieve VendorDeviceID into Nullable of Int as it is not a required field.
+                            vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0};", device.Field<int?>("VendorDeviceID") ?? 0));
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", device.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
@@ -1953,18 +1953,35 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Calculates percentage of variability of latency from input stream during last reporting interval.
+        /// Calculates minimum latency from input stream, in milliseconds, during last reporting interval.
         /// </summary>
         /// <param name="source">Source InputStream.</param>
         /// <param name="arguments">Any needed arguments for statistic calculation.</param>
-        /// <returns>Variability in Latency Statistic.</returns>
-        private static double GetInputStreamStatistic_LatencyVariability(object source, string arguments)
+        /// <returns>Minimum Latency Statistic.</returns>
+        private static double GetInputStreamStatistic_MinimumLatency(object source, string arguments)
         {
             double statistic = 0.0D;
             //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
 
             //if (inputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.LatencyVariability, "LatencyVariability");
+            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.MinimumLatency, "MinimumLatency");
+
+            return statistic;
+        }
+
+        /// <summary>
+        /// Calculates maximum latency from input stream, in milliseconds, during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Maximum Latency Statistic.</returns>
+        private static double GetInputStreamStatistic_MaximumLatency(object source, string arguments)
+        {
+            double statistic = 0.0D;
+            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+
+            //if (inputStream != null)
+            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.MaximumLatency, "MaximumLatency");
 
             return statistic;
         }
