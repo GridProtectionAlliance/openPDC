@@ -3,7 +3,7 @@
 "VSVersion" = "3:800"
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
-"ProjectName" = "8:openPDCSetup"
+"ProjectName" = "8:openPDCSetup64"
 "LanguageId" = "3:1033"
 "CodePage" = "3:1252"
 "UILanguageId" = "3:1033"
@@ -13,6 +13,12 @@
 "SccProvider" = "8:SAK"
     "Hierarchy"
     {
+        "Entry"
+        {
+        "MsmKey" = "8:_03ECF83ACDE446B6A0E2982451F10138"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
         "Entry"
         {
         "MsmKey" = "8:_07F4F7B31AF4436FA5946F2F0B24D359"
@@ -28,12 +34,6 @@
         "Entry"
         {
         "MsmKey" = "8:_1C2551016D3B4561B4AD38040E79BBD3"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_21243F65273F441199125EB9623E5433"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -105,19 +105,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_3826272332584626B45AC0CB68A59C0B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_3C16597FADB04F39824E264531BC91FD"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3CBB19411F52489EAE371B8ABD6E5D74"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -135,19 +123,37 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_5AFEEE80C1604256B4A534FFDC04F5C9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6353FAD73CEA40178387AD0F9FAB8C56"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_667BE769B40D4B82B71DF73B7781BE63"
+        "MsmKey" = "8:_7B48CAF66E564F4786CA471A4C8F4AE9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_800B7CA0991A46A384640F0EE3509A7E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8043EFB00A51442C9463B42345530BFF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_81642186557145E4A54E32F0B624E437"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -261,6 +267,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A06C6E4376024C90B265193A4D9DE8E6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A6E2A9313AC95F35939D280D0B9BDCBA"
         "OwnerKey" = "8:_F168A732E10B1BD9E37589EDF2710B32"
         "MsmSig" = "8:_UNDEFINED"
@@ -285,19 +297,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E0D661D0461E4466B667DE63703F7A02"
+        "MsmKey" = "8:_E0997581F66D4AB2B99EEEA087CFDF59"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_E29097BD0CC742FAAEED9E3BDF619DB4"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_E46F6EBA0CA44440B01A98816C5EB7E9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -347,12 +353,6 @@
         {
         "MsmKey" = "8:_F168A732E10B1BD9E37589EDF2710B32"
         "OwnerKey" = "8:_B91E164300C54B1587666D7B153DFF2F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F16B3DE43F574355B396474C9DA84BF4"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -507,7 +507,7 @@
         "DisplayName" = "8:Debug"
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:..\\..\\..\\..\\Build\\Output\\Debug\\Applications\\openPDC\\openPDCSetup.msi"
+        "OutputFilename" = "8:..\\..\\..\\..\\Build\\Output\\Debug\\Applications\\openPDC\\openPDCSetup64.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -544,7 +544,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:..\\..\\..\\..\\Build\\Output\\Release\\Applications\\openPDC\\openPDCSetup.msi"
+        "OutputFilename" = "8:..\\..\\..\\..\\Build\\Output\\Release\\Applications\\openPDC\\openPDCSetup64.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -660,6 +660,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_03ECF83ACDE446B6A0E2982451F10138"
+            {
+            "SourcePath" = "8:..\\..\\..\\Data\\SQL Server\\SampleDataSet.sql"
+            "TargetName" = "8:SampleDataSet.sql"
+            "Tag" = "8:"
+            "Folder" = "8:_1DAAE495754741B0A358A03DC8647E19"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_082E04D24B9B4FB48049EE6B80B45C06"
             {
             "AssemblyRegister" = "3:1"
@@ -677,26 +697,6 @@
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_21243F65273F441199125EB9623E5433"
-            {
-            "SourcePath" = "8:..\\..\\..\\Data\\SQL Server\\SampleDataSet.sql"
-            "TargetName" = "8:SampleDataSet.sql"
-            "Tag" = "8:"
-            "Folder" = "8:_BAAF58AAC3AF44FC977CF23D40A98CB9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -793,26 +793,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3826272332584626B45AC0CB68A59C0B"
-            {
-            "SourcePath" = "8:..\\..\\..\\Data\\MySQL\\InitialDataSet.sql"
-            "TargetName" = "8:InitialDataSet.sql"
-            "Tag" = "8:"
-            "Folder" = "8:_93AB1D2D1C2442529796E2F7C803AA71"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3C16597FADB04F39824E264531BC91FD"
             {
             "AssemblyRegister" = "3:1"
@@ -844,12 +824,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3CBB19411F52489EAE371B8ABD6E5D74"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5AFEEE80C1604256B4A534FFDC04F5C9"
             {
-            "SourcePath" = "8:..\\..\\..\\Data\\SQL Server\\openPDC.sql"
-            "TargetName" = "8:openPDC.sql"
+            "SourcePath" = "8:..\\..\\..\\Data\\MySQL\\SampleDataSet.sql"
+            "TargetName" = "8:SampleDataSet.sql"
             "Tag" = "8:"
-            "Folder" = "8:_BAAF58AAC3AF44FC977CF23D40A98CB9"
+            "Folder" = "8:_79429375D11F4F60A27D3EA38030AAE9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -884,12 +864,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_667BE769B40D4B82B71DF73B7781BE63"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7B48CAF66E564F4786CA471A4C8F4AE9"
             {
-            "SourcePath" = "8:..\\..\\..\\Data\\MySQL\\SampleDataSet.sql"
-            "TargetName" = "8:SampleDataSet.sql"
+            "SourcePath" = "8:..\\openPDC\\App64.config"
+            "TargetName" = "8:openPDC.exe.config"
             "Tag" = "8:"
-            "Folder" = "8:_93AB1D2D1C2442529796E2F7C803AA71"
+            "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8043EFB00A51442C9463B42345530BFF"
+            {
+            "SourcePath" = "8:..\\..\\..\\Data\\SQL Server\\openPDC.sql"
+            "TargetName" = "8:openPDC.sql"
+            "Tag" = "8:"
+            "Folder" = "8:_1DAAE495754741B0A358A03DC8647E19"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_81642186557145E4A54E32F0B624E437"
+            {
+            "SourcePath" = "8:..\\..\\..\\Data\\MySQL\\InitialDataSet.sql"
+            "TargetName" = "8:InitialDataSet.sql"
+            "Tag" = "8:"
+            "Folder" = "8:_79429375D11F4F60A27D3EA38030AAE9"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -966,6 +986,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A06C6E4376024C90B265193A4D9DE8E6"
+            {
+            "SourcePath" = "8:..\\..\\..\\Data\\MySQL\\openPDC.sql"
+            "TargetName" = "8:openPDC.sql"
+            "Tag" = "8:"
+            "Folder" = "8:_79429375D11F4F60A27D3EA38030AAE9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A6E2A9313AC95F35939D280D0B9BDCBA"
             {
             "AssemblyRegister" = "3:1"
@@ -997,32 +1037,12 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E0D661D0461E4466B667DE63703F7A02"
-            {
-            "SourcePath" = "8:..\\..\\..\\Data\\Access\\openPDC-SampleDataSet.mdb"
-            "TargetName" = "8:openPDC.mdb"
-            "Tag" = "8:"
-            "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E46F6EBA0CA44440B01A98816C5EB7E9"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E0997581F66D4AB2B99EEEA087CFDF59"
             {
             "SourcePath" = "8:..\\..\\..\\Data\\SQL Server\\InitialDataSet.sql"
             "TargetName" = "8:InitialDataSet.sql"
             "Tag" = "8:"
-            "Folder" = "8:_BAAF58AAC3AF44FC977CF23D40A98CB9"
+            "Folder" = "8:_1DAAE495754741B0A358A03DC8647E19"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1130,31 +1150,11 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F16B3DE43F574355B396474C9DA84BF4"
-            {
-            "SourcePath" = "8:..\\..\\..\\Data\\MySQL\\openPDC.sql"
-            "TargetName" = "8:openPDC.sql"
-            "Tag" = "8:"
-            "Folder" = "8:_93AB1D2D1C2442529796E2F7C803AA71"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_F96E0DC884E9D2CC9B5DEC046A516D28"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TVA.PhasorProtocols, Version=1.1.70.53150, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:TVA.PhasorProtocols, Version=1.1.71.53230, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_F96E0DC884E9D2CC9B5DEC046A516D28"
@@ -1222,7 +1222,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_7D253EACC81848AEA2104B4FE9EA2FD8"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
+            "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]\\[ProductName]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -1230,33 +1230,33 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_66B968D591AA49149206855C2BC12B41"
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_71BD5DAFF6EC417D9322AF50C0A7F9A5"
                     {
                     "Name" = "8:Database scripts"
                     "AlwaysCreate" = "11:FALSE"
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
-                    "Property" = "8:_479BFB4D45594B6F96266168943B5E1D"
+                    "Property" = "8:_49DD424E8556460FBBC3F19045B425A5"
                         "Folders"
                         {
-                            "{9EF0B969-E518-4E46-987F-47570745A589}:_93AB1D2D1C2442529796E2F7C803AA71"
-                            {
-                            "Name" = "8:MySQL"
-                            "AlwaysCreate" = "11:FALSE"
-                            "Condition" = "8:"
-                            "Transitive" = "11:FALSE"
-                            "Property" = "8:_66EF6C6B55DF485BAC0FB7713B780AA6"
-                                "Folders"
-                                {
-                                }
-                            }
-                            "{9EF0B969-E518-4E46-987F-47570745A589}:_BAAF58AAC3AF44FC977CF23D40A98CB9"
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_1DAAE495754741B0A358A03DC8647E19"
                             {
                             "Name" = "8:SQL Server"
                             "AlwaysCreate" = "11:FALSE"
                             "Condition" = "8:"
                             "Transitive" = "11:FALSE"
-                            "Property" = "8:_6C7BF9A8079C4AF69D4F253FCE18DA1B"
+                            "Property" = "8:_E6029373600942C0968EC793871C3D1D"
+                                "Folders"
+                                {
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_79429375D11F4F60A27D3EA38030AAE9"
+                            {
+                            "Name" = "8:MySQL"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_A544FEBA9A224209BD44B8F42182AE11"
                                 "Folders"
                                 {
                                 }
@@ -1282,7 +1282,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:openPDC"
         "ProductCode" = "8:{493D6CED-50C6-4CF5-93A3-306C364F10A3}"
-        "PackageCode" = "8:{1F5E6E86-19AA-438A-9AB3-80F57B4A25B8}"
+        "PackageCode" = "8:{7F88D355-8657-4742-9F5D-8BB4829955AE}"
         "UpgradeCode" = "8:{672ED075-C482-49A6-86D5-7B3FEB4AEAC8}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
@@ -1302,7 +1302,7 @@
         "ARPIconIndex" = "3:32512"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
-        "TargetPlatform" = "3:0"
+        "TargetPlatform" = "3:1"
         "PreBuildEvent" = "8:"
         "PostBuildEvent" = "8:"
         "RunPostBuildEvent" = "3:0"
@@ -1990,6 +1990,7 @@
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
+                "ExcludeFilter" = "8:App.config"
                 }
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_828AAECD8DC940EF9FB4DBC39DE65AC1"
