@@ -105,6 +105,7 @@ CREATE TABLE Node(
 	ImagePath LONGTEXT NULL,
 	TimeSeriesDataServiceUrl LONGTEXT NULL,
 	RemoteStatusServiceUrl LONGTEXT NULL,
+	RealTimeStatisticServiceUrl LONGTEXT NULL,
 	Master TINYINT NOT NULL DEFAULT 0,
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled TINYINT NOT NULL DEFAULT 0,
@@ -280,6 +281,10 @@ CREATE TABLE Statistic(
 	MethodName NVARCHAR(255) NOT NULL,
 	Arguments LONGTEXT NULL,
 	Enabled TINYINT NOT NULL DEFAULT 0,
+	DataType NVARCHAR(255) NULL,
+	DisplayFormat LONGTEXT NULL,
+	IsConnectedState TINYINT NOT NULL DEFAULT 0,
+	LoadOrder INT NOT NULL DEFAULT 0,
 	CONSTRAINT PK_Statistic PRIMARY KEY (ID ASC),
 	CONSTRAINT IX_Statistic_Source_SignalIndex UNIQUE KEY (Source ASC, SignalIndex ASC)
 );
@@ -769,7 +774,7 @@ AS
 SELECT N.ID, N.Name, N.CompanyID AS CompanyID, COALESCE(N.Longitude, 0) AS Longitude, COALESCE(N.Latitude, 0) AS Latitude, 
 		COALESCE(N.Description, '') AS Description, COALESCE(N.ImagePath, '') AS ImagePath, N.Master, N.LoadOrder, N.Enabled, 
 		COALESCE(N.TimeSeriesDataServiceUrl, '') AS TimeSeriesDataServiceUrl, COALESCE(N.RemoteStatusServiceUrl, '') AS RemoteStatusServiceUrl,	
-		COALESCE(C.Name, '') AS CompanyName
+		COALESCE(N.RealTimeStatisticServiceUrl, '') AS RealTimeStatisticServiceUrl, COALESCE(C.Name, '') AS CompanyName
 FROM Node N LEFT JOIN Company C 
 ON N.CompanyID = C.ID;
 
@@ -890,6 +895,13 @@ SELECT P.*, COALESCE(DP.Label, '') AS DestinationPhasorLabel, D.Acronym AS Devic
 FROM Phasor P LEFT OUTER JOIN Phasor DP ON P.DestinationPhasorID = DP.ID
       LEFT OUTER JOIN Device D ON P.DeviceID = D.ID;
 
+CREATE VIEW StatisticMeasurement AS
+SELECT     MeasurementDetail.CompanyID, MeasurementDetail.CompanyAcronym, MeasurementDetail.CompanyName, MeasurementDetail.SignalID, MeasurementDetail.HistorianID, MeasurementDetail.HistorianAcronym, MeasurementDetail.HistorianConnectionString, MeasurementDetail.PointID, MeasurementDetail.PointTag, MeasurementDetail.AlternateTag, MeasurementDetail.DeviceID, 
+                      MeasurementDetail.NodeID, MeasurementDetail.DeviceAcronym, MeasurementDetail.DeviceName, MeasurementDetail.FramesPerSecond, MeasurementDetail.DeviceEnabled, MeasurementDetail.ContactList, MeasurementDetail.VendorDeviceID, MeasurementDetail.VendorDeviceName, MeasurementDetail.VendorDeviceDescription, MeasurementDetail.ProtocolID, 
+                      MeasurementDetail.ProtocolAcronym, MeasurementDetail.ProtocolName, MeasurementDetail.SignalTypeID, MeasurementDetail.PhasorSourceIndex, MeasurementDetail.PhasorLabel, MeasurementDetail.PhasorType, MeasurementDetail.Phase, MeasurementDetail.SignalReference, MeasurementDetail.Adder, MeasurementDetail.Multiplier, MeasurementDetail.Description, MeasurementDetail.Enabled, 
+                      MeasurementDetail.EngineeringUnits, MeasurementDetail.Source, MeasurementDetail.SignalAcronym, MeasurementDetail.SignalName, MeasurementDetail.SignalTypeSuffix, MeasurementDetail.Longitude, MeasurementDetail.Latitude, CASE WHEN LOCATE('!IS', MeasurementDetail.SignalReference) > 0 THEN 'InputStream' WHEN LOCATE('!OS', MeasurementDetail.SignalReference) > 0 THEN 'OutputStream' ELSE 'Device' END AS MeasurementSource
+FROM MeasurementDetail 
+WHERE MeasurementDetail.SignalAcronym = 'STAT'
 
 CREATE TRIGGER CustomActionAdapter_RuntimeSync_Insert AFTER INSERT ON CustomActionAdapter
 FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, N'CustomActionAdapter');

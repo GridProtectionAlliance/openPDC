@@ -119,9 +119,14 @@
                                             <Image Source="Images/Tree.png" />
                                         </igMenu:XamWebMenuItem.Icon>
                                     </igMenu:XamWebMenuItem>                                    
-                                    <igMenu:XamWebMenuItem Header="Device Measurements Tree" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Adapters/DeviceMeasurements.xaml">
+                                    <igMenu:XamWebMenuItem Header="Real-Time Measurements" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Adapters/DeviceMeasurements.xaml">
                                         <igMenu:XamWebMenuItem.Icon>
-                                            <Image Source="Images/Tree.png" />
+                                            <Image Source="Images/Measure.png" />
+                                        </igMenu:XamWebMenuItem.Icon>
+                                    </igMenu:XamWebMenuItem>
+                                    <igMenu:XamWebMenuItem Header="Real-Time Statistics" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Adapters/RealTimeStatistics.xaml">
+                                        <igMenu:XamWebMenuItem.Icon>
+                                            <Image Source="Images/Chart.png" />
                                         </igMenu:XamWebMenuItem.Icon>
                                     </igMenu:XamWebMenuItem>
                             </igMenu:XamWebMenuItem>

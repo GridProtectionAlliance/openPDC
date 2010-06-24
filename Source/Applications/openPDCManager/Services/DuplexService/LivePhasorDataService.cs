@@ -270,7 +270,7 @@ namespace openPDCManager.Services.DuplexService
             livePhasorDataTimer = new Timer(LivePhasorDataUpdate, null, 0, 30000);
             timeSeriesDataTimer = new Timer(TimeSeriesDataUpdate, null, 0, 1000);			
 			serviceClientListTimer = new Timer(RefreshServiceClientList, null, 0, 30000);
-			timeTaggedMeasurementDataTimer = new Timer(TimeTaggedMeasurementDataUpdate, null, 0, 30000);
+			timeTaggedMeasurementDataTimer = new Timer(TimeTaggedMeasurementDataUpdate, null, 0, 30000);            
 			nodeList = CommonFunctions.GetNodeList(true);
         }
 
@@ -294,6 +294,8 @@ namespace openPDCManager.Services.DuplexService
                         // This will be done only when the object is disposed by calling Dispose().
                         livePhasorDataTimer.Dispose();
                         timeSeriesDataTimer.Dispose();
+                        serviceClientListTimer.Dispose();
+                        timeTaggedMeasurementDataTimer.Dispose();
 						lock (serviceClientList)
 						{
 							foreach (KeyValuePair<string, WindowsServiceClient> item in serviceClientList)
@@ -480,9 +482,10 @@ namespace openPDCManager.Services.DuplexService
 		private void TimeTaggedMeasurementDataUpdate(object obj)
 		{
 			RefreshTimeTaggedMeasurementsPerNode();
+            RefreshRealTimeStatisticsPerNode();
 			PushToAllClients(MessageType.TimeTaggedDataMessage);
 		}
-
+                
         #endregion
     }
 }

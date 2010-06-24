@@ -294,6 +294,7 @@ namespace openPDCManager.Silverlight.UserControls
 					app.NodeName = node.Name;
 					app.TimeSeriesDataServiceUrl = node.TimeSeriesDataServiceUrl;
 					app.RemoteStatusServiceUrl = node.RemoteStatusServiceUrl;
+                    app.RealTimeStatisticServiceUrl = node.RealTimeStatisticServiceUrl;
 				}
 				else
 					app.NodeValue = string.Empty;
@@ -340,6 +341,7 @@ namespace openPDCManager.Silverlight.UserControls
 				app.NodeName = node.Name;
 				app.TimeSeriesDataServiceUrl = node.TimeSeriesDataServiceUrl;
 				app.RemoteStatusServiceUrl = node.RemoteStatusServiceUrl;
+                app.RealTimeStatisticServiceUrl = node.RealTimeStatisticServiceUrl;
 				//app.NodeValue = ((KeyValuePair<string, string>)ComboboxNode.SelectedItem).Key;
 				//app.NodeName = ((KeyValuePair<string, string>)(ComboboxNode.SelectedItem)).Value;
 			}

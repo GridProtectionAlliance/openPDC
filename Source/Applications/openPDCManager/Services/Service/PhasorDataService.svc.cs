@@ -648,5 +648,10 @@ namespace openPDCManager.Services.Service
 		{
 			return CommonFunctions.GetParities();
 		}
+
+        public List<StatisticMeasurementData> GetStatisticMeasurementData(string nodeID)
+        {
+            return CommonFunctions.GetStatisticMeasurementData(nodeID);
+        }
 	}
 }

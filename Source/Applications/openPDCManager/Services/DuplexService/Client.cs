@@ -236,6 +236,7 @@ namespace openPDCManager.Services.DuplexService
 	{
 		public string NodeID { get; set; }
 		public string TimeSeriesDataRootUrl { get; set; }
+        public string RealTimeStatisticRootUrl { get; set; }
 		public int DataPointID { get; set; }
 		public DisplayType CurrentDisplayType { get; set; }
 		public IUniversalDuplexCallbackContract Channel { get; set; }

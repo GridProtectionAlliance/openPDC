@@ -427,7 +427,8 @@ namespace openPDCManager.Silverlight.Pages
 			
 			ConnectMessage msg = new ConnectMessage();
 			msg.NodeID = ((App)Application.Current).NodeValue;
-			msg.TimeSeriesDataRootUrl = ((App)Application.Current).TimeSeriesDataServiceUrl;	// "http://localhost:6152/historian/timeseriesdata/read/";			
+			msg.TimeSeriesDataRootUrl = ((App)Application.Current).TimeSeriesDataServiceUrl;	// "http://localhost:6152/historian/timeseriesdata/read/";		
+            msg.RealTimeStatisticRootUrl = ((App)Application.Current).RealTimeStatisticServiceUrl;
 			msg.CurrentDisplayType = DisplayType.Home;
 			if (ComboBoxMeasurements.Items.Count > 0)
 			{

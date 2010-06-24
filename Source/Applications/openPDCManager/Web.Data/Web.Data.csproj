@@ -94,6 +94,7 @@
     <Compile Include="BusinessObjects\MapData.cs" />
     <Compile Include="BusinessObjects\Message.cs" />
     <Compile Include="BusinessObjects\PmuDistribution.cs" />
+    <Compile Include="BusinessObjects\StatisticMeasurementData.cs" />
     <Compile Include="BusinessObjects\TimeSeriesDataPoint.cs" />
     <Compile Include="BusinessObjects\TimeTaggedMeasurement.cs" />
     <Compile Include="BusinessObjects\WizardDeviceInfo.cs" />

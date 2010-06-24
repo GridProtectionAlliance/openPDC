@@ -247,6 +247,9 @@ namespace openPDCManager.Services.DuplexService
 		[DataMember]
 		public string TimeSeriesDataRootUrl {get; set;}
 
+        [DataMember]
+        public string RealTimeStatisticRootUrl { get; set; }
+
 		[DataMember]
 		public int DataPointID { get; set; }
 

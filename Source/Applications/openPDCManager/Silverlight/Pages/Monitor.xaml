@@ -28,7 +28,7 @@
                 <Border BorderThickness="0" Background="{StaticResource PortletBackgroundBrush}">                    
                     <ScrollViewer x:Name="ScrollViewerMonitor" Background="Black" Margin="2,2,2,0" BorderThickness="0" Padding="0" Height="770" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top">
                         <ScrollViewer.Content>
-                            <TextBlock x:Name="TextBoxServiceStatus" Foreground="White" TextWrapping="Wrap" Margin="2" Height="Auto" FontFamily="Courier New" 
+                            <TextBlock x:Name="TextBoxServiceStatus" HorizontalAlignment="Left" Foreground="White" TextWrapping="Wrap" Width="750" Margin="2" Height="Auto" FontFamily="Courier New" 
                                 FontSize="{StaticResource LargerTextSize}"/>
                             <!--<TextBox x:Name="TextBoxServiceStatus" AcceptsReturn="True" Background="Black"  Margin="2" TextWrapping="NoWrap"  Foreground="White"  
                                      FontFamily="Courier New" FontSize="{StaticResource LargeTextSize}" />-->                            

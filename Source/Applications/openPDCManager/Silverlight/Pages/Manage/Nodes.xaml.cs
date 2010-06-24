@@ -386,6 +386,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
                 node.Enabled = (bool)CheckboxEnabled.IsChecked;
                 node.TimeSeriesDataServiceUrl = TextBoxTimeSeriesDataServiceUrl.Text.CleanText();
                 node.RemoteStatusServiceUrl = TextBoxRemoteStatusServiceUrl.Text.CleanText();
+                node.RealTimeStatisticServiceUrl = TextBoxRealTimeStatisticServiceUrl.Text.CleanText();
 
                 if (m_inEditMode == true && !string.IsNullOrEmpty(m_nodeID))
                 {

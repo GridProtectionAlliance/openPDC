@@ -51,6 +51,82 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="CustomServiceFault" nillable="true" type="tns:CustomServiceFault" />
+  <xs:complexType name="ArrayOfStatisticMeasurementData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="StatisticMeasurementData" nillable="true" type="tns:StatisticMeasurementData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfStatisticMeasurementData" nillable="true" type="tns:ArrayOfStatisticMeasurementData" />
+  <xs:complexType name="StatisticMeasurementData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="SourceStreamInfoList" nillable="true" type="tns:ArrayOfStreamInfo" />
+      <xs:element minOccurs="0" name="SourceType" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="StatisticMeasurementData" nillable="true" type="tns:StatisticMeasurementData" />
+  <xs:complexType name="ArrayOfStreamInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="StreamInfo" nillable="true" type="tns:StreamInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfStreamInfo" nillable="true" type="tns:ArrayOfStreamInfo" />
+  <xs:complexType name="StreamInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DeviceStatisticList" nillable="true" type="tns:ArrayOfDeviceStatistic" />
+      <xs:element minOccurs="0" name="ID" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StatisticList" nillable="true" type="tns:ArrayOfDetailStatisticInfo" />
+      <xs:element minOccurs="0" name="StatusColor" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="StreamInfo" nillable="true" type="tns:StreamInfo" />
+  <xs:complexType name="ArrayOfDeviceStatistic">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DeviceStatistic" nillable="true" type="tns:DeviceStatistic" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDeviceStatistic" nillable="true" type="tns:ArrayOfDeviceStatistic" />
+  <xs:complexType name="DeviceStatistic">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ID" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StatisticList" nillable="true" type="tns:ArrayOfDetailStatisticInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DeviceStatistic" nillable="true" type="tns:DeviceStatistic" />
+  <xs:complexType name="ArrayOfDetailStatisticInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DetailStatisticInfo" nillable="true" type="tns:DetailStatisticInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDetailStatisticInfo" nillable="true" type="tns:ArrayOfDetailStatisticInfo" />
+  <xs:complexType name="DetailStatisticInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DeviceID" type="xs:int" />
+      <xs:element minOccurs="0" name="PointID" type="xs:int" />
+      <xs:element minOccurs="0" name="PointTag" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SignalReference" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Statistics" nillable="true" type="tns:BasicStatisticInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DetailStatisticInfo" nillable="true" type="tns:DetailStatisticInfo" />
+  <xs:complexType name="BasicStatisticInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DataType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DisplayFormat" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IsConnectedState" type="xs:boolean" />
+      <xs:element minOccurs="0" name="LoadOrder" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Quality" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Source" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TimeTag" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Value" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BasicStatisticInfo" nillable="true" type="tns:BasicStatisticInfo" />
   <xs:complexType name="ArrayOfIaonTree">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="IaonTree" nillable="true" type="tns:IaonTree" />

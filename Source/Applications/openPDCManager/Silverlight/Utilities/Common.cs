@@ -240,6 +240,7 @@ using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
 using openPDCManager.Silverlight.PhasorDataServiceProxy;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 
 namespace openPDCManager.Silverlight.Utilities
 {
@@ -559,6 +560,17 @@ namespace openPDCManager.Silverlight.Utilities
                 return (double?)null;
         }
 
+        public static object ConvertValueToType(object value, string dataType)
+        {   
+               switch (dataType)
+                {
+                    case "System.DateTime":
+                        return new DateTime(Convert.ToInt64(value));
+                    default:
+                        return Convert.ChangeType(Convert.ToDouble(value), Type.GetType(dataType), null);
+                }
+        }
+               
 		#endregion
 
 	}

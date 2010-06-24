@@ -257,7 +257,8 @@ namespace openPDCManager.Services.DuplexService
     {
         Home,
         ServiceClient,
-		DeviceMeasurements
+		DeviceMeasurements,
+        RealTimeStatistics
     }
 
     #endregion
@@ -293,6 +294,7 @@ namespace openPDCManager.Services.DuplexService
         //Will maintain data for each node in a dictionary to serve to any number of clients. This would eliminate database hit for each client.
         Dictionary<string, LivePhasorDataMessage> dataPerNode;	//stores vendor device distribution and interconnectionstatus per node.
 		Dictionary<string, TimeTaggedDataMessage> timeTaggedMeasurementsPerNode;	//stores current time series data for all the measurements per node.
+        Dictionary<string, TimeTaggedDataMessage> realTimeStatisticsPerNode;        //stores current statistics data for all the input and output streams per node.
 		Dictionary<string, KeyValuePair<int, int>> minMaxPointIDsPerNode;	//stores min and max values of point id in measurement table per node.
         private bool m_disposed;
 
@@ -305,7 +307,23 @@ namespace openPDCManager.Services.DuplexService
             clients = new Dictionary<string, Client>();            
             dataPerNode = new Dictionary<string, LivePhasorDataMessage>();
 			timeTaggedMeasurementsPerNode = new Dictionary<string, TimeTaggedDataMessage>();
+            realTimeStatisticsPerNode = new Dictionary<string, TimeTaggedDataMessage>();
 			minMaxPointIDsPerNode = new Dictionary<string, KeyValuePair<int, int>>();
+
+            List<Node> nodeList = new List<Node>();
+            nodeList = CommonFunctions.GetNodeList(true);
+            foreach (Node node in nodeList)
+            {
+                //lock (syncRoot)
+                lock (minMaxPointIDsPerNode)
+                {
+                    if (minMaxPointIDsPerNode.ContainsKey(node.ID))
+                        minMaxPointIDsPerNode[node.ID] = CommonFunctions.GetMinMaxPointIDs(node.ID);
+                    else
+                        minMaxPointIDsPerNode.Add(node.ID, CommonFunctions.GetMinMaxPointIDs(node.ID));
+                }
+            }
+
         }
 
         /// <summary>
@@ -350,6 +368,7 @@ namespace openPDCManager.Services.DuplexService
                         client.Channel = ch;
                         client.NodeID = (msg as ConnectMessage).NodeID;
                         client.TimeSeriesDataRootUrl = (msg as ConnectMessage).TimeSeriesDataRootUrl;
+                        client.RealTimeStatisticRootUrl = (msg as ConnectMessage).RealTimeStatisticRootUrl;
                         client.DataPointID = (msg as ConnectMessage).DataPointID;
 						client.CurrentDisplayType = (msg as ConnectMessage).CurrentDisplayType;
                         clients.Add(session, client);
@@ -365,6 +384,7 @@ namespace openPDCManager.Services.DuplexService
                             NodeID = (msg as ConnectMessage).NodeID,
                             DataPointID = (msg as ConnectMessage).DataPointID,
                             TimeSeriesDataRootUrl = (msg as ConnectMessage).TimeSeriesDataRootUrl,
+                            RealTimeStatisticRootUrl = (msg as ConnectMessage).RealTimeStatisticRootUrl,
 							CurrentDisplayType = (msg as ConnectMessage).CurrentDisplayType
                         };
                     }
@@ -423,6 +443,23 @@ namespace openPDCManager.Services.DuplexService
 						PushMessageToClient(session, new TimeTaggedDataMessage());
 					}
 				}
+                else if (currentClient.CurrentDisplayType == DisplayType.RealTimeStatistics)
+                {
+                    KeyValuePair<int, int> minMaxPointID = minMaxPointIDsPerNode[currentClient.NodeID];
+                    if (!string.IsNullOrEmpty(currentClient.TimeSeriesDataRootUrl))	// if TimeSeriesDataRootUrl is defined for the node, then only try to send data to client upon connection.
+                    {
+                        System.Diagnostics.Debug.WriteLine("Sending Measurements to Client Connected on Device Measurements Page.");
+                        PushMessageToClient(session, new TimeTaggedDataMessage()
+                        {
+                            TimeTaggedMeasurements = CommonFunctions.GetStatisticMeasurements(currentClient.RealTimeStatisticRootUrl + "/timeseriesdata/read/current/" + minMaxPointID.Key.ToString() + "-" + minMaxPointID.Value.ToString() + "/XML", currentClient.NodeID)
+                        });
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("Sending Empty Message to Client Connected on Device Measurements Page.");
+                        PushMessageToClient(session, new TimeTaggedDataMessage());
+                    }
+                }
             }
 			else if (msg is ServiceRequestMessage)
 			{
@@ -508,6 +545,45 @@ namespace openPDCManager.Services.DuplexService
 			}
 		}
 
+        protected void RefreshRealTimeStatisticsPerNode()
+        {
+            List<Node> nodeList = new List<Node>();
+            nodeList = CommonFunctions.GetNodeList(true);
+            //foreach (Node node in nodeList)
+            //{
+            //    //lock (syncRoot)
+            //    lock (minMaxPointIDsPerNode)
+            //    {
+            //        if (minMaxPointIDsPerNode.ContainsKey(node.ID))
+            //            minMaxPointIDsPerNode[node.ID] = CommonFunctions.GetMinMaxPointIDs(node.ID);
+            //        else
+            //            minMaxPointIDsPerNode.Add(node.ID, CommonFunctions.GetMinMaxPointIDs(node.ID));
+            //    }
+            //}
+
+            foreach (Node node in nodeList)
+            {
+                KeyValuePair<int, int> minMaxPointID = minMaxPointIDsPerNode[node.ID];
+                TimeTaggedDataMessage message;
+                if (!string.IsNullOrEmpty(node.RealTimeStatisticServiceUrl))
+                    message = new TimeTaggedDataMessage()
+                    {
+                        TimeTaggedMeasurements = CommonFunctions.GetStatisticMeasurements(node.RealTimeStatisticServiceUrl + "/timeseriesdata/read/current/" + minMaxPointID.Key.ToString() + "-" + minMaxPointID.Value.ToString() + "/XML", node.ID)
+                    };
+                else
+                    message = new TimeTaggedDataMessage();
+
+                //lock (syncRoot)
+                lock (realTimeStatisticsPerNode)
+                {
+                    if (realTimeStatisticsPerNode.ContainsKey(node.ID))
+                        realTimeStatisticsPerNode[node.ID] = message;
+                    else
+                        realTimeStatisticsPerNode.Add(node.ID, message);
+                }
+            }
+        }
+
 		protected void PushServiceStatusToClients(string nodeID, DuplexMessage message)
 		{
 			Dictionary<string, Client> clientsList;
@@ -591,6 +667,13 @@ namespace openPDCManager.Services.DuplexService
 							else
 								PushMessageToClient(session, new TimeTaggedDataMessage());
 						}
+                        else if (clientsList[session].CurrentDisplayType == DisplayType.RealTimeStatistics)
+                        {
+                            if (realTimeStatisticsPerNode.ContainsKey(clientsList[session].NodeID))
+                                PushMessageToClient(session, realTimeStatisticsPerNode[clientsList[session].NodeID]);
+                            else
+                                PushMessageToClient(session, new TimeTaggedDataMessage());
+                        }
 					}
 				}
 			}

@@ -619,5 +619,9 @@ namespace openPDCManager.Services.Service
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
 		List<string> GetParities();
+
+        [OperationContract]
+        [FaultContract(typeof(CustomServiceFault))]
+        List<StatisticMeasurementData> GetStatisticMeasurementData(string nodeID);
 	}
 }

@@ -281,6 +281,7 @@
       <xs:element minOccurs="0" name="Longitude" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="Master" type="xs:boolean" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RealTimeStatisticServiceUrl" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="RemoteStatusServiceUrl" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TimeSeriesDataServiceUrl" nillable="true" type="xs:string" />
     </xs:sequence>

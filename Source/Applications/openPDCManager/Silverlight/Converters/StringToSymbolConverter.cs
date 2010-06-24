@@ -245,15 +245,7 @@ namespace openPDCManager.Silverlight.Converters
             //SolidColorBrush scBrush = new SolidColorBrush();            
             RadialGradientBrush scBrush = new RadialGradientBrush();
 
-            string statusColor = value.ToString();
-            //if (statusColor == "<img src=HttpHandlers/PersistantImage.ashx?key=Green border=0>") 
-            //    scBrush.Color = Color.FromArgb(255, 10, 255, 25);                           
-            //else if (statusColor == "<img src=HttpHandlers/PersistantImage.ashx?key=Gray border=0>")
-            //    scBrush.Color = Color.FromArgb(255, 125, 125, 125);                
-            //else if (statusColor == "<img src=HttpHandlers/PersistantImage.ashx?key=Yellow border=0>")
-            //    scBrush.Color = Color.FromArgb(255, 255, 255, 0);            
-            //else if (statusColor == "<img src=HttpHandlers/PersistantImage.ashx?key=Red border=0>")            
-            //    scBrush.Color = Color.FromArgb(255, 255, 10, 10);
+            string statusColor = value.ToString();          
 
             if (statusColor.Contains("Green"))
                 scBrush = Application.Current.Resources["GreenRadialGradientBrush"] as RadialGradientBrush;

@@ -246,7 +246,8 @@ namespace openPDCManager.Web.Data.Entities
 		public int LoadOrder { get; set; }
 		public bool Enabled { get; set; }
 		public string TimeSeriesDataServiceUrl { get; set; }
-		public string RemoteStatusServiceUrl { get; set; }		
+		public string RemoteStatusServiceUrl { get; set; }
+        public string RealTimeStatisticServiceUrl { get; set; }
 		public string CompanyName { get; set; }
 	}
 }

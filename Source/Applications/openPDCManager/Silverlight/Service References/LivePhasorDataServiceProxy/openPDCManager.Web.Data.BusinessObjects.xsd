@@ -1,13 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:complexType name="TimeTaggedMeasurement">
+  <xs:complexType name="ArrayOfTimeSeriesDataPoint">
     <xs:sequence>
-      <xs:element minOccurs="0" name="CurrentValue" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Quality" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="TimeTag" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TimeSeriesDataPoint" nillable="true" type="tns:TimeSeriesDataPoint" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="TimeTaggedMeasurement" nillable="true" type="tns:TimeTaggedMeasurement" />
+  <xs:element name="ArrayOfTimeSeriesDataPoint" nillable="true" type="tns:ArrayOfTimeSeriesDataPoint" />
+  <xs:complexType name="TimeSeriesDataPoint">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Index" type="xs:long" />
+      <xs:element minOccurs="0" name="Value" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TimeSeriesDataPoint" nillable="true" type="tns:TimeSeriesDataPoint" />
   <xs:complexType name="ArrayOfInterconnectionStatus">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="InterconnectionStatus" nillable="true" type="tns:InterconnectionStatus" />
@@ -37,17 +42,12 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="MemberStatus" nillable="true" type="tns:MemberStatus" />
-  <xs:complexType name="ArrayOfTimeSeriesDataPoint">
+  <xs:complexType name="TimeTaggedMeasurement">
     <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="TimeSeriesDataPoint" nillable="true" type="tns:TimeSeriesDataPoint" />
+      <xs:element minOccurs="0" name="CurrentValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Quality" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TimeTag" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="ArrayOfTimeSeriesDataPoint" nillable="true" type="tns:ArrayOfTimeSeriesDataPoint" />
-  <xs:complexType name="TimeSeriesDataPoint">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Index" type="xs:long" />
-      <xs:element minOccurs="0" name="Value" type="xs:double" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="TimeSeriesDataPoint" nillable="true" type="tns:TimeSeriesDataPoint" />
+  <xs:element name="TimeTaggedMeasurement" nillable="true" type="tns:TimeTaggedMeasurement" />
 </xs:schema>

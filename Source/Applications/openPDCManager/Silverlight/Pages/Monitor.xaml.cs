@@ -293,28 +293,28 @@ namespace openPDCManager.Silverlight.Pages
 		{
 			if (e.msg is ServiceUpdateMessage)
 			{
-				//TextBoxServiceStatus.Text += ((ServiceUpdateMessage)e.msg).ServiceUpdate;
-
-				if (((ServiceUpdateMessage)e.msg).ServiceUpdateType == UpdateType.Information)
+                string message = ((ServiceUpdateMessage)e.msg).ServiceUpdate;
+                                
+                if (((ServiceUpdateMessage)e.msg).ServiceUpdateType == UpdateType.Information)
 				{
 					//	TextBoxServiceStatus.Text += ((ServiceUpdateMessage)e.msg).ServiceUpdate;
 					Run run = new Run();
 					run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-					run.Text = ((ServiceUpdateMessage)e.msg).ServiceUpdate;
+					run.Text = message;
 					TextBoxServiceStatus.Inlines.Add(run);
 				}
 				else if (((ServiceUpdateMessage)e.msg).ServiceUpdateType == UpdateType.Warning)
 				{
 					Run run = new Run();
 					run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 0));
-					run.Text = ((ServiceUpdateMessage)e.msg).ServiceUpdate;
+					run.Text = message;
 					TextBoxServiceStatus.Inlines.Add(run);
 				}
 				else
 				{
 					Run run = new Run();
 					run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 10, 10));
-					run.Text = ((ServiceUpdateMessage)e.msg).ServiceUpdate;
+					run.Text = message;
 					TextBoxServiceStatus.Inlines.Add(run);
 				}
 			}
@@ -374,7 +374,8 @@ namespace openPDCManager.Silverlight.Pages
 		{
 			ConnectMessage msg = new ConnectMessage();
 			msg.NodeID = ((App)Application.Current).NodeValue;
-			msg.TimeSeriesDataRootUrl = ((App)Application.Current).TimeSeriesDataServiceUrl;	// "http://localhost:6152/historian/timeseriesdata/read/";			
+			msg.TimeSeriesDataRootUrl = ((App)Application.Current).TimeSeriesDataServiceUrl;	// "http://localhost:6152/historian/timeseriesdata/read/";
+            msg.RealTimeStatisticRootUrl = ((App)Application.Current).RealTimeStatisticServiceUrl;
 			msg.CurrentDisplayType = DisplayType.ServiceClient;
 			msg.DataPointID = 0;
 			m_duplexClient.SendToServiceAsync(msg);

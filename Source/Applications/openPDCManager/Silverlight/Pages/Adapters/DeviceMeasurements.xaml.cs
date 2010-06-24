@@ -250,7 +250,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		PhasorDataServiceClient m_client;
 		DuplexServiceClient m_duplexClient;
 		ActivityWindow m_activityWindow;
-		ObservableCollection<DeviceMeasurementData> deviceMeasurementDataList;
+		ObservableCollection<DeviceMeasurementData> m_deviceMeasurementDataList;
 		bool m_connected = false;
 
 		#endregion
@@ -278,6 +278,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 			ConnectMessage msg = new ConnectMessage();
 			msg.NodeID = ((App)Application.Current).NodeValue;
 			msg.TimeSeriesDataRootUrl = ((App)Application.Current).TimeSeriesDataServiceUrl;
+            msg.RealTimeStatisticRootUrl = ((App)Application.Current).RealTimeStatisticServiceUrl;
 			msg.CurrentDisplayType = DisplayType.DeviceMeasurements;
 			msg.DataPointID = 0;
 			m_duplexClient.SendToServiceAsync(msg);
@@ -295,7 +296,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 				Dictionary<int, TimeTaggedMeasurement> timeTaggedMeasurements = new Dictionary<int, TimeTaggedMeasurement>();
 				timeTaggedMeasurements = (e.msg as TimeTaggedDataMessage).TimeTaggedMeasurements;
 
-				foreach (DeviceMeasurementData deviceMeasurement in deviceMeasurementDataList)
+				foreach (DeviceMeasurementData deviceMeasurement in m_deviceMeasurementDataList)
 				{
 					foreach (DeviceInfo device in deviceMeasurement.DeviceList)
 					{
@@ -311,7 +312,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 						}
 					}
 				}
-				TreeViewDeviceMeasurements.ItemsSource = deviceMeasurementDataList;
+				TreeViewDeviceMeasurements.ItemsSource = m_deviceMeasurementDataList;
 			}
 		}
 
@@ -325,8 +326,8 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		{
 			if (e.Error == null)
 			{
-				deviceMeasurementDataList = e.Result;
-				TreeViewDeviceMeasurements.ItemsSource = deviceMeasurementDataList;
+				m_deviceMeasurementDataList = e.Result;
+				TreeViewDeviceMeasurements.ItemsSource = m_deviceMeasurementDataList;
 			}
 			else
 			{
@@ -343,9 +344,11 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 				sm.Show();
 			}
-
+            
 			if (m_activityWindow != null)
 				m_activityWindow.Close();
+
+            ReconnectToService();
 		}
 
 		#endregion
@@ -354,13 +357,13 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 		void DeviceMeasurements_Loaded(object sender, RoutedEventArgs e)
 		{
-			ReconnectToService();
+			
 		}
 
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			deviceMeasurementDataList = new ObservableCollection<DeviceMeasurementData>();
+			m_deviceMeasurementDataList = new ObservableCollection<DeviceMeasurementData>();
 			m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
 			m_activityWindow.Show();
 			App app = (App)Application.Current;

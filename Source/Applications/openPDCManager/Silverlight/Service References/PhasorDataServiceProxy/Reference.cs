@@ -332,6 +332,486 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="StatisticMeasurementData", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+    public partial class StatisticMeasurementData : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.StreamInfo> SourceStreamInfoListField;
+        
+        private string SourceTypeField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.StreamInfo> SourceStreamInfoList {
+            get {
+                return this.SourceStreamInfoListField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SourceStreamInfoListField, value) != true)) {
+                    this.SourceStreamInfoListField = value;
+                    this.RaisePropertyChanged("SourceStreamInfoList");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string SourceType {
+            get {
+                return this.SourceTypeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SourceTypeField, value) != true)) {
+                    this.SourceTypeField = value;
+                    this.RaisePropertyChanged("SourceType");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="StreamInfo", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+    public partial class StreamInfo : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string AcronymField;
+        
+        private System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.DeviceStatistic> DeviceStatisticListField;
+        
+        private int IDField;
+        
+        private string NameField;
+        
+        private System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.DetailStatisticInfo> StatisticListField;
+        
+        private string StatusColorField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Acronym {
+            get {
+                return this.AcronymField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AcronymField, value) != true)) {
+                    this.AcronymField = value;
+                    this.RaisePropertyChanged("Acronym");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.DeviceStatistic> DeviceStatisticList {
+            get {
+                return this.DeviceStatisticListField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DeviceStatisticListField, value) != true)) {
+                    this.DeviceStatisticListField = value;
+                    this.RaisePropertyChanged("DeviceStatisticList");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ID {
+            get {
+                return this.IDField;
+            }
+            set {
+                if ((this.IDField.Equals(value) != true)) {
+                    this.IDField = value;
+                    this.RaisePropertyChanged("ID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.DetailStatisticInfo> StatisticList {
+            get {
+                return this.StatisticListField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StatisticListField, value) != true)) {
+                    this.StatisticListField = value;
+                    this.RaisePropertyChanged("StatisticList");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string StatusColor {
+            get {
+                return this.StatusColorField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StatusColorField, value) != true)) {
+                    this.StatusColorField = value;
+                    this.RaisePropertyChanged("StatusColor");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="DeviceStatistic", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+    public partial class DeviceStatistic : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string AcronymField;
+        
+        private int IDField;
+        
+        private string NameField;
+        
+        private System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.DetailStatisticInfo> StatisticListField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Acronym {
+            get {
+                return this.AcronymField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AcronymField, value) != true)) {
+                    this.AcronymField = value;
+                    this.RaisePropertyChanged("Acronym");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ID {
+            get {
+                return this.IDField;
+            }
+            set {
+                if ((this.IDField.Equals(value) != true)) {
+                    this.IDField = value;
+                    this.RaisePropertyChanged("ID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.DetailStatisticInfo> StatisticList {
+            get {
+                return this.StatisticListField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StatisticListField, value) != true)) {
+                    this.StatisticListField = value;
+                    this.RaisePropertyChanged("StatisticList");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="DetailStatisticInfo", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+    public partial class DetailStatisticInfo : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private int DeviceIDField;
+        
+        private int PointIDField;
+        
+        private string PointTagField;
+        
+        private string SignalReferenceField;
+        
+        private openPDCManager.Silverlight.PhasorDataServiceProxy.BasicStatisticInfo StatisticsField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int DeviceID {
+            get {
+                return this.DeviceIDField;
+            }
+            set {
+                if ((this.DeviceIDField.Equals(value) != true)) {
+                    this.DeviceIDField = value;
+                    this.RaisePropertyChanged("DeviceID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int PointID {
+            get {
+                return this.PointIDField;
+            }
+            set {
+                if ((this.PointIDField.Equals(value) != true)) {
+                    this.PointIDField = value;
+                    this.RaisePropertyChanged("PointID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string PointTag {
+            get {
+                return this.PointTagField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PointTagField, value) != true)) {
+                    this.PointTagField = value;
+                    this.RaisePropertyChanged("PointTag");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string SignalReference {
+            get {
+                return this.SignalReferenceField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SignalReferenceField, value) != true)) {
+                    this.SignalReferenceField = value;
+                    this.RaisePropertyChanged("SignalReference");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public openPDCManager.Silverlight.PhasorDataServiceProxy.BasicStatisticInfo Statistics {
+            get {
+                return this.StatisticsField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StatisticsField, value) != true)) {
+                    this.StatisticsField = value;
+                    this.RaisePropertyChanged("Statistics");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="BasicStatisticInfo", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+    public partial class BasicStatisticInfo : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string DataTypeField;
+        
+        private string DescriptionField;
+        
+        private string DisplayFormatField;
+        
+        private bool IsConnectedStateField;
+        
+        private int LoadOrderField;
+        
+        private string NameField;
+        
+        private string QualityField;
+        
+        private string SourceField;
+        
+        private string TimeTagField;
+        
+        private string ValueField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string DataType {
+            get {
+                return this.DataTypeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DataTypeField, value) != true)) {
+                    this.DataTypeField = value;
+                    this.RaisePropertyChanged("DataType");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Description {
+            get {
+                return this.DescriptionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DescriptionField, value) != true)) {
+                    this.DescriptionField = value;
+                    this.RaisePropertyChanged("Description");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string DisplayFormat {
+            get {
+                return this.DisplayFormatField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DisplayFormatField, value) != true)) {
+                    this.DisplayFormatField = value;
+                    this.RaisePropertyChanged("DisplayFormat");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsConnectedState {
+            get {
+                return this.IsConnectedStateField;
+            }
+            set {
+                if ((this.IsConnectedStateField.Equals(value) != true)) {
+                    this.IsConnectedStateField = value;
+                    this.RaisePropertyChanged("IsConnectedState");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int LoadOrder {
+            get {
+                return this.LoadOrderField;
+            }
+            set {
+                if ((this.LoadOrderField.Equals(value) != true)) {
+                    this.LoadOrderField = value;
+                    this.RaisePropertyChanged("LoadOrder");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Quality {
+            get {
+                return this.QualityField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.QualityField, value) != true)) {
+                    this.QualityField = value;
+                    this.RaisePropertyChanged("Quality");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Source {
+            get {
+                return this.SourceField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SourceField, value) != true)) {
+                    this.SourceField = value;
+                    this.RaisePropertyChanged("Source");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TimeTag {
+            get {
+                return this.TimeTagField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TimeTagField, value) != true)) {
+                    this.TimeTagField = value;
+                    this.RaisePropertyChanged("TimeTag");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Value {
+            get {
+                return this.ValueField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ValueField, value) != true)) {
+                    this.ValueField = value;
+                    this.RaisePropertyChanged("Value");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "3.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="Measurement", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.Entities")]
     public partial class Measurement : object, System.ComponentModel.INotifyPropertyChanged {
         
@@ -3343,6 +3823,15 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.PhasorInfo>))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.PhasorInfo))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.StatisticMeasurementData>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.StatisticMeasurementData))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.StreamInfo>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.StreamInfo))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.DeviceStatistic>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.DeviceStatistic))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.DetailStatisticInfo>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.DetailStatisticInfo))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.BasicStatisticInfo))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.IaonTree>))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.IaonTree))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.DeviceMeasurementData>))]
@@ -3559,6 +4048,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private string NameField;
         
+        private string RealTimeStatisticServiceUrlField;
+        
         private string RemoteStatusServiceUrlField;
         
         private string TimeSeriesDataServiceUrlField;
@@ -3702,6 +4193,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 if ((object.ReferenceEquals(this.NameField, value) != true)) {
                     this.NameField = value;
                     this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string RealTimeStatisticServiceUrl {
+            get {
+                return this.RealTimeStatisticServiceUrlField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.RealTimeStatisticServiceUrlField, value) != true)) {
+                    this.RealTimeStatisticServiceUrlField = value;
+                    this.RaisePropertyChanged("RealTimeStatisticServiceUrl");
                 }
             }
         }
@@ -5214,6 +5718,13 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         System.Collections.ObjectModel.ObservableCollection<string> EndGetParities(System.IAsyncResult result);
         
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetStatisticMeasurementData", ReplyAction="http://tempuri.org/IPhasorDataService/GetStatisticMeasurementDataResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/GetStatisticMeasurementDataCustomServiceFau" +
+            "ltFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
+        System.IAsyncResult BeginGetStatisticMeasurementData(string nodeID, System.AsyncCallback callback, object asyncState);
+        
+        System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.StatisticMeasurementData> EndGetStatisticMeasurementData(System.IAsyncResult result);
+        
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetMeasurementsForOutputStream", ReplyAction="http://tempuri.org/IPhasorDataService/GetMeasurementsForOutputStreamResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.Silverlight.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/GetMeasurementsForOutputStreamCustomService" +
             "FaultFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Web.Data.BusinessObjects")]
@@ -5756,6 +6267,25 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             get {
                 base.RaiseExceptionIfNecessary();
                 return ((System.Collections.ObjectModel.ObservableCollection<string>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class GetStatisticMeasurementDataCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetStatisticMeasurementDataCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.StatisticMeasurementData> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.StatisticMeasurementData>)(this.results[0]));
             }
         }
     }
@@ -7022,6 +7552,12 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         
         private System.Threading.SendOrPostCallback onGetParitiesCompletedDelegate;
         
+        private BeginOperationDelegate onBeginGetStatisticMeasurementDataDelegate;
+        
+        private EndOperationDelegate onEndGetStatisticMeasurementDataDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetStatisticMeasurementDataCompletedDelegate;
+        
         private BeginOperationDelegate onBeginGetMeasurementsForOutputStreamDelegate;
         
         private EndOperationDelegate onEndGetMeasurementsForOutputStreamDelegate;
@@ -7472,6 +8008,8 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
         public event System.EventHandler<GetStopBitsCompletedEventArgs> GetStopBitsCompleted;
         
         public event System.EventHandler<GetParitiesCompletedEventArgs> GetParitiesCompleted;
+        
+        public event System.EventHandler<GetStatisticMeasurementDataCompletedEventArgs> GetStatisticMeasurementDataCompleted;
         
         public event System.EventHandler<GetMeasurementsForOutputStreamCompletedEventArgs> GetMeasurementsForOutputStreamCompleted;
         
@@ -7939,6 +8477,52 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
                 this.onGetParitiesCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetParitiesCompleted);
             }
             base.InvokeAsync(this.onBeginGetParitiesDelegate, null, this.onEndGetParitiesDelegate, this.onGetParitiesCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.BeginGetStatisticMeasurementData(string nodeID, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStatisticMeasurementData(nodeID, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.StatisticMeasurementData> openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService.EndGetStatisticMeasurementData(System.IAsyncResult result) {
+            return base.Channel.EndGetStatisticMeasurementData(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetStatisticMeasurementData(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            string nodeID = ((string)(inValues[0]));
+            return ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetStatisticMeasurementData(nodeID, callback, asyncState);
+        }
+        
+        private object[] OnEndGetStatisticMeasurementData(System.IAsyncResult result) {
+            System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.StatisticMeasurementData> retVal = ((openPDCManager.Silverlight.PhasorDataServiceProxy.IPhasorDataService)(this)).EndGetStatisticMeasurementData(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetStatisticMeasurementDataCompleted(object state) {
+            if ((this.GetStatisticMeasurementDataCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetStatisticMeasurementDataCompleted(this, new GetStatisticMeasurementDataCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetStatisticMeasurementDataAsync(string nodeID) {
+            this.GetStatisticMeasurementDataAsync(nodeID, null);
+        }
+        
+        public void GetStatisticMeasurementDataAsync(string nodeID, object userState) {
+            if ((this.onBeginGetStatisticMeasurementDataDelegate == null)) {
+                this.onBeginGetStatisticMeasurementDataDelegate = new BeginOperationDelegate(this.OnBeginGetStatisticMeasurementData);
+            }
+            if ((this.onEndGetStatisticMeasurementDataDelegate == null)) {
+                this.onEndGetStatisticMeasurementDataDelegate = new EndOperationDelegate(this.OnEndGetStatisticMeasurementData);
+            }
+            if ((this.onGetStatisticMeasurementDataCompletedDelegate == null)) {
+                this.onGetStatisticMeasurementDataCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStatisticMeasurementDataCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetStatisticMeasurementDataDelegate, new object[] {
+                        nodeID}, this.onEndGetStatisticMeasurementDataDelegate, this.onGetStatisticMeasurementDataCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -11120,6 +11704,19 @@ namespace openPDCManager.Silverlight.PhasorDataServiceProxy {
             public System.Collections.ObjectModel.ObservableCollection<string> EndGetParities(System.IAsyncResult result) {
                 object[] _args = new object[0];
                 System.Collections.ObjectModel.ObservableCollection<string> _result = ((System.Collections.ObjectModel.ObservableCollection<string>)(base.EndInvoke("GetParities", _args, result)));
+                return _result;
+            }
+            
+            public System.IAsyncResult BeginGetStatisticMeasurementData(string nodeID, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[1];
+                _args[0] = nodeID;
+                System.IAsyncResult _result = base.BeginInvoke("GetStatisticMeasurementData", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.StatisticMeasurementData> EndGetStatisticMeasurementData(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.StatisticMeasurementData> _result = ((System.Collections.ObjectModel.ObservableCollection<openPDCManager.Silverlight.PhasorDataServiceProxy.StatisticMeasurementData>)(base.EndInvoke("GetStatisticMeasurementData", _args, result)));
                 return _result;
             }
             
