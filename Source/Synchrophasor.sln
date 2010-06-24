@@ -202,9 +202,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "openPDCSetup64", "Applications\openPDC\openPDCSetup\openPDCSetup64.vdproj", "{C0CAE6E7-454E-44C2-B2CF-BAF002E25D87}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PMUConnectionTesterSetup64", "Tools\PMUConnectionTester\PMUConnectionTesterSetup\PMUConnectionTesterSetup64.vdproj", "{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 24
+		SccNumberOfProjects = 25
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs07.codeplex.com/
 		SccLocalPath0 = .
@@ -300,6 +302,10 @@ Global
 		SccProjectTopLevelParentUniqueName23 = Synchrophasor.sln
 		SccProjectName23 = Applications/openPDC/openPDCSetup
 		SccLocalPath23 = Applications\\openPDC\\openPDCSetup
+		SccProjectUniqueName24 = Tools\\PMUConnectionTester\\PMUConnectionTesterSetup\\PMUConnectionTesterSetup64.vdproj
+		SccProjectTopLevelParentUniqueName24 = Synchrophasor.sln
+		SccProjectName24 = Tools/PMUConnectionTester/PMUConnectionTesterSetup
+		SccLocalPath24 = Tools\\PMUConnectionTester\\PMUConnectionTesterSetup
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor.vsmdi
@@ -487,6 +493,14 @@ Global
 		{C0CAE6E7-454E-44C2-B2CF-BAF002E25D87}.Release|Any CPU.Build.0 = Release
 		{C0CAE6E7-454E-44C2-B2CF-BAF002E25D87}.Release|x86.ActiveCfg = Release
 		{C0CAE6E7-454E-44C2-B2CF-BAF002E25D87}.Release|x86.Build.0 = Release
+		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Debug|Any CPU.ActiveCfg = Debug
+		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Debug|Any CPU.Build.0 = Debug
+		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Debug|x86.ActiveCfg = Debug
+		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Debug|x86.Build.0 = Debug
+		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Release|Any CPU.ActiveCfg = Release
+		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Release|Any CPU.Build.0 = Release
+		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Release|x86.ActiveCfg = Release
+		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -520,6 +534,7 @@ Global
 		{B74CF4DA-2972-489B-AF08-419560EE57EF} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
 		{A519E312-66F5-4725-A88E-9B62242CBCB7} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
+		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
 		{5314055B-EA03-4E15-8653-83F011D7A00E} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{D96C8A3A-7E03-43C6-B401-41778D81FF70} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{3D0DC382-3C00-48A7-B9FF-D3154F8BEDF1} = {94B7694B-F813-47FF-8C50-33DCA32D183D}

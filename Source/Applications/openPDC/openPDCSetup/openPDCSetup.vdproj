@@ -261,6 +261,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A50E62101042478D9FC4BCFAE000F53B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A6E2A9313AC95F35939D280D0B9BDCBA"
         "OwnerKey" = "8:_F168A732E10B1BD9E37589EDF2710B32"
         "MsmSig" = "8:_UNDEFINED"
@@ -383,6 +389,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_800B7CA0991A46A384640F0EE3509A7E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A50E62101042478D9FC4BCFAE000F53B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -966,6 +978,37 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A50E62101042478D9FC4BCFAE000F53B"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:HistorianPlaybackUtility, Version=1.1.30.53237, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_A50E62101042478D9FC4BCFAE000F53B"
+                    {
+                    "Name" = "8:HistorianPlaybackUtility.exe"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:HistorianPlaybackUtility.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A6E2A9313AC95F35939D280D0B9BDCBA"
             {
             "AssemblyRegister" = "3:1"
@@ -1154,7 +1197,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TVA.PhasorProtocols, Version=1.1.70.53150, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:TVA.PhasorProtocols, Version=1.1.72.53398, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_F96E0DC884E9D2CC9B5DEC046A516D28"
@@ -1280,7 +1323,7 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:openPDC"
+        "ProductName" = "8:openPDC 32-bit"
         "ProductCode" = "8:{493D6CED-50C6-4CF5-93A3-306C364F10A3}"
         "PackageCode" = "8:{1F5E6E86-19AA-438A-9AB3-80F57B4A25B8}"
         "UpgradeCode" = "8:{672ED075-C482-49A6-86D5-7B3FEB4AEAC8}"
