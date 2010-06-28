@@ -231,8 +231,13 @@
 */
 #endregion
 
+using System.Collections;
 using System.ComponentModel;
 using System.Configuration.Install;
+using TVA.Configuration;
+using System.Xml;
+using System.Windows.Forms;
+using TVA;
 
 
 namespace openPDC
@@ -243,6 +248,40 @@ namespace openPDC
         public ServiceInstall()
         {
             InitializeComponent();
+        }
+
+        public override void Install(IDictionary stateSaver)
+        {
+            base.Install(stateSaver);
+
+            string configFilePath = Context.Parameters["DP_TargetDir"] + "openPDC.exe.Config";
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(configFilePath);
+            XmlNode node = xmlDoc.SelectSingleNode("configuration/categorizedSettings/systemSettings");
+            XmlNode child;
+
+            child = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
+            child.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyName"));
+            child.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyName"]));
+            child.Attributes.Append(CreateAttribute(xmlDoc, "description", "The name of the company who owns this instance of the openPDC."));
+            child.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
+            node.AppendChild(child);
+
+            child = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
+            child.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyAcronym"));
+            child.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyAcronym"]));
+            child.Attributes.Append(CreateAttribute(xmlDoc, "description", "The acronym representing the company who owns this instance of the openPDC."));
+            child.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
+            node.AppendChild(child);
+
+            xmlDoc.Save(configFilePath);
+        }
+
+        private XmlAttribute CreateAttribute(XmlDocument doc, string name, string value)
+        {
+            XmlAttribute attribute = doc.CreateAttribute(name);
+            attribute.Value = value;
+            return attribute;
         }
     }
 }
