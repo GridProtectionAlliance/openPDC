@@ -380,6 +380,8 @@ namespace openPDC
             systemSettings.Add("CachedConfigurationFile", "SystemConfiguration.xml", "File name for last known good system configuration (only cached for a Database or WebService connection)");
             systemSettings.Add("UniqueAdaptersIDs", "True", "Set to true if all runtime adapter ID's will be unique to allow for easier adapter specification");
             systemSettings.Add("ProcessPriority", "RealTime", "Sets desired process priority: Normal, AboveNormal, High, RealTime");
+            systemSettings.Add("CompanyName", "Grid Protection Alliance", "The name of the company who owns this instance of the openPDC.");
+            systemSettings.Add("CompanyAcronym", "GPA", "The acronym representing the company who owns this instance of the openPDC.");
 
             // Example connection settings
             CategorizedSettingsElementCollection exampleSettings = configFile.Settings["exampleConnectionSettings"];
@@ -820,7 +822,7 @@ namespace openPDC
                             throw new InvalidOperationException("Data operation method name was not defined.");
 
                         // Load data operation from containing assembly and type
-                        assembly = Assembly.LoadFrom(assemblyName);
+                        assembly = Assembly.LoadFrom(FilePath.GetAbsolutePath(assemblyName));
                         type = assembly.GetType(typeName);
                         method = type.GetMethod(methodName, BindingFlags.IgnoreCase | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.InvokeMethod);
 

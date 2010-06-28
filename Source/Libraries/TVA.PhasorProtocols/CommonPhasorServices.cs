@@ -1351,7 +1351,7 @@ namespace TVA.PhasorProtocols
                         statistic.Arguments = row["Arguments"].ToNonNullString();
 
                         // Load statistic's code location information
-                        assemblyName = FilePath.GetAbsolutePath(row["AssemblyName"].ToNonNullString());
+                        assemblyName = row["AssemblyName"].ToNonNullString();
                         typeName = row["TypeName"].ToNonNullString();
                         methodName = row["MethodName"].ToNonNullString();
 
@@ -1375,7 +1375,7 @@ namespace TVA.PhasorProtocols
                             else
                             {
                                 // Load statistic method from containing assembly and type
-                                assembly = Assembly.LoadFrom(assemblyName);
+                                assembly = Assembly.LoadFrom(FilePath.GetAbsolutePath(assemblyName));
                                 type = assembly.GetType(typeName);
                                 method = type.GetMethod(methodName, BindingFlags.IgnoreCase | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.InvokeMethod);
 
@@ -1666,6 +1666,7 @@ namespace TVA.PhasorProtocols
             // See if this node should process phasor source validation
             if (settings["ProcessPhasorDataSourceValidation"].ValueAsBoolean())
             {
+                CreateDefaultNode(connection, nodeIDQueryString, statusMessage, processException);
                 LoadDefaultConfigurationEntity(connection, statusMessage, processException);
                 LoadDefaultInterconnection(connection, statusMessage, processException);
                 LoadDefaultProtocol(connection, statusMessage, processException);
@@ -1733,7 +1734,7 @@ namespace TVA.PhasorProtocols
                 // Get the needed statistic related IDs
                 int statSignalTypeID = (int)connection.ExecuteScalar("SELECT ID FROM SignalType WHERE Acronym='STAT';");
                 int statHistorianID = (int)connection.ExecuteScalar(string.Format("SELECT ID FROM Historian WHERE Acronym='STAT' AND NodeID={0};", nodeIDQueryString));
-                int nodeCompanyID = (int)connection.ExecuteScalar(string.Format("SELECT CompanyID FROM Node WHERE ID={0};", nodeIDQueryString));
+                object nodeCompanyID = connection.ExecuteScalar(string.Format("SELECT CompanyID FROM Node WHERE ID={0};", nodeIDQueryString));
 
                 // Load the defined system statistics
                 IEnumerable<DataRow> statistics = connection.RetrieveData(adapterType, "SELECT * FROM Statistic ORDER BY Source, SignalIndex;").AsEnumerable();
@@ -1805,7 +1806,11 @@ namespace TVA.PhasorProtocols
 
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
                         {
-                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", nodeCompanyID));
+                            if (nodeCompanyID == null)
+                                company = configFile.Settings["systemSettings"]["CompanyAcronym"].Value.TruncateRight(3);
+                            else
+                                company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", nodeCompanyID));
+
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} Statistic for {1}", outputStream.Field<string>("Name"), statistic.Field<string>("Description"));
 
