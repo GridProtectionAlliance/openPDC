@@ -1026,7 +1026,7 @@ namespace TVA.PhasorProtocols
         // Assigns the reference to the parent adapter collection that will contain this adapter.
         void IAdapter.AssignParentCollection(IAdapterCollection parent)
         {
-            // The common phasor servies class does not inherit from the FacileActionAdapterBase (or ActionAdapterBase) since
+            // The common phasor services class does not inherit from the FacileActionAdapterBase (or ActionAdapterBase) since
             // it needs an internal reference to the IAdapter collections. With this internal reference all adapter collections
             // in the AllAdaptersCollection (the parent of the ActionAdapterCollection) can be referenced. This is needed so
             // that the common phasor services instance can cross reference the input adapter collection for monitoring devices
@@ -1079,7 +1079,7 @@ namespace TVA.PhasorProtocols
             if (m_inputMeasurementKeysHash != null)
                 return (m_inputMeasurementKeysHash.BinarySearch(item) >= 0);
 
-            // If no input measurements are defined we must assume user wants to accept all measurements - yikes!
+            // If no input measurements are defined we must assume user wants to accept all measurements
             return true;
         }
 
