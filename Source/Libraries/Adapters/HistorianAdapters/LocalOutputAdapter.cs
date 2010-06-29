@@ -891,8 +891,7 @@ namespace HistorianAdapters
                     // Remove any unused settings categories
                     foreach (string category in categoriesToRemove)
                     {
-                        // TODO: Uncomment once "Remove" category is working...
-                        //configFile.Settings.Remove(category);
+                        configFile.Settings.Remove(category);
                     }
                 }
 
