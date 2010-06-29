@@ -4,39 +4,19 @@
         <name>TVA.Services</name>
     </assembly>
     <members>
-        <member name="T:TVA.Services.IdentityToken">
-            <summary>
-            Indicates the type of <see cref="T:Microsoft.Web.Services3.Security.Tokens.SecurityToken"/> to be sent to the <see cref="T:TVA.Services.ServiceHelper"/> for authentication.
-            </summary>
-        </member>
-        <member name="F:TVA.Services.IdentityToken.None">
-            <summary>
-            No <see cref="T:Microsoft.Web.Services3.Security.Tokens.SecurityToken"/> is to be sent.
-            </summary>
-        </member>
-        <member name="F:TVA.Services.IdentityToken.Ntlm">
-            <summary>
-            A <see cref="T:Microsoft.Web.Services3.Security.Tokens.UsernameToken"/> is to be sent.
-            </summary>
-        </member>
-        <member name="F:TVA.Services.IdentityToken.Kerberos">
-            <summary>
-            A <see cref="T:Microsoft.Web.Services3.Security.Tokens.KerberosToken"/> is to be sent.
-            </summary>
-        </member>
         <member name="T:TVA.Services.ClientHelper">
             <summary>
             Component that provides client-side functionality to <see cref="T:TVA.Services.ServiceHelper"/>.
             </summary>
         </member>
-        <member name="F:TVA.Services.ClientHelper.DefaultAuthenticationMethod">
+        <member name="F:TVA.Services.ClientHelper.DefaultUsername">
             <summary>
-            Specifies the default value for the <see cref="P:TVA.Services.ClientHelper.AuthenticationMethod"/> property.
+            Specifies the default value for the <see cref="P:TVA.Services.ClientHelper.Username"/> property.
             </summary>
         </member>
-        <member name="F:TVA.Services.ClientHelper.DefaultAuthenticationInput">
+        <member name="F:TVA.Services.ClientHelper.DefaultPassword">
             <summary>
-            Specifies the default value for the <see cref="P:TVA.Services.ClientHelper.AuthenticationInput"/> property.
+            Specifies the default value for the <see cref="P:TVA.Services.ClientHelper.Password"/> property.
             </summary>
         </member>
         <member name="F:TVA.Services.ClientHelper.DefaultPersistSettings">
@@ -210,7 +190,7 @@
             </summary>
             <remarks>
             Set <see cref="P:System.ComponentModel.CancelEventArgs.Cancel"/> to <b>true</b> to continue with connection attempts even after authentication fails. 
-            This can be useful for re-authenticating using different <see cref="P:TVA.Services.ClientHelper.AuthenticationMethod"/> and <see cref="P:TVA.Services.ClientHelper.AuthenticationInput"/>.
+            This can be useful for re-authenticating the <see cref="T:TVA.Services.ClientHelper"/> using different <see cref="P:TVA.Services.ClientHelper.Username"/> and <see cref="P:TVA.Services.ClientHelper.Password"/>.
             </remarks>
         </member>
         <member name="E:TVA.Services.ClientHelper.TelnetSessionEstablished">
@@ -228,16 +208,17 @@
             Gets or sets the <see cref="T:TVA.Communication.ClientBase"/> object used for communicating with the <see cref="T:TVA.Services.ServiceHelper"/>.
             </summary>
         </member>
-        <member name="P:TVA.Services.ClientHelper.AuthenticationMethod">
+        <member name="P:TVA.Services.ClientHelper.Username">
             <summary>
-            Gets or sets the type of <see cref="T:TVA.Services.IdentityToken"/> to be sent to the <see cref="T:TVA.Services.ServiceHelper"/> for authentication.
+            Gets or sets the username of the <see cref="T:TVA.Services.ClientHelper"/>'s user to be used for authenticating with the <see cref="T:TVA.Services.ServiceHelper"/>.
             </summary>
+            <exception cref="T:System.ArgumentNullException">The value being specified is a null string.</exception>
         </member>
-        <member name="P:TVA.Services.ClientHelper.AuthenticationInput">
+        <member name="P:TVA.Services.ClientHelper.Password">
             <summary>
-            Gets or sets input text for the current <see cref="P:TVA.Services.ClientHelper.AuthenticationMethod"/>.
+            Gets or sets the password of the <see cref="T:TVA.Services.ClientHelper"/>'s user to be used for authenticating with the <see cref="T:TVA.Services.ServiceHelper"/>.
             </summary>
-            <exception cref="T:System.ArgumentNullException">The value being assigned is a null string.</exception>
+            <exception cref="T:System.ArgumentNullException">The value being specified is a null string.</exception>
         </member>
         <member name="P:TVA.Services.ClientHelper.PersistSettings">
             <summary>
@@ -279,14 +260,15 @@
             </summary>
             <param name="parent">An <see cref="T:TVA.Services.ClientHelper"/> object.</param>
         </member>
+        <member name="M:TVA.Services.ClientInfo.SetClientUser(System.Security.Principal.IPrincipal)">
+            <summary>
+            Updates the <see cref="P:TVA.Services.ClientInfo.ClientUser"/>.
+            </summary>
+            <param name="user">New <see cref="T:System.Security.Principal.IPrincipal"/> object to be assigned to <see cref="P:TVA.Services.ClientInfo.ClientUser"/>.</param>
+        </member>
         <member name="P:TVA.Services.ClientInfo.ClientID">
             <summary>
-            Gets the ID of the remote client application.
-            </summary>
-        </member>
-        <member name="P:TVA.Services.ClientInfo.ConnectedAt">
-            <summary>
-            Gets or sets the <see cref="T:System.DateTime"/> when the remote client application connected to the <see cref="T:TVA.Services.ServiceHelper"/>.
+            Gets the identifier of the remote client application.
             </summary>
         </member>
         <member name="P:TVA.Services.ClientInfo.ClientType">
@@ -296,12 +278,17 @@
         </member>
         <member name="P:TVA.Services.ClientInfo.ClientName">
             <summary>
-            Gets the name of the remote client application.
+            Gets the friendly name of the remote client application.
             </summary>
         </member>
-        <member name="P:TVA.Services.ClientInfo.UserName">
+        <member name="P:TVA.Services.ClientInfo.ClientUser">
             <summary>
-            Gets the name of the user running the remote client application.
+            Gets the <see cref="T:System.Security.Principal.IPrincipal"/> of the remote client application's user.
+            </summary>
+        </member>
+        <member name="P:TVA.Services.ClientInfo.ClientUserCredentials">
+            <summary>
+            Gets the credentials in 'username:password' format for authenticating the remote client application's user if a valid <see cref="P:TVA.Services.ClientInfo.ClientUser"/> is not available.
             </summary>
         </member>
         <member name="P:TVA.Services.ClientInfo.MachineName">
@@ -309,14 +296,9 @@
             Gets the name of the machine running the remote client application.
             </summary>
         </member>
-        <member name="P:TVA.Services.ClientInfo.SerializedIdentityToken">
+        <member name="P:TVA.Services.ClientInfo.ConnectedAt">
             <summary>
-            Gets the serialized identity token used for authenticating the remote client user.
-            </summary>
-        </member>
-        <member name="P:TVA.Services.ClientInfo.DeserializedIdentityToken">
-            <summary>
-            Gets the deserialized identity token used for authenticating the remote client user.
+            Gets or sets the <see cref="T:System.DateTime"/> when the remote client application connected to the <see cref="T:TVA.Services.ServiceHelper"/>.
             </summary>
         </member>
         <member name="T:TVA.Services.ClientRequest">
@@ -536,14 +518,9 @@
             Specifies the default value for the <see cref="P:TVA.Services.ServiceHelper.SupportTelnetSessions"/> property.
             </summary>
         </member>
-        <member name="F:TVA.Services.ServiceHelper.DefaultAllowedRemoteUsers">
+        <member name="F:TVA.Services.ServiceHelper.DefaultSecureRemoteInteractions">
             <summary>
-            Specifies the default value for the <see cref="P:TVA.Services.ServiceHelper.AllowedRemoteUsers"/> property.
-            </summary>
-        </member>
-        <member name="F:TVA.Services.ServiceHelper.DefaultImpersonateRemoteUser">
-            <summary>
-            Specifies the default value for the <see cref="P:TVA.Services.ServiceHelper.ImpersonateRemoteUser"/> property.
+            Specifies the default value for the <see cref="P:TVA.Services.ServiceHelper.SecureRemoteInteractions"/> property.
             </summary>
         </member>
         <member name="F:TVA.Services.ServiceHelper.DefaultPersistSettings">
@@ -906,16 +883,9 @@
             Gets or sets a boolean value that indicates whether the <see cref="T:TVA.Services.ServiceHelper"/> will have support for remote telnet-like sessions.
             </summary>
         </member>
-        <member name="P:TVA.Services.ServiceHelper.AllowedRemoteUsers">
+        <member name="P:TVA.Services.ServiceHelper.SecureRemoteInteractions">
             <summary>
-            Gets or sets a comma or semicolon delimited list of user logins allowed to connect to the <see cref="T:TVA.Services.ServiceHelper"/>.
-            </summary>
-            <remarks>Use '*' to allow access to any remote user.</remarks>
-            <exception cref="T:System.ArgumentNullException">The value being assigned is a null or empty string.</exception>
-        </member>
-        <member name="P:TVA.Services.ServiceHelper.ImpersonateRemoteUser">
-            <summary>
-            Gets or sets a boolean value that indicates whether remote commands are to be executed under the identity of the remote user.
+            Gets or sets a boolean value that indicates whether <see cref="T:TVA.Services.ServiceHelper"/> will secure remote interactions from <see cref="T:TVA.Services.ClientHelper"/>.
             </summary>
         </member>
         <member name="P:TVA.Services.ServiceHelper.PersistSettings">
@@ -963,11 +933,6 @@
             <see cref="P:TVA.Services.ServiceHelper.Enabled"/> property is not be set by user-code directly.
             </remarks>
         </member>
-        <member name="P:TVA.Services.ServiceHelper.ServiceComponents">
-            <summary>
-            Gets a list of components that implement the <see cref="T:TVA.ISupportLifecycle"/> interface used by the <see cref="P:TVA.Services.ServiceHelper.ParentService"/>.
-            </summary>
-        </member>
         <member name="P:TVA.Services.ServiceHelper.Processes">
             <summary>
             Gets a list of <see cref="T:TVA.Services.ServiceProcess"/> defined in the <see cref="T:TVA.Services.ServiceHelper"/>.
@@ -986,6 +951,11 @@
         <member name="P:TVA.Services.ServiceHelper.ClientRequestHandlers">
             <summary>
             Gets a list of <see cref="T:TVA.Services.ClientRequestHandler"/> registered for handling requests from <see cref="P:TVA.Services.ServiceHelper.RemoteClients"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Services.ServiceHelper.ServiceComponents">
+            <summary>
+            Gets a list of components that implement the <see cref="T:TVA.ISupportLifecycle"/> interface used by the <see cref="P:TVA.Services.ServiceHelper.ParentService"/>.
             </summary>
         </member>
         <member name="P:TVA.Services.ServiceHelper.PerformanceMonitor">

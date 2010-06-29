@@ -143,7 +143,6 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ServicesSetup", "Applicatio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVA", "TVA", "{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B}"
 	ProjectSection(SolutionItems) = preProject
-		Dependencies\TVA\Microsoft.Web.Services3.dll = Dependencies\TVA\Microsoft.Web.Services3.dll
 		Dependencies\TVA\TVA.Communication.dll = Dependencies\TVA\TVA.Communication.dll
 		Dependencies\TVA\TVA.Communication.xml = Dependencies\TVA\TVA.Communication.xml
 		Dependencies\TVA\TVA.Core.dll = Dependencies\TVA\TVA.Core.dll
@@ -179,7 +178,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerCalculations", "Librar
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Signed", "Signed", "{AD0B25C0-9724-4923-B43B-5648FA89AB7F}"
 	ProjectSection(SolutionItems) = preProject
-		Dependencies\TVA\Signed\Microsoft.Web.Services3.dll = Dependencies\TVA\Signed\Microsoft.Web.Services3.dll
 		Dependencies\TVA\Signed\TVA.Communication.dll = Dependencies\TVA\Signed\TVA.Communication.dll
 		Dependencies\TVA\Signed\TVA.Core.dll = Dependencies\TVA\Signed\TVA.Core.dll
 		Dependencies\TVA\Signed\TVA.Historian.dll = Dependencies\TVA\Signed\TVA.Historian.dll
