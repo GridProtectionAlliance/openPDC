@@ -829,7 +829,7 @@ namespace HistorianAdapters
                     // We handle the statistics historian as a special case
                     if (acronym != "stat")
                     {
-                        // Make sure needed statistic historian configuration settings are properly defined
+                        // Make sure needed historian configuration settings are properly defined
                         settings = configFile.Settings[string.Format("{0}MetadataFile", acronym)];
                         settings.Add("LoadOnOpen", true, string.Format("True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the {0} meta-data file.", name));
                         settings.Add("ReloadOnModify", true, string.Format("True if file records loaded in memory are to be re-loaded when file is modified on disk; otherwise False - this defaults to True for the {0} meta-data file.", name));
