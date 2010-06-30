@@ -268,6 +268,15 @@ namespace TVA.PhasorProtocols
         private Ticks m_timeAdjustmentTicks;
         private Ticks m_lastReportTime;
         private long m_outOfOrderFrames;
+        private long m_totalLatency;
+        private long m_minimumLatency;
+        private long m_maximumLatency;
+        private long m_latencyMeasurements;
+        private long m_connectionAttempts;
+        private long m_configurationChanges;
+        private long m_totalDataFrames;
+        private long m_totalConfigurationFrames;
+        private long m_totalHeaderFrames;
         private ushort m_accessID;
         private bool m_isConcentrator;
         private bool m_receivedConfigFrame;
@@ -284,7 +293,7 @@ namespace TVA.PhasorProtocols
         /// </summary>
         public PhasorMeasurementMapper()
         {
-            // Create a cached signal reference dictionary for generated signal referencs
+            // Create a cached signal reference dictionary for generated signal references
             m_cachedSignalReferences = new Dictionary<FundamentalSignalType, string[]>();
 
             // Create data stream monitoring timer
@@ -474,6 +483,136 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Gets the minimum latency in milliseconds over the last test interval.
+        /// </summary>
+        public int MinimumLatency
+        {
+            get
+            {
+                return (int)Ticks.ToMilliseconds(m_minimumLatency);
+            }
+        }
+
+        /// <summary>
+        /// Gets the maximum latency in milliseconds over the last test interval.
+        /// </summary>
+        public int MaximumLatency
+        {
+            get
+            {
+                return (int)Ticks.ToMilliseconds(m_maximumLatency);
+            }
+        }
+
+        /// <summary>
+        /// Gets the average latency in milliseconds over the last test interval.
+        /// </summary>
+        public int AverageLatency
+        {
+            get
+            {
+                return (int)Ticks.ToMilliseconds(m_totalLatency / m_latencyMeasurements);
+            }
+        }
+
+        /// <summary>
+        /// Gets the total number of connection attempts.
+        /// </summary>
+        public long ConnectionAttempts
+        {
+            get
+            {
+                return m_connectionAttempts;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total number of received configurations.
+        /// </summary>
+        public long ConfigurationChanges
+        {
+            get
+            {
+                return m_configurationChanges;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total number of received data frames.
+        /// </summary>
+        public long TotalDataFrames
+        {
+            get
+            {
+                return m_totalDataFrames;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total number of received configuration frames.
+        /// </summary>
+        public long TotalConfigurationFrames
+        {
+            get
+            {
+                return m_totalConfigurationFrames;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total number of received header frames.
+        /// </summary>
+        public long TotalHeaderFrames
+        {
+            get
+            {
+                return m_totalHeaderFrames;
+            }
+        }
+
+        /// <summary>
+        /// Gets the defined frame rate.
+        /// </summary>
+        public int DefinedFrameRate
+        {
+            get
+            {
+                if (m_frameParser != null)
+                    return (int)m_frameParser.ConfiguredFrameRate;
+
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets the actual frame rate.
+        /// </summary>
+        public double ActualFrameRate
+        {
+            get
+            {
+                if (m_frameParser != null)
+                    return m_frameParser.CalculatedFrameRate;
+
+                return 0.0D;
+            }
+        }
+
+        /// <summary>
+        /// Gets the actual data rate.
+        /// </summary>
+        public double ActualDataRate
+        {
+            get
+            {
+                if (m_frameParser != null)
+                    return m_frameParser.ByteRate;
+
+                return 0.0D;
+            }
+        }
+
+        /// <summary>
         /// Gets flag that determines if the data input connects asynchronously.
         /// </summary>
         protected override bool UseAsyncConnect
@@ -512,6 +651,12 @@ namespace TVA.PhasorProtocols
                 }
 
                 status.AppendFormat("       Out of order frames: {0}", m_outOfOrderFrames);
+                status.AppendLine();
+                status.AppendFormat("           Minimum latency: {0}ms over {1} tests", MinimumLatency, m_latencyMeasurements);
+                status.AppendLine();
+                status.AppendFormat("           Maximum latency: {0}ms over {1} tests", MaximumLatency, m_latencyMeasurements);
+                status.AppendLine();
+                status.AppendFormat("           Average latency: {0}ms over {1} tests", AverageLatency, m_latencyMeasurements);
                 status.AppendLine();
 
                 if (m_frameParser != null)
@@ -611,6 +756,7 @@ namespace TVA.PhasorProtocols
                     m_frameParser.ParsingException -= m_frameParser_ParsingException;
                     m_frameParser.ReceivedConfigurationFrame -= m_frameParser_ReceivedConfigurationFrame;
                     m_frameParser.ReceivedDataFrame -= m_frameParser_ReceivedDataFrame;
+                    m_frameParser.ReceivedHeaderFrame -= m_frameParser_ReceivedHeaderFrame;
                     m_frameParser.ReceivedFrameBufferImage -= m_frameParser_ReceivedFrameBufferImage;
                     m_frameParser.Dispose();
                 }
@@ -630,6 +776,7 @@ namespace TVA.PhasorProtocols
                     m_frameParser.ParsingException += m_frameParser_ParsingException;
                     m_frameParser.ReceivedConfigurationFrame += m_frameParser_ReceivedConfigurationFrame;
                     m_frameParser.ReceivedDataFrame += m_frameParser_ReceivedDataFrame;
+                    m_frameParser.ReceivedHeaderFrame += m_frameParser_ReceivedHeaderFrame;
                     m_frameParser.ReceivedFrameBufferImage += m_frameParser_ReceivedFrameBufferImage;
                 }
             }
@@ -991,6 +1138,17 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Resets counters related to latency calculations.
+        /// </summary>
+        public void ResetLatencyCounters()
+        {
+            m_minimumLatency = 0;
+            m_maximumLatency = 0;
+            m_totalLatency = 0;
+            m_latencyMeasurements = 0;
+        }
+
+        /// <summary>
         /// Attempts to load the last known good configuration.
         /// </summary>
         [AdapterCommand("Attempts to load the last known good configuration.")]
@@ -1006,6 +1164,7 @@ namespace TVA.PhasorProtocols
                 {
                     m_frameParser.ConfigurationFrame = configFrame;
                     m_receivedConfigFrame = true;
+                    m_configurationChanges++;
                 }
                 else
                     OnStatusMessage("NOTICE: Cannot load cached configuration, file \"{0}\" does not exist.", ConfigurationCacheFileName);
@@ -1038,6 +1197,7 @@ namespace TVA.PhasorProtocols
                         new EventArgs<IConfigurationFrame, Action<Exception>, string>(configFrame, OnProcessException, Name));
 
                     m_receivedConfigFrame = true;
+                    m_configurationChanges++;
                 }
                 else
                     OnStatusMessage("NOTICE: Cannot load configuration, file \"{0}\" does not exist.", configurationFileName);
@@ -1217,6 +1377,19 @@ namespace TVA.PhasorProtocols
                 m_lastReportTime = timestamp;
             else
                 m_outOfOrderFrames++;
+
+            // Track latency statistics against system time - in order for these statistics
+            // to be useful, the local clock must be fairly accurate
+            long latency = PrecisionTimer.UtcNow.Ticks - (long)timestamp;
+
+            if (m_minimumLatency > latency || m_minimumLatency == 0)
+                m_minimumLatency = latency;
+
+            if (m_maximumLatency < latency || m_maximumLatency == 0)
+                m_maximumLatency = latency;
+
+            m_totalLatency += latency;
+            m_latencyMeasurements++;
 
             // Loop through each parsed device in the data frame
             foreach (IDataCell parsedDevice in frame.Cells)
@@ -1404,6 +1577,7 @@ namespace TVA.PhasorProtocols
         private void m_frameParser_ReceivedDataFrame(object sender, EventArgs<IDataFrame> e)
         {
             ExtractFrameMeasurements(e.Argument);
+            m_totalDataFrames++;
         }
 
         private void m_frameParser_ReceivedConfigurationFrame(object sender, EventArgs<IConfigurationFrame> e)
@@ -1418,6 +1592,14 @@ namespace TVA.PhasorProtocols
 
                 m_receivedConfigFrame = true;
             }
+            
+            m_configurationChanges++;
+            m_totalConfigurationFrames++;
+        }
+
+        private void m_frameParser_ReceivedHeaderFrame(object sender, EventArgs<IHeaderFrame> e)
+        {
+            m_totalHeaderFrames++;
         }
 
         private void m_frameParser_ReceivedFrameBufferImage(object sender, EventArgs<FundamentalFrameType, byte[], int, int> e)
@@ -1475,6 +1657,7 @@ namespace TVA.PhasorProtocols
         private void m_frameParser_ConnectionAttempt(object sender, EventArgs e)
         {
             OnStatusMessage("Initiating {0} {1} based connection...", m_frameParser.PhasorProtocol.GetFormattedProtocolName(), m_frameParser.TransportProtocol.ToString().ToUpper());
+            m_connectionAttempts++;
         }
 
         private void m_frameParser_ConfigurationChanged(object sender, EventArgs e)
