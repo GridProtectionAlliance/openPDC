@@ -247,12 +247,15 @@ namespace openPDC
             s_serviceClient = new ServiceClient();
             s_serviceClient.Start(args);
             s_serviceClient.Dispose();
+
+            System.Environment.Exit(0);
         }
 
         static void OnConsoleClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // Dispose the client component.
-            s_serviceClient.Dispose();
+            if (s_serviceClient != null)
+                s_serviceClient.Dispose();
         }
     }
 }

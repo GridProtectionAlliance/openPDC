@@ -690,15 +690,36 @@ namespace HistorianAdapters
         private void MetadataProviders_AdapterCreated(object sender, EventArgs<IMetadataProvider> e)
         {
             e.Argument.SettingsCategory = InstanceName + e.Argument.SettingsCategory;
+            
             if (e.Argument.GetType() == typeof(AdoMetadataProvider))
             {
                 // Populate the default configuration for AdoMetadataProvider.
                 ConfigurationFile config = ConfigurationFile.Current;
                 AdoMetadataProvider provider = e.Argument as AdoMetadataProvider;
+                
                 provider.Enabled = true;
                 provider.SelectString = string.Format("SELECT * FROM HistorianMetadata WHERE PlantCode='{0}'", Name);
-                provider.ConnectionString = config.Settings["SystemSettings"]["ConnectionString"].Value;
                 provider.DataProviderString = config.Settings["SystemSettings"]["DataProviderString"].Value;
+
+                string connectionString = config.Settings["SystemSettings"]["ConnectionString"].Value;
+                Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
+                string setting;
+
+                if (settings.TryGetValue("Provider", out setting))
+                {
+                    // Check if provider is for Access
+                    if (setting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Make sure path to Access database is fully qualified
+                        if (settings.TryGetValue("Data Source", out setting))
+                        {
+                            settings["Data Source"] = FilePath.GetAbsolutePath(setting);
+                            connectionString = settings.JoinKeyValuePairs();
+                        }
+                    }
+                }
+                
+                provider.ConnectionString = connectionString;
             }
         }
 
