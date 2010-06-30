@@ -202,9 +202,13 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "openPDCSetup64", "Applicati
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PMUConnectionTesterSetup64", "Tools\PMUConnectionTester\PMUConnectionTesterSetup\PMUConnectionTesterSetup64.vdproj", "{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DatabaseSetupUtility", "DatabaseSetupUtility", "{F7821DF0-BD48-481E-9DF9-D64AEFD24F57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseSetupUtility", "DatabaseSetupUtility\DatabaseSetupUtility.csproj", "{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 25
+		SccNumberOfProjects = 26
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs07.codeplex.com/
 		SccLocalPath0 = .
@@ -304,6 +308,10 @@ Global
 		SccProjectTopLevelParentUniqueName24 = Synchrophasor.sln
 		SccProjectName24 = Tools/PMUConnectionTester/PMUConnectionTesterSetup
 		SccLocalPath24 = Tools\\PMUConnectionTester\\PMUConnectionTesterSetup
+		SccProjectUniqueName25 = DatabaseSetupUtility\\DatabaseSetupUtility.csproj
+		SccProjectTopLevelParentUniqueName25 = Synchrophasor.sln
+		SccProjectName25 = DatabaseSetupUtility
+		SccLocalPath25 = DatabaseSetupUtility
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor.vsmdi
@@ -495,6 +503,12 @@ Global
 		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Release|Any CPU.ActiveCfg = Release
 		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Release|x86.ActiveCfg = Release
 		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Release|x86.Build.0 = Release
+		{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -512,6 +526,7 @@ Global
 		{532E7465-B8A6-41BA-B4BF-D23504645007} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{9049F37F-1DE9-4F22-8F62-24D0814A80C6} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{DDCC02C0-E3BE-4989-996E-DFB0402F47A5} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
+		{F7821DF0-BD48-481E-9DF9-D64AEFD24F57} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{27A26713-8779-41AB-AFF1-BAB6BB0228E8} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{0BF2447E-252D-4712-B154-E350AF463081} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
@@ -541,5 +556,6 @@ Global
 		{41F2680B-D656-47F5-9A0D-3605BF886774} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{AD0B25C0-9724-4923-B43B-5648FA89AB7F} = {4CA4A21E-97E7-4566-95DF-A8DD97D7D02B}
 		{36D4CA56-E2DA-4435-B370-4867A83B6379} = {532E7465-B8A6-41BA-B4BF-D23504645007}
+		{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE} = {F7821DF0-BD48-481E-9DF9-D64AEFD24F57}
 	EndGlobalSection
 EndGlobal
