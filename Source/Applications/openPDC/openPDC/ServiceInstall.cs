@@ -238,6 +238,8 @@ using TVA.Configuration;
 using System.Xml;
 using System.Windows.Forms;
 using TVA;
+using System.IO;
+using System.Diagnostics;
 
 
 namespace openPDC
@@ -262,19 +264,36 @@ namespace openPDC
 
             child = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
             child.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyName"));
-            child.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyName"]));
+            child.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyName"].ToString()));
             child.Attributes.Append(CreateAttribute(xmlDoc, "description", "The name of the company who owns this instance of the openPDC."));
             child.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
             node.AppendChild(child);
 
             child = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
             child.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyAcronym"));
-            child.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyAcronym"]));
+            child.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyAcronym"].ToString()));
             child.Attributes.Append(CreateAttribute(xmlDoc, "description", "The acronym representing the company who owns this instance of the openPDC."));
             child.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
             node.AppendChild(child);
 
             xmlDoc.Save(configFilePath);
+
+            Process databaseSetup = null;
+            try
+            {
+                databaseSetup = new Process();
+                databaseSetup.StartInfo.FileName = Context.Parameters["DP_TargetDir"] + "\\DatabaseSetupUtility.exe";
+                databaseSetup.StartInfo.WorkingDirectory = Context.Parameters["DP_TargetDir"].ToString();
+                databaseSetup.StartInfo.UseShellExecute = false;
+                databaseSetup.StartInfo.CreateNoWindow = true;
+                databaseSetup.Start();
+                databaseSetup.WaitForExit();
+            }
+            finally
+            {
+                if (databaseSetup != null)
+                    databaseSetup.Close();
+            }
         }
 
         private XmlAttribute CreateAttribute(XmlDocument doc, string name, string value)
