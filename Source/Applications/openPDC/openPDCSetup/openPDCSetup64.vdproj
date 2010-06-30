@@ -46,6 +46,12 @@
         "Entry"
         {
         "MsmKey" = "8:_26D5E5F455686C6C00414E9EC5AFC170"
+        "OwnerKey" = "8:_D48B38F23A39498090BCD886ED084CF0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_26D5E5F455686C6C00414E9EC5AFC170"
         "OwnerKey" = "8:_40761957023C4080BB4A3D64A03D1787"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -818,7 +824,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TVA.PhasorProtocols, Version=1.1.76.53877, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:TVA.PhasorProtocols, Version=1.1.76.53877, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_332E02AB337466D92018B51303CED488"
@@ -1454,22 +1460,22 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:openPDC 64-bit"
         "ProductCode" = "8:{493D6CED-50C6-4CF5-93A3-306C364F10A3}"
-        "PackageCode" = "8:{211C5A06-F006-4C23-A82D-B90584FB06FE}"
+        "PackageCode" = "8:{0A4173FB-5586-489E-A30C-54029E35396D}"
         "UpgradeCode" = "8:{672ED075-C482-49A6-86D5-7B3FEB4AEAC8}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
         "ProductVersion" = "8:1.0.9"
-        "Manufacturer" = "8:TVA"
+        "Manufacturer" = "8:GPA"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://openpdc.codeplex.com"
         "Title" = "8:openPDC"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:TVA"
+        "ARPCONTACT" = "8:Grid Protection Alliance"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
-        "ARPURLINFOABOUT" = "8:http://www.tva.gov"
+        "ARPURLINFOABOUT" = "8:http://www.gridprotectionalliance.org/"
         "ARPPRODUCTICON" = "8:_800B7CA0991A46A384640F0EE3509A7E"
         "ARPIconIndex" = "3:32512"
         "SearchPath" = "8:"
@@ -1573,6 +1579,62 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_01C82A4F9B12412CA524AAE483FD4E79"
+            {
+            "Name" = "8:Configuration Editor"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:32512"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_082E04D24B9B4FB48049EE6B80B45C06"
+            "Folder" = "8:_97D98A22D09244039466A035BAF4EEF6"
+            "WorkingFolder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
+            "Icon" = "8:_082E04D24B9B4FB48049EE6B80B45C06"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_74F14C5524FA4C0ABF18A658A5315425"
+            {
+            "Name" = "8:Historian Playback Utility"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_40761957023C4080BB4A3D64A03D1787"
+            "Folder" = "8:_97D98A22D09244039466A035BAF4EEF6"
+            "WorkingFolder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
+            "Icon" = "8:_C1C467A3CE8940BDB248413143154967"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_7E435F58EFB644C282937280E4FA7AB7"
+            {
+            "Name" = "8:Data Migration Utility"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:32512"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_D48B38F23A39498090BCD886ED084CF0"
+            "Folder" = "8:_97D98A22D09244039466A035BAF4EEF6"
+            "WorkingFolder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
+            "Icon" = "8:_D48B38F23A39498090BCD886ED084CF0"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A9EE0F025070433B8A876951786898D3"
+            {
+            "Name" = "8:Cipher Key Manager"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:32512"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_3C16597FADB04F39824E264531BC91FD"
+            "Folder" = "8:_97D98A22D09244039466A035BAF4EEF6"
+            "WorkingFolder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
+            "Icon" = "8:_3C16597FADB04F39824E264531BC91FD"
+            "Feature" = "8:"
+            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_C32CB178D4E64C3498EE62AA9F1901E2"
             {
             "Name" = "8:openPDC Console"
@@ -2255,7 +2317,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_07F4F7B31AF4436FA5946F2F0B24D359"
             {
-            "SourcePath" = "8:..\\..\\..\\Libraries\\Adapters\\ICCPExport\\obj\\Release\\ICCPExport.dll"
+            "SourcePath" = "8:..\\..\\..\\Libraries\\Adapters\\ICCPExport\\obj\\x86\\Release\\ICCPExport.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
@@ -2311,7 +2373,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1C2551016D3B4561B4AD38040E79BBD3"
             {
-            "SourcePath" = "8:..\\..\\..\\Libraries\\TVA.PhasorProtocols\\obj\\Release\\TVA.PhasorProtocols.dll"
+            "SourcePath" = "8:..\\..\\..\\Libraries\\TVA.PhasorProtocols\\obj\\x86\\Release\\TVA.PhasorProtocols.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
@@ -2339,7 +2401,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_47E39753A64F4436AE84CC3D0A590D84"
             {
-            "SourcePath" = "8:..\\openPDCConsole\\obj\\Release\\openPDCConsole.exe"
+            "SourcePath" = "8:..\\openPDCConsole\\obj\\x86\\Release\\openPDCConsole.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
@@ -2367,7 +2429,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_54C9398AA24749E6AD4A657E1D600CF2"
             {
-            "SourcePath" = "8:..\\..\\..\\Libraries\\Adapters\\TestingAdapters\\obj\\Release\\TestingAdapters.dll"
+            "SourcePath" = "8:..\\..\\..\\Libraries\\Adapters\\TestingAdapters\\obj\\x86\\Release\\TestingAdapters.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
@@ -2395,7 +2457,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_800B7CA0991A46A384640F0EE3509A7E"
             {
-            "SourcePath" = "8:..\\openPDC\\obj\\Release\\openPDC.exe"
+            "SourcePath" = "8:..\\openPDC\\obj\\x86\\Release\\openPDC.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
@@ -2424,7 +2486,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_828AAECD8DC940EF9FB4DBC39DE65AC1"
             {
-            "SourcePath" = "8:..\\..\\..\\Libraries\\Adapters\\CsvAdapters\\obj\\Release\\CsvAdapters.dll"
+            "SourcePath" = "8:..\\..\\..\\Libraries\\Adapters\\CsvAdapters\\obj\\x86\\Release\\CsvAdapters.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
@@ -2480,7 +2542,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B91E164300C54B1587666D7B153DFF2F"
             {
-            "SourcePath" = "8:..\\..\\..\\Libraries\\Adapters\\HistorianAdapters\\obj\\Release\\HistorianAdapters.dll"
+            "SourcePath" = "8:..\\..\\..\\Libraries\\Adapters\\HistorianAdapters\\obj\\x86\\Release\\HistorianAdapters.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
@@ -2508,7 +2570,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E29097BD0CC742FAAEED9E3BDF619DB4"
             {
-            "SourcePath" = "8:..\\..\\..\\Libraries\\Adapters\\PowerCalculations\\obj\\Release\\PowerCalculations.dll"
+            "SourcePath" = "8:..\\..\\..\\Libraries\\Adapters\\PowerCalculations\\obj\\x86\\Release\\PowerCalculations.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
@@ -2536,7 +2598,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FD853BB567A749A68DE44CE4F37A6195"
             {
-            "SourcePath" = "8:..\\..\\..\\Libraries\\Adapters\\DataQualityMonitoring\\obj\\Release\\DataQualityMonitoring.dll"
+            "SourcePath" = "8:..\\..\\..\\Libraries\\Adapters\\DataQualityMonitoring\\obj\\x86\\Release\\DataQualityMonitoring.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
