@@ -51,12 +51,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_33F513A1388D499392A76E97F0B24430"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_344D9E02E1BDB6EF8A348C1C53C9A6A0"
         "OwnerKey" = "8:_1C2551016D3B4561B4AD38040E79BBD3"
         "MsmSig" = "8:_UNDEFINED"
@@ -100,13 +94,13 @@
         "Entry"
         {
         "MsmKey" = "8:_34DEA4FFEEEF9EF04FDAE9C9BFE9FC2C"
-        "OwnerKey" = "8:_ED140CC708A83BB279D95BB4D5E71935"
+        "OwnerKey" = "8:_A50E62101042478D9FC4BCFAE000F53B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_34DEA4FFEEEF9EF04FDAE9C9BFE9FC2C"
-        "OwnerKey" = "8:_A50E62101042478D9FC4BCFAE000F53B"
+        "OwnerKey" = "8:_E29097BD0CC742FAAEED9E3BDF619DB4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -118,7 +112,7 @@
         "Entry"
         {
         "MsmKey" = "8:_34DEA4FFEEEF9EF04FDAE9C9BFE9FC2C"
-        "OwnerKey" = "8:_E29097BD0CC742FAAEED9E3BDF619DB4"
+        "OwnerKey" = "8:_ED140CC708A83BB279D95BB4D5E71935"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -171,6 +165,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_76846B19E4424CB68CDEE749AF171056"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_800B7CA0991A46A384640F0EE3509A7E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -184,25 +184,7 @@
         "Entry"
         {
         "MsmKey" = "8:_841C5431CAD79F5505B5C7F61E56F01D"
-        "OwnerKey" = "8:_07F4F7B31AF4436FA5946F2F0B24D359"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_841C5431CAD79F5505B5C7F61E56F01D"
-        "OwnerKey" = "8:_F96E0DC884E9D2CC9B5DEC046A516D28"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_841C5431CAD79F5505B5C7F61E56F01D"
         "OwnerKey" = "8:_34DEA4FFEEEF9EF04FDAE9C9BFE9FC2C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_841C5431CAD79F5505B5C7F61E56F01D"
-        "OwnerKey" = "8:_33F513A1388D499392A76E97F0B24430"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -305,6 +287,18 @@
         {
         "MsmKey" = "8:_841C5431CAD79F5505B5C7F61E56F01D"
         "OwnerKey" = "8:_344D9E02E1BDB6EF8A348C1C53C9A6A0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_841C5431CAD79F5505B5C7F61E56F01D"
+        "OwnerKey" = "8:_07F4F7B31AF4436FA5946F2F0B24D359"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_841C5431CAD79F5505B5C7F61E56F01D"
+        "OwnerKey" = "8:_F96E0DC884E9D2CC9B5DEC046A516D28"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -484,19 +478,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_F96E0DC884E9D2CC9B5DEC046A516D28"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_34DEA4FFEEEF9EF04FDAE9C9BFE9FC2C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_33F513A1388D499392A76E97F0B24430"
+        "OwnerKey" = "8:_76846B19E4424CB68CDEE749AF171056"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -599,6 +581,18 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_07F4F7B31AF4436FA5946F2F0B24D359"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_F96E0DC884E9D2CC9B5DEC046A516D28"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_34DEA4FFEEEF9EF04FDAE9C9BFE9FC2C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1413,7 +1407,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TVA.PhasorProtocols, Version=1.1.76.53877, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:TVA.PhasorProtocols, Version=1.1.77.53957, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_F96E0DC884E9D2CC9B5DEC046A516D28"
@@ -1700,6 +1694,20 @@
             "Folder" = "8:_8F1B8C80820349DA9194FDA4E7291C5E"
             "WorkingFolder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
             "Icon" = "8:_3C16597FADB04F39824E264531BC91FD"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_8BBFD9598990476ABC6FC89EE31DF811"
+            {
+            "Name" = "8:Database Setup Utility"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_76846B19E4424CB68CDEE749AF171056"
+            "Folder" = "8:_8F1B8C80820349DA9194FDA4E7291C5E"
+            "WorkingFolder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_AB8873836D504791B2176FC8FB733642"
@@ -2480,34 +2488,6 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_33F513A1388D499392A76E97F0B24430"
-            {
-            "SourcePath" = "8:..\\..\\..\\DatabaseSetupUtility\\obj\\Release\\DatabaseSetupUtility.exe"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_47E39753A64F4436AE84CC3D0A590D84"
             {
             "SourcePath" = "8:..\\openPDCConsole\\obj\\Release\\openPDCConsole.exe"
@@ -2559,6 +2539,34 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{1338A569-A156-4122-8B65-8D4C147AA348}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_76846B19E4424CB68CDEE749AF171056"
+            {
+            "SourcePath" = "8:..\\..\\..\\Tools\\DatabaseSetupUtility\\obj\\Release\\DatabaseSetupUtility.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {

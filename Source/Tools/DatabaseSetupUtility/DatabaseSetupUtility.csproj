@@ -21,7 +21,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Build\Output\Debug\Tools\DatabaseSetupUtiltity\</OutputPath>
+    <OutputPath>..\..\..\Build\Output\Debug\Tools\DatabaseSetupUtiltity\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -29,7 +29,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Build\Output\Release\Tools\DatabaseSetupUtility\</OutputPath>
+    <OutputPath>..\..\..\Build\Output\Release\Tools\DatabaseSetupUtility\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -50,9 +50,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TVA.Core, Version=1.1.59.53605, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Core, Version=1.1.61.53930, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependencies\TVA\TVA.Core.dll</HintPath>
+      <HintPath>..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

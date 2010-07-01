@@ -204,7 +204,7 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PMUConnectionTesterSetup64"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DatabaseSetupUtility", "DatabaseSetupUtility", "{F7821DF0-BD48-481E-9DF9-D64AEFD24F57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseSetupUtility", "DatabaseSetupUtility\DatabaseSetupUtility.csproj", "{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseSetupUtility", "Tools\DatabaseSetupUtility\DatabaseSetupUtility.csproj", "{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
@@ -308,10 +308,10 @@ Global
 		SccProjectTopLevelParentUniqueName24 = Synchrophasor.sln
 		SccProjectName24 = Tools/PMUConnectionTester/PMUConnectionTesterSetup
 		SccLocalPath24 = Tools\\PMUConnectionTester\\PMUConnectionTesterSetup
-		SccProjectUniqueName25 = DatabaseSetupUtility\\DatabaseSetupUtility.csproj
+		SccProjectUniqueName25 = Tools\\DatabaseSetupUtility\\DatabaseSetupUtility.csproj
 		SccProjectTopLevelParentUniqueName25 = Synchrophasor.sln
-		SccProjectName25 = DatabaseSetupUtility
-		SccLocalPath25 = DatabaseSetupUtility
+		SccProjectName25 = Tools/DatabaseSetupUtility
+		SccLocalPath25 = Tools\\DatabaseSetupUtility
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor.vsmdi
