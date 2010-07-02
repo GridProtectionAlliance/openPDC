@@ -1065,9 +1065,9 @@ Public Class PMUConnectionTester
 
         With New AboutDialog
             Dim localNamespace As String = Me.GetType.Namespace
-            .SetCompanyUrl("http://www.tva.gov/")
-            .SetCompanyLogo(EntryAssembly.GetEmbeddedResource(localNamespace & ".TVAPSOLogo.png"))
-            .HideAssembliesTab()
+            .SetCompanyUrl("http://www.openpdc.com/")
+            .SetCompanyLogo(EntryAssembly.GetEmbeddedResource(localNamespace & ".HelpAboutLogo.png"))
+            .SetCompanyDisclaimer(EntryAssembly.GetEmbeddedResource(localNamespace & ".Disclaimer.txt"))
             .ShowDialog(Me)
         End With
 
@@ -2216,7 +2216,7 @@ Public Class PMUConnectionTester
 
     Private Function UnhandledExceptionErrorMessage() As String
 
-        Return String.Format("An unexpected exception has occurred in the PMU Connection Tester. This error may have been caused by an inconsistent system state or a programming error.  Details of this problem have been logged to an error file, it may be necessary to restart the application. Please notify TVA with details of this exception so they are aware of this problem: {0}", GlobalExceptionLogger.LastException.Message)
+        Return String.Format("An unexpected exception has occurred in the PMU Connection Tester. This error may have been caused by an inconsistent system state or a programming error.  Details of this problem have been logged to an error file, it may be necessary to restart the application. Please notify us with details of this exception so they are aware of this problem: {0}", GlobalExceptionLogger.LastException.Message)
 
     End Function
 

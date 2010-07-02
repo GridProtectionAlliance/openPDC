@@ -57,6 +57,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_16E674C541221B27A358F89BF08901C4"
+        "OwnerKey" = "8:_D6A808A02B638CB690CBC66878A092EA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_17A4A95288198218376AABD966DE74F8"
         "OwnerKey" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
         "MsmSig" = "8:_UNDEFINED"
@@ -69,14 +75,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_4F03173B3FA437FB72998B769D2FF90A"
-        "OwnerKey" = "8:_9B7067CE174EEA9C9ED66F696B1AE862"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4F03173B3FA437FB72998B769D2FF90A"
-        "OwnerKey" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
+        "MsmKey" = "8:_786F5E742A5E500C388CCDE619E6B7B8"
+        "OwnerKey" = "8:_D6A808A02B638CB690CBC66878A092EA"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -89,12 +89,6 @@
         {
         "MsmKey" = "8:_79789B06C34449F2BEF50C600ED7897B"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9B7067CE174EEA9C9ED66F696B1AE862"
-        "OwnerKey" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -165,19 +159,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_BF83EF947C58D0DDB6E6DA19E53F95D2"
-        "OwnerKey" = "8:_9B7067CE174EEA9C9ED66F696B1AE862"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BF83EF947C58D0DDB6E6DA19E53F95D2"
-        "OwnerKey" = "8:_4F03173B3FA437FB72998B769D2FF90A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_CD42C25CC4583497F182DDDC2D71AFD6"
+        "OwnerKey" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D6A808A02B638CB690CBC66878A092EA"
         "OwnerKey" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -280,18 +268,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_786F5E742A5E500C388CCDE619E6B7B8"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_16E674C541221B27A358F89BF08901C4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_EB6E4CFDFB1DE23ED017C9128BAF6635"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -346,19 +322,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9B7067CE174EEA9C9ED66F696B1AE862"
+        "OwnerKey" = "8:_D6A808A02B638CB690CBC66878A092EA"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4F03173B3FA437FB72998B769D2FF90A"
+        "OwnerKey" = "8:_786F5E742A5E500C388CCDE619E6B7B8"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BF83EF947C58D0DDB6E6DA19E53F95D2"
+        "OwnerKey" = "8:_16E674C541221B27A358F89BF08901C4"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -641,37 +617,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4F03173B3FA437FB72998B769D2FF90A"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TVA.Communication, Version=1.1.42.47266, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_4F03173B3FA437FB72998B769D2FF90A"
-                    {
-                    "Name" = "8:TVA.Communication.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:TVA.Communication.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_5A3EFF278728431A903835C5D0B23885"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_786F5E742A5E500C388CCDE619E6B7B8"
             {
             "AssemblyRegister" = "3:1"
@@ -721,32 +666,6 @@
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9B7067CE174EEA9C9ED66F696B1AE862"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TVA.PhasorProtocols, Version=1.1.74.53616, Culture=neutral, processorArchitecture=x86"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:TVA.PhasorProtocols.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_5A3EFF278728431A903835C5D0B23885"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A3C554204EE24CEEB17DD434FBCE08A4"
@@ -820,20 +739,20 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BF83EF947C58D0DDB6E6DA19E53F95D2"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CD42C25CC4583497F182DDDC2D71AFD6"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TVA.Core, Version=1.1.59.53605, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Infragistics2.Win.UltraWinTabControl.v7.2, Version=7.2.20072.61, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_BF83EF947C58D0DDB6E6DA19E53F95D2"
+                    "_CD42C25CC4583497F182DDDC2D71AFD6"
                     {
-                    "Name" = "8:TVA.Core.DLL"
+                    "Name" = "8:Infragistics2.Win.UltraWinTabControl.v7.2.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:TVA.Core.DLL"
+            "SourcePath" = "8:Infragistics2.Win.UltraWinTabControl.v7.2.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_5A3EFF278728431A903835C5D0B23885"
@@ -851,20 +770,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CD42C25CC4583497F182DDDC2D71AFD6"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D6A808A02B638CB690CBC66878A092EA"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Infragistics2.Win.UltraWinTabControl.v7.2, Version=7.2.20072.61, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:TVA.PhasorProtocols, Version=1.1.78.53998, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_CD42C25CC4583497F182DDDC2D71AFD6"
+                    "_D6A808A02B638CB690CBC66878A092EA"
                     {
-                    "Name" = "8:Infragistics2.Win.UltraWinTabControl.v7.2.dll"
+                    "Name" = "8:TVA.PhasorProtocols.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:Infragistics2.Win.UltraWinTabControl.v7.2.dll"
+            "SourcePath" = "8:TVA.PhasorProtocols.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_5A3EFF278728431A903835C5D0B23885"
@@ -1171,22 +1090,22 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:openPDC PMU Connection Tester"
         "ProductCode" = "8:{6602B32E-0671-4FE1-A7A4-63025D325F49}"
-        "PackageCode" = "8:{1B99B2F9-F6B8-42AD-8319-0718D3045BA3}"
+        "PackageCode" = "8:{58FC04A5-6625-4962-B96B-6DDD4F044D7A}"
         "UpgradeCode" = "8:{2F75A16E-39EE-44C2-B8EE-D147ACB4743E}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.9"
-        "Manufacturer" = "8:TVA"
+        "ProductVersion" = "8:1.1.2"
+        "Manufacturer" = "8:Grid Protection Alliance"
         "ARPHELPTELEPHONE" = "8:"
-        "ARPHELPLINK" = "8:http://openpdc.codeplex.com/"
+        "ARPHELPLINK" = "8:http://www.openpdc.com/"
         "Title" = "8:openPDC PMU Connection Tester"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:TVA"
+        "ARPCONTACT" = "8:GPA"
         "Keywords" = "8:PMU PDC Phasors Connection Tester"
         "ARPCOMMENTS" = "8:openPDC PMU Connection Tester"
-        "ARPURLINFOABOUT" = "8:http://www.tva.gov"
+        "ARPURLINFOABOUT" = "8:http://www.gridprotectionalliance.org/"
         "ARPPRODUCTICON" = "8:_B4B0EBF193BA405F967816E5BDC5B787"
         "ARPIconIndex" = "3:32512"
         "SearchPath" = "8:"

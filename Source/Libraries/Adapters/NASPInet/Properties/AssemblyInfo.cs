@@ -7,8 +7,8 @@ using System.Security.Permissions;
 [assembly: AssemblyVersion("1.1.78.53998")]
 
 // Informational attributes.
-[assembly: AssemblyCompany("TVA")]
-[assembly: AssemblyCopyright("No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.")]
+[assembly: AssemblyCompany("Grid Protection Alliance")]
+[assembly: AssemblyCopyright("Copyright © 2010.  All Rights Reserved.")]
 [assembly: AssemblyProduct("openPDC")]
 
 // Assembly manifest attributes.

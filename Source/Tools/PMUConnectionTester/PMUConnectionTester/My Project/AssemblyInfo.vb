@@ -5,8 +5,8 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyVersion("1.1.78.53998")> 
 
 ' Informational attributes.
-<Assembly: AssemblyCompany("TVA")> 
-<Assembly: AssemblyCopyright("No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.")> 
+<Assembly: AssemblyCompany("Grid Protection Alliance")> 
+<Assembly: AssemblyCopyright("Copyright © 2010, All Rights Reserved.")> 
 <Assembly: AssemblyProduct("openPDC")> 
 
 ' Assembly manifest attributes.
