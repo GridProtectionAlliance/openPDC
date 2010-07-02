@@ -277,6 +277,7 @@ namespace DatabaseSetupUtility
             m_canGoForward = true;
             m_accessible = true;
             m_canCancel = true;
+            pagePanel.Visible = false;
         }
 
         #endregion

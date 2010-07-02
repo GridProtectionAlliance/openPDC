@@ -376,12 +376,70 @@ namespace DatabaseSetupUtility
 
         #region [ Methods ]
 
+        public bool ExecuteStatement(string statement)
+        {
+            Process sqlCmdProcess = null;
+
+            try
+            {
+                // Set up arguments for sqlcmd.exe.
+                StringBuilder args = new StringBuilder();
+
+                args.Append("-b -S ");
+                args.Append(HostName);
+
+                args.Append(" -d ");
+                args.Append(DatabaseName);
+
+                if (!string.IsNullOrEmpty(UserName))
+                {
+                    args.Append(" -U ");
+                    args.Append(UserName);
+                }
+
+                if (!string.IsNullOrEmpty(Password))
+                {
+                    args.Append(" -P ");
+                    args.Append(Password);
+                }
+
+                args.Append(" -Q \"");
+                args.Append(statement);
+                args.Append('"');
+
+                // Start sqlcmd.exe.
+                sqlCmdProcess = new Process();
+                sqlCmdProcess.StartInfo.FileName = "sqlcmd.exe";
+                sqlCmdProcess.StartInfo.Arguments = args.ToString();
+                sqlCmdProcess.StartInfo.UseShellExecute = false;
+                sqlCmdProcess.StartInfo.RedirectStandardError = true;
+                sqlCmdProcess.ErrorDataReceived += sqlCmdProcess_ErrorDataReceived;
+                sqlCmdProcess.StartInfo.RedirectStandardOutput = true;
+                sqlCmdProcess.OutputDataReceived += sqlCmdProcess_OutputDataReceived;
+                sqlCmdProcess.StartInfo.CreateNoWindow = true;
+                sqlCmdProcess.Start();
+
+                sqlCmdProcess.BeginErrorReadLine();
+                sqlCmdProcess.BeginOutputReadLine();
+
+                sqlCmdProcess.WaitForExit();
+
+                return sqlCmdProcess.ExitCode == 0;
+            }
+            finally
+            {
+                // Close the process.
+                if (sqlCmdProcess != null)
+                    sqlCmdProcess.Close();
+            }
+        }
+
         /// <summary>
         /// Executes a SQL script using the SQL Server database engine.
         /// </summary>
         /// <param name="scriptPath">The path to the SQL Server script to be executed.</param>
         /// <returns>True if the script executed successfully. False otherwise.</returns>
-        public bool Execute(string scriptPath)
+        public bool ExecuteScript(string scriptPath)
         {
             Process sqlCmdProcess = null;
             StreamReader scriptStream = null;

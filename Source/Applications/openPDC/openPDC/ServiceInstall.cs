@@ -261,23 +261,26 @@ namespace openPDC
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(configFilePath);
                 XmlNode node = xmlDoc.SelectSingleNode("configuration/categorizedSettings/systemSettings");
-                XmlNode child;
+                XmlNode child = node.Attributes.GetNamedItem("CompanyName");
 
-                child = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
-                child.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyName"));
-                child.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyName"].ToString()));
-                child.Attributes.Append(CreateAttribute(xmlDoc, "description", "The name of the company who owns this instance of the openPDC."));
-                child.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
-                node.AppendChild(child);
+                if (child == null)
+                {
+                    child = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
+                    child.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyName"));
+                    child.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyName"].ToString()));
+                    child.Attributes.Append(CreateAttribute(xmlDoc, "description", "The name of the company who owns this instance of the openPDC."));
+                    child.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
+                    node.AppendChild(child);
 
-                child = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
-                child.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyAcronym"));
-                child.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyAcronym"].ToString()));
-                child.Attributes.Append(CreateAttribute(xmlDoc, "description", "The acronym representing the company who owns this instance of the openPDC."));
-                child.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
-                node.AppendChild(child);
+                    child = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
+                    child.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyAcronym"));
+                    child.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyAcronym"].ToString()));
+                    child.Attributes.Append(CreateAttribute(xmlDoc, "description", "The acronym representing the company who owns this instance of the openPDC."));
+                    child.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
+                    node.AppendChild(child);
 
-                xmlDoc.Save(configFilePath);
+                    xmlDoc.Save(configFilePath);
+                }
 
                 // Run database setup utility
                 Process databaseSetup = null;
@@ -285,6 +288,7 @@ namespace openPDC
                 {
                     databaseSetup = new Process();
                     databaseSetup.StartInfo.FileName = targetDir + "DatabaseSetupUtility.exe";
+                    databaseSetup.StartInfo.Arguments = "-install";
                     databaseSetup.StartInfo.WorkingDirectory = targetDir;
                     databaseSetup.StartInfo.UseShellExecute = false;
                     databaseSetup.StartInfo.CreateNoWindow = true;

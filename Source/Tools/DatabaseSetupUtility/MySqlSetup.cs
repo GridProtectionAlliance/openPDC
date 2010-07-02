@@ -377,11 +377,75 @@ namespace DatabaseSetupUtility
         #region [ Methods ]
 
         /// <summary>
-        /// Executes a SQL Script using the MySQL database engine.
+        /// Execute a SQL statement using the mysql.exe process.
+        /// </summary>
+        /// <param name="statement"></param>
+        /// <returns></returns>
+        public bool ExecuteStatement(string statement)
+        {
+            Process mySqlProcess = null;
+
+            try
+            {
+                // Set up arguments for mysql.exe.
+                StringBuilder args = new StringBuilder();
+
+                args.Append("-h");
+                args.Append(HostName);
+
+                args.Append(" -D");
+                args.Append(DatabaseName);
+
+                if (!string.IsNullOrEmpty(UserName))
+                {
+                    args.Append(" -u");
+                    args.Append(UserName);
+                }
+
+                if (!string.IsNullOrEmpty(Password))
+                {
+                    args.Append(" -p");
+                    args.Append(Password);
+                }
+
+                args.Append(" -e \"");
+                args.Append(statement);
+                args.Append('"');
+
+                // Start mysql.exe.
+                mySqlProcess = new Process();
+                mySqlProcess.StartInfo.FileName = "mysql.exe";
+                mySqlProcess.StartInfo.Arguments = args.ToString();
+                mySqlProcess.StartInfo.UseShellExecute = false;
+                mySqlProcess.StartInfo.RedirectStandardError = true;
+                mySqlProcess.ErrorDataReceived += mySqlProcess_ErrorDataReceived;
+                mySqlProcess.StartInfo.RedirectStandardOutput = true;
+                mySqlProcess.OutputDataReceived += mySqlProcess_OutputDataReceived;
+                mySqlProcess.StartInfo.CreateNoWindow = true;
+                mySqlProcess.Start();
+
+                mySqlProcess.BeginErrorReadLine();
+                mySqlProcess.BeginOutputReadLine();
+
+                // Wait for mysql.exe to finish.
+                mySqlProcess.WaitForExit();
+
+                return mySqlProcess.ExitCode == 0;
+            }
+            finally
+            {
+                // Close the process.
+                if (mySqlProcess != null)
+                    mySqlProcess.Close();
+            }
+        }
+
+        /// <summary>
+        /// Executes a SQL Script using the mysql.exe process.
         /// </summary>
         /// <param name="scriptPath">The path of the script to be executed.</param>
         /// <returns>True if the script executes successfully. False otherwise.</returns>
-        public bool Execute(string scriptPath)
+        public bool ExecuteScript(string scriptPath)
         {
             Process mySqlProcess = null;
             StreamReader scriptStream = null;
