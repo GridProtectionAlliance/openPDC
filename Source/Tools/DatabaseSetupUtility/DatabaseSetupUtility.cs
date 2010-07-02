@@ -242,6 +242,7 @@ using TVA;
 using TVA.IO;
 using System.Diagnostics;
 using System.Xml;
+using System.Threading;
 
 namespace DatabaseSetupUtility
 {
@@ -253,16 +254,24 @@ namespace DatabaseSetupUtility
 
         #region [ Members ]
 
+        // Delegates
+
+        private delegate void AppendToSetupTextBoxDelegate(string line);
+        private delegate void UpdateNavigationButtonsDelegate();
+        private delegate void UpdateProgressBarDelegate(int value);
+
         // Fields
 
+        private PageControl m_pageControl;
         private Page m_accessDatabasePage;
         private Page m_mySqlDatabasePage;
         private Page m_sqlServerDatabasePage;
-        private List<Page> m_steps;
-        private int m_currentStep;
         private MySqlSetup m_mySqlSetup;
         private SqlServerSetup m_sqlServerSetup;
         private AdvancedForm m_advancedForm;
+        private AppendToSetupTextBoxDelegate m_appendToSetupTextBox;
+        private UpdateNavigationButtonsDelegate m_updateNavigationButtons;
+        private UpdateProgressBarDelegate m_updateProgressBar;
 
         #endregion
 
@@ -276,32 +285,54 @@ namespace DatabaseSetupUtility
         {
             InitializeComponent();
 
+            m_pageControl = new PageControl();
             m_accessDatabasePage = new Page(accessDatabasePanel);
-            m_accessDatabasePage.UserInputValidationFunction = ValidateAccessDatabasePage;
             m_mySqlDatabasePage = new Page(mySqlDatabasePanel);
-            m_mySqlDatabasePage.UserInputValidationFunction = ValidateMySqlDatabasePage;
             m_sqlServerDatabasePage = new Page(sqlServerDatabasePanel);
-            m_sqlServerDatabasePage.UserInputValidationFunction = ValidateSqlServerDatabasePage;
 
-            m_steps = new List<Page>();
-            m_steps.Add(new Page(databaseTypePanel));
-            m_steps.Add(m_accessDatabasePage);
-            m_steps.Add(new Page(prepareForSetupPanel));
-            m_steps.Add(new Page(databaseSetupPanel));
-            m_steps.Add(new Page(setupFinishedPanel));
-            m_currentStep = 1;
+            Page databaseTypePage = new Page(databaseTypePanel);
+            Page prepareForSetupPage = new Page(prepareForSetupPanel);
+            Page databaseSetupPage = new Page(databaseSetupPanel);
+            Page setupFinishedPage = new Page(setupFinishedPanel);
+
+            m_accessDatabasePage.UserInputValidationFunction = ValidateAccessDatabasePage;
+            m_mySqlDatabasePage.UserInputValidationFunction = ValidateMySqlDatabasePage;
+            m_sqlServerDatabasePage.UserInputValidationFunction = ValidateSqlServerDatabasePage;
+            databaseSetupPage.CanGoBack = false;
+            databaseSetupPage.CanGoForward = false;
+            databaseSetupPage.CanCancel = false;
+            setupFinishedPage.CanGoBack = false;
+            setupFinishedPage.CanCancel = false;
+
+            m_pageControl.Add(databaseTypePage);
+            m_pageControl.Add(m_accessDatabasePage);
+            m_pageControl.Add(prepareForSetupPage);
+            m_pageControl.Add(databaseSetupPage);
+            m_pageControl.Add(setupFinishedPage);
+
+            m_appendToSetupTextBox = AppendToSetupTextBox;
+            m_updateNavigationButtons = UpdateNavigationButtons;
+            m_updateProgressBar = UpdateProgressBar;
         }
 
         #endregion
 
         #region [ Methods ]
 
+        // Determines whether the next or previous pages can be reached.
+        private void UpdateNavigationButtons()
+        {
+            cancelButton.Enabled = m_pageControl.CurrentPage.CanCancel;
+            backButton.Enabled = m_pageControl.PreviousPageAccessible;
+            nextButton.Enabled = m_pageControl.NextPageAccessible;
+        }
+
         // Called when the database setup utility form is closing.
         private void DatabaseSetupUtility_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (m_steps[m_currentStep - 1].PagePanel == databaseSetupPanel)
+            if (m_pageControl.CurrentPage.PagePanel == databaseSetupPanel && !m_pageControl.CurrentPage.CanCancel)
                 e.Cancel = true;
-            else if (m_currentStep != m_steps.Count)
+            else if (m_pageControl.NextPage != null)
             {
                 DialogResult selection = MessageBox.Show(this, "The setup is not yet complete. Are you sure you want to exit?", this.Text, MessageBoxButtons.YesNo);
 
@@ -320,35 +351,26 @@ namespace DatabaseSetupUtility
         // Called when the "Next" button is clicked.
         private void nextButton_Click(object sender, EventArgs e)
         {
-            if (m_steps[m_currentStep - 1].UserInputIsValid())
+            if (m_pageControl.NextPage == null)
+                this.Close();
+            else
             {
-                if (m_currentStep == m_steps.Count)
-                    this.Close();
-                else
-                {
-                    backButton.Enabled = true;
+                m_pageControl.GoToNextPage();
+                UpdateNavigationButtons();
 
-                    m_steps[m_currentStep - 1].Visible = false;
-                    m_currentStep++;
-                    m_steps[m_currentStep - 1].Visible = true;
-
-                    if (m_currentStep == m_steps.Count)
-                        nextButton.Text = "Finish";
-                }
+                if (m_pageControl.NextPage == null)
+                    nextButton.Text = "Finish";
             }
         }
 
         // Called when the "Back" button is clicked.
         private void backButton_Click(object sender, EventArgs e)
         {
-            nextButton.Text = "Next >";
+            m_pageControl.GoToPreviousPage();
+            UpdateNavigationButtons();
 
-            m_steps[m_currentStep - 1].Visible = false;
-            m_currentStep--;
-            m_steps[m_currentStep - 1].Visible = true;
-
-            if (m_currentStep == 1)
-                backButton.Enabled = false;
+            if (m_pageControl.NextPage != null)
+                nextButton.Text = "Next >";
         }
 
         // Called when the "Cancel" button is clicked.
@@ -361,33 +383,39 @@ namespace DatabaseSetupUtility
         private void accessRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (accessRadioButton.Checked)
-                m_steps.Insert(m_currentStep, m_accessDatabasePage);
+                m_pageControl.Insert(m_pageControl.CurrentPageIndex + 1, m_accessDatabasePage);
             else
-                m_steps.Remove(m_accessDatabasePage);
+                m_pageControl.Remove(m_accessDatabasePage);
+
+            UpdateNavigationButtons();
         }
 
         // Called when the "MySQL" radio button is checked or unchecked.
         private void mysqlRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (mysqlRadioButton.Checked)
-                m_steps.Insert(m_currentStep, m_mySqlDatabasePage);
+                m_pageControl.Insert(m_pageControl.CurrentPageIndex + 1, m_mySqlDatabasePage);
             else
-                m_steps.Remove(m_mySqlDatabasePage);
+                m_pageControl.Remove(m_mySqlDatabasePage);
+
+            UpdateNavigationButtons();
         }
 
         // Called when the "SQL Server" radio button is checked or unchecked.
         private void sqlServerRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (sqlServerRadioButton.Checked)
-                m_steps.Insert(m_currentStep, m_sqlServerDatabasePage);
+                m_pageControl.Insert(m_pageControl.CurrentPageIndex + 1, m_sqlServerDatabasePage);
             else
-                m_steps.Remove(m_sqlServerDatabasePage);
+                m_pageControl.Remove(m_sqlServerDatabasePage);
+
+            UpdateNavigationButtons();
         }
 
         // Called when the "Run initial data script" checkbox is checked or unchecked.
         private void initialDataScriptCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            sampleDataScriptCheckBox.Enabled = !sampleDataScriptCheckBox.Enabled;
+            sampleDataScriptCheckBox.Enabled = initialDataScriptCheckBox.Checked;
         }
 
         // Called when the button is clicked to browse for a location for the Access database file.
@@ -396,16 +424,18 @@ namespace DatabaseSetupUtility
             DialogResult selection = accessDatabaseSaveFileDialog.ShowDialog(this);
 
             if (selection == DialogResult.OK)
-            {
                 accessDatabaseFileLocationTextBox.Text = accessDatabaseSaveFileDialog.FileName;
-            }
         }
 
         // Called when the MySQL setup page is made visible or invisible.
         private void mySqlDatabasePanel_VisibleChanged(object sender, EventArgs e)
         {
             if (m_mySqlSetup == null)
+            {
                 m_mySqlSetup = new MySqlSetup();
+                m_mySqlSetup.ErrorDataReceived += m_mySqlSetup_ErrorDataReceived;
+                m_mySqlSetup.OutputDataReceived += m_mySqlSetup_OutputDataReceived;
+            }
 
             advancedButton.Visible = mySqlDatabasePanel.Visible;
         }
@@ -414,7 +444,11 @@ namespace DatabaseSetupUtility
         private void sqlServerDatabasePanel_VisibleChanged(object sender, EventArgs e)
         {
             if (m_sqlServerSetup == null)
+            {
                 m_sqlServerSetup = new SqlServerSetup();
+                m_sqlServerSetup.ErrorDataReceived += m_sqlServerSetup_ErrorDataReceived;
+                m_sqlServerSetup.OutputDataReceived += m_sqlServerSetup_OutputDataReceived;
+            }
 
             advancedButton.Visible = sqlServerDatabasePanel.Visible;
         }
@@ -422,7 +456,8 @@ namespace DatabaseSetupUtility
         // Called when the "Advanced" button is made visible or invisible.
         private void advancedButton_VisibleChanged(object sender, EventArgs e)
         {
-            m_advancedForm = new AdvancedForm();
+            if (m_advancedForm == null)
+                m_advancedForm = new AdvancedForm();
         }
 
         // Called when the "Advanced" button is clicked.
@@ -540,289 +575,260 @@ namespace DatabaseSetupUtility
         {
             if (databaseSetupPanel.Visible)
             {
-                cancelButton.Enabled = false;
-                backButton.Enabled = false;
-                nextButton.Enabled = false;
-
-                if (accessRadioButton.Checked)
-                    SetUpAccessDatabase();
-                else if (mysqlRadioButton.Checked)
-                    SetUpMySqlDatabase();
-                else
-                    SetUpSqlServerDatabase();
-
-                nextButton.Enabled = true;
+                Thread databaseSetupThread = new Thread(SetUpDatabase);
+                databaseSetupThread.Start();
             }
+            else
+            {
+                m_pageControl.CurrentPage.CanGoBack = false;
+                m_pageControl.CurrentPage.CanCancel = false;
+                databaseSetupTextBox.Text = string.Empty;
+            }
+        }
+        
+        // Called when the setup utility is about to set up the database
+        private void SetUpDatabase()
+        {
+            bool successful = false;
+
+            if (accessRadioButton.Checked)
+                successful = SetUpAccessDatabase();
+            else if (mysqlRadioButton.Checked)
+                successful = SetUpMySqlDatabase();
+            else
+                successful = SetUpSqlServerDatabase();
+
+            if (successful)
+            {
+                m_pageControl.CurrentPage.Accessible = false;
+                m_pageControl.CurrentPage.CanGoForward = true;
+            }
+            else
+            {
+                m_pageControl.CurrentPage.CanGoBack = true;
+                m_pageControl.CurrentPage.CanCancel = true;
+            }
+
+            Invoke(m_updateNavigationButtons);
         }
 
         // Called when the user has asked to set up an access database.
-        private void SetUpAccessDatabase()
+        private bool SetUpAccessDatabase()
         {
-            string filePath = null;
-
-            if (initialDataScriptCheckBox.Checked == false)
-                filePath = Directory.GetCurrentDirectory() + "\\Database scripts\\Access\\openPDC.mdb";
-            else if (sampleDataScriptCheckBox.Checked == false)
-                filePath = Directory.GetCurrentDirectory() + "\\Database scripts\\Access\\openPDC-InitialDataSet.mdb";
-            else
-                filePath = Directory.GetCurrentDirectory() + "\\Database scripts\\Access\\openPDC-SampleDataSet.mdb";
-
-            // Update the progress bar to indicate we found the database file.
-            databaseSetupProgressBar.Value = 2;
-
-            // Copy the file to the specified path.
-            File.Copy(filePath, accessDatabaseFileLocationTextBox.Text);
-            databaseSetupProgressBar.Value = 95;
-
-            // Modify the openPDC configuration file.
-            string configFileName = Directory.GetCurrentDirectory() + "\\openPDC.exe.Config";
-            XmlDocument configFile = new XmlDocument();
-            configFile.Load(configFileName);
-            XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
-
-            foreach (XmlNode child in systemSettings.ChildNodes)
+            try
             {
-                if (child.Attributes["name"].Value == "ConnectionString")
-                    child.Attributes["value"].Value = "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + accessDatabaseFileLocationTextBox.Text;
-                else if (child.Attributes["name"].Value == "DataProviderString")
-                    child.Attributes["value"].Value = "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter";
+                string filePath = null;
+                string destination = accessDatabaseFileLocationTextBox.Text;
+
+                if (initialDataScriptCheckBox.Checked == false)
+                    filePath = Directory.GetCurrentDirectory() + "\\Database scripts\\Access\\openPDC.mdb";
+                else if (sampleDataScriptCheckBox.Checked == false)
+                    filePath = Directory.GetCurrentDirectory() + "\\Database scripts\\Access\\openPDC-InitialDataSet.mdb";
+                else
+                    filePath = Directory.GetCurrentDirectory() + "\\Database scripts\\Access\\openPDC-SampleDataSet.mdb";
+
+                Invoke(m_updateProgressBar, 2);
+                Invoke(m_appendToSetupTextBox, string.Format("Attempting to copy file {0} to {1}...", filePath, destination));
+
+                // Copy the file to the specified path.
+                File.Copy(filePath, destination);
+                Invoke(m_updateProgressBar, 95);
+                Invoke(m_appendToSetupTextBox, "File copy successful.\r\n");
+
+                // Modify the openPDC configuration file.
+                Invoke(m_appendToSetupTextBox, "Attempting to modify openPDC.exe.Config...");
+                string configFileName = Directory.GetCurrentDirectory() + "\\openPDC.exe.Config";
+                XmlDocument configFile = new XmlDocument();
+                configFile.Load(configFileName);
+                XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
+
+                foreach (XmlNode child in systemSettings.ChildNodes)
+                {
+                    if (child.Attributes["name"].Value == "ConnectionString")
+                        child.Attributes["value"].Value = "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + destination;
+                    else if (child.Attributes["name"].Value == "DataProviderString")
+                        child.Attributes["value"].Value = "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter";
+                }
+
+                configFile.Save(configFileName);
+                Invoke(m_updateProgressBar, 100);
+                Invoke(m_appendToSetupTextBox, "Modification of openPDC.exe.Config was successful.");
+                return true;
             }
-
-            configFile.Save(configFileName);
-
-            databaseSetupProgressBar.Value = 100;
+            catch (Exception ex)
+            {
+                Invoke(m_appendToSetupTextBox, ex.Message);
+                return false;
+            }
         }
 
         // Called when the user has asked to set up a MySQL database.
-        private void SetUpMySqlDatabase()
+        private bool SetUpMySqlDatabase()
         {
-            List<string> scriptNames = new List<string>();
-            StringBuilder args = new StringBuilder();
-
-            // Determine which scripts need to be run.
-            scriptNames.Add("openPDC.sql");
-            if (initialDataScriptCheckBox.Checked)
+            try
             {
-                scriptNames.Add("InitialDataSet.sql");
-                if (sampleDataScriptCheckBox.Checked)
-                    scriptNames.Add("SampleDataSet.sql");
-            }
+                List<string> scriptNames = new List<string>();
+                int progress = 0;
 
-            // Set up database connection string.
-            m_mySqlSetup.HostName = mySqlDatabaseHostNameTextBox.Text;
-            m_mySqlSetup.DatabaseName = mySqlDatabaseNameTextBox.Text;
-            m_mySqlSetup.UserName = mySqlDatabaseUserNameTextBox.Text;
-            m_mySqlSetup.Password = mySqlDatabasePasswordTextBox.Text;
+                // Determine which scripts need to be run.
+                scriptNames.Add("openPDC.sql");
+                if (initialDataScriptCheckBox.Checked)
+                {
+                    scriptNames.Add("InitialDataSet.sql");
+                    if (sampleDataScriptCheckBox.Checked)
+                        scriptNames.Add("SampleDataSet.sql");
+                }
 
-            // Set up command line arguments to mysql.exe.
-            args.Append("-u");
-            args.Append(m_mySqlSetup.UserName);
-            args.Append(" -p");
-            args.Append(m_mySqlSetup.Password);
+                // Set up database connection string.
+                m_mySqlSetup.HostName = mySqlDatabaseHostNameTextBox.Text;
+                m_mySqlSetup.DatabaseName = mySqlDatabaseNameTextBox.Text;
+                m_mySqlSetup.UserName = mySqlDatabaseUserNameTextBox.Text;
+                m_mySqlSetup.Password = mySqlDatabasePasswordTextBox.Text;
 
-            foreach (string scriptName in scriptNames)
-            {
-                Process mySqlProcess = null;
-                StreamReader scriptStream = null;
-                StreamWriter processInput = null;
-
-                try
+                foreach (string scriptName in scriptNames)
                 {
                     string scriptPath = Directory.GetCurrentDirectory() + "\\Database scripts\\MySQL\\" + scriptName;
-                    this.Update();
+                    Invoke(m_appendToSetupTextBox, string.Format("Attempting to run {0} script...", scriptName));
 
-                    // Start mysql.exe.
-                    mySqlProcess = new Process();
-                    mySqlProcess.StartInfo.FileName = "mysql.exe";
-                    mySqlProcess.StartInfo.Arguments = args.ToString();
-                    mySqlProcess.StartInfo.UseShellExecute = false;
-                    mySqlProcess.StartInfo.RedirectStandardInput = true;
-                    mySqlProcess.StartInfo.CreateNoWindow = true;
-                    mySqlProcess.Start();
+                    if (!m_mySqlSetup.Execute(scriptPath))
+                        return false;
 
-                    // Send the script as standard input to mysql.exe.
-                    scriptStream = new StreamReader(new FileStream(scriptPath, FileMode.Open, FileAccess.Read));
-                    processInput = mySqlProcess.StandardInput;
-
-                    while (!scriptStream.EndOfStream)
-                    {
-                        string line = scriptStream.ReadLine();
-
-                        if (line.StartsWith("CREATE DATABASE") || line.StartsWith("USE"))
-                            line = line.Replace("openPDC", m_mySqlSetup.DatabaseName);
-
-                        processInput.WriteLine(line);
-                    }
-
-                    // Wait for mysql.exe to finish.
-                    processInput.Close();
-                    mySqlProcess.WaitForExit();
-
-                    if (mySqlProcess.ExitCode != 0)
-                        throw new Exception("Failed to create MySQL database.");
-
-                    // Update the progress bar.
-                    databaseSetupProgressBar.Value += 95 / scriptNames.Count;
+                    progress += 95 / scriptNames.Count;
+                    Invoke(m_updateProgressBar, progress);
+                    Invoke(m_appendToSetupTextBox, string.Format("{0} ran successfully.\r\n", scriptName));
                 }
-                finally
+
+                // Modify the openPDC configuration file.
+                Invoke(m_appendToSetupTextBox, "Attempting to modify openPDC.exe.Config...");
+                string configFileName = Directory.GetCurrentDirectory() + "\\openPDC.exe.Config";
+                XmlDocument configFile = new XmlDocument();
+                configFile.Load(configFileName);
+                XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
+
+                foreach (XmlNode child in systemSettings.ChildNodes)
                 {
-                    // Close streams and processes.
-                    if (scriptStream != null)
-                        scriptStream.Close();
-
-                    if (processInput != null)
-                        processInput.Close();
-
-                    if (mySqlProcess != null)
-                        mySqlProcess.Close();
+                    if (child.Attributes["name"].Value == "ConnectionString")
+                        child.Attributes["value"].Value = m_mySqlSetup.ConnectionString;
+                    else if (child.Attributes["name"].Value == "DataProviderString")
+                        child.Attributes["value"].Value = "AssemblyName={MySql.Data, Version=5.2.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
                 }
+
+                configFile.Save(configFileName);
+                Invoke(m_updateProgressBar, 100);
+                Invoke(m_appendToSetupTextBox, "Modification of openPDC.exe.Config was successful.");
+
+                return true;
             }
-
-            // Modify the openPDC configuration file.
-            string configFileName = Directory.GetCurrentDirectory() + "\\openPDC.exe.Config";
-            XmlDocument configFile = new XmlDocument();
-            configFile.Load(configFileName);
-            XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
-
-            foreach (XmlNode child in systemSettings.ChildNodes)
+            catch (Exception ex)
             {
-                if (child.Attributes["name"].Value == "ConnectionString")
-                    child.Attributes["value"].Value = m_mySqlSetup.ConnectionString;
-                else if (child.Attributes["name"].Value == "DataProviderString")
-                    child.Attributes["value"].Value = "AssemblyName={MySql.Data, Version=5.2.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
+                Invoke(m_appendToSetupTextBox, ex.Message);
+                return false;
             }
-
-            configFile.Save(configFileName);
-            
-            databaseSetupProgressBar.Value = 100;
         }
 
         // Called when the user has asked to set up a SQL Server database.
-        private void SetUpSqlServerDatabase()
+        private bool SetUpSqlServerDatabase()
         {
-            List<string> scriptNames = new List<string>();
-            StringBuilder args = new StringBuilder();
-
-            // Determine which scripts need to be run.
-            scriptNames.Add("openPDC.sql");
-            if (initialDataScriptCheckBox.Checked)
+            try
             {
-                scriptNames.Add("InitialDataSet.sql");
-                if (sampleDataScriptCheckBox.Checked)
-                    scriptNames.Add("SampleDataSet.sql");
-            }
+                List<string> scriptNames = new List<string>();
+                int progress = 0;
 
-            // Set up database connection string.
-            m_sqlServerSetup.HostName = sqlServerDatabaseHostNameTextBox.Text;
-            m_sqlServerSetup.DatabaseName = sqlServerDatabaseNameTextBox.Text;
-            m_sqlServerSetup.UserName = sqlServerDatabaseUserNameTextBox.Text;
-            m_sqlServerSetup.Password = sqlServerDatabasePasswordTextBox.Text;
-
-            // Command line argument for host name.
-            args.Append("-S ");
-            args.Append(m_sqlServerSetup.HostName);
-
-            // Command line argument for user name.
-            if (!string.IsNullOrEmpty(m_sqlServerSetup.UserName))
-            {
-                args.Append(" -U ");
-                args.Append(m_sqlServerSetup.UserName);
-            }
-
-            // Command line argument for password.
-            if (!string.IsNullOrEmpty(m_sqlServerSetup.Password))
-            {
-                args.Append(" -P ");
-                args.Append(m_sqlServerSetup.Password);
-            }
-
-            // Command line argument for input file.
-            args.Append(" -i ");
-
-            foreach (string scriptName in scriptNames)
-            {
-                Process sqlCmdProcess = null;
-                StreamReader scriptStream = null;
-                StreamWriter copyStream = null;
-                string scriptPath = Directory.GetCurrentDirectory() + "\\Database scripts\\SQL Server\\" + scriptName;
-                string copyPath = Path.GetTempFileName();
-
-                try
+                // Determine which scripts need to be run.
+                scriptNames.Add("openPDC.sql");
+                if (initialDataScriptCheckBox.Checked)
                 {
-                    // Copy the script to a temporary file with the proper database name.
-                    scriptStream = new StreamReader(new FileStream(scriptPath, FileMode.Open, FileAccess.Read));
-                    copyStream = new StreamWriter(new FileStream(copyPath, FileMode.Create, FileAccess.Write));
-
-                    while (!scriptStream.EndOfStream)
-                    {
-                        string line = scriptStream.ReadLine();
-
-                        if (line.StartsWith("CREATE DATABASE") || line.StartsWith("USE"))
-                            line = line.Replace("openPDC", m_sqlServerSetup.DatabaseName);
-
-                        copyStream.WriteLine(line);
-                    }
-
-                    copyStream.Close();
-
-                    // Start sqlcmd.exe.
-                    sqlCmdProcess = new Process();
-                    sqlCmdProcess.StartInfo.FileName = "sqlcmd.exe";
-                    sqlCmdProcess.StartInfo.Arguments = args.ToString() + '"' + copyPath + '"';
-                    sqlCmdProcess.StartInfo.UseShellExecute = false;
-                    sqlCmdProcess.StartInfo.CreateNoWindow = true;
-                    sqlCmdProcess.Start();
-                    sqlCmdProcess.WaitForExit();
-
-                    if (sqlCmdProcess.ExitCode != 0)
-                        throw new Exception("Failed to create SQL Server database.");
-
-                    // Update the progress bar.
-                    databaseSetupProgressBar.Value += 95 / scriptNames.Count;
+                    scriptNames.Add("InitialDataSet.sql");
+                    if (sampleDataScriptCheckBox.Checked)
+                        scriptNames.Add("SampleDataSet.sql");
                 }
-                finally
+
+                // Set up database connection string.
+                m_sqlServerSetup.HostName = sqlServerDatabaseHostNameTextBox.Text;
+                m_sqlServerSetup.DatabaseName = sqlServerDatabaseNameTextBox.Text;
+                m_sqlServerSetup.UserName = sqlServerDatabaseUserNameTextBox.Text;
+                m_sqlServerSetup.Password = sqlServerDatabasePasswordTextBox.Text;
+
+                foreach (string scriptName in scriptNames)
                 {
-                    // Close streams and processes.
-                    if (scriptStream != null)
-                        scriptStream.Close();
+                    string scriptPath = Directory.GetCurrentDirectory() + "\\Database scripts\\SQL Server\\" + scriptName;
+                    Invoke(m_appendToSetupTextBox, string.Format("Attempting to run {0} script...", scriptName));
 
-                    if (copyStream != null)
-                        copyStream.Close();
+                    if (!m_sqlServerSetup.Execute(scriptPath))
+                        return false;
 
-                    if (sqlCmdProcess != null)
-                        sqlCmdProcess.Close();
-
-                    // Delete the temporary file.
-                    if (File.Exists(copyPath))
-                        File.Delete(copyPath);
+                    progress += 95 / scriptNames.Count;
+                    Invoke(m_updateProgressBar, progress);
+                    Invoke(m_appendToSetupTextBox, string.Format("{0} ran successfully.\r\n", scriptName));
                 }
+
+                // Modify the openPDC configuration file.
+                Invoke(m_appendToSetupTextBox, "Attempting to modify openPDC.exe.Config...");
+                string configFileName = Directory.GetCurrentDirectory() + "\\openPDC.exe.Config";
+                XmlDocument configFile = new XmlDocument();
+                configFile.Load(configFileName);
+                XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
+
+                foreach (XmlNode child in systemSettings.ChildNodes)
+                {
+                    if (child.Attributes["name"].Value == "ConnectionString")
+                        child.Attributes["value"].Value = m_sqlServerSetup.ConnectionString;
+                    else if (child.Attributes["name"].Value == "DataProviderString")
+                        child.Attributes["value"].Value = "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter";
+                }
+
+                configFile.Save(configFileName);
+                Invoke(m_updateProgressBar, 100);
+                Invoke(m_appendToSetupTextBox, "Modification of openPDC.exe.Config was successful.");
+
+                return true;
             }
-
-            // Modify the openPDC configuration file.
-            string configFileName = Directory.GetCurrentDirectory() + "\\openPDC.exe.Config";
-            XmlDocument configFile = new XmlDocument();
-            configFile.Load(configFileName);
-            XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
-
-            foreach (XmlNode child in systemSettings.ChildNodes)
+            catch (Exception ex)
             {
-                if (child.Attributes["name"].Value == "ConnectionString")
-                    child.Attributes["value"].Value = m_sqlServerSetup.ConnectionString;
-                else if (child.Attributes["name"].Value == "DataProviderString")
-                    child.Attributes["value"].Value = "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter";
+                Invoke(m_appendToSetupTextBox, ex.Message);
+                return false;
             }
-
-            configFile.Save(configFileName);
-
-            databaseSetupProgressBar.Value = 100;
         }
 
-        // Called when the last page is made visible.
-        private void setupFinishedPanel_VisibleChanged(object sender, EventArgs e)
+        // Called when error output is received from mysql.exe.
+        private void m_mySqlSetup_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
-            backButton.Enabled = false;
+            Invoke(m_appendToSetupTextBox, e.Data);
+        }
+
+        // Called when output is received from mysql.exe.
+        private void m_mySqlSetup_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            Invoke(m_appendToSetupTextBox, e.Data);
+        }
+
+        // Called when error output is received from sqlcmd.exe.
+        private void m_sqlServerSetup_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            Invoke(m_appendToSetupTextBox, e.Data);
+        }
+
+        // Called when output is received from sqlcmd.exe.
+        private void m_sqlServerSetup_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            Invoke(m_appendToSetupTextBox, e.Data);
+        }
+
+        // Appends a line of text to the databaseSetupTextBox.
+        private void AppendToSetupTextBox(string line)
+        {
+            databaseSetupTextBox.AppendText(line + "\r\n");
+        }
+
+        // Updates the progress bar.
+        private void UpdateProgressBar(int value)
+        {
+            databaseSetupProgressBar.Value = value;
         }
 
         #endregion
+
+
+
     }
 }

@@ -234,16 +234,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TVA;
+using System.Diagnostics;
+using System.IO;
 
 namespace DatabaseSetupUtility
 {
     /// <summary>
-    /// This class is used to aid in the manipulation of a SQL Server connection string.
+    /// This class is used to aid in the manipulation of a SQL Server connection string as well as running the sqlcmd.exe process.
     /// </summary>
     public class SqlServerSetup
     {
 
         #region [ Members ]
+
+        // Events
+
+        /// <summary>
+        /// This event is triggered when error data is received while running a SQL Script.
+        /// </summary>
+        public event DataReceivedEventHandler ErrorDataReceived;
+
+        /// <summary>
+        /// This event is triggered when output data is received while running a SQL Script.
+        /// </summary>
+        public event DataReceivedEventHandler OutputDataReceived;
 
         // Fields
 
@@ -356,6 +370,109 @@ namespace DatabaseSetupUtility
             {
                 m_settings = value.ParseKeyValuePairs();
             }
+        }
+
+        #endregion
+
+        #region [ Methods ]
+
+        /// <summary>
+        /// Executes a SQL script using the SQL Server database engine.
+        /// </summary>
+        /// <param name="scriptPath">The path to the SQL Server script to be executed.</param>
+        /// <returns>True if the script executed successfully. False otherwise.</returns>
+        public bool Execute(string scriptPath)
+        {
+            Process sqlCmdProcess = null;
+            StreamReader scriptStream = null;
+            StreamWriter copyStream = null;
+            string copyPath = Path.GetTempFileName();
+
+            try
+            {
+                // Set up arguments for sqlcmd.exe.
+                StringBuilder args = new StringBuilder();
+
+                args.Append("-b -S ");
+                args.Append(HostName);
+
+                if (!string.IsNullOrEmpty(UserName))
+                {
+                    args.Append(" -U ");
+                    args.Append(UserName);
+                }
+
+                if (!string.IsNullOrEmpty(Password))
+                {
+                    args.Append(" -P ");
+                    args.Append(Password);
+                }
+
+                args.Append(" -i ");
+
+                // Copy the script to a temporary file with the proper database name.
+                scriptStream = new StreamReader(new FileStream(scriptPath, FileMode.Open, FileAccess.Read));
+                copyStream = new StreamWriter(new FileStream(copyPath, FileMode.Create, FileAccess.Write));
+
+                while (!scriptStream.EndOfStream)
+                {
+                    string line = scriptStream.ReadLine();
+
+                    if (line.StartsWith("CREATE DATABASE") || line.StartsWith("ALTER DATABASE") || line.StartsWith("USE"))
+                        line = line.Replace("openPDC", DatabaseName);
+
+                    copyStream.WriteLine(line);
+                }
+
+                copyStream.Close();
+
+                // Start sqlcmd.exe.
+                sqlCmdProcess = new Process();
+                sqlCmdProcess.StartInfo.FileName = "sqlcmd.exe";
+                sqlCmdProcess.StartInfo.Arguments = args.ToString() + '"' + copyPath + '"';
+                sqlCmdProcess.StartInfo.UseShellExecute = false;
+                sqlCmdProcess.StartInfo.RedirectStandardError = true;
+                sqlCmdProcess.ErrorDataReceived += sqlCmdProcess_ErrorDataReceived;
+                sqlCmdProcess.StartInfo.RedirectStandardOutput = true;
+                sqlCmdProcess.OutputDataReceived += sqlCmdProcess_OutputDataReceived;
+                sqlCmdProcess.StartInfo.CreateNoWindow = true;
+                sqlCmdProcess.Start();
+
+                sqlCmdProcess.BeginErrorReadLine();
+                sqlCmdProcess.BeginOutputReadLine();
+
+                sqlCmdProcess.WaitForExit();
+
+                return sqlCmdProcess.ExitCode == 0;
+            }
+            finally
+            {
+                // Close streams and processes.
+                if (scriptStream != null)
+                    scriptStream.Close();
+
+                if (copyStream != null)
+                    copyStream.Close();
+
+                if (sqlCmdProcess != null)
+                    sqlCmdProcess.Close();
+
+                // Delete the temporary file.
+                if (File.Exists(copyPath))
+                    File.Delete(copyPath);
+            }
+        }
+
+        private void sqlCmdProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (ErrorDataReceived != null)
+                ErrorDataReceived(sender, e);
+        }
+
+        private void sqlCmdProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (OutputDataReceived != null)
+                OutputDataReceived(sender, e);
         }
 
         #endregion

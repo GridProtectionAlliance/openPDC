@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  MySqlSetup.cs - Gbtc
+//  PageControl.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  06/29/2010 - Stephen C. Wills
+//  07/01/2010 - Stephen C. Wills
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -233,142 +233,95 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TVA;
-using System.Diagnostics;
-using System.IO;
+using System.Windows.Forms;
 
 namespace DatabaseSetupUtility
 {
     /// <summary>
-    /// This class is used to aid in the manipulation of a MySQL connection string as well as running the mysql.exe process.
+    /// This class represents a list of pages that keeps track of the previous, current, and next pages to be displayed.
     /// </summary>
-    public class MySqlSetup
+    public class PageControl : List<Page>
     {
 
         #region [ Members ]
 
-        // Events
-
-        /// <summary>
-        /// This event is triggered when error data is received while executing a SQL Script.
-        /// </summary>
-        public event DataReceivedEventHandler ErrorDataReceived;
-
-        /// <summary>
-        /// This event is triggered when output data is received while executing a SQL Script.
-        /// </summary>
-        public event DataReceivedEventHandler OutputDataReceived;
-
         // Fields
 
-        private Dictionary<string, string> m_settings;
-
-        #endregion
-
-        #region [ Constructors ]
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="MySqlSetup"/> class.
-        /// </summary>
-        public MySqlSetup()
-        {
-            m_settings = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
-        }
+        private int m_currentPage;
 
         #endregion
 
         #region [ Properties ]
 
         /// <summary>
-        /// Gets or sets the host name of the MySQL database.
+        /// Gets the index of the current page.
         /// </summary>
-        public string HostName
+        public int CurrentPageIndex
         {
             get
             {
-                return m_settings["Server"];
-            }
-            set
-            {
-                m_settings["Server"] = value;
+                return m_currentPage;
             }
         }
 
         /// <summary>
-        /// Gets or sets the name of the MySQL database.
+        /// Gets the page before the current page.
         /// </summary>
-        public string DatabaseName
+        public Page PreviousPage
         {
             get
             {
-                return m_settings["Database"];
-            }
-            set
-            {
-                m_settings["Database"] = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the user name for the user whom has access to the database.
-        /// </summary>
-        public string UserName
-        {
-            get
-            {
-                if (m_settings.ContainsKey("Uid"))
-                    return m_settings["Uid"];
+                if (m_currentPage > 0)
+                    return this[m_currentPage - 1];
                 else
                     return null;
             }
-            set
+        }
+
+        /// <summary>
+        /// Gets the current page.
+        /// </summary>
+        public Page CurrentPage
+        {
+            get
             {
-                if (!string.IsNullOrEmpty(value))
-                    m_settings["Uid"] = value;
+                return this[m_currentPage];
             }
         }
 
         /// <summary>
-        /// Gets or sets the password for the user whom has access to the database.
+        /// Gets the page after the current page.
         /// </summary>
-        public string Password
+        public Page NextPage
         {
             get
             {
-                if (m_settings.ContainsKey("Pwd"))
-                    return m_settings["Pwd"];
+                if (m_currentPage + 1 < Count)
+                    return this[m_currentPage + 1];
                 else
                     return null;
             }
-            set
+        }
+
+        /// <summary>
+        /// Determines whether the previous page is accessible.
+        /// </summary>
+        public bool PreviousPageAccessible
+        {
+            get
             {
-                if (!string.IsNullOrEmpty(value))
-                    m_settings["Pwd"] = value;
+                return (PreviousPage != null) && PreviousPage.Accessible && CurrentPage.CanGoBack;
             }
         }
 
         /// <summary>
-        /// Gets or sets the connection string used to access the database.
+        /// Determines whether the next page is accessible.
         /// </summary>
-        public string ConnectionString
+        public bool NextPageAccessible
         {
             get
             {
-                StringBuilder builder = new StringBuilder();
-
-                foreach (string key in m_settings.Keys)
-                {
-                    builder.Append(key);
-                    builder.Append('=');
-                    builder.Append(m_settings[key]);
-                    builder.Append("; ");
-                }
-
-                return builder.ToString();
-            }
-            set
-            {
-                m_settings = value.ParseKeyValuePairs();
+                return (NextPage == null) || (NextPage.Accessible && CurrentPage.CanGoForward);
             }
         }
 
@@ -377,100 +330,32 @@ namespace DatabaseSetupUtility
         #region [ Methods ]
 
         /// <summary>
-        /// Executes a SQL Script using the MySQL database engine.
+        /// Moves to the next page.
         /// </summary>
-        /// <param name="scriptPath">The path of the script to be executed.</param>
-        /// <returns>True if the script executes successfully. False otherwise.</returns>
-        public bool Execute(string scriptPath)
+        public void GoToNextPage()
         {
-            Process mySqlProcess = null;
-            StreamReader scriptStream = null;
-            StreamWriter processInput = null;
-
-            try
+            if (NextPageAccessible && CurrentPage.UserInputIsValid())
             {
-                // Set up arguments for mysql.exe.
-                StringBuilder args = new StringBuilder();
-
-                args.Append("-h");
-                args.Append(HostName);
-
-                if (!string.IsNullOrEmpty(UserName))
-                {
-                    args.Append(" -u");
-                    args.Append(UserName);
-                }
-
-                if (!string.IsNullOrEmpty(Password))
-                {
-                    args.Append(" -p");
-                    args.Append(Password);
-                }
-
-                // Start mysql.exe.
-                mySqlProcess = new Process();
-                mySqlProcess.StartInfo.FileName = "mysql.exe";
-                mySqlProcess.StartInfo.Arguments = args.ToString();
-                mySqlProcess.StartInfo.UseShellExecute = false;
-                mySqlProcess.StartInfo.RedirectStandardError = true;
-                mySqlProcess.ErrorDataReceived += mySqlProcess_ErrorDataReceived;
-                mySqlProcess.StartInfo.RedirectStandardInput = true;
-                mySqlProcess.StartInfo.RedirectStandardOutput = true;
-                mySqlProcess.OutputDataReceived += mySqlProcess_OutputDataReceived;
-                mySqlProcess.StartInfo.CreateNoWindow = true;
-                mySqlProcess.Start();
-
-                mySqlProcess.BeginErrorReadLine();
-                mySqlProcess.BeginOutputReadLine();
-
-                // Send the script as standard input to mysql.exe.
-                scriptStream = new StreamReader(new FileStream(scriptPath, FileMode.Open, FileAccess.Read));
-                processInput = mySqlProcess.StandardInput;
-
-                while (!scriptStream.EndOfStream)
-                {
-                    string line = scriptStream.ReadLine();
-
-                    if (line.StartsWith("CREATE DATABASE") || line.StartsWith("USE"))
-                        line = line.Replace("openPDC", DatabaseName);
-
-                    processInput.WriteLine(line);
-                }
-
-                // Wait for mysql.exe to finish.
-                processInput.Close();
-                mySqlProcess.WaitForExit();
-
-                return mySqlProcess.ExitCode == 0;
-            }
-            finally
-            {
-                // Close streams and processes.
-                if (scriptStream != null)
-                    scriptStream.Close();
-
-                if (processInput != null)
-                    processInput.Close();
-
-                if (mySqlProcess != null)
-                    mySqlProcess.Close();
+                this[m_currentPage].Visible = false;
+                m_currentPage++;
+                this[m_currentPage].Visible = true;
             }
         }
 
-        private void mySqlProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        /// <summary>
+        /// Moves to the previous page.
+        /// </summary>
+        public void GoToPreviousPage()
         {
-            if (ErrorDataReceived != null)
-                ErrorDataReceived(sender, e);
-        }
-
-        private void mySqlProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (OutputDataReceived != null)
-                OutputDataReceived(sender, e);
+            if (PreviousPageAccessible)
+            {
+                this[m_currentPage].Visible = false;
+                m_currentPage--;
+                this[m_currentPage].Visible = true;
+            }
         }
 
         #endregion
-        
         
     }
 }

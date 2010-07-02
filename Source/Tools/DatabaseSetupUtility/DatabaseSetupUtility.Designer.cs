@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DatabaseSetupUtility));
             this.nextButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.backButton = new System.Windows.Forms.Button();
@@ -72,6 +73,7 @@
             this.prepareForSetupTitleLabel = new System.Windows.Forms.Label();
             this.advancedButton = new System.Windows.Forms.Button();
             this.databaseSetupPanel = new System.Windows.Forms.Panel();
+            this.databaseSetupTextBox = new System.Windows.Forms.TextBox();
             this.databaseSetupInstructionLabel = new System.Windows.Forms.Label();
             this.databaseSetupTitleLabel = new System.Windows.Forms.Label();
             this.databaseSetupProgressBar = new System.Windows.Forms.ProgressBar();
@@ -202,10 +204,10 @@
             this.accessRadioButton.Checked = true;
             this.accessRadioButton.Location = new System.Drawing.Point(134, 82);
             this.accessRadioButton.Name = "accessRadioButton";
-            this.accessRadioButton.Size = new System.Drawing.Size(60, 17);
+            this.accessRadioButton.Size = new System.Drawing.Size(174, 17);
             this.accessRadioButton.TabIndex = 2;
             this.accessRadioButton.TabStop = true;
-            this.accessRadioButton.Text = "Access";
+            this.accessRadioButton.Text = "Access (32-bit installations only)";
             this.accessRadioButton.UseVisualStyleBackColor = true;
             this.accessRadioButton.CheckedChanged += new System.EventHandler(this.accessRadioButton_CheckedChanged);
             // 
@@ -515,6 +517,7 @@
             // 
             // databaseSetupPanel
             // 
+            this.databaseSetupPanel.Controls.Add(this.databaseSetupTextBox);
             this.databaseSetupPanel.Controls.Add(this.databaseSetupInstructionLabel);
             this.databaseSetupPanel.Controls.Add(this.databaseSetupTitleLabel);
             this.databaseSetupPanel.Controls.Add(this.databaseSetupProgressBar);
@@ -524,6 +527,16 @@
             this.databaseSetupPanel.TabIndex = 2;
             this.databaseSetupPanel.Visible = false;
             this.databaseSetupPanel.VisibleChanged += new System.EventHandler(this.databaseSetupPanel_VisibleChanged);
+            // 
+            // databaseSetupTextBox
+            // 
+            this.databaseSetupTextBox.Location = new System.Drawing.Point(28, 69);
+            this.databaseSetupTextBox.Multiline = true;
+            this.databaseSetupTextBox.Name = "databaseSetupTextBox";
+            this.databaseSetupTextBox.ReadOnly = true;
+            this.databaseSetupTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.databaseSetupTextBox.Size = new System.Drawing.Size(364, 140);
+            this.databaseSetupTextBox.TabIndex = 3;
             // 
             // databaseSetupInstructionLabel
             // 
@@ -546,7 +559,7 @@
             // 
             // databaseSetupProgressBar
             // 
-            this.databaseSetupProgressBar.Location = new System.Drawing.Point(26, 153);
+            this.databaseSetupProgressBar.Location = new System.Drawing.Point(24, 215);
             this.databaseSetupProgressBar.Name = "databaseSetupProgressBar";
             this.databaseSetupProgressBar.Size = new System.Drawing.Size(368, 23);
             this.databaseSetupProgressBar.TabIndex = 0;
@@ -560,7 +573,6 @@
             this.setupFinishedPanel.Size = new System.Drawing.Size(415, 257);
             this.setupFinishedPanel.TabIndex = 3;
             this.setupFinishedPanel.Visible = false;
-            this.setupFinishedPanel.VisibleChanged += new System.EventHandler(this.setupFinishedPanel_VisibleChanged);
             // 
             // label4
             // 
@@ -586,18 +598,21 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(439, 310);
-            this.Controls.Add(this.databaseSetupPanel);
             this.Controls.Add(this.advancedButton);
             this.Controls.Add(this.backButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.nextButton);
+            this.Controls.Add(this.databaseTypePanel);
+            this.Controls.Add(this.setupFinishedPanel);
+            this.Controls.Add(this.databaseSetupPanel);
             this.Controls.Add(this.prepareForSetupPanel);
             this.Controls.Add(this.sqlServerDatabasePanel);
             this.Controls.Add(this.mySqlDatabasePanel);
             this.Controls.Add(this.accessDatabasePanel);
-            this.Controls.Add(this.databaseTypePanel);
-            this.Controls.Add(this.setupFinishedPanel);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
+            this.MaximizeBox = false;
             this.Name = "DatabaseSetupUtility";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Database Setup Utility";
@@ -673,6 +688,7 @@
         private System.Windows.Forms.Panel setupFinishedPanel;
         private System.Windows.Forms.Label setupFinishedTitleLabel;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox databaseSetupTextBox;
     }
 }
 

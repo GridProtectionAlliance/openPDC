@@ -247,11 +247,19 @@ namespace DatabaseSetupUtility
 
         // Delegates
 
+        /// <summary>
+        /// This defines the signature of methods that can be used for user input validation.
+        /// </summary>
+        /// <returns>True if the user input is valid. False otherwise.</returns>
         public delegate bool UserInputValidationFunctionSignature();
 
         // Fields
 
         private Panel m_pagePanel;
+        private bool m_canGoBack;
+        private bool m_canGoForward;
+        private bool m_accessible;
+        private bool m_canCancel;
         private UserInputValidationFunctionSignature m_userInputValidationFunction;
 
         #endregion
@@ -265,6 +273,10 @@ namespace DatabaseSetupUtility
         public Page(Panel pagePanel)
         {
             m_pagePanel = pagePanel;
+            m_canGoBack = true;
+            m_canGoForward = true;
+            m_accessible = true;
+            m_canCancel = true;
         }
 
         #endregion
@@ -305,6 +317,66 @@ namespace DatabaseSetupUtility
             get
             {
                 return m_pagePanel;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the user can move back to the previous page from this page.
+        /// </summary>
+        public bool CanGoBack
+        {
+            get
+            {
+                return m_canGoBack;
+            }
+            set
+            {
+                m_canGoBack = value;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the user can move forward to the next page from this page.
+        /// </summary>
+        public bool CanGoForward
+        {
+            get
+            {
+                return m_canGoForward;
+            }
+            set
+            {
+                m_canGoForward = value;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the user can reach this page from another page.
+        /// </summary>
+        public bool Accessible
+        {
+            get
+            {
+                return m_accessible;
+            }
+            set
+            {
+                m_accessible = value;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the user can cancel the setup from this page.
+        /// </summary>
+        public bool CanCancel
+        {
+            get
+            {
+                return m_canCancel;
+            }
+            set
+            {
+                m_canCancel = value;
             }
         }
 
