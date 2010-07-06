@@ -327,6 +327,7 @@ namespace openPDC
                 // modify configuration file in programs folder
                 Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "DatabaseSetupUtility.exe", "RUNASADMIN", RegistryValueKind.String);
                 Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigurationEditor.exe", "RUNASADMIN", RegistryValueKind.String);
+                Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigCrypter.exe", "RUNASADMIN", RegistryValueKind.String);
             }
             catch
             {
@@ -348,6 +349,7 @@ namespace openPDC
                 {
                     settings.DeleteValue(targetDir + "DatabaseSetupUtility.exe");
                     settings.DeleteValue(targetDir + "ConfigurationEditor.exe");
+                    settings.DeleteValue(targetDir + "ConfigCrypter.exe");
                 }
             }
             catch
