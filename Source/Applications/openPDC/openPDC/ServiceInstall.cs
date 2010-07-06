@@ -255,32 +255,54 @@ namespace openPDC
 
             try
             {
-                // Add company name and acronym to configuration file
-                string targetDir = FilePath.AddPathSuffix(Context.Parameters["DP_TargetDir"].ToString());
+                // Open the configuration file as an XML document.
+                string targetDir = FilePath.AddPathSuffix(Context.Parameters["DP_TargetDir"]);
                 string configFilePath = targetDir + "openPDC.exe.Config";
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(configFilePath);
                 XmlNode node = xmlDoc.SelectSingleNode("configuration/categorizedSettings/systemSettings");
-                XmlNode child = node.Attributes.GetNamedItem("CompanyName");
+                XmlNode companyName = null;
+                XmlNode companyAcronym = null;
 
-                if (child == null)
+                // Find the CompanyName and CompanyAcronym parameters if they already exist.
+                foreach (XmlNode child in node.ChildNodes)
                 {
-                    child = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
-                    child.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyName"));
-                    child.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyName"].ToString()));
-                    child.Attributes.Append(CreateAttribute(xmlDoc, "description", "The name of the company who owns this instance of the openPDC."));
-                    child.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
-                    node.AppendChild(child);
+                    if (child.Attributes["name"].Value == "CompanyName")
+                        companyName = child;
+                    else if (child.Attributes["name"].Value == "CompanyAcronym")
+                        companyAcronym = child;
 
-                    child = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
-                    child.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyAcronym"));
-                    child.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyAcronym"].ToString()));
-                    child.Attributes.Append(CreateAttribute(xmlDoc, "description", "The acronym representing the company who owns this instance of the openPDC."));
-                    child.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
-                    node.AppendChild(child);
-
-                    xmlDoc.Save(configFilePath);
+                    if (companyName != null && companyAcronym != null)
+                        break;
                 }
+
+                // Modify or add the CompanyName parameter.
+                if (companyName != null)
+                    companyName.Attributes["value"].Value = Context.Parameters["DP_CompanyName"];
+                else
+                {
+                    companyName = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
+                    companyName.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyName"));
+                    companyName.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyName"]));
+                    companyName.Attributes.Append(CreateAttribute(xmlDoc, "description", "The name of the company who owns this instance of the openPDC."));
+                    companyName.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
+                    node.AppendChild(companyName);
+                }
+
+                // Modify or add the CompanyAcronym parameter.
+                if (companyAcronym != null)
+                    companyAcronym.Attributes["value"].Value = Context.Parameters["DP_CompanyAcronym"];
+                else
+                {
+                    companyAcronym = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
+                    companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyAcronym"));
+                    companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyAcronym"]));
+                    companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "description", "The acronym representing the company who owns this instance of the openPDC."));
+                    companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
+                    node.AppendChild(companyAcronym);
+                }
+
+                xmlDoc.Save(configFilePath);
 
                 // Run database setup utility
                 Process databaseSetup = null;
