@@ -819,6 +819,7 @@ namespace DatabaseSetupUtility
             {
                 m_pageControl.CurrentPage.CanGoBack = true;
                 m_pageControl.CurrentPage.CanCancel = true;
+                Invoke(m_updateProgressBar, 0);
             }
 
             Invoke(m_updateNavigationButtons);
