@@ -2035,7 +2035,7 @@ namespace openPDCManager.Web.Data
 			catch (Exception ex)
 			{
 				LogException("SaveHistorian", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Node List", SystemMessage = ex.Message };
+				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Historian Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
