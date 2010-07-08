@@ -1837,7 +1837,7 @@ namespace TVA.PhasorProtocols
             if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Node;")) == 0)
             {
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Creating default record for Node..."));
-                connection.ExecuteNonQuery("INSERT INTO Node(Name, Description, Master, LoadOrder, Enabled) VALUES('Default', 'Default node', 1, 0, 1);");
+                connection.ExecuteNonQuery("INSERT INTO Node(Name, Description, TimeSeriesDataServiceUrl, RemoteStatusServiceUrl, RealTimeStatisticServiceUrl, Master, LoadOrder, Enabled) VALUES('Default', 'Default node', 'http://localhost:6152/historian', 'Server=localhost:8500', 'http://localhost:6052/historian', 1, 0, 1);");
                 connection.ExecuteNonQuery("UPDATE Node SET ID=" + nodeIDQueryString + ";");
             }
         }
