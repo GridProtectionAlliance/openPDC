@@ -1769,7 +1769,8 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", device.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
-                            connection.ExecuteNonQuery(string.Format("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES({0}, {1}, '{2}', {3}, NULL, '{4}', '{5}', 1);", statHistorianID, device.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description));
+                            IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, device.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description);
+                            command.ExecuteNonQuery();
                         }
                     }
                 }
@@ -1792,7 +1793,8 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", inputStream.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
-                            connection.ExecuteNonQuery(string.Format("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES({0}, {1}, '{2}', {3}, NULL, '{4}', '{5}', 1);", statHistorianID, inputStream.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description));
+                            IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, inputStream.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description);
+                            command.ExecuteNonQuery();
                         }
                     }
                 }
@@ -1818,11 +1820,45 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} Statistic for {1}", outputStream.Field<string>("Name"), statistic.Field<string>("Description"));
 
-                            connection.ExecuteNonQuery(string.Format("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES({0}, NULL, '{1}', {2}, NULL, '{3}', '{4}', 1);", statHistorianID, pointTag, statSignalTypeID, signalReference, description));
+                            IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, NULL, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, pointTag, statSignalTypeID, signalReference, description);
+                            command.ExecuteNonQuery();
                         }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates and returns a parameterized SQL command. Parameter names are embedded in the SQL statement
+        /// passed as a parameter to this method. This method does very rudimentary parsing of the SQL statement so parameter
+        /// names should start with the '@' character and should be surrounded by either spaces, parentheses, or commas.
+        /// </summary>
+        /// <param name="connection">The database connection.</param>
+        /// <param name="sql">The SQL statement.</param>
+        /// <param name="args">The parameters for the command in the order that they appear in the SQL statement.</param>
+        /// <returns>The parameterized command.</returns>
+        private static IDbCommand CreateParameterizedCommand(IDbConnection connection, string sql, params object[] args)
+        {
+            string[] tokens = sql.Split(' ', '(', ')', ',');
+            IDbCommand command = connection.CreateCommand();
+            int i = 0;
+
+            foreach (string token in tokens)
+            {
+                if (token.StartsWith("@") && !command.Parameters.Contains(token))
+                {
+                    IDbDataParameter parameter = command.CreateParameter();
+
+                    parameter.ParameterName = token;
+                    parameter.Value = args[i++];
+                    parameter.Direction = ParameterDirection.Input;
+
+                    command.Parameters.Add(parameter);
+                }
+            }
+
+            command.CommandText = sql;
+            return command;
         }
         
         /// <summary>
