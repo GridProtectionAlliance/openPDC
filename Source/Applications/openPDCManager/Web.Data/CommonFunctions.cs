@@ -1548,6 +1548,7 @@ namespace openPDCManager.Web.Data
 			}
 		}
 
+        public static string digitalLabel = "DIGITAL0        DIGITAL1        DIGITAL2        DIGITAL3        DIGITAL4        DIGITAL5        DIGITAL6        DIGITAL7        DIGITAL8        DIGITAL9        DIGITAL10       DIGITAL11       DIGITAL12       DIGITAL13       DIGITAL14       DIGITAL15       ";
 		public static string AddDevices(int outputStreamID, Dictionary<int, string> devicesToBeAdded, bool addDigitals, bool addAnalogs)
 		{
 			try
@@ -1595,8 +1596,9 @@ namespace openPDCManager.Web.Data
 					List<Measurement> measurementList = new List<Measurement>();
 					measurementList = GetMeasurementsByDevice(deviceInfo.Key);
 
+                    int analogIndex = 0; 
 					foreach (Measurement measurement in measurementList)
-					{
+					{                                               
                         OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
                         outputStreamMeasurement.NodeID = device.NodeID;
                         outputStreamMeasurement.AdapterID = outputStreamID;
@@ -1613,11 +1615,12 @@ namespace openPDCManager.Web.Data
 								OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
 								outputStreamDeviceAnalog.NodeID = device.NodeID;
 								outputStreamDeviceAnalog.OutputStreamDeviceID = savedOutputStreamDeviceID;
-								outputStreamDeviceAnalog.Label = measurement.PointTag;
+                                outputStreamDeviceAnalog.Label = device.Acronym.Length > 12 ? device.Acronym.Substring(0, 12) + ":A" + analogIndex.ToString() : device.Acronym + ":A" + analogIndex.ToString(); // measurement.PointTag;
 								outputStreamDeviceAnalog.Type = 0;	//default
 								outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
                                 outputStreamDeviceAnalog.ScalingValue = 0;
 								SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, true);
+                                analogIndex += 1;
 							}
 						}
 						else if (measurement.SignalSuffix == "DV")
@@ -1629,7 +1632,7 @@ namespace openPDCManager.Web.Data
 								OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
 								outputStreamDeviceDigital.NodeID = device.NodeID;
 								outputStreamDeviceDigital.OutputStreamDeviceID = savedOutputStreamDeviceID;
-								outputStreamDeviceDigital.Label = measurement.PointTag;
+                                outputStreamDeviceDigital.Label = digitalLabel;     // measurement.PointTag;
 								outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
                                 outputStreamDeviceDigital.MaskValue = 0;
 								SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, true);
