@@ -511,6 +511,9 @@ namespace TVA.PhasorProtocols
         {
             get
             {
+                if (m_latencyMeasurements == 0)
+                    return -1;
+
                 return (int)Ticks.ToMilliseconds(m_totalLatency / m_latencyMeasurements);
             }
         }
