@@ -308,6 +308,17 @@ namespace TVA.PhasorProtocols.Anonymous
             }
         }
 
+        /// <summary>
+        /// Gets the maximum length of the Label of this <see cref="DigitalDefinition"/>.
+        /// </summary>
+        public override int MaximumLabelLength
+        {
+            get
+            {
+                return 256;
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
