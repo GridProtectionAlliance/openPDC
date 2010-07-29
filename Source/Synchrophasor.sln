@@ -206,9 +206,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DatabaseSetupUtility", "Dat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseSetupUtility", "Tools\DatabaseSetupUtility\DatabaseSetupUtility.csproj", "{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COMTRADE", "Libraries\Adapters\COMTRADE\COMTRADE.csproj", "{9B93C212-786C-45C9-9B90-8CEFD24EF19D}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 26
+		SccNumberOfProjects = 27
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs07.codeplex.com/
 		SccLocalPath0 = .
@@ -312,6 +314,10 @@ Global
 		SccProjectTopLevelParentUniqueName25 = Synchrophasor.sln
 		SccProjectName25 = Tools/DatabaseSetupUtility
 		SccLocalPath25 = Tools\\DatabaseSetupUtility
+		SccProjectUniqueName26 = Libraries\\Adapters\\COMTRADE\\COMTRADE.csproj
+		SccProjectTopLevelParentUniqueName26 = Synchrophasor.sln
+		SccProjectName26 = Libraries/Adapters/COMTRADE
+		SccLocalPath26 = Libraries\\Adapters\\COMTRADE
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor.vsmdi
@@ -509,6 +515,14 @@ Global
 		{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE}.Release|x86.ActiveCfg = Release|Any CPU
+		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Debug|x86.ActiveCfg = Debug|x86
+		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Debug|x86.Build.0 = Debug|x86
+		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Release|x86.ActiveCfg = Release|x86
+		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -541,6 +555,7 @@ Global
 		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{78E3A08A-E7FC-415C-82E1-0BB93C454DAD} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{B74CF4DA-2972-489B-AF08-419560EE57EF} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
+		{9B93C212-786C-45C9-9B90-8CEFD24EF19D} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
 		{A519E312-66F5-4725-A88E-9B62242CBCB7} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
 		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
