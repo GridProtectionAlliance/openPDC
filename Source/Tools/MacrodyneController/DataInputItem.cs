@@ -30,20 +30,7 @@ namespace MacrodyneController
         // Provide a formatted enumeration string
         public override string ToString()
         {
-            StringBuilder image = new StringBuilder();
-
-            foreach (char letter in Enum.GetName(typeof(DataInputCommand), m_command))
-            {
-                if (Char.IsUpper(letter) && image.Length > 0)
-                {
-                    image.Append(' ');
-                    image.Append(letter);
-                }
-                else
-                    image.Append(letter);
-            }
-
-            return image.ToString();
+            return Enum.GetName(typeof(DataInputCommand), m_command).ToFormattedEnumName();
         }
     }
 }

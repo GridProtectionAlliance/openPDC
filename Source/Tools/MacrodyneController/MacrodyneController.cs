@@ -15,6 +15,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using TVA;
@@ -71,16 +72,17 @@ namespace MacrodyneController
             ComboBoxSerialStopBits.SelectedIndex = 1;
 
             // Initialize command enumerations
-            foreach (object command in Enum.GetValues(typeof(DeviceCommand)))
-            {
-                ComboBoxCommands.Items.Add(new CommandItem((DeviceCommand)command));
+            foreach (DeviceCommand command in Enum.GetValues(typeof(DeviceCommand)).Cast<DeviceCommand>())
+            {                
+                ComboBoxCommands.Items.Add(new CommandItem(command));
             }
 
             ComboBoxCommands.SelectedIndex = 0;
-            
-            foreach (object command in Enum.GetValues(typeof(DataInputCommand)))
+
+            foreach (DataInputCommand command in Enum.GetValues(typeof(DataInputCommand)).Cast<DataInputCommand>())
             {
-                ComboBoxDataInputs.Items.Add(new DataInputItem((DataInputCommand)command));
+                if (command != DataInputCommand.SendReferencePhasor)
+                    ComboBoxDataInputs.Items.Add(new DataInputItem(command));
             }
 
             ComboBoxDataInputs.SelectedIndex = 0;
