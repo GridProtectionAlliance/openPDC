@@ -494,6 +494,7 @@ namespace TVA.PhasorProtocols
         private IClient m_dataChannel;
         private IServer m_serverBasedDataChannel;
         private IClient m_commandChannel;
+        private PrecisionTimer m_inputTimer;
         private System.Timers.Timer m_rateCalcTimer;
         private IConfigurationFrame m_configurationFrame;
         private long m_dataStreamStartTime;
@@ -556,6 +557,9 @@ namespace TVA.PhasorProtocols
             m_rateCalcTimer.Interval = 5000;
             m_rateCalcTimer.AutoReset = true;
             m_rateCalcTimer.Enabled = false;
+
+            // Set minimum timer resolution to one millisecond to improve timer accuracy
+            PrecisionTimer.SetMinimumTimerResolution(1);
         }
 
         /// <summary>
@@ -692,6 +696,34 @@ namespace TVA.PhasorProtocols
             {
                 m_deviceID = value;
             }
+        }
+
+        //public bool UseHighResolutionInputTimer
+        //{
+        //    get
+        //    {
+        //        return false;
+        //    }
+        //    set
+        //    {
+        //        if (value && m_inputTimer == null)
+        //        {
+        //            m_inputTimer = new PrecisionTimer();
+        //            m_inputTimer.Resolution = 1;
+        //            m_inputTimer.Period = 1;
+        //            m_inputTimer.AutoReset = true;
+        //            m_inputTimer.Tick += new EventHandler(m_inputTimer_Tick);
+        //        }
+        //        else if (!value && m_inputTimer != null)
+        //        {
+
+        //        }
+        //    }
+        //}
+
+        void m_inputTimer_Tick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -1343,6 +1375,9 @@ namespace TVA.PhasorProtocols
                             m_rateCalcTimer.Dispose();
                         }
                         m_rateCalcTimer = null;
+
+                        // Clear minimum timer resolution.
+                        PrecisionTimer.ClearMinimumTimerResolution(1);
                     }
                 }
                 finally
@@ -1401,7 +1436,7 @@ namespace TVA.PhasorProtocols
 
                 // Check for common error when using an IPv4 address on an IPv6 stack
                 if (ex.ErrorCode == 10014)
-                    OnConnectionException(new InvalidOperationException(string.Format("Bad IP address format in \"{0}\": {1}", m_connectionString, ex.Message), ex), 1);
+                    OnConnectionException(new InvalidOperationException(string.Format("Bad IP address format in \"{0}\": {1}\r\n\r\nUse a DNS name or an IPv6 formatted IP address (e.g., ::1); otherwise, force IPv4 mode.", m_connectionString, ex.Message), ex), 1);
                 else
                     OnConnectionException(new InvalidOperationException(string.Format("{0} in \"{1}\"", ex.Message, m_connectionString), ex), 1);
             }
