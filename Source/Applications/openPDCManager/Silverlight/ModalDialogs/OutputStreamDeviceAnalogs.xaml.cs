@@ -235,10 +235,10 @@ using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
+using openPDCManager.PhasorDataServiceProxy;
+using openPDCManager.Utilities;
 
-namespace openPDCManager.Silverlight.ModalDialogs
+namespace openPDCManager.ModalDialogs
 {
 	public partial class OutputStreamDeviceAnalogs : ChildWindow
 	{
@@ -263,7 +263,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			Loaded += new RoutedEventHandler(OutputStreamDeviceAnalogs_Loaded);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
-			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client = ProxyClient.GetPhasorDataServiceProxyClient();
 			m_client.GetOutputStreamDeviceAnalogListCompleted += new EventHandler<GetOutputStreamDeviceAnalogListCompletedEventArgs>(client_GetOutputStreamDeviceAnalogListCompleted);
 			m_client.SaveOutputStreamDeviceAnalogCompleted += new EventHandler<SaveOutputStreamDeviceAnalogCompletedEventArgs>(client_SaveOutputStreamDeviceAnalogCompleted);
 			ListBoxOutputStreamDeviceAnalogList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDeviceAnalogList_SelectionChanged);
@@ -350,7 +350,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Analog Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 			}
-			sm.Show();
+			sm.ShowPopup();
 			m_client.GetOutputStreamDeviceAnalogListAsync(m_sourceOutputStreamDeviceID);
 		}
 		
@@ -371,7 +371,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Ouptu Stream Device Analog List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 
@@ -406,7 +406,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
                                                 {
                                                     TextBoxLabel.Focus();
                                                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 
@@ -420,7 +420,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
                                                     TextBoxLoadOrder.Text = "0";
                                                     TextBoxLoadOrder.Focus();
                                                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 
@@ -434,7 +434,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
                     TextBoxScalingValue.Text = "0";
                     TextBoxScalingValue.Focus();
                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 

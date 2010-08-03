@@ -237,22 +237,21 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 using openPDCManager.Web.Data.BusinessObjects;
 using openPDCManager.Web.Data.Entities;
-using TVA.PhasorProtocols;
-using System.Net;
-using System.Xml.Linq;
-using TVA.PhasorProtocols.BpaPdcStream;
 using openPDCManager.Web.Data.ServiceCommunication;
-using System.Threading;
-using System.Reflection;
 using TVA;
+using TVA.PhasorProtocols;
+using System.Collections.ObjectModel;
 
 namespace openPDCManager.Web.Data
 {
@@ -289,7 +288,7 @@ namespace openPDCManager.Web.Data
 			return (new UTF8Encoding()).GetString(memoryStream.ToArray());
 		}
 
-		static void LogException(string source, Exception ex)
+		public static void LogException(string source, Exception ex)
 		{
 			DataConnection connection = new DataConnection();
 			try
@@ -314,95 +313,59 @@ namespace openPDCManager.Web.Data
 
 		public static string GetExecutingAssemblyPath()
 		{
-			try
-			{
-				return TVA.IO.FilePath.GetAbsolutePath("Temp");
-			}
-			catch (Exception ex)
-			{
-				LogException("GetExecutingAssemblyPath", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Current Execution Path", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+            return TVA.IO.FilePath.GetAbsolutePath("Temp");
 		}
 
 		public static string SaveIniFile(Stream input)
-		{
-			try
+		{			
+			string fileName = Guid.NewGuid().ToString() + ".ini";
+			using (FileStream fs = File.Create(GetExecutingAssemblyPath() + "\\" + fileName))
 			{
-				string fileName = Guid.NewGuid().ToString() + ".ini";
-				using (FileStream fs = File.Create(GetExecutingAssemblyPath() + "\\" + fileName))
+				byte[] buffer = new byte[4096];
+				int bytesRead;
+				while ((bytesRead = input.Read(buffer, 0, buffer.Length)) != 0)
 				{
-					byte[] buffer = new byte[4096];
-					int bytesRead;
-					while ((bytesRead = input.Read(buffer, 0, buffer.Length)) != 0)
-					{
-						fs.Write(buffer, 0, bytesRead);
-					}
+					fs.Write(buffer, 0, bytesRead);
 				}
-				return fileName;
 			}
-			catch(Exception ex)
-			{
-				LogException("SaveIniFile", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Upload INI File", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);				
-			}
+			return fileName;		
 		}
 
 		public static ConnectionSettings GetConnectionSettings(Stream inputStream)
 		{
 			ConnectionSettings connectionSettings = new ConnectionSettings();
-			try
+		
+			SoapFormatter sf = new SoapFormatter();
+			sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
+			sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
+			sf.Binder = new VersionConfigToNamespaceAssemblyObjectBinder();
+			connectionSettings = sf.Deserialize(inputStream) as ConnectionSettings;
+
+			if (connectionSettings.ConnectionParameters != null)
 			{
-				SoapFormatter sf = new SoapFormatter();
-				sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
-				sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
-				sf.Binder = new VersionConfigToNamespaceAssemblyObjectBinder();
-				connectionSettings = sf.Deserialize(inputStream) as ConnectionSettings;
-
-				if (connectionSettings.ConnectionParameters != null)
-				{
-					ConnectionSettings cs = new ConnectionSettings();
-					cs = (ConnectionSettings)connectionSettings.ConnectionParameters;
-					connectionSettings.configurationFileName = cs.configurationFileName;
-					connectionSettings.refreshConfigurationFileOnChange = cs.refreshConfigurationFileOnChange;
-					connectionSettings.parseWordCountFromByte = cs.parseWordCountFromByte;
-				}
-
-				return connectionSettings;
+				ConnectionSettings cs = new ConnectionSettings();
+				cs = (ConnectionSettings)connectionSettings.ConnectionParameters;
+				connectionSettings.configurationFileName = cs.configurationFileName;
+				connectionSettings.refreshConfigurationFileOnChange = cs.refreshConfigurationFileOnChange;
+				connectionSettings.parseWordCountFromByte = cs.parseWordCountFromByte;
 			}
-			catch (Exception ex)
-			{
-				LogException("GetConnectionSettings", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Parse Connection File", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);	
-			}			
+
+			return connectionSettings;			
 		}
 
 		public static List<WizardDeviceInfo> GetWizardConfigurationInfo(Stream inputStream)
-		{			
-			try
-			{
-				//List<WizardDeviceInfo> wizardDeviceInfoList = new List<WizardDeviceInfo>();
-				SoapFormatter sf = new SoapFormatter();
-				sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
-				sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
-				IConfigurationFrame configurationFrame = sf.Deserialize(inputStream) as IConfigurationFrame;								
-				return ParseConfigurationFrame(configurationFrame);
-			}
-			catch(Exception ex)
-			{
-				LogException("GetWizardConfigurationInfo", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Parse Configuration File", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}			
+		{				
+			SoapFormatter sf = new SoapFormatter();
+			sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
+			sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
+			IConfigurationFrame configurationFrame = sf.Deserialize(inputStream) as IConfigurationFrame;								
+			return ParseConfigurationFrame(configurationFrame);
 		}
 
 		public static List<WizardDeviceInfo> ParseConfigurationFrame(IConfigurationFrame configurationFrame)
 		{
-			try
-			{
+            //try
+            //{
 				List<WizardDeviceInfo> wizardDeviceInfoList = new List<WizardDeviceInfo>();
 				if (configurationFrame != null)
 				{
@@ -436,13 +399,13 @@ namespace openPDCManager.Web.Data
 
 				}
 				return wizardDeviceInfoList;
-			}
-			catch (Exception ex)
-			{
-				LogException("ParseConfigurationFrame", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Parse Configuration Frame", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+            //}
+            //catch (Exception ex)
+            //{
+            //    LogException("ParseConfigurationFrame", ex);
+            //    CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Parse Configuration Frame", SystemMessage = ex.Message };
+            //    throw new FaultException<CustomServiceFault>(fault);
+            //}
 		}
 
 		private static IConfigurationFrame s_responseAttachment;
@@ -692,9 +655,7 @@ namespace openPDCManager.Web.Data
 
 		public static Dictionary<string, string> GetTimeZones(bool isOptional)
 		{
-			try
-			{
-				Dictionary<string, string> timeZonesList = new Dictionary<string, string>();
+			Dictionary<string, string> timeZonesList = new Dictionary<string, string>();
 				if (isOptional)
 					timeZonesList.Add("", "Select Timezone");
 
@@ -706,13 +667,6 @@ namespace openPDCManager.Web.Data
 					System.Diagnostics.Debug.WriteLine(tzi.DisplayName);
 				}
 				return timeZonesList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetTimeZones", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Get Timezones List", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
 		}
 
 		public static Dictionary<string, int> GetVendorDeviceDistribution(string nodeID)
@@ -1033,12 +987,6 @@ namespace openPDCManager.Web.Data
 							   }).ToList();
 				return companyList;
 			}
-			catch (Exception ex)
-			{
-				LogException("GetCompanyList", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Company List", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
 			finally
 			{
 				connection.Dispose();
@@ -1070,13 +1018,7 @@ namespace openPDCManager.Web.Data
 						companyList.Add(id, row["Name"].ToString());
 				}
 				return companyList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetCompanies", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Companies", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -1107,12 +1049,6 @@ namespace openPDCManager.Web.Data
 
 				command.ExecuteNonQuery();				
 				return "Company Information Saved Successfully";
-			}
-			catch (Exception ex)
-			{
-				LogException("SaveCompany", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Company Information", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -1185,13 +1121,7 @@ namespace openPDCManager.Web.Data
                                         DigitalMaskValue = Convert.ToInt32(item.Field<object>("DigitalMaskValue"))
 									}).ToList();
 				return outputStreamList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetOutputStreamList", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Output Stream List", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -1255,12 +1185,7 @@ namespace openPDCManager.Web.Data
 
 				return "Output Stream Information Saved Successfully";
 			}
-			catch (Exception ex)
-			{
-				LogException("SaveOutputStream", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Information", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			
 			finally
 			{
 				connection.Dispose();
@@ -1417,13 +1342,7 @@ namespace openPDCManager.Web.Data
 											  Virtual = Convert.ToBoolean(item.Field<object>("Virtual"))
 										  }).ToList();
 				return outputStreamDeviceList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetOutputStreamDeviceList", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Output Stream Device List", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}		
 			finally
 			{
 				connection.Dispose();
@@ -1499,13 +1418,7 @@ namespace openPDCManager.Web.Data
 
 				command.ExecuteNonQuery();
 				return "Output Stream Device Information Saved Successfully";
-			}
-			catch (Exception ex)
-			{
-				LogException("SaveOutputStreamDevice", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Device Information", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -1535,13 +1448,7 @@ namespace openPDCManager.Web.Data
 				}
 
 				return "Output Stream Device Deleted Successfully";
-			}
-			catch (Exception ex)
-			{
-				LogException("DeleteOutputStreamDevice", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Delete Output Stream Device", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -1549,56 +1456,56 @@ namespace openPDCManager.Web.Data
 		}
 
         public static string digitalLabel = "DIGITAL0        DIGITAL1        DIGITAL2        DIGITAL3        DIGITAL4        DIGITAL5        DIGITAL6        DIGITAL7        DIGITAL8        DIGITAL9        DIGITAL10       DIGITAL11       DIGITAL12       DIGITAL13       DIGITAL14       DIGITAL15       ";
-		public static string AddDevices(int outputStreamID, Dictionary<int, string> devicesToBeAdded, bool addDigitals, bool addAnalogs)
-		{
-			try
-			{
-				foreach (KeyValuePair<int, string> deviceInfo in devicesToBeAdded)	//loop through all the devices that needs to be added.
-				{
-					Device device = new Device();
-					device = GetDeviceByDeviceID(deviceInfo.Key);	//Get alll the information about the device to be added.
-					OutputStreamDevice outputStreamDevice = new OutputStreamDevice();
-					outputStreamDevice.NodeID = device.NodeID;
-					outputStreamDevice.AdapterID = outputStreamID;
-					outputStreamDevice.Acronym = device.Acronym;
-					outputStreamDevice.BpaAcronym = string.Empty;
-					outputStreamDevice.Name = device.Name;
-					outputStreamDevice.LoadOrder = device.LoadOrder;
-					outputStreamDevice.Enabled = true;
+        public static string AddDevices(int outputStreamID, Dictionary<int, string> devicesToBeAdded, bool addDigitals, bool addAnalogs)
+        {
+            try
+            {
+                foreach (KeyValuePair<int, string> deviceInfo in devicesToBeAdded)	//loop through all the devices that needs to be added.
+                {
+                    Device device = new Device();
+                    device = GetDeviceByDeviceID(deviceInfo.Key);	//Get alll the information about the device to be added.
+                    OutputStreamDevice outputStreamDevice = new OutputStreamDevice();
+                    outputStreamDevice.NodeID = device.NodeID;
+                    outputStreamDevice.AdapterID = outputStreamID;
+                    outputStreamDevice.Acronym = device.Acronym;
+                    outputStreamDevice.BpaAcronym = string.Empty;
+                    outputStreamDevice.Name = device.Name;
+                    outputStreamDevice.LoadOrder = device.LoadOrder;
+                    outputStreamDevice.Enabled = true;
                     outputStreamDevice.PhasorDataFormat = string.Empty;
                     outputStreamDevice.FrequencyDataFormat = string.Empty;
                     outputStreamDevice.AnalogDataFormat = string.Empty;
                     outputStreamDevice.CoordinateFormat = string.Empty;
-					SaveOutputStreamDevice(outputStreamDevice, true, string.Empty);	//save in to OutputStreamDevice Table.
+                    SaveOutputStreamDevice(outputStreamDevice, true, string.Empty);	//save in to OutputStreamDevice Table.
 
-					int savedOutputStreamDeviceID = GetOutputStreamDevice(outputStreamID, device.Acronym).ID;
+                    int savedOutputStreamDeviceID = GetOutputStreamDevice(outputStreamID, device.Acronym).ID;
 
 
-					//********************************************
-					List<Phasor> phasorList = new List<Phasor>();
-					phasorList = GetPhasorList(deviceInfo.Key);			//Get all the phasor information for the device to be added.
+                    //********************************************
+                    List<Phasor> phasorList = new List<Phasor>();
+                    phasorList = GetPhasorList(deviceInfo.Key);			//Get all the phasor information for the device to be added.
 
-					foreach (Phasor phasor in phasorList)
-					{
-						OutputStreamDevicePhasor outputStreamDevicePhasor = new OutputStreamDevicePhasor(); //Add all phasors one by one into OutputStreamDevicePhasor table.
-						outputStreamDevicePhasor.NodeID = device.NodeID;
-						outputStreamDevicePhasor.OutputStreamDeviceID = savedOutputStreamDeviceID;
-						outputStreamDevicePhasor.Label = phasor.Label;
-						outputStreamDevicePhasor.Type = phasor.Type;
-						outputStreamDevicePhasor.Phase = phasor.Phase;
-						outputStreamDevicePhasor.LoadOrder = phasor.SourceIndex;
+                    foreach (Phasor phasor in phasorList)
+                    {
+                        OutputStreamDevicePhasor outputStreamDevicePhasor = new OutputStreamDevicePhasor(); //Add all phasors one by one into OutputStreamDevicePhasor table.
+                        outputStreamDevicePhasor.NodeID = device.NodeID;
+                        outputStreamDevicePhasor.OutputStreamDeviceID = savedOutputStreamDeviceID;
+                        outputStreamDevicePhasor.Label = phasor.Label;
+                        outputStreamDevicePhasor.Type = phasor.Type;
+                        outputStreamDevicePhasor.Phase = phasor.Phase;
+                        outputStreamDevicePhasor.LoadOrder = phasor.SourceIndex;
                         outputStreamDevicePhasor.ScalingValue = 0;
-						SaveOutputStreamDevicePhasor(outputStreamDevicePhasor, true);
-					}
-					//********************************************
+                        SaveOutputStreamDevicePhasor(outputStreamDevicePhasor, true);
+                    }
+                    //********************************************
 
-					//********************************************
-					List<Measurement> measurementList = new List<Measurement>();
-					measurementList = GetMeasurementsByDevice(deviceInfo.Key);
+                    //********************************************
+                    List<Measurement> measurementList = new List<Measurement>();
+                    measurementList = GetMeasurementsByDevice(deviceInfo.Key);
 
-                    int analogIndex = 0; 
-					foreach (Measurement measurement in measurementList)
-					{                                               
+                    int analogIndex = 0;
+                    foreach (Measurement measurement in measurementList)
+                    {
                         OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
                         outputStreamMeasurement.NodeID = device.NodeID;
                         outputStreamMeasurement.AdapterID = outputStreamID;
@@ -1606,54 +1513,54 @@ namespace openPDCManager.Web.Data
                         outputStreamMeasurement.PointID = measurement.PointID;
                         outputStreamMeasurement.SignalReference = measurement.SignalReference;
 
-						if (measurement.SignalSuffix == "AV")
-						{
-							if (addAnalogs)
-							{
+                        if (measurement.SignalSuffix == "AV")
+                        {
+                            if (addAnalogs)
+                            {
                                 SaveOutputStreamMeasurement(outputStreamMeasurement, true);
 
-								OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
-								outputStreamDeviceAnalog.NodeID = device.NodeID;
-								outputStreamDeviceAnalog.OutputStreamDeviceID = savedOutputStreamDeviceID;
+                                OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
+                                outputStreamDeviceAnalog.NodeID = device.NodeID;
+                                outputStreamDeviceAnalog.OutputStreamDeviceID = savedOutputStreamDeviceID;
                                 outputStreamDeviceAnalog.Label = device.Acronym.Length > 12 ? device.Acronym.Substring(0, 12) + ":A" + analogIndex.ToString() : device.Acronym + ":A" + analogIndex.ToString(); // measurement.PointTag;
-								outputStreamDeviceAnalog.Type = 0;	//default
-								outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
+                                outputStreamDeviceAnalog.Type = 0;	//default
+                                outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
                                 outputStreamDeviceAnalog.ScalingValue = 0;
-								SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, true);
+                                SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, true);
                                 analogIndex += 1;
-							}
-						}
-						else if (measurement.SignalSuffix == "DV")
-						{
-							if (addDigitals)
-							{
+                            }
+                        }
+                        else if (measurement.SignalSuffix == "DV")
+                        {
+                            if (addDigitals)
+                            {
                                 SaveOutputStreamMeasurement(outputStreamMeasurement, true);
 
-								OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
-								outputStreamDeviceDigital.NodeID = device.NodeID;
-								outputStreamDeviceDigital.OutputStreamDeviceID = savedOutputStreamDeviceID;
+                                OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
+                                outputStreamDeviceDigital.NodeID = device.NodeID;
+                                outputStreamDeviceDigital.OutputStreamDeviceID = savedOutputStreamDeviceID;
                                 outputStreamDeviceDigital.Label = digitalLabel;     // measurement.PointTag;
-								outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
+                                outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
                                 outputStreamDeviceDigital.MaskValue = 0;
-								SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, true);
-							}
-						}
-						else
-							SaveOutputStreamMeasurement(outputStreamMeasurement, true);
-											
-					}
-					//********************************************
-				}
+                                SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, true);
+                            }
+                        }
+                        else
+                            SaveOutputStreamMeasurement(outputStreamMeasurement, true);
 
-				return "Output Stream Device(s) Added Successfully";
-			}
-			catch (Exception ex)
-			{
-				LogException("AddDevices", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Device(s)", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
-		}
+                    }
+                    //********************************************
+                }
+
+                return "Output Stream Device(s) Added Successfully";
+            }
+            catch (Exception ex)
+            {
+                LogException("AddDevices", ex);
+                CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Device(s)", SystemMessage = ex.Message };
+                throw new FaultException<CustomServiceFault>(fault);
+            }
+        }
 
 		#endregion
 
@@ -1950,13 +1857,7 @@ namespace openPDCManager.Web.Data
 									 NodeName = item.Field<string>("NodeName")
 								 }).ToList();
 				return historianList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetHistorianList", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Historian List", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -1990,13 +1891,7 @@ namespace openPDCManager.Web.Data
 						historianList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
 				}
 				return historianList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetHistorians", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Historians", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -2034,13 +1929,7 @@ namespace openPDCManager.Web.Data
 
 				command.ExecuteNonQuery();
 				return "Historian Information Saved Successfully";
-			}
-			catch (Exception ex)
-			{
-				LogException("SaveHistorian", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Historian Information", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -2088,13 +1977,7 @@ namespace openPDCManager.Web.Data
 								CompanyName = item.Field<string>("CompanyName")
 							}).ToList();
 				return nodeList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetNodeList", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Node List", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -2129,17 +2012,11 @@ namespace openPDCManager.Web.Data
 						nodeList.Add(row["ID"].ToString(), row["Name"].ToString());
 				}
 				return nodeList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetNodes", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
-			finally
-			{
-				connection.Dispose();
-			}			
+			}            
+            finally
+            {
+                connection.Dispose();
+            }			
 		}
 		
 		public static string SaveNode(Node node, bool isNew)
@@ -2181,13 +2058,7 @@ namespace openPDCManager.Web.Data
 
 				command.ExecuteNonQuery();
 				return "Node Information Saved Successfully";
-			}
-			catch (Exception ex)
-			{
-				LogException("SaveNode", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Node Information", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -2241,13 +2112,7 @@ namespace openPDCManager.Web.Data
 								  URL = item.Field<string>("URL")
 							  }).ToList();
 				return vendorList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetVendorList", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Vendor List", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -2276,12 +2141,6 @@ namespace openPDCManager.Web.Data
 						vendorList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
 				}
 				return vendorList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetVendors", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Vendors", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -2312,12 +2171,6 @@ namespace openPDCManager.Web.Data
 
 				command.ExecuteNonQuery();
 				return "Vendor Information Saved Successfully";
-			}
-			catch (Exception ex)
-			{
-				LogException("SaveVendor", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Vendor Information", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
 			}
 			finally
 			{
@@ -2352,13 +2205,7 @@ namespace openPDCManager.Web.Data
 										VendorName = item.Field<string>("VendorName")
 									}).ToList();
 				return vendorDeviceList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetVendorDeviceList", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Vendor Device List", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -2388,13 +2235,7 @@ namespace openPDCManager.Web.Data
 				command.ExecuteNonQuery();
 
 				return "Vendor Device Information Saved Successfully";
-			}
-			catch (Exception ex)
-			{
-				LogException("SaveVendorDevice", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Vendor Device Information", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);				
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -2423,13 +2264,7 @@ namespace openPDCManager.Web.Data
 						vendorDeviceList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
 				}
 				return vendorDeviceList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetVendorDevices", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -2506,13 +2341,7 @@ namespace openPDCManager.Web.Data
 								  ParentAcronym = item.Field<string>("ParentAcronym")
 							  }).ToList();
 				return deviceList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetDeviceList", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Device List", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -2724,12 +2553,7 @@ namespace openPDCManager.Web.Data
 
 				return "Device Information Saved Successfully";
 			}
-			catch (Exception ex)
-			{
-				LogException("SaveDevice", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Device Information", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			
 			finally
 			{
 				connection.Dispose();
@@ -2780,13 +2604,7 @@ namespace openPDCManager.Web.Data
                     }                    
                 }
                 return deviceList;
-            }
-            catch (Exception ex)
-            {
-                LogException("GetDevices", ex);
-                CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Devices", SystemMessage = ex.Message };
-                throw new FaultException<CustomServiceFault>(fault);
-            }
+            }            
 			finally
 			{
 				connection.Dispose();
@@ -2917,13 +2735,7 @@ namespace openPDCManager.Web.Data
                 }
 
 				return "Device Deleted Successfully";
-			}
-			catch (Exception ex)
-			{
-				LogException("DeleteDevice", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Delete Device", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -2962,13 +2774,7 @@ namespace openPDCManager.Web.Data
 											  item.Field<string>("Phase") == "A" ? "Phase A" : item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
 							  }).ToList();
 				return phasorList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetPhasorList", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Phasor List", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -2997,13 +2803,7 @@ namespace openPDCManager.Web.Data
 						phasorList.Add(Convert.ToInt32(row["ID"]), row["Label"].ToString());
 				}
 				return phasorList;
-			}
-			catch (Exception ex)
-			{
-				LogException("SavePhasor", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Phasors", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -3090,13 +2890,7 @@ namespace openPDCManager.Web.Data
 				}
 
 				return "Phasor Information Saved Successfully";
-			}
-			catch (Exception ex)
-			{
-				LogException("SavePhasor", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Phasor Information", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -3216,13 +3010,7 @@ namespace openPDCManager.Web.Data
 									   PhasorLabel = item.Field<string>("PhasorLabel")
 								   }).ToList();
 				return measurementList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetMeasurementList", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Measurement List", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -3264,13 +3052,7 @@ namespace openPDCManager.Web.Data
 									   PhasorLabel = item.Field<string>("PhasorLabel")
 								   }).ToList();
 				return measurementList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetMeasurementsByDevice", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Measurements By Device", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -3313,13 +3095,7 @@ namespace openPDCManager.Web.Data
 
 				command.ExecuteNonQuery();
 				return "Measurement Information Saved Successfully";
-			}
-			catch (Exception ex)
-			{
-				LogException("SaveMeasurement", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Measurement Information", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -3460,13 +3236,7 @@ namespace openPDCManager.Web.Data
 									   PhasorLabel = item.Field<string>("PhasorLabel")
 								   }).ToList();
 				return measurementList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetFilteredMeasurementsByDevice", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Filtered Measurements By Device", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -3509,13 +3279,7 @@ namespace openPDCManager.Web.Data
 									   InterconnectionName = item.Field<string>("InterconnectionName")
 								   }).ToList();				
 				return otherDeviceList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetOtherDeviceList", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Other Device List", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -3553,13 +3317,7 @@ namespace openPDCManager.Web.Data
 
 				command.ExecuteScalar();
 				return "Other Device Information Saved Successfully";
-			}
-			catch (Exception ex)
-			{
-				LogException("SaveOtherDevice", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Other Device Information", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -3612,13 +3370,7 @@ namespace openPDCManager.Web.Data
 						interconnectionList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
 				}				
 				return interconnectionList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetInterconnections", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -3652,12 +3404,7 @@ namespace openPDCManager.Web.Data
 				}								
 				return protocolList;
 			}
-			catch (Exception ex)
-			{
-				LogException("GetProtocols", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Protocols", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			
 			finally
 			{
 				connection.Dispose();
@@ -3744,13 +3491,7 @@ namespace openPDCManager.Web.Data
 				}
 								
 				return signalTypeList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetSignalTypes", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Signal Types", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -3885,13 +3626,7 @@ namespace openPDCManager.Web.Data
 											 }).ToList();
 								
 				return calculatedMeasurementList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetCalculatedMeasurementList", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Calculated Measurement List", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -3944,13 +3679,7 @@ namespace openPDCManager.Web.Data
 				command.ExecuteNonQuery();
 
 				return "Calculated Measurement Information Saved Successfully";
-			}
-			catch (Exception ex)
-			{
-				LogException("SaveCalculatedMeasurement", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Calculated Measurement Information", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -4007,13 +3736,7 @@ namespace openPDCManager.Web.Data
 							   }).ToList();
 				
 				return adapterList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetAdapterList", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Adapter List", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -4059,13 +3782,7 @@ namespace openPDCManager.Web.Data
 				command.ExecuteNonQuery();
 
 				return "Adapter Information Saved Successfully";
-			}
-			catch (Exception ex)
-			{
-				LogException("SaveAdapter", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Adapter Information", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -4131,13 +3848,7 @@ namespace openPDCManager.Web.Data
 								}).ToList();
 				
 				return iaonTreeList;
-			}
-			catch (Exception ex)
-			{
-				LogException("GetIaonTreeData", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Iaon Tree Data", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			}			
 			finally
 			{
 				connection.Dispose();
@@ -4223,7 +3934,7 @@ namespace openPDCManager.Web.Data
 	
 		#region " Current Device Measurements Code"
 
-		public static List<DeviceMeasurementData> GetDeviceMeasurementData(string nodeID)
+		public static ObservableCollection<DeviceMeasurementData> GetDeviceMeasurementData(string nodeID)
 		{
 			DataConnection connection = new DataConnection();
 			try
@@ -4282,7 +3993,7 @@ namespace openPDCManager.Web.Data
 				//Get Measurements
 				IDbCommand commandMeasurements = connection.Connection.CreateCommand();
 				commandMeasurements.CommandType = CommandType.Text;
-				commandMeasurements.CommandText = "Select DeviceID, SignalID, PointID, PointTag, SignalAcronym From MeasurementDetail Where NodeID = @nodeID AND SignalAcronym <> 'STAT'";
+				commandMeasurements.CommandText = "Select DeviceID, SignalID, PointID, PointTag, SignalAcronym, Description, SignalName, EngineeringUnits From MeasurementDetail Where NodeID = @nodeID AND SignalAcronym <> 'STAT'";
 				if (commandMeasurements.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
 					commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", "{" + nodeID + "}"));
 				else
@@ -4303,7 +4014,8 @@ namespace openPDCManager.Web.Data
 												 Acronym = string.IsNullOrEmpty(pdc.Field<string>("Acronym")) ? "DIRECT CONNECTED" : pdc.Field<string>("Acronym"),
 												 Name = pdc.Field<string>("Name"),
 												 CompanyName = pdc.Field<string>("CompanyName"),
-												 DeviceList = (from device in resultSet.Tables["DeviceTable"].AsEnumerable()
+                                                 IsExpanded = true,
+                                                 DeviceList = new ObservableCollection<DeviceInfo>((from device in resultSet.Tables["DeviceTable"].AsEnumerable()
 															   where device.Field<string>("ParentAcronym") == pdc.Field<string>("Acronym")
 															   select new DeviceInfo()
 															   {
@@ -4314,7 +4026,8 @@ namespace openPDCManager.Web.Data
 																   ProtocolName = device.Field<string>("ProtocolName"),
 																   VendorDeviceName = device.Field<string>("VendorDeviceName"),
 																   ParentAcronym = string.IsNullOrEmpty(device.Field<string>("ParentAcronym")) ? "DIRECT CONNECTED" : device.Field<string>("ParentAcronym"),
-																   MeasurementList = (from measurement in resultSet.Tables["MeasurementTable"].AsEnumerable()
+                                                                   IsExpanded = true,
+																   MeasurementList = new ObservableCollection<MeasurementInfo>((from measurement in resultSet.Tables["MeasurementTable"].AsEnumerable()
 																					  where measurement.Field<int?>("DeviceID") == device.Field<int?>("ID")
 																					  select new MeasurementInfo()
 																					  {
@@ -4323,21 +4036,20 @@ namespace openPDCManager.Web.Data
 																						  PointID = measurement.Field<int>("PointID"),
 																						  PointTag = measurement.Field<string>("PointTag"),
 																						  SignalAcronym = measurement.Field<string>("SignalAcronym"),
+                                                                                          Description = measurement.Field<string>("description"),
+                                                                                          SignalName = measurement.Field<string>("SignalName"),
+                                                                                          EngineeringUnits = measurement.Field<string>("EngineeringUnits"),
+                                                                                          IsExpanded = true,
 																						  CurrentTimeTag = "N/A",
 																						  CurrentValue = "NaN",
 																						  CurrentQuality = "N/A"
-																					  }).ToList()
-															   }).ToList()
+																					  }).ToList())
+															   }).ToList())
 											 }).ToList();
 
-				return deviceMeasurementDataList;
+				return new ObservableCollection<DeviceMeasurementData>(deviceMeasurementDataList);
 			}
-			catch (Exception ex)
-			{
-				LogException("GetDeviceMeasurementsData", ex);
-				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Current Device Measurement Data", SystemMessage = ex.Message };
-				throw new FaultException<CustomServiceFault>(fault);
-			}
+			
 			finally
 			{
 				connection.Dispose();
@@ -4348,14 +4060,14 @@ namespace openPDCManager.Web.Data
 
         #region " Statistics Hierarchy Code"
 
-        public static List<StatisticMeasurementData> GetStatisticMeasurementData(string nodeID)
+        public static ObservableCollection<StatisticMeasurementData> GetStatisticMeasurementData(string nodeID)
         {
             DataConnection connection = new DataConnection();
             try
             {
-                List<StatisticMeasurementData> staticMeasurementDataList = new List<StatisticMeasurementData>();
-                List<StreamInfo> inputStreamInfoList = new List<StreamInfo>();
-                List<StreamInfo> outputStreamInfoList = new List<StreamInfo>();
+                ObservableCollection<StatisticMeasurementData> staticMeasurementDataList = new ObservableCollection<StatisticMeasurementData>();
+                ObservableCollection<StreamInfo> inputStreamInfoList = new ObservableCollection<StreamInfo>();
+                ObservableCollection<StreamInfo> outputStreamInfoList = new ObservableCollection<StreamInfo>();
                
                 DataSet resultSet = new DataSet();
                 resultSet.EnforceConstraints = false;
@@ -4464,57 +4176,57 @@ namespace openPDCManager.Web.Data
                                 
                 //****************************************************************************
 
-                inputStreamInfoList = (from inputDevice in resultSet.Tables["InputStreamDevices"].AsEnumerable()
+                inputStreamInfoList = new ObservableCollection<StreamInfo>((from inputDevice in resultSet.Tables["InputStreamDevices"].AsEnumerable()
                                             select new StreamInfo()
                                             {
                                                 ID = Convert.ToInt32(inputDevice.Field<object>("ID")),
                                                 Acronym = inputDevice.Field<string>("Acronym"),
                                                 Name = inputDevice.Field<string>("Name"),
                                                 StatusColor = "Gray",
-                                                StatisticList = (from statistic in statisticInfoList
+                                                StatisticList = new ObservableCollection<DetailStatisticInfo>( (from statistic in statisticInfoList
                                                                  where statistic.DeviceID == Convert.ToInt32(inputDevice.Field<object>("ID"))
-                                                                 select statistic).ToList().OrderBy(o => o.Statistics.Source).ThenBy(o => o.Statistics.LoadOrder).ToList(),
-                                                DeviceStatisticList = (from pdcDevice in resultSet.Tables["PdcDevices"].AsEnumerable()
+                                                                 select statistic).ToList().OrderBy(o => o.Statistics.Source).ThenBy(o => o.Statistics.LoadOrder).ToList()),
+                                                DeviceStatisticList = new ObservableCollection<DeviceStatistic>( (from pdcDevice in resultSet.Tables["PdcDevices"].AsEnumerable()
                                                               where Convert.ToInt32(pdcDevice.Field<object>("ParentID")) == Convert.ToInt32(inputDevice.Field<object>("ID"))
                                                               select new DeviceStatistic()
                                                               {
                                                                     ID = Convert.ToInt32(pdcDevice.Field<object>("ID")),
                                                                     Acronym = pdcDevice.Field<string>("Acronym"),
                                                                     Name = pdcDevice.Field<string>("Name"),
-                                                                    StatisticList = (from statistic in statisticInfoList
+                                                                    StatisticList = new ObservableCollection<DetailStatisticInfo>((from statistic in statisticInfoList
                                                                                      where statistic.DeviceID == Convert.ToInt32(pdcDevice.Field<object>("ID"))
                                                                                     select statistic 
-                                                                                    ).ToList().OrderBy( o => o.Statistics.LoadOrder).ToList()
-                                                              }).ToList()
-                                            }).ToList();
+                                                                                    ).ToList().OrderBy( o => o.Statistics.LoadOrder).ToList())
+                                                              }).ToList())
+                                            }).ToList());
 
                 foreach (StreamInfo inputStreamDevice in inputStreamInfoList)
                 {
-                    inputStreamDevice.DeviceStatisticList.Insert(0, new DeviceStatistic() { ID = 0, Acronym = "Run-Time Statistics", Name = "", StatisticList = new List<DetailStatisticInfo>(inputStreamDevice.StatisticList) });
+                    inputStreamDevice.DeviceStatisticList.Insert(0, new DeviceStatistic() { ID = 0, Acronym = "Run-Time Statistics", Name = "", StatisticList = new ObservableCollection<DetailStatisticInfo>(inputStreamDevice.StatisticList) });
                     inputStreamDevice.StatisticList = null;  //since this is moved to dummy device above "Run-Time Statistics", we don't need it anymore.
                 }
                 
-                staticMeasurementDataList.Add(new StatisticMeasurementData() { SourceType = "Input Streams", SourceStreamInfoList = inputStreamInfoList });
+                staticMeasurementDataList.Add(new StatisticMeasurementData() { SourceType = "Input Streams", SourceStreamInfoList = new ObservableCollection<StreamInfo>(inputStreamInfoList) });
                 //****************************************************************************
 
                 //****************************************************************************
                 //Now create a list for output steams.
-                outputStreamInfoList = (from outputDevice in resultSet.Tables["OutputStreams"].AsEnumerable()
+                outputStreamInfoList = new ObservableCollection<StreamInfo>( (from outputDevice in resultSet.Tables["OutputStreams"].AsEnumerable()
                                         select new StreamInfo()
                                         {
                                             ID = Convert.ToInt32(outputDevice.Field<object>("ID")),
                                             Acronym = outputDevice.Field<string>("Acronym"),
                                             Name = outputDevice.Field<string>("Name"),
                                             StatusColor = "Gray",
-                                            StatisticList = (from statistic in statisticInfoList
+                                            StatisticList = new ObservableCollection<DetailStatisticInfo>((from statistic in statisticInfoList
                                                              where statistic.SignalReference.StartsWith(outputDevice.Field<string>("Acronym"))
-                                                             select statistic).ToList().OrderBy(o => o.Statistics.Source).ThenBy(o => o.Statistics.LoadOrder).ToList(),
-                                            DeviceStatisticList = new List<DeviceStatistic>()
-                                        }).ToList();
+                                                             select statistic).ToList().OrderBy(o => o.Statistics.Source).ThenBy(o => o.Statistics.LoadOrder).ToList()),
+                                            DeviceStatisticList = new ObservableCollection<DeviceStatistic>()
+                                        }).ToList());
 
                 foreach (StreamInfo outputStreamDevice in outputStreamInfoList)
                 {
-                    outputStreamDevice.DeviceStatisticList.Insert(0, new DeviceStatistic() { ID = 0, Acronym = "Run-Time Statistics", Name = "", StatisticList = new List<DetailStatisticInfo>(outputStreamDevice.StatisticList) });
+                    outputStreamDevice.DeviceStatisticList.Insert(0, new DeviceStatistic() { ID = 0, Acronym = "Run-Time Statistics", Name = "", StatisticList = new ObservableCollection<DetailStatisticInfo>(outputStreamDevice.StatisticList) });
                     outputStreamDevice.StatisticList = null;
                 }
                 staticMeasurementDataList.Add(new StatisticMeasurementData() { SourceType = "Output Streams", SourceStreamInfoList = outputStreamInfoList });

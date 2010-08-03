@@ -239,11 +239,11 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Animation;
 using System.Windows.Navigation;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
+using openPDCManager.ModalDialogs;
+using openPDCManager.PhasorDataServiceProxy;
+using openPDCManager.Utilities;
 
-namespace openPDCManager.Silverlight.Pages.Manage
+namespace openPDCManager.Pages.Manage
 {
 	public partial class Measurements : Page
 	{
@@ -264,7 +264,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 		{
 			InitializeComponent();
 			Loaded += new RoutedEventHandler(Measurements_Loaded);
-			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client = ProxyClient.GetPhasorDataServiceProxyClient();
 			m_client.GetHistoriansCompleted += new EventHandler<GetHistoriansCompletedEventArgs>(client_GetHistoriansCompleted);
 			m_client.GetDevicesCompleted += new EventHandler<GetDevicesCompletedEventArgs>(client_GetDevicesCompleted);
 			m_client.GetSignalTypesCompleted += new EventHandler<GetSignalTypesCompletedEventArgs>(client_GetSignalTypesCompleted);
@@ -305,7 +305,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 
@@ -329,7 +329,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Measurements for Device", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 			if (m_activityWindow != null)
 				m_activityWindow.Close();	
@@ -355,7 +355,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Measurement List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 			if (m_activityWindow != null)
 				m_activityWindow.Close();			
@@ -383,7 +383,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Measurement Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 			}
-			sm.Show();
+			sm.ShowPopup();
 
 			App app = (App)Application.Current;
 			if (m_deviceID > 0)
@@ -433,7 +433,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasors", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 
@@ -458,7 +458,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Signal Types", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 
@@ -483,7 +483,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 
@@ -508,7 +508,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 		
@@ -679,7 +679,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
                                                 {
                                                     TextBoxPointTag.Focus();
                                                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 
@@ -692,7 +692,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
                                                 {
                                                     TextBoxSignalReference.Focus();
                                                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 
@@ -705,7 +705,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
                                                 {
                                                     TextBoxAdder.Focus();
                                                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 
@@ -718,7 +718,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
                                                 {
                                                     TextBoxMultiplier.Focus();
                                                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 

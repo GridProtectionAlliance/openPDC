@@ -230,136 +230,65 @@
 #endregion
 
 using System;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using openPDCManager.Silverlight.Utilities;
+using openPDCManager.Utilities;
+using System.Windows;
 
-
-namespace openPDCManager.Silverlight.ModalDialogs
+namespace openPDCManager.ModalDialogs
 {
 	public partial class SystemMessages : ChildWindow
-	{
-		#region [ Members ]
-
-		Message m_systemMessage = new Message();
-
-		#endregion
-
+	{		
 		#region [ Constructor ]
 
 		public SystemMessages(Message message, ButtonType buttonType)
 		{
-			InitializeComponent();
-			m_systemMessage = message;
-			Loaded += new RoutedEventHandler(SystemMessages_Loaded);
-			ButtonOk.Click += new RoutedEventHandler(ButtonOk_Click);
-			ButtonCancel.Click += new RoutedEventHandler(ButtonCancel_Click);
-			ButtonYes.Click += new RoutedEventHandler(ButtonYes_Click);
-			ButtonNo.Click += new RoutedEventHandler(ButtonNo_Click);
-			if (message.UserMessageType == MessageType.Success)
-			{
-				this.Title = "openPDCManager: Operation Completed Successfully!";
-				TextBlockMessageType.Text = "SUCCESS";
-				ImageMessageType.Source = new BitmapImage(new Uri(@"../Images/Success.png", UriKind.Relative));
-				BorderMain.Background = Application.Current.Resources["GreenRadialGradientBrush"] as Brush;
-			}
-			else if (message.UserMessageType == MessageType.Warning)
-			{
-				this.Title = "openPDCManager: Warning!";
-				TextBlockMessageType.Text = "WARNING";
-				ImageMessageType.Source = new BitmapImage(new Uri(@"../Images/Warning.png", UriKind.Relative));
-				BorderMain.Background = Application.Current.Resources["YellowRadialGradientBrush"] as Brush;
-			}
-			else if (message.UserMessageType == MessageType.Error)
-			{
-				this.Title = "openPDCManager: Error Occured!";
-				TextBlockMessageType.Text = "ERROR";
-				ImageMessageType.Source = new BitmapImage(new Uri(@"../Images/Error.png", UriKind.Relative));
-				BorderMain.Background = Application.Current.Resources["RedRadialGradientBrush"] as Brush;
-			}
-			else if (message.UserMessageType == MessageType.Confirmation)
-			{
-				this.Title = "openPDCManager: Confirmation!";
-				TextBlockMessageType.Text = "CONFIRMATION";
-				ImageMessageType.Source = new BitmapImage(new Uri(@"../Images/Warning.png", UriKind.Relative));
-				BorderMain.Background = Application.Current.Resources["YellowRadialGradientBrush"] as Brush;
-			}
-			else //treat as information.
-			{
-				this.Title = "openPDCManager: Information Only!";
-				TextBlockMessageType.Text = "INFORMATION";
-				ImageMessageType.Source = new BitmapImage(new Uri(@"../Images/Information.png", UriKind.Relative));
-				BorderMain.Background = Application.Current.Resources["BlueRadialGradientBrush"] as Brush;
-			}
+			InitializeComponent();            
+            UserControlSystemMessages.ButtonOk.Click += new RoutedEventHandler(ButtonOk_Click);
+            UserControlSystemMessages.ButtonCancel.Click += new RoutedEventHandler(ButtonCancel_Click);
+            UserControlSystemMessages.ButtonYes.Click += new RoutedEventHandler(ButtonYes_Click);
+            UserControlSystemMessages.ButtonNo.Click += new RoutedEventHandler(ButtonNo_Click);
 
-			if (buttonType == ButtonType.OkOnly)
-			{
-				ButtonOk.Visibility = Visibility.Visible;
-				ButtonCancel.Visibility = Visibility.Collapsed;
-				ButtonYes.Visibility = Visibility.Collapsed;
-				ButtonNo.Visibility = Visibility.Collapsed;
-			}
-			else if (buttonType == ButtonType.OkCancel)
-			{
-				ButtonOk.Visibility = Visibility.Visible;
-				ButtonCancel.Visibility = Visibility.Visible;
-				ButtonYes.Visibility = Visibility.Collapsed;
-				ButtonNo.Visibility = Visibility.Collapsed;
-			}
-			else if (buttonType == ButtonType.YesNo)
-			{
-				ButtonOk.Visibility = Visibility.Collapsed;
-				ButtonCancel.Visibility = Visibility.Collapsed;
-				ButtonYes.Visibility = Visibility.Visible;
-				ButtonNo.Visibility = Visibility.Visible;
-			}
-			else if (buttonType == ButtonType.YesNoCancel)
-			{
-				ButtonOk.Visibility = Visibility.Collapsed;
-				ButtonCancel.Visibility = Visibility.Visible;
-				ButtonYes.Visibility = Visibility.Visible;
-				ButtonNo.Visibility = Visibility.Visible;
-			}
+            UserControlSystemMessages.message = message;
+            UserControlSystemMessages.buttonType = buttonType;
 
-		}
+            if (message.UserMessageType == MessageType.Success)
+                this.Title = "openPDCManager: Operation Completed Successfully!";
+            else if (message.UserMessageType == MessageType.Warning)
+                this.Title = "openPDCManager: Warning!";
+            else if (message.UserMessageType == MessageType.Error)
+                this.Title = "openPDCManager: Error Occured!";
+            else if (message.UserMessageType == MessageType.Confirmation)
+                this.Title = "openPDCManager: Confirmation!";             
+            else //treat as information.
+                this.Title = "openPDCManager: Information Only!";
+        }
 
-		#endregion
+        #endregion
 
-		#region [ Control Event Handlers ]
+        #region [ Control Event Handlers ]
 
-		void ButtonOk_Click(object sender, RoutedEventArgs e)
-		{
-			this.DialogResult = true;
-		}
+        void ButtonOk_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = true;
+        }
 
-		void ButtonCancel_Click(object sender, RoutedEventArgs e)
-		{
-			this.DialogResult = false;
-		}
+        void ButtonCancel_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
+        }
 
-		void ButtonNo_Click(object sender, RoutedEventArgs e)
-		{
-			this.DialogResult = false;
-		}
+        void ButtonNo_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
+        }
 
-		void ButtonYes_Click(object sender, RoutedEventArgs e)
-		{
-			this.DialogResult = true;
-		}
+        void ButtonYes_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = true;
+        }
 
-		#endregion
-
-		#region [ Page Event Handlers ]
-
-		void SystemMessages_Loaded(object sender, RoutedEventArgs e)
-		{
-			GridSystemMessageDetail.DataContext = m_systemMessage;
-		}
-
-		#endregion
-
+        #endregion
+                
 	}
 }
 

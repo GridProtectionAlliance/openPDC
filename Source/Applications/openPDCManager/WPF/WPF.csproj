@@ -1,0 +1,608 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{66DE6E45-E538-480D-8928-9C86390E60FE}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>openPDCManager</RootNamespace>
+    <AssemblyName>openPDCManager</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <StartupObject>openPDCManager.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Windows.Controls.DataVisualization.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows.Controls.Input.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows.Controls.Layout.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TVA.Communication, Version=1.1.59.53605, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
+    </Reference>
+    <Reference Include="TVA.Core, Version=1.1.59.53605, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="TVA.Services, Version=1.1.59.53605, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\TVA\TVA.Services.dll</HintPath>
+    </Reference>
+    <Reference Include="UIAutomationProvider">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WPFToolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="..\Silverlight\Resources\CommonResource.xaml">
+      <Link>Resources\CommonResource.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\AdapterUserControl.xaml">
+      <Link>UserControls\CommonControls\AdapterUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\CalculatedMeasurementsUserControl.xaml">
+      <Link>UserControls\CommonControls\CalculatedMeasurementsUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\CompaniesUserControl.xaml">
+      <Link>UserControls\CommonControls\CompaniesUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\HistoriansUserControl.xaml">
+      <Link>UserControls\CommonControls\HistoriansUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\HomePageUserControl.xaml">
+      <Link>UserControls\CommonControls\HomePageUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\ManageDevicesUserControl.xaml">
+      <Link>UserControls\CommonControls\ManageDevicesUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\ManageOtherDevicesUserControl.xaml">
+      <Link>UserControls\CommonControls\ManageOtherDevicesUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\MonitorUserControl.xaml">
+      <Link>UserControls\CommonControls\MonitorUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\NodesUserControl.xaml">
+      <Link>UserControls\CommonControls\NodesUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\OtherDevicesUserControl.xaml">
+      <Link>UserControls\CommonControls\OtherDevicesUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\PhasorsUserControl.xaml">
+      <Link>UserControls\CommonControls\PhasorsUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\SelectNode.xaml">
+      <Link>UserControls\CommonControls\SelectNode.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\VendorDevicesUserControl.xaml">
+      <Link>UserControls\CommonControls\VendorDevicesUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\VendorUserControl.xaml">
+      <Link>UserControls\CommonControls\VendorUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\OutputStreamControls\AddDevicesUserControl.xaml">
+      <Link>UserControls\OutputStreamControls\AddDevicesUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\OutputStreamControls\CurrentDevicesUserControl.xaml">
+      <Link>UserControls\OutputStreamControls\CurrentDevicesUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\OutputStreamControls\OutputStreamsUserControl.xaml">
+      <Link>UserControls\OutputStreamControls\OutputStreamsUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\PopupControls\ActivityWindowUserControl.xaml">
+      <Link>UserControls\PopupControls\ActivityWindowUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\PopupControls\OutputStreamDevicesUserControl.xaml">
+      <Link>UserControls\PopupControls\OutputStreamDevicesUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\PopupControls\OutputStreamMeasurementsUserControl.xaml">
+      <Link>UserControls\PopupControls\OutputStreamMeasurementsUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\PopupControls\SystemMessagesUserControl.xaml">
+      <Link>UserControls\PopupControls\SystemMessagesUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MasterLayoutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ModalDialogs\ActivityWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ModalDialogs\ConnectionStringBuilder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamDevices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamMeasurements.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamWizard\AddDevices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamWizard\CurrentDevices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ModalDialogs\Phasors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ModalDialogs\SystemMessages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Adapters\DeviceMeasurementsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Adapters\IaonTreeUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Adapters\RealTimeStatisticsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Devices\BrowseDevicesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Manage\Measurements.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\ResourcePieChartStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\CommonControls\TestUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Silverlight\Converters\BooleanToColorConverter.cs">
+      <Link>Converters\BooleanToColorConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Silverlight\Converters\InvertBooleanConverter.cs">
+      <Link>Converters\InvertBooleanConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Silverlight\Converters\StringToColorConverter.cs">
+      <Link>Converters\StringToColorConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Silverlight\Converters\StringToDictionaryConverter.cs">
+      <Link>Converters\StringToDictionaryConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Silverlight\Converters\StringToPhaseConverter.cs">
+      <Link>Converters\StringToPhaseConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Silverlight\Converters\StringToPhasorTypeConverter.cs">
+      <Link>Converters\StringToPhasorTypeConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Silverlight\Converters\StringToSymbolConverter.cs">
+      <Link>Converters\StringToSymbolConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\AdapterUserControl.xaml.cs">
+      <Link>UserControls\CommonControls\AdapterUserControl.xaml.cs</Link>
+      <DependentUpon>AdapterUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\CalculatedMeasurementsUserControl.xaml.cs">
+      <Link>UserControls\CommonControls\CalculatedMeasurementsUserControl.xaml.cs</Link>
+      <DependentUpon>CalculatedMeasurementsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\CompaniesUserControl.xaml.cs">
+      <Link>UserControls\CommonControls\CompaniesUserControl.xaml.cs</Link>
+      <DependentUpon>CompaniesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\HistoriansUserControl.xaml.cs">
+      <Link>UserControls\CommonControls\HistoriansUserControl.xaml.cs</Link>
+      <DependentUpon>HistoriansUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\HomePageUserControl.xaml.cs">
+      <Link>UserControls\CommonControls\HomePageUserControl.xaml.cs</Link>
+      <DependentUpon>HomePageUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\ManageDevicesUserControl.xaml.cs">
+      <Link>UserControls\CommonControls\ManageDevicesUserControl.xaml.cs</Link>
+      <DependentUpon>ManageDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\ManageOtherDevicesUserControl.xaml.cs">
+      <Link>UserControls\CommonControls\ManageOtherDevicesUserControl.xaml.cs</Link>
+      <DependentUpon>ManageOtherDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\MonitorUserControl.xaml.cs">
+      <Link>UserControls\CommonControls\MonitorUserControl.xaml.cs</Link>
+      <DependentUpon>MonitorUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\NodesUserControl.xaml.cs">
+      <Link>UserControls\CommonControls\NodesUserControl.xaml.cs</Link>
+      <DependentUpon>NodesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\OtherDevicesUserControl.xaml.cs">
+      <Link>UserControls\CommonControls\OtherDevicesUserControl.xaml.cs</Link>
+      <DependentUpon>OtherDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\PhasorsUserControl.xaml.cs">
+      <Link>UserControls\CommonControls\PhasorsUserControl.xaml.cs</Link>
+      <DependentUpon>PhasorsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\SelectNode.xaml.cs">
+      <Link>UserControls\CommonControls\SelectNode.xaml.cs</Link>
+      <DependentUpon>SelectNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\VendorDevicesUserControl.xaml.cs">
+      <Link>UserControls\CommonControls\VendorDevicesUserControl.xaml.cs</Link>
+      <DependentUpon>VendorDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\VendorUserControl.xaml.cs">
+      <Link>UserControls\CommonControls\VendorUserControl.xaml.cs</Link>
+      <DependentUpon>VendorUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\OutputStreamControls\AddDevicesUserControl.xaml.cs">
+      <Link>UserControls\OutputStreamControls\AddDevicesUserControl.xaml.cs</Link>
+      <DependentUpon>AddDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\OutputStreamControls\CurrentDevicesUserControl.xaml.cs">
+      <Link>UserControls\OutputStreamControls\CurrentDevicesUserControl.xaml.cs</Link>
+      <DependentUpon>CurrentDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\OutputStreamControls\OutputStreamsUserControl.xaml.cs">
+      <Link>UserControls\OutputStreamControls\OutputStreamsUserControl.xaml.cs</Link>
+      <DependentUpon>OutputStreamsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\PopupControls\ActivityWindowUserControl.xaml.cs">
+      <Link>UserControls\PopupControls\ActivityWindowUserControl.xaml.cs</Link>
+      <DependentUpon>ActivityWindowUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\PopupControls\OutputStreamDevicesUserControl.xaml.cs">
+      <Link>UserControls\PopupControls\OutputStreamDevicesUserControl.xaml.cs</Link>
+      <DependentUpon>OutputStreamDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\PopupControls\OutputStreamMeasurementsUserControl.xaml.cs">
+      <Link>UserControls\PopupControls\OutputStreamMeasurementsUserControl.xaml.cs</Link>
+      <DependentUpon>OutputStreamMeasurementsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\PopupControls\SystemMessagesUserControl.xaml.cs">
+      <Link>UserControls\PopupControls\SystemMessagesUserControl.xaml.cs</Link>
+      <DependentUpon>SystemMessagesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\Utilities\Common.cs">
+      <Link>Utilities\Common.cs</Link>
+    </Compile>
+    <Compile Include="..\Silverlight\Utilities\DefaultButtonService.cs">
+      <Link>Utilities\DefaultButtonService.cs</Link>
+    </Compile>
+    <Compile Include="..\Silverlight\Utilities\Message.cs">
+      <Link>Utilities\Message.cs</Link>
+    </Compile>
+    <Compile Include="MasterLayoutWindow.xaml.cs">
+      <DependentUpon>MasterLayoutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\ActivityWindow.xaml.cs">
+      <DependentUpon>ActivityWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\ConnectionStringBuilder.xaml.cs">
+      <DependentUpon>ConnectionStringBuilder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamDevices.xaml.cs">
+      <DependentUpon>OutputStreamDevices.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamMeasurements.xaml.cs">
+      <DependentUpon>OutputStreamMeasurements.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamWizard\AddDevices.xaml.cs">
+      <DependentUpon>AddDevices.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamWizard\CurrentDevices.xaml.cs">
+      <DependentUpon>CurrentDevices.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\Phasors.xaml.cs">
+      <DependentUpon>Phasors.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\SystemMessages.xaml.cs">
+      <DependentUpon>SystemMessages.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\DeviceMeasurementDataForBinding.cs" />
+    <Compile Include="Pages\Adapters\DeviceMeasurementsUserControl.xaml.cs">
+      <DependentUpon>DeviceMeasurementsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\IaonTreeUserControl.xaml.cs">
+      <DependentUpon>IaonTreeUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\RealTimeStatisticsUserControl.xaml.cs">
+      <DependentUpon>RealTimeStatisticsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\BrowseDevicesUserControl.xaml.cs">
+      <DependentUpon>BrowseDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Manage\Measurements.xaml.cs">
+      <DependentUpon>Measurements.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\AdapterUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\CalculatedMeasurementsUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\CompaniesUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\HistoriansUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\HomePageUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\ManageDevicesUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\ManageOtherDevicesUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\MonitorUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\NodesUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\OtherDevicesUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\PhasorsUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\SelectNode.cs" />
+    <Compile Include="UserControls\CommonControls\TestUserControl.xaml.cs">
+      <DependentUpon>TestUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\VendorDevicesUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\VendorUserControl.cs" />
+    <Compile Include="UserControls\OutputStreamControls\AddDevicesUserControl.cs" />
+    <Compile Include="UserControls\OutputStreamControls\CurrentDevicesUserControl.cs" />
+    <Compile Include="UserControls\OutputStreamControls\OutputStreamsUserControl.cs" />
+    <Compile Include="UserControls\PopupControls\OutputStreamDevicesUserControl.cs" />
+    <Compile Include="UserControls\PopupControls\OutputStreamMeasurementsUserControl.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="App.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Web.Data\Web.Data.csproj">
+      <Project>{5314055B-EA03-4E15-8653-83F011D7A00E}</Project>
+      <Name>Web.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Silverlight\Images\Pmu.png">
+      <Link>Images\Pmu.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Silverlight\Images\Action.png">
+      <Link>Images\Action.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\ActivityReport.png">
+      <Link>Images\ActivityReport.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Add.png">
+      <Link>Images\Add.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Browse.png">
+      <Link>Images\Browse.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Calculation.png">
+      <Link>Images\Calculation.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Cancel.png">
+      <Link>Images\Cancel.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\CancelSearch.png">
+      <Link>Images\CancelSearch.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Chart.png">
+      <Link>Images\Chart.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Company.png">
+      <Link>Images\Company.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Computers.png">
+      <Link>Images\Computers.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Configuration.png">
+      <Link>Images\Configuration.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Contacts.png">
+      <Link>Images\Contacts.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\ContactUs.png">
+      <Link>Images\ContactUs.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Earth.png">
+      <Link>Images\Earth.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Error.png">
+      <Link>Images\Error.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Home.png">
+      <Link>Images\Home.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Information.png">
+      <Link>Images\Information.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Input.png">
+      <Link>Images\Input.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\List.png">
+      <Link>Images\List.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Measure.png">
+      <Link>Images\Measure.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Mode.png">
+      <Link>Images\Mode.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\News.png">
+      <Link>Images\News.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Next.png">
+      <Link>Images\Next.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Ok.png">
+      <Link>Images\Ok.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Output.png">
+      <Link>Images\Output.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Overview.png">
+      <Link>Images\Overview.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Previous.png">
+      <Link>Images\Previous.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Request.png">
+      <Link>Images\Request.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\RequestData.png">
+      <Link>Images\RequestData.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Save.png">
+      <Link>Images\Save.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Search.png">
+      <Link>Images\Search.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\StatusReport.png">
+      <Link>Images\StatusReport.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Success.png">
+      <Link>Images\Success.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Tree.png">
+      <Link>Images\Tree.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\UptimeReport.png">
+      <Link>Images\UptimeReport.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Vendor.png">
+      <Link>Images\Vendor.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Warning.png">
+      <Link>Images\Warning.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Silverlight\Images\Console.png">
+      <Link>Images\Console.png</Link>
+    </Resource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

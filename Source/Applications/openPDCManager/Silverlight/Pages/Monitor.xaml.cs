@@ -229,159 +229,28 @@
 */
 #endregion
 
-using System;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Navigation;
-using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.Utilities;
 
-namespace openPDCManager.Silverlight.Pages
+namespace openPDCManager.Pages
 {
 	public partial class Monitor : Page
 	{
-		#region [ Members ]
-
-		DuplexServiceClient m_duplexClient;
-		bool m_connected = false;
-		ActivityWindow m_activityWindow;
-		int m_numberOfMessagesOnMonitor;
-
-		#endregion
-
 		#region [ Constructor ]
 
 		public Monitor()
 		{
-			InitializeComponent();
-			this.Loaded += new RoutedEventHandler(Monitor_Loaded);
-			m_duplexClient = Common.GetDuplexServiceProxyClient();
-			m_duplexClient.SendToServiceCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(m_duplexClient_SendToServiceCompleted);
-			m_duplexClient.SendToClientReceived += new EventHandler<SendToClientReceivedEventArgs>(m_duplexClient_SendToClientReceived);
-			ButtonSendServiceRequest.Click += new RoutedEventHandler(ButtonSendServiceRequest_Click);
-			m_numberOfMessagesOnMonitor = IsolatedStorageManager.LoadFromIsolatedStorage("NumberOfMessagesOnMonitor") == null ? 50 : Convert.ToInt32(IsolatedStorageManager.LoadFromIsolatedStorage("NumberOfMessagesOnMonitor"));
+			InitializeComponent();						
 		}
 
 		#endregion
 
-		#region [ Control Event Handlers ]
-
-		void ButtonSendServiceRequest_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSendServiceRequestTransform);
-			sb.Begin();
-
-			if (!string.IsNullOrEmpty(TextBoxServiceRequest.Text))
-			{
-				ServiceRequestMessage message = new ServiceRequestMessage() { Request = TextBoxServiceRequest.Text };
-				m_duplexClient.SendToServiceAsync(message);
-			}
-		}
-
-		#endregion
-
-		#region [ Service Event Handlers ]
-
-		void m_duplexClient_SendToClientReceived(object sender, SendToClientReceivedEventArgs e)
-		{
-			if (e.msg is ServiceUpdateMessage)
-			{
-                string message = ((ServiceUpdateMessage)e.msg).ServiceUpdate;
-                                
-                if (((ServiceUpdateMessage)e.msg).ServiceUpdateType == UpdateType.Information)
-				{
-					//	TextBoxServiceStatus.Text += ((ServiceUpdateMessage)e.msg).ServiceUpdate;
-					Run run = new Run();
-					run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-					run.Text = message;
-					TextBoxServiceStatus.Inlines.Add(run);
-				}
-				else if (((ServiceUpdateMessage)e.msg).ServiceUpdateType == UpdateType.Warning)
-				{
-					Run run = new Run();
-					run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 0));
-					run.Text = message;
-					TextBoxServiceStatus.Inlines.Add(run);
-				}
-				else
-				{
-					Run run = new Run();
-					run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 10, 10));
-					run.Text = message;
-					TextBoxServiceStatus.Inlines.Add(run);
-				}
-			}
-						
-			if (TextBoxServiceStatus.Inlines.Count > m_numberOfMessagesOnMonitor)
-				TextBoxServiceStatus.Inlines.RemoveAt(0);
-
-			if (m_activityWindow != null)
-				m_activityWindow.Close();
-
-			ScrollViewerMonitor.UpdateLayout();	//this is required to keep scroll-bar at the bottom.
-			ScrollViewerMonitor.ScrollToVerticalOffset(TextBoxServiceStatus.ActualHeight * 2);
-			//ScrollViewerMonitor.ScrollToBottom();
-		}
-
-		void m_duplexClient_SendToServiceCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				m_connected = true;
-		}
-
-		#endregion
-
-		#region [ Page Event Handlers ]
-
-		void Monitor_Loaded(object sender, RoutedEventArgs e)
-		{
-			ReconnectToService();
-		}
-
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			m_activityWindow = new ActivityWindow("Connecting to Windows Service... Please Wait...");
-			m_activityWindow.Show();
-		}
-
-		// Executes just before a page is no longer the active page in a frame.
-		protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
-		{
-			if (m_connected)
-			{
-				try
-				{
-					m_duplexClient.SendToServiceAsync(new DisconnectMessage());
-				}
-				catch { }
-			}			
-			base.OnNavigatingFrom(e);
-		}
-
-		#endregion
-
-		#region [ Methods ]
-
-		void ReconnectToService()
-		{
-			ConnectMessage msg = new ConnectMessage();
-			msg.NodeID = ((App)Application.Current).NodeValue;
-			msg.TimeSeriesDataRootUrl = ((App)Application.Current).TimeSeriesDataServiceUrl;	// "http://localhost:6152/historian/timeseriesdata/read/";
-            msg.RealTimeStatisticRootUrl = ((App)Application.Current).RealTimeStatisticServiceUrl;
-			msg.CurrentDisplayType = DisplayType.ServiceClient;
-			msg.DataPointID = 0;
-			m_duplexClient.SendToServiceAsync(msg);
-		}
-
-		#endregion
+        // Executes just before a page is no longer the active page in a frame.
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            UserControlMonitor.Disconnect();            
+            base.OnNavigatingFrom(e);
+        }
 
 	}
 }

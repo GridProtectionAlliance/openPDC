@@ -234,71 +234,70 @@ using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
+using openPDCManager.ModalDialogs;
+using openPDCManager.PhasorDataServiceProxy;
+using openPDCManager.Utilities;
 
-namespace openPDCManager.Silverlight.Pages.Adapters
+namespace openPDCManager.Pages.Adapters
 {
 	public partial class IaonTree : Page
 	{
-		#region [ Members ]
+        #region [ Members ]
 
-		PhasorDataServiceClient m_client;
+        PhasorDataServiceClient m_client;
 
-		#endregion
+        #endregion
 
 		#region [ Constructor ]
 
 		public IaonTree()
 		{
 			InitializeComponent();
-			m_client = Common.GetPhasorDataServiceProxyClient();
-			m_client.GetIaonTreeDataCompleted += new EventHandler<GetIaonTreeDataCompletedEventArgs>(client_GetIaonTreeDataCompleted);
-			Loaded += new RoutedEventHandler(IaonTree_Loaded);
+            m_client = ProxyClient.GetPhasorDataServiceProxyClient();
+            m_client.GetIaonTreeDataCompleted += new EventHandler<GetIaonTreeDataCompletedEventArgs>(client_GetIaonTreeDataCompleted);
+            Loaded += new RoutedEventHandler(IaonTree_Loaded);
 		}
 
 		#endregion
 
-		#region [ Page Event Handlers ]
+        #region [ Page Event Handlers ]
 
-		void IaonTree_Loaded(object sender, RoutedEventArgs e)
-		{
-		}
+        void IaonTree_Loaded(object sender, RoutedEventArgs e)
+        {
+            
+        }
 
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			App app = (App)Application.Current;
-			m_client.GetIaonTreeDataAsync(app.NodeValue);
-		}
+        protected override void  OnNavigatedTo(NavigationEventArgs e)
+        {
+            m_client.GetIaonTreeDataAsync(((App)Application.Current).NodeValue);
+ 	        base.OnNavigatedTo(e);
+        }
 
-		#endregion
+        #endregion
 
-		#region [ Service Event Handlers ]
+        #region [ Service Event Handlers ]
 
-		void client_GetIaonTreeDataCompleted(object sender, GetIaonTreeDataCompletedEventArgs e)
-		{
-			if (e.Error == null)
-			    TreeViewIaon.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Iaon Tree Data", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
+        void client_GetIaonTreeDataCompleted(object sender, GetIaonTreeDataCompletedEventArgs e)
+        {
+            if (e.Error == null)
+                TreeViewIaon.ItemsSource = e.Result;
+            else
+            {
+                SystemMessages sm;
+                if (e.Error is FaultException<CustomServiceFault>)
+                {
+                    FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+                    sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                }
+                else
+                    sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Iaon Tree Data", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.ShowPopup();
+            }
+        }
 
-				sm.Show();
-			}
-		}
-
-		#endregion
-
+        #endregion
+		
 	}
 }

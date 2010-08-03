@@ -231,13 +231,15 @@
 
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace openPDCManager.Web.Data.BusinessObjects
 {
     public class StatisticMeasurementData
     {
         public string SourceType { get; set; }
-        public List<StreamInfo> SourceStreamInfoList { get; set; }        
+        public bool IsExpanded { get; set; }
+        public ObservableCollection<StreamInfo> SourceStreamInfoList { get; set; }        
     }
 
     public class StreamInfo
@@ -246,8 +248,9 @@ namespace openPDCManager.Web.Data.BusinessObjects
         public string Acronym { get; set; }
         public string Name { get; set; }
         public string StatusColor { get; set; }
-        public List<DeviceStatistic> DeviceStatisticList { get; set; }
-        public List<DetailStatisticInfo> StatisticList { get; set; }
+        public bool IsExpanded { get; set; }
+        public ObservableCollection<DeviceStatistic> DeviceStatisticList { get; set; }
+        public ObservableCollection<DetailStatisticInfo> StatisticList { get; set; }
     }
 
     public class DeviceStatistic
@@ -255,7 +258,8 @@ namespace openPDCManager.Web.Data.BusinessObjects
         public int ID { get; set; }
         public string Acronym { get; set; }
         public string Name { get; set; }
-        public List<DetailStatisticInfo> StatisticList { get; set; }
+        public bool IsExpanded { get; set; }
+        public ObservableCollection<DetailStatisticInfo> StatisticList { get; set; }
     }
 
     public class DetailStatisticInfo
@@ -264,6 +268,7 @@ namespace openPDCManager.Web.Data.BusinessObjects
         public int PointID { get; set; }
         public string PointTag { get; set; }
         public string SignalReference { get; set; }
+        public bool IsExpanded { get; set; }
         public BasicStatisticInfo Statistics { get; set; }        
     }
 

@@ -233,11 +233,11 @@ using System;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
+using openPDCManager.PhasorDataServiceProxy;
+using openPDCManager.Utilities;
 using System.Windows.Media.Animation;
 
-namespace openPDCManager.Silverlight.ModalDialogs
+namespace openPDCManager.ModalDialogs
 {
 	public partial class OutputStreamDeviceDigitals : ChildWindow
 	{
@@ -262,7 +262,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			Loaded += new RoutedEventHandler(OutputStreamDeviceDigitals_Loaded);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
-			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client = ProxyClient.GetPhasorDataServiceProxyClient();
 			m_client.GetOutputStreamDeviceDigitalListCompleted += new EventHandler<GetOutputStreamDeviceDigitalListCompletedEventArgs>(client_GetOutputStreamDeviceDigitalListCompleted);
 			m_client.SaveOutputStreamDeviceDigitalCompleted += new EventHandler<SaveOutputStreamDeviceDigitalCompletedEventArgs>(client_SaveOutputStreamDeviceDigitalCompleted);
 			ListBoxOutputStreamDeviceDigitalList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDeviceDigitalList_SelectionChanged);
@@ -347,7 +347,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Digital Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 			}
-			sm.Show();
+			sm.ShowPopup();
 			m_client.GetOutputStreamDeviceDigitalListAsync(m_sourceOutputStreamDeviceID);	
 		}
 		
@@ -368,7 +368,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device Digital List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 
@@ -399,7 +399,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
                                                 {
                                                     TextBoxLabel.Focus();
                                                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 
@@ -413,7 +413,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
                                                     TextBoxLoadOrder.Text = "0";
                                                     TextBoxLoadOrder.Focus();
                                                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 
@@ -427,7 +427,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
                     TextBoxMaskValue.Text = "0";
                     TextBoxMaskValue.Focus();
                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 

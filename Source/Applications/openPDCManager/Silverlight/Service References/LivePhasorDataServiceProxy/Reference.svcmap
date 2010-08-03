@@ -27,9 +27,9 @@
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="85d132c4-6299-48e9-86c0-ee66e90d0fd1" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
     <MetadataFile FileName="duplex.xsd" MetadataType="Schema" ID="b43dd0f2-4976-4db4-8d15-d6d1558a9c15" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
     <MetadataFile FileName="openPDCManager.Services.DuplexService.xsd" MetadataType="Schema" ID="702d3bf8-a027-40fe-8951-6e3d58b0ffa6" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="c6f270b4-6d2a-4019-83cf-bb78b4663bbc" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
     <MetadataFile FileName="openPDCManager.Web.Data.BusinessObjects.xsd" MetadataType="Schema" ID="2d32a860-594c-43b2-9e9b-ef11aa432dcb" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
     <MetadataFile FileName="TVA.Services.xsd" MetadataType="Schema" ID="783013f9-77a5-439f-ab59-835eb3dc0833" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
-    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="c6f270b4-6d2a-4019-83cf-bb78b4663bbc" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

@@ -229,193 +229,31 @@
 */
 #endregion
 
-using System;
-using System.ServiceModel;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
 using System.Windows.Navigation;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
 
-namespace openPDCManager.Silverlight.Pages.Manage
+namespace openPDCManager.Pages.Manage
 {
 	public partial class Vendors : Page
 	{
-		#region [ Members ]
-
-		PhasorDataServiceClient m_client;
-		bool m_inEditMode = false;
-		int m_vendorID = 0;
-
-		#endregion
-
 		#region [ Constructor ]
 
 		public Vendors()
 		{
-			InitializeComponent();
-			m_client = Common.GetPhasorDataServiceProxyClient();
-			m_client.GetVendorListCompleted += new EventHandler<GetVendorListCompletedEventArgs>(client_GetVendorListCompleted);
-			m_client.SaveVendorCompleted += new EventHandler<SaveVendorCompletedEventArgs>(client_SaveVendorCompleted);
-			Loaded += new RoutedEventHandler(Vendors_Loaded);
-			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
-			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
-			ListBoxVendorList.SelectionChanged += new SelectionChangedEventHandler(ListBoxVendorList_SelectionChanged);
-		}
-
-		#endregion
-
-		#region [ Service Event Handlers ]
-
-		void client_SaveVendorCompleted(object sender, SaveVendorCompletedEventArgs e)
-		{
-			SystemMessages sm;
-			if (e.Error == null)
-			{
-				ClearForm();
-				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-						ButtonType.OkOnly);
-			}
-			else
-			{
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Vendor Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-			}
-			sm.Show();
-						
-			m_client.GetVendorListAsync();	//Refresh data to reflect changes on the current screen.
-		}
-
-		void client_GetVendorListCompleted(object sender, GetVendorListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ListBoxVendorList.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-		}
-
-		#endregion
-
-		#region [ Control Event Handlers ]
-
-		void ListBoxVendorList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (ListBoxVendorList.SelectedIndex >= 0)
-			{
-				Vendor selectedVendor = ListBoxVendorList.SelectedItem as Vendor;
-				GridVendorDetail.DataContext = selectedVendor;
-				m_inEditMode = true;
-				m_vendorID = selectedVendor.ID;
-			}
-		}
-
-        void ButtonSave_Click(object sender, RoutedEventArgs e)
-        {
-            Storyboard sb = new Storyboard();
-            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-            Storyboard.SetTarget(sb, ButtonSaveTransform);
-            sb.Begin();
-
-            if (IsValid())
-            {
-                Vendor vendor = new Vendor();
-                vendor.Acronym = TextBoxAcronym.Text.CleanText();
-                vendor.Name = TextBoxName.Text.CleanText();
-                vendor.PhoneNumber = TextBoxPhoneNumber.Text.CleanText();
-                vendor.ContactEmail = TextBoxContactEmail.Text.CleanText();
-                vendor.URL = TextBoxUrl.Text.CleanText();
-
-                if (m_vendorID != 0 && m_inEditMode == true)		//i.e. It is an update to existing item.
-                {
-                    vendor.ID = m_vendorID;
-                    m_client.SaveVendorAsync(vendor, false);
-                }
-                else	//i.e. It is a new item			
-                    m_client.SaveVendorAsync(vendor, true);
-            }
-        }
-		
-		void ButtonClear_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonClearTransform);
-			sb.Begin();
-			ClearForm();
+			InitializeComponent();			
 		}
 
 		#endregion
 
 		#region [ Page Event Handlers ]
 
-		void Vendors_Loaded(object sender, RoutedEventArgs e)
-		{
-
-		}
-
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
 		{
-			m_client.GetVendorListAsync();
+			
 		}
 
 		#endregion
-
-		#region [ Methods ]
-
-        bool IsValid()
-        {
-            bool isValid = true;
-
-            if (string.IsNullOrEmpty(TextBoxName.Text.CleanText()))
-            {
-                isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Name", SystemMessage = "Please provide valid Name.", UserMessageType = MessageType.Error },
-                        ButtonType.OkOnly);
-                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
-                                                {
-                                                    TextBoxName.Focus();
-                                                });
-                sm.Show();
-                return isValid;
-            }
-
-            return isValid;
-        }
-
-		void ClearForm()
-		{
-			GridVendorDetail.DataContext = new Vendor();		//this is done to clear all the textboxes and to retain binding information. Please do not set empty strings as textboxes' vaues.
-			m_inEditMode = false;
-			m_vendorID = 0;
-			ListBoxVendorList.SelectedIndex = -1;
-		}
-
-		#endregion
-
-	}
+        
+    }
 }

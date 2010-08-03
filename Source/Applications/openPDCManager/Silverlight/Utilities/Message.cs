@@ -230,7 +230,7 @@
 #endregion
 
 
-namespace openPDCManager.Silverlight.Utilities
+namespace openPDCManager.Utilities
 {
 	public class Message
 	{

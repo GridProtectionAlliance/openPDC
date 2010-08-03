@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="openPDCManager.UserControls.Common.SelectNode"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    >
+    <!--<UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/openPDCManager.WPF;component/CommonResource.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>-->
+    <Grid>
+        <ComboBox x:Name="ComboboxNode" Margin="5" ItemsSource="{Binding}" DisplayMemberPath="Name" Width="{StaticResource LargerItemSize}" Height="{StaticResource XXSmallItemSize}"/>        
+    </Grid>
+</UserControl>

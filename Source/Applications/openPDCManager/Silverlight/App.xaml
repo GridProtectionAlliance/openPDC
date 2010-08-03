@@ -2,11 +2,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
 			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:igMenu="clr-namespace:Infragistics.Silverlight.XamWebMenu;assembly=Infragistics.Silverlight.XamWebMenu.v9.1"
-             x:Class="openPDCManager.Silverlight.App"
+             x:Class="openPDCManager.App"
              >
     <Application.Resources>
         <ResourceDictionary>
-            <sys:Double x:Key="XXSmallTextSize">7</sys:Double>
+            <Style x:Key="XamWebMenuStyle" TargetType="igMenu:XamWebMenu">
+                <Setter Property="Background" Value="{x:Null}"/>
+                <Setter Property="Foreground" Value="#FFFFFFFF"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="ExpandOnHover" Value="True"/>
+            </Style>
+            
+            
+            <!--   <sys:Double x:Key="XXSmallTextSize">7</sys:Double>
 			<sys:Double x:Key="XSmallTextSize">8</sys:Double>
             <sys:Double x:Key="SmallerTextSize">9</sys:Double>
             <sys:Double x:Key="SmallTextSize">10</sys:Double>
@@ -49,21 +57,12 @@
     		</ControlTemplate>            
             
             <ControlTemplate x:Key="ImageButtonTemplate" TargetType="Button">
-                <!--<Border BorderBrush="#FF7A9AB9" BorderThickness="1" CornerRadius="3" Padding="3">
-                    <Border.Effect>
-                        <DropShadowEffect BlurRadius="3" Color="#FF345270" ShadowDepth="1"/>
-                    </Border.Effect>
-                    <Border.Background>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="#FFCFE3F6" Offset="0"/>
-                            <GradientStop Color="White" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Border.Background>-->
+              
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{TemplateBinding Content}" Width="16" Height="16" Margin="2" />
                         <TextBlock Text="{TemplateBinding Tag}" FontWeight="Bold" FontSize="{StaticResource LargeTextSize}"/>
                     </StackPanel>
-                <!--</Border>-->
+              
             </ControlTemplate>
 
             <ControlTemplate x:Key="GrayPushPinButtonTemplate" TargetType="Button">
@@ -320,12 +319,13 @@
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="FontWeight" Value="Bold" />
                 <Setter Property="Margin" Value="5" />                
-            </Style>
+            </Style>-->
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/ResourceMenuItemStyle.xaml" ></ResourceDictionary>
                 <ResourceDictionary Source="Resources/ResourcePieChartStyle.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="Resources/ResourceAccordianStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Resources/CommonResource.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

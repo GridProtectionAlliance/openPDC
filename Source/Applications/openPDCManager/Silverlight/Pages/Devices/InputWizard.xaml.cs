@@ -240,11 +240,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using System.Windows.Navigation;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
+using openPDCManager.ModalDialogs;
+using openPDCManager.PhasorDataServiceProxy;
+using openPDCManager.Utilities;
 
-namespace openPDCManager.Silverlight.Pages.Devices
+namespace openPDCManager.Pages.Devices
 {
 	public partial class InputWizard : Page
 	{
@@ -272,7 +272,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		{
 			InitializeComponent();
 			//Services Events			
-			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client = ProxyClient.GetPhasorDataServiceProxyClient();
 			m_client.GetProtocolsCompleted += new EventHandler<GetProtocolsCompletedEventArgs>(client_GetProtocolsCompleted);
 			m_client.GetVendorDevicesCompleted += new EventHandler<GetVendorDevicesCompletedEventArgs>(client_GetVendorDevicesCompleted);
 			m_client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);
@@ -338,7 +338,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				else
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Upload INI File", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
-				sm.Show();
+				sm.ShowPopup();
 			}			
 		}
 		
@@ -359,7 +359,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Current Execution Path", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 		
@@ -380,7 +380,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 			if (ComboboxInterconnection.Items.Count > 0)
 				ComboboxInterconnection.SelectedIndex = 0;
@@ -403,7 +403,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 			if (ComboboxHistorian.Items.Count > 0)
 				ComboboxHistorian.SelectedIndex = 0;
@@ -426,7 +426,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 			if (ComboboxCompany.Items.Count > 0)
 				ComboboxCompany.SelectedIndex = 0;
@@ -452,7 +452,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 			if (ComboboxPDCVendor.Items.Count > 0)
 				ComboboxPDCVendor.SelectedIndex = 0;
@@ -475,7 +475,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Protocols", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 			if (ComboboxProtocol.Items.Count > 0)
 				ComboboxProtocol.SelectedIndex = 0;
@@ -528,7 +528,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Parse Connection File", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 		
@@ -552,7 +552,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Parse Configuration File", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 			if (m_activityWindow != null)
 				m_activityWindow.Close();
@@ -578,7 +578,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Configuration Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 			}
-			sm.Show();
+			sm.ShowPopup();
 			nextButtonClicked = false;
 			if (m_activityWindow != null)
 				m_activityWindow.Close();	
@@ -633,7 +633,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device Information by Acronym", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 		
@@ -654,7 +654,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 
@@ -679,7 +679,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Configuration", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);				
 			}
-			sm.Show();
+			sm.ShowPopup();
 
 			if (m_activityWindow != null)
 				m_activityWindow.Close();
@@ -888,7 +888,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 				else
 				{
 					SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Application is busy processing previous request. Please wait.", SystemMessage = "", UserMessageType = MessageType.Information }, ButtonType.OkOnly);
-					sm.Show();
+					sm.ShowPopup();
 				}
 			}
 

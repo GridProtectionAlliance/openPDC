@@ -232,11 +232,11 @@
 using System;
 using System.Windows;
 using Microsoft.Maps.MapControl;
-using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
+using openPDCManager.Utilities;
+using openPDCManager.ModalDialogs;
 using System.Text;
 
-namespace openPDCManager.Silverlight
+namespace openPDCManager
 {
     public partial class App : Application
 	{
@@ -279,7 +279,7 @@ namespace openPDCManager.Silverlight
 			this.RootVisual = new MasterLayoutControl();
 
 			//Set default system settings if no settings exist.
-			Common.SetDefaultSystemSettings(false);
+			ProxyClient.SetDefaultSystemSettings(false);
         }
         
 		private void Application_Exit(object sender, EventArgs e)
@@ -310,7 +310,7 @@ namespace openPDCManager.Silverlight
 
 			SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Application Error Occured", SystemMessage = sb.ToString(), UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
-			sm.Show();
+			sm.ShowPopup();
 		}
 
 		#endregion

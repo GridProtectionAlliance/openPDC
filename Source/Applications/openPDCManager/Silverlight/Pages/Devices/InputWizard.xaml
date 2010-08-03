@@ -1,12 +1,12 @@
 ﻿<navigation:Page xmlns:layoutToolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"  
-           x:Class="openPDCManager.Silverlight.Pages.Devices.InputWizard" 
+           x:Class="openPDCManager.Pages.Devices.InputWizard" 
            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            mc:Ignorable="d"
            xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"     
-           xmlns:converter="clr-namespace:openPDCManager.Silverlight.Converters"                 
+           xmlns:converter="clr-namespace:openPDCManager.Converters"                 
            Title="Device Configuration Wizard" TabNavigation="Cycle">
            
     <Grid x:Name="GridConfigurationWizard">        

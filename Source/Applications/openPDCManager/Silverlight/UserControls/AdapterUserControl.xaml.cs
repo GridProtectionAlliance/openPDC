@@ -235,11 +235,11 @@ using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
+using openPDCManager.ModalDialogs;
+using openPDCManager.PhasorDataServiceProxy;
+using openPDCManager.Utilities;
 
-namespace openPDCManager.Silverlight.UserControls
+namespace openPDCManager.UserControls
 {
 	public partial class AdapterUserControl : UserControl
 	{
@@ -258,7 +258,7 @@ namespace openPDCManager.Silverlight.UserControls
 		public AdapterUserControl()
 		{
 			InitializeComponent();
-			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client = ProxyClient.GetPhasorDataServiceProxyClient();
 			m_client.GetAdapterListCompleted += new EventHandler<GetAdapterListCompletedEventArgs>(client_GetAdapterListCompleted);
 			m_client.SaveAdapterCompleted += new EventHandler<SaveAdapterCompletedEventArgs>(client_SaveAdapterCompleted);
 			m_client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
@@ -289,7 +289,7 @@ namespace openPDCManager.Silverlight.UserControls
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 			if (ComboboxNode.Items.Count > 0)
 				ComboboxNode.SelectedIndex = 0;
@@ -316,7 +316,7 @@ namespace openPDCManager.Silverlight.UserControls
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Adapter Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 			}
-			sm.Show();
+			sm.ShowPopup();
 			m_client.GetAdapterListAsync(false, m_adapterType, m_nodeID);
 		}
 
@@ -337,7 +337,7 @@ namespace openPDCManager.Silverlight.UserControls
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Adapter List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 
@@ -427,7 +427,7 @@ namespace openPDCManager.Silverlight.UserControls
                                                 {
                                                     TextBoxAdapterName.Focus();
                                                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 
@@ -440,7 +440,7 @@ namespace openPDCManager.Silverlight.UserControls
                                                 {
                                                     TextBoxAssemblyName.Focus();
                                                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 
@@ -453,7 +453,7 @@ namespace openPDCManager.Silverlight.UserControls
                                                 {
                                                     TextBoxTypeName.Focus();
                                                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 
@@ -466,7 +466,7 @@ namespace openPDCManager.Silverlight.UserControls
                                                 {
                                                     TextBoxLoadOrder.Focus();
                                                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 
