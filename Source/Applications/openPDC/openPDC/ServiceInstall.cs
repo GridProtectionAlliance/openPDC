@@ -234,11 +234,10 @@
 using System.Collections;
 using System.ComponentModel;
 using System.Configuration.Install;
-using TVA.Configuration;
+using System.Diagnostics;
 using System.Xml;
-using System.Windows.Forms;
-using TVA;
-
+using Microsoft.Win32;
+using TVA.IO;
 
 namespace openPDC
 {
@@ -254,27 +253,109 @@ namespace openPDC
         {
             base.Install(stateSaver);
 
-            string configFilePath = Context.Parameters["DP_TargetDir"] + "openPDC.exe.Config";
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(configFilePath);
-            XmlNode node = xmlDoc.SelectSingleNode("configuration/categorizedSettings/systemSettings");
-            XmlNode child;
+            try
+            {
+                // Open the configuration file as an XML document.
+                string targetDir = FilePath.AddPathSuffix(Context.Parameters["DP_TargetDir"]);
+                string configFilePath = targetDir + "openPDC.exe.Config";
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.Load(configFilePath);
+                XmlNode node = xmlDoc.SelectSingleNode("configuration/categorizedSettings/systemSettings");
+                XmlNode companyName = null;
+                XmlNode companyAcronym = null;
 
-            child = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
-            child.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyName"));
-            child.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyName"]));
-            child.Attributes.Append(CreateAttribute(xmlDoc, "description", "The name of the company who owns this instance of the openPDC."));
-            child.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
-            node.AppendChild(child);
+                // Find the CompanyName and CompanyAcronym parameters if they already exist.
+                foreach (XmlNode child in node.ChildNodes)
+                {
+                    if (child.Attributes["name"].Value == "CompanyName")
+                        companyName = child;
+                    else if (child.Attributes["name"].Value == "CompanyAcronym")
+                        companyAcronym = child;
 
-            child = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
-            child.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyAcronym"));
-            child.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyAcronym"]));
-            child.Attributes.Append(CreateAttribute(xmlDoc, "description", "The acronym representing the company who owns this instance of the openPDC."));
-            child.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
-            node.AppendChild(child);
+                    if (companyName != null && companyAcronym != null)
+                        break;
+                }
 
-            xmlDoc.Save(configFilePath);
+                // Modify or add the CompanyName parameter.
+                if (companyName != null)
+                    companyName.Attributes["value"].Value = Context.Parameters["DP_CompanyName"];
+                else
+                {
+                    companyName = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
+                    companyName.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyName"));
+                    companyName.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyName"]));
+                    companyName.Attributes.Append(CreateAttribute(xmlDoc, "description", "The name of the company who owns this instance of the openPDC."));
+                    companyName.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
+                    node.AppendChild(companyName);
+                }
+
+                // Modify or add the CompanyAcronym parameter.
+                if (companyAcronym != null)
+                    companyAcronym.Attributes["value"].Value = Context.Parameters["DP_CompanyAcronym"];
+                else
+                {
+                    companyAcronym = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
+                    companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyAcronym"));
+                    companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyAcronym"]));
+                    companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "description", "The acronym representing the company who owns this instance of the openPDC."));
+                    companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
+                    node.AppendChild(companyAcronym);
+                }
+
+                xmlDoc.Save(configFilePath);
+
+                // Run database setup utility
+                Process databaseSetup = null;
+                try
+                {
+                    databaseSetup = new Process();
+                    databaseSetup.StartInfo.FileName = targetDir + "DatabaseSetupUtility.exe";
+                    databaseSetup.StartInfo.Arguments = "-install";
+                    databaseSetup.StartInfo.WorkingDirectory = targetDir;
+                    databaseSetup.StartInfo.UseShellExecute = false;
+                    databaseSetup.StartInfo.CreateNoWindow = true;
+                    databaseSetup.Start();
+                    databaseSetup.WaitForExit();
+                }
+                finally
+                {
+                    if (databaseSetup != null)
+                        databaseSetup.Close();
+                }
+
+                // Make sure configuration editor and database setup utility are run in admin mode since they
+                // modify configuration file in programs folder
+                Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "DatabaseSetupUtility.exe", "RUNASADMIN", RegistryValueKind.String);
+                Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigurationEditor.exe", "RUNASADMIN", RegistryValueKind.String);
+                Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigCrypter.exe", "RUNASADMIN", RegistryValueKind.String);
+            }
+            catch
+            {
+                // Not failing install if we can't perform these steps...
+            }
+        }
+
+        public override void Uninstall(IDictionary savedState)
+        {
+            base.Uninstall(savedState);
+
+            try
+            {
+                string targetDir = FilePath.AddPathSuffix(Context.Parameters["DP_TargetDir"].ToString());
+
+                // Make sure configuration editor and database setup utility are run in admin mode since they
+                // modify configuration file in programs folder
+                using (RegistryKey settings = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", true))
+                {
+                    settings.DeleteValue(targetDir + "DatabaseSetupUtility.exe");
+                    settings.DeleteValue(targetDir + "ConfigurationEditor.exe");
+                    settings.DeleteValue(targetDir + "ConfigCrypter.exe");
+                }
+            }
+            catch
+            {
+                // Not failing uninstall if we can't perform these steps...
+            }
         }
 
         private XmlAttribute CreateAttribute(XmlDocument doc, string name, string value)

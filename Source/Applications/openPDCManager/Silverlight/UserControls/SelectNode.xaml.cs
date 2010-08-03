@@ -233,11 +233,11 @@ using System;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
+using openPDCManager.ModalDialogs;
+using openPDCManager.PhasorDataServiceProxy;
+using openPDCManager.Utilities;
 
-namespace openPDCManager.Silverlight.UserControls
+namespace openPDCManager.UserControls
 {
 	public partial class SelectNode : UserControl
 	{
@@ -255,7 +255,7 @@ namespace openPDCManager.Silverlight.UserControls
 		public SelectNode()
 		{
 			InitializeComponent();
-			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client = ProxyClient.GetPhasorDataServiceProxyClient();
 			//m_client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
 			m_client.GetNodeListCompleted += new EventHandler<GetNodeListCompletedEventArgs>(m_client_GetNodeListCompleted);
 			ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
@@ -312,7 +312,7 @@ namespace openPDCManager.Silverlight.UserControls
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 			m_raiseNodesCollectionChanged = false;
 		}

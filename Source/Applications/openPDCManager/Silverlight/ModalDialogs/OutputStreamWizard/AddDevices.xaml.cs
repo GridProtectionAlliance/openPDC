@@ -229,180 +229,23 @@
 */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
-using System.Windows.Media;
 
-namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
+namespace openPDCManager.ModalDialogs.OutputStreamWizard
 {
 	public partial class AddDevices : ChildWindow
 	{
-		#region [ Members ]
-
-		int m_sourceOutputStreamID;
-		string m_sourceOutputStreamAcronym;
-		Dictionary<int, string> m_devicesToBeAdded;
-		PhasorDataServiceClient m_client;
-		Dictionary<int, string> m_deviceList;
-		string m_nodeValue;
-
-		#endregion
-
 		#region [ Constructor ]
 
 		public AddDevices(int outputStreamID, string outputStreamAcronym)
 		{
 			InitializeComponent();
-			m_sourceOutputStreamID = outputStreamID;
-			m_sourceOutputStreamAcronym = outputStreamAcronym;
-			this.Title = "Add New Devices For Output Stream: " + m_sourceOutputStreamAcronym;
-			Loaded += new RoutedEventHandler(AddDevices_Loaded);
-			ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);
-			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
-			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
-			m_client = Common.GetPhasorDataServiceProxyClient();	
-			m_client.GetDevicesForOutputStreamCompleted += new EventHandler<GetDevicesForOutputStreamCompletedEventArgs>(client_GetDevicesForOutputStreamCompleted);
-			m_client.AddDevicesCompleted += new EventHandler<AddDevicesCompletedEventArgs>(client_AddDevicesCompleted);
+            UserControlAddDevices.m_sourceOutputStreamID = outputStreamID;
+            UserControlAddDevices.m_sourceOutputStreamAcronym = outputStreamAcronym;
+            this.Title = "Add New Devices For Output Stream: " + outputStreamAcronym;
 		}
 
 		#endregion
-
-		#region [ Service Event Handlers ]
-
-		void client_AddDevicesCompleted(object sender, AddDevicesCompletedEventArgs e)
-		{
-			SystemMessages sm;
-			if (e.Error == null)
-			{				
-				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-						ButtonType.OkOnly);
-			}
-			else
-			{
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Add Output Stream Device(s)", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-			}
-			sm.Show();
-			m_client.GetDevicesForOutputStreamAsync(m_sourceOutputStreamID, m_nodeValue);
-		}
-
-		void client_GetDevicesForOutputStreamCompleted(object sender, GetDevicesForOutputStreamCompletedEventArgs e)
-		{
-			if (e.Error == null)
-			{				
-				m_deviceList = e.Result;
-				ListBoxDeviceList.ItemsSource = m_deviceList;
-				if (ListBoxDeviceList.Items.Count > 0)
-					ListBoxDeviceList.SelectedIndex = 0;
-			}
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device for Output Stream", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-		}
-
-		#endregion
-
-		#region [ Controls Event Handlers ]
-
-		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonShowAllTransform);
-			sb.Begin();
-
-			ListBoxDeviceList.ItemsSource = m_deviceList;
-		}
-
-		void ButtonSearch_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSearchTransform);
-			sb.Begin();
-
-			string searchText = TextBoxSearch.Text.ToUpper();
-			ListBoxDeviceList.ItemsSource = (from item in m_deviceList.AsEnumerable()
-											 where item.Value.ToUpper().Contains(searchText)
-											 select item).ToList();
-		}
-
-		void ButtonAdd_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonAddTransform);
-			sb.Begin();
-
-			if (m_devicesToBeAdded.Count > 0)
-				m_client.AddDevicesAsync(m_sourceOutputStreamID, m_devicesToBeAdded, (bool)CheckAddDigitals.IsChecked, (bool)CheckAddAnalog.IsChecked);
-			else
-			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please Select Device(s) to Add", SystemMessage = string.Empty, UserMessageType = MessageType.Information },
-						 ButtonType.OkOnly);
-				sm.Show();
-			}
-		}
-
-		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
-		{
-			string deviceAcronym = ((CheckBox)sender).Content.ToString();
-			int deviceID = Convert.ToInt32(((CheckBox)sender).Tag.ToString());
-			if (m_devicesToBeAdded.ContainsKey(deviceID))
-				m_devicesToBeAdded.Remove(deviceID);
-		}
-
-		private void CheckBox_Checked(object sender, RoutedEventArgs e)
-		{
-			string deviceAcronym = ((CheckBox)sender).Content.ToString();
-			int deviceID = Convert.ToInt32(((CheckBox)sender).Tag.ToString());
-			if (!m_devicesToBeAdded.ContainsKey(deviceID))
-				m_devicesToBeAdded.Add(deviceID, deviceAcronym);
-		}
-
-		#endregion			
-
-		#region [ Page Event Handlers ]
-
-		void AddDevices_Loaded(object sender, RoutedEventArgs e)
-		{
-			m_devicesToBeAdded = new Dictionary<int, string>();
-			m_deviceList = new Dictionary<int, string>();
-			m_nodeValue = ((App)Application.Current).NodeValue;
-			m_client.GetDevicesForOutputStreamAsync(m_sourceOutputStreamID, m_nodeValue);
-		}
-
-		#endregion
-
-	}
+    }
 }
 

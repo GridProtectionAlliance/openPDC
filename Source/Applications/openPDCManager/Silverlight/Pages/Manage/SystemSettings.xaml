@@ -1,4 +1,4 @@
-﻿<navigation:Page x:Class="openPDCManager.Silverlight.Pages.Manage.SystemSettings" 
+﻿<navigation:Page x:Class="openPDCManager.Pages.Manage.SystemSettings" 
            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -35,12 +35,11 @@
                         <TextBox x:Name="TextBoxMinimumWidth" Grid.Row="1" Grid.Column="1" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="Minimum Height" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                         <TextBox x:Name="TextBoxMinimumHeight" Grid.Row="1" Grid.Column="3" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-
-
                         <CheckBox x:Name="CheckboxResizeWithBrowser" Content="Resize With Browser" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                         <CheckBox x:Name="CheckboxMaintainAspectRatio" Content="Maintain Aspect Ratio" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="# Of Messages On Monitor" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                         <TextBox x:Name="TextBoxNumberOfMessagesOnMonitor" Grid.Row="3" Grid.Column="1" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        
                         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Restore Default Settings" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
                                 <Button.RenderTransform>

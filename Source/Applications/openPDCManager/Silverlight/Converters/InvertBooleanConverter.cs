@@ -232,7 +232,7 @@
 using System;
 using System.Windows.Data;
 
-namespace openPDCManager.Silverlight.Converters
+namespace openPDCManager.Converters
 {
 	public class InvertBooleanConverter : IValueConverter
 	{

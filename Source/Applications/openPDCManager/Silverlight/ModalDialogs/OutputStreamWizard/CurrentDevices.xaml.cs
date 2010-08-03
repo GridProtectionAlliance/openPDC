@@ -229,154 +229,20 @@
 */
 #endregion
 
-using System;
-using System.Collections.ObjectModel;
-using System.ServiceModel;
-using System.Windows;
 using System.Windows.Controls;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
-using System.Windows.Media.Animation;
 
-namespace openPDCManager.Silverlight.ModalDialogs.OutputStreamWizard
+namespace openPDCManager.ModalDialogs.OutputStreamWizard
 {
 	public partial class CurrentDevices : ChildWindow
 	{
-		#region [ Members ]
-
-		int m_sourceOutputStreamID;
-		string m_sourceOutputStreamAcronym;		
-		ObservableCollection<string> m_devicesToBeDeleted;		
-		PhasorDataServiceClient m_client;
-		
-		#endregion
-
 		#region [ Constructor ]
 
 		public CurrentDevices(int outputStreamID, string outputStreamAcronym)
 		{
 			InitializeComponent();
-			m_sourceOutputStreamAcronym = outputStreamAcronym;
-			m_sourceOutputStreamID = outputStreamID;
-			this.Title = "Current Devices For Output Stream: " + m_sourceOutputStreamAcronym;
-			Loaded += new RoutedEventHandler(CurrentDevices_Loaded);
-			m_client = Common.GetPhasorDataServiceProxyClient();
-			m_client.GetOutputStreamDeviceListCompleted += new EventHandler<GetOutputStreamDeviceListCompletedEventArgs>(client_GetOutputStreamDeviceListCompleted);
-			m_client.DeleteOutputStreamDeviceCompleted += new EventHandler<DeleteOutputStreamDeviceCompletedEventArgs>(client_DeleteOutputStreamDeviceCompleted);
-			ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);
-			ButtonDelete.Click += new RoutedEventHandler(ButtonDelete_Click);
-		}
-
-		#endregion
-
-		#region [ Service Event Handlers ]
-
-		void client_DeleteOutputStreamDeviceCompleted(object sender, DeleteOutputStreamDeviceCompletedEventArgs e)
-		{
-			SystemMessages sm;
-			if (e.Error == null)
-			{				
-				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-						ButtonType.OkOnly);
-			}
-			else
-			{
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Output Stream Device(s)", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-			}
-			sm.Show();
-			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, true);
-		}
-		
-		void client_GetOutputStreamDeviceListCompleted(object sender, GetOutputStreamDeviceListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ListBoxOutputStreamDeviceList.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-		}
-
-		#endregion
-
-		#region [ Control Event Handlers ]
-		
-		void ButtonDelete_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonDeleteTransform);
-			sb.Begin();
-
-			if (m_devicesToBeDeleted.Count > 0)
-				m_client.DeleteOutputStreamDeviceAsync(m_sourceOutputStreamID, m_devicesToBeDeleted);
-			else
-			{
-				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please select device(s) to delete", SystemMessage = string.Empty, UserMessageType = MessageType.Information }, ButtonType.OkOnly);
-				sm.Show();
-			}
-		}
-		
-		void ButtonAdd_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonAddTransform);
-			sb.Begin();
-
-			AddDevices addDevices = new AddDevices(m_sourceOutputStreamID, m_sourceOutputStreamAcronym);
-			addDevices.Closed += new EventHandler(addDevices_Closed);
-			addDevices.Show();
-		}
-
-		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
-		{
-			string deviceAcronym = ((CheckBox)sender).Content.ToString();
-			if (m_devicesToBeDeleted.Contains(deviceAcronym))
-				m_devicesToBeDeleted.Remove(deviceAcronym);
-		}
-
-		private void CheckBox_Checked(object sender, RoutedEventArgs e)
-		{
-			string deviceAcronym = ((CheckBox)sender).Content.ToString();
-			if (!m_devicesToBeDeleted.Contains(deviceAcronym))
-				m_devicesToBeDeleted.Add(deviceAcronym);
-		}
-
-		#endregion
-
-		#region [ Page Event Handlers ]
-
-		void addDevices_Closed(object sender, EventArgs e)
-		{
-			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, true);
-		}
-		
-		void CurrentDevices_Loaded(object sender, RoutedEventArgs e)
-		{
-			m_devicesToBeDeleted = new ObservableCollection<string>();
-			m_client.GetOutputStreamDeviceListAsync(m_sourceOutputStreamID, true);
+            UserControlCurrentDevices.m_sourceOutputStreamAcronym = outputStreamAcronym;
+            UserControlCurrentDevices.m_sourceOutputStreamID = outputStreamID;
+			this.Title = "Current Devices For Output Stream: " + outputStreamAcronym;			
 		}
 
 		#endregion

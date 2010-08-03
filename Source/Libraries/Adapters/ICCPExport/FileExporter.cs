@@ -323,7 +323,38 @@ namespace ICCPExport
 
         #endregion
 
-        #region [ Methods ]
+        #region [ Methods ]   
+
+        private bool m_disposed;
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="FileExporter"/> object and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (!m_disposed)
+            {
+                try
+                {
+                    if (disposing)
+                    {
+                        if (m_dataExporter != null)
+                        {
+                            m_dataExporter.SaveSettings();
+                            m_dataExporter.Dispose();
+                        }
+
+                        m_dataExporter = null;
+                    }
+                }
+                finally
+                {
+                    m_disposed = true;          // Prevent duplicate dispose.
+                    base.Dispose(disposing);    // Call base class Dispose().
+                }
+            }
+        }
 
         /// <summary>
         /// Intializes <see cref="FileExporter"/>.
@@ -388,10 +419,8 @@ namespace ICCPExport
                 m_companyTagPrefix = m_companyTagPrefix.EnsureEnd('_');
 
             // Define a default export location - user can override and add multiple locations in config later...
-            ExportDestination[] defaultDestinations = new ExportDestination[] { new ExportDestination(FilePath.GetAbsolutePath("ICCPExport.txt"), false, "", "", "") };
             m_dataExporter = new MultipleDestinationExporter(ConfigurationSection, m_exportInterval * 1000);
-            m_dataExporter.PersistSettings = true;
-            m_dataExporter.Initialize(defaultDestinations);
+            m_dataExporter.Initialize(new ExportDestination[] { new ExportDestination(FilePath.GetAbsolutePath(ConfigurationSection + ".txt"), false, "", "", "") });
 
             // Create new measurement tag name dictionary
             m_measurementTags = new Dictionary<MeasurementKey, string>();

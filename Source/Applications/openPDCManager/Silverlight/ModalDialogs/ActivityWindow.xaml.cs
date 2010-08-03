@@ -233,7 +233,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace openPDCManager.Silverlight.ModalDialogs
+namespace openPDCManager.ModalDialogs
 {
 	public partial class ActivityWindow : ChildWindow
 	{
@@ -259,12 +259,12 @@ namespace openPDCManager.Silverlight.ModalDialogs
 
 		void ActivityWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			TextBlockMessage.Text = string.Empty;
+            UserControlActivityWindow.TextBlockMessage.Text = string.Empty;			
 		}
 
 		void ActivityWindow_Loaded(object sender, RoutedEventArgs e)
 		{
-			TextBlockMessage.Text = m_displayMessage;
+            UserControlActivityWindow.TextBlockMessage.Text = m_displayMessage;
 		}
 
 		#endregion

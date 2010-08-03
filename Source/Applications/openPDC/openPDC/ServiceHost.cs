@@ -256,6 +256,7 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Xml;
+using Microsoft.Win32;
 using TVA;
 using TVA.Configuration;
 using TVA.Data;
@@ -264,6 +265,7 @@ using TVA.Measurements;
 using TVA.Measurements.Routing;
 using TVA.Reflection;
 using TVA.Services;
+using TVA.Units;
 
 namespace openPDC
 {
@@ -388,7 +390,7 @@ namespace openPDC
             exampleSettings.Add("SqlServer.ConnectionString", "Data Source=serverName;Initial Catalog=openPDC;User Id=userName;Password=password", "Example SQL Server database connection string");
             exampleSettings.Add("SqlServer.DataProviderString", "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089};ConnectionType=System.Data.SqlClient.SqlConnection;AdapterType=System.Data.SqlClient.SqlDataAdapter", "Example SQL Server database .NET provider string");
             exampleSettings.Add("MySQL.ConnectionString", "Server=serverName;Database=openPDC;Uid=root;Pwd=password", "Example MySQL database connection string");
-            exampleSettings.Add("MySQL.DataProviderString", "AssemblyName={MySql.Data, Version=5.2.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d};ConnectionType=MySql.Data.MySqlClient.MySqlConnection;AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter", "Example MySQL database .NET provider string");
+            exampleSettings.Add("MySQL.DataProviderString", "AssemblyName={MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d};ConnectionType=MySql.Data.MySqlClient.MySqlConnection;AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter", "Example MySQL database .NET provider string");
             exampleSettings.Add("Oracle.ConnectionString", "Data Source=openPDC;User Id=username;Password=password;Integrated Security=no", "Example Oracle database connection string");
             exampleSettings.Add("Oracle.DataProviderString", "AssemblyName={System.Data.OracleClient, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089};ConnectionType=System.Data.OracleClient.OracleConnection;AdapterType=System.Data.OracleClient.OracleDataAdapter", "Example Oracle database .NET provider string");
             exampleSettings.Add("OleDB.ConnectionString", "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=openPDC.mdb", "Example Microsoft Access (via OleDb) database connection string");
@@ -476,8 +478,31 @@ namespace openPDC
             // Log startup information
             m_serviceHelper.UpdateStatus(
                 UpdateType.Information,
-                "\r\n\r\n{0}\r\n\r\nNode {{{1}}} Initializing\r\n\r\nUTC System Timestamp: {2}\r\n\r\nCurrent system file path:\r\n\r\n{3}\r\n\r\n{4}\r\n",
-                stars, m_nodeID, DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff"), FilePath.GetAbsolutePath(""), stars);
+                "\r\n\r\n{0}\r\n\r\n" +
+                "Node {{{1}}} Initializing\r\n\r\n" +
+                "     System Time: {2} UTC\r\n\r\n" +
+                "    Current Path: {3}\r\n\r\n" +
+                "    Machine Name: {4}\r\n\r\n" +
+                "      OS Version: {5}\r\n\r\n" +
+                "    Product Name: {6}\r\n\r\n" +
+                "  Working Memory: {7}\r\n\r\n" +
+                "  Execution Mode: {8}-bit\r\n\r\n" +
+                "      Processors: {9}\r\n\r\n" +
+                " Process Account: {10}\\{11}\r\n\r\n" +
+                "{12}\r\n",
+                stars, 
+                m_nodeID, 
+                DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                FilePath.TrimFileName(FilePath.RemovePathSuffix(FilePath.GetAbsolutePath("")), 61),
+                Environment.MachineName,
+                Environment.OSVersion.VersionString,
+                Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "ProductName", null).ToNonNullString("<Unavailable>"),
+                SI2.ToScaledIECString(Environment.WorkingSet, 3, "B"),
+                IntPtr.Size * 8,
+                Environment.ProcessorCount,
+                Environment.UserDomainName,
+                Environment.UserName,
+                stars);            
 
             // Create health exporter
             m_healthExporter = new MultipleDestinationExporter("HealthExporter", Timeout.Infinite);

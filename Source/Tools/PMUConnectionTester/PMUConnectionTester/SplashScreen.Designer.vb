@@ -25,10 +25,10 @@ Partial Class SplashScreen
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.MainLayoutPanel = New System.Windows.Forms.TableLayoutPanel
+        Me.DetailsLayoutPanel = New System.Windows.Forms.TableLayoutPanel
+        Me.Version = New System.Windows.Forms.Label
         Me.Copyright = New System.Windows.Forms.Label
         Me.ApplicationTitle = New System.Windows.Forms.Label
-        Me.Version = New System.Windows.Forms.Label
-        Me.DetailsLayoutPanel = New System.Windows.Forms.TableLayoutPanel
         Me.MainLayoutPanel.SuspendLayout()
         Me.DetailsLayoutPanel.SuspendLayout()
         Me.SuspendLayout()
@@ -50,45 +50,6 @@ Partial Class SplashScreen
         Me.MainLayoutPanel.Size = New System.Drawing.Size(497, 296)
         Me.MainLayoutPanel.TabIndex = 0
         '
-        'Copyright
-        '
-        Me.Copyright.Anchor = System.Windows.Forms.AnchorStyles.Right
-        Me.Copyright.BackColor = System.Drawing.Color.Transparent
-        Me.Copyright.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Copyright.ForeColor = System.Drawing.Color.LemonChiffon
-        Me.Copyright.Location = New System.Drawing.Point(25, 24)
-        Me.Copyright.Name = "Copyright"
-        Me.Copyright.Size = New System.Drawing.Size(249, 48)
-        Me.Copyright.TabIndex = 2
-        Me.Copyright.Text = "Copyright"
-        Me.Copyright.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'ApplicationTitle
-        '
-        Me.ApplicationTitle.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.ApplicationTitle.BackColor = System.Drawing.Color.Transparent
-        Me.ApplicationTitle.Font = New System.Drawing.Font("Tahoma", 22.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ApplicationTitle.ForeColor = System.Drawing.Color.LemonChiffon
-        Me.ApplicationTitle.Location = New System.Drawing.Point(211, 35)
-        Me.ApplicationTitle.Name = "ApplicationTitle"
-        Me.ApplicationTitle.Size = New System.Drawing.Size(281, 142)
-        Me.ApplicationTitle.TabIndex = 0
-        Me.ApplicationTitle.Text = "ApplicationTitle"
-        Me.ApplicationTitle.TextAlign = System.Drawing.ContentAlignment.BottomCenter
-        '
-        'Version
-        '
-        Me.Version.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.Version.BackColor = System.Drawing.Color.Transparent
-        Me.Version.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Version.ForeColor = System.Drawing.Color.LemonChiffon
-        Me.Version.Location = New System.Drawing.Point(22, 0)
-        Me.Version.Name = "Version"
-        Me.Version.Size = New System.Drawing.Size(232, 20)
-        Me.Version.TabIndex = 1
-        Me.Version.Text = "Version"
-        Me.Version.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
         'DetailsLayoutPanel
         '
         Me.DetailsLayoutPanel.Anchor = System.Windows.Forms.AnchorStyles.None
@@ -105,6 +66,45 @@ Partial Class SplashScreen
         Me.DetailsLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle)
         Me.DetailsLayoutPanel.Size = New System.Drawing.Size(277, 77)
         Me.DetailsLayoutPanel.TabIndex = 1
+        '
+        'Version
+        '
+        Me.Version.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.Version.BackColor = System.Drawing.Color.Transparent
+        Me.Version.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Version.ForeColor = System.Drawing.Color.LemonChiffon
+        Me.Version.Location = New System.Drawing.Point(22, 0)
+        Me.Version.Name = "Version"
+        Me.Version.Size = New System.Drawing.Size(232, 20)
+        Me.Version.TabIndex = 1
+        Me.Version.Text = "Version"
+        Me.Version.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Copyright
+        '
+        Me.Copyright.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.Copyright.BackColor = System.Drawing.Color.Transparent
+        Me.Copyright.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Copyright.ForeColor = System.Drawing.Color.LemonChiffon
+        Me.Copyright.Location = New System.Drawing.Point(4, 24)
+        Me.Copyright.Name = "Copyright"
+        Me.Copyright.Size = New System.Drawing.Size(270, 48)
+        Me.Copyright.TabIndex = 2
+        Me.Copyright.Text = "Copyright"
+        Me.Copyright.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'ApplicationTitle
+        '
+        Me.ApplicationTitle.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.ApplicationTitle.BackColor = System.Drawing.Color.Transparent
+        Me.ApplicationTitle.Font = New System.Drawing.Font("Tahoma", 22.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ApplicationTitle.ForeColor = System.Drawing.Color.LemonChiffon
+        Me.ApplicationTitle.Location = New System.Drawing.Point(211, 35)
+        Me.ApplicationTitle.Name = "ApplicationTitle"
+        Me.ApplicationTitle.Size = New System.Drawing.Size(281, 142)
+        Me.ApplicationTitle.TabIndex = 0
+        Me.ApplicationTitle.Text = "ApplicationTitle"
+        Me.ApplicationTitle.TextAlign = System.Drawing.ContentAlignment.BottomCenter
         '
         'SplashScreen
         '

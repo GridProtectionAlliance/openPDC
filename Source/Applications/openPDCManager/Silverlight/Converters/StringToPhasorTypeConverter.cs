@@ -233,7 +233,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Data;
 
-namespace openPDCManager.Silverlight.Converters
+namespace openPDCManager.Converters
 {
 	public class StringToPhasorTypeConverter : IValueConverter
 	{

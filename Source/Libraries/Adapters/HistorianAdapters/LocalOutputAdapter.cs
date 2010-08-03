@@ -690,15 +690,36 @@ namespace HistorianAdapters
         private void MetadataProviders_AdapterCreated(object sender, EventArgs<IMetadataProvider> e)
         {
             e.Argument.SettingsCategory = InstanceName + e.Argument.SettingsCategory;
+            
             if (e.Argument.GetType() == typeof(AdoMetadataProvider))
             {
                 // Populate the default configuration for AdoMetadataProvider.
                 ConfigurationFile config = ConfigurationFile.Current;
                 AdoMetadataProvider provider = e.Argument as AdoMetadataProvider;
+                
                 provider.Enabled = true;
                 provider.SelectString = string.Format("SELECT * FROM HistorianMetadata WHERE PlantCode='{0}'", Name);
-                provider.ConnectionString = config.Settings["SystemSettings"]["ConnectionString"].Value;
                 provider.DataProviderString = config.Settings["SystemSettings"]["DataProviderString"].Value;
+
+                string connectionString = config.Settings["SystemSettings"]["ConnectionString"].Value;
+                Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
+                string setting;
+
+                if (settings.TryGetValue("Provider", out setting))
+                {
+                    // Check if provider is for Access
+                    if (setting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Make sure path to Access database is fully qualified
+                        if (settings.TryGetValue("Data Source", out setting))
+                        {
+                            settings["Data Source"] = FilePath.GetAbsolutePath(setting);
+                            connectionString = settings.JoinKeyValuePairs();
+                        }
+                    }
+                }
+                
+                provider.ConnectionString = connectionString;
             }
         }
 
@@ -829,7 +850,7 @@ namespace HistorianAdapters
                     // We handle the statistics historian as a special case
                     if (acronym != "stat")
                     {
-                        // Make sure needed statistic historian configuration settings are properly defined
+                        // Make sure needed historian configuration settings are properly defined
                         settings = configFile.Settings[string.Format("{0}MetadataFile", acronym)];
                         settings.Add("LoadOnOpen", true, string.Format("True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the {0} meta-data file.", name));
                         settings.Add("ReloadOnModify", true, string.Format("True if file records loaded in memory are to be re-loaded when file is modified on disk; otherwise False - this defaults to True for the {0} meta-data file.", name));
@@ -891,8 +912,7 @@ namespace HistorianAdapters
                     // Remove any unused settings categories
                     foreach (string category in categoriesToRemove)
                     {
-                        // TODO: Uncomment once "Remove" category is working...
-                        //configFile.Settings.Remove(category);
+                        configFile.Settings.Remove(category);
                     }
                 }
 

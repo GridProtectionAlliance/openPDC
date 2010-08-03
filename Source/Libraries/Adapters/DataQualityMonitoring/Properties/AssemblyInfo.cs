@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("DataQualityMonitoring")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("TVA")]
+[assembly: AssemblyCompany("Grid Protection Alliance")]
 [assembly: AssemblyProduct("DataQualityMonitoring")]
-[assembly: AssemblyCopyright("No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.")]
+[assembly: AssemblyCopyright("Copyright © 2010.  All Rights Reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -30,6 +30,6 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.1.75.53788")]
-[assembly: AssemblyVersion("1.1.75.53788")]
+// [assembly: AssemblyVersion("1.1.83.54923")]
+[assembly: AssemblyVersion("1.1.83.54923")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

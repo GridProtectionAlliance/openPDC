@@ -344,6 +344,7 @@ namespace TVA.PhasorProtocols
         private ConfigurationFrame m_baseConfigurationFrame;
         private Dictionary<MeasurementKey, SignalReference[]> m_signalReferences;
         private Dictionary<FundamentalSignalType, string[]> m_cachedSignalReferences;
+        private long m_connectionAttempts;
         private LineFrequency m_nominalFrequency;
         private DataFormat m_dataFormat;
         private CoordinateFormat m_coordinateFormat;
@@ -409,6 +410,17 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_autoPublishConfigurationFrame = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total number of connection attempts.
+        /// </summary>
+        public long ConnectionAttempts
+        {
+            get
+            {
+                return m_connectionAttempts;
             }
         }
 
@@ -1476,6 +1488,7 @@ namespace TVA.PhasorProtocols
         {
             // Start concentration engine
             base.Start();
+            m_connectionAttempts++;
 
             OnStatusMessage("Data channel started.");
         }
@@ -1513,6 +1526,7 @@ namespace TVA.PhasorProtocols
         private void m_commandChannel_ServerStarted(object sender, EventArgs e)
         {
             OnStatusMessage("Command channel started.");
+            m_connectionAttempts++;
         }
 
         private void m_commandChannel_ServerStopped(object sender, EventArgs e)

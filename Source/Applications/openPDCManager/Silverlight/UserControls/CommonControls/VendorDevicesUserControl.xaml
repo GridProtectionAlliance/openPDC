@@ -1,0 +1,94 @@
+﻿<UserControl x:Class="openPDCManager.UserControls.CommonControls.VendorDevicesUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    >
+    <Border Style="{StaticResource PortletBorderStyle}">
+
+        <StackPanel Orientation="Vertical">
+
+            <TextBlock Text="Manage Vendor Devices" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+
+            <Border Background="{StaticResource PortletBackgroundBrush}">
+
+                <Grid x:Name="GridVendorDeviceDetail" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="2*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Vendor" Style="{StaticResource GenericLabelStyle}"/>
+                    <ComboBox x:Name="ComboBoxVendor" Grid.Row="0" Grid.Column="1" Margin="5" DisplayMemberPath="Value"></ComboBox>
+                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+                        <TextBlock Text="Name" Style="{StaticResource GenericLabelStyle}"/>
+                        <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Name}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="100"/>
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Description" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBox x:Name="TextBoxDescription" Grid.Row="1" Grid.Column="3" Text="{Binding Path=Description}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="URL" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBox x:Name="TextBoxUrl" Grid.Row="2" Grid.Column="1" Text="{Binding Path=URL}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonClearTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
+                        <TextBlock Text="     "/>
+                        <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="Save" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonSaveTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
+                    </StackPanel>
+                    <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3"/>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource HeaderRowBorderStyle}">
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <TextBlock Text="Name" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </Border>
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <TextBlock Text="Description" Width="{StaticResource XXXLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </Border>
+                    <TextBlock Text="URL" Width="{StaticResource XXXLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                </StackPanel>
+            </Border>
+            <Border Background="{StaticResource PortletBackgroundBrush}">
+                <ScrollViewer BorderThickness="0" Padding="0" Height="612">
+                    <ScrollViewer.Content>
+                        <ListBox x:Name="ListBoxVendorDeviceList" Margin="0" Padding="0">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <TextBlock Text="{Binding Path=Name}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <TextBlock Text="{Binding Path=Description}" Width="{StaticResource XXXLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <!--<HyperlinkButton Content="{Binding Path=URL}" TargetName="_blank" NavigateUri="{Binding Path=URL}" Foreground="#FF095188" Width="{StaticResource XXXLargeItemSize}" />-->                                            
+                                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="{Binding Path=URL}" Foreground="#FF095188" Width="{StaticResource XXXLargeItemSize}" HorizontalContentAlignment="Left" Click="ButtonURL_Click"></Button>
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </ScrollViewer.Content>
+                </ScrollViewer>
+            </Border>
+
+        </StackPanel>
+
+    </Border>
+</UserControl>

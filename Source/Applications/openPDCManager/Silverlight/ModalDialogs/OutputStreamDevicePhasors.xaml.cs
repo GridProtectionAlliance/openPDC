@@ -234,11 +234,11 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
+using openPDCManager.PhasorDataServiceProxy;
+using openPDCManager.Utilities;
 using System.Windows.Media.Animation;
 
-namespace openPDCManager.Silverlight.ModalDialogs
+namespace openPDCManager.ModalDialogs
 {
 	public partial class OutputStreamDevicePhasors : ChildWindow
 	{
@@ -263,7 +263,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			Loaded += new RoutedEventHandler(OutputStreamDevicePhasors_Loaded);
 			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
 			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
-			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client = ProxyClient.GetPhasorDataServiceProxyClient();
 			m_client.GetOutputStreamDevicePhasorListCompleted += new EventHandler<GetOutputStreamDevicePhasorListCompletedEventArgs>(client_GetOutputStreamDevicePhasorListCompleted);
 			m_client.SaveOutputStreamDevicePhasorCompleted += new EventHandler<SaveOutputStreamDevicePhasorCompletedEventArgs>(client_SaveOutputStreamDevicePhasorCompleted);
 			ListBoxOutputStreamDevicePhasorList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDevicePhasorList_SelectionChanged);
@@ -355,7 +355,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Phasor Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 			}
-			sm.Show();
+			sm.ShowPopup();
 			m_client.GetOutputStreamDevicePhasorListAsync(m_sourceOutputStreamDeviceID);
 		}
 		
@@ -376,7 +376,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device Phasor List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 
@@ -418,7 +418,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
                                                 {
                                                     TextBoxLabel.Focus();
                                                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 
@@ -432,7 +432,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
                                                     TextBoxLoadOrder.Text = "0";
                                                     TextBoxLoadOrder.Focus();
                                                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
 
@@ -446,7 +446,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
                     TextBoxScalingValue.Text = "0";
                     TextBoxScalingValue.Focus();
                 });
-                sm.Show();
+                sm.ShowPopup();
                 return isValid;
             }
     

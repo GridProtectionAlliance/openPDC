@@ -237,6 +237,7 @@ using System.ServiceModel;
 using openPDCManager.Web.Data.Entities;
 using openPDCManager.Web.Data.BusinessObjects;
 using System.IO;
+using System.Collections.ObjectModel;
 
 namespace openPDCManager.Services.Service
 {
@@ -572,7 +573,7 @@ namespace openPDCManager.Services.Service
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
-		List<DeviceMeasurementData> GetDeviceMeasurementData(string nodeID);
+        ObservableCollection<DeviceMeasurementData> GetDeviceMeasurementData(string nodeID);
 
 		#endregion
 
@@ -622,6 +623,6 @@ namespace openPDCManager.Services.Service
 
         [OperationContract]
         [FaultContract(typeof(CustomServiceFault))]
-        List<StatisticMeasurementData> GetStatisticMeasurementData(string nodeID);
+        ObservableCollection<StatisticMeasurementData> GetStatisticMeasurementData(string nodeID);
 	}
 }

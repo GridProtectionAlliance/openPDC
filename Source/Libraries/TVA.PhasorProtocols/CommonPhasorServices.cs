@@ -248,6 +248,7 @@ using TVA.IO;
 using TVA.Measurements;
 using TVA.Measurements.Routing;
 using TVA.PhasorProtocols.Anonymous;
+using TVA.Units;
 
 namespace TVA.PhasorProtocols
 {
@@ -1026,7 +1027,7 @@ namespace TVA.PhasorProtocols
         // Assigns the reference to the parent adapter collection that will contain this adapter.
         void IAdapter.AssignParentCollection(IAdapterCollection parent)
         {
-            // The common phasor servies class does not inherit from the FacileActionAdapterBase (or ActionAdapterBase) since
+            // The common phasor services class does not inherit from the FacileActionAdapterBase (or ActionAdapterBase) since
             // it needs an internal reference to the IAdapter collections. With this internal reference all adapter collections
             // in the AllAdaptersCollection (the parent of the ActionAdapterCollection) can be referenced. This is needed so
             // that the common phasor services instance can cross reference the input adapter collection for monitoring devices
@@ -1079,7 +1080,7 @@ namespace TVA.PhasorProtocols
             if (m_inputMeasurementKeysHash != null)
                 return (m_inputMeasurementKeysHash.BinarySearch(item) >= 0);
 
-            // If no input measurements are defined we must assume user wants to accept all measurements - yikes!
+            // If no input measurements are defined we must assume user wants to accept all measurements
             return true;
         }
 
@@ -1651,6 +1652,9 @@ namespace TVA.PhasorProtocols
 
         // Static Fields
         private static StatisticValueStateCache s_statisticValueCache = new StatisticValueStateCache();
+        private static long s_maximumLatency;   // Cached maximum latency
+        private static long s_averageLatency;   // Cached average latency
+        private static long s_configChanges;    // Cached configuration changes
 
         // Static Methods
 
@@ -1765,7 +1769,8 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", device.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
-                            connection.ExecuteNonQuery(string.Format("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES({0}, {1}, '{2}', {3}, NULL, '{4}', '{5}', 1);", statHistorianID, device.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description));
+                            IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, device.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description);
+                            command.ExecuteNonQuery();
                         }
                     }
                 }
@@ -1788,7 +1793,8 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", inputStream.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
-                            connection.ExecuteNonQuery(string.Format("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES({0}, {1}, '{2}', {3}, NULL, '{4}', '{5}', 1);", statHistorianID, inputStream.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description));
+                            IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, inputStream.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description);
+                            command.ExecuteNonQuery();
                         }
                     }
                 }
@@ -1814,11 +1820,45 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} Statistic for {1}", outputStream.Field<string>("Name"), statistic.Field<string>("Description"));
 
-                            connection.ExecuteNonQuery(string.Format("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES({0}, NULL, '{1}', {2}, NULL, '{3}', '{4}', 1);", statHistorianID, pointTag, statSignalTypeID, signalReference, description));
+                            IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, NULL, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, pointTag, statSignalTypeID, signalReference, description);
+                            command.ExecuteNonQuery();
                         }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates and returns a parameterized SQL command. Parameter names are embedded in the SQL statement
+        /// passed as a parameter to this method. This method does very rudimentary parsing of the SQL statement so parameter
+        /// names should start with the '@' character and should be surrounded by either spaces, parentheses, or commas.
+        /// </summary>
+        /// <param name="connection">The database connection.</param>
+        /// <param name="sql">The SQL statement.</param>
+        /// <param name="args">The parameters for the command in the order that they appear in the SQL statement.</param>
+        /// <returns>The parameterized command.</returns>
+        private static IDbCommand CreateParameterizedCommand(IDbConnection connection, string sql, params object[] args)
+        {
+            string[] tokens = sql.Split(' ', '(', ')', ',');
+            IDbCommand command = connection.CreateCommand();
+            int i = 0;
+
+            foreach (string token in tokens)
+            {
+                if (token.StartsWith("@") && !command.Parameters.Contains(token))
+                {
+                    IDbDataParameter parameter = command.CreateParameter();
+
+                    parameter.ParameterName = token;
+                    parameter.Value = args[i++];
+                    parameter.Direction = ParameterDirection.Input;
+
+                    command.Parameters.Add(parameter);
+                }
+            }
+
+            command.CommandText = sql;
+            return command;
         }
         
         /// <summary>
@@ -1833,7 +1873,7 @@ namespace TVA.PhasorProtocols
             if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Node;")) == 0)
             {
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Creating default record for Node..."));
-                connection.ExecuteNonQuery("INSERT INTO Node(Name, Description, Master, LoadOrder, Enabled) VALUES('Default', 'Default node', 1, 0, 1);");
+                connection.ExecuteNonQuery("INSERT INTO Node(Name, Description, TimeSeriesDataServiceUrl, RemoteStatusServiceUrl, RealTimeStatisticServiceUrl, Master, LoadOrder, Enabled) VALUES('Default', 'Default node', 'http://localhost:6152/historian', 'Server=localhost:8500', 'http://localhost:6052/historian', 1, 0, 1);");
                 connection.ExecuteNonQuery("UPDATE Node SET ID=" + nodeIDQueryString + ";");
             }
         }
@@ -1960,7 +2000,7 @@ namespace TVA.PhasorProtocols
                 LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 14, 'Average Latency', 'Average latency, in seconds, for data received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_AverageLatency', '', 1,  'System.Double', @displayFormat, 0, 11);", "{0:N3} ms");
                 LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 15, 'Defined Frame Rate', 'Frame rate as defined by input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_DefinedFrameRate', '', 1,  'System.Int32', @displayFormat, 0, 12);", "{0:N0} frames / second");
                 LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 16, 'Actual Frame Rate', 'Latest actual mean frame rate for data received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_ActualFrameRate', '', 1,  'System.Double', @displayFormat, 0, 13);", "{0:N3} frames / second");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 17, 'Actual Data Rate', 'Latest actual mean Mbps data rate for data received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_ActualDataRate', '', 1,  'System.Double', @displayFormat, 0, 14);", "{0:N3} bytes / second");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 17, 'Actual Data Rate', 'Latest actual mean Mbps data rate for data received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_ActualDataRate', '', 1,  'System.Double', @displayFormat, 0, 14);", "{0:N3} Mbps");
                 LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 1, 'Discarded Measurements', 'Number of discarded measurements reported by output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_DiscardedMeasurements', '', 1,  'System.Int32', @displayFormat, 0, 4);", "{0:N0}");
                 LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 2, 'Received Measurements', 'Number of received measurements reported by the output strean during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_ReceivedMeasurements', '', 1,  'System.Int32', @displayFormat, 0, 2);", "{0:N0}");
                 LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 3, 'Expected Measurements', 'Number of expected measurements reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_ExpectedMeasurements', '', 1,  'System.Int32', @displayFormat, 0, 1);", "{0:N0}");
@@ -2074,8 +2114,15 @@ namespace TVA.PhasorProtocols
             double statistic = 0.0D;
             PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
 
+            // Local archival uses a 32-bit floating point number for statistical value storage so we
+            // reduce the last reporting time resolution down to the hour to make sure the archived
+            // timestamp is accurate at least to the milliseconds - remaining date/time high data bits
+            // can be later deduced from the statistic's archival timestamp
             if (inputStream != null)
-                statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.LastReportTime, "LastReportTime");
+            {
+                Ticks lastReportTime = inputStream.LastReportTime;
+                statistic = lastReportTime - lastReportTime.BaselinedTimestamp(BaselineTimeInterval.Hour);
+            }
 
             return statistic;
         }
@@ -2136,14 +2183,28 @@ namespace TVA.PhasorProtocols
         /// </summary>
         /// <param name="source">Source InputStream.</param>
         /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <remarks>
+        /// This statistic also calculates the maximum and average latency statistics so its load order must occur first.
+        /// </remarks>
         /// <returns>Minimum Latency Statistic.</returns>
         private static double GetInputStreamStatistic_MinimumLatency(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
 
-            //if (inputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.MinimumLatency, "MinimumLatency");
+            if (inputStream != null)
+            {
+                // We get all latency statistics in close sequence for improved accuracy
+                statistic = inputStream.MinimumLatency;
+                s_maximumLatency = inputStream.MaximumLatency;
+                s_averageLatency = inputStream.AverageLatency;
+                inputStream.ResetLatencyCounters();
+            }
+            else
+            {
+                s_maximumLatency = 0;
+                s_averageLatency = 0;
+            }
 
             return statistic;
         }
@@ -2156,13 +2217,18 @@ namespace TVA.PhasorProtocols
         /// <returns>Maximum Latency Statistic.</returns>
         private static double GetInputStreamStatistic_MaximumLatency(object source, string arguments)
         {
-            double statistic = 0.0D;
-            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+            return s_maximumLatency;
+        }
 
-            //if (inputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.MaximumLatency, "MaximumLatency");
-
-            return statistic;
+        /// <summary>
+        /// Calculates average latency, in seconds, for data received from input stream during last reporting interval.
+        /// </summary>
+        /// <param name="source">Source InputStream.</param>
+        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <returns>Average Latency Statistic.</returns>
+        private static double GetInputStreamStatistic_AverageLatency(object source, string arguments)
+        {
+            return s_averageLatency;
         }
 
         /// <summary>
@@ -2174,10 +2240,10 @@ namespace TVA.PhasorProtocols
         private static double GetInputStreamStatistic_Connected(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
 
-            //if (inputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.Connected, "Connected");
+            if (inputStream != null)
+                statistic = (s_statisticValueCache.GetDifference(inputStream, inputStream.ConnectionAttempts, "ConnectionAttempts") == 0.0D ? 1.0D : 0.0D);
 
             return statistic;
         }
@@ -2187,14 +2253,22 @@ namespace TVA.PhasorProtocols
         /// </summary>
         /// <param name="source">Source InputStream.</param>
         /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <remarks>
+        /// This statistic also calculates the total configuration changes so its load order must occur first.
+        /// </remarks>
         /// <returns>Received Configuration Statistic.</returns>
         private static double GetInputStreamStatistic_ReceivedConfiguration(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
 
-            //if (inputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.ReceivedConfiguration, "ReceivedConfiguration");
+            if (inputStream != null)
+            {
+                s_configChanges = (long)s_statisticValueCache.GetDifference(inputStream, inputStream.ConfigurationChanges, "ConfigurationChanges");
+                statistic = (s_configChanges > 0 ? 1.0D : 0.0D);
+            }
+            else
+                s_configChanges = 0;
 
             return statistic;
         }
@@ -2207,13 +2281,7 @@ namespace TVA.PhasorProtocols
         /// <returns>Configuration Changes Statistic.</returns>
         private static double GetInputStreamStatistic_ConfigurationChanges(object source, string arguments)
         {
-            double statistic = 0.0D;
-            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
-
-            //if (inputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.ConfigurationChanges, "ConfigurationChanges");
-
-            return statistic;
+            return s_configChanges;
         }
 
         /// <summary>
@@ -2225,10 +2293,10 @@ namespace TVA.PhasorProtocols
         private static double GetInputStreamStatistic_TotalDataFrames(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
 
-            //if (inputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.TotalDataFrames, "TotalDataFrames");
+            if (inputStream != null)
+                statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.TotalDataFrames, "TotalDataFrames");
 
             return statistic;
         }
@@ -2242,10 +2310,10 @@ namespace TVA.PhasorProtocols
         private static double GetInputStreamStatistic_TotalConfigurationFrames(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
 
-            //if (inputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.TotalConfigurationFrames, "TotalConfigurationFrames");
+            if (inputStream != null)
+                statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.TotalConfigurationFrames, "TotalConfigurationFrames");
 
             return statistic;
         }
@@ -2259,27 +2327,10 @@ namespace TVA.PhasorProtocols
         private static double GetInputStreamStatistic_TotalHeaderFrames(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
 
-            //if (inputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.TotalHeaderFrames, "TotalHeaderFrames");
-
-            return statistic;
-        }
-
-        /// <summary>
-        /// Calculates average latency, in seconds, for data received from input stream during last reporting interval.
-        /// </summary>
-        /// <param name="source">Source InputStream.</param>
-        /// <param name="arguments">Any needed arguments for statistic calculation.</param>
-        /// <returns>Average Latency Statistic.</returns>
-        private static double GetInputStreamStatistic_AverageLatency(object source, string arguments)
-        {
-            double statistic = 0.0D;
-            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
-
-            //if (inputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.AverageLatency, "AverageLatency");
+            if (inputStream != null)
+                statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.TotalHeaderFrames, "TotalHeaderFrames");
 
             return statistic;
         }
@@ -2293,10 +2344,10 @@ namespace TVA.PhasorProtocols
         private static double GetInputStreamStatistic_DefinedFrameRate(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
 
-            //if (inputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.DefinedFrameRate, "DefinedFrameRate");
+            if (inputStream != null)
+                statistic = inputStream.DefinedFrameRate;
 
             return statistic;
         }
@@ -2310,10 +2361,10 @@ namespace TVA.PhasorProtocols
         private static double GetInputStreamStatistic_ActualFrameRate(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
 
-            //if (inputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.ActualFrameRate, "ActualFrameRate");
+            if (inputStream != null)
+                statistic = inputStream.ActualFrameRate;
 
             return statistic;
         }
@@ -2327,10 +2378,10 @@ namespace TVA.PhasorProtocols
         private static double GetInputStreamStatistic_ActualDataRate(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
+            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
 
-            //if (inputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.ActualDataRate, "ActualDataRate");
+            if (inputStream != null)
+                statistic = inputStream.ActualDataRate * 8.0D / SI.Mega;
 
             return statistic;
         }
@@ -2348,10 +2399,10 @@ namespace TVA.PhasorProtocols
         private static double GetOutputStreamStatistic_DiscardedMeasurements(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+            PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
 
-            //if (outputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.DiscardedMeasurements, "DiscardedMeasurements");
+            if (outputStream != null)
+                statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.DiscardedMeasurements, "DiscardedMeasurements");
 
             return statistic;
         }
@@ -2365,10 +2416,10 @@ namespace TVA.PhasorProtocols
         private static double GetOutputStreamStatistic_ReceivedMeasurements(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+            PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
 
-            //if (outputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.ReceivedMeasurements, "ReceivedMeasurements");
+            if (outputStream != null)
+                statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.ReceivedMeasurements, "ReceivedMeasurements");
 
             return statistic;
         }
@@ -2382,10 +2433,10 @@ namespace TVA.PhasorProtocols
         private static double GetOutputStreamStatistic_ExpectedMeasurements(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+            PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
 
-            //if (outputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.ExpectedMeasurements, "ExpectedMeasurements");
+            if (outputStream != null)
+                statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.ExpectedMeasurements, "ExpectedMeasurements");
 
             return statistic;
         }
@@ -2399,10 +2450,10 @@ namespace TVA.PhasorProtocols
         private static double GetOutputStreamStatistic_ProcessedMeasurements(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+            PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
 
-            //if (outputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.ProcessedMeasurements, "ProcessedMeasurements");
+            if (outputStream != null)
+                statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.ProcessedMeasurements, "ProcessedMeasurements");
 
             return statistic;
         }
@@ -2416,10 +2467,10 @@ namespace TVA.PhasorProtocols
         private static double GetOutputStreamStatistic_MeasurementsSortedByArrival(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+            PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
 
-            //if (outputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.MeasurementsSortedByArrival, "MeasurementsSortedByArrival");
+            if (outputStream != null)
+                statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.MeasurementsSortedByArrival, "MeasurementsSortedByArrival");
 
             return statistic;
         }
@@ -2433,10 +2484,10 @@ namespace TVA.PhasorProtocols
         private static double GetOutputStreamStatistic_PublishedMeasurements(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+            PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
 
-            //if (outputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.PublishedMeasurements, "PublishedMeasurements");
+            if (outputStream != null)
+                statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.PublishedMeasurements, "PublishedMeasurements");
 
             return statistic;
         }
@@ -2450,10 +2501,10 @@ namespace TVA.PhasorProtocols
         private static double GetOutputStreamStatistic_DownsampledMeasurements(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+            PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
 
-            //if (outputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.DownsampledMeasurements, "DownsampledMeasurements");
+            if (outputStream != null)
+                statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.DownsampledMeasurements, "DownsampledMeasurements");
 
             return statistic;
         }
@@ -2467,10 +2518,10 @@ namespace TVA.PhasorProtocols
         private static double GetOutputStreamStatistic_MissedSortsByTimeout(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+            PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
 
-            //if (outputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.MissedSortsByTimeout, "MissedSortsByTimeout");
+            if (outputStream != null)
+                statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.MissedSortsByTimeout, "MissedSortsByTimeout");
 
             return statistic;
         }
@@ -2484,10 +2535,10 @@ namespace TVA.PhasorProtocols
         private static double GetOutputStreamStatistic_FramesAheadOfSchedule(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+            PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
 
-            //if (outputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.FramesAheadOfSchedule, "FramesAheadOfSchedule");
+            if (outputStream != null)
+                statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.FramesAheadOfSchedule, "FramesAheadOfSchedule");
 
             return statistic;
         }
@@ -2518,10 +2569,10 @@ namespace TVA.PhasorProtocols
         private static double GetOutputStreamStatistic_Connected(object source, string arguments)
         {
             double statistic = 0.0D;
-            //PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
+            PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
 
-            //if (outputStream != null)
-            //    statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.Connected, "Connected");
+            if (outputStream != null)
+                statistic = (s_statisticValueCache.GetDifference(outputStream, outputStream.ConnectionAttempts, "ConnectionAttempts") == 0.0D ? 1.0D : 0.0D);
 
             return statistic;
         }

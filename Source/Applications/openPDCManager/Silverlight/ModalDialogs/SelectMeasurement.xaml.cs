@@ -236,11 +236,11 @@ using System.Linq;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
+using openPDCManager.PhasorDataServiceProxy;
+using openPDCManager.Utilities;
 using System.Windows.Data;
 
-namespace openPDCManager.Silverlight.ModalDialogs
+namespace openPDCManager.ModalDialogs
 {
 	public partial class SelectMeasurement : ChildWindow
 	{
@@ -268,7 +268,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 			ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);
 			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
 			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
-			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client = ProxyClient.GetPhasorDataServiceProxyClient();
 			m_client.GetMeasurementsForOutputStreamCompleted += new EventHandler<GetMeasurementsForOutputStreamCompletedEventArgs>(client_GetMeasurementsForOutputStreamCompleted);
 		}
 
@@ -295,7 +295,7 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				else
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Measurements For Output Stream", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
-				sm.Show();
+				sm.ShowPopup();
 			}
 			if (m_activityWindow != null)
 				m_activityWindow.Close();
@@ -339,14 +339,14 @@ namespace openPDCManager.Silverlight.ModalDialogs
 				}
 				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Output Stream Measurements Added Successfully", SystemMessage = string.Empty, UserMessageType = MessageType.Success },
 						 ButtonType.OkOnly);
-				sm.Show();
+				sm.ShowPopup();
 				m_client.GetMeasurementsForOutputStreamAsync(app.NodeValue, m_sourceOutputStreamID);
 			}
 			else
 			{
 				SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please Select Measurement(s) to Add", SystemMessage = string.Empty, UserMessageType = MessageType.Information },
 						 ButtonType.OkOnly);
-				sm.Show();
+				sm.ShowPopup();
 			}				
 		}
 		

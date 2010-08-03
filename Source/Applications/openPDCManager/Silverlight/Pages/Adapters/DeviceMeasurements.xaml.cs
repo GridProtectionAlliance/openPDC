@@ -236,12 +236,12 @@ using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using openPDCManager.Silverlight.LivePhasorDataServiceProxy;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
+using openPDCManager.LivePhasorDataServiceProxy;
+using openPDCManager.ModalDialogs;
+using openPDCManager.PhasorDataServiceProxy;
+using openPDCManager.Utilities;
 
-namespace openPDCManager.Silverlight.Pages.Adapters
+namespace openPDCManager.Pages.Adapters
 {
 	public partial class DeviceMeasurements : Page
 	{
@@ -260,11 +260,11 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 		public DeviceMeasurements()
 		{
 			InitializeComponent();
-			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client = ProxyClient.GetPhasorDataServiceProxyClient();
 			m_client.GetDeviceMeasurementDataCompleted += new EventHandler<GetDeviceMeasurementDataCompletedEventArgs>(m_client_GetDeviceMeasurementDataCompleted);
 			this.Loaded += new RoutedEventHandler(DeviceMeasurements_Loaded);
 
-			m_duplexClient = Common.GetDuplexServiceProxyClient();
+			m_duplexClient = ProxyClient.GetDuplexServiceProxyClient();
 			m_duplexClient.SendToServiceCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(m_duplexClient_SendToServiceCompleted);
 			m_duplexClient.SendToClientReceived += new EventHandler<SendToClientReceivedEventArgs>(m_duplexClient_SendToClientReceived);
 		}
@@ -342,7 +342,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Current Device Measurements Tree Data", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
             
 			if (m_activityWindow != null)

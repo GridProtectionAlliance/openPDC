@@ -237,11 +237,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Maps.MapControl;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
+using openPDCManager.ModalDialogs;
+using openPDCManager.PhasorDataServiceProxy;
+using openPDCManager.Utilities;
 
-namespace openPDCManager.Silverlight.Pages.Devices
+namespace openPDCManager.Pages.Devices
 {
 	public partial class ActiveMap : Page
 	{
@@ -259,7 +259,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		public ActiveMap()
 		{
 			InitializeComponent();
-			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client = ProxyClient.GetPhasorDataServiceProxyClient();
 			VirtualEarthActiveMap.CredentialsProvider = (Application.Current as App).Credentials;
 			Loaded += new RoutedEventHandler(ActiveMap_Loaded);
 			m_client.GetMapDataCompleted += new EventHandler<GetMapDataCompletedEventArgs>(client_GetMapDataCompleted);
@@ -308,7 +308,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Map Data", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 

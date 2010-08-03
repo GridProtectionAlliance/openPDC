@@ -230,286 +230,37 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ServiceModel;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
 using System.Windows.Navigation;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
 
-namespace openPDCManager.Silverlight.Pages.Devices
+namespace openPDCManager.Pages.Devices
 {
 	public partial class ManageOtherDevices : Page
 	{
-		#region [ Members ]
-
-		PhasorDataServiceClient m_client;
-		bool m_inEditMode = false;
-		int m_deviceID = 0;
-
-		#endregion
-
 		#region [ Constructor ]
 
 		public ManageOtherDevices()
 		{
-			InitializeComponent();
-			m_client = Common.GetPhasorDataServiceProxyClient();
-			Loaded += new RoutedEventHandler(ManageOtherDevices_Loaded);
-			m_client.GetCompaniesCompleted += new EventHandler<GetCompaniesCompletedEventArgs>(client_GetCompaniesCompleted);
-			m_client.GetVendorDevicesCompleted += new EventHandler<GetVendorDevicesCompletedEventArgs>(client_GetVendorDevicesCompleted);
-			m_client.GetInterconnectionsCompleted += new EventHandler<GetInterconnectionsCompletedEventArgs>(client_GetInterconnectionsCompleted);
-			m_client.SaveOtherDeviceCompleted += new EventHandler<SaveOtherDeviceCompletedEventArgs>(client_SaveOtherDeviceCompleted);
-			m_client.GetOtherDeviceByDeviceIDCompleted += new EventHandler<GetOtherDeviceByDeviceIDCompletedEventArgs>(client_GetOtherDeviceByDeviceIDCompleted);
-			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
-			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
+			InitializeComponent();         
 		}
 
 		#endregion
 
-		#region [ Service Event Handlers ]
-
-		void client_GetOtherDeviceByDeviceIDCompleted(object sender, GetOtherDeviceByDeviceIDCompletedEventArgs e)
-		{
-			OtherDevice deviceToEdit = new OtherDevice();
-			if (e.Error == null)
-			{
-				deviceToEdit = e.Result;
-				GridOtherDeviceDetail.DataContext = deviceToEdit;
-				if (deviceToEdit.CompanyID.HasValue)
-					ComboboxCompany.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.CompanyID, deviceToEdit.CompanyName);
-				else
-					ComboboxCompany.SelectedIndex = 0;
-				if (deviceToEdit.InterconnectionID.HasValue)
-					ComboboxInterconnection.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.InterconnectionID, deviceToEdit.InterconnectionName);
-				else
-					ComboboxInterconnection.SelectedIndex = 0;
-				if (deviceToEdit.VendorDeviceID.HasValue)
-					ComboboxVendorDevice.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.VendorDeviceID, deviceToEdit.VendorDeviceName);
-				else
-					ComboboxVendorDevice.SelectedIndex = 0;
-			}
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Other Device Information by ID", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-		}
-		
-		void client_SaveOtherDeviceCompleted(object sender, SaveOtherDeviceCompletedEventArgs e)
-		{
-			SystemMessages sm;
-			if (e.Error == null)
-			{
-				ClearForm();
-				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-						ButtonType.OkOnly);
-			}
-			else
-			{
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Other Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-			}
-			sm.Show();
-		}
-
-		void client_GetInterconnectionsCompleted(object sender, GetInterconnectionsCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboboxInterconnection.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-			if (ComboboxInterconnection.Items.Count > 0)
-				ComboboxInterconnection.SelectedIndex = 0;
-		}
-
-		void client_GetVendorDevicesCompleted(object sender, GetVendorDevicesCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboboxVendorDevice.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-			if (ComboboxVendorDevice.Items.Count > 0)
-				ComboboxVendorDevice.SelectedIndex = 0;
-		}
-
-		void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ComboboxCompany.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-			if (ComboboxCompany.Items.Count > 0)
-				ComboboxCompany.SelectedIndex = 0;
-		}
-
-		#endregion
-
-		#region [ Control Event Handlers ]
-
-		void ButtonClear_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonClearTransform);
-			sb.Begin();
-
-			ClearForm();
-		}
-
-        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        // Executes when the user navigates to this page.
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            Storyboard sb = new Storyboard();
-            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-            Storyboard.SetTarget(sb, ButtonSaveTransform);
-            sb.Begin();
+            UserControlManageOtherDevices.GetCompanies();
+            UserControlManageOtherDevices.GetVendorDevices();
+            UserControlManageOtherDevices.GetInterconnections();            
 
-            if (IsValid())
+            if (this.NavigationContext.QueryString.ContainsKey("did"))
             {
-                OtherDevice otherDevice = new OtherDevice();
-                otherDevice.Acronym = TextBoxAcronym.Text.CleanText();
-                otherDevice.Name = TextBoxName.Text.CleanText();
-                otherDevice.IsConcentrator = (bool)CheckboxConcentrator.IsChecked;
-                otherDevice.CompanyID = ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key;
-                otherDevice.VendorDeviceID = ((KeyValuePair<int, string>)ComboboxVendorDevice.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxVendorDevice.SelectedItem).Key;
-                otherDevice.Longitude = TextBoxLongitude.Text.ToNullableDecimal();
-                otherDevice.Latitude = TextBoxLatitude.Text.ToNullableDecimal();
-                otherDevice.InterconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
-                otherDevice.Planned = (bool)CheckboxPlanned.IsChecked;
-                otherDevice.Desired = (bool)CheckboxDesired.IsChecked;
-                otherDevice.InProgress = (bool)CheckboxInProgress.IsChecked;
-                if (m_inEditMode == false && m_deviceID == 0)
-                    m_client.SaveOtherDeviceAsync(otherDevice, true);
-                else
-                {
-                    otherDevice.ID = m_deviceID;
-                    m_client.SaveOtherDeviceAsync(otherDevice, false);
-                }
+                UserControlManageOtherDevices.hasQueryString = true;
+                UserControlManageOtherDevices.m_deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);                
+                UserControlManageOtherDevices.GetOtherDeviceByDeviceID(UserControlManageOtherDevices.m_deviceID);
             }
+            else
+                UserControlManageOtherDevices.ClearForm();
         }
-
-		#endregion
-
-		#region [ Page Event Handlers ]
-
-		void ManageOtherDevices_Loaded(object sender, RoutedEventArgs e)
-		{
-			if (this.NavigationContext.QueryString.ContainsKey("did"))
-			{
-				m_deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
-				m_inEditMode = true;
-				m_client.GetOtherDeviceByDeviceIDAsync(m_deviceID);
-			}
-		}
-
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			m_client.GetCompaniesAsync(true);
-			m_client.GetVendorDevicesAsync(true);
-			m_client.GetInterconnectionsAsync(true);
-            ClearForm();
-		}
-
-		#endregion
-
-		#region [ Methods ]
-
-        bool IsValid()
-        {
-            bool isValid = true;
-
-            if (string.IsNullOrEmpty(TextBoxAcronym.Text.CleanText()))
-            {
-                isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Acronym", SystemMessage = "Please provide valid Acronym for a device.", UserMessageType = MessageType.Error },
-                        ButtonType.OkOnly);
-                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
-                                                {
-                                                    TextBoxAcronym.Focus();
-                                                });
-                sm.Show();
-                return isValid;
-            }
-
-            return isValid;
-        }
-
-		void ClearForm()
-		{
-            GridOtherDeviceDetail.DataContext = new OtherDevice() { Longitude = -98.6m, Latitude = 37.5m };
-			if (ComboboxCompany.Items.Count > 0)
-                ComboboxCompany.SelectedIndex = 0;
-			if (ComboboxInterconnection.Items.Count > 0)
-                ComboboxInterconnection.SelectedIndex = 0;
-			if (ComboboxVendorDevice.Items.Count > 0)
-                ComboboxVendorDevice.SelectedIndex = 0;
-			m_inEditMode = false;
-			m_deviceID = 0;
-		}
-
-		#endregion
-
 	}
 }

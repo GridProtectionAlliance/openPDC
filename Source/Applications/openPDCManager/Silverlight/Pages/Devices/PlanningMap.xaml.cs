@@ -237,11 +237,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Maps.MapControl;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
+using openPDCManager.ModalDialogs;
+using openPDCManager.PhasorDataServiceProxy;
+using openPDCManager.Utilities;
 
-namespace openPDCManager.Silverlight.Pages.Devices
+namespace openPDCManager.Pages.Devices
 {
 	public partial class PlanningMap : Page
 	{
@@ -260,7 +260,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 		public PlanningMap()
 		{
 			InitializeComponent();
-			m_client = Common.GetPhasorDataServiceProxyClient();
+			m_client = ProxyClient.GetPhasorDataServiceProxyClient();
 			m_client.GetOtherDeviceListCompleted += new System.EventHandler<GetOtherDeviceListCompletedEventArgs>(client_GetOtherDeviceListCompleted);
 			m_client.GetMapDataCompleted += new EventHandler<GetMapDataCompletedEventArgs>(client_GetMapDataCompleted);
 			VirtualEarthPlanningMap.CredentialsProvider = (Application.Current as App).Credentials;
@@ -313,7 +313,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Planning Map Data", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 		
@@ -362,7 +362,7 @@ namespace openPDCManager.Silverlight.Pages.Devices
 					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Other Devices for Planning Map", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
 						ButtonType.OkOnly);
 
-				sm.Show();
+				sm.ShowPopup();
 			}
 		}
 

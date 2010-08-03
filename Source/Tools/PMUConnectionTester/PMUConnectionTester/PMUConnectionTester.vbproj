@@ -219,11 +219,12 @@
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="CommandChannel.ico" />
+    <EmbeddedResource Include="Embedded Resources\Disclaimer.txt" />
     <Content Include="LastRun.PmuConnection">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="PMUConnectionTester.ico" />
-    <EmbeddedResource Include="Embedded Resources\TVAPSOLogo.png" />
+    <EmbeddedResource Include="Embedded Resources\HelpAboutLogo.png" />
     <Content Include="PMUConnectionTester.chm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -229,121 +229,22 @@
 */
 #endregion
 
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.ServiceModel;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using System.Windows.Navigation;
-using openPDCManager.Silverlight.ModalDialogs;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.Utilities;
+using System;
+using System.Windows;
 
-namespace openPDCManager.Silverlight.Pages.Devices
+namespace openPDCManager.Pages.Devices
 {
 	public partial class OtherDevices : Page
 	{
-		#region [ Members ]
-
-		PhasorDataServiceClient m_client;
-		ObservableCollection<OtherDevice> m_otherDeviceList = new ObservableCollection<OtherDevice>();
-
-		#endregion
-
 		#region [ Constructor ]
 
 		public OtherDevices()
 		{
 			InitializeComponent();
-			m_client = Common.GetPhasorDataServiceProxyClient();
-			m_client.GetOtherDeviceListCompleted += new EventHandler<GetOtherDeviceListCompletedEventArgs>(client_GetOtherDeviceListCompleted);
-			Loaded += new RoutedEventHandler(OtherDevices_Loaded);
-			ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
-			ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
-		}
-
-		#endregion
-
-		#region [ Control Event Handlers ]
-
-		void ButtonShowAll_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonShowAllTransform);
-			sb.Begin();
-
-			ListBoxOtherDeviceList.ItemsSource = m_otherDeviceList;
-		}
-		
-		void ButtonSearch_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonSearchTransform);
-			sb.Begin();
-
-			string searchText = TextBoxSearch.Text.ToUpper();
-			ListBoxOtherDeviceList.ItemsSource = (from item in m_otherDeviceList
-											 where item.Acronym.ToUpper().Contains(searchText) || item.Name.ToUpper().Contains(searchText) || item.InterconnectionName.ToUpper().Contains(searchText) 
-													|| item.CompanyName.ToUpper().Contains(searchText) || item.VendorDeviceName.ToUpper().Contains(searchText)
-											 select item).ToList();
-		}
-
-		void HyperlinkButton_Click(object sender, RoutedEventArgs e)
-		{
-			string deviceId = ((HyperlinkButton)sender).Tag.ToString();
-			NavigationService.Navigate(new Uri("/Pages/Devices/ManageOtherDevices.xaml?did=" + deviceId, UriKind.Relative));
-		}
-
-		#endregion
-
-		#region [ Page Event Handlers ]
-
-		void OtherDevices_Loaded(object sender, RoutedEventArgs e)
-		{
 			
 		}
-				
-		// Executes when the user navigates to this page.
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-			m_client.GetOtherDeviceListAsync();
-		}
 
-		#endregion
-
-		#region [ Service Event Handlers ]
-
-		void client_GetOtherDeviceListCompleted(object sender, GetOtherDeviceListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-			{
-				m_otherDeviceList = e.Result;
-				ListBoxOtherDeviceList.ItemsSource = m_otherDeviceList;
-			}
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Other Device List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.Show();
-			}
-		}
-
-		#endregion
-
+		#endregion        
 	}
 }

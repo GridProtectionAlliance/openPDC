@@ -234,10 +234,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using System.Windows.Navigation;
-using openPDCManager.Silverlight.Utilities;
-using openPDCManager.Silverlight.ModalDialogs;
+using openPDCManager.Utilities;
+using openPDCManager.ModalDialogs;
 
-namespace openPDCManager.Silverlight.Pages.Manage
+namespace openPDCManager.Pages.Manage
 {
 	public partial class SystemSettings : Page
 	{
@@ -264,12 +264,12 @@ namespace openPDCManager.Silverlight.Pages.Manage
 			sb.Begin();
 
 			//Load Default Settings.
-			Common.SetDefaultSystemSettings(true);
+			ProxyClient.SetDefaultSystemSettings(true);
 			LoadSettingsFromIsolatedStorage();
 
 			SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Successfully Restored Default System Settings", SystemMessage = string.Empty, UserMessageType = MessageType.Success },
 						ButtonType.OkOnly);			
-			sm.Show();
+			sm.ShowPopup();
 		}
 
 		void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -303,7 +303,7 @@ namespace openPDCManager.Silverlight.Pages.Manage
 
 			SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Successfully Saved System Settings", SystemMessage = string.Empty, UserMessageType = MessageType.Success },
 						ButtonType.OkOnly);
-			sm.Show();
+			sm.ShowPopup();
 		}
 
 		#endregion

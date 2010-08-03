@@ -233,7 +233,7 @@ using System;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace openPDCManager.Silverlight.Converters
+namespace openPDCManager.Converters
 {
 	public class BooleanToColorConverter : IValueConverter
 	{

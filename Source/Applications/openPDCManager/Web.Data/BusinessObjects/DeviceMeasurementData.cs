@@ -233,16 +233,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.ObjectModel;
 
 namespace openPDCManager.Web.Data.BusinessObjects
 {
 	public class DeviceMeasurementData
-	{
+	{        
 		public int ID { get; set; }
 		public string Acronym { get; set; }
 		public string Name { get; set; }
 		public string CompanyName { get; set; }
-		public List<DeviceInfo> DeviceList { get; set; }
+        public bool IsExpanded { get; set; }  
+		public ObservableCollection<DeviceInfo> DeviceList { get; set; }
 	}
 
 	public class DeviceInfo
@@ -254,7 +256,8 @@ namespace openPDCManager.Web.Data.BusinessObjects
 		public string ProtocolName { get; set; }
 		public string VendorDeviceName { get; set; }
 		public string ParentAcronym { get; set; }
-		public List<MeasurementInfo> MeasurementList { get; set; }
+        public bool IsExpanded { get; set; }  
+		public ObservableCollection<MeasurementInfo> MeasurementList { get; set; }
 	}
 
 	public class MeasurementInfo
@@ -264,9 +267,13 @@ namespace openPDCManager.Web.Data.BusinessObjects
 		public int PointID { get; set; }
 		public string PointTag { get; set; }
 		public string SignalAcronym { get; set; }
+        public string Description { get; set; }
+        public string SignalName { get; set; }
+        public string EngineeringUnits { get; set; }
 		public string CurrentTimeTag { get; set; }
 		public string CurrentValue { get; set; }
 		public string CurrentQuality { get; set; }
+        public bool IsExpanded { get; set; }  
 	}
 }
 

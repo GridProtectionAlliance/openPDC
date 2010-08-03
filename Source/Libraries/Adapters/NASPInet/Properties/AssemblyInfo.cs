@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 
 // Assembly identity attributes.
-[assembly: AssemblyVersion("1.1.75.53788")]
+[assembly: AssemblyVersion("1.1.83.54923")]
 
 // Informational attributes.
-[assembly: AssemblyCompany("TVA")]
-[assembly: AssemblyCopyright("No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.")]
+[assembly: AssemblyCompany("Grid Protection Alliance")]
+[assembly: AssemblyCopyright("Copyright © 2010.  All Rights Reserved.")]
 [assembly: AssemblyProduct("openPDC")]
 
 // Assembly manifest attributes.

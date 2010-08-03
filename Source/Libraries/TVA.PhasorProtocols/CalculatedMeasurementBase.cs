@@ -476,6 +476,9 @@ namespace TVA.PhasorProtocols
             // Load optional parameters
             if (!Settings.TryGetValue("configurationSection", out m_configurationSection))
                 m_configurationSection = Name;
+
+            if (string.IsNullOrEmpty(m_configurationSection))
+                m_configurationSection = Name;
         }
 
         // Lookup signal type for given measurement key

@@ -1,4 +1,4 @@
-﻿<navigation:Page x:Class="openPDCManager.Silverlight.Pages.Devices.Browse" 
+﻿<navigation:Page x:Class="openPDCManager.Pages.Devices.Browse" 
            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,7 +6,7 @@
            mc:Ignorable="d"
            xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"      
            xmlns:data="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data" 
-           xmlns:DefaultButton="clr-namespace:openPDCManager.Silverlight.Utilities" 
+           xmlns:DefaultButton="clr-namespace:openPDCManager.Utilities" 
            Title="Browse Devices">    
     <Grid x:Name="GridBrowseDevices">
         <Border Style="{StaticResource PortletBorderStyle}">
@@ -29,7 +29,7 @@
                 </Border>
                 <Border Style="{StaticResource HeaderRowBorderStyle}">
                     <StackPanel Orientation="Horizontal" Margin="2">
-                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">                            
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <HyperlinkButton Content="Acronym" HorizontalContentAlignment="Center" Width="{StaticResource SmallItemSize}" FontSize="{StaticResource LargeTextSize}" Foreground="#FF000000" FontWeight="Bold" Click="HyperlinkButtonAcronym_Click" />
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
@@ -56,7 +56,7 @@
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Enabled" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
-                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">                            
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <HyperlinkButton Content="Created On" HorizontalContentAlignment="Center" Width="{StaticResource LargeItemSize}" FontSize="{StaticResource LargeTextSize}" Foreground="#FF000000" FontWeight="Bold" Click="HyperlinkButtonCreatedOn_Click" />
                         </Border>
                         <TextBlock Text="" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
@@ -113,7 +113,7 @@
                     </ScrollViewer>
                 </Border>
                 <data:DataPager x:Name="DataPagerDevices" PageSize="30" AutoEllipsis="True" NumericButtonCount="3" DisplayMode="FirstLastPreviousNext"/>
-            </StackPanel>            
+            </StackPanel>
         </Border>
     </Grid>
     

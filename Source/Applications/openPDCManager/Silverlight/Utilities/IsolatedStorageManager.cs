@@ -231,7 +231,7 @@
 
 using System.IO.IsolatedStorage;
 
-namespace openPDCManager.Silverlight.Utilities
+namespace openPDCManager.Utilities
 {
 	public static class IsolatedStorageManager
 	{

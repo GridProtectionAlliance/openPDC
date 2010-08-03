@@ -234,11 +234,12 @@ using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
-using openPDCManager.Silverlight.UserControls;
-using openPDCManager.Silverlight.Utilities;
+using openPDCManager.PhasorDataServiceProxy;
+//using openPDCManager.UserControls;
+using openPDCManager.UserControls.CommonControls;
+using openPDCManager.Utilities;
 
-namespace openPDCManager.Silverlight
+namespace openPDCManager
 {
 	public partial class MasterLayoutControl : UserControl
 	{
@@ -297,10 +298,10 @@ namespace openPDCManager.Silverlight
 			System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration"), "_blank");
 		}
 
-		void HyperlinkButtonMonitor_Click(object sender, RoutedEventArgs e)
-		{
-			ContentFrame.Navigate(new Uri("/Pages/Monitor.xaml", UriKind.Relative));
-		}
+        //void HyperlinkButtonMonitor_Click(object sender, RoutedEventArgs e)
+        //{
+        //    ContentFrame.Navigate(new Uri("/Pages/Monitor.xaml", UriKind.Relative));
+        //}
 
 		#endregion
 

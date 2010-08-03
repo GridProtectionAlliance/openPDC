@@ -231,9 +231,9 @@
 
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using openPDCManager.Silverlight.PhasorDataServiceProxy;
+using openPDCManager.PhasorDataServiceProxy;
 
-namespace openPDCManager.Silverlight.Pages.Adapters
+namespace openPDCManager.Pages.Adapters
 {
 	public partial class ActionAdapters : Page
 	{
@@ -250,7 +250,7 @@ namespace openPDCManager.Silverlight.Pages.Adapters
 
 		// Executes when the user navigates to this page.
 		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
+		{            
 			ActionAdapterControl.SetAdapterType(AdapterType.Action);
 		}
 

@@ -235,7 +235,7 @@ using System.Windows.Automation.Provider;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace openPDCManager.Silverlight.Utilities
+namespace openPDCManager.Utilities
 {
 	public static class DefaultButtonService
 	{
