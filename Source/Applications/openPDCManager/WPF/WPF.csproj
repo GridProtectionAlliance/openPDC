@@ -573,9 +573,6 @@
     <Resource Include="..\Silverlight\Images\Search.png">
       <Link>Images\Search.png</Link>
     </Resource>
-    <Resource Include="..\Silverlight\Images\StatusReport.png">
-      <Link>Images\StatusReport.png</Link>
-    </Resource>
     <Resource Include="..\Silverlight\Images\Success.png">
       <Link>Images\Success.png</Link>
     </Resource>

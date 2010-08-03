@@ -365,24 +365,30 @@ namespace openPDCManager.UserControls.PopupControls
         {
             int outputStreamDeviceId = Convert.ToInt32(((Button)sender).Tag.ToString());
             string acronym = ToolTipService.GetToolTip((Button)sender).ToString();  // ((HyperlinkButton)sender).Name;
-            //OutputStreamDevicePhasors osdp = new OutputStreamDevicePhasors(outputStreamDeviceId, acronym);
-            //osdp.Show();
+#if SILVERLIGHT
+            OutputStreamDevicePhasors osdp = new OutputStreamDevicePhasors(outputStreamDeviceId, acronym);
+            osdp.Show();
+#endif
         }
 
         private void HyperlinkButtonAnalogs_Click(object sender, RoutedEventArgs e)
         {
             int outputStreamDeviceId = Convert.ToInt32(((Button)sender).Tag.ToString());
             string acronym = ToolTipService.GetToolTip((Button)sender).ToString();  // ((HyperlinkButton)sender).Name;
-            //OutputStreamDeviceAnalogs osda = new OutputStreamDeviceAnalogs(outputStreamDeviceId, acronym);
-            //osda.Show();
+#if SILVERLIGHT
+            OutputStreamDeviceAnalogs osda = new OutputStreamDeviceAnalogs(outputStreamDeviceId, acronym);
+            osda.Show();
+#endif
         }
 
         private void HyperlinkButtonDigitals_Click(object sender, RoutedEventArgs e)
         {
             int outputStreamDeviceId = Convert.ToInt32(((Button)sender).Tag.ToString());
             string acronym = ToolTipService.GetToolTip((Button)sender).ToString();  // ((HyperlinkButton)sender).Name;
-            //OutputStreamDeviceDigitals osdd = new OutputStreamDeviceDigitals(outputStreamDeviceId, acronym);
-            //osdd.Show();
+      #if SILVERLIGHT
+            OutputStreamDeviceDigitals osdd = new OutputStreamDeviceDigitals(outputStreamDeviceId, acronym);
+            osdd.Show();
+#endif
         }
 
         private void HyperlinkButtonDelete_Click(object sender, RoutedEventArgs e)

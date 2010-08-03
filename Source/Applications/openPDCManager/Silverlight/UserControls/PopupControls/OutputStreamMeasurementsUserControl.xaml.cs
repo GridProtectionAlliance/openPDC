@@ -282,9 +282,11 @@ namespace openPDCManager.UserControls.PopupControls
 
         void ButtonSourceMeasurement_Click(object sender, RoutedEventArgs e)
         {
-            //SelectMeasurement selectMeasurement = new SelectMeasurement(m_sourceOutputStreamID, m_sourceOutputStreamAcronym);
-            //selectMeasurement.Closed += new EventHandler(selectMeasurement_Closed);
-            //selectMeasurement.Show();
+            #if SILVERLIGHT
+            SelectMeasurement selectMeasurement = new SelectMeasurement(m_sourceOutputStreamID, m_sourceOutputStreamAcronym);
+            selectMeasurement.Closed += new EventHandler(selectMeasurement_Closed);
+            selectMeasurement.Show();
+#endif
         }
 
         void selectMeasurement_Closed(object sender, EventArgs e)
