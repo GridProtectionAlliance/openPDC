@@ -245,7 +245,7 @@ namespace DataQualityMonitoring.Services
     /// Represents a REST web service for flatlined measurements.
     /// </summary>
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class FlatlineService : RestService, IFlatlineService
+    public class FlatlineService : SelfHostingService, IFlatlineService
     {
 
         #region [ Members ]

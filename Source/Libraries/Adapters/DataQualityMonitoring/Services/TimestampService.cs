@@ -242,7 +242,7 @@ namespace DataQualityMonitoring.Services
     /// Represents a REST web service for measurements with bad timestamps.
     /// </summary>
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class TimestampService : RestService, ITimestampService
+    public class TimestampService : SelfHostingService, ITimestampService
     {
 
         #region [ Members ]

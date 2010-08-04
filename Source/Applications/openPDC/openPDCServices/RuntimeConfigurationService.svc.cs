@@ -24,7 +24,7 @@ using TVA.Web.Services;
 namespace openPDCServices
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class RuntimeConfigurationService : RestService, IRuntimeConfigurationService
+    public class RuntimeConfigurationService : SelfHostingService, IRuntimeConfigurationService
     {
         #region [ Members ]
 

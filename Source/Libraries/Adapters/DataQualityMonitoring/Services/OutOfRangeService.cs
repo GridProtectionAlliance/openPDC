@@ -241,7 +241,7 @@ namespace DataQualityMonitoring.Services
     /// Represents a REST web service for out-of-range measurements.
     /// </summary>
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class OutOfRangeService : RestService, IOutOfRangeService
+    public class OutOfRangeService : SelfHostingService, IOutOfRangeService
     {
         
         #region [ Members ]

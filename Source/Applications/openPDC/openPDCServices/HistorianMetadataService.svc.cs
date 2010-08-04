@@ -27,7 +27,7 @@ using TVA.Web.Services;
 namespace openPDCServices
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class HistorianMetadataService : RestService, IHistorianMetadataService
+    public class HistorianMetadataService : SelfHostingService, IHistorianMetadataService
     {
         #region [ Members ]
 
