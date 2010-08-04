@@ -363,7 +363,7 @@
             </summary>
             <param name="requestCommand">Command text that the <see cref="T:TVA.Services.ClientRequestHandler"/> will process.</param>
             <param name="requestDescription">Description of the <see cref="T:TVA.Services.ClientRequestHandler"/>.</param>
-            <param name="handlerMethod"><see cref="T:System.Delegate"/> method that will be invoked for processing the <paramref name="command"/>.</param>
+            <param name="handlerMethod"><see cref="T:System.Delegate"/> method that will be invoked for processing the <paramref name="requestCommand"/>.</param>
         </member>
         <member name="M:TVA.Services.ClientRequestHandler.#ctor(System.String,System.String,System.Action{TVA.Services.ClientRequestInfo},System.Boolean)">
             <summary>
@@ -371,7 +371,7 @@
             </summary>
             <param name="requestCommand">Command text that the <see cref="T:TVA.Services.ClientRequestHandler"/> will process.</param>
             <param name="requestDescription">Description of the <see cref="T:TVA.Services.ClientRequestHandler"/>.</param>
-            <param name="handlerMethod"><see cref="T:System.Delegate"/> method that will be invoked for processing the <paramref name="command"/>.</param>
+            <param name="handlerMethod"><see cref="T:System.Delegate"/> method that will be invoked for processing the <paramref name="requestCommand"/>.</param>
             <param name="isAdvertised">true if the <see cref="T:TVA.Services.ClientRequestHandler"/> is to be published by the <see cref="T:TVA.Services.ServiceHelper"/>; otherwise false.</param>
         </member>
         <member name="P:TVA.Services.ClientRequestHandler.Command">
@@ -708,14 +708,14 @@
         </member>
         <member name="M:TVA.Services.ServiceHelper.FindConnectedClient(System.Guid)">
             <summary>
-            Returns the <see cref="T:TVA.Services.ClientInfo"/> object for the specified <paramref name="client"/>.
+            Returns the <see cref="T:TVA.Services.ClientInfo"/> object for the specified <paramref name="clientID"/>.
             </summary>
             <param name="clientID">ID of the client whose <see cref="T:TVA.Services.ClientInfo"/> object is to be retrieved.</param>
             <returns><see cref="T:TVA.Services.ClientInfo"/> object if found; otherwise null.</returns>
         </member>
         <member name="M:TVA.Services.ServiceHelper.FindClientRequestHandler(System.String)">
             <summary>
-            Returns the <see cref="T:TVA.Services.ClientRequestHandler"/> object for the specified <paramref name="requestType"/>.
+            Returns the <see cref="T:TVA.Services.ClientRequestHandler"/> object for the specified <paramref name="handlerCommand"/>.
             </summary>
             <param name="handlerCommand">Request type whose <see cref="T:TVA.Services.ClientRequestHandler"/> object is to be retrieved.</param>
             <returns><see cref="T:TVA.Services.ClientRequestHandler"/> object if found; otherwise null.</returns>
