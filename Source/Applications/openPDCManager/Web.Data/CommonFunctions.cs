@@ -296,7 +296,7 @@ namespace openPDCManager.Data
                 List<ErrorLog> errorLogList = new List<ErrorLog>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Select Top " + numberOfLogs.ToString() + " From ErrorLog Order By CreatedOn DESC";
+                command.CommandText = "Select Top " + numberOfLogs.ToString() + " * From ErrorLog Order By CreatedOn DESC";
 
                 DataTable resultTable = new DataTable();
                 resultTable.Load(command.ExecuteReader());
@@ -307,6 +307,7 @@ namespace openPDCManager.Data
                                     ID = item.Field<int>("ID"),
                                     Source = item.Field<string>("Source"),
                                     Message = item.Field<string>("Message"),
+                                    CreatedOn = Convert.ToDateTime(item.Field<object>("CreatedOn")),
                                     Detail = item.Field<string>("Detail")
                                 }).ToList();
                 return errorLogList;
@@ -827,6 +828,7 @@ namespace openPDCManager.Data
 			catch (Exception ex)
 			{
 				LogException("GetRealTimeData", ex);
+                throw ex;
 			}
 
 			return timeSeriesData;

@@ -7,6 +7,7 @@ using openPDCManager.Pages.Devices;
 using openPDCManager.Pages.Manage;
 using openPDCManager.Pages.Adapters;
 using openPDCManager.UserControls.OutputStreamControls;
+using System.Windows.Media.Imaging;
 
 namespace openPDCManager
 {
@@ -26,24 +27,18 @@ namespace openPDCManager
 
         public MasterLayoutWindow()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            ButtonErrorLog.Content = new BitmapImage(new Uri(@"images/Log.png", UriKind.Relative));
             UserControlSelectNode.NodeCollectionChanged += new openPDCManager.UserControls.CommonControls.SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);
             UserControlSelectNode.ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
             MainWindow.SizeChanged += new SizeChangedEventHandler(MainWindow_SizeChanged);
             Loaded += new RoutedEventHandler(MasterLayoutWindow_Loaded);
-            //ExpanderErrorLog.Collapsed += new RoutedEventHandler(ExpanderErrorLog_Collapsed);
-            //ExpanderErrorLog.Expanded += new RoutedEventHandler(ExpanderErrorLog_Expanded);
+            ButtonErrorLog.Click += new RoutedEventHandler(ButtonErrorLog_Click);
         }
 
-        void ExpanderErrorLog_Expanded(object sender, RoutedEventArgs e)
-        {
-            //MainWindow.Height += 125;
-        }
+        #endregion
 
-        void ExpanderErrorLog_Collapsed(object sender, RoutedEventArgs e)
-        {
-            //MainWindow.Height -= 125;
-        }
+        #region [ Windows Event Handlers ]
 
         void MasterLayoutWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -52,10 +47,6 @@ namespace openPDCManager
             HomePageUserControl home = new HomePageUserControl();
             ContentFrame.Navigate(home);
         }
-
-        #endregion
-
-        #region [ Windows Event Handlers ]
 
         void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -72,6 +63,21 @@ namespace openPDCManager
         #endregion
 
         #region [ Controls Event Handlers ]
+
+        void ButtonErrorLog_Click(object sender, RoutedEventArgs e)
+        {
+            ErrorLogWindow errorLogWindow = new ErrorLogWindow();
+            errorLogWindow.Owner = Window.GetWindow(this);
+            errorLogWindow.WindowStartupLocation = WindowStartupLocation.Manual;
+            errorLogWindow.Left = MainWindow.Left;
+            if (MainWindow.WindowState == System.Windows.WindowState.Maximized)
+                errorLogWindow.Top = MainWindow.Top + MainWindow.Height - 150;
+            else
+                errorLogWindow.Top = MainWindow.Top + MainWindow.Height - 25;
+            errorLogWindow.Width = MainWindow.Width;
+            errorLogWindow.Height = 150;
+            errorLogWindow.Show();
+        }
 
         void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

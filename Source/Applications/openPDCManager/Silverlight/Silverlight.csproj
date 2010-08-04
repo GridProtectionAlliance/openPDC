@@ -827,6 +827,7 @@
     <Resource Include="Images\RequestData.png" />
     <Resource Include="Images\Chart.png" />
     <Resource Include="Images\Console.png" />
+    <Resource Include="Images\Log.png" />
     <Content Include="ServiceReferences.ClientConfig" />
   </ItemGroup>
   <ItemGroup>

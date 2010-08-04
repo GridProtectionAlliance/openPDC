@@ -331,6 +331,11 @@ namespace openPDCManager.UserControls.CommonControls
                 catch (Exception ex)
                 {
                     CommonFunctions.LogException("GUI.GetTimeSeriesData", ex);
+                    if (m_secondsTimer != null)
+                    {
+                        m_secondsTimer.Stop();
+                        m_secondsTimer = null;
+                    }
                     m_retrievingData = false;
                 }
             }

@@ -11,5 +11,6 @@ namespace openPDCManager.Data.Entities
         public string Source { get; set; }
         public string Message { get; set;}
         public string Detail { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 }

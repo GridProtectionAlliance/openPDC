@@ -264,6 +264,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="ErrorLogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MasterLayoutWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -473,6 +477,9 @@
     </Compile>
     <Compile Include="..\Silverlight\Utilities\Message.cs">
       <Link>Utilities\Message.cs</Link>
+    </Compile>
+    <Compile Include="ErrorLogWindow.xaml.cs">
+      <DependentUpon>ErrorLogWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MasterLayoutWindow.xaml.cs">
       <DependentUpon>MasterLayoutWindow.xaml</DependentUpon>
@@ -702,6 +709,11 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Silverlight\Images\Log.png">
+      <Link>Images\Log.png</Link>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
