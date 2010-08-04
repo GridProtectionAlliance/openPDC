@@ -233,7 +233,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace openPDCManager.Web.Data.BusinessObjects
+namespace openPDCManager.Data.BusinessObjects
 {
     public class StatisticMeasurementData
     {

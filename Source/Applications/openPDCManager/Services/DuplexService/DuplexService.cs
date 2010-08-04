@@ -236,10 +236,10 @@
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
-using openPDCManager.Web.Data;
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data;
+using openPDCManager.Data.Entities;
 using System.Collections;
-using openPDCManager.Web.Data.ServiceCommunication;
+using openPDCManager.Data.ServiceCommunication;
 
 namespace openPDCManager.Services.DuplexService
 {
@@ -601,16 +601,16 @@ namespace openPDCManager.Services.DuplexService
 
         protected void PushToAllClients(MessageType messageType)
         {
+            Dictionary<string, Client> clientsList;
+            lock (clients)
+            {
+                clientsList = new Dictionary<string, Client>(clients);	// we will take a copy of the global collection locally to avoid locking of the resource.
+            }
+
 			//This is not the best way to check for measurementType and have individual local collection of clients and foreach loop but
 			//since this method is being called by different threads and timers, I have implemented it this way. --Mehul Thakkar.
 			if (messageType == MessageType.LivePhasorDataMessage)
-			{
-				Dictionary<string, Client> clientsList;
-				lock (clients)
-				{
-					clientsList = new Dictionary<string, Client>(clients);	// we will take a copy of the global collection locally to avoid locking of the resource.
-				}
-
+			{			
 				lock (clientsList)
 				{
 					foreach (string session in clientsList.Keys)
@@ -627,12 +627,6 @@ namespace openPDCManager.Services.DuplexService
 			}
 			else if (messageType == MessageType.TimeSeriesDataMessage)
 			{
-				Dictionary<string, Client> clientsList;
-				lock (clients)
-				{
-					clientsList = new Dictionary<string, Client>(clients);	// we will take a copy of the global collection locally to avoid locking of the resource.
-				}
-
 				lock (clientsList)
 				{
 					foreach (string session in clientsList.Keys)
@@ -650,13 +644,7 @@ namespace openPDCManager.Services.DuplexService
 			}
 			else if (messageType == MessageType.TimeTaggedDataMessage)
 			{
-				Dictionary<string, Client> clientsList;
-				lock (clients)
-				{
-					clientsList  = new Dictionary<string, Client>(clients);	// we will take a copy of the global collection locally to avoid locking of the resource.
-				}
-				
-				lock (clientsList)
+                lock (clientsList)
 				{
 					foreach (string session in clientsList.Keys)
 					{

@@ -1,15 +1,15 @@
 ﻿<Window x:Class="openPDCManager.MasterLayoutWindow" x:Name="MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="MasterLayoutWindow"   Height="900" Width="1200" ResizeMode="CanResizeWithGrip" MinHeight="600" MaxHeight="1200" MinWidth="800" MaxWidth="1600"
+    Title="MasterLayoutWindow"   Height="900" Width="1200" ResizeMode="CanResizeWithGrip" MinHeight="600" MinWidth="800"
     xmlns:uc="clr-namespace:openPDCManager.UserControls.CommonControls" WindowStyle="None" Background="Transparent" AllowsTransparency="True" MouseDown="MainWindow_MouseDown"
     >
 
     <Border CornerRadius="10" Background="{StaticResource PageBackgroundBrush}">
         
         <Grid x:Name="GridLayoutRoot" Background="Transparent" HorizontalAlignment="Stretch">
-        
-            <Canvas x:Name="LayoutRoot" Background="Transparent" VerticalAlignment="Top" HorizontalAlignment="Left">
+                       
+            <Canvas x:Name="LayoutRoot" Grid.Row="0" Background="Transparent" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <Canvas.RenderTransform>
                     <ScaleTransform x:Name="LayoutRootScale" ScaleX="1" ScaleY="1"/>
                 </Canvas.RenderTransform>
@@ -17,7 +17,7 @@
                 <Grid Canvas.Left="5" Canvas.Top="5" Background="Transparent" Width="1190" Height="890">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
-                        <RowDefinition Height="11*" />
+                        <RowDefinition Height="12*" />                        
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -34,6 +34,7 @@
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
                                 <Button x:Name="ButtonMinimize" FontWeight="Bold" Width="30" Margin="0,5,0,10" ToolTip="Close" Click="ButtonMinimize_Click">_</Button>
+                                <Button x:Name="ButtonMaximize" FontWeight="Bold" Width="30" Margin="0,5,0,10" ToolTip="Close" Click="ButtonMaximize_Click">[]</Button>
                                 <Button x:Name="ButtonClose" FontWeight="Bold" Width="30" Margin="2,5,10,10" ToolTip="Minimize" Click="ButtonClose_Click">X</Button>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
@@ -42,122 +43,122 @@
                                     <MenuItem Header="Monitoring" Style="{StaticResource MainMenuItemStyle}">
                                         <MenuItem Header="Real-Time Measurements" Style="{StaticResource MainSubMenuItemStyle}" x:Name="RealTimeMeasurements" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Measure.png" Height="16" Width="16" />
+                                                <Image Source="images/Measure.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="Run-Time Status &amp; Statistics" Style="{StaticResource MainSubMenuItemStyle}" x:Name="RealTimeStatistics" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Chart.png" Height="16" Width="16" />
+                                                <Image Source="images/Chart.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="Remote Console" Style="{StaticResource MainSubMenuItemStyle}" x:Name="RemoteConsole" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Console.png" Height="16" Width="16" />
+                                                <Image Source="images/Console.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                     </MenuItem>
                                     <MenuItem Header="Devices" Style="{StaticResource MainMenuItemStyle}">
                                         <MenuItem Header="Browse" Style="{StaticResource MainSubMenuItemStyle}" x:Name="BrowseDevices" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="List.png" Height="16" Width="16" />
+                                                <Image Source="images/List.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="Add New" Style="{StaticResource MainSubMenuItemStyle}" x:Name="AddNew" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Pmu.png" Height="16" Width="16" />
+                                                <Image Source="images/Pmu.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="Configuration Wizard" Style="{StaticResource MainSubMenuItemStyle}" x:Name="ConfigurationWizard" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Configuration.png" Height="16" Width="16" />
+                                                <Image Source="images/Configuration.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="Active Map" Style="{StaticResource MainSubMenuItemStyle}" x:Name="ActiveMap" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Earth.png" Height="16" Width="16" />
+                                                <Image Source="images/Earth.png" Height="16" Width="16" />
                                             </MenuItem.Icon>                                        
                                         </MenuItem>
                                         <MenuItem Header="Planning Map" Style="{StaticResource MainSubMenuItemStyle}" x:Name="PlanningMap" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Earth.png" Height="16" Width="16" />
+                                                <Image Source="images/Earth.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="Other Devices" Style="{StaticResource MainSubMenuItemStyle}" x:Name="OtherDevices" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="List.png" Height="16" Width="16" />
+                                                <Image Source="images/List.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="Add New" Style="{StaticResource MainSubMenuItemStyle}" x:Name="AddOtherDevice" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Pmu.png" Height="16" Width="16" />
+                                                <Image Source="images/Pmu.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                     </MenuItem>
                                     <MenuItem Header="Adapters" Style="{StaticResource MainMenuItemStyle}">
                                         <MenuItem Header="Calculated Measurements" Style="{StaticResource MainSubMenuItemStyle}" x:Name="CalculatedMeasurements" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Calculation.png" Height="16" Width="16"/>
+                                                <Image Source="images/Calculation.png" Height="16" Width="16"/>
                                             </MenuItem.Icon>  
                                         </MenuItem>
                                         <MenuItem Header="Concentrator Output Streams" Style="{StaticResource MainSubMenuItemStyle}" x:Name="OutputStreams" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Output.png" Height="16" Width="16"/>
+                                                <Image Source="images/Output.png" Height="16" Width="16"/>
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="Historians" Style="{StaticResource MainSubMenuItemStyle}" x:Name="Historians" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Computers.png" Height="16" Width="16" />
+                                                <Image Source="images/Computers.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="Custom Inputs" Style="{StaticResource MainSubMenuItemStyle}" x:Name="CustomInputs" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Input.png" Height="16" Width="16" />
+                                                <Image Source="images/Input.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="Custom Actions" Style="{StaticResource MainSubMenuItemStyle}" x:Name="CustomActions" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Action.png" Height="16" Width="16" />
+                                                <Image Source="images/Action.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="Custom Outputs" Style="{StaticResource MainSubMenuItemStyle}" x:Name="CustomOutputs" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Output.png" Height="16" Width="16" />
+                                                <Image Source="images/Output.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="View Iaon Tree" Style="{StaticResource MainSubMenuItemStyle}" x:Name="IaonTree" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Tree.png" Height="16" Width="16" />
+                                                <Image Source="images/Tree.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>                                        
                                     </MenuItem>
                                     <MenuItem Header="Manage" Style="{StaticResource MainMenuItemStyle}">
                                         <MenuItem Header="Nodes" Style="{StaticResource MainSubMenuItemStyle}" x:Name="Nodes" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Computers.png" Height="16" Width="16" />
+                                                <Image Source="images/Computers.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="Measurements" Style="{StaticResource MainSubMenuItemStyle}" x:Name="Measurements" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Measure.png" Height="16" Width="16" />
+                                                <Image Source="images/Measure.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="Companies" Style="{StaticResource MainSubMenuItemStyle}" x:Name="Companies" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Company.png" Height="16" Width="16" />
+                                                <Image Source="images/Company.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="Vendors" Style="{StaticResource MainSubMenuItemStyle}" x:Name="Vendors" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Vendor.png" Height="16" Width="16" />
+                                                <Image Source="images/Vendor.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="Vendor Devices" Style="{StaticResource MainSubMenuItemStyle}" x:Name="VendorDevices" Click="MenuItem_Click">
                                             <MenuItem.Icon>
-                                                <Image Source="Pmu.png" Height="16" Width="16" />
+                                                <Image Source="images/Pmu.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                     </MenuItem>
@@ -179,7 +180,52 @@
                 </Grid>
 
             </Canvas>
-  
-    </Grid>
+
+            <!--<Expander x:Name="ExpanderErrorLog" Header="Error Log" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                        <StackPanel Orientation="Vertical">
+                            <Border Style="{StaticResource HeaderRowBorderStyle}">
+                                <StackPanel Orientation="Horizontal" Margin="2">
+                                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                                        <TextBlock Text="ID" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                    </Border>
+                                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                                        <TextBlock Text="Source" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                    </Border>
+                                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                                        <TextBlock Text="Message" Width="{StaticResource XXLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                    </Border>                                    
+                                    <TextBlock Text="" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="{StaticResource PortletBackgroundBrush}">
+                                <ScrollViewer BorderThickness="0" Padding="0" Height="100">
+                                    <ScrollViewer.Content>
+                                        <ListBox x:Name="ListBoxErrorList" Margin="0" Padding="0">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                            <TextBlock Text="{Binding Path=ID}" Width="{StaticResource SmallerItemSize}" TextAlignment="Left" Padding="1"/>
+                                                        </Border>
+                                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                            <TextBlock Text="{Binding Path=Source}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                                        </Border>
+                                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                            <TextBlock Text="{Binding Path=Message}" Width="{StaticResource XXLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                                        </Border>                                                        
+                                                        <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallerItemSize}">
+                                                            <Image Source="images/search.png" ToolTip="{Binding Path=Detail}" HorizontalAlignment="Center"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </ScrollViewer.Content>
+                                </ScrollViewer>
+                            </Border>
+                        </StackPanel>
+                    </Expander>-->
+
+        </Grid>
     </Border>
 </Window>

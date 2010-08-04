@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
-using openPDCManager.Web.Data.BusinessObjects;
+using openPDCManager.Data.BusinessObjects;
 
 namespace openPDCManager.Pages.Adapters
 {

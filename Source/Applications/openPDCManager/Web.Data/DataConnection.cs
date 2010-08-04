@@ -240,7 +240,7 @@ using System.Reflection;
 using TVA;
 using TVA.Configuration;
 
-namespace openPDCManager.Web.Data
+namespace openPDCManager.Data
 {
 	/// <summary>
 	/// Creates a new <see cref="IDbConnection"/> to configured ADO.NET data source.

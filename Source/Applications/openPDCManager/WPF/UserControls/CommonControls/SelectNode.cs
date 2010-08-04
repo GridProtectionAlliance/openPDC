@@ -231,7 +231,7 @@
 
 using System;
 using System.Windows;
-using openPDCManager.Web.Data;
+using openPDCManager.Data;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 

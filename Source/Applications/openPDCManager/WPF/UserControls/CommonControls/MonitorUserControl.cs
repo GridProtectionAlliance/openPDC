@@ -233,7 +233,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using openPDCManager.Web.Data.ServiceCommunication;
+using openPDCManager.Data.ServiceCommunication;
 using System.Windows;
 using System.Threading;
 using TVA.Services;

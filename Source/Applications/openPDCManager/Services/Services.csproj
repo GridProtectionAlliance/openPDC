@@ -137,9 +137,9 @@
     <None Include="ClassDiagram\PhasorDataDuplexService.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Web.Data\Web.Data.csproj">
+    <ProjectReference Include="..\Web.Data\Data.csproj">
       <Project>{5314055B-EA03-4E15-8653-83F011D7A00E}</Project>
-      <Name>Web.Data</Name>
+      <Name>Data %28Applications\openPDCManager\Data%29</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

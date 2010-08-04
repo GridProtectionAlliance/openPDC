@@ -235,7 +235,7 @@ using System.ServiceModel.Configuration;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 
-namespace openPDCManager.Web.Data
+namespace openPDCManager.Data
 {
 	public class SilverlightFaultBehavior : BehaviorExtensionElement, IEndpointBehavior
 	{

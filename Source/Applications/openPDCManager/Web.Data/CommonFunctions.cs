@@ -246,14 +246,14 @@ using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using openPDCManager.Web.Data.BusinessObjects;
-using openPDCManager.Web.Data.Entities;
-using openPDCManager.Web.Data.ServiceCommunication;
+using openPDCManager.Data.BusinessObjects;
+using openPDCManager.Data.Entities;
+using openPDCManager.Data.ServiceCommunication;
 using TVA;
 using TVA.PhasorProtocols;
 using System.Collections.ObjectModel;
 
-namespace openPDCManager.Web.Data
+namespace openPDCManager.Data
 {
 	/// <summary>
 	/// Class that defines common operations on data (retrieval and update)
@@ -287,6 +287,35 @@ namespace openPDCManager.Web.Data
 			memoryStream = (MemoryStream)xmlTextWriter.BaseStream;
 			return (new UTF8Encoding()).GetString(memoryStream.ToArray());
 		}
+
+        public static List<ErrorLog> ReadExceptionLog(int numberOfLogs)
+        {
+            DataConnection connection = new DataConnection();            
+            try
+            {
+                List<ErrorLog> errorLogList = new List<ErrorLog>();
+                IDbCommand command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = "Select Top " + numberOfLogs.ToString() + " From ErrorLog Order By CreatedOn DESC";
+
+                DataTable resultTable = new DataTable();
+                resultTable.Load(command.ExecuteReader());
+
+                errorLogList = (from item in resultTable.AsEnumerable()
+                                select new ErrorLog()
+                                {
+                                    ID = item.Field<int>("ID"),
+                                    Source = item.Field<string>("Source"),
+                                    Message = item.Field<string>("Message"),
+                                    Detail = item.Field<string>("Detail")
+                                }).ToList();
+                return errorLogList;
+            }
+            finally
+            {
+                connection.Dispose();
+            }
+        }
 
 		public static void LogException(string source, Exception ex)
 		{

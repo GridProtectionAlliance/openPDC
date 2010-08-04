@@ -259,8 +259,8 @@ namespace openPDCManager.UserControls.OutputStreamControls
             Initialize();
             Loaded += new RoutedEventHandler(CurrentDevices_Loaded);
 #if !SILVERLIGHT
-            ButtonAdd.Content = new BitmapImage(new Uri(@"Add.png", UriKind.Relative));
-            ButtonDelete.Content = new BitmapImage(new Uri(@"Cancel.png", UriKind.Relative));            
+            ButtonAdd.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));
+            ButtonDelete.Content = new BitmapImage(new Uri(@"images/Cancel.png", UriKind.Relative));            
             UpdateLayout();
 #endif
             ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);

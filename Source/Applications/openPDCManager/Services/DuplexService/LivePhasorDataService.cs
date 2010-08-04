@@ -234,12 +234,12 @@
 #endregion
 
 using System.Threading;
-using openPDCManager.Web.Data.ServiceCommunication;
+using openPDCManager.Data.ServiceCommunication;
 using TVA;
 using TVA.Services;
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data.Entities;
 using System.Collections.Generic;
-using openPDCManager.Web.Data;
+using openPDCManager.Data;
 
 namespace openPDCManager.Services.DuplexService
 {   
@@ -255,7 +255,7 @@ namespace openPDCManager.Services.DuplexService
 		Timer serviceClientListTimer;
 		Timer timeTaggedMeasurementDataTimer;
         WindowsServiceClient serviceClient;
-        bool m_disposed;		
+        bool m_disposed, m_retrievingData;		
 		List<Node> nodeList;
 
         #endregion
@@ -324,7 +324,19 @@ namespace openPDCManager.Services.DuplexService
 
         private void TimeSeriesDataUpdate(object obj)
         {
-            PushToAllClients(MessageType.TimeSeriesDataMessage);
+            try
+            {
+                if (!m_retrievingData)
+                {
+                    m_retrievingData = true;
+                    PushToAllClients(MessageType.TimeSeriesDataMessage);
+                    m_retrievingData = false;
+                }
+            }
+            catch 
+            {
+                m_retrievingData = false;
+            }            
         }
 
 		private void RefreshServiceClientList(object obj)

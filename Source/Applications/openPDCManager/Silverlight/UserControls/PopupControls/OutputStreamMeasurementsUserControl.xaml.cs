@@ -239,7 +239,7 @@ using openPDCManager.Utilities;
 using openPDCManager.PhasorDataServiceProxy;
 using System.ServiceModel;
 #else
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data.Entities;
 using System.Windows.Media.Imaging;
 #endif
 
@@ -265,8 +265,8 @@ namespace openPDCManager.UserControls.PopupControls
             InitializeComponent();
             Initialize();
 #if !SILVERLIGHT
-            ButtonSave.Content = new BitmapImage(new Uri(@"Save.png", UriKind.Relative));
-            ButtonClear.Content = new BitmapImage(new Uri(@"Cancel.png", UriKind.Relative));            
+            ButtonSave.Content = new BitmapImage(new Uri(@"images/Save.png", UriKind.Relative));
+            ButtonClear.Content = new BitmapImage(new Uri(@"images/Cancel.png", UriKind.Relative));            
 #endif
             m_selectedOutputStreamMeasurement = new OutputStreamMeasurement();     
             Loaded += new RoutedEventHandler(OutputStreamMeasurements_Loaded);

@@ -233,7 +233,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using openPDCManager.Web.Data;
+using openPDCManager.Data;
 using openPDCManager.Utilities;
 using openPDCManager.ModalDialogs;
 using System.Windows;

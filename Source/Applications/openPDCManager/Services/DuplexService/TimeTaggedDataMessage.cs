@@ -231,7 +231,7 @@
 
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using openPDCManager.Web.Data.BusinessObjects;
+using openPDCManager.Data.BusinessObjects;
 
 namespace openPDCManager.Services.DuplexService
 {

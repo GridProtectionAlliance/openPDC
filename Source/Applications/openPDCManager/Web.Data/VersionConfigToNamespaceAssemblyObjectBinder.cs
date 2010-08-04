@@ -233,7 +233,7 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace openPDCManager.Web.Data
+namespace openPDCManager.Data
 {
 	public class VersionConfigToNamespaceAssemblyObjectBinder : SerializationBinder
 	{
@@ -250,7 +250,7 @@ namespace openPDCManager.Web.Data
 				{
 					if (assembly.FullName.Split(new char[] { ',' })[0] == toAssemblyName)
 					{
-						typeToDeserialize = assembly.GetType("openPDCManager.Web.Data.BusinessObjects.ConnectionSettings");
+						typeToDeserialize = assembly.GetType("openPDCManager.Data.BusinessObjects.ConnectionSettings");
 						break;
 					}
 				}

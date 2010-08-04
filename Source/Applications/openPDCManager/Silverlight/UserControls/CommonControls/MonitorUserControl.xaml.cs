@@ -261,7 +261,7 @@ namespace openPDCManager.UserControls.CommonControls
             this.Loaded += new RoutedEventHandler(Monitor_Loaded);            
             ButtonSendServiceRequest.Click += new RoutedEventHandler(ButtonSendServiceRequest_Click);    
 #if !SILVERLIGHT
-            ButtonSendServiceRequest.Content = new BitmapImage(new Uri(@"Input.png", UriKind.Relative));
+            ButtonSendServiceRequest.Content = new BitmapImage(new Uri(@"images/Input.png", UriKind.Relative));
 #endif
         }
 

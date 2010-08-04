@@ -235,7 +235,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
-using openPDCManager.Web.Data;
+using openPDCManager.Data;
 
 namespace openPDCManager.Pages.Adapters
 {

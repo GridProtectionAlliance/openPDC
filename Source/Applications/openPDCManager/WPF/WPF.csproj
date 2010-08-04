@@ -354,12 +354,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\CommonControls\TestUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -548,9 +542,6 @@
     <Compile Include="UserControls\CommonControls\OtherDevicesUserControl.cs" />
     <Compile Include="UserControls\CommonControls\PhasorsUserControl.cs" />
     <Compile Include="UserControls\CommonControls\SelectNode.cs" />
-    <Compile Include="UserControls\CommonControls\TestUserControl.xaml.cs">
-      <DependentUpon>TestUserControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UserControls\CommonControls\VendorDevicesUserControl.cs" />
     <Compile Include="UserControls\CommonControls\VendorUserControl.cs" />
     <Compile Include="UserControls\OutputStreamControls\AddDevicesUserControl.cs" />
@@ -570,9 +561,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Web.Data\Web.Data.csproj">
+    <ProjectReference Include="..\Web.Data\Data.csproj">
       <Project>{5314055B-EA03-4E15-8653-83F011D7A00E}</Project>
-      <Name>Web.Data</Name>
+      <Name>Data %28Applications\openPDCManager\Data%29</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

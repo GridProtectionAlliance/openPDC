@@ -234,8 +234,8 @@ using System.Windows.Controls;
 #if SILVERLIGHT
 using openPDCManager.PhasorDataServiceProxy;
 #else
-using openPDCManager.Web.Data;
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data;
+using openPDCManager.Data.Entities;
 #endif
 
 namespace openPDCManager.UserControls.CommonControls

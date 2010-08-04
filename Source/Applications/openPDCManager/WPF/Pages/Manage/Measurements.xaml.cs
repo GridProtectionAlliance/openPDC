@@ -243,8 +243,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using openPDCManager.ModalDialogs;
-using openPDCManager.Web.Data.Entities;
-using openPDCManager.Web.Data;
+using openPDCManager.Data.Entities;
+using openPDCManager.Data;
 using openPDCManager.Utilities;
 
 namespace openPDCManager.Pages.Manage
@@ -270,10 +270,10 @@ namespace openPDCManager.Pages.Manage
         {
             InitializeComponent();
             m_deviceID = deviceID;
-            ButtonSearch.Content = new BitmapImage(new Uri(@"Search.png", UriKind.Relative));
-            ButtonShowAll.Content = new BitmapImage(new Uri(@"CancelSearch.png", UriKind.Relative));
-            ButtonSave.Content = new BitmapImage(new Uri(@"Save.png", UriKind.Relative));
-            ButtonClear.Content = new BitmapImage(new Uri(@"Cancel.png", UriKind.Relative));
+            ButtonSearch.Content = new BitmapImage(new Uri(@"images/Search.png", UriKind.Relative));
+            ButtonShowAll.Content = new BitmapImage(new Uri(@"images/CancelSearch.png", UriKind.Relative));
+            ButtonSave.Content = new BitmapImage(new Uri(@"images/Save.png", UriKind.Relative));
+            ButtonClear.Content = new BitmapImage(new Uri(@"images/Cancel.png", UriKind.Relative));
             Loaded += new RoutedEventHandler(Measurements_Loaded);            
             ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
             ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);

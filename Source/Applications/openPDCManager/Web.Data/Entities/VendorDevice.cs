@@ -229,7 +229,7 @@
 */
 #endregion
 
-namespace openPDCManager.Web.Data.Entities
+namespace openPDCManager.Data.Entities
 {
 	public class VendorDevice
 	{

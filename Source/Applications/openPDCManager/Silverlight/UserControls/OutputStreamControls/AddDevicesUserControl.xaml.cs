@@ -267,9 +267,9 @@ namespace openPDCManager.UserControls.OutputStreamControls
             InitializeComponent();
             Initialize();
 #if !SILVERLIGHT
-            ButtonSearch.Content = new BitmapImage(new Uri(@"Search.png", UriKind.Relative));
-            ButtonShowAll.Content = new BitmapImage(new Uri(@"CancelSearch.png", UriKind.Relative));
-            ButtonAdd.Content = new BitmapImage(new Uri(@"Add.png", UriKind.Relative));
+            ButtonSearch.Content = new BitmapImage(new Uri(@"images/Search.png", UriKind.Relative));
+            ButtonShowAll.Content = new BitmapImage(new Uri(@"images/CancelSearch.png", UriKind.Relative));
+            ButtonAdd.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));
             UpdateLayout();
 #endif
             Loaded += new RoutedEventHandler(AddDevices_Loaded);

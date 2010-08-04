@@ -234,7 +234,7 @@ using System.Collections.Generic;
 using System.Windows;
 using openPDCManager.Utilities;
 using Microsoft.Win32;
-using openPDCManager.Web.Data;
+using openPDCManager.Data;
 using System.Windows.Media.Imaging;
 
 namespace openPDCManager.ModalDialogs
@@ -284,12 +284,12 @@ namespace openPDCManager.ModalDialogs
         {
             InitializeComponent();
 #if !SILVERLIGHT
-            ButtonSaveTCP.Content = new BitmapImage(new Uri(@"Save.png", UriKind.Relative));
-            ButtonSaveFile.Content = new BitmapImage(new Uri(@"Save.png", UriKind.Relative));
-            ButtonSaveSerial.Content = new BitmapImage(new Uri(@"Save.png", UriKind.Relative));
-            ButtonSaveUDP.Content = new BitmapImage(new Uri(@"Save.png", UriKind.Relative));
-            ButtonBrowseFile.Content = new BitmapImage(new Uri(@"Browse.png", UriKind.Relative));
-            ButtonSaveUdpServer.Content = new BitmapImage(new Uri(@"Save.png", UriKind.Relative));
+            ButtonSaveTCP.Content = new BitmapImage(new Uri(@"images/Save.png", UriKind.Relative));
+            ButtonSaveFile.Content = new BitmapImage(new Uri(@"images/Save.png", UriKind.Relative));
+            ButtonSaveSerial.Content = new BitmapImage(new Uri(@"images/Save.png", UriKind.Relative));
+            ButtonSaveUDP.Content = new BitmapImage(new Uri(@"images/Save.png", UriKind.Relative));
+            ButtonBrowseFile.Content = new BitmapImage(new Uri(@"images/Browse.png", UriKind.Relative));
+            ButtonSaveUdpServer.Content = new BitmapImage(new Uri(@"images/Save.png", UriKind.Relative));
             UpdateLayout();
 #endif
             m_connectionType = connectionType;            

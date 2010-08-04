@@ -234,7 +234,7 @@ using System.Collections.Generic;
 using System.Windows;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
-using openPDCManager.Web.Data;
+using openPDCManager.Data;
 
 namespace openPDCManager.UserControls.OutputStreamControls
 {

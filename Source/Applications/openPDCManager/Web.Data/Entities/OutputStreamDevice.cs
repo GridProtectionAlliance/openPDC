@@ -231,7 +231,7 @@
 
 using System;
 
-namespace openPDCManager.Web.Data.Entities
+namespace openPDCManager.Data.Entities
 {
 	public class OutputStreamDevice
 	{

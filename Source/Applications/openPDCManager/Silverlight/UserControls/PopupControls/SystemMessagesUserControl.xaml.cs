@@ -247,10 +247,10 @@ namespace openPDCManager.UserControls.PopupControls
         {
             InitializeComponent();
 #if !SILVERLIGHT
-            ButtonOk.Content = new BitmapImage(new Uri(@"Ok.png", UriKind.Relative));
-            ButtonCancel.Content = new BitmapImage(new Uri(@"Cancel.png", UriKind.Relative));
-            ButtonYes.Content = new BitmapImage(new Uri(@"Ok.png", UriKind.Relative));
-            ButtonNo.Content = new BitmapImage(new Uri(@"Cancel.png", UriKind.Relative));
+            ButtonOk.Content = new BitmapImage(new Uri(@"images/Ok.png", UriKind.Relative));
+            ButtonCancel.Content = new BitmapImage(new Uri(@"images/Cancel.png", UriKind.Relative));
+            ButtonYes.Content = new BitmapImage(new Uri(@"images/Ok.png", UriKind.Relative));
+            ButtonNo.Content = new BitmapImage(new Uri(@"images/Cancel.png", UriKind.Relative));
             UpdateLayout();
 #endif
             Loaded += new RoutedEventHandler(SystemMessagesUserControl_Loaded);
@@ -265,7 +265,7 @@ namespace openPDCManager.UserControls.PopupControls
 #if SILVERLIGHT
                 ImageMessageType.Source = new BitmapImage(new Uri(@"../../Images/Success.png", UriKind.Relative));
 #else
-                ImageMessageType.Source = new BitmapImage(new Uri(@"Success.png", UriKind.Relative));
+                ImageMessageType.Source = new BitmapImage(new Uri(@"images/Success.png", UriKind.Relative));
 #endif
                 BorderMain.Background = Application.Current.Resources["GreenRadialGradientBrush"] as Brush;
             }
@@ -275,7 +275,7 @@ namespace openPDCManager.UserControls.PopupControls
 #if SILVERLIGHT
                 ImageMessageType.Source = new BitmapImage(new Uri(@"../../Images/Warning.png", UriKind.Relative));
 #else
-                ImageMessageType.Source = new BitmapImage(new Uri(@"Warning.png", UriKind.Relative));
+                ImageMessageType.Source = new BitmapImage(new Uri(@"images/Warning.png", UriKind.Relative));
 #endif
                 BorderMain.Background = Application.Current.Resources["YellowRadialGradientBrush"] as Brush;
             }
@@ -285,7 +285,7 @@ namespace openPDCManager.UserControls.PopupControls
 #if SILVERLIGHT
                 ImageMessageType.Source = new BitmapImage(new Uri(@"../../Images/Error.png", UriKind.Relative));
 #else
-                ImageMessageType.Source = new BitmapImage(new Uri(@"Error.png", UriKind.Relative));
+                ImageMessageType.Source = new BitmapImage(new Uri(@"images/Error.png", UriKind.Relative));
 #endif
                 BorderMain.Background = Application.Current.Resources["RedRadialGradientBrush"] as Brush;
             }
@@ -295,7 +295,7 @@ namespace openPDCManager.UserControls.PopupControls
 #if SILVERLIGHT
                 ImageMessageType.Source = new BitmapImage(new Uri(@"../../Images/Warning.png", UriKind.Relative));
 #else
-                ImageMessageType.Source = new BitmapImage(new Uri(@"Warning.png", UriKind.Relative));
+                ImageMessageType.Source = new BitmapImage(new Uri(@"images/Warning.png", UriKind.Relative));
 #endif
                 BorderMain.Background = Application.Current.Resources["YellowRadialGradientBrush"] as Brush;
             }
@@ -305,7 +305,7 @@ namespace openPDCManager.UserControls.PopupControls
 #if SILVERLIGHT
                 ImageMessageType.Source = new BitmapImage(new Uri(@"../../Images/Information.png", UriKind.Relative));
 #else
-                ImageMessageType.Source = new BitmapImage(new Uri(@"Information.png", UriKind.Relative));
+                ImageMessageType.Source = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
 #endif
                 BorderMain.Background = Application.Current.Resources["BlueRadialGradientBrush"] as Brush;
             }

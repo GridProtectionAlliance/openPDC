@@ -233,7 +233,7 @@ using System;
 using TVA.Communication;
 using TVA.PhasorProtocols;
 
-namespace openPDCManager.Web.Data.BusinessObjects
+namespace openPDCManager.Data.BusinessObjects
 {	
 	[Serializable()]
 	public class ConnectionSettings

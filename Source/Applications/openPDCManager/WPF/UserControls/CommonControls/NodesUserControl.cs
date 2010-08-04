@@ -232,8 +232,8 @@
 using System;
 using System.Windows;
 using openPDCManager.Utilities;
-using openPDCManager.Web.Data;
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data;
+using openPDCManager.Data.Entities;
 using openPDCManager.ModalDialogs;
 
 namespace openPDCManager.UserControls.CommonControls

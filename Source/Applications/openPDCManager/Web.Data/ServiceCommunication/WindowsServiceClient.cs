@@ -238,7 +238,7 @@ using TVA;
 using TVA.Communication;
 using TVA.Services;
 
-namespace openPDCManager.Web.Data.ServiceCommunication
+namespace openPDCManager.Data.ServiceCommunication
 {
 	public class WindowsServiceClient : IDisposable
 	{

@@ -238,8 +238,8 @@ using System.Windows.Media.Imaging;
 using openPDCManager.ModalDialogs;
 using openPDCManager.UserControls.CommonControls;
 using openPDCManager.Utilities;
-using openPDCManager.Web.Data;
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data;
+using openPDCManager.Data.Entities;
 using openPDCManager.Pages.Manage;
 
 namespace openPDCManager.Pages.Devices
@@ -260,9 +260,9 @@ namespace openPDCManager.Pages.Devices
 
         public BrowseDevicesUserControl()
         {            
-            InitializeComponent();                        
-            ButtonSearch.Content = new BitmapImage(new Uri(@"Search.png", UriKind.Relative));
-            ButtonShowAll.Content = new BitmapImage(new Uri(@"CancelSearch.png", UriKind.Relative));
+            InitializeComponent();
+            ButtonSearch.Content = new BitmapImage(new Uri(@"images/Search.png", UriKind.Relative));
+            ButtonShowAll.Content = new BitmapImage(new Uri(@"images/CancelSearch.png", UriKind.Relative));
             UpdateLayout();
 
             Loaded += new RoutedEventHandler(Browse_Loaded);

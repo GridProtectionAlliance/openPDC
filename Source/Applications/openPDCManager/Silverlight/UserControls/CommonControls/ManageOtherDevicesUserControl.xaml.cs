@@ -240,7 +240,7 @@ using openPDCManager.Utilities;
 using openPDCManager.PhasorDataServiceProxy;
 #else
 using System.Windows.Media.Imaging;
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data.Entities;
 using System.Diagnostics;
 #endif
 
@@ -261,8 +261,8 @@ namespace openPDCManager.UserControls.CommonControls
             InitializeComponent();
             Initialize();
 #if !SILVERLIGHT
-            ButtonSave.Content = new BitmapImage(new Uri(@"Save.png", UriKind.Relative));
-            ButtonClear.Content = new BitmapImage(new Uri(@"Cancel.png", UriKind.Relative));
+            ButtonSave.Content = new BitmapImage(new Uri(@"images/Save.png", UriKind.Relative));
+            ButtonClear.Content = new BitmapImage(new Uri(@"images/Cancel.png", UriKind.Relative));
             UpdateLayout();
 #endif
             Loaded += new RoutedEventHandler(ManageOtherDevices_Loaded);            

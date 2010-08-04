@@ -235,8 +235,8 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
-using openPDCManager.Web.Data;
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data;
+using openPDCManager.Data.Entities;
 
 namespace openPDCManager.UserControls.PopupControls
 {

@@ -233,8 +233,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using openPDCManager.Web.Data;
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data;
+using openPDCManager.Data.Entities;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using System.Windows.Controls;
@@ -340,7 +340,7 @@ namespace openPDCManager.UserControls.CommonControls
                 toolTip.Template = Application.Current.Resources["PdcInfoToolTipTemplate"] as ControlTemplate;
                 ToolTipService.SetToolTip(ButtonView, toolTip);               
             }
-            catch (Exception ex)
+            catch 
             {
                 //Do Nothing
             }

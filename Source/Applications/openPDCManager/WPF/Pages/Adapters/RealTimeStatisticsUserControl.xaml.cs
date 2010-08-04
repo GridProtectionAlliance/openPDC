@@ -237,8 +237,8 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
-using openPDCManager.Web.Data;
-using openPDCManager.Web.Data.BusinessObjects;
+using openPDCManager.Data;
+using openPDCManager.Data.BusinessObjects;
 using TVA;
 using TVA.Configuration;
 

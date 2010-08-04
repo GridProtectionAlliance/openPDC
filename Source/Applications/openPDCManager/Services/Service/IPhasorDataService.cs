@@ -234,8 +234,8 @@
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
-using openPDCManager.Web.Data.Entities;
-using openPDCManager.Web.Data.BusinessObjects;
+using openPDCManager.Data.Entities;
+using openPDCManager.Data.BusinessObjects;
 using System.IO;
 using System.Collections.ObjectModel;
 

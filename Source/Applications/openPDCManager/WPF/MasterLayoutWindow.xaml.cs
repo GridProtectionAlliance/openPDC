@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using openPDCManager.UserControls.CommonControls;
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data.Entities;
 using System;
 using openPDCManager.Pages.Devices;
 using openPDCManager.Pages.Manage;
@@ -31,6 +31,18 @@ namespace openPDCManager
             UserControlSelectNode.ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
             MainWindow.SizeChanged += new SizeChangedEventHandler(MainWindow_SizeChanged);
             Loaded += new RoutedEventHandler(MasterLayoutWindow_Loaded);
+            //ExpanderErrorLog.Collapsed += new RoutedEventHandler(ExpanderErrorLog_Collapsed);
+            //ExpanderErrorLog.Expanded += new RoutedEventHandler(ExpanderErrorLog_Expanded);
+        }
+
+        void ExpanderErrorLog_Expanded(object sender, RoutedEventArgs e)
+        {
+            //MainWindow.Height += 125;
+        }
+
+        void ExpanderErrorLog_Collapsed(object sender, RoutedEventArgs e)
+        {
+            //MainWindow.Height -= 125;
         }
 
         void MasterLayoutWindow_Loaded(object sender, RoutedEventArgs e)
@@ -76,7 +88,15 @@ namespace openPDCManager
 
         private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            this.WindowState = WindowState.Minimized;            
+        }
+
+        private void ButtonMaximize_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.WindowState == WindowState.Maximized)
+                this.WindowState = WindowState.Normal;
+            else
+                this.WindowState = WindowState.Maximized;
         }
 
         private void ButtonClose_Click(object sender, RoutedEventArgs e)

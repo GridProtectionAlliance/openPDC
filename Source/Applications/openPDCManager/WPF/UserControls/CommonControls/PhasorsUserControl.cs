@@ -1,9 +1,9 @@
 ﻿using System;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
-using openPDCManager.Web.Data;
+using openPDCManager.Data;
 using System.Windows;
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data.Entities;
 
 namespace openPDCManager.UserControls.CommonControls
 {

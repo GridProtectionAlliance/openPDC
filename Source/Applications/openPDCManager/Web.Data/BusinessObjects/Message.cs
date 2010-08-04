@@ -235,7 +235,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace openPDCManager.Web.Data.BusinessObjects
+namespace openPDCManager.Data.BusinessObjects
 {
 	[Serializable()]
 	public class Message

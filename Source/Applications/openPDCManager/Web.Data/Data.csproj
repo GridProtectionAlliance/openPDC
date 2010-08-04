@@ -8,8 +8,8 @@
     <ProjectGuid>{5314055B-EA03-4E15-8653-83F011D7A00E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>openPDCManager.Web.Data</RootNamespace>
-    <AssemblyName>openPDCManager.Web.Data</AssemblyName>
+    <RootNamespace>openPDCManager.Data</RootNamespace>
+    <AssemblyName>openPDCManager.Data</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -131,6 +131,7 @@
     <Compile Include="Entities\CalculatedMeasurement.cs" />
     <Compile Include="Entities\Company.cs" />
     <Compile Include="Entities\Device.cs" />
+    <Compile Include="Entities\ErrorLog.cs" />
     <Compile Include="Entities\Historian.cs" />
     <Compile Include="Entities\Measurement.cs" />
     <Compile Include="Entities\Node.cs" />

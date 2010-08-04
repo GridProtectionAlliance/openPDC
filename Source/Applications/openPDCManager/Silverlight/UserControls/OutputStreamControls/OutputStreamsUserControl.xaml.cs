@@ -240,7 +240,7 @@ using openPDCManager.ModalDialogs.OutputStreamWizard;
 #if SILVERLIGHT
 using openPDCManager.PhasorDataServiceProxy;
 #else
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data.Entities;
 using System.Windows.Media.Imaging;
 #endif
 
@@ -261,10 +261,10 @@ namespace openPDCManager.UserControls.OutputStreamControls
             InitializeComponent();
             Initialize();
 #if !SILVERLIGHT
-            ButtonSave.Content = new BitmapImage(new Uri(@"Save.png", UriKind.Relative));
-            ButtonClear.Content = new BitmapImage(new Uri(@"Cancel.png", UriKind.Relative));
-            ButtonBuildCommandChannel.Content = new BitmapImage(new Uri(@"Add.png", UriKind.Relative));
-            ButtonBuildDataChannel.Content = new BitmapImage(new Uri(@"Add.png", UriKind.Relative));            
+            ButtonSave.Content = new BitmapImage(new Uri(@"images/Save.png", UriKind.Relative));
+            ButtonClear.Content = new BitmapImage(new Uri(@"images/Cancel.png", UriKind.Relative));
+            ButtonBuildCommandChannel.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));
+            ButtonBuildDataChannel.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));            
             UpdateLayout();
 #endif
             ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);

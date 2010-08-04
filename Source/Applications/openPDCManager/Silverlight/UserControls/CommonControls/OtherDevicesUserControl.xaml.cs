@@ -239,7 +239,7 @@ using System.ServiceModel;
 using openPDCManager.PhasorDataServiceProxy;
 using System.Windows.Media.Animation;
 #else
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data.Entities;
 #endif
 
 namespace openPDCManager.UserControls.CommonControls

@@ -231,7 +231,7 @@
 */
 #endregion
 
-namespace openPDCManager.Web.Data.BusinessObjects
+namespace openPDCManager.Data.BusinessObjects
 {
     public class PmuDistribution
     {

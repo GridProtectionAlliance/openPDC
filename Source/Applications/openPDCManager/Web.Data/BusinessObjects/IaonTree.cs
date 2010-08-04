@@ -230,9 +230,9 @@
 #endregion
 
 using System.Collections.Generic;
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data.Entities;
 
-namespace openPDCManager.Web.Data.BusinessObjects
+namespace openPDCManager.Data.BusinessObjects
 {
 	public class IaonTree
 	{

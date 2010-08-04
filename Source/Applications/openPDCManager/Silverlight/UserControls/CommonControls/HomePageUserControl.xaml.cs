@@ -244,9 +244,9 @@ using System.ServiceModel;
 using openPDCManager.LivePhasorDataServiceProxy;
 using openPDCManager.PhasorDataServiceProxy;
 #else
-using openPDCManager.Web.Data;
-using openPDCManager.Web.Data.Entities;
-using openPDCManager.Web.Data.BusinessObjects;
+using openPDCManager.Data;
+using openPDCManager.Data.Entities;
+using openPDCManager.Data.BusinessObjects;
 using System.Windows.Media.Imaging;
 #endif
 
@@ -275,7 +275,7 @@ namespace openPDCManager.UserControls.CommonControls
             (Application.Current.RootVisual as MasterLayoutControl).UserControlSelectNode.ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);            
             ChartDeviceDistribution.Style = (Style)Application.Current.Resources["PieChartStyle"];            
 #else
-            ButtonGetData.Content = new BitmapImage(new Uri(@"RequestData.png", UriKind.Relative));
+            ButtonGetData.Content = new BitmapImage(new Uri(@"images/RequestData.png", UriKind.Relative));
 #endif
             
             ButtonGetData.Click += new RoutedEventHandler(ButtonGetData_Click);

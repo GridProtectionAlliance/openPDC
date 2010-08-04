@@ -233,12 +233,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using openPDCManager.Web.Data;
-using openPDCManager.Web.Data.Entities;
+using openPDCManager.Data;
+using openPDCManager.Data.Entities;
 using System.Windows;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
-using openPDCManager.Web.Data.BusinessObjects;
+using openPDCManager.Data.BusinessObjects;
 using System.Windows.Threading;
 using System.Windows.Controls.DataVisualization.Charting;
 using System.Collections.ObjectModel;
@@ -325,13 +325,12 @@ namespace openPDCManager.UserControls.CommonControls
 
                     if (m_secondsTimer == null)
                         StartSecondsTimer();
+
+                    m_retrievingData = false;
                 }
                 catch (Exception ex)
                 {
                     CommonFunctions.LogException("GUI.GetTimeSeriesData", ex);
-                }
-                finally
-                {
                     m_retrievingData = false;
                 }
             }
@@ -345,7 +344,7 @@ namespace openPDCManager.UserControls.CommonControls
                 if (m_thirtySecondsTimer == null)
                     StartThirtySecondsTimer();
             }
-            catch (Exception ex)
+            catch
             {
 
             }
@@ -361,7 +360,7 @@ namespace openPDCManager.UserControls.CommonControls
                 if (m_thirtySecondsTimer == null)
                     StartThirtySecondsTimer();
             }
-            catch (Exception ex)
+            catch
             {
 
             }
