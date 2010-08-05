@@ -533,7 +533,7 @@ namespace TVA.PhasorProtocols
                     {
                         if (DataFormat == PhasorProtocols.DataFormat.FixedInteger)
                         {
-                            EndianOrder.BigEndian.CopyBytes((ushort)m_phasor.Magnitude, buffer, 0);
+                            EndianOrder.BigEndian.CopyBytes((ushort)(m_phasor.Magnitude / Definition.ConversionFactor), buffer, 0);
                             EndianOrder.BigEndian.CopyBytes((short)(m_phasor.Angle * 10000.0D), buffer, 2);
                         }
                         else
@@ -643,7 +643,7 @@ namespace TVA.PhasorProtocols
                 else
                 {
                     // Parse from fixed-integer, polar
-                    m_phasor.Magnitude = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex);
+                    m_phasor.Magnitude = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex) * Definition.ConversionFactor;
                     m_phasor.Angle = EndianOrder.BigEndian.ToInt16(binaryImage, startIndex + 2) / 10000.0D;
                 }
 
