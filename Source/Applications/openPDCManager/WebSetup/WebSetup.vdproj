@@ -122,7 +122,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "Version" = "8:3.5.30729"
+                "FrameworkVersion" = "8:.NETFramework,Version=v4.0"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=76617"
                 }
@@ -214,6 +214,7 @@
         "ProductCode" = "8:{E4C4BE1C-0EC5-4266-841B-F62F99E8E03E}"
         "PackageCode" = "8:{3FDAC0E9-8DD1-425D-86C9-AB70C8DCF248}"
         "UpgradeCode" = "8:{91EBCCD7-3161-4214-B76F-3993F481597D}"
+        "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
