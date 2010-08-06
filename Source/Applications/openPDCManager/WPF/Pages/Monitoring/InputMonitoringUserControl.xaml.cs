@@ -1,19 +1,15 @@
 ﻿//*******************************************************************************************************
-//  LivePhasorDataService.cs - Gbtc
+//  InputMonitoringUserControl.xaml.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  07/05/2009 - Mehulbhai Thakkar
+//  08/06/2010 - Mehulbhai P Thakkar
 //       Generated original version of source code.
-//  09/15/2009 - Stephen C. Wills
-//       Added new header and license agreement.
-//  03/02/2010 - Pinal C. Patel
-//       Implemented IDisposable interface and added code regions.
 //
 //*******************************************************************************************************
 
@@ -233,271 +229,193 @@
 */
 #endregion
 
-using System.Threading;
-using openPDCManager.Data.ServiceCommunication;
-using TVA;
-using TVA.Services;
-using openPDCManager.Data.Entities;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Threading;
+using openPDCManager.ModalDialogs;
+using openPDCManager.Utilities;
 using openPDCManager.Data;
+using openPDCManager.Data.BusinessObjects;
+using TVA.Configuration;
+using openPDCManager.Pages.Adapters;
 
-namespace openPDCManager.Services.DuplexService
-{   
+namespace openPDCManager.Pages.Monitoring
+{
     /// <summary>
-    /// This class actually does all the work for the duplex service. It is being referenced in the .svc file.
+    /// Interaction logic for InputMonitoringUserControl.xaml
     /// </summary>
-    public class LivePhasorDataService : DuplexService
+    public partial class InputMonitoringUserControl : UserControl
     {
-        #region [ Members ]	
-        // This timer will be used to retrieve fresh data from the database and then push to all clients.
-        Timer livePhasorDataTimer;
-        Timer timeSeriesDataTimer;
-		Timer serviceClientListTimer;
-		Timer timeTaggedMeasurementDataTimer;
-        WindowsServiceClient serviceClient;
-        bool m_disposed, m_retrievingData;		
-		List<Node> nodeList;
+        #region [ Members ]
+
+        ActivityWindow m_activityWindow;
+        ObservableCollection<DeviceMeasurementData> m_deviceMeasurementDataList;
+        DeviceMeasurementDataForBinding m_dataForBinding;
+        DispatcherTimer m_thirtySecondsTimer;
+        KeyValuePair<int, int> m_minMaxPointIDs;
+        string m_url;
+        bool m_retrievingData;
 
         #endregion
 
-        #region [ Constructors ]
-
-        public LivePhasorDataService()
-            : base()
+        #region [ Constructor ]
+                
+        public InputMonitoringUserControl()
         {
-			serviceClientList = new Dictionary<string, WindowsServiceClient>();
-			List<Node> nodeList = new List<Node>();
-            livePhasorDataTimer = new Timer(LivePhasorDataUpdate, null, 0, 30000);
-            timeSeriesDataTimer = new Timer(TimeSeriesDataUpdate, null, 0, 5000);			
-			serviceClientListTimer = new Timer(RefreshServiceClientList, null, 0, 30000);
-			timeTaggedMeasurementDataTimer = new Timer(TimeTaggedMeasurementDataUpdate, null, 0, 30000);            
-			nodeList = CommonFunctions.GetNodeList(true);
+            InitializeComponent();
+            this.Loaded += new RoutedEventHandler(InputMonitoringUserControl_Loaded);
+            this.Unloaded += new RoutedEventHandler(InputMonitoringUserControl_Unloaded);
+            m_dataForBinding = new DeviceMeasurementDataForBinding();
+            m_deviceMeasurementDataList = new ObservableCollection<DeviceMeasurementData>();
+            m_minMaxPointIDs = new KeyValuePair<int, int>();
+        }
+
+        #endregion
+
+        #region [ Page Events Handlers ]
+
+        void InputMonitoringUserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (m_thirtySecondsTimer != null)
+                    m_thirtySecondsTimer.Stop();
+                m_thirtySecondsTimer = null;
+            }
+            catch { } 
+        }
+
+        void InputMonitoringUserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+            m_activityWindow.Owner = Window.GetWindow(this);
+            m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            m_activityWindow.Show();
+            GetDeviceMeasurementData();
+            GetMinMaxPointIDs();
+            App app = (App)Application.Current;
+            if (string.IsNullOrEmpty(app.TimeSeriesDataServiceUrl))
+                m_url = string.Empty;
+            else
+                m_url = app.TimeSeriesDataServiceUrl + "/timeseriesdata/read/current/" + m_minMaxPointIDs.Key.ToString() + "-" + m_minMaxPointIDs.Value.ToString() + "/XML";
+            GetTimeTaggesMeasurements(m_url);            
+        }
+
+        void thirtySecondsTimer_Tick(object sender, EventArgs e)
+        {
+            GetTimeTaggesMeasurements(m_url);
         }
 
         #endregion
 
         #region [ Methods ]
-		
-        /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="LivePhasorDataService"/> object and optionally releases the managed resources.
-        /// </summary>
-        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        protected override void Dispose(bool disposing)
+
+        void GetMinMaxPointIDs()
         {
-            if (!m_disposed)
+            m_minMaxPointIDs = CommonFunctions.GetMinMaxPointIDs(((App)Application.Current).NodeValue);
+        }
+
+        void GetTimeTaggesMeasurements(string url)
+        {
+            if (!string.IsNullOrEmpty(url) && !m_retrievingData)
             {
                 try
                 {
-                    // This will be done regardless of whether the object is finalized or disposed.
-                    if (disposing)
+                    m_retrievingData = true;
+                    Dictionary<int, TimeTaggedMeasurement> timeTaggedMeasurements = new Dictionary<int, TimeTaggedMeasurement>();
+                    timeTaggedMeasurements = CommonFunctions.GetTimeTaggedMeasurements(url);
+                    TextBlockLastRefresh.Text = "Last Refresh: " + DateTime.Now.ToString();
+                    foreach (DeviceMeasurementData deviceMeasurement in m_deviceMeasurementDataList)
                     {
-                        // This will be done only when the object is disposed by calling Dispose().
-                        livePhasorDataTimer.Dispose();
-                        timeSeriesDataTimer.Dispose();
-                        serviceClientListTimer.Dispose();
-                        timeTaggedMeasurementDataTimer.Dispose();
-						lock (serviceClientList)
-						{
-							foreach (KeyValuePair<string, WindowsServiceClient> item in serviceClientList)
-							{
-								item.Value.Helper.ReceivedServiceUpdate -= ClientHelper_ReceivedServiceUpdate;
-								item.Value.Helper.ReceivedServiceResponse -= ClientHelper_ReceivedServiceResponse;
-								item.Value.Dispose();
-							}
-						}
-						serviceClientList.Clear();
+                        foreach (DeviceInfo device in deviceMeasurement.DeviceList)
+                        {
+                            foreach (MeasurementInfo measurement in device.MeasurementList)
+                            {
+                                TimeTaggedMeasurement timeTaggedMeasurement;
+                                if (timeTaggedMeasurements.TryGetValue(measurement.PointID, out timeTaggedMeasurement))
+                                {
+                                    measurement.CurrentValue = timeTaggedMeasurement.CurrentValue;
+                                    measurement.CurrentTimeTag = timeTaggedMeasurement.TimeTag;
+                                    measurement.CurrentQuality = timeTaggedMeasurement.Quality;
+                                }
+                            }
+                        }
                     }
+
+                    TreeViewDeviceMeasurements.Items.Refresh();
+                    m_dataForBinding.IsExpanded = true;
+                    m_dataForBinding.DeviceMeasurementDataList = m_deviceMeasurementDataList;
+                    TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
+                }
+                catch (Exception ex)
+                {
+                    CommonFunctions.LogException("GUI.GetTimeTaggedMeasurements", ex);
                 }
                 finally
                 {
-                    m_disposed = true;          // Prevent duplicate dispose.
-                    base.Dispose(disposing);    // Call base class Dispose().
-                }
-            }
-        }
-
-        private void LivePhasorDataUpdate(object obj)
-        {
-            RefreshDataPerNode();
-            PushToAllClients(MessageType.LivePhasorDataMessage);
-        }
-
-        private void TimeSeriesDataUpdate(object obj)
-        {
-            try
-            {
-                if (!m_retrievingData)
-                {
-                    m_retrievingData = true;
-                    PushToAllClients(MessageType.TimeSeriesDataMessage);
                     m_retrievingData = false;
                 }
             }
-            catch 
-            {
-                m_retrievingData = false;
-            }            
         }
 
-		private void RefreshServiceClientList(object obj)
-		{
-			System.Diagnostics.Debug.WriteLine("Refreshing Service Clients List");
-			nodeList = CommonFunctions.GetNodeList(true);
-			
-			//For each node defined in the database, we need to have a TCP client created to listen to the events.
-			foreach (Node node in nodeList)
-			{
-				lock (serviceClientList)
-				{
-					if (serviceClientList.ContainsKey(node.ID))
-					{
-						if (node.RemoteStatusServiceUrl != serviceClientList[node.ID].Helper.RemotingClient.ConnectionString)
-						{
-							System.Diagnostics.Debug.WriteLine("Resetting Service Client for Node: " + node.ID);
-							serviceClientList[node.ID].Helper.ReceivedServiceUpdate -= ClientHelper_ReceivedServiceUpdate;
-							serviceClientList[node.ID].Helper.ReceivedServiceResponse -= ClientHelper_ReceivedServiceResponse;
-							serviceClientList[node.ID].Dispose();
-							if (!string.IsNullOrEmpty(node.RemoteStatusServiceUrl))
-							{
-								System.Diagnostics.Debug.WriteLine("Reconnecting Service Client for Node: " + node.ID);
-								serviceClientList[node.ID] = null;
-								serviceClient = new WindowsServiceClient(node.RemoteStatusServiceUrl);
-								serviceClient.Helper.RemotingClient.MaxConnectionAttempts = 10;
-								serviceClientList[node.ID] = serviceClient;
-								serviceClient.Helper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;
-								serviceClient.Helper.ReceivedServiceResponse += ClientHelper_ReceivedServiceResponse;
-								ThreadPool.QueueUserWorkItem(ConnectWindowsServiceClient, serviceClient);
-							}
-							else
-							{
-								System.Diagnostics.Debug.WriteLine("Removing Service Client for Node: " + node.ID);
-								serviceClientList.Remove(node.ID);
-							}							
-						}
-						else if (!serviceClientList[node.ID].Helper.RemotingClient.Enabled)
-						{
-							ThreadPool.QueueUserWorkItem(ConnectWindowsServiceClient, serviceClientList[node.ID]);
-						}
-					}
-					else
-					{
-						if (!string.IsNullOrEmpty(node.RemoteStatusServiceUrl))
-						{
-							System.Diagnostics.Debug.WriteLine("Adding New Service Client for Node: " + node.ID);
-							serviceClient = new WindowsServiceClient(node.RemoteStatusServiceUrl);
-							serviceClient.Helper.RemotingClient.MaxConnectionAttempts = 10;
-							serviceClientList.Add(node.ID, serviceClient);
-							serviceClient.Helper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;
-							serviceClient.Helper.ReceivedServiceResponse += ClientHelper_ReceivedServiceResponse;		
-							ThreadPool.QueueUserWorkItem(ConnectWindowsServiceClient, serviceClient);
-						}
-					}
-				}
-			}
-		}
-				
-		private void ConnectWindowsServiceClient(object state)
-		{
-			try
-			{
-				((WindowsServiceClient)state).Helper.Connect();
-			}
-			catch 
-			{ 
-				
-			}
-		}
-
-        private void ClientHelper_ReceivedServiceUpdate(object sender, EventArgs<UpdateType, string> e)
+        void GetDeviceMeasurementData()
         {
-			string connectionString = ((ClientHelper)sender).RemotingClient.ConnectionString;
-			string nodeID = string.Empty;
-			foreach (Node node in nodeList)
-			{
-				if (node.RemoteStatusServiceUrl == connectionString)
-				{
-					nodeID = node.ID;
-					break;
-				}
-			}			
-			ServiceUpdateMessage message = new ServiceUpdateMessage() 
-												{ 
-													ServiceUpdateType = e.Argument1, 
-													ServiceUpdate = e.Argument2 
-												};
-			PushServiceStatusToClients(nodeID, message);            
+            try
+            {
+                m_deviceMeasurementDataList = CommonFunctions.GetDeviceMeasurementData(((App)Application.Current).NodeValue);
+                m_dataForBinding.DeviceMeasurementDataList = m_deviceMeasurementDataList;
+                m_dataForBinding.IsExpanded = false;
+                TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
+                if (m_thirtySecondsTimer == null)
+                    StartTimer();
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException("GetDeviceMeasurementsData", ex);
+                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Current Device Measurements Tree Data", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+            }
+            if (m_activityWindow != null)
+                m_activityWindow.Close();
         }
 
-		private void ClientHelper_ReceivedServiceResponse(object sender, EventArgs<ServiceResponse> e)
-		{
-			string response = e.Argument.Type;
-			string message = e.Argument.Message;
-			string responseToClient = string.Empty;
-			UpdateType responseType = UpdateType.Information;
-			string connectionString = ((ClientHelper)sender).RemotingClient.ConnectionString;
-			string nodeID = string.Empty;
+        void StartTimer()
+        {
+            ConfigurationFile config = ConfigurationFile.Current;
+            CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
 
-			if (!string.IsNullOrEmpty(response))
-			{
-				// Reponse types are formatted as "Command:Success" or "Command:Failure"
-				string[] parts = response.Split(':');
-				string action;
-				bool success;
+            string timerInterval = configSettings["RealTimeMeasurementRefreshInterval"].Value;
+            int interval = 10;
 
-				if (parts.Length > 1)
-				{
-					action = parts[0].Trim().ToTitleCase();
-					success = (string.Compare(parts[1].Trim(), "Success", true) == 0);
-				}
-				else
-				{
-					action = response;
-					success = true;
-				}
+            if (!string.IsNullOrEmpty(timerInterval))
+            {
+                if (!int.TryParse(timerInterval, out interval))
+                    interval = 10;
+            }
 
-				if (success)
-				{
-					if (string.IsNullOrEmpty(message))
-						responseToClient = string.Format("{0} command processed successfully.\r\n\r\n", action);
-					else
-						responseToClient = string.Format("{0}\r\n\r\n", message);
-				}
-				else
-				{
-					responseType = UpdateType.Alarm;
-					if (string.IsNullOrEmpty(message))
-						responseToClient = string.Format("{0} failure.\r\n\r\n", action);
-					else
-						responseToClient = string.Format("{0} failure: {1}\r\n\r\n", action, message);
-				}
+            m_thirtySecondsTimer = new DispatcherTimer();
+            m_thirtySecondsTimer.Interval = TimeSpan.FromSeconds(interval);
+            TextBlockRefreshInterval.Text = "Refresh Interval: " + interval.ToString() + " sec";
+            m_thirtySecondsTimer.Tick += new EventHandler(thirtySecondsTimer_Tick);
+            m_thirtySecondsTimer.Start();
+        }
 
-
-				foreach (Node node in nodeList)
-				{
-					if (node.RemoteStatusServiceUrl == connectionString)
-					{
-						nodeID = node.ID;
-						break;
-					}
-				}
-
-				ServiceUpdateMessage msg = new ServiceUpdateMessage()
-												{
-													ServiceUpdateType = responseType,
-													ServiceUpdate = responseToClient
-												};
-				PushServiceStatusToClients(nodeID, msg); 
-			}
-
-		}
-
-		private void TimeTaggedMeasurementDataUpdate(object obj)
-		{
-			RefreshTimeTaggedMeasurementsPerNode();
-            RefreshRealTimeStatisticsPerNode();
-			PushToAllClients(MessageType.TimeTaggedDataMessage);
-		}
-                
         #endregion
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

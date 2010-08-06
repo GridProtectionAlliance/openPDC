@@ -269,35 +269,7 @@ namespace openPDCManager.Pages.Adapters
             this.Unloaded += new RoutedEventHandler(DeviceMeasurementsUserControl_Unloaded);
             m_dataForBinding = new DeviceMeasurementDataForBinding();
             m_deviceMeasurementDataList = new ObservableCollection<DeviceMeasurementData>();
-            m_minMaxPointIDs = new KeyValuePair<int, int>();
-
-            ConfigurationFile config = ConfigurationFile.Current;
-            CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
-
-            string timerInterval = configSettings["RealTimeMeasurementRefreshInterval"].Value;
-            int interval = 10;
-
-            if (!string.IsNullOrEmpty(timerInterval))
-            {
-                if (!int.TryParse(timerInterval, out interval))
-                    interval = 10;
-            }
-
-            m_thirtySecondsTimer = new DispatcherTimer();
-            m_thirtySecondsTimer.Interval = TimeSpan.FromSeconds(interval);
-            TextBlockRefreshInterval.Text = "Refresh Interval: " + interval.ToString() + " sec";  
-            m_thirtySecondsTimer.Tick += new EventHandler(thirtySecondsTimer_Tick);
-            m_thirtySecondsTimer.Start();
-        }
-
-        void DeviceMeasurementsUserControl_Unloaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                m_thirtySecondsTimer.Stop();
-                m_thirtySecondsTimer = null;
-            }
-            catch { }
+            m_minMaxPointIDs = new KeyValuePair<int, int>();                        
         }
 
         #endregion
@@ -323,6 +295,17 @@ namespace openPDCManager.Pages.Adapters
             else
                 m_url = app.TimeSeriesDataServiceUrl + "/timeseriesdata/read/current/" + m_minMaxPointIDs.Key.ToString() + "-" + m_minMaxPointIDs.Value.ToString() + "/XML";
             GetTimeTaggesMeasurements(m_url);
+        }
+
+        void DeviceMeasurementsUserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (m_thirtySecondsTimer != null)
+                    m_thirtySecondsTimer.Stop();
+                m_thirtySecondsTimer = null;
+            }
+            catch { }            
         }
 
         #endregion
@@ -384,7 +367,9 @@ namespace openPDCManager.Pages.Adapters
                 m_deviceMeasurementDataList = CommonFunctions.GetDeviceMeasurementData(((App)Application.Current).NodeValue);
                 m_dataForBinding.DeviceMeasurementDataList = m_deviceMeasurementDataList;
                 m_dataForBinding.IsExpanded = false;
-                TreeViewDeviceMeasurements.DataContext = m_dataForBinding;                
+                TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
+                if (m_thirtySecondsTimer == null)
+                    StartTimer();
             }
             catch (Exception ex)
             {
@@ -397,6 +382,27 @@ namespace openPDCManager.Pages.Adapters
             }
             if (m_activityWindow != null)
                 m_activityWindow.Close();
+        }
+
+        void StartTimer()
+        {
+            ConfigurationFile config = ConfigurationFile.Current;
+            CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
+
+            string timerInterval = configSettings["RealTimeMeasurementRefreshInterval"].Value;
+            int interval = 10;
+
+            if (!string.IsNullOrEmpty(timerInterval))
+            {
+                if (!int.TryParse(timerInterval, out interval))
+                    interval = 10;
+            }
+
+            m_thirtySecondsTimer = new DispatcherTimer();
+            m_thirtySecondsTimer.Interval = TimeSpan.FromSeconds(interval);
+            TextBlockRefreshInterval.Text = "Refresh Interval: " + interval.ToString() + " sec";
+            m_thirtySecondsTimer.Tick += new EventHandler(thirtySecondsTimer_Tick);
+            m_thirtySecondsTimer.Start();
         }
         
         #endregion

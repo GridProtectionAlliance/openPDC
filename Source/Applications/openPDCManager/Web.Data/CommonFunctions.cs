@@ -4045,7 +4045,7 @@ namespace openPDCManager.Data
 												 Acronym = string.IsNullOrEmpty(pdc.Field<string>("Acronym")) ? "DIRECT CONNECTED" : pdc.Field<string>("Acronym"),
 												 Name = pdc.Field<string>("Name"),
 												 CompanyName = pdc.Field<string>("CompanyName"),
-                                                 IsExpanded = true,
+                                                 IsExpanded = false,
                                                  DeviceList = new ObservableCollection<DeviceInfo>((from device in resultSet.Tables["DeviceTable"].AsEnumerable()
 															   where device.Field<string>("ParentAcronym") == pdc.Field<string>("Acronym")
 															   select new DeviceInfo()
@@ -4057,7 +4057,7 @@ namespace openPDCManager.Data
 																   ProtocolName = device.Field<string>("ProtocolName"),
 																   VendorDeviceName = device.Field<string>("VendorDeviceName"),
 																   ParentAcronym = string.IsNullOrEmpty(device.Field<string>("ParentAcronym")) ? "DIRECT CONNECTED" : device.Field<string>("ParentAcronym"),
-                                                                   IsExpanded = true,
+                                                                   IsExpanded = false,
 																   MeasurementList = new ObservableCollection<MeasurementInfo>((from measurement in resultSet.Tables["MeasurementTable"].AsEnumerable()
 																					  where measurement.Field<int?>("DeviceID") == device.Field<int?>("ID")
 																					  select new MeasurementInfo()
@@ -4070,7 +4070,7 @@ namespace openPDCManager.Data
                                                                                           Description = measurement.Field<string>("description"),
                                                                                           SignalName = measurement.Field<string>("SignalName"),
                                                                                           EngineeringUnits = measurement.Field<string>("EngineeringUnits"),
-                                                                                          IsExpanded = true,
+                                                                                          IsExpanded = false,
 																						  CurrentTimeTag = "N/A",
 																						  CurrentValue = "NaN",
 																						  CurrentQuality = "N/A"

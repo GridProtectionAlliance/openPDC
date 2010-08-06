@@ -603,20 +603,27 @@ namespace openPDCManager.Pages.Devices
 					device.AccessID = m_wizardDeviceInfoList.Count > 0 ? m_wizardDeviceInfoList[0].ParentAccessID : 0;
 					device.NodeID = app.NodeValue;
 					device.ParentID = null;
-					device.Longitude = 0;
-					device.Latitude = 0;
+					device.Longitude = -98.6m;
+					device.Latitude = 37.5m;
 					device.CompanyID = ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key;
 					device.ProtocolID = ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key;
 					device.HistorianID = ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key;
 					device.InterconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
 					device.ConnectionString = this.ConnectionString();					
 					device.TimeZone = string.Empty;
-					device.TimeAdjustmentTicks = 0;
-					device.DataLossInterval = 35;
-                    device.MeasuredLines = 0;   //m_wizardDeviceInfoList.Count;
+					device.TimeAdjustmentTicks = 0;					
+                    device.MeasuredLines = 1;   //m_wizardDeviceInfoList.Count;
 					device.LoadOrder = 0;
 					device.ContactList = string.Empty;
 					device.Enabled = true;
+                    device.FramesPerSecond = 30;
+                    device.DataLossInterval = 5;
+                    device.AllowedParsingExceptions = 10;
+                    device.ParsingExceptionWindow = 5;
+                    device.DelayedConnectionInterval = 5;
+                    device.AllowUseOfCachedConfiguration = true;
+                    device.AutoStartDataParsingSequence = true;
+                    device.MeasurementReportingInterval = 100000;
 					m_client.SaveDeviceAsync(device, true, 0, 0);
 				}
 			}

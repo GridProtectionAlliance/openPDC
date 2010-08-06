@@ -60,6 +60,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamicDataDisplay">
+      <HintPath>..\..\..\Dependencies\Microsoft\D3\DynamicDataDisplay.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -352,6 +355,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Monitoring\InputMonitoringUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Monitoring\SystemMonitor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\ResourcePieChartStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -523,6 +534,12 @@
     </Compile>
     <Compile Include="Pages\Manage\Measurements.xaml.cs">
       <DependentUpon>Measurements.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Monitoring\InputMonitoringUserControl.xaml.cs">
+      <DependentUpon>InputMonitoringUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Monitoring\SystemMonitor.xaml.cs">
+      <DependentUpon>SystemMonitor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

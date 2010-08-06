@@ -8,6 +8,7 @@ using openPDCManager.Pages.Manage;
 using openPDCManager.Pages.Adapters;
 using openPDCManager.UserControls.OutputStreamControls;
 using System.Windows.Media.Imaging;
+using openPDCManager.Pages.Monitoring;
 
 namespace openPDCManager
 {
@@ -42,10 +43,10 @@ namespace openPDCManager
 
         void MasterLayoutWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            //TestUserControl test = new TestUserControl();
-            //ContentFrame.Navigate(test);
-            HomePageUserControl home = new HomePageUserControl();
-            ContentFrame.Navigate(home);
+            SystemMonitor test = new SystemMonitor();
+            ContentFrame.Navigate(test);
+            //HomePageUserControl home = new HomePageUserControl();
+            //ContentFrame.Navigate(home);
         }
 
         void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -217,6 +218,11 @@ namespace openPDCManager
             {
                 OutputStreamsUserControl outputStreams = new OutputStreamsUserControl();
                 ContentFrame.Navigate(outputStreams);
+            }
+            else if (item.Name == "InputMonitor")
+            {
+                InputMonitoringUserControl inputMonitor = new InputMonitoringUserControl();
+                ContentFrame.Navigate(inputMonitor);
             }
         }
 
