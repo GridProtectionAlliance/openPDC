@@ -597,12 +597,12 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Returns a <see cref="string"/> that represents the specified <paramref name="acronym"/>, <see cref="FundamentalSignalType"/> and <paramref name="signalIndex"/>.
+        /// Returns a <see cref="string"/> that represents the specified <paramref name="acronym"/>, <see cref="FundamentalSignalType"/> and <paramref name="index"/>.
         /// </summary>
         /// <param name="acronym">Acronym portion of the desired <see cref="string"/> representation.</param>
         /// <param name="type"><see cref="FundamentalSignalType"/> portion of the desired <see cref="string"/> representation.</param>
         /// <param name="index">Index of <see cref="FundamentalSignalType"/> portion of the desired <see cref="string"/> representation.</param>
-        /// <returns>A <see cref="string"/> that represents the specified <paramref name="acronym"/>, <see cref="FundamentalSignalType"/> and <paramref name="signalIndex"/>.</returns>
+        /// <returns>A <see cref="string"/> that represents the specified <paramref name="acronym"/>, <see cref="FundamentalSignalType"/> and <paramref name="index"/>.</returns>
         public static string ToString(string acronym, FundamentalSignalType type, int index)
         {
             if (index > 0)

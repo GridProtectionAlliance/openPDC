@@ -1526,12 +1526,12 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Get signal reference for specified <see cref="FundamentalSignalType"/> and <paramref name="signalIndex"/>.
+        /// Get signal reference for specified <see cref="FundamentalSignalType"/> and <paramref name="index"/>.
         /// </summary>
         /// <param name="type"><see cref="FundamentalSignalType"/> to request signal reference for.</param>
         /// <param name="index">Index <see cref="FundamentalSignalType"/> to request signal reference for.</param>
         /// <param name="count">Number of signals defined for this <see cref="FundamentalSignalType"/>.</param>
-        /// <returns>Signal reference of given <see cref="FundamentalSignalType"/> and <paramref name="signalIndex"/>.</returns>
+        /// <returns>Signal reference of given <see cref="FundamentalSignalType"/> and <paramref name="index"/>.</returns>
         public string GetSignalReference(FundamentalSignalType type, int index, int count)
         {
             // We cache indexed signal reference strings so they don't need to be generated at each mapping call.

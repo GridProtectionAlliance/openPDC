@@ -545,12 +545,12 @@ namespace TVA.PhasorProtocols.Anonymous
         }
 
         /// <summary>
-        /// Get signal reference for specified <see cref="FundamentalSignalType"/> and <paramref name="signalIndex"/>.
+        /// Get signal reference for specified <see cref="FundamentalSignalType"/> and <paramref name="index"/>.
         /// </summary>
         /// <param name="type"><see cref="FundamentalSignalType"/> to request signal reference for.</param>
         /// <param name="index">Index <see cref="FundamentalSignalType"/> to request signal reference for.</param>
         /// <param name="count">Number of signals defined for this <see cref="FundamentalSignalType"/>.</param>
-        /// <returns>Signal reference of given <see cref="FundamentalSignalType"/> and <paramref name="signalIndex"/>.</returns>
+        /// <returns>Signal reference of given <see cref="FundamentalSignalType"/> and <paramref name="index"/>.</returns>
         public string GetSignalReference(FundamentalSignalType type, int index, int count)
         {
             // We cache indexed signal reference strings so they don't need to be generated at each mapping call.
@@ -590,7 +590,6 @@ namespace TVA.PhasorProtocols.Anonymous
         /// </summary>
         /// <param name="info">The <see cref="SerializationInfo"/> to populate with data.</param>
         /// <param name="context">The destination <see cref="StreamingContext"/> for this serialization.</param>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);

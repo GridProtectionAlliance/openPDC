@@ -245,8 +245,14 @@ namespace TVA.PhasorProtocols
     /// Protocol independent common status flags enumeration.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// These flags are expected to exist in the high-word of a double-word flag set such that original word flags remain in-tact
     /// in low-word of double-word flag set.
+    /// </para>
+    /// <para>
+    /// Note that value being stored in a historian using a 32-bit single precision floating number value will only have castable
+    /// conversion accuracy back to an unsigned 32-bit integer up to the 24th bit, so any bits used beyond Bit23 will be lossy.
+    /// </para>
     /// </remarks>
     [Flags(), Serializable()]
     public enum CommonStatusFlags : uint
@@ -726,7 +732,6 @@ namespace TVA.PhasorProtocols
         /// </summary>
         /// <param name="info">The <see cref="SerializationInfo"/> to populate with data.</param>
         /// <param name="context">The destination <see cref="StreamingContext"/> for this serialization.</param>
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);

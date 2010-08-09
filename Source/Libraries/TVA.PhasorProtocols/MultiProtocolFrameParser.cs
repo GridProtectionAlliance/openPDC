@@ -497,6 +497,7 @@ namespace TVA.PhasorProtocols
         private PrecisionTimer m_inputTimer;
         private System.Timers.Timer m_rateCalcTimer;
         private IConfigurationFrame m_configurationFrame;
+        //private AutoResetEvent m_initializeWaitHandle;
         private long m_dataStreamStartTime;
         private bool m_executeParseOnSeparateThread;
         private bool m_autoRepeatCapturedPlayback;

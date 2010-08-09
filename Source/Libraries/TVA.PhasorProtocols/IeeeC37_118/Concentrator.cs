@@ -314,7 +314,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// <summary>
         /// Creates a new IEEE C37.118 specific <see cref="IConfigurationFrame"/> based on provided protocol independent <paramref name="baseConfigurationFrame"/>.
         /// </summary>
-        /// <param name="baseConfigurationFrame">Protocol independent <paramref name="IConfigurationFrame"/>.</param>
+        /// <param name="baseConfigurationFrame">Protocol independent <see cref="TVA.PhasorProtocols.Anonymous.ConfigurationFrame"/>.</param>
         /// <returns>A new IEEE C37.118 specific <see cref="IConfigurationFrame"/>.</returns>
         protected override IConfigurationFrame CreateNewConfigurationFrame(TVA.PhasorProtocols.Anonymous.ConfigurationFrame baseConfigurationFrame)
         {

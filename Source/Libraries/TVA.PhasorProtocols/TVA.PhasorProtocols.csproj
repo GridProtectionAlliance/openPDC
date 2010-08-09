@@ -53,7 +53,7 @@
     <CodeAnalysisRules>
     </CodeAnalysisRules>
     <DefineConstants>DEBUG</DefineConstants>
-    <CodeAnalysisRuleSet>Migrated rules for TVA.PhasorProtocols.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>TVA.PhasorProtocols.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

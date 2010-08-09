@@ -334,7 +334,7 @@ namespace TVA.PhasorProtocols
         /// Returns display friendly signal type name.
         /// </summary>
         /// <param name="signalType"><see cref="SignalType"/> to return display name for.</param>
-        /// <returns>Friendly protocol display name for specified <paramref name="SignalType"/>.</returns>
+        /// <returns>Friendly protocol display name for specified <paramref name="signalType"/>.</returns>
         public static string GetFormattedSignalTypeName(this SignalType signalType)
         {
             switch (signalType)
