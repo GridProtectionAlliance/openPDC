@@ -860,10 +860,13 @@ namespace DatabaseSetupUtility
 
                 foreach (XmlNode child in systemSettings.ChildNodes)
                 {
-                    if (child.Attributes["name"].Value == "ConnectionString")
-                        child.Attributes["value"].Value = "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + destination;
-                    else if (child.Attributes["name"].Value == "DataProviderString")
-                        child.Attributes["value"].Value = "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter";
+                    if (child.NodeType == XmlNodeType.Element)
+                    {
+                        if (child.Attributes["name"].Value == "ConnectionString")
+                            child.Attributes["value"].Value = "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + destination;
+                        else if (child.Attributes["name"].Value == "DataProviderString")
+                            child.Attributes["value"].Value = "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter";
+                    }
                 }
 
                 configFile.Save(configFileName);
@@ -951,16 +954,19 @@ namespace DatabaseSetupUtility
 
                 foreach (XmlNode child in systemSettings.ChildNodes)
                 {
-                    if (child.Attributes["name"].Value == "DataProviderString")
-                        child.Attributes["value"].Value = "AssemblyName={MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
-                    else if (child.Attributes["name"].Value == "ConnectionString")
+                    if (child.NodeType == XmlNodeType.Element)
                     {
-                        if (m_advancedForm.Encrypted)
-                            child.Attributes["value"].Value = Cipher.Encrypt(m_mySqlSetup.ConnectionString, DefaultCryptoKey, CryptoStrength);
-                        else
-                            child.Attributes["value"].Value = m_mySqlSetup.ConnectionString;
+                        if (child.Attributes["name"].Value == "DataProviderString")
+                            child.Attributes["value"].Value = "AssemblyName={MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
+                        else if (child.Attributes["name"].Value == "ConnectionString")
+                        {
+                            if (m_advancedForm.Encrypted)
+                                child.Attributes["value"].Value = Cipher.Encrypt(m_mySqlSetup.ConnectionString, DefaultCryptoKey, CryptoStrength);
+                            else
+                                child.Attributes["value"].Value = m_mySqlSetup.ConnectionString;
 
-                        child.Attributes["encrypted"].Value = m_advancedForm.Encrypted.ToString();
+                            child.Attributes["encrypted"].Value = m_advancedForm.Encrypted.ToString();
+                        }
                     }
                 }
 
@@ -1055,16 +1061,19 @@ namespace DatabaseSetupUtility
 
                 foreach (XmlNode child in systemSettings.ChildNodes)
                 {
-                    if (child.Attributes["name"].Value == "DataProviderString")
-                        child.Attributes["value"].Value = "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter";
-                    else if (child.Attributes["name"].Value == "ConnectionString")
+                    if (child.NodeType == XmlNodeType.Element)
                     {
-                        if (m_advancedForm.Encrypted)
-                            child.Attributes["value"].Value = Cipher.Encrypt(m_sqlServerSetup.ConnectionString, DefaultCryptoKey, CryptoStrength);
-                        else
-                            child.Attributes["value"].Value = m_sqlServerSetup.ConnectionString;
+                        if (child.Attributes["name"].Value == "DataProviderString")
+                            child.Attributes["value"].Value = "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter";
+                        else if (child.Attributes["name"].Value == "ConnectionString")
+                        {
+                            if (m_advancedForm.Encrypted)
+                                child.Attributes["value"].Value = Cipher.Encrypt(m_sqlServerSetup.ConnectionString, DefaultCryptoKey, CryptoStrength);
+                            else
+                                child.Attributes["value"].Value = m_sqlServerSetup.ConnectionString;
 
-                        child.Attributes["encrypted"].Value = m_advancedForm.Encrypted.ToString();
+                            child.Attributes["encrypted"].Value = m_advancedForm.Encrypted.ToString();
+                        }
                     }
                 }
 

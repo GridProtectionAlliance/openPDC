@@ -1018,10 +1018,19 @@ namespace TVA.PhasorProtocols
                     cell = new ConfigurationCell(m_baseConfigurationFrame, ushort.Parse(deviceRow["ID"].ToString()));
 
                     // Assign user selected data and coordinate formats, derived classes can change
-                    cell.PhasorDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["PhasorDataFormat"].ToNonNullString(m_dataFormat.ToString()));
-                    cell.FrequencyDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["FrequencyDataFormat"].ToNonNullString(m_dataFormat.ToString()));
-                    cell.AnalogDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), deviceRow["AnalogDataFormat"].ToNonNullString(m_dataFormat.ToString()));
-                    cell.PhasorCoordinateFormat = (CoordinateFormat)Enum.Parse(typeof(CoordinateFormat), deviceRow["CoordinateFormat"].ToNonNullString(m_coordinateFormat.ToString()));
+                    string formatString;
+
+                    formatString = deviceRow["PhasorDataFormat"].ToNonNullString(m_dataFormat.ToString());
+                    cell.PhasorDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), string.IsNullOrEmpty(formatString) ? m_dataFormat.ToString() : formatString);
+
+                    formatString = deviceRow["FrequencyDataFormat"].ToNonNullString(m_dataFormat.ToString());
+                    cell.FrequencyDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), string.IsNullOrEmpty(formatString) ? m_dataFormat.ToString() : formatString);
+
+                    formatString = deviceRow["AnalogDataFormat"].ToNonNullString(m_dataFormat.ToString());
+                    cell.AnalogDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), string.IsNullOrEmpty(formatString) ? m_dataFormat.ToString() : formatString);
+
+                    formatString = deviceRow["CoordinateFormat"].ToNonNullString(m_coordinateFormat.ToString());
+                    cell.PhasorCoordinateFormat = (CoordinateFormat)Enum.Parse(typeof(CoordinateFormat), string.IsNullOrEmpty(formatString) ? m_coordinateFormat.ToString() : formatString);
 
                     // Assign device identification labels
                     cell.IDLabel = deviceRow["Name"].ToString().Trim();
