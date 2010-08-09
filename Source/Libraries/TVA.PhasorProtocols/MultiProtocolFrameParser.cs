@@ -348,7 +348,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Specifies the default value for the <see cref="DefinedFrameRate"/> property.
         /// </summary>
-        public const double DefaultDefinedFrameRate = 1.0D / 30.0D;
+        public const int DefaultDefinedFrameRate = 30;
 
         /// <summary>
         /// Specifies the default value for the <see cref="MaximumConnectionAttempts"/> property.
@@ -511,7 +511,8 @@ namespace TVA.PhasorProtocols
         private double m_calculatedFrameRate;
         private double m_calculatedByteRate;
         private string m_sourceName;
-        private double m_definedFrameRate;
+        private int m_definedFrameRate;
+        private double m_ticksPerFrame;
         private long m_lastFrameReceivedTime;
         private bool m_autoStartDataParsingSequence;
         private bool m_skipDisableRealTimeData;
@@ -698,32 +699,32 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        //public bool UseHighResolutionInputTimer
-        //{
-        //    get
-        //    {
-        //        return false;
-        //    }
-        //    set
-        //    {
-        //        if (value && m_inputTimer == null)
-        //        {
-        //            m_inputTimer = new PrecisionTimer();
-        //            m_inputTimer.Resolution = 1;
-        //            m_inputTimer.Period = 1;
-        //            m_inputTimer.AutoReset = true;
-        //            m_inputTimer.Tick += new EventHandler(m_inputTimer_Tick);
-        //        }
-        //        else if (!value && m_inputTimer != null)
-        //        {
-
-        //        }
-        //    }
-        //}
-
-        void m_inputTimer_Tick(object sender, EventArgs e)
+        /// <summary>
+        /// Gets or sets flag that determines if system should use precision timing for file based inputs.
+        /// </summary>
+        public bool UseHighResolutionInputTimer
         {
-            throw new NotImplementedException();
+            get
+            {
+                return (m_inputTimer != null);
+            }
+            set
+            {
+                if (value && m_inputTimer == null)
+                {
+                    m_inputTimer = new PrecisionTimer();
+                    m_inputTimer.Resolution = 1;
+                    m_inputTimer.Period = 1;
+                    m_inputTimer.AutoReset = true;
+                    m_inputTimer.Tick += m_inputTimer_Tick;
+                }
+                else if (!value && m_inputTimer != null)
+                {
+                    m_inputTimer.Tick -= m_inputTimer_Tick;
+                    m_inputTimer.Dispose();
+                    m_inputTimer = null;
+                }
+            }
         }
 
         /// <summary>
@@ -887,7 +888,7 @@ namespace TVA.PhasorProtocols
         /// <remarks>
         /// This is only applicable when connection is made to a file for replay purposes.
         /// </remarks>
-        public double DefinedFrameRate
+        public int DefinedFrameRate
         {
             get
             {
@@ -896,6 +897,7 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_definedFrameRate = value;
+                m_ticksPerFrame = Ticks.PerSecond / (double)m_definedFrameRate;
             }
         }
 
@@ -1368,6 +1370,13 @@ namespace TVA.PhasorProtocols
                     if (disposing)
                     {
                         Stop();
+
+                        if (m_inputTimer != null)
+                        {
+                            m_inputTimer.Tick -= m_inputTimer_Tick;
+                            m_inputTimer.Dispose();
+                        }
+                        m_inputTimer = null;
 
                         if (m_rateCalcTimer != null)
                         {
@@ -2043,8 +2052,8 @@ namespace TVA.PhasorProtocols
                 m_initiatingDataStream = false;
             }
 
-            // Request configuration frame once real-time data has been disabled. Data stream will be enabled
-            // when we receive a configuration frame. Note that 
+            // Request configuration frame once real-time data has been disabled. Note that data stream
+            // will be enabled when we receive a configuration frame. 
             switch (m_phasorProtocol)
             {
                 case PhasorProtocol.SelFastMessage:
@@ -2054,7 +2063,7 @@ namespace TVA.PhasorProtocols
                     break;
                 case PhasorProtocol.Macrodyne:
                     // We collect the station name (i.e. the unit ID) from the Macrodyne
-                    // protocol as a header frame before get the configuration frame
+                    // protocol as a header frame before we get the configuration frame
                     SendDeviceCommand(DeviceCommand.SendHeaderFrame);
                     break;
                 default:
@@ -2098,19 +2107,53 @@ namespace TVA.PhasorProtocols
 
         private void MaintainCapturedFrameReplayTiming()
         {
-            if (m_lastFrameReceivedTime > 0)
+            if (m_inputTimer == null)
             {
-                // To maintain timing on "frames per second", we wait for defined frame rate interval
-                double sleepTime = m_definedFrameRate - ((double)(DateTime.Now.Ticks - m_lastFrameReceivedTime) / (double)Ticks.PerSecond);
+                if (m_lastFrameReceivedTime > 0)
+                {
+                    // To maintain timing on "frames per second", we wait for defined frame rate interval
+                    double sleepTime = (1.0D / m_definedFrameRate) - ((double)(DateTime.Now.Ticks - m_lastFrameReceivedTime) / (double)Ticks.PerSecond);
 
-                // Thread sleep time is a minimum suggested sleep time depending on system activity, so we target 9/10 of a second
-                // to make this a little more accurate. Since this is just used for replay, getting close is good enough - no need
-                // to incur the overhead of using a PrecisionTimer here...
-                if (sleepTime > 0)
-                    Thread.Sleep((int)(sleepTime * 900.0D));
+                    // Thread sleep time is a minimum suggested sleep time depending on system activity, so we target 9/10 of a second
+                    // to make this a little more accurate. Since this is just used for replay, getting close is good enough - no need
+                    // to incur the overhead of using a PrecisionTimer here unless requested
+                    if (sleepTime > 0)
+                        Thread.Sleep((int)(sleepTime * 900.0D));
+                }
+
+                m_lastFrameReceivedTime = DateTime.Now.Ticks;
             }
+            else
+            {
+            }
+        }
 
-            m_lastFrameReceivedTime = DateTime.Now.Ticks;
+        // This timer function is called every millisecond so that frames can be published at the exact desired time 
+        void m_inputTimer_Tick(object sender, EventArgs e)
+        {
+            DateTime now = PrecisionTimer.UtcNow;
+            long ticks = now.Ticks;
+            int milliseconds = now.Millisecond;
+            long baseTicks, ticksBeyondSecond, frameIndex;
+
+            // Baseline timestamp to the top of the second
+            baseTicks = ticks - ticks % Ticks.PerSecond;
+
+            // Remove the seconds from ticks
+            ticksBeyondSecond = ticks - baseTicks;
+
+            // Calculate a frame index between 0 and m_definedFrameRate - 1, corresponding to ticks
+            // rounded down to the nearest frame
+            frameIndex = (long)(ticksBeyondSecond / m_ticksPerFrame);
+
+            // See if it is time to publish
+            if ((int)(1.0D / m_definedFrameRate * (frameIndex * 1000.0D)) == milliseconds)
+            {
+                // Baseline timestamp to the top of the millisecond for frame publication
+                m_lastFrameReceivedTime = ticks - ticks % Ticks.PerMillisecond;
+
+                // Release wait handle
+            }
         }
 
         #region [ Data Channel Event Handlers ]

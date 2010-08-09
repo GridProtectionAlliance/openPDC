@@ -2073,7 +2073,7 @@ Public Class PMUConnectionTester
                     .AllowedParsingExceptions = m_applicationSettings.AllowedParsingExceptions
                     .ParsingExceptionWindow = Ticks.FromSeconds(m_applicationSettings.ParsingExceptionWindow)
                     .AutoRepeatCapturedPlayback = currentSettings.AutoRepeatPlayback
-                    .DefinedFrameRate = 1 / Convert.ToInt32(TextBoxFileFrameRate.Text)
+                    .DefinedFrameRate = Convert.ToInt32(TextBoxFileFrameRate.Text)
                     .MaximumConnectionAttempts = m_applicationSettings.MaximumConnectionAttempts
 
                     ' Assignment of maximum connection attempts can be affected by other settings, update

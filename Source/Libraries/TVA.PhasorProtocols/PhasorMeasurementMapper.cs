@@ -899,9 +899,9 @@ namespace TVA.PhasorProtocols
             if (frameParser.TransportProtocol == TransportProtocol.File)
             {
                 if (settings.TryGetValue("definedFrameRate", out setting))
-                    frameParser.DefinedFrameRate = 1.0D / double.Parse(setting);
+                    frameParser.DefinedFrameRate = int.Parse(setting);
                 else
-                    frameParser.DefinedFrameRate = 1.0D / 30.0D;
+                    frameParser.DefinedFrameRate = 30;
 
                 if (settings.TryGetValue("simulateTimestamp", out setting))
                     frameParser.InjectSimulatedTimestamp = setting.ParseBoolean();
