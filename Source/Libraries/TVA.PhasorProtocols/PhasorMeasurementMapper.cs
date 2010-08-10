@@ -903,18 +903,23 @@ namespace TVA.PhasorProtocols
                 else
                     frameParser.DefinedFrameRate = 30;
 
-                if (settings.TryGetValue("simulateTimestamp", out setting))
-                    frameParser.InjectSimulatedTimestamp = setting.ParseBoolean();
-                else
-                    frameParser.InjectSimulatedTimestamp = true;
-
                 if (settings.TryGetValue("autoRepeatFile", out setting))
                     frameParser.AutoRepeatCapturedPlayback = setting.ParseBoolean();
                 else
                     frameParser.AutoRepeatCapturedPlayback = true;
+
+                if (settings.TryGetValue("useHighResolutionInputTimer", out setting))
+                    frameParser.UseHighResolutionInputTimer = setting.ParseBoolean();
+                else
+                    frameParser.UseHighResolutionInputTimer = true;
             }
 
             // Apply other settings as needed
+            if (settings.TryGetValue("simulateTimestamp", out setting))
+                frameParser.InjectSimulatedTimestamp = setting.ParseBoolean();
+            else
+                frameParser.InjectSimulatedTimestamp = (frameParser.TransportProtocol == TransportProtocol.File);
+
             if (settings.TryGetValue("allowedParsingExceptions", out setting))
                 frameParser.AllowedParsingExceptions = int.Parse(setting);
 

@@ -267,6 +267,8 @@ Public Class ApplicationSettings
     Private Const DefaultAutoStartDataParsingSequence As Boolean = True
     Private Const DefaultExecuteParseOnSeparateThread As Boolean = False
     Private Const DefaultSkipDisableRealTimeData As Boolean = False
+    Private Const DefaultInjectSimulatedTimestamp As Boolean = False
+    Private Const DefaultUseHighResolutionInputTimer As Boolean = False
 
     ' Default phase angle graph settings
     Private Const DefaultPhaseAngleGraphStyle As String = "Relative"
@@ -412,6 +414,8 @@ Public Class ApplicationSettings
     Private m_autoStartDataParsingSequence As Boolean
     Private m_executeParseOnSeparateThread As Boolean
     Private m_skipDisableRealTimeData As Boolean
+    Private m_injectSimulatedTimestamp As Boolean
+    Private m_useHighResolutionInputTimer As Boolean
 
     ' Phase angle graph settings
     Private m_phaseAngleGraphStyle As AngleGraphStyle
@@ -712,6 +716,32 @@ Public Class ApplicationSettings
         End Get
         Set(ByVal value As Boolean)
             m_skipDisableRealTimeData = value
+        End Set
+    End Property
+
+    <Category(ConnectionSettingsCategory), _
+    Description("Defines flag to inject a simulated timestamp into incoming streams - this will override any existing incoming timestamp. Useful when using file based input to simulate real-time data."), _
+    DefaultValue(DefaultInjectSimulatedTimestamp), _
+    UserScopedSetting()> _
+    Public Property InjectSimulatedTimestamp() As Boolean
+        Get
+            Return m_injectSimulatedTimestamp
+        End Get
+        Set(ByVal value As Boolean)
+            m_injectSimulatedTimestamp = value
+        End Set
+    End Property
+
+    <Category(ConnectionSettingsCategory), _
+    Description("Defines flag that determines if a high-resolution precision timer should be used for file based input. Useful when accurately spaced input frames are desired to better simulate an input device."), _
+    DefaultValue(DefaultUseHighResolutionInputTimer), _
+    UserScopedSetting()> _
+    Public Property UseHighResolutionInputTimer() As Boolean
+        Get
+            Return m_useHighResolutionInputTimer
+        End Get
+        Set(ByVal value As Boolean)
+            m_useHighResolutionInputTimer = value
         End Set
     End Property
 

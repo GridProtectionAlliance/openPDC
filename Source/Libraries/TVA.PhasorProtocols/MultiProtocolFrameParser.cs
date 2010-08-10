@@ -280,6 +280,7 @@ using System.Text;
 using System.Threading;
 using TVA.Communication;
 using TVA.IO;
+using TVA.Measurements;
 using TVA.Units;
 
 namespace TVA.PhasorProtocols
@@ -497,7 +498,7 @@ namespace TVA.PhasorProtocols
         private PrecisionTimer m_inputTimer;
         private System.Timers.Timer m_rateCalcTimer;
         private IConfigurationFrame m_configurationFrame;
-        //private AutoResetEvent m_initializeWaitHandle;
+        private AutoResetEvent m_frameWaitHandle;
         private long m_dataStreamStartTime;
         private bool m_executeParseOnSeparateThread;
         private bool m_autoRepeatCapturedPlayback;
@@ -559,6 +560,8 @@ namespace TVA.PhasorProtocols
             m_rateCalcTimer.Interval = 5000;
             m_rateCalcTimer.AutoReset = true;
             m_rateCalcTimer.Enabled = false;
+
+            m_frameWaitHandle = new AutoResetEvent(false);
 
             // Set minimum timer resolution to one millisecond to improve timer accuracy
             PrecisionTimer.SetMinimumTimerResolution(1);
@@ -718,12 +721,16 @@ namespace TVA.PhasorProtocols
                     m_inputTimer.Period = 1;
                     m_inputTimer.AutoReset = true;
                     m_inputTimer.Tick += m_inputTimer_Tick;
+                    m_inputTimer.Start();
                 }
                 else if (!value && m_inputTimer != null)
                 {
                     m_inputTimer.Tick -= m_inputTimer_Tick;
                     m_inputTimer.Dispose();
                     m_inputTimer = null;
+
+                    // Make sure any waiting threads are released
+                    m_frameWaitHandle.Set();
                 }
             }
         }
@@ -1385,6 +1392,11 @@ namespace TVA.PhasorProtocols
                             m_rateCalcTimer.Dispose();
                         }
                         m_rateCalcTimer = null;
+
+                        if (m_frameWaitHandle != null)
+                            m_frameWaitHandle.Dispose();
+
+                        m_frameWaitHandle = null;
 
                         // Clear minimum timer resolution.
                         PrecisionTimer.ClearMinimumTimerResolution(1);
@@ -2106,14 +2118,14 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        private void MaintainCapturedFrameReplayTiming()
+        private void MaintainCapturedFrameReplayTiming(IFrame sourceFrame)
         {
             if (m_inputTimer == null)
             {
                 if (m_lastFrameReceivedTime > 0)
                 {
                     // To maintain timing on "frames per second", we wait for defined frame rate interval
-                    double sleepTime = (1.0D / m_definedFrameRate) - ((double)(DateTime.Now.Ticks - m_lastFrameReceivedTime) / (double)Ticks.PerSecond);
+                    double sleepTime = (1.0D / m_definedFrameRate) - ((double)(DateTime.UtcNow.Ticks - m_lastFrameReceivedTime) / (double)Ticks.PerSecond);
 
                     // Thread sleep time is a minimum suggested sleep time depending on system activity, so we target 9/10 of a second
                     // to make this a little more accurate. Since this is just used for replay, getting close is good enough - no need
@@ -2122,11 +2134,17 @@ namespace TVA.PhasorProtocols
                         Thread.Sleep((int)(sleepTime * 900.0D));
                 }
 
-                m_lastFrameReceivedTime = DateTime.Now.Ticks;
+                m_lastFrameReceivedTime = DateTime.UtcNow.Ticks;
             }
             else
             {
+                // When high resolution input timing is requested, we only need to wait for the next signal...
+                m_frameWaitHandle.WaitOne();
             }
+            
+            // If injecting a simulated timestamp, use the last received time
+            if (m_injectSimulatedTimestamp)
+                sourceFrame.Timestamp = m_lastFrameReceivedTime;
         }
 
         // This timer function is called every millisecond so that frames can be published at the exact desired time 
@@ -2154,6 +2172,7 @@ namespace TVA.PhasorProtocols
                 m_lastFrameReceivedTime = ticks - ticks % Ticks.PerMillisecond;
 
                 // Release wait handle
+                m_frameWaitHandle.Set();
             }
         }
 
@@ -2251,8 +2270,10 @@ namespace TVA.PhasorProtocols
             // We don't stop parsing for exceptions thrown in consumer event handlers
             try
             {
-                if (m_injectSimulatedTimestamp)
-                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
+                if (m_transportProtocol == TransportProtocol.File)
+                    MaintainCapturedFrameReplayTiming(e.Argument);
+                else if (m_injectSimulatedTimestamp)
+                    m_lastFrameReceivedTime = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedCommandFrame != null)
                     ReceivedCommandFrame(this, e);
@@ -2261,9 +2282,6 @@ namespace TVA.PhasorProtocols
             {
                 OnParsingException(ex, "MultiProtocolFrameParser \"ReceivedCommandFrame\" consumer event handler exception: {0}", ex.Message);
             }
-
-            if (m_transportProtocol == TransportProtocol.File)
-                MaintainCapturedFrameReplayTiming();
         }
 
         private void m_frameParser_ReceivedConfigurationFrame(object sender, EventArgs<IConfigurationFrame> e)
@@ -2279,8 +2297,10 @@ namespace TVA.PhasorProtocols
             // We don't stop parsing for exceptions thrown in consumer event handlers
             try
             {
-                if (m_injectSimulatedTimestamp)
-                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
+                if (m_transportProtocol == TransportProtocol.File)
+                    MaintainCapturedFrameReplayTiming(e.Argument);
+                else if (m_injectSimulatedTimestamp)
+                    m_lastFrameReceivedTime = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedConfigurationFrame != null)
                     ReceivedConfigurationFrame(this, e);
@@ -2292,9 +2312,6 @@ namespace TVA.PhasorProtocols
             {
                 OnParsingException(ex, "MultiProtocolFrameParser \"ReceivedConfigurationFrame\" consumer event handler exception: {0}", ex.Message);
             }
-
-            if (m_transportProtocol == TransportProtocol.File)
-                MaintainCapturedFrameReplayTiming();
         }
 
         private void m_frameParser_ReceivedDataFrame(object sender, EventArgs<IDataFrame> e)
@@ -2304,8 +2321,10 @@ namespace TVA.PhasorProtocols
             // We don't stop parsing for exceptions thrown in consumer event handlers
             try
             {
-                if (m_injectSimulatedTimestamp)
-                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
+                if (m_transportProtocol == TransportProtocol.File)
+                    MaintainCapturedFrameReplayTiming(e.Argument);
+                else if (m_injectSimulatedTimestamp)
+                    m_lastFrameReceivedTime = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedDataFrame != null)
                     ReceivedDataFrame(this, e);
@@ -2314,9 +2333,6 @@ namespace TVA.PhasorProtocols
             {
                 OnParsingException(ex, "MultiProtocolFrameParser \"ReceivedDataFrame\" consumer event handler exception: {0}", ex.Message);
             }
-
-            if (m_transportProtocol == TransportProtocol.File)
-                MaintainCapturedFrameReplayTiming();
         }
 
         private void m_frameParser_ReceivedHeaderFrame(object sender, EventArgs<IHeaderFrame> e)
@@ -2330,8 +2346,10 @@ namespace TVA.PhasorProtocols
             // We don't stop parsing for exceptions thrown in consumer event handlers
             try
             {
-                if (m_injectSimulatedTimestamp)
-                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
+                if (m_transportProtocol == TransportProtocol.File)
+                    MaintainCapturedFrameReplayTiming(e.Argument);
+                else if (m_injectSimulatedTimestamp)
+                    m_lastFrameReceivedTime = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedHeaderFrame != null)
                     ReceivedHeaderFrame(this, e);
@@ -2340,9 +2358,6 @@ namespace TVA.PhasorProtocols
             {
                 OnParsingException(ex, "MultiProtocolFrameParser \"ReceivedHeaderFrame\" consumer event handler exception: {0}", ex.Message);
             }
-
-            if (m_transportProtocol == TransportProtocol.File)
-                MaintainCapturedFrameReplayTiming();
         }
 
         private void m_frameParser_ReceivedUndeterminedFrame(object sender, EventArgs<IChannelFrame> e)
@@ -2352,8 +2367,10 @@ namespace TVA.PhasorProtocols
             // We don't stop parsing for exceptions thrown in consumer event handlers
             try
             {
-                if (m_injectSimulatedTimestamp)
-                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
+                if (m_transportProtocol == TransportProtocol.File)
+                    MaintainCapturedFrameReplayTiming(e.Argument);
+                else if (m_injectSimulatedTimestamp)
+                    m_lastFrameReceivedTime = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedUndeterminedFrame != null)
                     ReceivedUndeterminedFrame(this, e);
@@ -2362,9 +2379,6 @@ namespace TVA.PhasorProtocols
             {
                 OnParsingException(ex, "MultiProtocolFrameParser \"ReceivedUndeterminedFrame\" consumer event handler exception: {0}", ex.Message);
             }
-
-            if (m_transportProtocol == TransportProtocol.File)
-                MaintainCapturedFrameReplayTiming();
         }
 
         private void m_frameParser_ReceivedFrameBufferImage(object sender, EventArgs<FundamentalFrameType, byte[], int, int> e)

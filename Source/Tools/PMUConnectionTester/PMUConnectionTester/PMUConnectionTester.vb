@@ -842,13 +842,16 @@ Public Class PMUConnectionTester
                         ForceIPv4 = m_applicationSettings.ForceIPv4
                     End If
                 Case ApplicationSettings.ConnectionSettingsCategory
-                    ' We allow dynamic changes to the thread parsing state
+                    ' We allow run-time dynamic changes to some frame parsing states
                     If String.Compare(.Name, "ExecuteParseOnSeparateThread", True) = 0 Then
-                        ' Attempt to apply new dynamic parsing state to frame parser
                         m_frameParser.ExecuteParseOnSeparateThread = m_applicationSettings.ExecuteParseOnSeparateThread
 
                         ' Change in ExecuteParseOnSeparateThread may not be allowed based on connection settings, so we restore accepted state to application settings
                         m_applicationSettings.ExecuteParseOnSeparateThread = m_frameParser.ExecuteParseOnSeparateThread
+                    ElseIf String.Compare(.Name, "InjectSimulatedTimestamp", True) = 0 Then
+                        m_frameParser.InjectSimulatedTimestamp = m_applicationSettings.InjectSimulatedTimestamp
+                    ElseIf String.Compare(.Name, "UseHighResolutionInputTimer", True) = 0 Then
+                        m_frameParser.UseHighResolutionInputTimer = m_applicationSettings.UseHighResolutionInputTimer
                     End If
                 Case ApplicationSettings.ChartSettingsCategory, ApplicationSettings.PhaseAngleGraphCategory, ApplicationSettings.FrequencyGraphCategory
                     If String.Compare(.Name, "PhaseAngleGraphStyle", True) = 0 Then
@@ -1857,6 +1860,8 @@ Public Class PMUConnectionTester
                 If Not m_applicationSettings.AutoStartDataParsingSequence Then .ConnectionString &= "; autoStartDataParsingSequence = false"
                 If m_applicationSettings.ExecuteParseOnSeparateThread Then .ConnectionString &= "; executeParseOnSeparateThread = true"
                 If m_applicationSettings.SkipDisableRealTimeData Then .ConnectionString &= "; skipDisableRealTimeData = true"
+                If m_applicationSettings.InjectSimulatedTimestamp Then .ConnectionString &= "; simulateTimestamp = true"
+                If m_applicationSettings.UseHighResolutionInputTimer Then .ConnectionString &= "; useHighResolutionInputTiming = true"
 
                 .PmuID = Convert.ToInt32(TextBoxDeviceID.Text)
                 .FrameRate = Convert.ToInt32(TextBoxFileFrameRate.Text)
@@ -1937,6 +1942,8 @@ Public Class PMUConnectionTester
             If connectionData.TryGetValue("autoStartDataParsingSequence", setting) Then m_applicationSettings.AutoStartDataParsingSequence = setting.ParseBoolean()
             If connectionData.TryGetValue("executeParseOnSeparateThread", setting) Then m_applicationSettings.ExecuteParseOnSeparateThread = setting.ParseBoolean()
             If connectionData.TryGetValue("skipDisableRealTimeData", setting) Then m_applicationSettings.SkipDisableRealTimeData = setting.ParseBoolean()
+            If connectionData.TryGetValue("simulateTimestamp", setting) Then m_applicationSettings.InjectSimulatedTimestamp = setting.ParseBoolean()
+            If connectionData.TryGetValue("useHighResolutionInputTiming", setting) Then m_applicationSettings.UseHighResolutionInputTimer = setting.ParseBoolean()
 
             TextBoxDeviceID.Text = .PmuID.ToString()
             TextBoxFileFrameRate.Text = .FrameRate.ToString()
@@ -2071,6 +2078,8 @@ Public Class PMUConnectionTester
                     .ExecuteParseOnSeparateThread = m_applicationSettings.ExecuteParseOnSeparateThread
                     .SkipDisableRealTimeData = m_applicationSettings.SkipDisableRealTimeData
                     .AllowedParsingExceptions = m_applicationSettings.AllowedParsingExceptions
+                    .InjectSimulatedTimestamp = m_applicationSettings.InjectSimulatedTimestamp
+                    .UseHighResolutionInputTimer = m_applicationSettings.UseHighResolutionInputTimer
                     .ParsingExceptionWindow = Ticks.FromSeconds(m_applicationSettings.ParsingExceptionWindow)
                     .AutoRepeatCapturedPlayback = currentSettings.AutoRepeatPlayback
                     .DefinedFrameRate = Convert.ToInt32(TextBoxFileFrameRate.Text)
