@@ -51,6 +51,8 @@
 //       Added parsing exception threshold settings and consumer event to handle situation.
 //  06/13/2010 - J. Ritchie Carroll
 //       Added several more run-time statistics to the frame parser (e.g., missing frames, CRC errors).
+//  08/10/2010 - J. Ritchie Carroll
+//       Added code to handle high-resolution input timing to support accurate input simulations.
 //
 //*******************************************************************************************************
 
@@ -514,7 +516,8 @@ namespace TVA.PhasorProtocols
         private double m_calculatedByteRate;
         private string m_sourceName;
         private int m_definedFrameRate;
-        private double m_ticksPerFrame;
+        private int[] m_frameMilliseconds;
+        private int m_lastFrameIndex;
         private long m_lastFrameReceivedTime;
         private bool m_autoStartDataParsingSequence;
         private bool m_skipDisableRealTimeData;
@@ -546,7 +549,6 @@ namespace TVA.PhasorProtocols
             m_connectionString = "server=127.0.0.1:4712";
             m_deviceID = 1;
             m_bufferSize = DefaultBufferSize;
-            m_definedFrameRate = DefaultDefinedFrameRate;
             m_maximumConnectionAttempts = DefaultMaximumConnectionAttempts;
             m_autoStartDataParsingSequence = DefaultAutoStartDataParsingSequence;
             m_allowedParsingExceptions = DefaultAllowedParsingExceptions;
@@ -555,6 +557,9 @@ namespace TVA.PhasorProtocols
 
             m_phasorProtocol = PhasorProtocol.IeeeC37_118V1;
             m_transportProtocol = TransportProtocol.Tcp;
+
+            // Set default frame rate, this calculates milliseconds for each frame
+            this.DefinedFrameRate = DefaultDefinedFrameRate;
 
             m_rateCalcTimer.Elapsed += m_rateCalcTimer_Elapsed;
             m_rateCalcTimer.Interval = 5000;
@@ -721,6 +726,9 @@ namespace TVA.PhasorProtocols
                     m_inputTimer.Period = 1;
                     m_inputTimer.AutoReset = true;
                     m_inputTimer.Tick += m_inputTimer_Tick;
+
+                    // Start high resolution timer
+                    m_lastFrameIndex = 0;
                     m_inputTimer.Start();
                 }
                 else if (!value && m_inputTimer != null)
@@ -904,8 +912,26 @@ namespace TVA.PhasorProtocols
             }
             set
             {
-                m_definedFrameRate = value;
-                m_ticksPerFrame = Ticks.PerSecond / (double)m_definedFrameRate;
+                if (m_definedFrameRate != value)
+                {
+                    bool timerActive = UseHighResolutionInputTimer;
+
+                    // Deactivate timer before changing defined frame rate
+                    if (timerActive)
+                        UseHighResolutionInputTimer = false;
+
+                    m_definedFrameRate = value;
+                    m_frameMilliseconds = new int[m_definedFrameRate];
+
+                    for (int frameIndex = 0; frameIndex < m_definedFrameRate; frameIndex++)
+                    {
+                        m_frameMilliseconds[frameIndex] = (int)(1.0D / m_definedFrameRate * (frameIndex * 1000.0D));
+                    }
+
+                    // Reactivate timer if it was active
+                    if (timerActive)
+                        UseHighResolutionInputTimer = true;
+                }                
             }
         }
 
@@ -2151,24 +2177,31 @@ namespace TVA.PhasorProtocols
         void m_inputTimer_Tick(object sender, EventArgs e)
         {
             DateTime now = PrecisionTimer.UtcNow;
-            long ticks = now.Ticks;
-            int milliseconds = now.Millisecond;
-            long baseTicks, ticksBeyondSecond, frameIndex;
+            int frameMilliseconds, milliseconds = now.Millisecond;
+            bool releaseTimer = false;
 
-            // Baseline timestamp to the top of the second
-            baseTicks = ticks - ticks % Ticks.PerSecond;
-
-            // Remove the seconds from ticks
-            ticksBeyondSecond = ticks - baseTicks;
-
-            // Calculate a frame index between 0 and m_definedFrameRate - 1, corresponding to ticks
-            // rounded down to the nearest frame
-            frameIndex = (long)(ticksBeyondSecond / m_ticksPerFrame);
+            if (m_lastFrameIndex >= m_frameMilliseconds.Length - 1)
+                m_lastFrameIndex = 0;
 
             // See if it is time to publish
-            if ((int)(1.0D / m_definedFrameRate * (frameIndex * 1000.0D)) == milliseconds)
+            for (int frameIndex = m_lastFrameIndex; frameIndex < m_frameMilliseconds.Length; frameIndex++)
+            {
+                frameMilliseconds = m_frameMilliseconds[frameIndex];
+
+                if (frameMilliseconds == milliseconds)
+                {
+                    m_lastFrameIndex = frameIndex;
+                    releaseTimer = true;
+                    break;
+                }
+                else if (frameMilliseconds > milliseconds)
+                    break;
+            }
+
+            if (releaseTimer)
             {
                 // Baseline timestamp to the top of the millisecond for frame publication
+                long ticks = now.Ticks;
                 m_lastFrameReceivedTime = ticks - ticks % Ticks.PerMillisecond;
 
                 // Release wait handle

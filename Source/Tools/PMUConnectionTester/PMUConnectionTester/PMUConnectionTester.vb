@@ -1861,7 +1861,7 @@ Public Class PMUConnectionTester
                 If m_applicationSettings.ExecuteParseOnSeparateThread Then .ConnectionString &= "; executeParseOnSeparateThread = true"
                 If m_applicationSettings.SkipDisableRealTimeData Then .ConnectionString &= "; skipDisableRealTimeData = true"
                 If m_applicationSettings.InjectSimulatedTimestamp Then .ConnectionString &= "; simulateTimestamp = true"
-                If m_applicationSettings.UseHighResolutionInputTimer Then .ConnectionString &= "; useHighResolutionInputTiming = true"
+                If m_applicationSettings.UseHighResolutionInputTimer Then .ConnectionString &= "; useHighResolutionInputTimer = true"
 
                 .PmuID = Convert.ToInt32(TextBoxDeviceID.Text)
                 .FrameRate = Convert.ToInt32(TextBoxFileFrameRate.Text)
@@ -1943,7 +1943,7 @@ Public Class PMUConnectionTester
             If connectionData.TryGetValue("executeParseOnSeparateThread", setting) Then m_applicationSettings.ExecuteParseOnSeparateThread = setting.ParseBoolean()
             If connectionData.TryGetValue("skipDisableRealTimeData", setting) Then m_applicationSettings.SkipDisableRealTimeData = setting.ParseBoolean()
             If connectionData.TryGetValue("simulateTimestamp", setting) Then m_applicationSettings.InjectSimulatedTimestamp = setting.ParseBoolean()
-            If connectionData.TryGetValue("useHighResolutionInputTiming", setting) Then m_applicationSettings.UseHighResolutionInputTimer = setting.ParseBoolean()
+            If connectionData.TryGetValue("useHighResolutionInputTimer", setting) Then m_applicationSettings.UseHighResolutionInputTimer = setting.ParseBoolean()
 
             TextBoxDeviceID.Text = .PmuID.ToString()
             TextBoxFileFrameRate.Text = .FrameRate.ToString()
