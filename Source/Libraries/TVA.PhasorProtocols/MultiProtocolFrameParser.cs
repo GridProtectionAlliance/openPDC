@@ -2180,9 +2180,6 @@ namespace TVA.PhasorProtocols
             int frameMilliseconds, milliseconds = now.Millisecond;
             bool releaseTimer = false;
 
-            if (m_lastFrameIndex >= m_frameMilliseconds.Length - 1)
-                m_lastFrameIndex = 0;
-
             // See if it is time to publish
             for (int frameIndex = m_lastFrameIndex; frameIndex < m_frameMilliseconds.Length; frameIndex++)
             {
@@ -2190,7 +2187,11 @@ namespace TVA.PhasorProtocols
 
                 if (frameMilliseconds == milliseconds)
                 {
-                    m_lastFrameIndex = frameIndex;
+                    m_lastFrameIndex = frameIndex + 1;
+
+                    if (m_lastFrameIndex >= m_frameMilliseconds.Length)
+                        m_lastFrameIndex = 0;
+
                     releaseTimer = true;
                     break;
                 }
