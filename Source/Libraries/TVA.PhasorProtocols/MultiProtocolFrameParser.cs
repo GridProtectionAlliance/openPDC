@@ -516,7 +516,7 @@ namespace TVA.PhasorProtocols
         private double m_calculatedByteRate;
         private string m_sourceName;
         private int m_definedFrameRate;
-        private int m_millisecondsPerFrame;
+        private int m_frameWindowSize;
         private int[] m_frameMilliseconds;
         private int m_lastFrameIndex;
         private long m_lastFrameReceivedTime;
@@ -930,8 +930,8 @@ namespace TVA.PhasorProtocols
                     if (timerActive)
                         UseHighResolutionInputTimer = false;
 
-                    m_definedFrameRate = value;
-                    m_millisecondsPerFrame = (int)Math.Round(1000.0D / m_definedFrameRate);
+                    m_definedFrameRate = value;                    
+                    m_frameWindowSize = (int)Math.Round(1000.0D / m_definedFrameRate) * 2;
                     m_frameMilliseconds = new int[m_definedFrameRate];
 
                     for (int frameIndex = 0; frameIndex < m_definedFrameRate; frameIndex++)
@@ -2182,16 +2182,15 @@ namespace TVA.PhasorProtocols
                 if (m_lastFrameReceivedTime > 0)
                 {
                     // To maintain timing on "frames per second", we wait for defined frame rate interval
-                    double sleepTime = (1.0D / m_definedFrameRate) - ((double)(DateTime.UtcNow.Ticks - m_lastFrameReceivedTime) / (double)Ticks.PerSecond);
+                    double sleepTime = (1.0D / m_definedFrameRate) - ((double)(PrecisionTimer.UtcNow.Ticks - m_lastFrameReceivedTime) / (double)Ticks.PerSecond);
 
-                    // Thread sleep time is a minimum suggested sleep time depending on system activity, so we target 9/10 of a second
-                    // to make this a little more accurate. Since this is just used for replay, getting close is good enough - no need
-                    // to incur the overhead of using a PrecisionTimer here unless requested
+                    // Thread sleep time is a minimum suggested sleep time depending on system activity, when not using high-resolution
+                    // input timer we assume getting close is good enough
                     if (sleepTime > 0)
-                        Thread.Sleep((int)(sleepTime * 900.0D));
+                        Thread.Sleep((int)(sleepTime * 1000.0D));
                 }
 
-                m_lastFrameReceivedTime = DateTime.UtcNow.Ticks;
+                m_lastFrameReceivedTime = PrecisionTimer.UtcNow.Ticks;
             }
             else
             {
@@ -2219,7 +2218,7 @@ namespace TVA.PhasorProtocols
                     bool releaseTimer = false, resync = false;
 
                     // Make sure current time is reasonably close to current frame index
-                    if (Math.Abs(milliseconds - m_frameMilliseconds[m_lastFrameIndex]) > m_millisecondsPerFrame * 2)
+                    if (Math.Abs(milliseconds - m_frameMilliseconds[m_lastFrameIndex]) > m_frameWindowSize)
                         m_lastFrameIndex = 0;
 
                     // See if it is time to publish
