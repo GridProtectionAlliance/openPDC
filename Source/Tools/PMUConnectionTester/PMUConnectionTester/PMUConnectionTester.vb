@@ -852,6 +852,9 @@ Public Class PMUConnectionTester
                         m_frameParser.InjectSimulatedTimestamp = m_applicationSettings.InjectSimulatedTimestamp
                     ElseIf String.Compare(.Name, "UseHighResolutionInputTimer", True) = 0 Then
                         m_frameParser.UseHighResolutionInputTimer = m_applicationSettings.UseHighResolutionInputTimer
+
+                        ' Change in UseHighResolutionInputTimer may not be allowed if debugger is attached, so we restore accepted state to application settings
+                        m_applicationSettings.UseHighResolutionInputTimer = m_frameParser.UseHighResolutionInputTimer
                     End If
                 Case ApplicationSettings.ChartSettingsCategory, ApplicationSettings.PhaseAngleGraphCategory, ApplicationSettings.FrequencyGraphCategory
                     If String.Compare(.Name, "PhaseAngleGraphStyle", True) = 0 Then
@@ -2085,12 +2088,15 @@ Public Class PMUConnectionTester
                     .DefinedFrameRate = Convert.ToInt32(TextBoxFileFrameRate.Text)
                     .MaximumConnectionAttempts = m_applicationSettings.MaximumConnectionAttempts
 
-                    ' Assignment of maximum connection attempts can be affected by other settings, update
-                    ' application settings to reflect possible change
+                    ' Assignment of some can be affected by other settings, update these settings to reflect possible change
                     m_applicationSettings.MaximumConnectionAttempts = .MaximumConnectionAttempts
+                    m_applicationSettings.ExecuteParseOnSeparateThread = .ExecuteParseOnSeparateThread
 
                     ' Connect to PMU...
                     .Start()
+
+                    ' Timer will be disabled after connection if not using file based input, update setting to reflect possible change
+                    m_applicationSettings.UseHighResolutionInputTimer = .UseHighResolutionInputTimer
 
                     ' Update visual elements based on connection selections
                     TabControlChart.Tabs(ChartTabs.Graph).Selected = True
