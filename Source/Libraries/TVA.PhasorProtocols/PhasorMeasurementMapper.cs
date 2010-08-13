@@ -911,7 +911,7 @@ namespace TVA.PhasorProtocols
                 if (settings.TryGetValue("useHighResolutionInputTimer", out setting))
                     frameParser.UseHighResolutionInputTimer = setting.ParseBoolean();
                 else
-                    frameParser.UseHighResolutionInputTimer = true;
+                    frameParser.UseHighResolutionInputTimer = false;
             }
 
             // Apply other settings as needed

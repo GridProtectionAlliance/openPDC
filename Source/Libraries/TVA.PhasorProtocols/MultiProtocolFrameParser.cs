@@ -341,6 +341,346 @@ namespace TVA.PhasorProtocols
     {
         #region [ Members ]
 
+        // Nested Types
+
+        /// <summary>
+        /// Precision input timer.
+        /// </summary>
+        /// <remarks>
+        /// This class is used to create highly accurate simulated data inputs aligned to the local clock.<br/>
+        /// One static instance of this internal class is created per encountered frame rate.
+        /// </remarks>
+        private class PrecisionInputTimer : IDisposable
+        {
+            #region [ Members ]
+
+            // Fields
+            private PrecisionTimer m_timer;
+            private bool m_useWaitHandleA;
+            private ManualResetEventSlim m_frameWaitHandleA;
+            private ManualResetEventSlim m_frameWaitHandleB;
+            private object m_timerTickLock;
+            private int m_framesPerSecond;
+            private int m_frameWindowSize;
+            private int[] m_frameMilliseconds;
+            private int m_lastFrameIndex;
+            private long m_lastFrameReceivedTime;
+            private long m_missedPublicationWindows;
+            private long m_lastMissedWindowTime;
+            private long m_resynchronizations;
+            private int m_referenceCount;
+            private bool m_disposed;
+
+            #endregion
+
+            #region [ Constructors ]
+
+            /// <summary>
+            /// Create a new <see cref="PrecisionInputTimer"/> class.
+            /// </summary>
+            /// <param name="framesPerSecond">Desired frame rate for <see cref="PrecisionTimer"/>.</param>
+            public PrecisionInputTimer(int framesPerSecond)
+            {
+                // Create synchronization objects
+                m_frameWaitHandleA = new ManualResetEventSlim(false);
+                m_frameWaitHandleB = new ManualResetEventSlim(false);
+                m_useWaitHandleA = true;
+                m_timerTickLock = new object();
+                m_framesPerSecond = framesPerSecond;
+
+                // Create a new precision timer for this timer state
+                m_timer = new PrecisionTimer();
+                m_timer.Resolution = 1;
+                m_timer.Period = 1;
+                m_timer.AutoReset = true;
+
+                // Attach handler for timer ticks
+                m_timer.Tick += m_timer_Tick;
+
+                m_frameWindowSize = (int)Math.Round(1000.0D / framesPerSecond) * 2;
+                m_frameMilliseconds = new int[framesPerSecond];
+
+                for (int frameIndex = 0; frameIndex < framesPerSecond; frameIndex++)
+                {
+                    m_frameMilliseconds[frameIndex] = (int)(1.0D / framesPerSecond * (frameIndex * 1000.0D));
+                }
+
+                // Start high resolution timer on a separate thread so the start
+                // time can synchronized to the top of the millisecond
+                ThreadPool.QueueUserWorkItem(SynchronizeInputTimer);
+            }
+
+            /// <summary>
+            /// Releases the unmanaged resources before the <see cref="PrecisionInputTimer"/> object is reclaimed by <see cref="GC"/>.
+            /// </summary>
+            ~PrecisionInputTimer()
+            {
+                Dispose(false);
+            }
+
+            #endregion
+
+            #region [ Properties ]
+
+            /// <summary>
+            /// Gets frames per second for this <see cref="PrecisionInputTimer"/>.
+            /// </summary>
+            public int FramesPerSecond
+            {
+                get
+                {
+                    return m_framesPerSecond;
+                }
+            }
+
+            /// <summary>
+            /// Gets array of frame millisecond times for this <see cref="PrecisionInputTimer"/>.
+            /// </summary>
+            public int[] FrameMilliseconds
+            {
+                get
+                {
+                    return m_frameMilliseconds;
+                }
+            }
+
+            /// <summary>
+            /// Gets reference count for this <see cref="PrecisionInputTimer"/>.
+            /// </summary>
+            public int ReferenceCount
+            {
+                get
+                {
+                    return m_referenceCount;
+                }
+            }
+
+            /// <summary>
+            /// Gets number of resynchronizations that have occurred for this <see cref="PrecisionInputTimer"/>.
+            /// </summary>
+            public long Resynchronizations
+            {
+                get
+                {
+                    return m_resynchronizations;
+                }
+            }
+
+            /// <summary>
+            /// Gets time of last frame received, in ticks.
+            /// </summary>
+            public long LastFrameReceivedTime
+            {
+                get
+                {
+                    return m_lastFrameReceivedTime;
+                }
+            }
+
+            /// <summary>
+            /// Gets a reference to the frame wait handle.
+            /// </summary>
+            public ManualResetEventSlim FrameWaitHandle
+            {
+                get
+                {
+                    if (m_useWaitHandleA)
+                        return m_frameWaitHandleA;
+
+                    return m_frameWaitHandleB;
+                }
+            }
+
+            #endregion
+
+            #region [ Methods ]
+
+            /// <summary>
+            /// Releases all the resources used by the <see cref="PrecisionInputTimer"/> object.
+            /// </summary>
+            public void Dispose()
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            /// <summary>
+            /// Releases the unmanaged resources used by the <see cref="PrecisionInputTimer"/> object and optionally releases the managed resources.
+            /// </summary>
+            /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+            protected virtual void Dispose(bool disposing)
+            {
+                if (!m_disposed)
+                {
+                    try
+                    {
+                        if (disposing)
+                        {
+                            if (m_timer != null)
+                            {
+                                m_timer.Tick -= m_timer_Tick;
+                                m_timer.Dispose();
+                            }
+                            m_timer = null;
+
+                            if (m_frameWaitHandleA != null)
+                            {
+                                m_frameWaitHandleA.Set();
+                                m_frameWaitHandleA.Dispose();
+                            }
+                            m_frameWaitHandleA = null;
+
+                            if (m_frameWaitHandleB != null)
+                            {
+                                m_frameWaitHandleB.Set();
+                                m_frameWaitHandleB.Dispose();
+                            }
+                            m_frameWaitHandleB = null;
+                        }
+                    }
+                    finally
+                    {
+                        m_disposed = true;  // Prevent duplicate dispose.
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Adds a reference to this <see cref="PrecisionInputTimer"/>.
+            /// </summary>
+            public void AddReference()
+            {
+                m_referenceCount++;
+            }
+
+            /// <summary>
+            /// Removes a reference to this <see cref="PrecisionInputTimer"/>.
+            /// </summary>
+            public void RemoveReference()
+            {
+                m_referenceCount--;
+            }
+
+            // This timer function is called every millisecond so that frames can be published at the exact desired time 
+            void m_timer_Tick(object sender, EventArgs e)
+            {
+                // Slower systems or systems under stress may have trouble keeping up with a 1-ms timer, so
+                // we only process this code if it's not already processing...
+                if (Monitor.TryEnter(m_timerTickLock))
+                {
+                    try
+                    {
+                        DateTime now = PrecisionTimer.UtcNow;
+                        int frameMilliseconds, milliseconds = now.Millisecond;
+                        long ticks = now.Ticks;
+                        bool releaseTimer = false, resync = false;
+
+                        // Make sure current time is reasonably close to current frame index
+                        if (Math.Abs(milliseconds - m_frameMilliseconds[m_lastFrameIndex]) > m_frameWindowSize)
+                            m_lastFrameIndex = 0;
+
+                        // See if it is time to publish
+                        for (int frameIndex = m_lastFrameIndex; frameIndex < m_frameMilliseconds.Length; frameIndex++)
+                        {
+                            frameMilliseconds = m_frameMilliseconds[frameIndex];
+
+                            if (frameMilliseconds == milliseconds)
+                            {
+                                // See if system skipped a publication window
+                                if (m_lastFrameIndex != frameIndex)
+                                {
+                                    // We monitor for missed windows in quick succession (within 1.5 seconds)
+                                    if (ticks - m_lastMissedWindowTime > 15000000L)
+                                    {
+                                        // Threshold has passed since last missed window, so we reset counters
+                                        m_lastMissedWindowTime = ticks;
+                                        m_missedPublicationWindows = 0;
+                                    }
+
+                                    m_missedPublicationWindows++;
+
+                                    // If the system is starting to skip publications it could need resynchronization,
+                                    // so in this case we restart the high-resolution timer to get the timer started
+                                    // closer to the top of the millisecond
+                                    resync = (m_missedPublicationWindows > 4);
+                                }
+
+                                // Prepare index for next check, time moving forward
+                                m_lastFrameIndex = frameIndex + 1;
+
+                                if (m_lastFrameIndex >= m_frameMilliseconds.Length)
+                                    m_lastFrameIndex = 0;
+
+                                if (resync)
+                                {
+                                    if (m_timer != null)
+                                    {
+                                        m_timer.Stop();
+                                        ThreadPool.QueueUserWorkItem(SynchronizeInputTimer);
+                                        m_resynchronizations++;
+                                    }
+                                }
+
+                                releaseTimer = true;
+                                break;
+                            }
+                            else if (frameMilliseconds > milliseconds)
+                            {
+                                // Time has yet to pass, wait till the next tick
+                                break;
+                            }
+                        }
+
+                        if (releaseTimer)
+                        {
+                            // Baseline timestamp to the top of the millisecond for frame publication
+                            m_lastFrameReceivedTime = ticks - ticks % Ticks.PerMillisecond;
+
+                            // Pulse all waiting threads toggling between ready handles
+                            if (m_useWaitHandleA)
+                            {
+                                m_frameWaitHandleB.Reset();
+                                m_useWaitHandleA = false;
+                                m_frameWaitHandleA.Set();
+                            }
+                            else
+                            {
+                                m_frameWaitHandleA.Reset();
+                                m_useWaitHandleA = true;
+                                m_frameWaitHandleB.Set();
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        Monitor.Exit(m_timerTickLock);
+                    }
+                }
+            }
+
+            private void SynchronizeInputTimer(object state)
+            {
+                // Start timer at as close to the top of the millisecond as possible 
+                bool repeat = true;
+                long last = 0, next;
+
+                while (repeat)
+                {
+                    next = PrecisionTimer.UtcNow.Ticks % Ticks.PerMillisecond % 1000;
+                    repeat = (next > last);
+                    last = next;
+                }
+
+                m_lastMissedWindowTime = 0;
+                m_missedPublicationWindows = 0;
+
+                if (m_timer != null)
+                    m_timer.Start();
+            }
+
+            #endregion
+        }
+
         // Constants
 
         /// <summary>
@@ -430,7 +770,7 @@ namespace TVA.PhasorProtocols
         /// Occurs when a device sends a notification that its configuration has changed.
         /// </summary>
         public event EventHandler ConfigurationChanged;
-        
+
         /// <summary>
         /// Occurs when an <see cref="Exception"/> is encountered while parsing the data stream.
         /// </summary>
@@ -475,7 +815,7 @@ namespace TVA.PhasorProtocols
         /// Occurs when device connection has been terminated.
         /// </summary>
         public event EventHandler ConnectionTerminated;
-        
+
         /// <summary>
         /// Occurs when the <see cref="MultiProtocolFrameParser"/> is setup as a listening connection and server connection has been started.
         /// </summary>
@@ -497,10 +837,9 @@ namespace TVA.PhasorProtocols
         private IClient m_dataChannel;
         private IServer m_serverBasedDataChannel;
         private IClient m_commandChannel;
-        private PrecisionTimer m_inputTimer;
+        private PrecisionInputTimer m_inputTimer;
         private System.Timers.Timer m_rateCalcTimer;
         private IConfigurationFrame m_configurationFrame;
-        private AutoResetEvent m_frameWaitHandle;
         private long m_dataStreamStartTime;
         private bool m_executeParseOnSeparateThread;
         private bool m_autoRepeatCapturedPlayback;
@@ -516,14 +855,8 @@ namespace TVA.PhasorProtocols
         private double m_calculatedByteRate;
         private string m_sourceName;
         private int m_definedFrameRate;
-        private int m_frameWindowSize;
-        private int[] m_frameMilliseconds;
-        private int m_lastFrameIndex;
+        private bool m_attachedToInputTimer;
         private long m_lastFrameReceivedTime;
-        private long m_missedPublicationWindows;
-        private long m_lastMissedWindowTime;
-        private long m_resynchronizations;
-        private object m_inputTimerTickLock;
         private bool m_autoStartDataParsingSequence;
         private bool m_skipDisableRealTimeData;
         private bool m_initiatingDataStream;
@@ -538,9 +871,9 @@ namespace TVA.PhasorProtocols
         private int m_connectionAttempts;
         private bool m_disposed;
 
-        #if RawDataCapture
+#if RawDataCapture
         FileStream m_rawDataCapture;
-        #endif
+#endif
 
         #endregion
 
@@ -559,7 +892,6 @@ namespace TVA.PhasorProtocols
             m_allowedParsingExceptions = DefaultAllowedParsingExceptions;
             m_parsingExceptionWindow = DefaultParsingExceptionWindow;
             m_rateCalcTimer = new System.Timers.Timer();
-            m_inputTimerTickLock = new object();
 
             m_phasorProtocol = PhasorProtocol.IeeeC37_118V1;
             m_transportProtocol = TransportProtocol.Tcp;
@@ -571,8 +903,6 @@ namespace TVA.PhasorProtocols
             m_rateCalcTimer.Interval = 5000;
             m_rateCalcTimer.AutoReset = true;
             m_rateCalcTimer.Enabled = false;
-
-            m_frameWaitHandle = new AutoResetEvent(false);
 
             // Set minimum timer resolution to one millisecond to improve timer accuracy
             PrecisionTimer.SetMinimumTimerResolution(1);
@@ -883,28 +1213,11 @@ namespace TVA.PhasorProtocols
             }
             set
             {
+                // Note that a 1-ms timer and debug mode don't mix, so the high-resolution timer is disabled while debugging
                 if (value && m_inputTimer == null && !System.Diagnostics.Debugger.IsAttached)
-                {
-                    m_inputTimer = new PrecisionTimer();
-                    m_inputTimer.Resolution = 1;
-                    m_inputTimer.Period = 1;
-                    m_inputTimer.AutoReset = true;
-                    m_inputTimer.Tick += m_inputTimer_Tick;
-
-                    // Start high resolution timer
-                    m_lastMissedWindowTime = 0;
-                    m_missedPublicationWindows = 0;
-                    ThreadPool.QueueUserWorkItem(StartInputTimer);
-                }
+                    m_inputTimer = AttachToInputTimer(m_definedFrameRate);
                 else if (!value && m_inputTimer != null)
-                {
-                    m_inputTimer.Tick -= m_inputTimer_Tick;
-                    m_inputTimer.Dispose();
-                    m_inputTimer = null;
-
-                    // Make sure any waiting threads are released
-                    m_frameWaitHandle.Set();
-                }
+                    DetachFromInputTimer(ref m_inputTimer);
             }
         }
 
@@ -930,19 +1243,12 @@ namespace TVA.PhasorProtocols
                     if (timerActive)
                         UseHighResolutionInputTimer = false;
 
-                    m_definedFrameRate = value;                    
-                    m_frameWindowSize = (int)Math.Round(1000.0D / m_definedFrameRate) * 2;
-                    m_frameMilliseconds = new int[m_definedFrameRate];
-
-                    for (int frameIndex = 0; frameIndex < m_definedFrameRate; frameIndex++)
-                    {
-                        m_frameMilliseconds[frameIndex] = (int)(1.0D / m_definedFrameRate * (frameIndex * 1000.0D));
-                    }
+                    m_definedFrameRate = value;
 
                     // Reactivate timer if it was active
                     if (timerActive)
                         UseHighResolutionInputTimer = true;
-                }                
+                }
             }
         }
 
@@ -1016,8 +1322,8 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return (m_phasorProtocol == PhasorProtocols.PhasorProtocol.IeeeC37_118V1 || 
-                        m_phasorProtocol == PhasorProtocols.PhasorProtocol.IeeeC37_118D6 || 
+                return (m_phasorProtocol == PhasorProtocols.PhasorProtocol.IeeeC37_118V1 ||
+                        m_phasorProtocol == PhasorProtocols.PhasorProtocol.IeeeC37_118D6 ||
                         m_phasorProtocol == PhasorProtocols.PhasorProtocol.Ieee1344);
             }
         }
@@ -1279,8 +1585,11 @@ namespace TVA.PhasorProtocols
                     status.AppendLine();
                     status.AppendFormat("     Precision input timer: {0}", UseHighResolutionInputTimer ? "Enabled" : "Offline");
                     status.AppendLine();
-                    status.AppendFormat("  Timer resynchronizations: {0}", m_resynchronizations);
-                    status.AppendLine();
+                    if (m_inputTimer != null)
+                    {
+                        status.AppendFormat("  Timer resynchronizations: {0}", m_inputTimer.Resynchronizations);
+                        status.AppendLine();
+                    }
                 }
 
                 if (m_frameParser != null)
@@ -1341,66 +1650,6 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        ///// <summary>
-        ///// Gets or sets a reference to the active <see cref="IFrameParser"/>.
-        ///// </summary>
-        //internal IFrameParser FrameParser
-        //{
-        //    get
-        //    {
-        //        return m_frameParser;
-        //    }
-        //    set
-        //    {
-        //        m_frameParser = value;
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Gets or sets a reference to the <see cref="IClient"/> data channel.
-        ///// </summary>
-        //internal IClient DataChannel
-        //{
-        //    get
-        //    {
-        //        return m_dataChannel;
-        //    }
-        //    set
-        //    {
-        //        m_dataChannel = value;
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Gets or sets a reference to the <see cref="IServer"/> server based data channel.
-        ///// </summary>
-        //internal IServer ServerBasedDataChannel
-        //{
-        //    get
-        //    {
-        //        return m_serverBasedDataChannel;
-        //    }
-        //    set
-        //    {
-        //        m_serverBasedDataChannel = value;
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Gets or sets a reference to the <see cref="IClient"/> command channel.
-        ///// </summary>
-        //internal IClient CommandChannel
-        //{
-        //    get
-        //    {
-        //        return m_commandChannel;
-        //    }
-        //    set
-        //    {
-        //        m_commandChannel = value;
-        //    }
-        //}
-
         #endregion
 
         #region [ Methods ]
@@ -1428,12 +1677,7 @@ namespace TVA.PhasorProtocols
                     {
                         Stop();
 
-                        if (m_inputTimer != null)
-                        {
-                            m_inputTimer.Tick -= m_inputTimer_Tick;
-                            m_inputTimer.Dispose();
-                        }
-                        m_inputTimer = null;
+                        DetachFromInputTimer(ref m_inputTimer);
 
                         if (m_rateCalcTimer != null)
                         {
@@ -1441,11 +1685,6 @@ namespace TVA.PhasorProtocols
                             m_rateCalcTimer.Dispose();
                         }
                         m_rateCalcTimer = null;
-
-                        if (m_frameWaitHandle != null)
-                            m_frameWaitHandle.Dispose();
-
-                        m_frameWaitHandle = null;
 
                         // Clear minimum timer resolution.
                         PrecisionTimer.ClearMinimumTimerResolution(1);
@@ -1478,11 +1717,6 @@ namespace TVA.PhasorProtocols
             m_calculatedByteRate = 0.0D;
             m_lastParsingExceptionTime = 0;
             m_parsingExceptionCount = 0;
-            m_lastFrameReceivedTime = 0;
-            m_lastFrameIndex = 0;
-            m_lastMissedWindowTime = 0;
-            m_missedPublicationWindows = 0;
-            m_resynchronizations = 0;
 
             try
             {
@@ -1863,11 +2097,11 @@ namespace TVA.PhasorProtocols
             }
             m_frameParser = null;
 
-            #if RawDataCapture
+#if RawDataCapture
             if (m_rawDataCapture != null)
                 m_rawDataCapture.Close();
             m_rawDataCapture = null;
-            #endif
+#endif
         }
 
         /// <summary>
@@ -1945,7 +2179,7 @@ namespace TVA.PhasorProtocols
             }
 
             return handle;
-        }        
+        }
 
         /// <summary>
         /// Writes data directly to the frame parsing engine buffer.
@@ -1962,15 +2196,15 @@ namespace TVA.PhasorProtocols
             // of data directly from the socket (i.e., ReceiveDataHandler) that is used for a
             // speed boost in communications processing...
 
-            #if RawDataCapture
+#if RawDataCapture
             if (m_rawDataCapture == null)
                 m_rawDataCapture = new FileStream(FilePath.GetAbsolutePath("RawData.Capture"), FileMode.Create);
             m_rawDataCapture.Write(buffer, offset, count);
-            #endif
+#endif
 
             // Pass data from communications client into protocol specific frame parser
             m_frameParser.Write(buffer, offset, count);
-            
+
             m_byteRateTotal += count;
 
             if (m_initiatingDataStream)
@@ -2195,117 +2429,71 @@ namespace TVA.PhasorProtocols
             else
             {
                 // When high resolution input timing is requested, we only need to wait for the next signal...
-                m_frameWaitHandle.WaitOne();
+                m_inputTimer.FrameWaitHandle.Wait();
+
+                // Input timer can be disabled while thread is waiting, so we make sure it is not null
+                if (m_inputTimer != null)
+                    m_lastFrameReceivedTime = m_inputTimer.LastFrameReceivedTime;
             }
-            
+
             // If injecting a simulated timestamp, use the last received time
             if (m_injectSimulatedTimestamp)
                 sourceFrame.Timestamp = m_lastFrameReceivedTime;
         }
 
-        // This timer function is called every millisecond so that frames can be published at the exact desired time 
-        void m_inputTimer_Tick(object sender, EventArgs e)
+        // Handle attach to input timer
+        private PrecisionInputTimer AttachToInputTimer(int framesPerSecond)
         {
-            // Slower systems or systems under stress may have trouble keeping up with 1-ms timer, so
-            // we only process this code if it's not already processing...
-            if (Monitor.TryEnter(m_inputTimerTickLock))
+            PrecisionInputTimer timer;
+
+            lock (s_inputTimers)
             {
-                try
+                // Get static input timer for given frames per second creating it if needed
+                if (!s_inputTimers.TryGetValue(framesPerSecond, out timer))
                 {
-                    DateTime now = PrecisionTimer.UtcNow;
-                    int frameMilliseconds, milliseconds = now.Millisecond;
-                    long ticks = now.Ticks;
-                    bool releaseTimer = false, resync = false;
+                    // Create a new precision input timer
+                    timer = new PrecisionInputTimer(framesPerSecond);
 
-                    // Make sure current time is reasonably close to current frame index
-                    if (Math.Abs(milliseconds - m_frameMilliseconds[m_lastFrameIndex]) > m_frameWindowSize)
-                        m_lastFrameIndex = 0;
-
-                    // See if it is time to publish
-                    for (int frameIndex = m_lastFrameIndex; frameIndex < m_frameMilliseconds.Length; frameIndex++)
-                    {
-                        frameMilliseconds = m_frameMilliseconds[frameIndex];
-
-                        if (frameMilliseconds == milliseconds)
-                        {
-                            // See if system skipped a publication window
-                            if (m_lastFrameIndex != frameIndex)
-                            {
-                                // We monitor for missed windows in quick succession
-                                if (ticks - m_lastMissedWindowTime > 15000000L)
-                                {
-                                    // Threshold has passed since last missed window, so we reset counters
-                                    m_lastMissedWindowTime = ticks;
-                                    m_missedPublicationWindows = 0;
-                                }
-
-                                m_missedPublicationWindows++;
-
-                                // If the system is starting to skip publications it could need resynchronization,
-                                // so in this case we restart the high-resolution timer to get the system started
-                                // closer to the top of the millisecond
-                                resync = (m_missedPublicationWindows > 4);
-                            }
-
-                            // Prepare index for next check, time moving forward
-                            m_lastFrameIndex = frameIndex + 1;
-
-                            if (m_lastFrameIndex >= m_frameMilliseconds.Length)
-                                m_lastFrameIndex = 0;
-
-                            if (resync)
-                            {
-                                m_resynchronizations++;
-                                ThreadPool.QueueUserWorkItem(RestartInputTimer);
-                            }
-
-                            releaseTimer = true;
-                            break;
-                        }
-                        else if (frameMilliseconds > milliseconds)
-                        {
-                            // Time has yet to pass, wait till the next tick
-                            break;
-                        }
-                    }
-
-                    if (releaseTimer)
-                    {
-                        // Baseline timestamp to the top of the millisecond for frame publication
-                        m_lastFrameReceivedTime = ticks - ticks % Ticks.PerMillisecond;
-
-                        // Release wait handle
-                        m_frameWaitHandle.Set();
-                    }
+                    // Add timer state for given rate to static collection
+                    s_inputTimers.Add(framesPerSecond, timer);
                 }
-                finally
-                {
-                    Monitor.Exit(m_inputTimerTickLock);
-                }
-            }
-        }
 
-        private void RestartInputTimer(object state)
-        {
-            UseHighResolutionInputTimer = false;
-            UseHighResolutionInputTimer = true;
-        }
-
-        private void StartInputTimer(object state)
-        {
-            // Start timer at as close to the top of the millisecond as possible 
-            bool repeat = true;
-            long last = 0, next;
-
-            while (repeat)
-            {
-                next = PrecisionTimer.UtcNow.Ticks % Ticks.PerMillisecond % 1000;
-                repeat = (next > last);
-                last = next;
+                // Increment reference count for input timer at given frame rate
+                timer.AddReference();
+                m_attachedToInputTimer = true;
             }
 
-            if (m_inputTimer != null && m_transportProtocol == TransportProtocol.File)
-                m_inputTimer.Start();
+            return timer;
+        }
+
+        // Handle detach from input timer
+        private void DetachFromInputTimer(ref PrecisionInputTimer timer)
+        {
+            if (timer != null)
+            {
+                lock (s_inputTimers)
+                {
+                    if (m_attachedToInputTimer)
+                    {
+                        // Verify static frame rate timer for given frames per second exists
+                        if (s_inputTimers.ContainsKey(timer.FramesPerSecond))
+                        {
+                            // Decrement reference count
+                            timer.RemoveReference();
+                            m_attachedToInputTimer = false;
+
+                            // If timer is no longer being referenced we stop it and remove it from static collection
+                            if (timer.ReferenceCount == 0)
+                            {
+                                timer.Dispose();
+                                s_inputTimers.Remove(timer.FramesPerSecond);
+                            }
+                        }
+                    }
+                }
+            }
+
+            timer = null;
         }
 
         #region [ Data Channel Event Handlers ]
@@ -2405,7 +2593,7 @@ namespace TVA.PhasorProtocols
                 if (m_transportProtocol == TransportProtocol.File)
                     MaintainCapturedFrameReplayTiming(e.Argument);
                 else if (m_injectSimulatedTimestamp)
-                    m_lastFrameReceivedTime = PrecisionTimer.UtcNow.Ticks;
+                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedCommandFrame != null)
                     ReceivedCommandFrame(this, e);
@@ -2432,7 +2620,7 @@ namespace TVA.PhasorProtocols
                 if (m_transportProtocol == TransportProtocol.File)
                     MaintainCapturedFrameReplayTiming(e.Argument);
                 else if (m_injectSimulatedTimestamp)
-                    m_lastFrameReceivedTime = PrecisionTimer.UtcNow.Ticks;
+                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedConfigurationFrame != null)
                     ReceivedConfigurationFrame(this, e);
@@ -2456,7 +2644,7 @@ namespace TVA.PhasorProtocols
                 if (m_transportProtocol == TransportProtocol.File)
                     MaintainCapturedFrameReplayTiming(e.Argument);
                 else if (m_injectSimulatedTimestamp)
-                    m_lastFrameReceivedTime = PrecisionTimer.UtcNow.Ticks;
+                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedDataFrame != null)
                     ReceivedDataFrame(this, e);
@@ -2481,7 +2669,7 @@ namespace TVA.PhasorProtocols
                 if (m_transportProtocol == TransportProtocol.File)
                     MaintainCapturedFrameReplayTiming(e.Argument);
                 else if (m_injectSimulatedTimestamp)
-                    m_lastFrameReceivedTime = PrecisionTimer.UtcNow.Ticks;
+                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedHeaderFrame != null)
                     ReceivedHeaderFrame(this, e);
@@ -2502,7 +2690,7 @@ namespace TVA.PhasorProtocols
                 if (m_transportProtocol == TransportProtocol.File)
                     MaintainCapturedFrameReplayTiming(e.Argument);
                 else if (m_injectSimulatedTimestamp)
-                    m_lastFrameReceivedTime = PrecisionTimer.UtcNow.Ticks;
+                    e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedUndeterminedFrame != null)
                     ReceivedUndeterminedFrame(this, e);
@@ -2554,5 +2742,19 @@ namespace TVA.PhasorProtocols
         #endregion
 
         #endregion
+
+        #region [ Static ]
+
+        // Static Fields
+        private static Dictionary<int, PrecisionInputTimer> s_inputTimers;
+
+        // Static Constructor
+        static MultiProtocolFrameParser()
+        {
+            s_inputTimers = new Dictionary<int, PrecisionInputTimer>();
+        }
+
+        #endregion
+
     }
 }
