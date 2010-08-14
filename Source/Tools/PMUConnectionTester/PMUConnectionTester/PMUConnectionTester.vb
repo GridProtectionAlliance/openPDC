@@ -721,6 +721,24 @@ Public Class PMUConnectionTester
 
     End Sub
 
+    Private Sub ButtonRestoreDefaultSettings_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonRestoreDefaultSettings.Click
+
+        If MsgBox("Are you sure you want to restore the default settings?" & vbCrLf & vbCrLf & _
+                  "Note that application will be closed and you will need to restart.", MsgBoxStyle.YesNo Or MsgBoxStyle.Question, _
+                  "Restore Default Settings") = MsgBoxResult.Yes Then
+            Try
+                Dim userSettingsFile As String = Path.Combine(GetApplicationDataFolder(), "Settings.xml")
+                Disconnect()
+                ConfigurationFile.Current.Save(System.Configuration.ConfigurationSaveMode.Full)
+                If File.Exists(userSettingsFile) Then File.Delete(userSettingsFile)
+                Shutdown()
+            Catch ex As Exception
+                MsgBox("Exception occured while trying to restore default settings: " & ex.Message, MsgBoxStyle.OkOnly Or MsgBoxStyle.Exclamation)
+            End Try
+        End If
+
+    End Sub
+
     Private Sub ButtonBrowse_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonBrowse.Click
 
         With OpenFileDialog

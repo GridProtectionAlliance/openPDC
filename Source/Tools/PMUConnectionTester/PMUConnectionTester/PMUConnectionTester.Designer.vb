@@ -19,248 +19,249 @@ Partial Class PMUConnectionTester
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container
-        Dim Appearance1 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance2 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance3 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Me.components = New System.ComponentModel.Container()
+        Dim Appearance1 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance2 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance3 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
         Dim UltraToolTipInfo9 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[Default])
-        Dim Appearance55 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance56 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance36 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance55 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance56 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance36 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
         Dim UltraToolTipInfo3 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Enter host DNS name, IPv4 or IPv6 address", Infragistics.Win.ToolTipImage.[Default], Nothing, Infragistics.Win.DefaultableBoolean.[Default])
-        Dim Appearance37 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance38 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance37 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance38 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
         Dim UltraToolTipInfo4 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Enter host DNS name, IPv4 or IPv6 address", Infragistics.Win.ToolTipImage.[Default], Nothing, Infragistics.Win.DefaultableBoolean.[Default])
-        Dim Appearance39 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance40 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance39 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance40 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
         Dim UltraToolTipInfo5 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("This enables the Request to Send (RTS) signal during serial communication.", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[Default])
         Dim UltraToolTipInfo6 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("This enables the Data Terminal Ready (DTR) signal during serial communication.", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[Default])
-        Dim Appearance41 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance42 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance43 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance44 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance45 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance46 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance47 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance48 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance49 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim PaintElement1 As Infragistics.UltraChart.Resources.Appearance.PaintElement = New Infragistics.UltraChart.Resources.Appearance.PaintElement
-        Dim Appearance33 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance50 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance34 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraTab5 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
-        Dim UltraTab6 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
+        Dim Appearance41 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance42 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance43 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance44 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance45 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance46 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance47 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance48 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance49 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim PaintElement1 As Infragistics.UltraChart.Resources.Appearance.PaintElement = New Infragistics.UltraChart.Resources.Appearance.PaintElement()
+        Dim Appearance33 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance50 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance34 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim UltraTab5 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab()
+        Dim UltraTab6 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab()
         Dim UltraToolTipInfo2 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("This protocol has additional connection parameters.  Click here to view.", Infragistics.Win.ToolTipImage.[Default], Nothing, Infragistics.Win.DefaultableBoolean.[False])
-        Dim Appearance35 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraTab7 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
-        Dim UltraTab8 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
-        Dim UltraTab9 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
-        Dim UltraTab10 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
-        Dim Appearance19 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance35 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim UltraTab7 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab()
+        Dim UltraTab8 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab()
+        Dim UltraTab9 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab()
+        Dim UltraTab10 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab()
+        Dim Appearance19 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
         Dim UltraToolTipInfo1 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Keeping this data window displayed may cause the graph to fall behind real-time", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[True])
-        Dim Appearance12 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance13 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance14 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance15 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance16 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance17 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance18 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraStatusPanel1 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
-        Dim UltraStatusPanel2 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
-        Dim Appearance29 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraStatusPanel3 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
-        Dim UltraStatusPanel4 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
-        Dim Appearance30 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraStatusPanel5 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
-        Dim UltraStatusPanel6 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
-        Dim Appearance31 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraStatusPanel7 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
-        Dim UltraStatusPanel8 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
-        Dim UltraStatusPanel9 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
-        Dim UltraStatusPanel10 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel
-        Dim Appearance32 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance51 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance52 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance12 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance13 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance14 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance15 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance16 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance17 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance18 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim UltraStatusPanel1 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel()
+        Dim UltraStatusPanel2 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel()
+        Dim Appearance29 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim UltraStatusPanel3 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel()
+        Dim UltraStatusPanel4 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel()
+        Dim Appearance30 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim UltraStatusPanel5 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel()
+        Dim UltraStatusPanel6 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel()
+        Dim Appearance31 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim UltraStatusPanel7 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel()
+        Dim UltraStatusPanel8 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel()
+        Dim UltraStatusPanel9 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel()
+        Dim UltraStatusPanel10 As Infragistics.Win.UltraWinStatusBar.UltraStatusPanel = New Infragistics.Win.UltraWinStatusBar.UltraStatusPanel()
+        Dim Appearance32 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance51 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance52 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
         Dim UltraToolTipInfo7 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Click link to change source voltage and current phasors for power / vars calculat" & _
                 "ions...", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[Default])
-        Dim Appearance53 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance54 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance53 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance54 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
         Dim UltraToolTipInfo8 As Infragistics.Win.UltraWinToolTip.UltraToolTipInfo = New Infragistics.Win.UltraWinToolTip.UltraToolTipInfo("Click link to change source voltage and current phasors for power / vars calculat" & _
                 "ions...", Infragistics.Win.ToolTipImage.Info, "Note", Infragistics.Win.DefaultableBoolean.[Default])
-        Dim Appearance28 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance27 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance20 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance21 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance22 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance23 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance24 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance25 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance26 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance7 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraTab1 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
-        Dim Appearance8 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
+        Dim Appearance28 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance27 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance20 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance21 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance22 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance23 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance24 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance25 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance26 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance7 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim UltraTab1 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab()
+        Dim Appearance8 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(PMUConnectionTester))
-        Dim UltraTab2 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
-        Dim Appearance9 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraTab3 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
-        Dim Appearance10 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim UltraTab4 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab
-        Dim Appearance11 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance5 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance6 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Dim Appearance4 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance
-        Me.TabPageControl9 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl
-        Me.LabelAlternateCommandChannelState = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelAlternateCommandChannel = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelVersion = New Infragistics.Win.Misc.UltraLabel
-        Me.ButtonListen = New Infragistics.Win.Misc.UltraButton
-        Me.ComboBoxCommands = New System.Windows.Forms.ComboBox
-        Me.LabelCommand = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelDeviceID = New Infragistics.Win.Misc.UltraLabel
-        Me.TextBoxDeviceID = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit
-        Me.ButtonSendCommand = New Infragistics.Win.Misc.UltraButton
-        Me.ComboBoxProtocols = New System.Windows.Forms.ComboBox
-        Me.TabPageControl10 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl
-        Me.TabPageControl1 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl
-        Me.CheckBoxEstablishTcpServer = New Infragistics.Win.UltraWinEditors.UltraCheckEditor
-        Me.LabelTcpHostIP = New Infragistics.Win.Misc.UltraLabel
-        Me.TextBoxTcpHostIP = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit
-        Me.LabelTcpPort = New Infragistics.Win.Misc.UltraLabel
-        Me.TextBoxTcpPort = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit
-        Me.TabPageControl2 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl
-        Me.GroupBoxRemoteUDPServer = New Infragistics.Win.Misc.UltraGroupBox
-        Me.LabelUdpHostIP = New Infragistics.Win.Misc.UltraLabel
-        Me.TextBoxUdpHostIP = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit
-        Me.LabelUdpRemotePort = New Infragistics.Win.Misc.UltraLabel
-        Me.TextBoxUdpRemotePort = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit
-        Me.CheckBoxRemoteUdpServer = New Infragistics.Win.UltraWinEditors.UltraCheckEditor
-        Me.LabelUdpLocalPort = New Infragistics.Win.Misc.UltraLabel
-        Me.TextBoxUdpLocalPort = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit
-        Me.TabPageControl3 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl
-        Me.CheckBoxSerialRTS = New Infragistics.Win.UltraWinEditors.UltraCheckEditor
-        Me.CheckBoxSerialDTR = New Infragistics.Win.UltraWinEditors.UltraCheckEditor
-        Me.TextBoxSerialDataBits = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit
-        Me.ComboBoxSerialStopBits = New System.Windows.Forms.ComboBox
-        Me.ComboBoxSerialParities = New System.Windows.Forms.ComboBox
-        Me.LabelSerialParity = New Infragistics.Win.Misc.UltraLabel
-        Me.ComboBoxSerialBaudRates = New System.Windows.Forms.ComboBox
-        Me.LabelSerialBaudRate = New Infragistics.Win.Misc.UltraLabel
-        Me.ComboBoxSerialPorts = New System.Windows.Forms.ComboBox
-        Me.LabelSerialPort = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelSerialStopBits = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelSerialDataBits = New Infragistics.Win.Misc.UltraLabel
-        Me.TabPageControl4 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl
-        Me.CheckBoxAutoRepeatPlayback = New Infragistics.Win.UltraWinEditors.UltraCheckEditor
-        Me.LabelFrameRate = New Infragistics.Win.Misc.UltraLabel
-        Me.TextBoxFileFrameRate = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit
-        Me.ButtonBrowse = New System.Windows.Forms.Button
-        Me.TextBoxFileCaptureName = New System.Windows.Forms.TextBox
-        Me.LabelCaptureFile = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelFramesPerSecond = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelReplayCapturedFile = New Infragistics.Win.Misc.UltraLabel
-        Me.TabPageControl5 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl
-        Me.ChartDataDisplay = New Infragistics.Win.UltraWinChart.UltraChart
-        Me.TabPageControl6 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl
-        Me.GroupBoxPowerVarCalculations = New Infragistics.Win.Misc.UltraGroupBox
-        Me.ComboBoxCurrentPhasors = New System.Windows.Forms.ComboBox
-        Me.LabelCurrentPhasor = New Infragistics.Win.Misc.UltraLabel
-        Me.ComboBoxVoltagePhasors = New System.Windows.Forms.ComboBox
-        Me.LabelVoltagePhasor = New Infragistics.Win.Misc.UltraLabel
-        Me.PropertyGridApplicationSettings = New System.Windows.Forms.PropertyGrid
-        Me.ButtonGetStatus = New Infragistics.Win.Misc.UltraButton
-        Me.TabPageControl7 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl
-        Me.TextBoxMessages = New System.Windows.Forms.TextBox
-        Me.TabPageControl8 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl
-        Me.TreeFrameAttributes = New Infragistics.Win.UltraWinTree.UltraTree
+        Dim UltraTab2 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab()
+        Dim Appearance9 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim UltraTab3 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab()
+        Dim Appearance10 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim UltraTab4 As Infragistics.Win.UltraWinTabControl.UltraTab = New Infragistics.Win.UltraWinTabControl.UltraTab()
+        Dim Appearance11 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance5 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance6 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Dim Appearance4 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
+        Me.TabPageControl9 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl()
+        Me.LabelAlternateCommandChannelState = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelAlternateCommandChannel = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelVersion = New Infragistics.Win.Misc.UltraLabel()
+        Me.ButtonListen = New Infragistics.Win.Misc.UltraButton()
+        Me.ComboBoxCommands = New System.Windows.Forms.ComboBox()
+        Me.LabelCommand = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelDeviceID = New Infragistics.Win.Misc.UltraLabel()
+        Me.TextBoxDeviceID = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit()
+        Me.ButtonSendCommand = New Infragistics.Win.Misc.UltraButton()
+        Me.ComboBoxProtocols = New System.Windows.Forms.ComboBox()
+        Me.TabPageControl10 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl()
+        Me.TabPageControl1 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl()
+        Me.CheckBoxEstablishTcpServer = New Infragistics.Win.UltraWinEditors.UltraCheckEditor()
+        Me.LabelTcpHostIP = New Infragistics.Win.Misc.UltraLabel()
+        Me.TextBoxTcpHostIP = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit()
+        Me.LabelTcpPort = New Infragistics.Win.Misc.UltraLabel()
+        Me.TextBoxTcpPort = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit()
+        Me.TabPageControl2 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl()
+        Me.GroupBoxRemoteUDPServer = New Infragistics.Win.Misc.UltraGroupBox()
+        Me.LabelUdpHostIP = New Infragistics.Win.Misc.UltraLabel()
+        Me.TextBoxUdpHostIP = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit()
+        Me.LabelUdpRemotePort = New Infragistics.Win.Misc.UltraLabel()
+        Me.TextBoxUdpRemotePort = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit()
+        Me.CheckBoxRemoteUdpServer = New Infragistics.Win.UltraWinEditors.UltraCheckEditor()
+        Me.LabelUdpLocalPort = New Infragistics.Win.Misc.UltraLabel()
+        Me.TextBoxUdpLocalPort = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit()
+        Me.TabPageControl3 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl()
+        Me.CheckBoxSerialRTS = New Infragistics.Win.UltraWinEditors.UltraCheckEditor()
+        Me.CheckBoxSerialDTR = New Infragistics.Win.UltraWinEditors.UltraCheckEditor()
+        Me.TextBoxSerialDataBits = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit()
+        Me.ComboBoxSerialStopBits = New System.Windows.Forms.ComboBox()
+        Me.ComboBoxSerialParities = New System.Windows.Forms.ComboBox()
+        Me.LabelSerialParity = New Infragistics.Win.Misc.UltraLabel()
+        Me.ComboBoxSerialBaudRates = New System.Windows.Forms.ComboBox()
+        Me.LabelSerialBaudRate = New Infragistics.Win.Misc.UltraLabel()
+        Me.ComboBoxSerialPorts = New System.Windows.Forms.ComboBox()
+        Me.LabelSerialPort = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelSerialStopBits = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelSerialDataBits = New Infragistics.Win.Misc.UltraLabel()
+        Me.TabPageControl4 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl()
+        Me.CheckBoxAutoRepeatPlayback = New Infragistics.Win.UltraWinEditors.UltraCheckEditor()
+        Me.LabelFrameRate = New Infragistics.Win.Misc.UltraLabel()
+        Me.TextBoxFileFrameRate = New Infragistics.Win.UltraWinMaskedEdit.UltraMaskedEdit()
+        Me.ButtonBrowse = New System.Windows.Forms.Button()
+        Me.TextBoxFileCaptureName = New System.Windows.Forms.TextBox()
+        Me.LabelCaptureFile = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelFramesPerSecond = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelReplayCapturedFile = New Infragistics.Win.Misc.UltraLabel()
+        Me.TabPageControl5 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl()
+        Me.ChartDataDisplay = New Infragistics.Win.UltraWinChart.UltraChart()
+        Me.TabPageControl6 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl()
+        Me.GroupBoxPowerVarCalculations = New Infragistics.Win.Misc.UltraGroupBox()
+        Me.ComboBoxCurrentPhasors = New System.Windows.Forms.ComboBox()
+        Me.LabelCurrentPhasor = New Infragistics.Win.Misc.UltraLabel()
+        Me.ComboBoxVoltagePhasors = New System.Windows.Forms.ComboBox()
+        Me.LabelVoltagePhasor = New Infragistics.Win.Misc.UltraLabel()
+        Me.PropertyGridApplicationSettings = New System.Windows.Forms.PropertyGrid()
+        Me.ButtonGetStatus = New Infragistics.Win.Misc.UltraButton()
+        Me.TabPageControl7 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl()
+        Me.TextBoxMessages = New System.Windows.Forms.TextBox()
+        Me.TabPageControl8 = New Infragistics.Win.UltraWinTabControl.UltraTabPageControl()
+        Me.TreeFrameAttributes = New Infragistics.Win.UltraWinTree.UltraTree()
         Me.ContextMenuForTree = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.MenuItemRefresh = New System.Windows.Forms.ToolStripMenuItem
-        Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator
-        Me.MenuItemExpandAll = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemCollapseAll = New System.Windows.Forms.ToolStripMenuItem
-        Me.GroupBoxConnection = New Infragistics.Win.Misc.UltraExpandableGroupBox
-        Me.GroupBoxPanelConnection = New Infragistics.Win.Misc.UltraExpandableGroupBoxPanel
-        Me.TabControlProtocolParameters = New Infragistics.Win.UltraWinTabControl.UltraTabControl
-        Me.TabSharedControlsPageProtocolParameters = New Infragistics.Win.UltraWinTabControl.UltraTabSharedControlsPage
-        Me.TabControlCommunications = New Infragistics.Win.UltraWinTabControl.UltraTabControl
-        Me.TabSharedControlsPageCommunications = New Infragistics.Win.UltraWinTabControl.UltraTabSharedControlsPage
-        Me.GroupBoxStatus = New Infragistics.Win.Misc.UltraExpandableGroupBox
-        Me.GroupBoxPanelStatus = New Infragistics.Win.Misc.UltraExpandableGroupBoxPanel
-        Me.LabelBinaryFrameImage = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelDisplayFormat = New Infragistics.Win.Misc.UltraLabel
-        Me.ComboBoxByteEncodingDisplayFormats = New System.Windows.Forms.ComboBox
-        Me.LabelFrameType = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelFrameTypeLabel = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelFrequency = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelFrequencyLabel = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelMagnitude = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelMagnitudeLabel = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelAngle = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelAngleLabel = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelTime = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelTimeLabel = New Infragistics.Win.Misc.UltraLabel
-        Me.StatusBar = New Infragistics.Win.UltraWinStatusBar.UltraStatusBar
+        Me.MenuItemRefresh = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
+        Me.MenuItemExpandAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemCollapseAll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.GroupBoxConnection = New Infragistics.Win.Misc.UltraExpandableGroupBox()
+        Me.GroupBoxPanelConnection = New Infragistics.Win.Misc.UltraExpandableGroupBoxPanel()
+        Me.TabControlProtocolParameters = New Infragistics.Win.UltraWinTabControl.UltraTabControl()
+        Me.TabSharedControlsPageProtocolParameters = New Infragistics.Win.UltraWinTabControl.UltraTabSharedControlsPage()
+        Me.TabControlCommunications = New Infragistics.Win.UltraWinTabControl.UltraTabControl()
+        Me.TabSharedControlsPageCommunications = New Infragistics.Win.UltraWinTabControl.UltraTabSharedControlsPage()
+        Me.GroupBoxStatus = New Infragistics.Win.Misc.UltraExpandableGroupBox()
+        Me.GroupBoxPanelStatus = New Infragistics.Win.Misc.UltraExpandableGroupBoxPanel()
+        Me.LabelBinaryFrameImage = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelDisplayFormat = New Infragistics.Win.Misc.UltraLabel()
+        Me.ComboBoxByteEncodingDisplayFormats = New System.Windows.Forms.ComboBox()
+        Me.LabelFrameType = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelFrameTypeLabel = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelFrequency = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelFrequencyLabel = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelMagnitude = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelMagnitudeLabel = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelAngle = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelAngleLabel = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelTime = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelTimeLabel = New Infragistics.Win.Misc.UltraLabel()
+        Me.StatusBar = New Infragistics.Win.UltraWinStatusBar.UltraStatusBar()
         Me.ToolTipManager = New Infragistics.Win.UltraWinToolTip.UltraToolTipManager(Me.components)
-        Me.LabelVarsLabel = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelPowerLabel = New Infragistics.Win.Misc.UltraLabel
-        Me.OpenFileDialog = New System.Windows.Forms.OpenFileDialog
-        Me.GroupBoxHeaderFrame = New Infragistics.Win.Misc.UltraExpandableGroupBox
-        Me.GroupBoxPanelHeaderFrame = New Infragistics.Win.Misc.UltraExpandableGroupBoxPanel
-        Me.TextBoxHeaderFrame = New Infragistics.Win.UltraWinEditors.UltraTextEditor
-        Me.SaveFileDialog = New System.Windows.Forms.SaveFileDialog
-        Me.GroupBoxConfigurationFrame = New Infragistics.Win.Misc.UltraExpandableGroupBox
-        Me.GroupBoxPanelConfigurationFrame = New Infragistics.Win.Misc.UltraExpandableGroupBoxPanel
-        Me.LabelPhasorCount = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelPhasorCountLabel = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelHz = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelNominalFrequency = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelNominalFrequencyLabel = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelDigitalCount = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelDigitalCountLabel = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelAnalogCount = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelAnalogCountLabel = New Infragistics.Win.Misc.UltraLabel
-        Me.ComboBoxPmus = New System.Windows.Forms.ComboBox
-        Me.LabelIDCode = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelIDCodeLabel = New Infragistics.Win.Misc.UltraLabel
-        Me.ComboBoxPhasors = New System.Windows.Forms.ComboBox
-        Me.LabelPmuList = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelSelectedIsRefAngle = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelPhasor = New Infragistics.Win.Misc.UltraLabel
-        Me.MenuStripMain = New System.Windows.Forms.MenuStrip
-        Me.MenuItemFile = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemConnection = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemLoadConnection = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemSaveConnection = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemConfigFile = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemLoadConfigFile = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemSaveConfigFile = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemCapture = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemStartCapture = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemStopCapture = New System.Windows.Forms.ToolStripMenuItem
-        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator
-        Me.MenuItemStartStreamDebugCapture = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemStopStreamDebugCapture = New System.Windows.Forms.ToolStripMenuItem
-        Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator
-        Me.MenuItemCaptureSampleFrames = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemCancelSampleFrameCapture = New System.Windows.Forms.ToolStripMenuItem
-        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator
-        Me.MenuItemExit = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemHelp = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemLocalHelp = New System.Windows.Forms.ToolStripMenuItem
-        Me.MenuItemOnlineHelp = New System.Windows.Forms.ToolStripMenuItem
-        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator
-        Me.MenuItemAbout = New System.Windows.Forms.ToolStripMenuItem
-        Me.TabSharedControlsPageChart = New Infragistics.Win.UltraWinTabControl.UltraTabSharedControlsPage
-        Me.TabControlChart = New Infragistics.Win.UltraWinTabControl.UltraTabControl
-        Me.GroupBoxRealTimePowerVars = New Infragistics.Win.Misc.UltraGroupBox
-        Me.LabelVars = New Infragistics.Win.Misc.UltraLabel
-        Me.LabelPower = New Infragistics.Win.Misc.UltraLabel
+        Me.LabelVarsLabel = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelPowerLabel = New Infragistics.Win.Misc.UltraLabel()
+        Me.OpenFileDialog = New System.Windows.Forms.OpenFileDialog()
+        Me.GroupBoxHeaderFrame = New Infragistics.Win.Misc.UltraExpandableGroupBox()
+        Me.GroupBoxPanelHeaderFrame = New Infragistics.Win.Misc.UltraExpandableGroupBoxPanel()
+        Me.TextBoxHeaderFrame = New Infragistics.Win.UltraWinEditors.UltraTextEditor()
+        Me.SaveFileDialog = New System.Windows.Forms.SaveFileDialog()
+        Me.GroupBoxConfigurationFrame = New Infragistics.Win.Misc.UltraExpandableGroupBox()
+        Me.GroupBoxPanelConfigurationFrame = New Infragistics.Win.Misc.UltraExpandableGroupBoxPanel()
+        Me.LabelPhasorCount = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelPhasorCountLabel = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelHz = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelNominalFrequency = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelNominalFrequencyLabel = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelDigitalCount = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelDigitalCountLabel = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelAnalogCount = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelAnalogCountLabel = New Infragistics.Win.Misc.UltraLabel()
+        Me.ComboBoxPmus = New System.Windows.Forms.ComboBox()
+        Me.LabelIDCode = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelIDCodeLabel = New Infragistics.Win.Misc.UltraLabel()
+        Me.ComboBoxPhasors = New System.Windows.Forms.ComboBox()
+        Me.LabelPmuList = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelSelectedIsRefAngle = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelPhasor = New Infragistics.Win.Misc.UltraLabel()
+        Me.MenuStripMain = New System.Windows.Forms.MenuStrip()
+        Me.MenuItemFile = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemConnection = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemLoadConnection = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemSaveConnection = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemConfigFile = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemLoadConfigFile = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemSaveConfigFile = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemCapture = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemStartCapture = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemStopCapture = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.MenuItemStartStreamDebugCapture = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemStopStreamDebugCapture = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
+        Me.MenuItemCaptureSampleFrames = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemCancelSampleFrameCapture = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.MenuItemExit = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemHelp = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemLocalHelp = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuItemOnlineHelp = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.MenuItemAbout = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TabSharedControlsPageChart = New Infragistics.Win.UltraWinTabControl.UltraTabSharedControlsPage()
+        Me.TabControlChart = New Infragistics.Win.UltraWinTabControl.UltraTabControl()
+        Me.GroupBoxRealTimePowerVars = New Infragistics.Win.Misc.UltraGroupBox()
+        Me.LabelVars = New Infragistics.Win.Misc.UltraLabel()
+        Me.LabelPower = New Infragistics.Win.Misc.UltraLabel()
         Me.ToolTipManagerForExtraParameters = New Infragistics.Win.UltraWinToolTip.UltraToolTipManager(Me.components)
-        Me.GroupBoxProtocolParameters = New Infragistics.Win.Misc.UltraGroupBox
-        Me.LabelTabMask = New Infragistics.Win.Misc.UltraLabel
-        Me.PropertyGridProtocolParameters = New System.Windows.Forms.PropertyGrid
+        Me.GroupBoxProtocolParameters = New Infragistics.Win.Misc.UltraGroupBox()
+        Me.LabelTabMask = New Infragistics.Win.Misc.UltraLabel()
+        Me.PropertyGridProtocolParameters = New System.Windows.Forms.PropertyGrid()
         Me.GlobalExceptionLogger = New TVA.ErrorManagement.ErrorLogger(Me.components)
-        Me.LabelDefaultIPStack = New Infragistics.Win.Misc.UltraLabel
+        Me.LabelDefaultIPStack = New Infragistics.Win.Misc.UltraLabel()
         Me.TimerDelay = New System.Windows.Forms.Timer(Me.components)
+        Me.ButtonRestoreDefaultSettings = New Infragistics.Win.Misc.UltraButton()
         Me.TabPageControl9.SuspendLayout()
         Me.TabPageControl1.SuspendLayout()
         Me.TabPageControl2.SuspendLayout()
@@ -302,7 +303,6 @@ Partial Class PMUConnectionTester
         CType(Me.GroupBoxProtocolParameters, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBoxProtocolParameters.SuspendLayout()
         CType(Me.GlobalExceptionLogger, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.GlobalExceptionLogger.ErrorLog, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'TabPageControl9
@@ -857,7 +857,7 @@ Partial Class PMUConnectionTester
         'TabPageControl5
         '
         Me.TabPageControl5.Controls.Add(Me.ChartDataDisplay)
-        Me.TabPageControl5.Location = New System.Drawing.Point(1, 1)
+        Me.TabPageControl5.Location = New System.Drawing.Point(-10000, -10000)
         Me.TabPageControl5.Name = "TabPageControl5"
         Me.TabPageControl5.Size = New System.Drawing.Size(312, 223)
         '
@@ -991,10 +991,11 @@ Partial Class PMUConnectionTester
         '
         'TabPageControl6
         '
+        Me.TabPageControl6.Controls.Add(Me.ButtonRestoreDefaultSettings)
         Me.TabPageControl6.Controls.Add(Me.GroupBoxPowerVarCalculations)
         Me.TabPageControl6.Controls.Add(Me.PropertyGridApplicationSettings)
         Me.TabPageControl6.Controls.Add(Me.ButtonGetStatus)
-        Me.TabPageControl6.Location = New System.Drawing.Point(-10000, -10000)
+        Me.TabPageControl6.Location = New System.Drawing.Point(1, 1)
         Me.TabPageControl6.Name = "TabPageControl6"
         Me.TabPageControl6.Size = New System.Drawing.Size(312, 223)
         '
@@ -1057,14 +1058,14 @@ Partial Class PMUConnectionTester
         Me.PropertyGridApplicationSettings.Location = New System.Drawing.Point(158, 6)
         Me.PropertyGridApplicationSettings.Name = "PropertyGridApplicationSettings"
         Me.PropertyGridApplicationSettings.Size = New System.Drawing.Size(151, 214)
-        Me.PropertyGridApplicationSettings.TabIndex = 4
+        Me.PropertyGridApplicationSettings.TabIndex = 3
         '
         'ButtonGetStatus
         '
-        Me.ButtonGetStatus.Location = New System.Drawing.Point(23, 131)
+        Me.ButtonGetStatus.Location = New System.Drawing.Point(11, 137)
         Me.ButtonGetStatus.Name = "ButtonGetStatus"
-        Me.ButtonGetStatus.Size = New System.Drawing.Size(110, 23)
-        Me.ButtonGetStatus.TabIndex = 3
+        Me.ButtonGetStatus.Size = New System.Drawing.Size(135, 23)
+        Me.ButtonGetStatus.TabIndex = 1
         Me.ButtonGetStatus.Text = "Get Parsing Status"
         '
         'TabPageControl7
@@ -2029,6 +2030,14 @@ Partial Class PMUConnectionTester
         '
         Me.TimerDelay.Interval = 1100
         '
+        'ButtonRestoreDefaultSettings
+        '
+        Me.ButtonRestoreDefaultSettings.Location = New System.Drawing.Point(11, 166)
+        Me.ButtonRestoreDefaultSettings.Name = "ButtonRestoreDefaultSettings"
+        Me.ButtonRestoreDefaultSettings.Size = New System.Drawing.Size(135, 23)
+        Me.ButtonRestoreDefaultSettings.TabIndex = 2
+        Me.ButtonRestoreDefaultSettings.Text = "Restore Defaults"
+        '
         'PMUConnectionTester
         '
         Me.AllowDrop = True
@@ -2094,7 +2103,6 @@ Partial Class PMUConnectionTester
         Me.GroupBoxRealTimePowerVars.ResumeLayout(False)
         CType(Me.GroupBoxProtocolParameters, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBoxProtocolParameters.ResumeLayout(False)
-        CType(Me.GlobalExceptionLogger.ErrorLog, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GlobalExceptionLogger, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -2252,5 +2260,6 @@ Partial Class PMUConnectionTester
     Friend WithEvents ChartDataDisplay As Infragistics.Win.UltraWinChart.UltraChart
     Friend WithEvents LabelDefaultIPStack As Infragistics.Win.Misc.UltraLabel
     Friend WithEvents TimerDelay As System.Windows.Forms.Timer
+    Friend WithEvents ButtonRestoreDefaultSettings As Infragistics.Win.Misc.UltraButton
 
 End Class
