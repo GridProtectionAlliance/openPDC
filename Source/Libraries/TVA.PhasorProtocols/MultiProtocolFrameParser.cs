@@ -364,7 +364,7 @@ namespace TVA.PhasorProtocols
             private int m_frameWindowSize;
             private int[] m_frameMilliseconds;
             private int m_lastFrameIndex;
-            private long m_lastFrameReceivedTime;
+            private long m_lastFrameTime;
             private long m_missedPublicationWindows;
             private long m_lastMissedWindowTime;
             private long m_resynchronizations;
@@ -467,13 +467,13 @@ namespace TVA.PhasorProtocols
             }
 
             /// <summary>
-            /// Gets time of last frame received, in ticks.
+            /// Gets time of last frame, in ticks.
             /// </summary>
-            public long LastFrameReceivedTime
+            public long LastFrameTime
             {
                 get
                 {
-                    return m_lastFrameReceivedTime;
+                    return m_lastFrameTime;
                 }
             }
 
@@ -634,7 +634,7 @@ namespace TVA.PhasorProtocols
                         if (releaseTimer)
                         {
                             // Baseline timestamp to the top of the millisecond for frame publication
-                            m_lastFrameReceivedTime = ticks - ticks % Ticks.PerMillisecond;
+                            m_lastFrameTime = ticks - ticks % Ticks.PerMillisecond;
 
                             // Pulse all waiting threads toggling between ready handles
                             if (m_useWaitHandleA)
@@ -855,6 +855,7 @@ namespace TVA.PhasorProtocols
         private double m_calculatedByteRate;
         private string m_sourceName;
         private int m_definedFrameRate;
+        private double m_ticksPerFrame;
         private bool m_attachedToInputTimer;
         private long m_lastFrameReceivedTime;
         private bool m_autoStartDataParsingSequence;
@@ -1200,9 +1201,11 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets or sets flag that determines if system should use precision timing for file based inputs.
+        /// Gets or sets flag that determines if a high-resolution precision timer should be used for file based input.
         /// </summary>
         /// <remarks>
+        /// Useful when input frames need be accurately time-aligned to the local clock to better simulate
+        /// an input device and calculate downstream latencies.<br/>
         /// This is only applicable when connection is made to a file for replay purposes.
         /// </remarks>
         public bool UseHighResolutionInputTimer
@@ -1244,6 +1247,7 @@ namespace TVA.PhasorProtocols
                         UseHighResolutionInputTimer = false;
 
                     m_definedFrameRate = value;
+                    m_ticksPerFrame = Ticks.PerSecond / (double)m_definedFrameRate;
 
                     // Reactivate timer if it was active
                     if (timerActive)
@@ -2411,6 +2415,8 @@ namespace TVA.PhasorProtocols
 
         private void MaintainCapturedFrameReplayTiming(IFrame sourceFrame)
         {
+            long simulatedTimestamp = 0;
+
             if (m_inputTimer == null)
             {
                 if (m_lastFrameReceivedTime > 0)
@@ -2425,6 +2431,37 @@ namespace TVA.PhasorProtocols
                 }
 
                 m_lastFrameReceivedTime = PrecisionTimer.UtcNow.Ticks;
+
+                if (m_injectSimulatedTimestamp)
+                {
+                    long baseTicks, ticksBeyondSecond, frameIndex, nextFrameTicks;
+
+                    simulatedTimestamp = m_lastFrameReceivedTime;
+
+                    // Baseline timestamp to the top of the second
+                    baseTicks = simulatedTimestamp - simulatedTimestamp % Ticks.PerSecond;
+
+                    // Remove the seconds from ticks
+                    ticksBeyondSecond = simulatedTimestamp - baseTicks;
+
+                    // Calculate a frame index between 0 and m_framesPerSecond-1, corresponding to ticks
+                    // rounded down to the nearest frame
+                    frameIndex = (long)(ticksBeyondSecond / m_ticksPerFrame);
+
+                    // Calculate the timestamp of the nearest frame rounded up
+                    nextFrameTicks = (frameIndex + 1) * Ticks.PerSecond / m_definedFrameRate;
+
+                    // Determine whether the desired frame is the nearest frame rounded down or the nearest frame rounded up
+                    // After translating nextDestinationTicks to millisecond resolution, if next ticks are less than or equal
+                    // to ticks, nextDestinationTicks corresponds to the desired frame
+                    if ((nextFrameTicks / Ticks.PerMillisecond) * Ticks.PerMillisecond <= ticksBeyondSecond)
+                        simulatedTimestamp = nextFrameTicks;
+                    else
+                        simulatedTimestamp = frameIndex * Ticks.PerSecond / m_definedFrameRate;
+
+                    // Recover the seconds that were removed
+                    simulatedTimestamp += baseTicks;
+                }
             }
             else
             {
@@ -2433,12 +2470,12 @@ namespace TVA.PhasorProtocols
 
                 // Input timer can be disabled while thread is waiting, so we make sure it is not null
                 if (m_inputTimer != null)
-                    m_lastFrameReceivedTime = m_inputTimer.LastFrameReceivedTime;
+                    simulatedTimestamp = m_inputTimer.LastFrameTime;
             }
 
             // If injecting a simulated timestamp, use the last received time
             if (m_injectSimulatedTimestamp)
-                sourceFrame.Timestamp = m_lastFrameReceivedTime;
+                sourceFrame.Timestamp = simulatedTimestamp;
         }
 
         // Handle attach to input timer

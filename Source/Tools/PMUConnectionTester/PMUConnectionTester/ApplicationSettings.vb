@@ -733,7 +733,7 @@ Public Class ApplicationSettings
     End Property
 
     <Category(ConnectionSettingsCategory), _
-    Description("Defines flag that determines if a high-resolution precision timer should be used for file based input. Useful when accurately spaced input frames are desired to better simulate an input device."), _
+    Description("Defines flag that determines if a high-resolution precision timer should be used for file based input. Useful when input frames need be accurately time-aligned to the local clock to better simulate an input device and calculate downstream latencies."), _
     DefaultValue(DefaultUseHighResolutionInputTimer), _
     UserScopedSetting()> _
     Public Property UseHighResolutionInputTimer() As Boolean
