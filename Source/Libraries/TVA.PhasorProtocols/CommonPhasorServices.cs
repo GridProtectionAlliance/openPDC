@@ -1401,9 +1401,20 @@ namespace TVA.PhasorProtocols
                     m_outputStreamStatistics = statistics.Where(stat => string.Compare(stat.Source, "OutputStream", true) == 0).ToArray();
 
                     // Calculate maximum signal indicies
-                    m_deviceStatisticsMaxIndex = m_deviceStatistics.Max(stat => stat.Index);
-                    m_inputStreamStatisticsMaxIndex = m_inputStreamStatistics.Max(stat => stat.Index);
-                    m_outputStreamStatisticsMaxIndex = m_outputStreamStatistics.Max(stat => stat.Index);
+                    if (m_deviceStatistics.Length > 0)
+                        m_deviceStatisticsMaxIndex = m_deviceStatistics.Max(stat => stat.Index);
+                    else
+                        m_deviceStatisticsMaxIndex = 0;
+
+                    if (m_inputStreamStatistics.Length > 0)
+                        m_inputStreamStatisticsMaxIndex = m_inputStreamStatistics.Max(stat => stat.Index);
+                    else
+                        m_inputStreamStatisticsMaxIndex = 0;
+
+                    if (m_outputStreamStatistics.Length > 0)
+                        m_outputStreamStatisticsMaxIndex = m_outputStreamStatistics.Max(stat => stat.Index);
+                    else
+                        m_outputStreamStatisticsMaxIndex = 0;
 
                     // Load statistical measurements
                     m_definedMeasurements = new Dictionary<string, IMeasurement>();
