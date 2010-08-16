@@ -1400,7 +1400,7 @@ namespace TVA.PhasorProtocols
                     m_inputStreamStatistics = statistics.Where(stat => string.Compare(stat.Source, "InputStream", true) == 0).ToArray();
                     m_outputStreamStatistics = statistics.Where(stat => string.Compare(stat.Source, "OutputStream", true) == 0).ToArray();
 
-                    // Calculate maximum signal indicies
+                    // Calculate maximum signal indices
                     if (m_deviceStatistics.Length > 0)
                         m_deviceStatisticsMaxIndex = m_deviceStatistics.Max(stat => stat.Index);
                     else
@@ -1850,6 +1850,7 @@ namespace TVA.PhasorProtocols
         /// <returns>The parameterized command.</returns>
         private static IDbCommand CreateParameterizedCommand(IDbConnection connection, string sql, params object[] args)
         {
+            // TODO: Move function to TVA.Data.DataExtensions as an extension...
             string[] tokens = sql.Split(' ', '(', ')', ',');
             IDbCommand command = connection.CreateCommand();
             int i = 0;
