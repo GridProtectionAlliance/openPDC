@@ -263,7 +263,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("SaveVendorDevice", ex);
+                CommonFunctions.LogException("WPF.SaveVendorDevice", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Vendor Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -282,6 +282,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetVendors", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendors", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -298,6 +299,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetVendorDevices", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Device List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

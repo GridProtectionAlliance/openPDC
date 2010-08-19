@@ -260,6 +260,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetDevicesForOutputStream", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device for Output Stream", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -280,6 +281,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.AddDevices", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Add Output Stream Device(s)", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                            ButtonType.OkOnly);
             }

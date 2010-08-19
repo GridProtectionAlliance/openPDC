@@ -319,6 +319,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetDeviceByDeviceID", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device Information by ID", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -340,9 +341,9 @@ namespace openPDCManager.UserControls.CommonControls
                 toolTip.Template = Application.Current.Resources["PdcInfoToolTipTemplate"] as ControlTemplate;
                 ToolTipService.SetToolTip(ButtonView, toolTip);               
             }
-            catch 
+            catch (Exception ex)
             {
-                //Do Nothing
+                CommonFunctions.LogException("WPF.GetConcentratorDevice", ex);
             }
         }
 
@@ -354,6 +355,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetDeviceListByParentID", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device List By Parent ID", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -370,6 +372,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetDevices", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Devices", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -388,6 +391,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetCompanies", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -406,6 +410,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetNodes", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -424,6 +429,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetHistorians", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -442,6 +448,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetInterconnections", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                        ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -460,6 +467,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetVendorDevices", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -478,6 +486,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetProtocols", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Protocols", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -496,6 +505,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetTimeZones", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Time Zones", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -523,6 +533,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.SaveDevice", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                        ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

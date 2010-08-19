@@ -330,7 +330,7 @@ namespace openPDCManager.UserControls.CommonControls
                 }
                 catch (Exception ex)
                 {
-                    CommonFunctions.LogException("GUI.GetTimeSeriesData", ex);
+                    CommonFunctions.LogException("WPF.GetTimeSeriesData", ex);
                     if (m_secondsTimer != null)
                     {
                         m_secondsTimer.Stop();
@@ -383,7 +383,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("Service.GetFilteredMeasurementsByDevice", ex);
+                CommonFunctions.LogException("WPF.GetFilteredMeasurementsByDevice", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Measurements for Device", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -402,6 +402,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetDevices", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Devices", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

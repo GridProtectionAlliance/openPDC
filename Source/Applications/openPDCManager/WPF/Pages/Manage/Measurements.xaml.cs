@@ -445,7 +445,7 @@ namespace openPDCManager.Pages.Manage
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("SaveMeasurement", ex);
+                CommonFunctions.LogException("WPF.SaveMeasurement", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Measurement Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
@@ -483,6 +483,7 @@ namespace openPDCManager.Pages.Manage
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetPhasors", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasors", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -502,7 +503,7 @@ namespace openPDCManager.Pages.Manage
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("GetMeasurementsByDevice", ex);
+                CommonFunctions.LogException("WPF.GetMeasurementsByDevice", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Measurements for Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -520,6 +521,7 @@ namespace openPDCManager.Pages.Manage
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetDeviceByDeviceID", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -540,7 +542,7 @@ namespace openPDCManager.Pages.Manage
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("GetMeasurementList", ex);
+                CommonFunctions.LogException("WPF.GetMeasurementList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Measurement List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -559,7 +561,7 @@ namespace openPDCManager.Pages.Manage
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("GetSignalTypes", ex);
+                CommonFunctions.LogException("WPF.GetSignalTypes", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Signal Types", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -578,6 +580,7 @@ namespace openPDCManager.Pages.Manage
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetHistorians", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -596,6 +599,7 @@ namespace openPDCManager.Pages.Manage
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetDevices", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Devices", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

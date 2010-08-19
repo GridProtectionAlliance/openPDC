@@ -243,8 +243,9 @@ namespace openPDCManager.Data.BusinessObjects
 		public string Acronym { get; set; }
 		public string Name { get; set; }
 		public string CompanyName { get; set; }
-        public bool IsExpanded { get; set; }  
-		public ObservableCollection<DeviceInfo> DeviceList { get; set; }
+        public bool IsExpanded { get; set; }
+        public string StatusColor { get; set; }
+        public ObservableCollection<DeviceInfo> DeviceList { get; set; }
 	}
 
 	public class DeviceInfo
@@ -256,7 +257,8 @@ namespace openPDCManager.Data.BusinessObjects
 		public string ProtocolName { get; set; }
 		public string VendorDeviceName { get; set; }
 		public string ParentAcronym { get; set; }
-        public bool IsExpanded { get; set; }  
+        public bool IsExpanded { get; set; }
+        public string StatusColor { get; set; }
 		public ObservableCollection<MeasurementInfo> MeasurementList { get; set; }
 	}
 
@@ -266,6 +268,7 @@ namespace openPDCManager.Data.BusinessObjects
 		public string SignalID { get; set; }
 		public int PointID { get; set; }
 		public string PointTag { get; set; }
+        public string SignalReference { get; set; }
 		public string SignalAcronym { get; set; }
         public string Description { get; set; }
         public string SignalName { get; set; }
@@ -273,7 +276,8 @@ namespace openPDCManager.Data.BusinessObjects
 		public string CurrentTimeTag { get; set; }
 		public string CurrentValue { get; set; }
 		public string CurrentQuality { get; set; }
-        public bool IsExpanded { get; set; }  
+        public bool IsExpanded { get; set; }
+        public bool IsSelected { get; set; }
 	}
 }
 

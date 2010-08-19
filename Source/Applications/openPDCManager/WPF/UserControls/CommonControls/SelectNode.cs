@@ -255,6 +255,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.RefreshNodeList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

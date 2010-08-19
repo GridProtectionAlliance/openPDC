@@ -241,29 +241,29 @@ namespace openPDCManager.Converters
 		#region IValueConverter Members
 
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-		{			
-			if (value.ToString() == "+")
-				return new KeyValuePair<string, string>("+", "Positive");
-			else if (value.ToString() == "-")
-				return new KeyValuePair<string, string>("-", "Negative");
-			else if (value.ToString() == "A")
-				return new KeyValuePair<string, string>("A", "Phase A");
-			else if (value.ToString() == "B")
-				return new KeyValuePair<string, string>("B", "Phase B");
-			else if (value.ToString() == "C")
-				return new KeyValuePair<string, string>("C", "Phase C");
-			else
-				throw new ArgumentException("Value not supported as a Phase Type");
+		{
+            if (value.ToString() == "+")
+                return new KeyValuePair<string, string>("+", "Positive");
+            else if (value.ToString() == "-")
+                return new KeyValuePair<string, string>("-", "Negative");
+            else if (value.ToString() == "A")
+                return new KeyValuePair<string, string>("A", "Phase A");
+            else if (value.ToString() == "B")
+                return new KeyValuePair<string, string>("B", "Phase B");
+            else if (value.ToString() == "C")
+                return new KeyValuePair<string, string>("C", "Phase C");
+            else
+                return new KeyValuePair<string, string>("+", "Positive");
+				//throw new ArgumentException("Value not supported as a Phase Type");
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			if (value is KeyValuePair<string, string>)
-			{
-				return ((KeyValuePair<string, string>)value).Key;
-			}
-			else
-				throw new ArgumentException("Value not supported as a Phase Type");
+            if (value is KeyValuePair<string, string>)
+                return ((KeyValuePair<string, string>)value).Key;
+            else
+                return "+";
+				//throw new ArgumentException("Value not supported as a Phase Type");
 		}
 
 		#endregion

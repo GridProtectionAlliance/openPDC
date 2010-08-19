@@ -43,10 +43,10 @@ namespace openPDCManager
 
         void MasterLayoutWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            SystemMonitor test = new SystemMonitor();
-            ContentFrame.Navigate(test);
-            //HomePageUserControl home = new HomePageUserControl();
-            //ContentFrame.Navigate(home);
+            //SystemMonitor test = new SystemMonitor();
+            //ContentFrame.Navigate(test);
+            HomePageUserControl home = new HomePageUserControl();
+            ContentFrame.Navigate(home);
         }
 
         void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -70,11 +70,17 @@ namespace openPDCManager
             ErrorLogWindow errorLogWindow = new ErrorLogWindow();
             errorLogWindow.Owner = Window.GetWindow(this);
             errorLogWindow.WindowStartupLocation = WindowStartupLocation.Manual;
-            errorLogWindow.Left = MainWindow.Left;
+
             if (MainWindow.WindowState == System.Windows.WindowState.Maximized)
+            {
                 errorLogWindow.Top = MainWindow.Top + MainWindow.Height - 150;
+                errorLogWindow.Left = 0;
+            }
             else
+            {
                 errorLogWindow.Top = MainWindow.Top + MainWindow.Height - 25;
+                errorLogWindow.Left = MainWindow.Left;
+            }
             errorLogWindow.Width = MainWindow.Width;
             errorLogWindow.Height = 150;
             errorLogWindow.Show();
@@ -223,6 +229,11 @@ namespace openPDCManager
             {
                 InputMonitoringUserControl inputMonitor = new InputMonitoringUserControl();
                 ContentFrame.Navigate(inputMonitor);
+            }
+            else if (item.Name == "ConfigurationWizard")
+            {
+                //InputWizardUserControl wizardControl = new InputWizardUserControl();
+                //ContentFrame.Navigate(wizardControl);
             }
         }
 

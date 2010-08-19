@@ -24,6 +24,7 @@
       <xs:element minOccurs="0" name="ID" type="xs:int" />
       <xs:element minOccurs="0" name="IsExpanded" type="xs:boolean" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StatusColor" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="DeviceMeasurementData" nillable="true" type="tns:DeviceMeasurementData" />
@@ -43,6 +44,7 @@
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ParentAcronym" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ProtocolName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StatusColor" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="VendorDeviceName" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
@@ -62,11 +64,13 @@
       <xs:element minOccurs="0" name="DeviceID" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="EngineeringUnits" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="IsExpanded" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsSelected" type="xs:boolean" />
       <xs:element minOccurs="0" name="PointID" type="xs:int" />
       <xs:element minOccurs="0" name="PointTag" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="SignalAcronym" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="SignalID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="SignalName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SignalReference" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="MeasurementInfo" nillable="true" type="tns:MeasurementInfo" />

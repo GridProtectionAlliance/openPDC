@@ -341,6 +341,7 @@ namespace openPDCManager.Pages.Devices
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.SaveDevice", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
@@ -375,7 +376,7 @@ namespace openPDCManager.Pages.Devices
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("DeleteDevice", ex);
+                CommonFunctions.LogException("WPF.DeleteDevice", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);                
             }
@@ -412,7 +413,7 @@ namespace openPDCManager.Pages.Devices
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("GetDeviceList", ex);
+                CommonFunctions.LogException("WPF.GetDeviceList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

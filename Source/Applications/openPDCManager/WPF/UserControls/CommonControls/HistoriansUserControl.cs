@@ -254,7 +254,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("GetHistorianList", ex);
+                CommonFunctions.LogException("WPF.GetHistorianList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Historian Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -272,7 +272,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("GetNodes", ex);
+                CommonFunctions.LogException("WPF.GetNodes", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -295,7 +295,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("SaveHistorian", ex);
+                CommonFunctions.LogException("WPF.SaveHistorian", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Historian Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

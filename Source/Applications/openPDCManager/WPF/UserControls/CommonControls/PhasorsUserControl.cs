@@ -33,6 +33,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.SavePhasor", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Phasor Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -49,6 +50,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetPhasors", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasors", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                        ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -67,6 +69,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetPhasorList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasor List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

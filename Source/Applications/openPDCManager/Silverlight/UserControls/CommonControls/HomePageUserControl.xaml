@@ -98,7 +98,7 @@
                             <ScaleTransform x:Name="ButtonGetDataTransform" ScaleX="1" ScaleY="1" />
                         </Button.RenderTransform>
                     </Button>
-                </StackPanel>              
+                </StackPanel>                
                 <chartingToolkit:Chart x:Name="ChartRealTimeData" Foreground="Black" Background="{StaticResource PortletBackgroundBrush}" VerticalAlignment="Top" Height="{StaticResource XLargeItemSize}" >
                     <chartingToolkit:Chart.LegendStyle>
                         <Style TargetType="Control">

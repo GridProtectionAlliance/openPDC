@@ -245,6 +245,7 @@ namespace openPDCManager.Converters
             //SolidColorBrush scBrush = new SolidColorBrush();            
             RadialGradientBrush scBrush = new RadialGradientBrush();
 
+
             string statusColor = value.ToString();          
 
             if (statusColor.Contains("Green"))

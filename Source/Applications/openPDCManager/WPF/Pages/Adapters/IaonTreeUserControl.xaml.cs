@@ -273,7 +273,7 @@ namespace openPDCManager.Pages.Adapters
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("GetIaonTreeData", ex);
+                CommonFunctions.LogException("WPF.GetIaonTreeData", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Iaon Tree Data", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

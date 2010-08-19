@@ -351,7 +351,7 @@ namespace openPDCManager.Pages.Adapters
                 }
                 catch (Exception ex)
                 {
-                    CommonFunctions.LogException("GUI.GetTimeTaggedMeasurements", ex);
+                    CommonFunctions.LogException("WPF.GetTimeTaggedMeasurements", ex);
                 }
                 finally
                 {
@@ -373,7 +373,7 @@ namespace openPDCManager.Pages.Adapters
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("GetDeviceMeasurementsData", ex);
+                CommonFunctions.LogException("WPF.GetDeviceMeasurementsData", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Current Device Measurements Tree Data", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

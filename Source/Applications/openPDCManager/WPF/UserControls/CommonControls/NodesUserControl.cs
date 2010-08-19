@@ -259,7 +259,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("GetNodeList", ex);
+                CommonFunctions.LogException("WPF.GetNodeList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Node Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -281,7 +281,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("GetCompanies", ex);
+                CommonFunctions.LogException("WPF.GetCompanies", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                          ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -305,7 +305,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("SaveNode", ex);
+                CommonFunctions.LogException("WPF.SaveNode", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Node Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                        ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

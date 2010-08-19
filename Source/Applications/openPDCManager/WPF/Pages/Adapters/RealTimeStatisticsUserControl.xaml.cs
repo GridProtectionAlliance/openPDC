@@ -307,7 +307,7 @@ namespace openPDCManager.Pages.Adapters
             m_minMaxPointIDs = CommonFunctions.GetMinMaxPointIDs(((App)Application.Current).NodeValue);
         }
 
-        void GetTimeTaggesMeasurements(string url)
+        void GetTimeTaggedMeasurements(string url)
         {
             if (!string.IsNullOrEmpty(url) && !m_retrievingData)
             {
@@ -355,7 +355,7 @@ namespace openPDCManager.Pages.Adapters
                 }
                 catch (Exception ex)
                 {
-                    CommonFunctions.LogException("GUI.TimeTaggedMeasurements", ex);
+                    CommonFunctions.LogException("WPF.TimeTaggedMeasurements", ex);
                 }
                 finally
                 {
@@ -375,6 +375,7 @@ namespace openPDCManager.Pages.Adapters
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetStatisticsMeasurementData", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to RetrieveStatistics Measurements Data", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -391,7 +392,7 @@ namespace openPDCManager.Pages.Adapters
 
         void thirtySecondsTimer_Tick(object sender, EventArgs e)
         {            
-            GetTimeTaggesMeasurements(m_url);
+            GetTimeTaggedMeasurements(m_url);
         }
 
         void RealTimeStatistics_Loaded(object sender, RoutedEventArgs e)
@@ -407,7 +408,7 @@ namespace openPDCManager.Pages.Adapters
                 m_url = string.Empty;
             else
                 m_url = app.RealTimeStatisticServiceUrl + "/timeseriesdata/read/current/" + m_minMaxPointIDs.Key.ToString() + "-" + m_minMaxPointIDs.Value.ToString() + "/XML";
-            GetTimeTaggesMeasurements(m_url);
+            GetTimeTaggedMeasurements(m_url);
         }
                 
         #endregion           

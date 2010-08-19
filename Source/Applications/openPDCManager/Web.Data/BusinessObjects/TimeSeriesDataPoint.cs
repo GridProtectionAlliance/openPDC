@@ -238,4 +238,11 @@ namespace openPDCManager.Data.BusinessObjects
 		public long Index { get; set; }
 		public double Value { get; set; }
 	}
+
+    public class TimeSeriesDataPointDetail
+    {        
+        public string TimeStamp { get; set; }
+        public double Value { get; set; }
+        public string Quality { get; set; }
+    }
 }

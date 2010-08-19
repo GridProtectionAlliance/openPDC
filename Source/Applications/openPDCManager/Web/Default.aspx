@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
-    <title>TVA NERC Phasor Concentration System</title>
+    <title>openPDC Manager</title>
     <link href="Styles/WebStyle.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="Silverlight.js"></script>
     

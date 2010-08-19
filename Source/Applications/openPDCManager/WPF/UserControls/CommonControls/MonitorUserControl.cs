@@ -247,6 +247,7 @@ using System.Windows.Navigation;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using System.Windows.Threading;
+using openPDCManager.Data;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -346,6 +347,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.ConnectWindowsServiceClient", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Connect to Windows Service (" + ((App)Application.Current).RemoteStatusServiceUrl + ").", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);                
                 sm.Owner = Window.GetWindow(this);

@@ -23,6 +23,8 @@
     </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
     <UpgradeBackupLocation />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -35,10 +37,8 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -58,6 +58,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>AppLogo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DynamicDataDisplay">
@@ -88,6 +91,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
     </Reference>
+    <Reference Include="TVA.PhasorProtocols">
+      <HintPath>..\..\..\..\Build\Output\Debug\Libraries\TVA.PhasorProtocols.dll</HintPath>
+    </Reference>
     <Reference Include="TVA.Services, Version=1.1.59.53605, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Services.dll</HintPath>
@@ -115,8 +121,6 @@
     </ApplicationDefinition>
     <Page Include="..\Silverlight\Resources\CommonResource.xaml">
       <Link>Resources\CommonResource.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -152,6 +156,11 @@
       <Link>UserControls\CommonControls\HomePageUserControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\CommonControls\InputWizardUserControl.xaml">
+      <Link>UserControls\CommonControls\InputWizardUserControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -355,6 +364,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Monitoring\DeviceDetailInfoUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Monitoring\InputMonitoringUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -369,6 +382,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="..\Silverlight\UserControls\CommonControls\InputWizardUserControl.xaml.cs">
+      <Link>UserControls\CommonControls\InputWizardUserControl.xaml.cs</Link>
+      <DependentUpon>InputWizardUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -535,9 +552,15 @@
     <Compile Include="Pages\Manage\Measurements.xaml.cs">
       <DependentUpon>Measurements.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Monitoring\DeviceDetailInfoUserControl.xaml.cs">
+      <DependentUpon>DeviceDetailInfoUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Monitoring\InputMonitorData.cs" />
     <Compile Include="Pages\Monitoring\InputMonitoringUserControl.xaml.cs">
       <DependentUpon>InputMonitoringUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Monitoring\ObservableCollection.cs" />
+    <Compile Include="Pages\Monitoring\StatisticalMeasurementData.cs" />
     <Compile Include="Pages\Monitoring\SystemMonitor.xaml.cs">
       <DependentUpon>SystemMonitor.xaml</DependentUpon>
     </Compile>
@@ -559,6 +582,7 @@
     <Compile Include="UserControls\CommonControls\CompaniesUserControl.cs" />
     <Compile Include="UserControls\CommonControls\HistoriansUserControl.cs" />
     <Compile Include="UserControls\CommonControls\HomePageUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\InputWizardUserControl.cs" />
     <Compile Include="UserControls\CommonControls\ManageDevicesUserControl.cs" />
     <Compile Include="UserControls\CommonControls\ManageOtherDevicesUserControl.cs" />
     <Compile Include="UserControls\CommonControls\MonitorUserControl.cs" />
@@ -577,7 +601,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -731,6 +757,9 @@
     <Resource Include="..\Silverlight\Images\Log.png">
       <Link>Images\Log.png</Link>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="AppLogo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

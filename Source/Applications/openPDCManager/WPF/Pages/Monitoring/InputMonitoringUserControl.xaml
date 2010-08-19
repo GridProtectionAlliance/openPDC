@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:converter="clr-namespace:openPDCManager.Converters"
+             xmlns:converter="clr-namespace:openPDCManager.Converters" 
+             xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0"
+             xmlns:uc="clr-namespace:openPDCManager.Pages.Monitoring"
              mc:Ignorable="d" >
     <Grid x:Name="LayoutRoot">
 
@@ -12,14 +14,13 @@
                 
                 <StackPanel.Resources>
                     <HierarchicalDataTemplate x:Key="SecondChildNodeTemplate">
-                        <StackPanel Orientation="Horizontal" Margin="-25,0,0,0">
+                        <StackPanel Orientation="Horizontal" Margin="-20,0,0,0">
                             <StackPanel.Resources>
                                 <converter:StringToColorConverter x:Key="stringToColorConverter" />
                             </StackPanel.Resources>                            
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                <CheckBox HorizontalAlignment="Left" Content="{Binding Path=PointTag}" ToolTip="{Binding Path=Description}" Tag="{Binding Path=PointID}" Width="{StaticResource LargeItemSize}" 
-                                               Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"/>
-                                <!--<TextBlock Text="{Binding Path=PointTag}" ToolTipService.ToolTip="{Binding Path=Description}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>-->
+                                <CheckBox HorizontalAlignment="Left" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}" Content="{Binding Path=SignalReference}" ToolTip="{Binding Path=Description}" Tag="{Binding Path=PointID}" Width="{StaticResource LargeItemSize}" 
+                                               Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"/>                                
                             </Border>                                                        
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                 <TextBlock Text="{Binding Path=CurrentValue}" Width="{StaticResource SmallItemSize}" Foreground="{Binding CurrentQuality, Converter={StaticResource stringToColorConverter}}" ToolTipService.ToolTip="{Binding Path=CurrentTimeTag}" TextAlignment="Center" Padding="1"/>
@@ -31,35 +32,41 @@
                     </HierarchicalDataTemplate>
                     <HierarchicalDataTemplate x:Key="FirstChildNodeTemplate" ItemTemplate="{StaticResource SecondChildNodeTemplate}" ItemsSource="{Binding Path=MeasurementList, Mode=TwoWay}">
                         <StackPanel Orientation="Horizontal">
+                            <StackPanel.Resources>
+                                <converter:StringToSymbolConverter x:Key="ConvertStringToSymbol"/>
+                            </StackPanel.Resources>
+                            
+                                <Ellipse Width="16" Height="16" Margin="5, 0, 5, 0" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>
+                            
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                <TextBlock Text="{Binding Path=Acronym}" ToolTipService.ToolTip="Device Acronym" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="{Binding Path=Acronym}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" Width="{StaticResource LargeItemSize}" HorizontalContentAlignment="Left" Click="ButtonGetStatistics_Click"></Button>                                
                             </Border>
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                 <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Device Name" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
                             </Border>                            
                         </StackPanel>
                     </HierarchicalDataTemplate>
-                    <HierarchicalDataTemplate x:Key="RootNodeTemplate" ItemTemplate="{StaticResource FirstChildNodeTemplate}" ItemsSource="{Binding Path=DeviceList, Mode=TwoWay}" >
-                        <StackPanel Orientation="Vertical">
-                            <!--<TextBlock Text="{Binding Path=AdapterType}" FontSize="{StaticResource LargerTextSize}" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>-->
-                            <Border Style="{StaticResource HeaderRowBorderStyle}">
-                                <StackPanel Orientation="Horizontal" Margin="2">                                    
-                                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                                        <TextBlock Text="{Binding Path=Acronym}" ToolTipService.ToolTip="Concentrator Acronym" Width="{StaticResource LargeItemSize}" FontSize="{StaticResource LargeTextSize}" Padding="1"/>
-                                    </Border>
-                                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                                        <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Concentrator Name" Width="{StaticResource LargerItemSize}" FontSize="{StaticResource LargeTextSize}" Padding="1"/>
-                                    </Border>                                    
-                                </StackPanel>
+                    <HierarchicalDataTemplate x:Key="RootNodeTemplate" ItemTemplate="{StaticResource FirstChildNodeTemplate}" ItemsSource="{Binding Path=DeviceList, Mode=TwoWay}" >                        
+                        <StackPanel Orientation="Horizontal" Margin="2">
+                            <StackPanel.Resources>
+                                <converter:StringToSymbolConverter x:Key="ConvertStringToSymbol"/>
+                            </StackPanel.Resources>                            
+                                <Ellipse Width="16" Height="16" Margin="5, 0, 5, 0" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>                            
+                            <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                                <TextBlock Text="{Binding Path=Acronym}" ToolTipService.ToolTip="Concentrator Acronym" Width="{StaticResource LargeItemSize}" FontSize="{StaticResource LargeTextSize}" Padding="1"/>
                             </Border>
-                        </StackPanel>
+                            <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                                <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Concentrator Name" Width="{StaticResource LargeItemSize}" FontSize="{StaticResource LargeTextSize}" Padding="1"/>
+                            </Border>                                    
+                        </StackPanel>                        
                     </HierarchicalDataTemplate>
+                    
                     <Style x:Key="ExpandedItemStyle" TargetType="TreeViewItem">
                         <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
                     </Style>
                 </StackPanel.Resources>
 
-                <TextBlock Text="Input Monitoring" Grid.Column="0"  Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                <TextBlock Text="Input Status &amp; Monitoring" Grid.Column="0"  Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
 
                 <Grid Background="{StaticResource PortletBackgroundBrush}">
                     <Grid.ColumnDefinitions>
@@ -70,14 +77,69 @@
                     
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="12*"/>
+                        <RowDefinition Height="25*"/>                        
                     </Grid.RowDefinitions>
                     
-                    <TextBlock x:Name="TextBlockRefreshInterval" Text="Refresh Interval: 10 sec" Grid.Row="0" Grid.Column="0"  HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="{StaticResource SmallTextSize}"/>
-                    <TextBlock x:Name="TextBlockLastRefresh" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="{StaticResource SmallTextSize}" />
+                    <TextBlock x:Name="TextBlockRefreshInterval" Text="Refresh Interval: 10 sec" Grid.Row="0" Grid.Column="0"  HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="{StaticResource SmallTextSize}" Padding="5"/>
+                    <TextBlock x:Name="TextBlockLastRefresh" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="{StaticResource SmallTextSize}" Padding="5"/>
 
-                    <TreeView x:Name="TreeViewDeviceMeasurements" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Path=DeviceMeasurementDataList, Mode=TwoWay}" ItemContainerStyle="{StaticResource ExpandedItemStyle}" ItemTemplate="{StaticResource RootNodeTemplate}" Height="762" />
+                    <TreeView x:Name="TreeViewDeviceMeasurements" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Path=DeviceMeasurementDataList, Mode=TwoWay}" ItemContainerStyle="{StaticResource ExpandedItemStyle}" ItemTemplate="{StaticResource RootNodeTemplate}" Height="750" Margin="0,-20,0,0" VerticalAlignment="Top" />
 
+                    <StackPanel Orientation="Vertical" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" VerticalAlignment="Top">
+                    
+                        <d3:ChartPlotter Name="ChartPlotterDynamic" VerticalAlignment="Top" Margin="5" Background="Transparent" Height="400"
+                                         MainHorizontalAxisVisibility="Hidden" MainVerticalAxisVisibility="Collapsed">
+
+                            <d3:InjectedPlotter Name="FrequencyPlotter" SetViewportBinding="False">
+                                <d3:VerticalAxis Placement="Left" Visibility="Collapsed"/>
+                            </d3:InjectedPlotter>
+                            
+                            <d3:InjectedPlotter Name="PhaseAnglePlotter" Background="Aqua" SetViewportBinding="False">
+                                <d3:VerticalAxis Placement="Right" Visibility="Collapsed"/>
+                            </d3:InjectedPlotter>
+
+                            <d3:InjectedPlotter Name="VoltageMagnitudePlotter" SetViewportBinding="False">
+                                <d3:VerticalAxis Placement="Left" Visibility="Collapsed"/>
+                            </d3:InjectedPlotter>
+
+                            <d3:InjectedPlotter Name="CurrentMagnitudePlotter" SetViewportBinding="False">
+                                <d3:VerticalAxis Placement="Right" Visibility="Collapsed"/>
+                            </d3:InjectedPlotter>
+
+                        </d3:ChartPlotter>
+
+                        <ListBox x:Name="ListBoxCurrentValues" Margin="5,-25,5,0" Padding="0" VerticalAlignment="Top" Height="140">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" DataContext="{Binding Path=Value}">
+                                        <StackPanel.Resources>
+                                            <converter:StringToColorConverter x:Key="stringToColorConverter" />
+                                        </StackPanel.Resources>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <TextBlock Text="{Binding Path=PointID}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Left" Padding="1"/>
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <TextBlock Text="{Binding Path=SignalReference}" ToolTip="{Binding Path=Description}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1" Foreground="{Binding Path=Background}"/>
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <TextBlock Text="{Binding Path=TimeStamp}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <TextBlock Text="{Binding Path=Value}" Width="{StaticResource SmallItemSize}" TextAlignment="Center" Padding="1" />
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <TextBlock Text="{Binding Path=EngineeringUnit}" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" Padding="1" />
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <TextBlock Text="{Binding Path=Quality}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1" Foreground="{Binding Quality, Converter={StaticResource stringToColorConverter}}"/>
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                           
+                        <uc:DeviceDetailInfoUserControl  x:Name="UserControlDeviceDetailInfo" Background="Transparent" VerticalAlignment="Top"/>
+                    </StackPanel>
                 </Grid>
 
             </StackPanel>

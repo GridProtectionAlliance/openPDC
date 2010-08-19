@@ -256,7 +256,7 @@ namespace openPDCManager.UserControls.PopupControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("GetOutputStreamDeviceList", ex);
+                CommonFunctions.LogException("WPF.GetOutputStreamDeviceList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -278,7 +278,7 @@ namespace openPDCManager.UserControls.PopupControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("SaveOutputStreamDevice", ex);
+                CommonFunctions.LogException("WPF.SaveOutputStreamDevice", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
@@ -299,7 +299,7 @@ namespace openPDCManager.UserControls.PopupControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("DeleteOutputStreamDevice", ex);
+                CommonFunctions.LogException("WPF.DeleteOutputStreamDevice", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Output Stream Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }

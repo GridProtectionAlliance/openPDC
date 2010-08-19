@@ -289,6 +289,10 @@
     <Compile Include="UserControls\CommonControls\HomePageUserControl.xaml.cs">
       <DependentUpon>HomePageUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\CommonControls\InputWizardUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\InputWizardUserControl.xaml.cs">
+      <DependentUpon>InputWizardUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\CommonControls\ManageDevicesUserControl.cs" />
     <Compile Include="UserControls\CommonControls\ManageDevicesUserControl.xaml.cs">
       <DependentUpon>ManageDevicesUserControl.xaml</DependentUpon>
@@ -664,6 +668,10 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\InputWizardUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\CommonControls\ManageDevicesUserControl.xaml">
       <SubType>Designer</SubType>

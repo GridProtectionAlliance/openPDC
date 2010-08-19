@@ -256,6 +256,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             }
             catch (Exception ex)
             {
+                CommonFunctions.LogException("WPF.GetNodes", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -272,7 +273,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("GetOutputStreamList", ex);
+                CommonFunctions.LogException("WPF.GetOutputStreamList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -293,7 +294,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("SaveOutputStream", ex);
+                CommonFunctions.LogException("WPF.SaveOutputStream", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }

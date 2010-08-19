@@ -255,7 +255,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("GetCalculatedMeasurementList", ex);
+                CommonFunctions.LogException("WPF.GetCalculatedMeasurementList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Calculated Measurement List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                          ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -273,7 +273,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("GetNodes", ex);
+                CommonFunctions.LogException("WPF.GetNodes", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -295,7 +295,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("SaveCalculatedMeasurement", ex);
+                CommonFunctions.LogException("WPF.SaveCalculatedMeasurement", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Calculated Measurement Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

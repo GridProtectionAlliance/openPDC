@@ -127,7 +127,7 @@
  B. Each Recipient must ensure that the following copyright notice appears prominently in the Subject
  Software:
 
-          No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
+		  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 
  C. Each Contributor must characterize its alteration of the Subject Software as a Modification and
  must identify itself as the originator of its Modification in a manner that reasonably allows
@@ -241,7 +241,7 @@ using System.Collections.ObjectModel;
 
 namespace openPDCManager.Services.Service
 {
-    // NOTE: If you change the interface name "IPhasorDataService" here, you must also update the reference to "IPhasorDataService" in Web.config.
+	// NOTE: If you change the interface name "IPhasorDataService" here, you must also update the reference to "IPhasorDataService" in Web.config.
 	/// <summary>
 	/// Interface defines service and operation contract between WCF service and its consumers.
 	/// </summary>
@@ -573,7 +573,7 @@ namespace openPDCManager.Services.Service
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
-        ObservableCollection<DeviceMeasurementData> GetDeviceMeasurementData(string nodeID);
+		ObservableCollection<DeviceMeasurementData> GetDeviceMeasurementData(string nodeID);
 
 		#endregion
 
@@ -621,8 +621,8 @@ namespace openPDCManager.Services.Service
 		[FaultContract(typeof(CustomServiceFault))]
 		List<string> GetParities();
 
-        [OperationContract]
-        [FaultContract(typeof(CustomServiceFault))]
-        ObservableCollection<StatisticMeasurementData> GetStatisticMeasurementData(string nodeID);
+		[OperationContract]
+		[FaultContract(typeof(CustomServiceFault))]
+		ObservableCollection<StatisticMeasurementData> GetStatisticMeasurementData(string nodeID);
 	}
 }

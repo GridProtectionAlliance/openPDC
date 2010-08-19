@@ -317,6 +317,8 @@ namespace openPDCManager.PhasorDataServiceProxy {
         
         private string NameField;
         
+        private string StatusColorField;
+        
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string Acronym {
             get {
@@ -395,6 +397,19 @@ namespace openPDCManager.PhasorDataServiceProxy {
             }
         }
         
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string StatusColor {
+            get {
+                return this.StatusColorField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StatusColorField, value) != true)) {
+                    this.StatusColorField = value;
+                    this.RaisePropertyChanged("StatusColor");
+                }
+            }
+        }
+        
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -425,6 +440,8 @@ namespace openPDCManager.PhasorDataServiceProxy {
         private string ParentAcronymField;
         
         private string ProtocolNameField;
+        
+        private string StatusColorField;
         
         private string VendorDeviceNameField;
         
@@ -533,6 +550,19 @@ namespace openPDCManager.PhasorDataServiceProxy {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string StatusColor {
+            get {
+                return this.StatusColorField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StatusColorField, value) != true)) {
+                    this.StatusColorField = value;
+                    this.RaisePropertyChanged("StatusColor");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string VendorDeviceName {
             get {
                 return this.VendorDeviceNameField;
@@ -574,6 +604,8 @@ namespace openPDCManager.PhasorDataServiceProxy {
         
         private bool IsExpandedField;
         
+        private bool IsSelectedField;
+        
         private int PointIDField;
         
         private string PointTagField;
@@ -583,6 +615,8 @@ namespace openPDCManager.PhasorDataServiceProxy {
         private string SignalIDField;
         
         private string SignalNameField;
+        
+        private string SignalReferenceField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string CurrentQuality {
@@ -676,6 +710,19 @@ namespace openPDCManager.PhasorDataServiceProxy {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsSelected {
+            get {
+                return this.IsSelectedField;
+            }
+            set {
+                if ((this.IsSelectedField.Equals(value) != true)) {
+                    this.IsSelectedField = value;
+                    this.RaisePropertyChanged("IsSelected");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public int PointID {
             get {
                 return this.PointIDField;
@@ -736,6 +783,19 @@ namespace openPDCManager.PhasorDataServiceProxy {
                 if ((object.ReferenceEquals(this.SignalNameField, value) != true)) {
                     this.SignalNameField = value;
                     this.RaisePropertyChanged("SignalName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string SignalReference {
+            get {
+                return this.SignalReferenceField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SignalReferenceField, value) != true)) {
+                    this.SignalReferenceField = value;
+                    this.RaisePropertyChanged("SignalReference");
                 }
             }
         }

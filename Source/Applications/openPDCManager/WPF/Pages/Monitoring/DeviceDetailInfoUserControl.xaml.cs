@@ -1,5 +1,5 @@
 ﻿//*******************************************************************************************************
-//  AdapterUserControl.cs - Gbtc
+//  DeviceDetailInfoUserControl.xaml.cs - Gbtc
 //
 //  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
@@ -8,7 +8,7 @@
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  07/08/2010 - Mehulbhai P Thakkar
+//  08/06/2010 - Mehulbhai P Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -229,84 +229,114 @@
 */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using openPDCManager.Data;
+using System.Windows.Controls;
 using openPDCManager.Data.Entities;
-using openPDCManager.Utilities;
+using openPDCManager.Data;
 using System.Windows;
-using openPDCManager.ModalDialogs;
+using System.Collections.ObjectModel;
+using openPDCManager.Data.BusinessObjects;
+using System.Windows.Threading;
+using System;
+using TVA.Configuration;
+using System.Collections.Generic;
 
-namespace openPDCManager.UserControls.CommonControls
+namespace openPDCManager.Pages.Monitoring
 {
-    public partial class AdapterUserControl
+    /// <summary>
+    /// Interaction logic for DeviceDetailInfoUserControl.xaml
+    /// </summary>
+    public partial class DeviceDetailInfoUserControl : UserControl
     {
-        #region [ Methods ]
+        ObservableCollection<DetailStatisticInfo> m_deviceStatisticInfoList;
+        DispatcherTimer m_refreshTimer;
+        int m_maxPointID = 0;
+        int m_minPointID = 0;
+        string m_url;
 
-        void Initialize()
+        public DeviceDetailInfoUserControl()
         {
-           
-        }
-               
-        void GetNodes()
-        {
-            try
-            {
-              ComboboxNode.ItemsSource = CommonFunctions.GetNodes(true, false);
-              if (ComboboxNode.Items.Count > 0)
-                  ComboboxNode.SelectedIndex = 0;
-            }            
-            catch (Exception ex)
-            {
-                CommonFunctions.LogException("WPF.GetNodes", ex);
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
-                       ButtonType.OkOnly);
-                sm.Owner = Window.GetWindow(this);
-                sm.ShowPopup();
-            }            
+            InitializeComponent();            
         }
 
-        void GetAdapterList()
+        public void Initialize(Device deviceInfo)
         {
-            try
-            {
-                ListBoxAdapterList.ItemsSource = CommonFunctions.GetAdapterList(false, m_adapterType, m_nodeID);
+            if (deviceInfo != null)
+            { 
+                try
+                {
+                    GridDeviceInfo.DataContext = deviceInfo;
+                    m_deviceStatisticInfoList = CommonFunctions.GetDeviceStatisticMeasurements(deviceInfo.ID);
+                    ListBoxStatisticsList.ItemsSource = m_deviceStatisticInfoList;
+                    if (m_deviceStatisticInfoList.Count > 0)
+                    {
+                        GetMaxMinPointIDs();
+                        RefreshData();
+                    }
+
+                    if (m_refreshTimer == null)
+                    {
+                        ConfigurationFile config = ConfigurationFile.Current;
+                        CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
+                        string timerInterval = configSettings["RunTimeStatisticsRefreshInterval"].Value;
+                        int interval = 10;
+
+                        if (!string.IsNullOrEmpty(timerInterval))
+                        {
+                            if (!int.TryParse(timerInterval, out interval))
+                                interval = 10;
+                        }
+                        m_refreshTimer = new DispatcherTimer();
+                        m_refreshTimer.Interval = TimeSpan.FromSeconds(interval);
+                        m_refreshTimer.Tick += new EventHandler(m_refreshTimer_Tick);
+                        m_refreshTimer.Start();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    CommonFunctions.LogException("WPF.Initialize", ex);
+                }
             }
-            catch (Exception ex)
-            {
-                CommonFunctions.LogException("WPF.GetAdapterList", ex);
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Adapter List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
-                         ButtonType.OkOnly);
-                sm.Owner = Window.GetWindow(this);
-                sm.ShowPopup();
-            }
         }
 
-        void SaveAdapter(Adapter adapter, bool isNew)
+        void GetMaxMinPointIDs()
         {
-            SystemMessages sm;
-            try
+            m_maxPointID = int.MinValue;
+            m_minPointID = int.MaxValue;
+            foreach (DetailStatisticInfo statInfo in m_deviceStatisticInfoList)
             {
-                string result = CommonFunctions.SaveAdapter(adapter, isNew);
-                GetAdapterList();
-                ClearForm();
-                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-                       ButtonType.OkOnly);
-                sm.Owner = Window.GetWindow(this);
-                sm.ShowPopup();
+                if (statInfo.PointID > m_maxPointID)
+                    m_maxPointID = statInfo.PointID;
+
+                if (statInfo.PointID < m_minPointID)
+                    m_minPointID = statInfo.PointID;
             }
-            catch (Exception ex)
-            {
-                CommonFunctions.LogException("WPF.SaveAdapter", ex);
-                sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Adapter Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
-                        ButtonType.OkOnly);
-                sm.Owner = Window.GetWindow(this);
-                sm.ShowPopup();
-            }                        
+            m_url = ((App)Application.Current).RealTimeStatisticServiceUrl + "/timeseriesdata/read/current/" + m_minPointID + "-" + m_maxPointID + "/XML";
         }
 
-        #endregion
+        void m_refreshTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
+
+        void RefreshData()
+        {
+            if (!string.IsNullOrEmpty(m_url))
+            {
+                Dictionary<int, TimeTaggedMeasurement> timeTaggedMeasurements = new Dictionary<int, TimeTaggedMeasurement>();
+                timeTaggedMeasurements = CommonFunctions.GetTimeTaggedMeasurements(m_url);
+                foreach (DetailStatisticInfo detailStatistic in m_deviceStatisticInfoList)
+                {
+                    TimeTaggedMeasurement timeTaggedMeasurement;
+                    if (timeTaggedMeasurements.TryGetValue(detailStatistic.PointID, out timeTaggedMeasurement))
+                    {
+                        detailStatistic.Statistics.Value = timeTaggedMeasurement.CurrentValue;
+                        detailStatistic.Statistics.TimeTag = timeTaggedMeasurement.TimeTag;
+                        detailStatistic.Statistics.Quality = timeTaggedMeasurement.Quality;
+                    }
+                }
+                ListBoxStatisticsList.Items.Refresh();
+                ListBoxStatisticsList.ItemsSource = m_deviceStatisticInfoList;
+            }
+        }
     }
 }
