@@ -1,5 +1,5 @@
 ﻿//******************************************************************************************************
-//  Program.cs - Gbtc
+//  DataSubscriber.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -16,46 +16,63 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  05/14/2009 - J. Ritchie Carroll
+//  08/20/2010 - J. Ritchie Carroll
 //       Generated original version of source code.
-//  10/06/2009 - Pinal C. Patel
-//       Modified to run the service as application by default in Debug mode.
 //
 //******************************************************************************************************
 
-#if !DEBUG
-    #define RunAsService
-#endif 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-#if RunAsService
-    using System.ServiceProcess;
-#else
-    using System.Windows.Forms;
-#endif
-
-namespace openPDC
+namespace TimeSeriesFramework
 {
-    static class Program
+    /// <summary>
+    /// Represents a data subscribing client that will connection to a data publisher for a data subscription.
+    /// </summary>
+    public class DataSubscriber
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        static void Main()
-        {
-#if RunAsService
-            // Run as Windows Service.
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[] 
-            { 
-                new ServiceHost() 
-            };
-            ServiceBase.Run(ServicesToRun);
-#else
-            // Run as Windows Application.
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DebugHost());
-#endif
-        }
+        #region [ Members ]
+
+        // Nested Types
+
+        // Constants
+
+        // Delegates
+
+        // Events
+
+        // Fields
+
+        #endregion
+
+        #region [ Constructors ]
+
+        #endregion
+
+        #region [ Properties ]
+
+        #endregion
+
+        #region [ Methods ]
+
+        #endregion
+
+        #region [ Operators ]
+
+        #endregion
+
+        #region [ Static ]
+
+        // Static Fields
+
+        // Static Constructor
+
+        // Static Properties
+
+        // Static Methods
+
+        #endregion        
     }
 }

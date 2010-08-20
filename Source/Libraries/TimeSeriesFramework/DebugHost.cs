@@ -27,9 +27,12 @@ using System.Windows.Forms;
 using TVA.IO;
 using TVA.Reflection;
 
-namespace openPDC
+namespace TimeSeriesFramework
 {
-    public partial class DebugHost : Form
+    /// <summary>
+    /// Windows form application used to host the time-series framework service.
+    /// </summary>
+    public abstract partial class DebugHost : Form
     {
         #region [ Members ]
 
@@ -41,6 +44,9 @@ namespace openPDC
 
         #region [ Constructors ]
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="DebugHost"/> windows form.
+        /// </summary>
         public DebugHost()
         {
             InitializeComponent();
@@ -48,12 +54,40 @@ namespace openPDC
 
         #endregion
 
+        #region [ Properties ]
+
+        /// <summary>
+        /// Gets the executable name of the service client that can remotely access the time-series framework service.
+        /// </summary>
+        protected abstract string ServiceClientName { get; }
+
+        #endregion
+
         #region [ Methods ]
+
+        /// <summary>
+        /// Invoked when the debug host is loading. By default this launches the remote service client.
+        /// </summary>
+        protected virtual void DebugHostLoading()
+        {
+            // Start remote console sesstion
+            m_remoteConsole = Process.Start(FilePath.GetAbsolutePath(ServiceClientName));
+        }
+
+        /// <summary>
+        /// Invoked when the debug host is unloading. By default this shuts down the remote service client.
+        /// </summary>
+        protected virtual void DebugHostUnloading()
+        {
+            // Close remote console session
+            if (m_remoteConsole != null && !m_remoteConsole.HasExited)
+                m_remoteConsole.Kill();
+        }
 
         private void DebugHost_Load(object sender, EventArgs e)
         {
-            // Start remote console sesstion
-            m_remoteConsole = Process.Start(FilePath.GetAbsolutePath("openPDCConsole.exe"));
+            // Call user overridable debug host loading method
+            DebugHostLoading();
 
             // Initialize text.
             m_productName = AssemblyInfo.EntryAssembly.Title;
@@ -71,15 +105,14 @@ namespace openPDC
 
         private void DebugHost_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (MessageBox.Show(string.Format("Are you sure you want to stop {0} windows service? ",
-                m_productName), "Stop Service", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show(string.Format("Are you sure you want to stop {0} service? ", m_productName), 
+                "Stop Service", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 // Stop the windows service.
                 serviceHost.StopDebugging();
 
-                // Close remote console session
-                if (m_remoteConsole != null && !m_remoteConsole.HasExited)
-                    m_remoteConsole.Kill();
+                // Call user overridable debug host unloading method
+                DebugHostUnloading();
             }
             else
             {
