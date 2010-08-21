@@ -294,12 +294,6 @@ namespace openPDCManager.Data
 				if (string.IsNullOrEmpty(adapterTypeName))
 					throw new NullReferenceException("Database adapter type was undefined.");
 
-				//Assembly assembly;
-				//string assemblyName = "System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
-				//string connectionTypeName = "System.Data.SqlClient.SqlConnection";
-				//string adapterTypeName = "System.Data.SqlClient.SqlDataAdapter";
-				//m_connectionString = "Data Source=RGOCDSQL;Initial Catalog=openPDC;User Id=openPDCManagerUser;Password=NXJCt0XD";
-
                 assembly = Assembly.Load(new AssemblyName(assemblyName));
                 s_connectionType = assembly.GetType(connectionTypeName);
                 s_adapterType = assembly.GetType(adapterTypeName);
