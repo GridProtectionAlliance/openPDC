@@ -33,7 +33,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using TVA.Communication;
 using TVA.Configuration;
 using TVA.Data;
 using TVA.IO;
@@ -1033,7 +1032,7 @@ namespace TVA.PhasorProtocols
         /// <param name="formattedStatus">Formatted status message.</param>
         /// <param name="args">Arguments for <paramref name="formattedStatus"/>.</param>
         /// <remarks>
-        /// This overload combines string.Format and SendStatusMessage for convienence.
+        /// This overload combines string.Format and OnStatusMessage for convienence.
         /// </remarks>
         protected virtual void OnStatusMessage(string formattedStatus, params object[] args)
         {

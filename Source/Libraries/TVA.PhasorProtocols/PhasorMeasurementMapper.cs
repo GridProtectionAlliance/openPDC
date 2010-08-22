@@ -841,7 +841,7 @@ namespace TVA.PhasorProtocols
             else
                 m_accessID = 1;
 
-            if (settings.TryGetValue("timeZone", out setting) && !string.IsNullOrEmpty(setting) && string.Compare(setting.Trim(), "UTC", true) != 0)
+            if (settings.TryGetValue("timeZone", out setting) && !string.IsNullOrEmpty(setting) && string.Compare(setting.Trim(), "UTC", true) != 0 && string.Compare(setting.Trim(), "Coordinated Universal Time", true) != 0)
             {
                 try
                 {

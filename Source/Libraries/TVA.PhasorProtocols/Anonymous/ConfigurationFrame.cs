@@ -232,10 +232,12 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Soap;
+using TVA;
 using TVA.Configuration;
 using TVA.IO;
 using TVA.IO.Checksums;
@@ -392,8 +394,8 @@ namespace TVA.PhasorProtocols.Anonymous
         /// <param name="configurationName">Name of the configuration to get file name for.</param>
         /// <returns>File name with path of the specified <paramref name="configurationName"/>.</returns>
         public static string GetConfigurationCacheFileName(string configurationName)
-        {
-            return string.Format("{0}{1}.configuration.xml", ConfigurationCachePath, configurationName);
+        {            
+            return string.Format("{0}{1}.configuration.xml", ConfigurationCachePath, configurationName.ReplaceCharacters('_', c => Path.GetInvalidFileNameChars().Contains(c)));
         }
 
         /// <summary>
