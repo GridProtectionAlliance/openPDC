@@ -26,22 +26,218 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TVA;
+using TVA.Collections;
 using TVA.Communication;
+using TVA.Measurements;
+using TVA.Measurements.Routing;
+using System.Data;
+using System.IO;
 
 namespace TimeSeriesFramework
 {
+    #region [ Enumerations ]
+
+    /// <summary>
+    /// <see cref="DataPublisher"/> server commands.
+    /// </summary>
+    public enum ServerCommand : byte
+    {
+        Subscribe = 0xC0,
+        Unsubscribe = 0xC1,
+        QueryPoints = 0xC2
+    }
+
+    /// <summary>
+    /// <see cref="DataPublisher"/> server responses.
+    /// </summary>
+    public enum ServerResponse : byte
+    {
+        Succeeded = 0xD0,
+        Failed = 0xD1,
+        DataPacket = 0xD2
+    }
+
+    #endregion
+
     /// <summary>
     /// Represents a data publishing server that allows multiple connections for data subscriptions.
     /// </summary>
-    public class DataPublisher : IDisposable
+    public class DataPublisher : ActionAdapterCollection
     {
         #region [ Members ]
 
         // Nested Types
+        private class ClientSubscription : ActionAdapterBase
+        {
+            #region [ Members ]
 
-        // Constants
+            // Fields
+            private DataPublisher m_parent;
+            private Guid m_clientID;
+            private bool m_useFullFidelityMeasurements;
+            private bool m_disposed;
 
-        // Delegates
+            #endregion
+
+            #region [ Constructors ]
+
+            /// <summary>
+            /// Creates a new <see cref="ClientSubscription"/>.
+            /// </summary>
+            /// <param name="parent">Reference to parent.</param>
+            /// <param name="clientID"></param>
+            public ClientSubscription(DataPublisher parent, Guid clientID)
+            {
+                // Pass parent reference into base class
+                ((IAdapter)this).AssignParentCollection(parent);
+
+                m_parent = parent;
+                m_clientID = clientID;
+            }
+
+            #endregion
+
+            #region [ Properties ]
+
+            /// <summary>
+            /// Gets the <see cref="Guid"/> client identifier of this <see cref="ClientSubscription"/>.
+            /// </summary>
+            public Guid ClientID
+            {
+                get
+                {
+                    return m_clientID;
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets primary keys of input measurements the <see cref="ClientSubscription"/> expects, if any.
+            /// </summary>
+            /// <remarks>
+            /// We override method so assignment can be synchronized such that dynamic updates won't interfere
+            /// with filtering in <see cref="QueueMeasurementsForProcessing"/>.
+            /// </remarks>
+            public override MeasurementKey[] InputMeasurementKeys
+            {
+                get
+                {
+                    return base.InputMeasurementKeys;
+                }
+                set
+                {
+                    lock (this)
+                    {
+                        base.InputMeasurementKeys = value;
+                    }
+                }
+            }
+
+            #endregion
+
+            #region [ Methods ]
+
+            /// <summary>
+            /// Releases the unmanaged resources used by the <see cref="ClientSubscription"/> object and optionally releases the managed resources.
+            /// </summary>
+            /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+            protected override void Dispose(bool disposing)
+            {
+                if (!m_disposed)
+                {
+                    try
+                    {
+                        if (disposing)
+                        {
+                            // Remove reference to parent
+                            m_parent = null;
+                        }
+                    }
+                    finally
+                    {
+                        m_disposed = true;          // Prevent duplicate dispose.
+                        base.Dispose(disposing);    // Call base class Dispose().
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Initializes <see cref="ClientSubscription"/>.
+            /// </summary>
+            public override void Initialize()
+            {
+                base.Initialize();
+
+                string setting;
+
+                // Load optional parameters
+                if (Settings.TryGetValue("useFullFidelityMeasurements", out setting))
+                    m_useFullFidelityMeasurements = setting.ParseBoolean();
+            }
+
+            /// <summary>
+            /// Publish <see cref="IFrame"/> of time-aligned collection of <see cref="IMeasurement"/> values that arrived within the
+            /// concentrator's defined <see cref="ConcentratorBase.LagTime"/>.
+            /// </summary>
+            /// <param name="frame"><see cref="IFrame"/> of measurements with the same timestamp that arrived within <see cref="ConcentratorBase.LagTime"/> that are ready for processing.</param>
+            /// <param name="index">Index of <see cref="IFrame"/> within a second ranging from zero to <c><see cref="ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
+            protected override void PublishFrame(IFrame frame, int index)
+            {
+                MemoryStream data = new MemoryStream();
+                byte[] buffer;
+
+                // Serialize frame timestamp into data packet
+                data.Write(EndianOrder.BigEndian.GetBytes((long)frame.Timestamp), 0, 8);
+
+                // Serialize measurements to data buffer
+                foreach (IMeasurement measurement in frame.Measurements.Values)
+                {
+                    if (m_useFullFidelityMeasurements)
+                    {
+                        buffer = (new SerializableMeasurement(measurement)).BinaryImage;
+                        data.Write(buffer, 0, buffer.Length);
+                    }
+                    else
+                        data.Write((new SerializableMeasurementSlim(measurement)).BinaryImage, 0, SerializableMeasurementSlim.FixedLength);
+                }
+
+                // Pusblish data packet to client
+                m_parent.SendClientResponse(m_clientID, ServerResponse.DataPacket, ServerCommand.Subscribe, data.ToArray());
+            }
+
+            /// <summary>
+            /// Queues a single measurement for processing.
+            /// </summary>
+            /// <param name="measurement">Measurement to queue for processing.</param>
+            /// <remarks>
+            /// Measurement is filtered against the defined <see cref="InputMeasurementKeys"/> so we override method
+            /// so that dyanmic updates to keys will be synchronized with filtering to prevent interference.
+            /// </remarks>
+            public override void QueueMeasurementForProcessing(IMeasurement measurement)
+            {
+                lock (this)
+                {
+                    base.QueueMeasurementForProcessing(measurement);
+                }
+            }
+
+            /// <summary>
+            /// Queues a collection of measurements for processing.
+            /// </summary>
+            /// <param name="measurements">Collection of measurements to queue for processing.</param>
+            /// <remarks>
+            /// Measurements are filtered against the defined <see cref="InputMeasurementKeys"/> so we override method
+            /// so that dyanmic updates to keys will be synchronized with filtering to prevent interference.
+            /// </remarks>
+            public override void QueueMeasurementsForProcessing(IEnumerable<IMeasurement> measurements)
+            {
+                lock (this)
+                {
+                    base.QueueMeasurementsForProcessing(measurements);
+                }
+            }
+
+            #endregion
+        }
 
         // Events
 
@@ -58,8 +254,19 @@ namespace TimeSeriesFramework
         /// </summary>
         public DataPublisher()
         {
+            base.Name = "Data Publisher Collection";
+            base.DataMember = "[internal]";
+
             // Create a new TCP server
             m_dataServer = new TcpServer();
+
+            // Initialize default settings
+            m_dataServer.SettingsCategory = Name;
+            m_dataServer.ConfigurationString = "port=6165";
+            m_dataServer.PayloadAware = true;
+            m_dataServer.PersistSettings = true;
+
+            // Attach to desired events
             m_dataServer.ClientConnected += m_dataServer_ClientConnected;
             m_dataServer.ClientDisconnected += m_dataServer_ClientDisconnected;
             m_dataServer.HandshakeProcessTimeout += m_dataServer_HandshakeProcessTimeout;
@@ -84,24 +291,57 @@ namespace TimeSeriesFramework
 
         #region [ Properties ]
 
+        /// <summary>
+        /// Gets the status of this <see cref="DataPublisher"/>.
+        /// </summary>
+        /// <remarks>
+        /// Derived classes should provide current status information about the adapter for display purposes.
+        /// </remarks>
+        public override string Status
+        {
+            get
+            {
+                StringBuilder status = new StringBuilder();
+
+                if (m_dataServer != null)
+                    status.Append(m_dataServer.Status);
+
+                status.Append(base.Status);
+
+                return status.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the name of this <see cref="DataPublisher"/>.
+        /// </summary>
+        /// <remarks>
+        /// The assigned name is used as the settings category when persisting the TCP server settings.
+        /// </remarks>
+        public override string Name
+        {
+            get
+            {
+                return base.Name;
+            }
+            set
+            {
+                base.Name = value.ToUpper();
+
+                if (m_dataServer != null)
+                    m_dataServer.SettingsCategory = value;
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
 
         /// <summary>
-        /// Releases all the resources used by the <see cref="DataPublisher"/> object.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
         /// Releases the unmanaged resources used by the <see cref="DataPublisher"/> object and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (!m_disposed)
             {
@@ -128,77 +368,358 @@ namespace TimeSeriesFramework
                 }
                 finally
                 {
-                    m_disposed = true;  // Prevent duplicate dispose.
+                    m_disposed = true;          // Prevent duplicate dispose.
+                    base.Dispose(disposing);    // Call base class Dispose().
                 }
             }
         }
 
-        private void m_dataServer_ServerStopped(object sender, EventArgs e)
+        /// <summary>
+        /// Intializes <see cref="DataPublisher"/>.
+        /// </summary>
+        public override void Initialize()
         {
-            throw new NotImplementedException();
+            // We don't call base class initialize since it tries to auto-load adapters from the defined
+            // data member - instead, the data publisher dyanmically creates adapters upon request
+            Initialized = false;
+
+            Clear();
+
+            // Initialize TCP server (loads config file settings)
+            if (m_dataServer != null)
+                m_dataServer.Initialize();
+
+            Initialized = true;
         }
 
-        private void m_dataServer_ServerStarted(object sender, EventArgs e)
+        /// <summary>
+        /// Establish <see cref="DataPublisher"/> and start listening for client connections.
+        /// </summary>
+        public override void Start()
         {
-            throw new NotImplementedException();
+            if (!Enabled)
+            {
+                base.Start();
+
+                if (m_dataServer != null)
+                    m_dataServer.Start();
+            }
         }
 
-        private void m_dataServer_SendClientDataException(object sender, EventArgs<Guid, Exception> e)
+        /// <summary>
+        /// Terminate <see cref="DataPublisher"/> and stop listening for client connections.
+        /// </summary>
+        public override void Stop()
         {
-            throw new NotImplementedException();
+            base.Stop();
+
+            if (m_dataServer != null)
+                m_dataServer.Stop();
         }
 
-        private void m_dataServer_ReceiveClientDataTimeout(object sender, EventArgs<Guid> e)
+        /// <summary>
+        /// Gets a short one-line status of this <see cref="CommonPhasorServices"/>.
+        /// </summary>
+        /// <param name="maxLength">Maximum number of available characters for display.</param>
+        /// <returns>A short one-line summary of the current status of the <see cref="CommonPhasorServices"/>.</returns>
+        public override string GetShortStatus(int maxLength)
         {
-            throw new NotImplementedException();
+            if (m_dataServer != null)
+                return string.Format("Publishing data to {0} clients.", m_dataServer.ClientIDs.Length).CenterText(maxLength);
+
+            return "Currently not connected".CenterText(maxLength);
         }
 
-        private void m_dataServer_ReceiveClientDataException(object sender, EventArgs<Guid, Exception> e)
+        /// <summary>
+        /// Unwires events and disposes of <see cref="IActionAdapter"/> implementation.
+        /// </summary>
+        /// <param name="item"><see cref="IActionAdapter"/> to dispose.</param>
+        protected override void DisposeItem(IActionAdapter item)
         {
-            throw new NotImplementedException();
+            base.DisposeItem(item);
+
+            try
+            {
+                if (m_dataServer != null)
+                    m_dataServer.DisconnectOne(((ClientSubscription)item).ClientID);
+            }
+            catch (InvalidOperationException)
+            {
+                // This exception is thrown if client is no longer in the connection list - we can safely ignore this error
+            }
         }
 
-        private void m_dataServer_ReceiveClientDataComplete(object sender, EventArgs<Guid, byte[], int> e)
+        /// <summary>
+        /// Sends response back to specified client.
+        /// </summary>
+        /// <param name="clientID">ID of client to send response.</param>
+        /// <param name="response">Server response.</param>
+        /// <param name="command">In response to command.</param>
+        protected virtual void SendClientResponse(Guid clientID, ServerResponse response, ServerCommand command)
         {
-            throw new NotImplementedException();
+            SendClientResponse(clientID, response, command, (byte[])null);
         }
 
-        private void m_dataServer_HandshakeProcessUnsuccessful(object sender, EventArgs e)
+        /// <summary>
+        /// Sends response back to specified client with a message.
+        /// </summary>
+        /// <param name="clientID">ID of client to send response.</param>
+        /// <param name="response">Server response.</param>
+        /// <param name="command">In response to command.</param>
+        /// <param name="status">Status message to return.</param>
+        protected virtual void SendClientResponse(Guid clientID, ServerResponse response, ServerCommand command, string status)
         {
-            throw new NotImplementedException();
+            if (status != null)
+                SendClientResponse(clientID, response, command, Encoding.Unicode.GetBytes(status));
+            else
+                SendClientResponse(clientID, response, command);
         }
 
-        private void m_dataServer_HandshakeProcessTimeout(object sender, EventArgs e)
+        /// <summary>
+        /// Sends response back to specified client with a formatted message.
+        /// </summary>
+        /// <param name="clientID">ID of client to send response.</param>
+        /// <param name="response">Server response.</param>
+        /// <param name="command">In response to command.</param>
+        /// <param name="formattedStatus">Formatted status message to return.</param>
+        /// <param name="args">Arguments for <paramref name="formattedStatus"/>.</param>
+        protected virtual void SendClientResponse(Guid clientID, ServerResponse response, ServerCommand command, string formattedStatus, params object[] args)
         {
-            throw new NotImplementedException();
+            if (formattedStatus != null)
+                SendClientResponse(clientID, response, command, Encoding.Unicode.GetBytes(string.Format(formattedStatus, args)));
+            else
+                SendClientResponse(clientID, response, command);
         }
 
-        private void m_dataServer_ClientDisconnected(object sender, EventArgs<Guid> e)
+        /// <summary>
+        /// Sends response back to specified client with attached data.
+        /// </summary>
+        /// <param name="clientID">ID of client to send response.</param>
+        /// <param name="response">Server response.</param>
+        /// <param name="command">In response to command.</param>
+        /// <param name="data">Data to return to client; null if none.</param>
+        protected virtual void SendClientResponse(Guid clientID, ServerResponse response, ServerCommand command, byte[] data)
         {
-            throw new NotImplementedException();
+            SendClientResponse(clientID, (byte)response, (byte)command, data);
+        }
+
+        // Send binary response packet to client
+        private void SendClientResponse(Guid clientID, byte responseCode, byte commandCode, byte[] data)
+        {
+            MemoryStream responsePacket = new MemoryStream();
+
+            // Add response code
+            responsePacket.WriteByte(responseCode);
+
+            // Add original in response to command code
+            responsePacket.WriteByte(commandCode);
+
+            if (data == null || data.Length == 0)
+            {
+                // Add zero sized data buffer to response packet
+                responsePacket.Write(EndianOrder.BigEndian.GetBytes(0), 0, 4);
+            }
+            else
+            {
+                // Add size of data buffer to response packet
+                responsePacket.Write(EndianOrder.BigEndian.GetBytes(data.Length), 0, 4);
+
+                // Add data buffer
+                responsePacket.Write(data, 0, data.Length);
+            }
+
+            // Send response packet
+            if (m_dataServer != null)
+            {
+                try
+                {
+                    m_dataServer.SendToAsync(clientID, responsePacket.ToArray());
+                }
+                catch (Exception ex)
+                {
+                    OnProcessException(new InvalidOperationException("Failed to send response packet to client due to exception: " + ex.Message, ex));
+                }
+            }
+        }
+
+        // Remove client subscription
+        private void RemoveClientSubscription(Guid clientID)
+        {
+            lock (this)
+            {
+                IActionAdapter clientSubscription = this.First<IActionAdapter>(cs => ((ClientSubscription)cs).ClientID == clientID);
+
+                if (clientSubscription != null)
+                {
+                    clientSubscription.Dispose();
+                    Remove(clientSubscription);
+                }
+            }
         }
 
         private void m_dataServer_ClientConnected(object sender, EventArgs<Guid> e)
         {
-            throw new NotImplementedException();
+            // Initialize a new subscription list for this client
+            lock (this)
+            {
+                Add(new ClientSubscription(this, e.Argument));
+            }
+        }
+
+        private void m_dataServer_ClientDisconnected(object sender, EventArgs<Guid> e)
+        {
+            RemoveClientSubscription(e.Argument);
+        }
+
+        private void m_dataServer_ReceiveClientDataComplete(object sender, EventArgs<Guid, byte[], int> e)
+        {
+            Guid clientID = e.Argument1;
+            byte[] buffer = e.Argument2;
+            int length = e.Argument3;
+            string message;
+
+            if (length > 0 && buffer != null)
+            {
+                // Query command byte
+                switch ((ServerCommand)buffer[0])
+                {
+                    case ServerCommand.Subscribe:
+                        // Handle subscribe
+                        try
+                        {
+                            // Make sure there is enough buffer to for integer that defines signal ID count
+                            if (length >= 5)
+                            {
+                                // Next 4 bytes are an integer representing the length of the connection string that follows
+                                int byteLength = EndianOrder.BigEndian.ToInt32(buffer, 1);
+
+                                if (byteLength > 0 && length >= 5 + byteLength)
+                                {
+                                    string connectionString = Encoding.Unicode.GetString(buffer, 5, byteLength);
+                                    ClientSubscription subscription = null;
+
+                                    // Lookup adapter by its client ID
+                                    lock (this)
+                                    {
+                                        IActionAdapter adapter;
+
+                                        if (this.TryGetAdapter<Guid>(clientID, (item, value) => ((ClientSubscription)item).ClientID == value, out adapter))
+                                            subscription = (ClientSubscription)adapter;
+                                    }
+
+                                    if (subscription != null)
+                                    {
+                                        // Update connection string
+                                        subscription.ConnectionString = connectionString;
+
+                                        // Subscribed signals (i.e., input measurement keys) will be parsed from connection string during
+                                        // initialization of adapter. This should also gracefully handle "resubscribing" since assignment
+                                        // and  use of input measurment keys is synchronized within the client subscription class
+                                        subscription.Initialize();
+
+                                        // Make sure adapter is started
+                                        subscription.Start();
+
+                                        // Send success response
+                                        if (subscription.InputMeasurementKeys != null)
+                                            message = string.Format("Client subscribed with {0} signals.", subscription.InputMeasurementKeys.Length);
+                                        else
+                                            message = string.Format("Client subscribed, but no signals were specified. Make sure \"inputMeasurementKeys\" setting is properly defined.");
+
+                                        SendClientResponse(clientID, ServerResponse.Succeeded, ServerCommand.Subscribe, message);
+                                        OnStatusMessage(message);
+                                    }
+                                    else
+                                    {
+                                        // No need to send response to client, it is already disconnected...
+                                        OnProcessException(new InvalidOperationException("Failed to find connection for client data subscription."));
+                                    }
+                                }
+                                else
+                                {
+                                    if (byteLength > 0)
+                                        message = "Not enough buffer was provided to parse client data subscription.";
+                                    else
+                                        message = "Cannot initialize client data subscription without a connection string.";
+
+                                    SendClientResponse(clientID, ServerResponse.Failed, ServerCommand.Subscribe, message);
+                                    OnProcessException(new InvalidOperationException(message));
+                                }
+                            }
+                            else
+                            {
+                                message = "Not enough buffer was provided to parse client data subscription.";
+                                SendClientResponse(clientID, ServerResponse.Failed, ServerCommand.Subscribe, message);
+                                OnProcessException(new InvalidOperationException(message));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            message = "Failed to process client data subscription due to exception: " + ex.Message;
+                            SendClientResponse(clientID, ServerResponse.Failed, ServerCommand.Subscribe, message);
+                            OnProcessException(new InvalidOperationException(message, ex));
+                        }
+                        break;
+                    case ServerCommand.Unsubscribe:
+                        // Handle unsubscribe
+                        RemoveClientSubscription(clientID);
+                        message = "Client unsubscribed.";
+                        SendClientResponse(clientID, ServerResponse.Succeeded, ServerCommand.Unsubscribe, message);
+                        OnStatusMessage(message);
+                        break;
+                    case ServerCommand.QueryPoints:
+                        // Handle point query
+                        message = "Client request for query points command is not implemented yet.";
+                        SendClientResponse(clientID, ServerResponse.Failed, ServerCommand.QueryPoints, message);
+                        OnProcessException(new NotImplementedException(message));
+                        break;
+                    default:
+                        // Handle unrecognized commands
+                        message = "Client sent an unrecognized server command: 0x" + buffer[0].ToString("X").PadLeft(2, '0');
+                        SendClientResponse(clientID, (byte)ServerResponse.Failed, buffer[0], Encoding.Unicode.GetBytes(message));
+                        OnProcessException(new InvalidOperationException(message));
+                        break;
+                }
+            }
+        }
+
+        private void m_dataServer_ServerStarted(object sender, EventArgs e)
+        {
+            OnStatusMessage("Data publisher started.");
+        }
+
+        private void m_dataServer_ServerStopped(object sender, EventArgs e)
+        {
+            OnStatusMessage("Data publisher stopped.");
+        }
+
+        private void m_dataServer_SendClientDataException(object sender, EventArgs<Guid, Exception> e)
+        {
+            Exception ex = e.Argument2;
+            OnProcessException(new InvalidOperationException("Data publisher encountered an exception while sending data to client connection: " + ex.Message, ex));
+        }
+
+        private void m_dataServer_ReceiveClientDataException(object sender, EventArgs<Guid, Exception> e)
+        {
+            Exception ex = e.Argument2;
+            OnProcessException(new InvalidOperationException("Data publisher encountered an exception while receiving data from client connection: " + ex.Message, ex));
+        }
+
+        private void m_dataServer_ReceiveClientDataTimeout(object sender, EventArgs<Guid> e)
+        {
+            OnProcessException(new InvalidOperationException("Data publisher timed out while receiving data from client connection"));
+        }
+
+        private void m_dataServer_HandshakeProcessUnsuccessful(object sender, EventArgs e)
+        {
+            OnProcessException(new InvalidOperationException("Data publisher failed to authenticate client connection"));
+        }
+
+        private void m_dataServer_HandshakeProcessTimeout(object sender, EventArgs e)
+        {
+            OnProcessException(new InvalidOperationException("Data publisher timed out while trying authenticate client connection"));
         }
 
         #endregion
-
-        #region [ Operators ]
-
-        #endregion
-
-        #region [ Static ]
-
-        // Static Fields
-
-        // Static Constructor
-
-        // Static Properties
-
-        // Static Methods
-
-        #endregion       
     }
 }

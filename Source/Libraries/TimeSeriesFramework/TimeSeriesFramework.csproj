@@ -58,6 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SerializableMeasurementSlim.cs" />
     <Compile Include="DataPublisher.cs" />
     <Compile Include="DataSubscriber.cs" />
     <Compile Include="DebugHost.cs">
@@ -67,6 +68,7 @@
       <DependentUpon>DebugHost.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SerializableMeasurement.cs" />
     <Compile Include="ServiceClient.cs">
       <SubType>Component</SubType>
     </Compile>

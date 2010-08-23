@@ -33,6 +33,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using TimeSeriesFramework;
 using TVA.Configuration;
 using TVA.Data;
 using TVA.IO;
@@ -252,9 +253,6 @@ namespace TVA.PhasorProtocols
         private DataSet m_dataSource;
         private int m_initializationTimeout;
         private ManualResetEvent m_initializeWaitHandle;
-        private MeasurementKey[] m_inputMeasurementKeys;
-        private IMeasurement[] m_outputMeasurements;
-        private List<MeasurementKey> m_inputMeasurementKeysHash;
         private long m_processedMeasurements;
         private int m_measurementReportingInterval;
         private int m_framesPerSecond;
@@ -269,6 +267,7 @@ namespace TVA.PhasorProtocols
         private int m_outputStreamStatisticsMaxIndex;
         private Dictionary<string, IMeasurement> m_definedMeasurements;
         private System.Timers.Timer m_statisticCalculationTimer;
+        private DataPublisher m_dataPublisher;
         private bool m_enabled;
         private bool m_initialized;
         private bool m_disposed;
@@ -310,6 +309,9 @@ namespace TVA.PhasorProtocols
             m_frameParser.AutoRepeatCapturedPlayback = false;
             m_frameParser.AutoStartDataParsingSequence = false;
             m_frameParser.SkipDisableRealTimeData = true;
+
+            // Create a new data publishing server
+            m_dataPublisher = new DataPublisher();
         }
 
         /// <summary>
@@ -401,6 +403,10 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_dataSource = value;
+
+                // Cascade to data publishing server
+                if (m_dataPublisher != null)
+                    m_dataPublisher.DataSource = value;
             }
         }
 
@@ -419,6 +425,10 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_initializationTimeout = value;
+
+                // Cascade to data publishing server
+                if (m_dataPublisher != null)
+                    m_dataPublisher.InitializationTimeout = value;
             }
         }
 
@@ -429,11 +439,11 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return m_outputMeasurements;
+                return null;
             }
             set
             {
-                m_outputMeasurements = value;
+                // Not used
             }
         }
 
@@ -444,20 +454,11 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return m_inputMeasurementKeys;
+                return null;
             }
             set
             {
-                m_inputMeasurementKeys = value;
-
-                // Update input key lookup hash table
-                if (value != null)
-                {
-                    m_inputMeasurementKeysHash = new List<MeasurementKey>(value);
-                    m_inputMeasurementKeysHash.Sort();
-                }
-                else
-                    m_inputMeasurementKeysHash = null;
+                // Not used
             }
         }
 
@@ -669,6 +670,14 @@ namespace TVA.PhasorProtocols
                 status.AppendFormat("        Defined frame rate: {0} frames/sec", FramesPerSecond);
                 status.AppendLine();
 
+                if (m_dataPublisher != null)
+                {
+                    status.AppendLine();
+                    status.AppendLine("Data Publishing Server:");
+                    status.AppendLine();
+                    status.Append(m_dataPublisher.Status);
+                }
+
                 return status.ToString();
             }
         }
@@ -733,6 +742,19 @@ namespace TVA.PhasorProtocols
                             m_statisticCalculationTimer.Dispose();
                         }
                         m_statisticCalculationTimer = null;
+
+                        // Dispose of data publishing server
+                        if (m_dataPublisher != null)
+                        {
+                            m_dataPublisher.StatusMessage -= StatusMessage;
+                            m_dataPublisher.ProcessException -= ProcessException;
+                            m_dataPublisher.NewMeasurements -= NewMeasurements;
+                            m_dataPublisher.UnpublishedSamples -= UnpublishedSamples;
+                            m_dataPublisher.DiscardingMeasurements -= DiscardingMeasurements;
+                            m_dataPublisher.Dispose();
+                        }
+                        m_dataPublisher = null;
+
                     }
                 }
                 finally
@@ -787,6 +809,18 @@ namespace TVA.PhasorProtocols
             m_statisticCalculationTimer.Enabled = false;
 
             ReloadStatistics();
+
+            // Initialize the data publishing server (load settings from config file)
+            if (m_dataPublisher != null)
+            {
+                m_dataPublisher.Name = "dataPublisher";
+                m_dataPublisher.StatusMessage += StatusMessage;
+                m_dataPublisher.ProcessException += ProcessException;
+                m_dataPublisher.NewMeasurements += NewMeasurements;
+                m_dataPublisher.UnpublishedSamples += UnpublishedSamples;
+                m_dataPublisher.DiscardingMeasurements += DiscardingMeasurements;
+                m_dataPublisher.Initialize();
+            }
         }
 
         /// <summary>
@@ -796,14 +830,17 @@ namespace TVA.PhasorProtocols
         public void Start()
         {
             // Make sure we are stopped (e.g., disconnected) before attempting to start (e.g., connect)
-            if (m_enabled)
-                Stop();
-
-            // Wait for adapter intialization to complete...
-            m_enabled = WaitForInitialize(InitializationTimeout);
-
             if (!m_enabled)
-                OnProcessException(new TimeoutException("Failed to start adapter due to timeout waiting for initialization."));
+            {
+                // Wait for adapter intialization to complete...
+                m_enabled = WaitForInitialize(InitializationTimeout);
+
+                if (m_dataPublisher != null)
+                    m_dataPublisher.Start();
+
+                if (!m_enabled)
+                    OnProcessException(new TimeoutException("Failed to start adapter due to timeout waiting for initialization."));
+            }
         }
 
         /// <summary>
@@ -813,6 +850,9 @@ namespace TVA.PhasorProtocols
         public void Stop()
         {
             m_enabled = false;
+
+            if (m_dataPublisher != null)
+                m_dataPublisher.Stop();
         }
 
         // Assigns the reference to the parent adapter collection that will contain this adapter.
@@ -839,6 +879,10 @@ namespace TVA.PhasorProtocols
                 m_actionAdapters = null;
                 //m_outputAdapters = null;
             }
+
+            // Assign parent collection for data publishing server
+            if (m_dataPublisher != null)
+                ((IAdapter)m_dataPublisher).AssignParentCollection(parent);
         }
 
         /// <summary>
@@ -859,20 +903,6 @@ namespace TVA.PhasorProtocols
         public string GetShortStatus(int maxLength)
         {
             return "Type \"LISTCOMMANDS 0\" to enumerate service commands.".CenterText(maxLength);
-        }
-
-        /// <summary>
-        /// Determines if specified measurement key is defined in <see cref="InputMeasurementKeys"/>.
-        /// </summary>
-        /// <param name="item">Primary key of measurement to find.</param>
-        /// <returns>true if specified measurement key is defined in <see cref="InputMeasurementKeys"/>.</returns>
-        public bool IsInputMeasurement(MeasurementKey item)
-        {
-            if (m_inputMeasurementKeysHash != null)
-                return (m_inputMeasurementKeysHash.BinarySearch(item) >= 0);
-
-            // If no input measurements are defined we must assume user wants to accept all measurements
-            return true;
         }
 
         /// <summary>
@@ -994,10 +1024,6 @@ namespace TVA.PhasorProtocols
         /// Queues a single measurement for processing.
         /// </summary>
         /// <param name="measurement">Measurement to queue for processing.</param>
-        /// <remarks>
-        /// The <see cref="CommonPhasorServices"/> adapter doesn't process any measurements.
-        /// </remarks>
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public void QueueMeasurementForProcessing(IMeasurement measurement)
         {
             QueueMeasurementsForProcessing(new IMeasurement[] { measurement });
@@ -1007,13 +1033,10 @@ namespace TVA.PhasorProtocols
         /// Queues a collection of measurements for processing.
         /// </summary>
         /// <param name="measurements">Collection of measurements to queue for processing.</param>
-        /// <remarks>
-        /// The <see cref="CommonPhasorServices"/> adapter doesn't process any measurements.
-        /// </remarks>
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public void QueueMeasurementsForProcessing(IEnumerable<IMeasurement> measurements)
         {
-            // The common phasor services doesn't have a need to process any measurements
+            if (m_dataPublisher != null)
+                m_dataPublisher.QueueMeasurementsForProcessing(measurements);
         }
 
         /// <summary>
