@@ -32,6 +32,7 @@ using TVA.Measurements;
 using TVA.Measurements.Routing;
 using System.Data;
 using System.IO;
+using System.Threading;
 
 namespace TimeSeriesFramework
 {
@@ -42,8 +43,17 @@ namespace TimeSeriesFramework
     /// </summary>
     public enum ServerCommand : byte
     {
+        /// <summary>
+        /// Subscribe command.
+        /// </summary>
         Subscribe = 0xC0,
+        /// <summary>
+        /// Unsubscribe command.
+        /// </summary>
         Unsubscribe = 0xC1,
+        /// <summary>
+        /// Query points command.
+        /// </summary>
         QueryPoints = 0xC2
     }
 
@@ -52,9 +62,35 @@ namespace TimeSeriesFramework
     /// </summary>
     public enum ServerResponse : byte
     {
+        /// <summary>
+        /// Command succeeded response.
+        /// </summary>
         Succeeded = 0xD0,
+        /// <summary>
+        /// Command failed response.
+        /// </summary>
         Failed = 0xD1,
+        /// <summary>
+        /// Data packet response.
+        /// </summary>
         DataPacket = 0xD2
+    }
+
+    [Flags()]
+    public enum DataPacketFlags : byte
+    {
+        /// <summary>
+        /// Determines if data packet is synchronized. Bit set = synchronized, bit clear = unsynchronized.
+        /// </summary>
+        Synchronized = (byte)Bits.Bit00,
+        /// <summary>
+        /// Determines if serialized measurement is compact. Bit set = compact, bit clear = full fidelity.
+        /// </summary>
+        Compact = (byte)Bits.Bit01,
+        /// <summary>
+        /// No flags set. This would represent unsynchronized, full fidelity measurement data packets.
+        /// </summary>
+        NoFlags = (Byte)Bits.Nil
     }
 
     #endregion
@@ -67,7 +103,23 @@ namespace TimeSeriesFramework
         #region [ Members ]
 
         // Nested Types
-        private class ClientSubscription : ActionAdapterBase
+
+        // Client subscription action adatper interface
+        private interface IClientSubscription : IActionAdapter
+        {
+            /// <summary>
+            /// Gets the <see cref="Guid"/> client identifier of this <see cref="IClientSubscription"/>.
+            /// </summary>
+            Guid ClientID { get; }
+
+            /// <summary>
+            /// Gets or sets flag that determines if full fidelity measurements should be used in data packets of this <see cref="IClientSubscription"/>.
+            /// </summary>
+            bool UseFullFidelityMeasurements { get; set; }
+        }
+
+        // Synchronized action adapter interface
+        private class SynchronizedClientSubscription : ActionAdapterBase, IClientSubscription
         {
             #region [ Members ]
 
@@ -82,11 +134,11 @@ namespace TimeSeriesFramework
             #region [ Constructors ]
 
             /// <summary>
-            /// Creates a new <see cref="ClientSubscription"/>.
+            /// Creates a new <see cref="SynchronizedClientSubscription"/>.
             /// </summary>
             /// <param name="parent">Reference to parent.</param>
             /// <param name="clientID"></param>
-            public ClientSubscription(DataPublisher parent, Guid clientID)
+            public SynchronizedClientSubscription(DataPublisher parent, Guid clientID)
             {
                 // Pass parent reference into base class
                 ((IAdapter)this).AssignParentCollection(parent);
@@ -100,7 +152,7 @@ namespace TimeSeriesFramework
             #region [ Properties ]
 
             /// <summary>
-            /// Gets the <see cref="Guid"/> client identifier of this <see cref="ClientSubscription"/>.
+            /// Gets the <see cref="Guid"/> client identifier of this <see cref="SynchronizedClientSubscription"/>.
             /// </summary>
             public Guid ClientID
             {
@@ -111,7 +163,22 @@ namespace TimeSeriesFramework
             }
 
             /// <summary>
-            /// Gets or sets primary keys of input measurements the <see cref="ClientSubscription"/> expects, if any.
+            /// Gets or sets flag that determines if full fidelity measurements should be used in data packets of this <see cref="SynchronizedClientSubscription"/>.
+            /// </summary>
+            public bool UseFullFidelityMeasurements
+            {
+                get
+                {
+                    return m_useFullFidelityMeasurements;
+                }
+                set
+                {
+                    m_useFullFidelityMeasurements = value;
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets primary keys of input measurements the <see cref="SynchronizedClientSubscription"/> expects, if any.
             /// </summary>
             /// <remarks>
             /// We override method so assignment can be synchronized such that dynamic updates won't interfere
@@ -137,7 +204,7 @@ namespace TimeSeriesFramework
             #region [ Methods ]
 
             /// <summary>
-            /// Releases the unmanaged resources used by the <see cref="ClientSubscription"/> object and optionally releases the managed resources.
+            /// Releases the unmanaged resources used by the <see cref="SynchronizedClientSubscription"/> object and optionally releases the managed resources.
             /// </summary>
             /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
             protected override void Dispose(bool disposing)
@@ -161,20 +228,6 @@ namespace TimeSeriesFramework
             }
 
             /// <summary>
-            /// Initializes <see cref="ClientSubscription"/>.
-            /// </summary>
-            public override void Initialize()
-            {
-                base.Initialize();
-
-                string setting;
-
-                // Load optional parameters
-                if (Settings.TryGetValue("useFullFidelityMeasurements", out setting))
-                    m_useFullFidelityMeasurements = setting.ParseBoolean();
-            }
-
-            /// <summary>
             /// Publish <see cref="IFrame"/> of time-aligned collection of <see cref="IMeasurement"/> values that arrived within the
             /// concentrator's defined <see cref="ConcentratorBase.LagTime"/>.
             /// </summary>
@@ -183,7 +236,16 @@ namespace TimeSeriesFramework
             protected override void PublishFrame(IFrame frame, int index)
             {
                 MemoryStream data = new MemoryStream();
+                bool useFullFidelityMeasurements = !m_useFullFidelityMeasurements;
                 byte[] buffer;
+
+                // Serialize data packet flags into response
+                DataPacketFlags flags = DataPacketFlags.Synchronized;
+
+                if (!useFullFidelityMeasurements)
+                    flags |= DataPacketFlags.Compact;
+
+                data.WriteByte((byte)flags);
 
                 // Serialize frame timestamp into data packet
                 data.Write(EndianOrder.BigEndian.GetBytes((long)frame.Timestamp), 0, 8);
@@ -191,13 +253,12 @@ namespace TimeSeriesFramework
                 // Serialize measurements to data buffer
                 foreach (IMeasurement measurement in frame.Measurements.Values)
                 {
-                    if (m_useFullFidelityMeasurements)
-                    {
+                    if (useFullFidelityMeasurements)
                         buffer = (new SerializableMeasurement(measurement)).BinaryImage;
-                        data.Write(buffer, 0, buffer.Length);
-                    }
                     else
-                        data.Write((new SerializableMeasurementSlim(measurement)).BinaryImage, 0, SerializableMeasurementSlim.FixedLength);
+                        buffer = (new SerializableMeasurementSlim(measurement, false)).BinaryImage;
+
+                    data.Write(buffer, 0, buffer.Length);
                 }
 
                 // Pusblish data packet to client
@@ -239,7 +300,207 @@ namespace TimeSeriesFramework
             #endregion
         }
 
-        // Events
+        // Unsynchronized action adapter interface
+        private class UnsynchronizedClientSubscription : FacileActionAdapterBase, IClientSubscription
+        {
+            #region [ Members ]
+
+            // Fields
+            private DataPublisher m_parent;
+            private Guid m_clientID;
+            private bool m_useFullFidelityMeasurements;
+            private bool m_disposed;
+
+            #endregion
+
+            #region [ Constructors ]
+
+            /// <summary>
+            /// Creates a new <see cref="UnsynchronizedClientSubscription"/>.
+            /// </summary>
+            /// <param name="parent">Reference to parent.</param>
+            /// <param name="clientID"></param>
+            public UnsynchronizedClientSubscription(DataPublisher parent, Guid clientID)
+            {
+                // Pass parent reference into base class
+                ((IAdapter)this).AssignParentCollection(parent);
+
+                m_parent = parent;
+                m_clientID = clientID;
+            }
+
+            #endregion
+
+            #region [ Properties ]
+
+            /// <summary>
+            /// Gets the <see cref="Guid"/> client identifier of this <see cref="UnsynchronizedClientSubscription"/>.
+            /// </summary>
+            public Guid ClientID
+            {
+                get
+                {
+                    return m_clientID;
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets flag that determines if full fidelity measurements should be used in data packets of this <see cref="UnsynchronizedClientSubscription"/>.
+            /// </summary>
+            public bool UseFullFidelityMeasurements
+            {
+                get
+                {
+                    return m_useFullFidelityMeasurements;
+                }
+                set
+                {
+                    m_useFullFidelityMeasurements = value;
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets primary keys of input measurements the <see cref="UnsynchronizedClientSubscription"/> expects, if any.
+            /// </summary>
+            /// <remarks>
+            /// We override method so assignment can be synchronized such that dynamic updates won't interfere
+            /// with filtering in <see cref="QueueMeasurementsForProcessing"/>.
+            /// </remarks>
+            public override MeasurementKey[] InputMeasurementKeys
+            {
+                get
+                {
+                    return base.InputMeasurementKeys;
+                }
+                set
+                {
+                    lock (this)
+                    {
+                        base.InputMeasurementKeys = value;
+                    }
+                }
+            }
+
+            #endregion
+
+            #region [ Methods ]
+
+            /// <summary>
+            /// Releases the unmanaged resources used by the <see cref="UnsynchronizedClientSubscription"/> object and optionally releases the managed resources.
+            /// </summary>
+            /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+            protected override void Dispose(bool disposing)
+            {
+                if (!m_disposed)
+                {
+                    try
+                    {
+                        if (disposing)
+                        {
+                            // Remove reference to parent
+                            m_parent = null;
+                        }
+                    }
+                    finally
+                    {
+                        m_disposed = true;          // Prevent duplicate dispose.
+                        base.Dispose(disposing);    // Call base class Dispose().
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Gets a short one-line status of this <see cref="UnsynchronizedClientSubscription"/>.
+            /// </summary>
+            /// <param name="maxLength">Maximum number of available characters for display.</param>
+            /// <returns>A short one-line summary of the current status of this <see cref="AdapterBase"/>.</returns>
+            public override string GetShortStatus(int maxLength)
+            {
+                int inputCount = 0, outputCount = 0;
+
+                if (InputMeasurementKeys != null)
+                    inputCount = InputMeasurementKeys.Length;
+
+                if (OutputMeasurements != null)
+                    outputCount = OutputMeasurements.Length;
+
+                return string.Format("Total input measurements: {0}, total output measurements: {1}", inputCount, outputCount).PadLeft(maxLength);
+            }
+
+            /// <summary>
+            /// Queues a single measurement for processing.
+            /// </summary>
+            /// <param name="measurement">Measurement to queue for processing.</param>
+            /// <remarks>
+            /// Measurement is filtered against the defined <see cref="InputMeasurementKeys"/> so we override method
+            /// so that dyanmic updates to keys will be synchronized with filtering to prevent interference.
+            /// </remarks>
+            public override void QueueMeasurementForProcessing(IMeasurement measurement)
+            {
+                QueueMeasurementsForProcessing(new IMeasurement[] { measurement });
+            }
+
+            /// <summary>
+            /// Queues a collection of measurements for processing.
+            /// </summary>
+            /// <param name="measurements">Collection of measurements to queue for processing.</param>
+            /// <remarks>
+            /// Measurements are filtered against the defined <see cref="InputMeasurementKeys"/> so we override method
+            /// so that dyanmic updates to keys will be synchronized with filtering to prevent interference.
+            /// </remarks>
+            public override void QueueMeasurementsForProcessing(IEnumerable<IMeasurement> measurements)
+            {
+                List<IMeasurement> filteredMeasurements = new List<IMeasurement>();
+
+                lock (this)
+                {
+                    foreach (IMeasurement measurement in measurements)
+                    {
+                        if (IsInputMeasurement(measurement.Key))
+                            filteredMeasurements.Add(measurement);
+                    }
+                }
+
+                if (filteredMeasurements.Count > 0)
+                    ThreadPool.QueueUserWorkItem(ProcessMeasurements, filteredMeasurements);
+            }
+
+            private void ProcessMeasurements(object state)
+            {
+                IEnumerable<IMeasurement> measurements = state as IEnumerable<IMeasurement>;
+
+                if (state != null)
+                {
+                    MemoryStream data = new MemoryStream();
+                    bool useFullFidelityMeasurements = !m_useFullFidelityMeasurements;
+                    byte[] buffer;
+
+                    // Serialize data packet flags into response
+                    DataPacketFlags flags = DataPacketFlags.NoFlags;
+
+                    if (!useFullFidelityMeasurements)
+                        flags |= DataPacketFlags.Compact;
+
+                    data.WriteByte((byte)flags);
+
+                    // Serialize measurements to data buffer
+                    foreach (IMeasurement measurement in measurements)
+                    {
+                        if (useFullFidelityMeasurements)
+                            buffer = (new SerializableMeasurement(measurement)).BinaryImage;
+                        else
+                            buffer = (new SerializableMeasurementSlim(measurement, true)).BinaryImage;
+                        
+                        data.Write(buffer, 0, buffer.Length);
+                    }
+
+                    // Pusblish data packet to client
+                    m_parent.SendClientResponse(m_clientID, ServerResponse.DataPacket, ServerCommand.Subscribe, data.ToArray());
+                }
+            }
+
+            #endregion
+        }
 
         // Fields
         private TcpServer m_dataServer;
@@ -441,7 +702,7 @@ namespace TimeSeriesFramework
             try
             {
                 if (m_dataServer != null)
-                    m_dataServer.DisconnectOne(((ClientSubscription)item).ClientID);
+                    m_dataServer.DisconnectOne(((IClientSubscription)item).ClientID);
             }
             catch (InvalidOperationException)
             {
@@ -547,7 +808,7 @@ namespace TimeSeriesFramework
         {
             lock (this)
             {
-                IActionAdapter clientSubscription = this.First<IActionAdapter>(cs => ((ClientSubscription)cs).ClientID == clientID);
+                IActionAdapter clientSubscription = this.First<IActionAdapter>(cs => ((IClientSubscription)cs).ClientID == clientID);
 
                 if (clientSubscription != null)
                 {
@@ -562,7 +823,7 @@ namespace TimeSeriesFramework
             // Initialize a new subscription list for this client
             lock (this)
             {
-                Add(new ClientSubscription(this, e.Argument));
+                //Add();
             }
         }
 
@@ -596,15 +857,15 @@ namespace TimeSeriesFramework
                                 if (byteLength > 0 && length >= 5 + byteLength)
                                 {
                                     string connectionString = Encoding.Unicode.GetString(buffer, 5, byteLength);
-                                    ClientSubscription subscription = null;
+                                    IClientSubscription subscription = null;
 
                                     // Lookup adapter by its client ID
                                     lock (this)
                                     {
                                         IActionAdapter adapter;
 
-                                        if (this.TryGetAdapter<Guid>(clientID, (item, value) => ((ClientSubscription)item).ClientID == value, out adapter))
-                                            subscription = (ClientSubscription)adapter;
+                                        if (this.TryGetAdapter<Guid>(clientID, (item, value) => ((IClientSubscription)item).ClientID == value, out adapter))
+                                            subscription = (IClientSubscription)adapter;
                                     }
 
                                     if (subscription != null)

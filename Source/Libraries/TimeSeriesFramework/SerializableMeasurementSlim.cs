@@ -45,6 +45,9 @@ namespace TimeSeriesFramework
         /// </summary>
         public const int FixedLength = 25;
 
+        // Members
+        private bool m_includeTime;
+
         #endregion
         
         #region [ Constructors ]
@@ -60,15 +63,32 @@ namespace TimeSeriesFramework
         /// Creates a new <see cref="SerializableMeasurementSlim"/> from source <see cref="IMeasurement"/> value.
         /// </summary>
         /// <param name="m">Source <see cref="IMeasurement"/> value.</param>
-        public SerializableMeasurementSlim(IMeasurement m) : base(m.ID, m.Source, m.SignalID, m.Value, m.Adder, m.Multiplier, m.Timestamp)
+        /// <param name="includeTime">Determines if time is included in binary images.</param>
+        public SerializableMeasurementSlim(IMeasurement m, bool includeTime) : base(m.ID, m.Source, m.SignalID, m.Value, m.Adder, m.Multiplier, m.Timestamp)
         {
             this.ValueQualityIsGood = m.ValueQualityIsGood;
             this.TimestampQualityIsGood = m.TimestampQualityIsGood;
+            m_includeTime = includeTime;
         }
 
         #endregion
 
         #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets flags that determines if time is included in binary images.
+        /// </summary>
+        public bool IncludeTime
+        {
+            get
+            {
+                return m_includeTime;
+            }
+            set
+            {
+                m_includeTime = value;
+            }
+        }
 
         /// <summary>
         /// Gets the binary image of the <see cref="SerializableMeasurementSlim"/>.
@@ -79,11 +99,12 @@ namespace TimeSeriesFramework
         /// --------   -------<br/>
         /// SignalID     16   <br/>
         ///  Value        8   <br/>
+        ///  [Time]       8?  <br/>
         ///  Flags        1   <br/>
         /// </para>
         /// <para>
-        /// Constant Length = 33<br/>
-        /// Variable Length = 0
+        /// Constant Length = 25<br/>
+        /// Variable Length = 8 (time is optional)
         /// </para>
         /// </remarks>
         public byte[] BinaryImage
@@ -104,6 +125,13 @@ namespace TimeSeriesFramework
                 EndianOrder.BigEndian.CopyBytes(AdjustedValue, buffer, index);
                 index += 8;
 
+                if (m_includeTime)
+                {
+                    // Encode timestamp
+                    EndianOrder.BigEndian.CopyBytes((long)Timestamp, buffer, index);
+                    index += 8;
+                }
+
                 // Encode flags
                 buffer[index] = (byte)((ValueQualityIsGood ? Bits.Bit00 : Bits.Nil) | (TimestampQualityIsGood ? Bits.Bit01 : Bits.Nil) | (IsDiscarded ? Bits.Bit02 : Bits.Nil));
 
@@ -118,7 +146,7 @@ namespace TimeSeriesFramework
         {
             get
             {
-                return FixedLength;
+                return FixedLength + (m_includeTime ? 8 : 0);
             }
         }
 
@@ -135,7 +163,7 @@ namespace TimeSeriesFramework
         /// <returns>The number of bytes used for initialization in the <paramref name="buffer"/> (i.e., the number of bytes parsed).</returns>
         public int Initialize(byte[] buffer, int startIndex, int count)
         {
-            if (count < FixedLength)
+            if (count < BinaryLength)
                 throw new InvalidOperationException("Not enough buffer available to deserialized measurement.");
 
             int index = startIndex;
@@ -147,6 +175,13 @@ namespace TimeSeriesFramework
             // Decode value
             Value = EndianOrder.BigEndian.ToDouble(buffer, index);
             index += 8;
+
+            if (m_includeTime)
+            {
+                // Decode timestamp
+                Timestamp = EndianOrder.BigEndian.ToInt64(buffer, index);
+                index += 8;
+            }
 
             // Decode flags
             ValueQualityIsGood = ((buffer[index] & (byte)Bits.Bit00) > 0);
