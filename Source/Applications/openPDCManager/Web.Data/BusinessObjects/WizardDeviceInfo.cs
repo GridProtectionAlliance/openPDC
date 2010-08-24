@@ -233,6 +233,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.ObjectModel;
 
 namespace openPDCManager.Data.BusinessObjects
 {
@@ -251,7 +252,7 @@ namespace openPDCManager.Data.BusinessObjects
 		public bool AddDigitals { get; set; }
 		public bool AddAnalogs { get; set; }
         public bool IsNew { get; set; }
-		public List<PhasorInfo> PhasorList {get; set;}
+		public ObservableCollection<PhasorInfo> PhasorList {get; set;}
 	}
 
 	public class PhasorInfo

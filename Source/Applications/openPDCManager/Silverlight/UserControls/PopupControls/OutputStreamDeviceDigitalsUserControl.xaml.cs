@@ -1,14 +1,14 @@
 ﻿//*******************************************************************************************************
-//  StringToPhaseConverter.cs - Gbtc
+//  OutputStreamDeviceDigitalsUserControl.xaml.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  11/09/2009 - Mehulbhai P. Thakkar
+//  08/23/2010 - Mehulbhai P Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -230,56 +230,188 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Windows.Data;
 
-namespace openPDCManager.Converters
+using System.Windows;
+using System.Windows.Controls;
+using openPDCManager.Utilities;
+using System.Windows.Media.Animation;
+using openPDCManager.ModalDialogs;
+#if SILVERLIGHT
+using openPDCManager.PhasorDataServiceProxy;
+using System.ServiceModel;
+#else
+using openPDCManager.Data.Entities;
+using System.Windows.Media.Imaging;
+#endif
+
+namespace openPDCManager.UserControls.PopupControls
 {
-	public class StringToPhaseConverter : IValueConverter
-	{
+    public partial class OutputStreamDeviceDigitalsUserControl : UserControl
+    {
+        #region [ Members ]
 
-		#region IValueConverter Members
+        public int m_sourceOutputStreamDeviceID;
+        public string m_sourceOutputStreamDeviceAcronym;
+        bool m_inEditMode = false;
+        int m_outputStreamDeviceDigitalID = 0;        
 
-		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-		{
-            //if (value.ToString() == "+")
-            //    return new KeyValuePair<string, string>("+", "Positive");
-            //else if (value.ToString() == "-")
-            //    return new KeyValuePair<string, string>("-", "Negative");
-            //else if (value.ToString() == "A")
-            //    return new KeyValuePair<string, string>("A", "Phase A");
-            //else if (value.ToString() == "B")
-            //    return new KeyValuePair<string, string>("B", "Phase B");
-            //else if (value.ToString() == "C")
-            //    return new KeyValuePair<string, string>("C", "Phase C");
-            //else
-            //    return new KeyValuePair<string, string>("+", "Positive");
-				//throw new ArgumentException("Value not supported as a Phase Type");
+        #endregion
 
-            if (value.ToString() == "+")
-                return "Positive";
-            else if (value.ToString() == "-")
-                return "Negative";
-            else if (value.ToString() == "A")
-                return "Phase A";
-            else if (value.ToString() == "B")
-                return "Phase B";
-            else if (value.ToString() == "C")
-                return "Phase C";
-            else
-                return "";
-		}
+        #region [ Constructor ]
+        
+        public OutputStreamDeviceDigitalsUserControl()
+        {
+            InitializeComponent();
+            Initialize();
+            Loaded += new RoutedEventHandler(OutputStreamDeviceDigitals_Loaded);
+#if !SILVERLIGHT
+            ButtonSave.Content = new BitmapImage(new Uri(@"images/Save.png", UriKind.Relative));
+            ButtonClear.Content = new BitmapImage(new Uri(@"images/Cancel.png", UriKind.Relative));
+#endif
+            ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
+            ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);            
+            ListBoxOutputStreamDeviceDigitalList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDeviceDigitalList_SelectionChanged);
+        }
 
-		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-		{
-            return null;
-            //if (value is KeyValuePair<string, string>)
-            //    return ((KeyValuePair<string, string>)value).Key;
-            //else
-            //    return "+";
-				//throw new ArgumentException("Value not supported as a Phase Type");
-		}
+        #endregion
 
-		#endregion
-	}
+        #region [ Controls Event Handlers ]
+
+        void ListBoxOutputStreamDeviceDigitalList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ListBoxOutputStreamDeviceDigitalList.SelectedIndex >= 0)
+            {
+                OutputStreamDeviceDigital selectedOutputStreamDeviceDigital = ListBoxOutputStreamDeviceDigitalList.SelectedItem as OutputStreamDeviceDigital;
+                GridOutputStreamDeviceDigitalDetail.DataContext = selectedOutputStreamDeviceDigital;
+                m_inEditMode = true;
+                m_outputStreamDeviceDigitalID = selectedOutputStreamDeviceDigital.ID;
+            }
+        }
+
+        void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+#if SILVERLIGHT
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonSaveTransform);
+            sb.Begin();
+#endif            
+
+            if (IsValid())
+            {
+                OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
+                App app = (App)Application.Current;
+
+                outputStreamDeviceDigital.NodeID = app.NodeValue;
+                outputStreamDeviceDigital.OutputStreamDeviceID = m_sourceOutputStreamDeviceID;
+                outputStreamDeviceDigital.Label = TextBoxLabel.Text.CleanText();
+                outputStreamDeviceDigital.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
+                outputStreamDeviceDigital.MaskValue = TextBoxMaskValue.Text.ToInteger();
+                if (m_inEditMode == true && m_outputStreamDeviceDigitalID > 0)
+                {
+                    outputStreamDeviceDigital.ID = m_outputStreamDeviceDigitalID;
+                    SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, false);
+                }
+                else
+                    SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, true);
+            }
+        }
+
+        void ButtonClear_Click(object sender, RoutedEventArgs e)
+        {
+#if SILVERLIGHT
+            Storyboard sb = new Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
+            Storyboard.SetTarget(sb, ButtonClearTransform);
+            sb.Begin();
+#endif
+            ClearForm();
+        }
+
+        #endregion
+             
+        #region [ Page Event Handlers ]
+
+        void OutputStreamDeviceDigitals_Loaded(object sender, RoutedEventArgs e)
+        {
+            GetOutputStreamDeviceDigitalList();
+            ClearForm();
+        }
+
+        #endregion
+
+        #region [ Methods ]
+
+        bool IsValid()
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(TextBoxLabel.Text.CleanText()))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Label", SystemMessage = "Please provide valid Label.", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxLabel.Focus();
+                });
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+                return isValid;
+            }
+
+            if (!TextBoxLoadOrder.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Load Order", SystemMessage = "Please provide valid integer value for Load Order.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxLoadOrder.Text = "0";
+                    TextBoxLoadOrder.Focus();
+                });
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+                return isValid;
+            }
+
+            if (!TextBoxMaskValue.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Mask Value", SystemMessage = "Please provide valid integer value for Mask Value.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxMaskValue.Text = "0";
+                    TextBoxMaskValue.Focus();
+                });
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+                return isValid;
+            }
+
+            return isValid;
+        }
+
+        void ClearForm()
+        {
+            GridOutputStreamDeviceDigitalDetail.DataContext = new OutputStreamDeviceDigital();
+            m_inEditMode = false;
+            m_outputStreamDeviceDigitalID = 0;
+            ListBoxOutputStreamDeviceDigitalList.SelectedIndex = -1;
+        }
+
+        #endregion
+    }
 }

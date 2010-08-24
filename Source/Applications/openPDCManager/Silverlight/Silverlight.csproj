@@ -344,6 +344,18 @@
     <Compile Include="UserControls\PopupControls\ActivityWindowUserControl.xaml.cs">
       <DependentUpon>ActivityWindowUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\PopupControls\OutputStreamDeviceAnalogsUserControl.cs" />
+    <Compile Include="UserControls\PopupControls\OutputStreamDeviceAnalogsUserControl.xaml.cs">
+      <DependentUpon>OutputStreamDeviceAnalogsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PopupControls\OutputStreamDeviceDigitalsUserControl.cs" />
+    <Compile Include="UserControls\PopupControls\OutputStreamDeviceDigitalsUserControl.xaml.cs">
+      <DependentUpon>OutputStreamDeviceDigitalsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PopupControls\OutputStreamDevicePhasorsUserControl.cs" />
+    <Compile Include="UserControls\PopupControls\OutputStreamDevicePhasorsUserControl.xaml.cs">
+      <DependentUpon>OutputStreamDevicePhasorsUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\PopupControls\OutputStreamDevicesUserControl.cs" />
     <Compile Include="UserControls\PopupControls\OutputStreamDevicesUserControl.xaml.cs">
       <DependentUpon>OutputStreamDevicesUserControl.xaml</DependentUpon>
@@ -750,6 +762,18 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\PopupControls\OutputStreamDeviceAnalogsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\PopupControls\OutputStreamDeviceDigitalsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\PopupControls\OutputStreamDevicePhasorsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\PopupControls\OutputStreamDevicesUserControl.xaml">
       <SubType>Designer</SubType>

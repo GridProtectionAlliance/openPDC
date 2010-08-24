@@ -1,14 +1,14 @@
 ﻿//*******************************************************************************************************
-//  StringToPhaseConverter.cs - Gbtc
+//  OutputStreamDeviceDigitalsUserControl.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  11/09/2009 - Mehulbhai P. Thakkar
+//  08/23/2010 - Mehulbhai P Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -230,56 +230,93 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Windows.Data;
+using System.ServiceModel;
+using System.Windows;
+using System.Windows.Controls;
+using openPDCManager.PhasorDataServiceProxy;
+using openPDCManager.Utilities;
+using System.Windows.Media.Animation;
+using openPDCManager.ModalDialogs;
 
-namespace openPDCManager.Converters
+namespace openPDCManager.UserControls.PopupControls
 {
-	public class StringToPhaseConverter : IValueConverter
-	{
+    public partial class OutputStreamDeviceDigitalsUserControl
+    {
+        #region [ Members ]
 
-		#region IValueConverter Members
+        PhasorDataServiceClient m_client;
 
-		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-		{
-            //if (value.ToString() == "+")
-            //    return new KeyValuePair<string, string>("+", "Positive");
-            //else if (value.ToString() == "-")
-            //    return new KeyValuePair<string, string>("-", "Negative");
-            //else if (value.ToString() == "A")
-            //    return new KeyValuePair<string, string>("A", "Phase A");
-            //else if (value.ToString() == "B")
-            //    return new KeyValuePair<string, string>("B", "Phase B");
-            //else if (value.ToString() == "C")
-            //    return new KeyValuePair<string, string>("C", "Phase C");
-            //else
-            //    return new KeyValuePair<string, string>("+", "Positive");
-				//throw new ArgumentException("Value not supported as a Phase Type");
+        #endregion
 
-            if (value.ToString() == "+")
-                return "Positive";
-            else if (value.ToString() == "-")
-                return "Negative";
-            else if (value.ToString() == "A")
-                return "Phase A";
-            else if (value.ToString() == "B")
-                return "Phase B";
-            else if (value.ToString() == "C")
-                return "Phase C";
+        #region [ Methods ]
+
+        void Initialize()
+        {
+            m_client = ProxyClient.GetPhasorDataServiceProxyClient();
+            m_client.GetOutputStreamDeviceDigitalListCompleted += new EventHandler<GetOutputStreamDeviceDigitalListCompletedEventArgs>(client_GetOutputStreamDeviceDigitalListCompleted);
+            m_client.SaveOutputStreamDeviceDigitalCompleted += new EventHandler<SaveOutputStreamDeviceDigitalCompletedEventArgs>(client_SaveOutputStreamDeviceDigitalCompleted);
+        }
+
+        void GetOutputStreamDeviceDigitalList()
+        {
+            m_client.GetOutputStreamDeviceDigitalListAsync(m_sourceOutputStreamDeviceID);
+        }
+
+        void SaveOutputStreamDeviceDigital(OutputStreamDeviceDigital outputStreamDeviceDigital, bool isNew)
+        {
+            m_client.SaveOutputStreamDeviceDigitalAsync(outputStreamDeviceDigital, isNew);
+        }
+
+        #endregion
+
+        #region [ Service Event Handlers ]
+
+        void client_SaveOutputStreamDeviceDigitalCompleted(object sender, SaveOutputStreamDeviceDigitalCompletedEventArgs e)
+        {
+            SystemMessages sm;
+            if (e.Error == null)
+            {
+                ClearForm();
+                sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                        ButtonType.OkOnly);
+            }
             else
-                return "";
-		}
+            {
+                if (e.Error is FaultException<CustomServiceFault>)
+                {
+                    FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+                    sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                }
+                else
+                    sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Digital Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+            }
+            sm.ShowPopup();
+            GetOutputStreamDeviceDigitalList();
+        }
 
-		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-		{
-            return null;
-            //if (value is KeyValuePair<string, string>)
-            //    return ((KeyValuePair<string, string>)value).Key;
-            //else
-            //    return "+";
-				//throw new ArgumentException("Value not supported as a Phase Type");
-		}
+        void client_GetOutputStreamDeviceDigitalListCompleted(object sender, GetOutputStreamDeviceDigitalListCompletedEventArgs e)
+        {
+            if (e.Error == null)
+                ListBoxOutputStreamDeviceDigitalList.ItemsSource = e.Result;
+            else
+            {
+                SystemMessages sm;
+                if (e.Error is FaultException<CustomServiceFault>)
+                {
+                    FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+                    sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                }
+                else
+                    sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device Digital List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
 
-		#endregion
-	}
+                sm.ShowPopup();
+            }
+        }
+
+        #endregion
+    }
 }

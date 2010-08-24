@@ -53,7 +53,8 @@
                             </StackPanel.Resources>                            
                                 <Ellipse Width="16" Height="16" Margin="5, 0, 5, 0" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>                            
                             <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                                <TextBlock Text="{Binding Path=Acronym}" ToolTipService.ToolTip="Concentrator Acronym" Width="{StaticResource LargeItemSize}" FontSize="{StaticResource LargeTextSize}" Padding="1"/>
+                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="{Binding Path=Acronym}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" Width="{StaticResource LargeItemSize}" HorizontalContentAlignment="Left" Click="ButtonGetStatistics_Click"></Button>
+                                <!--<TextBlock Text="{Binding Path=Acronym}" ToolTipService.ToolTip="Concentrator Acronym" Width="{StaticResource LargeItemSize}" FontSize="{StaticResource LargeTextSize}" Padding="1"/>-->
                             </Border>
                             <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                                 <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Concentrator Name" Width="{StaticResource LargeItemSize}" FontSize="{StaticResource LargeTextSize}" Padding="1"/>

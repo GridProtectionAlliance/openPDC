@@ -242,22 +242,29 @@ namespace openPDCManager.Converters
 
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			if (value.ToString() == "I")
-				return new KeyValuePair<string, string>("I", "Current");
-			else if (value.ToString() == "V")
-				return new KeyValuePair<string, string>("V", "Voltage");
-			else
-				throw new ArgumentException("Value not supported as a Phasor Type");
+            //if (value.ToString() == "I")
+            //    return new KeyValuePair<string, string>("I", "Current");
+            //else if (value.ToString() == "V")
+            //    return new KeyValuePair<string, string>("V", "Voltage");
+            //else
+            //    throw new ArgumentException("Value not supported as a Phasor Type");
+            if (value.ToString() == "I")
+                return "Current";
+            else if (value.ToString() == "V")
+                return "Voltage";
+            else
+                return "";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			if (value is KeyValuePair<string, string>)
-			{
-				return ((KeyValuePair<string, string>)value).Key;
-			}
-			else
-				throw new ArgumentException("Value not supported as a Phasor Type");
+            return null;
+            //if (value is KeyValuePair<string, string>)
+            //{
+            //    return ((KeyValuePair<string, string>)value).Key;
+            //}
+            //else
+            //    throw new ArgumentException("Value not supported as a Phasor Type");
 		}
 
 		#endregion

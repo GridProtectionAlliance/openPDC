@@ -25,10 +25,13 @@
                 <Setter Property="Margin" Value="0" />
             </Style>
 
-            <ResourceDictionary.MergedDictionaries>
+            
+
+
+                <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/openPDCManager;component/CommonResource.xaml" />
                 <ResourceDictionary Source="Resources/ResourcePieChartStyle.xaml"></ResourceDictionary>
-                <!--<ResourceDictionary Source="Resources/ResourceAccordianStyle.xaml"></ResourceDictionary>-->
+                <ResourceDictionary Source="Resources/ResourceAccordianStyle.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

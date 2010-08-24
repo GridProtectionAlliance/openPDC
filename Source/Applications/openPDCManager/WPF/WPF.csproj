@@ -263,6 +263,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="..\Silverlight\UserControls\PopupControls\OutputStreamDeviceAnalogsUserControl.xaml">
+      <Link>UserControls\PopupControls\OutputStreamDeviceAnalogsUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\PopupControls\OutputStreamDeviceDigitalsUserControl.xaml">
+      <Link>UserControls\PopupControls\OutputStreamDeviceDigitalsUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Silverlight\UserControls\PopupControls\OutputStreamDevicePhasorsUserControl.xaml">
+      <Link>UserControls\PopupControls\OutputStreamDevicePhasorsUserControl.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="..\Silverlight\UserControls\PopupControls\OutputStreamDevicesUserControl.xaml">
       <Link>UserControls\PopupControls\OutputStreamDevicesUserControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -305,6 +320,18 @@
       <Generator>MSBuild:Compile</Generator>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamDeviceAnalogs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamDeviceDigitals.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamDevicePhasors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ModalDialogs\OutputStreamDevices.xaml">
       <SubType>Designer</SubType>
@@ -384,6 +411,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\ResourceAccordianStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\ResourcePieChartStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -393,6 +424,18 @@
     <Compile Include="..\Silverlight\UserControls\CommonControls\InputWizardUserControl.xaml.cs">
       <Link>UserControls\CommonControls\InputWizardUserControl.xaml.cs</Link>
       <DependentUpon>InputWizardUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\PopupControls\OutputStreamDeviceAnalogsUserControl.xaml.cs">
+      <Link>UserControls\PopupControls\OutputStreamDeviceAnalogsUserControl.xaml.cs</Link>
+      <DependentUpon>OutputStreamDeviceAnalogsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\PopupControls\OutputStreamDeviceDigitalsUserControl.xaml.cs">
+      <Link>UserControls\PopupControls\OutputStreamDeviceDigitalsUserControl.xaml.cs</Link>
+      <DependentUpon>OutputStreamDeviceDigitalsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\Silverlight\UserControls\PopupControls\OutputStreamDevicePhasorsUserControl.xaml.cs">
+      <Link>UserControls\PopupControls\OutputStreamDevicePhasorsUserControl.xaml.cs</Link>
+      <DependentUpon>OutputStreamDevicePhasorsUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -526,6 +569,15 @@
     <Compile Include="ModalDialogs\ConnectionStringBuilder.xaml.cs">
       <DependentUpon>ConnectionStringBuilder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ModalDialogs\OutputStreamDeviceAnalogs.xaml.cs">
+      <DependentUpon>OutputStreamDeviceAnalogs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamDeviceDigitals.xaml.cs">
+      <DependentUpon>OutputStreamDeviceDigitals.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamDevicePhasors.xaml.cs">
+      <DependentUpon>OutputStreamDevicePhasors.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ModalDialogs\OutputStreamDevices.xaml.cs">
       <DependentUpon>OutputStreamDevices.xaml</DependentUpon>
     </Compile>
@@ -603,6 +655,9 @@
     <Compile Include="UserControls\OutputStreamControls\AddDevicesUserControl.cs" />
     <Compile Include="UserControls\OutputStreamControls\CurrentDevicesUserControl.cs" />
     <Compile Include="UserControls\OutputStreamControls\OutputStreamsUserControl.cs" />
+    <Compile Include="UserControls\PopupControls\OutputStreamDeviceAnalogsUserControl.cs" />
+    <Compile Include="UserControls\PopupControls\OutputStreamDeviceDigitalsUserControl.cs" />
+    <Compile Include="UserControls\PopupControls\OutputStreamDevicePhasorsUserControl.cs" />
     <Compile Include="UserControls\PopupControls\OutputStreamDevicesUserControl.cs" />
     <Compile Include="UserControls\PopupControls\OutputStreamMeasurementsUserControl.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

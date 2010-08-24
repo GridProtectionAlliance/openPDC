@@ -232,8 +232,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
@@ -244,13 +248,6 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Pages.Adapters;
 using openPDCManager.Utilities;
 using TVA.Configuration;
-using System.Linq;
-using System.Windows.Documents;
-using Microsoft.Research.DynamicDataDisplay;
-using Microsoft.Research.DynamicDataDisplay.DataSources;
-using System.Windows;
-using System.Threading;
-using System.Windows.Media;
 
 namespace openPDCManager.Pages.Monitoring
 {

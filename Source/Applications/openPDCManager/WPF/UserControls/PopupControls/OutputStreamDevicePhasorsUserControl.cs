@@ -1,14 +1,14 @@
 ﻿//*******************************************************************************************************
-//  StringToPhaseConverter.cs - Gbtc
+//  OutputStreamDevicePhasorsUserControl.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  11/09/2009 - Mehulbhai P. Thakkar
+//  08/23/2010 - Mehulbhai P Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -230,56 +230,61 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Windows.Data;
+using System.Windows;
+using openPDCManager.Data;
+using openPDCManager.Data.Entities;
+using openPDCManager.ModalDialogs;
+using openPDCManager.Utilities;
 
-namespace openPDCManager.Converters
+namespace openPDCManager.UserControls.PopupControls
 {
-	public class StringToPhaseConverter : IValueConverter
-	{
+    public partial class OutputStreamDevicePhasorsUserControl
+    {
+        #region [ Methods ]
 
-		#region IValueConverter Members
+        void Initialize()
+        {            
+        }
 
-		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-		{
-            //if (value.ToString() == "+")
-            //    return new KeyValuePair<string, string>("+", "Positive");
-            //else if (value.ToString() == "-")
-            //    return new KeyValuePair<string, string>("-", "Negative");
-            //else if (value.ToString() == "A")
-            //    return new KeyValuePair<string, string>("A", "Phase A");
-            //else if (value.ToString() == "B")
-            //    return new KeyValuePair<string, string>("B", "Phase B");
-            //else if (value.ToString() == "C")
-            //    return new KeyValuePair<string, string>("C", "Phase C");
-            //else
-            //    return new KeyValuePair<string, string>("+", "Positive");
-				//throw new ArgumentException("Value not supported as a Phase Type");
+        void GetOutputStreamDevicePhasorList()
+        {
+            try
+            {
+                ListBoxOutputStreamDevicePhasorList.ItemsSource = CommonFunctions.GetOutputStreamDevicePhasorList(m_sourceOutputStreamDeviceID);
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException("WPF.GetOutputStreamDevicePhasorList", ex);
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device Phasor List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+            }            
+        }
 
-            if (value.ToString() == "+")
-                return "Positive";
-            else if (value.ToString() == "-")
-                return "Negative";
-            else if (value.ToString() == "A")
-                return "Phase A";
-            else if (value.ToString() == "B")
-                return "Phase B";
-            else if (value.ToString() == "C")
-                return "Phase C";
-            else
-                return "";
-		}
+        void SaveOutputStreamDevicePhasor(OutputStreamDevicePhasor outputStreamDevicePhasor, bool isNew)
+        {
+            SystemMessages sm;
+            try
+            {
+                string result = CommonFunctions.SaveOutputStreamDevicePhasor(outputStreamDevicePhasor, isNew);
+                ClearForm();
+                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                        ButtonType.OkOnly);
+                GetOutputStreamDevicePhasorList();
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException("WPF.SaveOutputStreamDevicePhasor", ex);
+                sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Phasor Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+            }
+            sm.Owner = Window.GetWindow(this);
+            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            sm.ShowPopup();
+        }
 
-		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-		{
-            return null;
-            //if (value is KeyValuePair<string, string>)
-            //    return ((KeyValuePair<string, string>)value).Key;
-            //else
-            //    return "+";
-				//throw new ArgumentException("Value not supported as a Phase Type");
-		}
-
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -289,6 +289,8 @@ namespace openPDCManager.Pages.Monitoring
                         m_refreshTimer.Interval = TimeSpan.FromSeconds(interval);
                         m_refreshTimer.Tick += new EventHandler(m_refreshTimer_Tick);
                         m_refreshTimer.Start();
+                        
+                        TextBlockRefreshInterval.Text = " (Refresh Interval: " + interval.ToString() + " sec)";
                     }
                 }
                 catch (Exception ex)

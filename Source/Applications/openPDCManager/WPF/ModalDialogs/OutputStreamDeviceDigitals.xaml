@@ -1,0 +1,8 @@
+﻿<Window x:Class="openPDCManager.ModalDialogs.OutputStreamDeviceDigitals"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:uc="clr-namespace:openPDCManager.UserControls.PopupControls"
+        Title="OutputStreamDeviceDigitals" Height="370" Width="550" WindowStyle="ToolWindow">
+    <Grid>
+        <uc:OutputStreamDeviceDigitalsUserControl x:Name="UserControlOutputStreamDeviceDigitals" />
+    </Grid>
+</Window>

@@ -365,19 +365,28 @@ namespace openPDCManager.UserControls.PopupControls
         {
             int outputStreamDeviceId = Convert.ToInt32(((Button)sender).Tag.ToString());
             string acronym = ToolTipService.GetToolTip((Button)sender).ToString();  // ((HyperlinkButton)sender).Name;
-#if SILVERLIGHT
             OutputStreamDevicePhasors osdp = new OutputStreamDevicePhasors(outputStreamDeviceId, acronym);
+#if SILVERLIGHT
             osdp.Show();
+#else
+            osdp.Owner = Window.GetWindow(this);
+            osdp.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            osdp.ShowDialog();
 #endif
+
         }
 
         private void HyperlinkButtonAnalogs_Click(object sender, RoutedEventArgs e)
         {
             int outputStreamDeviceId = Convert.ToInt32(((Button)sender).Tag.ToString());
             string acronym = ToolTipService.GetToolTip((Button)sender).ToString();  // ((HyperlinkButton)sender).Name;
-#if SILVERLIGHT
             OutputStreamDeviceAnalogs osda = new OutputStreamDeviceAnalogs(outputStreamDeviceId, acronym);
+#if SILVERLIGHT            
             osda.Show();
+#else
+            osda.Owner = Window.GetWindow(this);
+            osda.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            osda.ShowDialog();
 #endif
         }
 
@@ -385,9 +394,13 @@ namespace openPDCManager.UserControls.PopupControls
         {
             int outputStreamDeviceId = Convert.ToInt32(((Button)sender).Tag.ToString());
             string acronym = ToolTipService.GetToolTip((Button)sender).ToString();  // ((HyperlinkButton)sender).Name;
-      #if SILVERLIGHT
             OutputStreamDeviceDigitals osdd = new OutputStreamDeviceDigitals(outputStreamDeviceId, acronym);
+      #if SILVERLIGHT            
             osdd.Show();
+#else
+            osdd.Owner = Window.GetWindow(this);
+            osdd.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            osdd.ShowDialog();
 #endif
         }
 

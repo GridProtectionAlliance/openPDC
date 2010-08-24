@@ -428,11 +428,15 @@ namespace openPDCManager.UserControls.CommonControls
             if (result != null && result == true)
             {
                 m_activityWindow = new ActivityWindow("Validating Configuration File... Please Wait...");
-                m_activityWindow.Show();
+                
 #if SILVERLIGHT
+                m_activityWindow.Show();
                 TextBoxConfigurationFile.Text = openFileDialog.File.Name;
                 m_configFileData = openFileDialog.File.OpenRead();
 #else
+                m_activityWindow.Owner = Window.GetWindow(this);
+                m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                m_activityWindow.Show();
                 TextBoxConfigurationFile.Text = openFileDialog.FileName;
                 m_configFileData = openFileDialog.OpenFile();
 #endif
@@ -503,6 +507,10 @@ namespace openPDCManager.UserControls.CommonControls
                 {
                     nextButtonClicked = true;
                     m_activityWindow = new ActivityWindow("Processing Request... Please Wait...");
+#if !SILVERLIGHT
+                    m_activityWindow.Owner = Window.GetWindow(this);
+                    m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
                     m_activityWindow.Show();
 
                     App app = (App)Application.Current;
@@ -591,8 +599,17 @@ namespace openPDCManager.UserControls.CommonControls
                 foreach (WizardDeviceInfo deviceInfo in m_wizardDeviceInfoList)
                 {
                     deviceInfo.Include = true;
+#if !SILVERLIGHT
+                    foreach (PhasorInfo phasorInfo in deviceInfo.PhasorList)
+                    {
+                        phasorInfo.Include = true;
+                    }
+#endif
                 }
-            }
+#if !SILVERLIGHT
+                ItemControlDeviceList.Items.Refresh();
+#endif
+            }            
         }
 
         void CheckAllDevices_Unchecked(object sender, RoutedEventArgs e)
@@ -600,16 +617,31 @@ namespace openPDCManager.UserControls.CommonControls
             foreach (WizardDeviceInfo deviceInfo in m_wizardDeviceInfoList)
             {
                 deviceInfo.Include = false;
+#if !SILVERLIGHT
+                foreach (PhasorInfo phasorInfo in deviceInfo.PhasorList)
+                {
+                    phasorInfo.Include = false;
+                }
+#endif
             }
+#if !SILVERLIGHT
+            ItemControlDeviceList.Items.Refresh();
+#endif
         }
 
         void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
+        {   
             WizardDeviceInfo deviceInfo = (WizardDeviceInfo)((CheckBox)sender).DataContext;
             foreach (PhasorInfo phasorInfo in deviceInfo.PhasorList)
             {
                 phasorInfo.Include = true;
             }
+#if !SILVERLIGHT
+            ItemsControl phasorItems = (((((CheckBox)sender).Parent as Border).Parent as StackPanel).Parent as StackPanel).FindName("ItemControlPhasorList") as ItemsControl;
+            //var container = ItemControlDeviceList.ItemContainerGenerator.ContainerFromItem(ItemControlDeviceList.Items.CurrentItem) as FrameworkElement;
+            //ItemsControl phasorItems = ItemControlDeviceList.ItemTemplate.FindName("ItemControlPhasorList", container) as ItemsControl;
+            phasorItems.Items.Refresh();
+#endif            
         }
 
         void CheckBox_Unchecked(object sender, RoutedEventArgs e)
@@ -619,11 +651,22 @@ namespace openPDCManager.UserControls.CommonControls
             {
                 phasorInfo.Include = false;
             }
+#if !SILVERLIGHT
+            ItemsControl phasorItems = (((((CheckBox)sender).Parent as Border).Parent as StackPanel).Parent as StackPanel).FindName("ItemControlPhasorList") as ItemsControl;
+            //var container = ItemControlDeviceList.ItemContainerGenerator.ContainerFromItem(ItemControlDeviceList.Items.CurrentItem) as FrameworkElement;
+            //ItemsControl phasorItems = ItemControlDeviceList.ItemTemplate.FindName("ItemControlPhasorList", container) as ItemsControl;
+            phasorItems.Items.Refresh();
+#endif            
         }
 
         void ButtonRequestConfiguration_Click(object sender, RoutedEventArgs e)
         {
             m_activityWindow = new ActivityWindow("Retrieving Configuration Frame... Please Wait...");
+            
+#if !SILVERLIGHT
+            m_activityWindow.Owner = Window.GetWindow(this);
+            m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
             m_activityWindow.Show();
 
 #if SILVERLIGHT
@@ -633,7 +676,6 @@ namespace openPDCManager.UserControls.CommonControls
             Storyboard.SetTarget(sb, ButtonRequestConfigurationTransform);
             sb.Begin();
 #endif           
-
             if (!string.IsNullOrEmpty(((App)Application.Current).RemoteStatusServiceUrl))
                 RetrieveConfigurationFrame();
             else
@@ -661,7 +703,7 @@ namespace openPDCManager.UserControls.CommonControls
                 csb.ConnectionString = TextBoxAlternateCommandChannel.Text;
             csb.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
             {
-                if ((bool)csb.DialogResult)
+                if (csb.DialogResult != null && (bool)csb.DialogResult)
                     TextBoxAlternateCommandChannel.Text = csb.ConnectionString;
             });
             csb.Show();

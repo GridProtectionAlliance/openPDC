@@ -78,6 +78,7 @@
                                                 <Image Source="images/Configuration.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
+                                        <!--
                                         <Separator />
                                         <MenuItem Header="Active Map" Style="{StaticResource MainSubMenuItemStyle}" x:Name="ActiveMap" Click="MenuItem_Click">
                                             <MenuItem.Icon>
@@ -89,6 +90,7 @@
                                                 <Image Source="images/Earth.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
+                                        -->
                                         <Separator />
                                         <MenuItem Header="Other Devices" Style="{StaticResource MainSubMenuItemStyle}" x:Name="OtherDevices" Click="MenuItem_Click">
                                             <MenuItem.Icon>

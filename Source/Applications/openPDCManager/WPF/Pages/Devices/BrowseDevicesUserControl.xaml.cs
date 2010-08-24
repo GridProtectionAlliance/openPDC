@@ -253,7 +253,7 @@ namespace openPDCManager.Pages.Devices
                 
         List<Device> m_deviceList = new List<Device>();        
         ActivityWindow m_activityWindow;
-
+        
         #endregion
 
         #region [ Constructor ]
@@ -262,12 +262,12 @@ namespace openPDCManager.Pages.Devices
         {            
             InitializeComponent();
             ButtonSearch.Content = new BitmapImage(new Uri(@"images/Search.png", UriKind.Relative));
-            ButtonShowAll.Content = new BitmapImage(new Uri(@"images/CancelSearch.png", UriKind.Relative));
+            ButtonShowAll.Content = new BitmapImage(new Uri(@"images/CancelSearch.png", UriKind.Relative));                       
             UpdateLayout();
 
             Loaded += new RoutedEventHandler(Browse_Loaded);
             ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
-            ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
+            ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);            
         }
 
         #endregion
@@ -281,7 +281,10 @@ namespace openPDCManager.Pages.Devices
             //sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
             //Storyboard.SetTarget(sb, ButtonShowAllTransform);
             //sb.Begin();
-
+            //m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+            //m_activityWindow.Owner = Window.GetWindow(this);
+            //m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            //m_activityWindow.Show();
             BindData(m_deviceList);
         }
 
@@ -408,7 +411,7 @@ namespace openPDCManager.Pages.Devices
             string nodeID = app.NodeValue;
             try
             {
-                m_deviceList = CommonFunctions.GetDeviceList(nodeID);
+                m_deviceList = CommonFunctions.GetDeviceList(nodeID);             
                 BindData(m_deviceList);                
             }
             catch (Exception ex)

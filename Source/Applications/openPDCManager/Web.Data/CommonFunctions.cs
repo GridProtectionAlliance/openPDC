@@ -416,7 +416,7 @@ namespace openPDCManager.Data
 												AddDigitals = false,
 												AddAnalogs = false,
 												IsNew = GetDeviceByAcronym(cell.StationName.Replace(" ", "").ToUpper()) == null ? true : false,
-												PhasorList = (from phasor in cell.PhasorDefinitions
+												PhasorList = new ObservableCollection<PhasorInfo>( (from phasor in cell.PhasorDefinitions
 															  select new PhasorInfo()
 															  {
 																  Label = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(phasor.Label.Replace("?", " ").Trim().ToLower()),
@@ -424,7 +424,7 @@ namespace openPDCManager.Data
 																  Phase = "+",
 																  DestinationLabel = "",
 																  Include = true
-															  }).ToList()
+															  }).ToList())
 											}).ToList();
 
 				}

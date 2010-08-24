@@ -250,11 +250,23 @@ namespace openPDCManager.UserControls.CommonControls
 {
     public partial class InputWizardUserControl
     {
+        #region [ Members ]
+
+        bool m_bindingDevices;
+
+        #endregion
+
         #region [ Methods ]
 
         void Initialize()
         {
+            ItemControlDeviceList.SizeChanged += new SizeChangedEventHandler(ItemControlDeviceList_SizeChanged);
+        }
 
+        void ItemControlDeviceList_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (m_activityWindow != null && m_bindingDevices)
+                m_activityWindow.Close();
         }
 
         void RetrieveConfigurationFrame()
@@ -263,8 +275,12 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 m_wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>(CommonFunctions.RetrieveConfigurationFrame(((App)Application.Current).RemoteStatusServiceUrl, this.ConnectionString(), ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key));
+                if (m_wizardDeviceInfoList.Count > 0)
+                    m_bindingDevices = true;
+                else
+                    m_bindingDevices = false;
+
                 ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
-                
                 sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Retrieved Configuration Successfully!", SystemMessage = "", UserMessageType = openPDCManager.Utilities.MessageType.Success }, ButtonType.OkOnly);
             }
             catch (Exception ex)
@@ -276,7 +292,7 @@ namespace openPDCManager.UserControls.CommonControls
             sm.Owner = Window.GetWindow(this);
             sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             sm.ShowPopup();
-            if (m_activityWindow != null)
+            if (m_activityWindow != null && !m_bindingDevices)
                 m_activityWindow.Close();
         }
 
@@ -416,6 +432,11 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 m_wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>(CommonFunctions.GetWizardConfigurationInfo(data));
+                if (m_wizardDeviceInfoList.Count > 10)
+                    m_bindingDevices = true;
+                else
+                    m_bindingDevices = false;
+
                 ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;                
             }
             catch (Exception ex)
@@ -427,7 +448,7 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
             }
-            if (m_activityWindow != null)
+            if (m_activityWindow != null && !m_bindingDevices)
                 m_activityWindow.Close();
         }
 

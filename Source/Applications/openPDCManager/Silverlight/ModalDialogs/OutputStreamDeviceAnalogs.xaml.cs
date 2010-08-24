@@ -229,229 +229,23 @@
 */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.ServiceModel;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using openPDCManager.PhasorDataServiceProxy;
-using openPDCManager.Utilities;
 
 namespace openPDCManager.ModalDialogs
 {
 	public partial class OutputStreamDeviceAnalogs : ChildWindow
-	{
-		#region [ Members ]
-
-		int m_sourceOutputStreamDeviceID;
-		string m_sourceOutputStreamDeviceAcronym;				
-		bool m_inEditMode = false;
-		int m_outputStreamDeviceAnalogID = 0;
-		PhasorDataServiceClient m_client;
-
-		#endregion
-
+	{	
 		#region [ Constructor ]
 
 		public OutputStreamDeviceAnalogs(int outputStreamDeviceID, string outputStreamDeviceAcronym)
 		{
 			InitializeComponent();
-			m_sourceOutputStreamDeviceAcronym = outputStreamDeviceAcronym;
-			m_sourceOutputStreamDeviceID = outputStreamDeviceID;
-			this.Title = "Manage Analogs For Output Stream Device: " + m_sourceOutputStreamDeviceAcronym;
-			Loaded += new RoutedEventHandler(OutputStreamDeviceAnalogs_Loaded);
-			ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
-			ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
-			m_client = ProxyClient.GetPhasorDataServiceProxyClient();
-			m_client.GetOutputStreamDeviceAnalogListCompleted += new EventHandler<GetOutputStreamDeviceAnalogListCompletedEventArgs>(client_GetOutputStreamDeviceAnalogListCompleted);
-			m_client.SaveOutputStreamDeviceAnalogCompleted += new EventHandler<SaveOutputStreamDeviceAnalogCompletedEventArgs>(client_SaveOutputStreamDeviceAnalogCompleted);
-			ListBoxOutputStreamDeviceAnalogList.SelectionChanged += new SelectionChangedEventHandler(ListBoxOutputStreamDeviceAnalogList_SelectionChanged);
+            this.Title = "Manage Analogs For Output Stream Device: " + outputStreamDeviceAcronym;
+            UserControlOutputStreamDeviceAnalogs.m_sourceOutputStreamDeviceAcronym = outputStreamDeviceAcronym;
+            UserControlOutputStreamDeviceAnalogs.m_sourceOutputStreamDeviceID = outputStreamDeviceID;						
 		}
 
-		#endregion
-
-		#region [ Controls Event Handlers ]
-
-		void ListBoxOutputStreamDeviceAnalogList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (ListBoxOutputStreamDeviceAnalogList.SelectedIndex >= 0)
-			{
-				OutputStreamDeviceAnalog selectedOutputStreamDeviceAnalog = ListBoxOutputStreamDeviceAnalogList.SelectedItem as OutputStreamDeviceAnalog;
-				GridOutputStreamDeviceAnalogDetail.DataContext = selectedOutputStreamDeviceAnalog;
-				ComboBoxType.SelectedItem = new KeyValuePair<int, string>(selectedOutputStreamDeviceAnalog.Type, selectedOutputStreamDeviceAnalog.TypeName);
-				m_inEditMode = true;
-				m_outputStreamDeviceAnalogID = selectedOutputStreamDeviceAnalog.ID;
-			}
-		}
-
-        void ButtonSave_Click(object sender, RoutedEventArgs e)
-        {
-            Storyboard sb = new Storyboard();
-            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-            Storyboard.SetTarget(sb, ButtonSaveTransform);
-            sb.Begin();
-
-            if (IsValid())
-            {
-                OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
-                App app = (App)Application.Current;
-
-                outputStreamDeviceAnalog.NodeID = app.NodeValue;
-                outputStreamDeviceAnalog.OutputStreamDeviceID = m_sourceOutputStreamDeviceID;
-                outputStreamDeviceAnalog.Type = ((KeyValuePair<int, string>)ComboBoxType.SelectedItem).Key;
-                outputStreamDeviceAnalog.Label = TextBoxLabel.Text.CleanText();
-                outputStreamDeviceAnalog.LoadOrder = TextBoxLoadOrder.Text.ToInteger();
-                outputStreamDeviceAnalog.ScalingValue = TextBoxScalingValue.Text.ToInteger();
-                if (m_inEditMode == true && m_outputStreamDeviceAnalogID > 0)
-                {
-                    outputStreamDeviceAnalog.ID = m_outputStreamDeviceAnalogID;
-                    m_client.SaveOutputStreamDeviceAnalogAsync(outputStreamDeviceAnalog, false);
-                }
-                else
-                    m_client.SaveOutputStreamDeviceAnalogAsync(outputStreamDeviceAnalog, true);
-            }
-        }
-
-		void ButtonClear_Click(object sender, RoutedEventArgs e)
-		{
-			Storyboard sb = new Storyboard();
-			sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-			sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-			Storyboard.SetTarget(sb, ButtonClearTransform);
-			sb.Begin();
-
-			ClearForm();
-		}
-
-		#endregion
-
-		#region [ Service Event Handlers ]
-
-		void client_SaveOutputStreamDeviceAnalogCompleted(object sender, SaveOutputStreamDeviceAnalogCompletedEventArgs e)
-		{
-			SystemMessages sm;
-			if (e.Error == null)
-			{
-				ClearForm();
-				sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-						ButtonType.OkOnly);
-			}
-			else
-			{
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Analog Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-			}
-			sm.ShowPopup();
-			m_client.GetOutputStreamDeviceAnalogListAsync(m_sourceOutputStreamDeviceID);
-		}
-		
-		void client_GetOutputStreamDeviceAnalogListCompleted(object sender, GetOutputStreamDeviceAnalogListCompletedEventArgs e)
-		{
-			if (e.Error == null)
-				ListBoxOutputStreamDeviceAnalogList.ItemsSource = e.Result;
-			else
-			{
-				SystemMessages sm;
-				if (e.Error is FaultException<CustomServiceFault>)
-				{
-					FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
-					sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-				}
-				else
-					sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Ouptu Stream Device Analog List", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
-						ButtonType.OkOnly);
-
-				sm.ShowPopup();
-			}
-		}
-
-		#endregion
-
-		#region [ Page Event Handlers ]
-
-		void OutputStreamDeviceAnalogs_Loaded(object sender, RoutedEventArgs e)
-		{
-			m_client.GetOutputStreamDeviceAnalogListAsync(m_sourceOutputStreamDeviceID);
-			ComboBoxType.Items.Add(new KeyValuePair<int, string>(0, "Single point-on-wave"));
-			ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "RMS of analog input"));
-			ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "Peak of analog input"));
-			ComboBoxType.SelectedIndex = 0;
-            ClearForm();
-		}
-
-		#endregion 
-
-		#region [ Methods ]
-
-        bool IsValid()
-        {
-            bool isValid = true;
-
-            if (string.IsNullOrEmpty(TextBoxLabel.Text.CleanText()))
-            {
-                isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Label", SystemMessage = "Please provide valid Label.", UserMessageType = MessageType.Error },
-                        ButtonType.OkOnly);
-                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
-                                                {
-                                                    TextBoxLabel.Focus();
-                                                });
-                sm.ShowPopup();
-                return isValid;
-            }
-
-            if (!TextBoxLoadOrder.Text.IsInteger())
-            {
-                isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Load Order", SystemMessage = "Please provide valid integer value for Load Order.", UserMessageType = MessageType.Error },
-                    ButtonType.OkOnly);
-                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
-                                                {
-                                                    TextBoxLoadOrder.Text = "0";
-                                                    TextBoxLoadOrder.Focus();
-                                                });
-                sm.ShowPopup();
-                return isValid;
-            }
-
-            if (!TextBoxScalingValue.Text.IsInteger())
-            {
-                isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Scaling Value", SystemMessage = "Please provide valid integer value for Scaling Value.", UserMessageType = MessageType.Error },
-                    ButtonType.OkOnly);
-                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
-                {
-                    TextBoxScalingValue.Text = "0";
-                    TextBoxScalingValue.Focus();
-                });
-                sm.ShowPopup();
-                return isValid;
-            }
-
-            return isValid;
-        }
-
-		void ClearForm()
-		{
-			GridOutputStreamDeviceAnalogDetail.DataContext = new OutputStreamDeviceAnalog();
-			if (ComboBoxType.Items.Count > 0)
-                ComboBoxType.SelectedIndex = 0;
-			m_inEditMode = false;
-			m_outputStreamDeviceAnalogID = 0;
-			ListBoxOutputStreamDeviceAnalogList.SelectedIndex = -1;
-		}
-
-		#endregion
+		#endregion        		
 	}
 }
 

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="openPDCManager.ModalDialogs.ConnectionStringBuilder"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
-    Title="ConnectionStringBuilder" Height="250" Width="500" ResizeMode="NoResize" WindowStyle="ToolWindow">
+    Title="ConnectionStringBuilder" Height="250" Width="500" WindowStyle="ToolWindow">
     <Grid x:Name="GridConnectionStringBuilder">
         <Border Style="{StaticResource PortletBorderStyle}">
             <StackPanel Orientation="Vertical">

@@ -232,8 +232,8 @@ namespace openPDCManager
             }
             else if (item.Name == "ConfigurationWizard")
             {
-                //InputWizardUserControl wizardControl = new InputWizardUserControl();
-                //ContentFrame.Navigate(wizardControl);
+                InputWizardUserControl wizardControl = new InputWizardUserControl();
+                ContentFrame.Navigate(wizardControl);
             }
         }
 

@@ -59,7 +59,7 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0" Height="700">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0" Height="730">
                         <ScrollViewer.Content>
                             <ListBox x:Name="ListBoxDeviceList" Margin="0" Padding="0">
                                 <ListBox.ItemTemplate>
@@ -98,10 +98,10 @@
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
                                                 <StackPanel Orientation="Horizontal">
                                                     <Button x:Name="ButtonSave" Click="ButtonSave_Click" ToolTipService.ToolTip="Click Here to Save Changes" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="0, 0, 3, 0">
-                                                        <Image Source="/openPDCManager;component/Save.png"/>
+                                                        <Image Source="/openPDCManager;component/images/Save.png"/>
                                                     </Button>
                                                     <Button x:Name="ButtonDelete" Click="ButtonDelete_Click" ToolTipService.ToolTip="Click Here to Delete Device" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="0, 0, 3, 0">
-                                                        <Image Source="/openPDCManager;component/Cancel.png"/>
+                                                        <Image Source="/openPDCManager;component/images/Cancel.png"/>
                                                     </Button>
                                                 </StackPanel>
                                             </Border>

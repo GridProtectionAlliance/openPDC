@@ -436,13 +436,13 @@
 
 
 
-    <!--<Style x:Key="PieDataPointStyle" TargetType="chartingToolkit:PieDataPoint">
+    <Style x:Key="PieDataPointStyle" TargetType="chartingToolkit:PieDataPoint">
 		<Setter Property="Background" Value="Orange"/>
 		<Setter Property="BorderBrush" Value="White"/>
 		<Setter Property="BorderThickness" Value="1"/>
 		<Setter Property="IsTabStop" Value="False"/>
 		<Setter Property="RatioStringFormat" Value="{}{0:p2}"/>
-        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate" />
-    </Style>-->
+        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
+    </Style>
 
 </ResourceDictionary>

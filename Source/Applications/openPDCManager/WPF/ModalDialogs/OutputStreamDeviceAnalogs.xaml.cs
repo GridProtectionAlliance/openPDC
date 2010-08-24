@@ -1,14 +1,14 @@
 ﻿//*******************************************************************************************************
-//  StringToPhaseConverter.cs - Gbtc
+//  OutputStreamDeviceAnalogs.xaml.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
+//  Tennessee Valley Authority, 2010
 //  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
 //
 //  Code Modification History:
 //  -----------------------------------------------------------------------------------------------------
-//  11/09/2009 - Mehulbhai P. Thakkar
+//  08/23/2010 - Mehulbhai P Thakkar
 //       Generated original version of source code.
 //
 //*******************************************************************************************************
@@ -229,57 +229,21 @@
 */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Windows.Data;
+using System.Windows;
 
-namespace openPDCManager.Converters
+namespace openPDCManager.ModalDialogs
 {
-	public class StringToPhaseConverter : IValueConverter
-	{
-
-		#region IValueConverter Members
-
-		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-		{
-            //if (value.ToString() == "+")
-            //    return new KeyValuePair<string, string>("+", "Positive");
-            //else if (value.ToString() == "-")
-            //    return new KeyValuePair<string, string>("-", "Negative");
-            //else if (value.ToString() == "A")
-            //    return new KeyValuePair<string, string>("A", "Phase A");
-            //else if (value.ToString() == "B")
-            //    return new KeyValuePair<string, string>("B", "Phase B");
-            //else if (value.ToString() == "C")
-            //    return new KeyValuePair<string, string>("C", "Phase C");
-            //else
-            //    return new KeyValuePair<string, string>("+", "Positive");
-				//throw new ArgumentException("Value not supported as a Phase Type");
-
-            if (value.ToString() == "+")
-                return "Positive";
-            else if (value.ToString() == "-")
-                return "Negative";
-            else if (value.ToString() == "A")
-                return "Phase A";
-            else if (value.ToString() == "B")
-                return "Phase B";
-            else if (value.ToString() == "C")
-                return "Phase C";
-            else
-                return "";
-		}
-
-		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-		{
-            return null;
-            //if (value is KeyValuePair<string, string>)
-            //    return ((KeyValuePair<string, string>)value).Key;
-            //else
-            //    return "+";
-				//throw new ArgumentException("Value not supported as a Phase Type");
-		}
-
-		#endregion
-	}
+    /// <summary>
+    /// Interaction logic for OutputStreamDeviceAnalogs.xaml
+    /// </summary>
+    public partial class OutputStreamDeviceAnalogs : Window
+    {
+        public OutputStreamDeviceAnalogs(int outputStreamDeviceID, string outputStreamDeviceAcronym)
+        {
+            InitializeComponent();
+            this.Title = "Manage Analogs For Output Stream Device: " + outputStreamDeviceAcronym;
+            UserControlOutputStreamDeviceAnalogs.m_sourceOutputStreamDeviceAcronym = outputStreamDeviceAcronym;
+            UserControlOutputStreamDeviceAnalogs.m_sourceOutputStreamDeviceID = outputStreamDeviceID;
+        }
+    }
 }
