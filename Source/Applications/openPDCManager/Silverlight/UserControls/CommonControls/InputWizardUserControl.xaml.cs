@@ -693,7 +693,14 @@ namespace openPDCManager.UserControls.CommonControls
                 if ((bool)csb.DialogResult)
                     TextBoxConnectionString.Text = csb.ConnectionString;
             });
+#if SILVERLIGHT
             csb.Show();
+#else
+            csb.Owner = Window.GetWindow(this);
+            csb.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            csb.ShowDialog();
+#endif
+
         }
 
         void ButtonBuildCommandChannel_Click(object sender, RoutedEventArgs e)
@@ -706,7 +713,13 @@ namespace openPDCManager.UserControls.CommonControls
                 if (csb.DialogResult != null && (bool)csb.DialogResult)
                     TextBoxAlternateCommandChannel.Text = csb.ConnectionString;
             });
+#if SILVERLIGHT
             csb.Show();
+#else
+            csb.Owner = Window.GetWindow(this);
+            csb.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            csb.ShowDialog();
+#endif
         }
 
         #endregion

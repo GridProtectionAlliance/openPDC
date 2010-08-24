@@ -409,6 +409,8 @@ namespace openPDCManager.Pages.Manage
             m_measurementList = new List<Measurement>();
             App app = (App)Application.Current;
             m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+            m_activityWindow.Owner = Window.GetWindow(this);
+            m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             m_activityWindow.Show();
             GetSignalTypes();
             GetHistorians();

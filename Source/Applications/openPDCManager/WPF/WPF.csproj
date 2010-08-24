@@ -557,6 +557,7 @@
     <Compile Include="..\Silverlight\Utilities\Message.cs">
       <Link>Utilities\Message.cs</Link>
     </Compile>
+    <Compile Include="Converters\StringToBooleanConverter.cs" />
     <Compile Include="ErrorLogWindow.xaml.cs">
       <DependentUpon>ErrorLogWindow.xaml</DependentUpon>
     </Compile>

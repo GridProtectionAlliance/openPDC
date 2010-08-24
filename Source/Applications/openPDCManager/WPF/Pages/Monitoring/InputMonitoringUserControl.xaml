@@ -17,9 +17,10 @@
                         <StackPanel Orientation="Horizontal" Margin="-20,0,0,0">
                             <StackPanel.Resources>
                                 <converter:StringToColorConverter x:Key="stringToColorConverter" />
+                                <converter:StringToBooleanConverter x:Key="stringToBooleanConverter" />
                             </StackPanel.Resources>                            
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                <CheckBox HorizontalAlignment="Left" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}" Content="{Binding Path=SignalReference}" ToolTip="{Binding Path=Description}" Tag="{Binding Path=PointID}" Width="{StaticResource LargeItemSize}" 
+                                <CheckBox HorizontalAlignment="Left" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}" Content="{Binding Path=SignalReference}" ToolTip="{Binding Path=Description}" Tag="{Binding Path=PointID}" IsEnabled="{Binding Path=SignalAcronym, Converter={StaticResource stringToBooleanConverter}}" Width="{StaticResource LargeItemSize}" 
                                                Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"/>                                
                             </Border>                                                        
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
