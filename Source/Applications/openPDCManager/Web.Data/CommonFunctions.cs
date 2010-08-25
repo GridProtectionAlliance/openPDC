@@ -428,6 +428,26 @@ namespace openPDCManager.Data
 											}).ToList();
 
 				}
+
+                List<string> nondistinctAcronymList = new List<string>();
+                nondistinctAcronymList = (from item in wizardDeviceInfoList                                          
+                                          group item by item.Acronym into grouped
+                                          where grouped.Count() > 1
+                                          select grouped.Key).ToList();
+
+                if (nondistinctAcronymList.Count > 0)
+                {
+                    int i = 0;
+                    foreach (WizardDeviceInfo deviceInfo in wizardDeviceInfoList)
+                    {
+                        if (deviceInfo.IsNew && nondistinctAcronymList.Contains(deviceInfo.Acronym))
+                        {
+                            deviceInfo.Acronym = deviceInfo.Acronym.Substring(0, deviceInfo.Acronym.Length - i.ToString().Length) + i.ToString();
+                            i++;
+                        }
+                    }                    
+                }
+
 				return wizardDeviceInfoList;
 			//}
 			//catch (Exception ex)

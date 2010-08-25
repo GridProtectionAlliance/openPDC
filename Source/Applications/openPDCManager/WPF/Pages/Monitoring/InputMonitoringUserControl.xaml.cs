@@ -265,7 +265,7 @@ namespace openPDCManager.Pages.Monitoring
         KeyValuePair<int, int> m_minMaxPointIDs;
         Dictionary<int, int> m_deviceIDsWithStatusPointIDs;
         string m_urlForTree, m_timeSeriesDataServiceUrl, m_urlForStatistics, m_realTimeStatisticsServiceUrl;
-        bool m_retrievingData;
+        bool m_retrievingData, m_refreshingChart;
 
         //Chart related fields        
         EnumerableDataSource<int> m_xAxisSource;
@@ -412,18 +412,39 @@ namespace openPDCManager.Pages.Monitoring
 
         void m_chartRefreshTimer_Tick(object sender, EventArgs e)
         {
-            Dictionary<int, MeasurementInfo> temp;
-            lock (m_pointsToPlot)
+            if (!m_refreshingChart)
             {
-                temp = new Dictionary<int, MeasurementInfo>(m_pointsToPlot);
-            }
-            foreach (KeyValuePair<int, MeasurementInfo> item in temp)
-            {
-                GetChartData(item.Value);
-                //ThreadPool.QueueUserWorkItem(GetChartData, item.Value);
+                try
+                {
+                    m_refreshingChart = true;
+                    Dictionary<int, MeasurementInfo> temp;
+                    lock (m_pointsToPlot)
+                    {
+                        temp = new Dictionary<int, MeasurementInfo>(m_pointsToPlot);
+                    }
+                    foreach (KeyValuePair<int, MeasurementInfo> item in temp)
+                    {
+                        try
+                        {
+                            GetChartData(item.Value);
+                        }
+                        catch (Exception ex)
+                        {
+                            CommonFunctions.LogException("WPF.GetChartData", ex);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    CommonFunctions.LogException("WPF.m_chartRefreshTimer_Tick", ex);
+                }
+                finally
+                {
+                    m_refreshingChart = false;
+                }
             }
         }
-
+        
         private void ButtonGetStatistics_Click(object sender, RoutedEventArgs e)
         {
             string deviceAcronym = ((Button)sender).Content.ToString();

@@ -67,7 +67,7 @@ namespace openPDCManager
         void StartTimer()
         {
             m_refreshTimer = new DispatcherTimer();
-            m_refreshTimer.Interval = TimeSpan.FromSeconds(60);
+            m_refreshTimer.Interval = TimeSpan.FromSeconds(15);
             m_refreshTimer.Tick += new EventHandler(m_refreshTimer_Tick);
             m_refreshTimer.Start();
         }
