@@ -256,7 +256,7 @@ namespace openPDCManager.Pages.Adapters
         StatisticMeasurementDataForBinding m_dataForBinding;
         DispatcherTimer m_thirtySecondsTimer;
         KeyValuePair<int, int> m_minMaxPointIDs;
-        string m_url;
+        string m_url, m_nodeID;
         bool m_retrievingData;
 
         #endregion
@@ -269,7 +269,7 @@ namespace openPDCManager.Pages.Adapters
             m_dataForBinding = new StatisticMeasurementDataForBinding();
             m_statisticMeasurementDataList = new ObservableCollection<StatisticMeasurementData>();
             m_minMaxPointIDs = new KeyValuePair<int, int>();
-
+            m_nodeID = ((App)Application.Current).NodeValue;
             ConfigurationFile config = ConfigurationFile.Current; 
             CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
 
@@ -315,7 +315,7 @@ namespace openPDCManager.Pages.Adapters
                 {
                     m_retrievingData = true;
                     Dictionary<int, TimeTaggedMeasurement> timeTaggedMeasurements = new Dictionary<int, TimeTaggedMeasurement>();
-                    timeTaggedMeasurements = CommonFunctions.GetTimeTaggedMeasurements(url);
+                    timeTaggedMeasurements = CommonFunctions.GetStatisticMeasurements(url, m_nodeID);   //CommonFunctions.GetTimeTaggedMeasurements(url);
 
                     if (timeTaggedMeasurements != null)
                     {
@@ -333,7 +333,7 @@ namespace openPDCManager.Pages.Adapters
                                         {
                                             if (detailStatistic.Statistics.IsConnectedState == true)
                                             {   
-                                                if (Convert.ToBoolean(Convert.ToInt32(timeTaggedMeasurement.CurrentValue)))
+                                                if (Convert.ToBoolean(timeTaggedMeasurement.CurrentValue))
                                                     streamInfo.StatusColor = "Green";
                                                 else
                                                     streamInfo.StatusColor = "Red";
