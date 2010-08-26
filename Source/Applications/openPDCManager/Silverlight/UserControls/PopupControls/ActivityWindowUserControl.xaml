@@ -6,7 +6,7 @@
         <StackPanel Orientation="Vertical" Background="Transparent">
             <StackPanel Orientation="Horizontal">
                 <Image x:Name="ImageInformation" Source="../Images/Information.png" Margin="5"/>
-                <TextBlock x:Name="TextBlockMessage" Text="" Style="{StaticResource LargeWhiteTextWithEffectStyle}" Margin="5" />
+                <TextBlock x:Name="TextBlockMessage" Text="Loading Data... Please Wait..." Style="{StaticResource LargeWhiteTextWithEffectStyle}" Margin="5" />
             </StackPanel>
         </StackPanel>
     </Border>

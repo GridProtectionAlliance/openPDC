@@ -261,6 +261,7 @@ namespace openPDCManager.Pages.Manage
         int m_deviceID = 0;
         ActivityWindow m_activityWindow;
         List<Measurement> m_measurementList;
+        bool m_bindingData;
 
         #endregion
 
@@ -278,9 +279,16 @@ namespace openPDCManager.Pages.Manage
             ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
             ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
             ListBoxMeasurementList.SelectionChanged += new SelectionChangedEventHandler(ListBoxMeasurementList_SelectionChanged);
+            ListBoxMeasurementList.SizeChanged += new SizeChangedEventHandler(ListBoxMeasurementList_SizeChanged);
             ComboBoxDevice.SelectionChanged += new SelectionChangedEventHandler(ComboBoxDevice_SelectionChanged);
             ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
             ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
+        }
+
+        void ListBoxMeasurementList_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (m_activityWindow != null)
+                m_activityWindow.Close();
         }
 
         #endregion
@@ -498,9 +506,14 @@ namespace openPDCManager.Pages.Manage
         {
             try
             {
-                m_measurementList = CommonFunctions.GetMeasurementsByDevice(m_deviceID); 
+                m_bindingData = false;
+                m_measurementList = CommonFunctions.GetMeasurementsByDevice(m_deviceID);
+                if (m_measurementList.Count > 30)
+                    m_bindingData = true;
+
                 BindData(m_measurementList);
-                if (m_activityWindow != null)
+                
+                if (!m_bindingData && m_activityWindow != null)
                     m_activityWindow.Close();
             }
             catch (Exception ex)
@@ -511,7 +524,7 @@ namespace openPDCManager.Pages.Manage
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
-            }
+            }            
         }
 
         void GetDeviceByDeviceID()
@@ -536,10 +549,15 @@ namespace openPDCManager.Pages.Manage
         {
             try
             {
+                m_bindingData = false;
                 m_measurementList = CommonFunctions.GetMeasurementList(((App)Application.Current).NodeValue);
-                BindData(m_measurementList);                
 
-                if (m_activityWindow != null)
+                if (m_measurementList.Count > 30)
+                    m_bindingData = true;
+             
+                BindData(m_measurementList);
+
+                if (!m_bindingData && m_activityWindow != null)
                     m_activityWindow.Close();
             }
             catch (Exception ex)
