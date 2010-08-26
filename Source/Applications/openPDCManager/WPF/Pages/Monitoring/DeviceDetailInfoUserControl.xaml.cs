@@ -251,7 +251,7 @@ namespace openPDCManager.Pages.Monitoring
         DispatcherTimer m_refreshTimer;
         int m_maxPointID = 0;
         int m_minPointID = 0;
-        string m_url;
+        string m_url, m_nodeID;
 
         public DeviceDetailInfoUserControl()
         {
@@ -264,6 +264,7 @@ namespace openPDCManager.Pages.Monitoring
             { 
                 try
                 {
+                    m_nodeID = ((App)Application.Current).NodeValue;
                     GridDeviceInfo.DataContext = deviceInfo;
                     m_deviceStatisticInfoList = CommonFunctions.GetDeviceStatisticMeasurements(deviceInfo.ID);
                     ListBoxStatisticsList.ItemsSource = m_deviceStatisticInfoList;
@@ -325,7 +326,7 @@ namespace openPDCManager.Pages.Monitoring
             if (!string.IsNullOrEmpty(m_url))
             {
                 Dictionary<int, TimeTaggedMeasurement> timeTaggedMeasurements = new Dictionary<int, TimeTaggedMeasurement>();
-                timeTaggedMeasurements = CommonFunctions.GetTimeTaggedMeasurements(m_url);
+                timeTaggedMeasurements = CommonFunctions.GetStatisticMeasurements(m_url, m_nodeID);   //CommonFunctions.GetTimeTaggedMeasurements(m_url);
                 foreach (DetailStatisticInfo detailStatistic in m_deviceStatisticInfoList)
                 {
                     TimeTaggedMeasurement timeTaggedMeasurement;
