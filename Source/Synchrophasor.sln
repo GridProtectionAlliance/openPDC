@@ -231,9 +231,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{29821B31-3A0
 		Dependencies\Microsoft\WPF\WPFToolkit.dll = Dependencies\Microsoft\WPF\WPFToolkit.dll
 	EndProjectSection
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "WPFSetup", "Applications\openPDCManager\WPFSetup\WPFSetup.vdproj", "{B5E00819-CC0F-430D-957A-92ECDE07D09C}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "WPFSetup64", "Applications\openPDCManager\WPFSetup64\WPFSetup64.vdproj", "{1C627E7C-7B7E-461A-8712-F17972A39EDF}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 30
+		SccNumberOfProjects = 32
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
 		SccLocalPath0 = .
@@ -353,6 +357,14 @@ Global
 		SccProjectTopLevelParentUniqueName29 = Synchrophasor.sln
 		SccProjectName29 = Libraries/TimeSeriesFramework
 		SccLocalPath29 = Libraries\\TimeSeriesFramework
+		SccProjectUniqueName30 = Applications\\openPDCManager\\WPFSetup\\WPFSetup.vdproj
+		SccProjectTopLevelParentUniqueName30 = Synchrophasor.sln
+		SccProjectName30 = Applications/openPDCManager/WPFSetup
+		SccLocalPath30 = Applications\\openPDCManager\\WPFSetup
+		SccProjectUniqueName31 = Applications\\openPDCManager\\WPFSetup64\\WPFSetup64.vdproj
+		SccProjectTopLevelParentUniqueName31 = Synchrophasor.sln
+		SccProjectName31 = Applications/openPDCManager/WPFSetup64
+		SccLocalPath31 = Applications\\openPDCManager\\WPFSetup64
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor.vsmdi
@@ -576,6 +588,14 @@ Global
 		{412F9F59-D9B9-4C8E-96D2-20492644198C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{412F9F59-D9B9-4C8E-96D2-20492644198C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{412F9F59-D9B9-4C8E-96D2-20492644198C}.Release|x86.ActiveCfg = Release|Any CPU
+		{B5E00819-CC0F-430D-957A-92ECDE07D09C}.Debug|Any CPU.ActiveCfg = Debug
+		{B5E00819-CC0F-430D-957A-92ECDE07D09C}.Debug|x86.ActiveCfg = Debug
+		{B5E00819-CC0F-430D-957A-92ECDE07D09C}.Release|Any CPU.ActiveCfg = Release
+		{B5E00819-CC0F-430D-957A-92ECDE07D09C}.Release|x86.ActiveCfg = Release
+		{1C627E7C-7B7E-461A-8712-F17972A39EDF}.Debug|Any CPU.ActiveCfg = Debug
+		{1C627E7C-7B7E-461A-8712-F17972A39EDF}.Debug|x86.ActiveCfg = Debug
+		{1C627E7C-7B7E-461A-8712-F17972A39EDF}.Release|Any CPU.ActiveCfg = Release
+		{1C627E7C-7B7E-461A-8712-F17972A39EDF}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -613,6 +633,8 @@ Global
 		{955C76BA-E809-4732-A15C-CD3607F66EC8} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{30297342-C66C-4715-A495-B6DFCF8E3A78} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{66DE6E45-E538-480D-8928-9C86390E60FE} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
+		{B5E00819-CC0F-430D-957A-92ECDE07D09C} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
+		{1C627E7C-7B7E-461A-8712-F17972A39EDF} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{2C391997-493B-4A29-9441-67A521602CFB} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
 		{DD8772FF-592C-4139-ADA1-0D0D47508F39} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
 		{29821B31-3A0D-469E-B8BA-AD006159BC3D} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
