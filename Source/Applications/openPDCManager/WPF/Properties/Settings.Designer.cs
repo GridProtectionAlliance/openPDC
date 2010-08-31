@@ -22,5 +22,53 @@ namespace openPDCManager.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("600")]
+        public double ApplicationHeight {
+            get {
+                return ((double)(this["ApplicationHeight"]));
+            }
+            set {
+                this["ApplicationHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("800")]
+        public double ApplicationWidth {
+            get {
+                return ((double)(this["ApplicationWidth"]));
+            }
+            set {
+                this["ApplicationWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double ApplicationTop {
+            get {
+                return ((double)(this["ApplicationTop"]));
+            }
+            set {
+                this["ApplicationTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double ApplicationLeft {
+            get {
+                return ((double)(this["ApplicationLeft"]));
+            }
+            set {
+                this["ApplicationLeft"] = value;
+            }
+        }
     }
 }

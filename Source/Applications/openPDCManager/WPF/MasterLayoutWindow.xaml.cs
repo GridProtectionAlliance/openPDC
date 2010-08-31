@@ -57,9 +57,10 @@ namespace openPDCManager
             UserControlSelectNode.ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
             MainWindow.SizeChanged += new SizeChangedEventHandler(MainWindow_SizeChanged);
             Loaded += new RoutedEventHandler(MasterLayoutWindow_Loaded);
+            Closing += new System.ComponentModel.CancelEventHandler(MasterLayoutWindow_Closing);
             ButtonErrorLog.Click += new RoutedEventHandler(ButtonErrorLog_Click);
         }
-
+        
         #endregion
 
         #region [ Windows Event Handlers ]
@@ -70,6 +71,11 @@ namespace openPDCManager
             //ContentFrame.Navigate(test);
             HomePageUserControl home = new HomePageUserControl();
             ContentFrame.Navigate(home);
+        }
+
+        void MasterLayoutWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Properties.Settings.Default.Save();
         }
 
         void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
