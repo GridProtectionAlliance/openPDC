@@ -407,10 +407,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Monitoring\SystemMonitor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Resources\ResourceAccordianStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -619,11 +615,6 @@
     <Compile Include="Pages\Monitoring\InputMonitorData.cs" />
     <Compile Include="Pages\Monitoring\InputMonitoringUserControl.xaml.cs">
       <DependentUpon>InputMonitoringUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Monitoring\ObservableCollection.cs" />
-    <Compile Include="Pages\Monitoring\StatisticalMeasurementData.cs" />
-    <Compile Include="Pages\Monitoring\SystemMonitor.xaml.cs">
-      <DependentUpon>SystemMonitor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
