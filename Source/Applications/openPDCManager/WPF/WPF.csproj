@@ -128,6 +128,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Utilities\IsolatedStorageManager.cs" />
     <Page Include="..\Silverlight\Resources\CommonResource.xaml">
       <Link>Resources\CommonResource.xaml</Link>
       <Generator>MSBuild:Compile</Generator>

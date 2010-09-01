@@ -35,6 +35,8 @@ namespace openPDCManager.Converters
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
 			SolidColorBrush scBrush = new SolidColorBrush();
+			if (value == null)
+				value = "Unknown";
 
 			if (value.ToString().ToUpper() == "GOOD")
 				scBrush.Color = Color.FromArgb(255, 25, 150, 25);

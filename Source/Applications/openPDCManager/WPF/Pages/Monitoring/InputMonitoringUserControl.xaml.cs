@@ -98,6 +98,17 @@ namespace openPDCManager.Pages.Monitoring
         {
             try
             {
+                List<int> pointList = new List<int>();
+                foreach (KeyValuePair<int, MeasurementInfo> pointToPlot in m_pointsToPlot)
+                {
+                    pointList.Add(pointToPlot.Value.PointID);
+                }
+                IsolatedStorageManager.SaveInputMonitoringPoints(pointList);
+            }
+            catch { }
+
+            try
+            {
                 if (m_thirtySecondsTimer != null)
                     m_thirtySecondsTimer.Stop();
                 m_thirtySecondsTimer = null;
@@ -118,26 +129,23 @@ namespace openPDCManager.Pages.Monitoring
             m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
             m_activityWindow.Owner = Window.GetWindow(this);
             m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            m_activityWindow.Show();
-            GetDeviceMeasurementData();
+            m_activityWindow.Show();            
             GetMinMaxPointIDs();            
+            
             App app = (App)Application.Current;
-            m_deviceIDsWithStatusPointIDs = CommonFunctions.GetDeviceIDsWithStatusPointIDs(app.NodeValue);
 
             m_realTimeStatisticsServiceUrl = app.RealTimeStatisticServiceUrl;
             if (string.IsNullOrEmpty(m_realTimeStatisticsServiceUrl))
                 m_urlForStatistics = string.Empty;
             else
                 m_urlForStatistics = m_realTimeStatisticsServiceUrl + "/timeseriesdata/read/current/" + m_minMaxPointIDs.Key.ToString() + "-" + m_minMaxPointIDs.Value.ToString() + "/XML";
-            GetTimeTaggedMeasurementsForStatus(m_urlForStatistics);
 
             m_timeSeriesDataServiceUrl = app.TimeSeriesDataServiceUrl;
             if (string.IsNullOrEmpty(m_timeSeriesDataServiceUrl))
                 m_urlForTree = string.Empty;
             else
                 m_urlForTree = m_timeSeriesDataServiceUrl + "/timeseriesdata/read/current/" + m_minMaxPointIDs.Key.ToString() + "-" + m_minMaxPointIDs.Value.ToString() + "/XML";
-            GetTimeTaggedMeasurements(m_urlForTree);
-
+                                   
             //Chart related settings.
             //Remove legend on the right.
             Panel legendParent = (Panel)ChartPlotterDynamic.Legend.ContentGrid.Parent;
@@ -151,6 +159,11 @@ namespace openPDCManager.Pages.Monitoring
             }
             m_xAxisSource = new EnumerableDataSource<int>(m_xAxisValuesList);
             m_xAxisSource.SetXMapping(x => x);
+
+            GetDeviceMeasurementData();
+            m_deviceIDsWithStatusPointIDs = CommonFunctions.GetDeviceIDsWithStatusPointIDs(app.NodeValue);
+            GetTimeTaggedMeasurementsForStatus(m_urlForStatistics);
+            GetTimeTaggedMeasurements(m_urlForTree);
         }
 
         #endregion
@@ -193,12 +206,17 @@ namespace openPDCManager.Pages.Monitoring
                 ThreadPool.QueueUserWorkItem(GetChartData, measurementInfo);
             }
 
+            StartChartRefreshTimer();
+        }
+
+        void StartChartRefreshTimer()
+        {
             if (m_pointsToPlot.Count > 0 && m_chartRefreshTimer == null)
             {
                 m_chartRefreshTimer = new DispatcherTimer();
                 m_chartRefreshTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 m_chartRefreshTimer.Tick += new EventHandler(m_chartRefreshTimer_Tick);
-                m_chartRefreshTimer.Start();                
+                m_chartRefreshTimer.Start();
             }
         }
 
@@ -364,6 +382,39 @@ namespace openPDCManager.Pages.Monitoring
             try
             {
                 m_deviceMeasurementDataList = CommonFunctions.GetDeviceMeasurementData(((App)Application.Current).NodeValue);
+
+                List<int> pointList = IsolatedStorageManager.ReadInputMonitoringPoints();
+
+                if (pointList.Count > 0)
+                { 
+                    foreach (DeviceMeasurementData deviceMeasurementData in m_deviceMeasurementDataList)
+                    {
+                        foreach (DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
+                        {
+                            foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
+                            {
+                                if (pointList.Contains(measurementInfo.PointID))
+                                {
+                                    measurementInfo.IsSelected = true;
+                                    deviceInfo.IsExpanded = true;
+                                    deviceMeasurementData.IsExpanded = true;
+
+                                    // Add measurement info to m_pointsToPlot collection.
+                                    if (!m_pointsToPlot.ContainsKey(measurementInfo.PointID))
+                                    {
+                                        lock (m_pointsToPlot)
+                                            m_pointsToPlot.Add(measurementInfo.PointID, measurementInfo);
+
+                                        //start chart
+                                        ThreadPool.QueueUserWorkItem(GetChartData, measurementInfo);
+                                        StartChartRefreshTimer();
+                                    }                                     
+                                }
+                            }
+                        }
+                    }
+                }
+
                 m_dataForBinding.DeviceMeasurementDataList = m_deviceMeasurementDataList;
                 m_dataForBinding.IsExpanded = false;
                 TreeViewDeviceMeasurements.DataContext = m_dataForBinding;

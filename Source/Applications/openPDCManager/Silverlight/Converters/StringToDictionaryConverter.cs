@@ -38,7 +38,10 @@ namespace openPDCManager.Converters
 
 		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			return ((KeyValuePair<int, string>)value).Key;
+            if (value != null)
+                return ((KeyValuePair<int, string>)value).Key;
+            else
+                return 0;
 		}
 
 		#endregion

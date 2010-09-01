@@ -37,6 +37,8 @@ namespace openPDCManager.Converters
             //SolidColorBrush scBrush = new SolidColorBrush();            
             RadialGradientBrush scBrush = new RadialGradientBrush();
 
+            if (value == null)
+                return scBrush as Brush;
 
             string statusColor = value.ToString();          
 

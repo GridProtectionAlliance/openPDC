@@ -40,6 +40,9 @@ namespace openPDCManager.Converters
             //    return new KeyValuePair<string, string>("V", "Voltage");
             //else
             //    throw new ArgumentException("Value not supported as a Phasor Type");
+            if (value == null)
+                return "";
+
             if (value.ToString() == "I")
                 return "Current";
             else if (value.ToString() == "V")

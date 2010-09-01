@@ -48,6 +48,9 @@ namespace openPDCManager.Converters
             //    return new KeyValuePair<string, string>("+", "Positive");
 				//throw new ArgumentException("Value not supported as a Phase Type");
 
+            if (value == null)
+                return "";
+
             if (value.ToString() == "+")
                 return "Positive";
             else if (value.ToString() == "-")

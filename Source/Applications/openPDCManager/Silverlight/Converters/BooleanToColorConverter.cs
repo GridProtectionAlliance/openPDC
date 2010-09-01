@@ -33,6 +33,9 @@ namespace openPDCManager.Converters
 
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
+            if (value == null)
+                value = false;
+
 			SolidColorBrush scBrush = new SolidColorBrush();
 
             if (parameter == null)  //if parameter is not supplied then we will return standard red and green color
