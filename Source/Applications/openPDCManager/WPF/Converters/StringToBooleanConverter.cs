@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Data;
+using System.Windows;
 
 namespace openPDCManager.Converters
 {
@@ -43,6 +44,33 @@ namespace openPDCManager.Converters
             }
             else
                 return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    class IntegerToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value != null)
+            {
+                int temp;
+                if (Int32.TryParse(value.ToString(), out temp))
+                {
+                    if (temp > 0)
+                        return Visibility.Visible;
+                    else
+                        return Visibility.Hidden;
+                }
+                else
+                    return Visibility.Hidden;
+            }
+            else
+                return Visibility.Hidden;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

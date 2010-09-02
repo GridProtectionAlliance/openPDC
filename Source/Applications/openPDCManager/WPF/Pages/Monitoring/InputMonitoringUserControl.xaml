@@ -10,14 +10,14 @@
     <Grid x:Name="LayoutRoot">
 
         <Border Style="{StaticResource PortletBorderStyle}">
-            <StackPanel Orientation="Vertical">
-                
+            <StackPanel Orientation="Vertical">                
                 <StackPanel.Resources>
+                    <converter:IntegerToVisibilityConverter x:Key="integerToVisibilityConverter" />
                     <HierarchicalDataTemplate x:Key="SecondChildNodeTemplate">
                         <StackPanel Orientation="Horizontal" Margin="-20,0,0,0">
                             <StackPanel.Resources>
                                 <converter:StringToColorConverter x:Key="stringToColorConverter" />
-                                <converter:StringToBooleanConverter x:Key="stringToBooleanConverter" />
+                                <converter:StringToBooleanConverter x:Key="stringToBooleanConverter" />                                
                             </StackPanel.Resources>                            
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                 <CheckBox HorizontalAlignment="Left" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}" Content="{Binding Path=SignalReference}" ToolTip="{Binding Path=Description}" Tag="{Binding Path=PointID}" IsEnabled="{Binding Path=SignalAcronym, Converter={StaticResource stringToBooleanConverter}}" Width="{StaticResource LargeItemSize}" 
@@ -35,16 +35,17 @@
                         <StackPanel Orientation="Horizontal">
                             <StackPanel.Resources>
                                 <converter:StringToSymbolConverter x:Key="ConvertStringToSymbol"/>
-                            </StackPanel.Resources>
-                            
-                                <Ellipse Width="16" Height="16" Margin="5, 0, 5, 0" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>
-                            
+                            </StackPanel.Resources>                            
+                            <Ellipse Width="16" Height="16" Margin="5, 0, 5, 0" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>                            
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="{Binding Path=Acronym}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" Width="{StaticResource LargeItemSize}" HorizontalContentAlignment="Left" Click="ButtonGetStatistics_Click"></Button>                                
+                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="{Binding Path=Acronym}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" HorizontalContentAlignment="Left" Click="ButtonGetStatistics_Click"></Button>                                
                             </Border>
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                 <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Device Name" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
-                            </Border>                            
+                            </Border>
+                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                <Button x:Name="ButtonEdit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Visibility="{Binding Path=ID, Converter={StaticResource integerToVisibilityConverter}}" Content="Edit" Tag="{Binding Path=ID}" ToolTipService.ToolTip="Click Here to View/Edit Device Configuration" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Click="ButtonEdit_Click" Width="{StaticResource XXXSmallItemSize}"/>
+                            </Border>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                     <HierarchicalDataTemplate x:Key="RootNodeTemplate" ItemTemplate="{StaticResource FirstChildNodeTemplate}" ItemsSource="{Binding Path=DeviceList, Mode=TwoWay}" >                        
@@ -54,12 +55,14 @@
                             </StackPanel.Resources>                            
                                 <Ellipse Width="16" Height="16" Margin="5, 0, 5, 0" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>                            
                             <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="{Binding Path=Acronym}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" Width="{StaticResource LargeItemSize}" HorizontalContentAlignment="Left" Click="ButtonGetStatistics_Click"></Button>
-                                <!--<TextBlock Text="{Binding Path=Acronym}" ToolTipService.ToolTip="Concentrator Acronym" Width="{StaticResource LargeItemSize}" FontSize="{StaticResource LargeTextSize}" Padding="1"/>-->
+                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="{Binding Path=Acronym}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" HorizontalContentAlignment="Left" Click="ButtonGetStatistics_Click"></Button>                                
                             </Border>
                             <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                                 <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Concentrator Name" Width="{StaticResource LargeItemSize}" FontSize="{StaticResource LargeTextSize}" Padding="1"/>
-                            </Border>                                    
+                            </Border>
+                            <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                                <Button x:Name="ButtonEdit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Visibility="{Binding Path=ID, Converter={StaticResource integerToVisibilityConverter}}" Content="Edit" Tag="{Binding Path=ID}" ToolTipService.ToolTip="Click Here to View/Edit Device Configuration" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Click="ButtonEdit_Click" Width="{StaticResource XXXSmallItemSize}"/>
+                            </Border>
                         </StackPanel>                        
                     </HierarchicalDataTemplate>
                     

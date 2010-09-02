@@ -70,7 +70,7 @@ namespace openPDCManager
             //SystemMonitor test = new SystemMonitor();
             //ContentFrame.Navigate(test);
             HomePageUserControl home = new HomePageUserControl();
-            ContentFrame.Navigate(home);
+            ContentFrame.Navigate(home);                       
         }
 
         void MasterLayoutWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

@@ -60,7 +60,7 @@ namespace openPDCManager.Services.DuplexService
 			serviceClientList = new Dictionary<string, WindowsServiceClient>();
 			List<Node> nodeList = new List<Node>();
             livePhasorDataTimer = new Timer(LivePhasorDataUpdate, null, 0, 30000);
-            timeSeriesDataTimer = new Timer(TimeSeriesDataUpdate, null, 0, 5000);			
+            timeSeriesDataTimer = new Timer(TimeSeriesDataUpdate, null, 0, 1000);			
 			serviceClientListTimer = new Timer(RefreshServiceClientList, null, 0, 30000);
 			timeTaggedMeasurementDataTimer = new Timer(TimeTaggedMeasurementDataUpdate, null, 0, 30000);            
 			nodeList = CommonFunctions.GetNodeList(true);

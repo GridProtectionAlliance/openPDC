@@ -68,8 +68,7 @@ namespace openPDCManager.UserControls.CommonControls
             ChartDeviceDistribution.Style = (Style)Application.Current.Resources["PieChartStyle"];            
 #else
             ButtonGetData.Content = new BitmapImage(new Uri(@"images/RequestData.png", UriKind.Relative));
-#endif
-            
+#endif            
             ButtonGetData.Click += new RoutedEventHandler(ButtonGetData_Click);
             ComboBoxDevice.SelectionChanged += new SelectionChangedEventHandler(ComboBoxDevice_SelectionChanged);
         }
@@ -137,9 +136,9 @@ namespace openPDCManager.UserControls.CommonControls
             m_activityWindow.Show();
             GetDevices();
 #if !SILVERLIGHT
-            GetTimeSeriesData(((App)Application.Current).TimeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + ((Measurement)ComboBoxMeasurements.SelectedItem).PointID.ToString() + "/*-30S/*/XML");
             GetInterconnectionStatus();
             GetDeviceDistributionList();
+            //GetTimeSeriesData(((App)Application.Current).TimeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + ((Measurement)ComboBoxMeasurements.SelectedItem).PointID.ToString() + "/*-30S/*/XML");            
 #endif
             //if (!string.IsNullOrEmpty(((App)Application.Current).NodeValue))
             //m_client.GetDevicesAsync(DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, false);

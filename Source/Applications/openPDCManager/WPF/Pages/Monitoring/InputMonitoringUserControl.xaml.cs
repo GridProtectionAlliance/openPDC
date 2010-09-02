@@ -40,6 +40,7 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Pages.Adapters;
 using openPDCManager.Utilities;
 using TVA.Configuration;
+using openPDCManager.UserControls.CommonControls;
 
 namespace openPDCManager.Pages.Monitoring
 {
@@ -82,6 +83,7 @@ namespace openPDCManager.Pages.Monitoring
             m_minMaxPointIDs = new KeyValuePair<int, int>();
             m_deviceIDsWithStatusPointIDs = new Dictionary<int, int>();
             UserControlDeviceDetailInfo.Visibility = Visibility.Hidden;
+
             //Chart related fields initializer.
             m_yAxisSourceCollection = new Dictionary<int, EnumerableDataSource<double>>();
             m_yAxisDataCollection = new Dictionary<int, List<double>>();
@@ -263,6 +265,36 @@ namespace openPDCManager.Pages.Monitoring
             UserControlDeviceDetailInfo.Visibility = Visibility.Visible;
         }
 
+        private void ButtonEdit_Click(object sender, RoutedEventArgs e)
+        {
+            if (((Button)sender).Tag != null)
+            {
+                int deviceId = Convert.ToInt32(((Button)sender).Tag);
+                if (deviceId > 0)
+                {
+                    ManageDevicesUserControl manageDevicesUserControl = new ManageDevicesUserControl();
+                    manageDevicesUserControl.m_deviceID = deviceId;
+                    ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(manageDevicesUserControl);
+                }
+                else
+                {
+                    SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Invalid or Dummy Device Selected", SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Information },
+                        ButtonType.OkOnly);
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm.ShowPopup();
+                }
+            }
+            else
+            {
+                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Invalid or Dummy Device Selected", SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Information },
+                        ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+            }
+        }
+        
         #endregion
 
         #region [ Methods ]
@@ -610,6 +642,7 @@ namespace openPDCManager.Pages.Monitoring
         }
 
         #endregion
-        
+
+                
     }
 }

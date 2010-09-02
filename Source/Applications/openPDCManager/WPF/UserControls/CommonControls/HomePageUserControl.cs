@@ -213,8 +213,14 @@ namespace openPDCManager.UserControls.CommonControls
 
         void ComboBoxMeasurements_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ComboBoxMeasurements.Items.Count > 0)
+            if (ComboBoxMeasurements.Items.Count > 0 && ComboBoxMeasurements.SelectedIndex >= 0)
             {
+#if !SILVERLIGHT
+                //This was done for WPF to make sure there are measurements available in the dropdown before calling time series data service. Otherwise ComboboxMeasurements.SelectedItem returned NULL.
+                ReconnectToService();
+                GetTimeSeriesData(((App)Application.Current).TimeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + ((Measurement)ComboBoxMeasurements.SelectedItem).PointID.ToString() + "/*-30S/*/XML");
+#endif
+                
                 m_url = ((App)Application.Current).TimeSeriesDataServiceUrl + "/timeseriesdata/read/current/" + ((Measurement)ComboBoxMeasurements.SelectedItem).PointID.ToString() + "/XML";
                 framesPerSecond = (int)((Measurement)ComboBoxMeasurements.SelectedItem).FramesPerSecond;
                 LinearAxis yAxis = (LinearAxis)ChartRealTimeData.Axes[1];
