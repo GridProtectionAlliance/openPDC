@@ -58,48 +58,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataPacket.cs" />
     <Compile Include="SerializableMeasurementSlim.cs" />
     <Compile Include="DataPublisher.cs" />
     <Compile Include="DataSubscriber.cs" />
-    <Compile Include="DebugHost.cs">
+    <Compile Include="DebugHostBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DebugHost.designer.cs">
-      <DependentUpon>DebugHost.cs</DependentUpon>
+    <Compile Include="DebugHostBase.designer.cs">
+      <DependentUpon>DebugHostBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerializableMeasurement.cs" />
-    <Compile Include="ServiceClient.cs">
+    <Compile Include="ServiceClientBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ServiceClient.designer.cs">
-      <DependentUpon>ServiceClient.cs</DependentUpon>
+    <Compile Include="ServiceClientBase.designer.cs">
+      <DependentUpon>ServiceClientBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="ServiceHost.cs">
+    <Compile Include="ServiceHostBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ServiceHost.designer.cs">
-      <DependentUpon>ServiceHost.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ServiceInstall.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ServiceInstall.designer.cs">
-      <DependentUpon>ServiceInstall.cs</DependentUpon>
+    <Compile Include="ServiceHostBase.designer.cs">
+      <DependentUpon>ServiceHostBase.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DebugHost.resx">
-      <DependentUpon>DebugHost.cs</DependentUpon>
+    <EmbeddedResource Include="DebugHostBase.resx">
+      <DependentUpon>DebugHostBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ServiceClient.resx">
-      <DependentUpon>ServiceClient.cs</DependentUpon>
+    <EmbeddedResource Include="ServiceClientBase.resx">
+      <DependentUpon>ServiceClientBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ServiceHost.resx">
-      <DependentUpon>ServiceHost.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ServiceInstall.resx">
-      <DependentUpon>ServiceInstall.cs</DependentUpon>
+    <EmbeddedResource Include="ServiceHostBase.resx">
+      <DependentUpon>ServiceHostBase.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
