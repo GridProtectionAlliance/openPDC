@@ -8,7 +8,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}"
 	ProjectSection(SolutionItems) = preProject
 		Documentation\Near GPS Quality NTP Settings.reg = Documentation\Near GPS Quality NTP Settings.reg
-		Documentation\PMU Connection Tester Help Documents.zip = Documentation\PMU Connection Tester Help Documents.zip
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}"
@@ -16,26 +15,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{9EEDE95F-8333-4957-B270-02D3CD4629B5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infragistics", "Infragistics", "{3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\Infragistics\Infragistics2.Shared.v7.2.dll = Dependencies\Infragistics\Infragistics2.Shared.v7.2.dll
-		Dependencies\Infragistics\Infragistics2.Shared.v7.2.xml = Dependencies\Infragistics\Infragistics2.Shared.v7.2.xml
-		Dependencies\Infragistics\Infragistics2.Win.Misc.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.Misc.v7.2.dll
-		Dependencies\Infragistics\Infragistics2.Win.Misc.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.Misc.v7.2.xml
-		Dependencies\Infragistics\Infragistics2.Win.UltraWinChart.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.UltraWinChart.v7.2.dll
-		Dependencies\Infragistics\Infragistics2.Win.UltraWinChart.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.UltraWinChart.v7.2.xml
-		Dependencies\Infragistics\Infragistics2.Win.UltraWinEditors.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.UltraWinEditors.v7.2.dll
-		Dependencies\Infragistics\Infragistics2.Win.UltraWinEditors.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.UltraWinEditors.v7.2.xml
-		Dependencies\Infragistics\Infragistics2.Win.UltraWinMaskedEdit.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.UltraWinMaskedEdit.v7.2.dll
-		Dependencies\Infragistics\Infragistics2.Win.UltraWinMaskedEdit.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.UltraWinMaskedEdit.v7.2.xml
-		Dependencies\Infragistics\Infragistics2.Win.UltraWinStatusBar.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.UltraWinStatusBar.v7.2.dll
-		Dependencies\Infragistics\Infragistics2.Win.UltraWinStatusBar.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.UltraWinStatusBar.v7.2.xml
-		Dependencies\Infragistics\Infragistics2.Win.UltraWinTabControl.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.UltraWinTabControl.v7.2.dll
-		Dependencies\Infragistics\Infragistics2.Win.UltraWinTabControl.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.UltraWinTabControl.v7.2.xml
-		Dependencies\Infragistics\Infragistics2.Win.UltraWinTree.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.UltraWinTree.v7.2.dll
-		Dependencies\Infragistics\Infragistics2.Win.UltraWinTree.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.UltraWinTree.v7.2.xml
-		Dependencies\Infragistics\Infragistics2.Win.v7.2.dll = Dependencies\Infragistics\Infragistics2.Win.v7.2.dll
-		Dependencies\Infragistics\Infragistics2.Win.v7.2.xml = Dependencies\Infragistics\Infragistics2.Win.v7.2.xml
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{CDEEFA49-6184-4E99-9559-C7BBD7588F3B}"
 EndProject
@@ -106,8 +85,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebDataAccess", "WebDataAcc
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openPDC", "openPDC", "{CE260396-797B-45DF-AC53-E4FC553B57C0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PMUConnectionTester", "PMUConnectionTester", "{9049F37F-1DE9-4F22-8F62-24D0814A80C6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVA", "TVA", "{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B}"
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\TVA\Hadoop.Replication.dll = Dependencies\TVA\Hadoop.Replication.dll
@@ -165,8 +142,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TVA.PhasorProtocols", "Libr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NASPInet", "Libraries\Adapters\NASPInet\NASPInet.csproj", "{F8902AA2-1A9A-451B-89D1-7FEA30C34C48}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PMUConnectionTester", "Tools\PMUConnectionTester\PMUConnectionTester\PMUConnectionTester.vbproj", "{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Applications\openPDCManager\Web.Data\Data.csproj", "{5314055B-EA03-4E15-8653-83F011D7A00E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Applications\openPDCManager\Services\Services.csproj", "{D96C8A3A-7E03-43C6-B401-41778D81FF70}"
@@ -183,8 +158,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingAdapters", "Libraries\Adapters\TestingAdapters\TestingAdapters.csproj", "{1338A569-A156-4122-8B65-8D4C147AA348}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "openPDCSetup", "Applications\openPDC\openPDCSetup\openPDCSetup.vdproj", "{27A26713-8779-41AB-AFF1-BAB6BB0228E8}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PMUConnectionTesterSetup", "Tools\PMUConnectionTester\PMUConnectionTesterSetup\PMUConnectionTesterSetup.vdproj", "{A519E312-66F5-4725-A88E-9B62242CBCB7}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "WebSetup", "Applications\openPDCManager\WebSetup\WebSetup.vdproj", "{955C76BA-E809-4732-A15C-CD3607F66EC8}"
 EndProject
@@ -205,8 +178,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TVA.PhasorProtocols.Test", "Libraries\Test\TVA.PhasorProtocols.Test\TVA.PhasorProtocols.Test.csproj", "{36D4CA56-E2DA-4435-B370-4867A83B6379}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "openPDCSetup64", "Applications\openPDC\openPDCSetup\openPDCSetup64.vdproj", "{C0CAE6E7-454E-44C2-B2CF-BAF002E25D87}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PMUConnectionTesterSetup64", "Tools\PMUConnectionTester\PMUConnectionTesterSetup\PMUConnectionTesterSetup64.vdproj", "{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF", "Applications\openPDCManager\WPF\WPF.csproj", "{66DE6E45-E538-480D-8928-9C86390E60FE}"
 EndProject
@@ -233,7 +204,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{29821B31-3A0
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 30
+		SccNumberOfProjects = 27
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
 		SccLocalPath0 = .
@@ -277,82 +248,70 @@ Global
 		SccProjectTopLevelParentUniqueName10 = Synchrophasor.sln
 		SccProjectName10 = Applications/openPDC/openPDC
 		SccLocalPath10 = Applications\\openPDC\\openPDC
-		SccProjectUniqueName11 = Tools\\PMUConnectionTester\\PMUConnectionTester\\PMUConnectionTester.vbproj
+		SccProjectUniqueName11 = Applications\\openPDCManager\\WebSetup\\WebSetup.vdproj
 		SccProjectTopLevelParentUniqueName11 = Synchrophasor.sln
-		SccProjectName11 = Tools/PMUConnectionTester/PMUConnectionTester
-		SccLocalPath11 = Tools\\PMUConnectionTester\\PMUConnectionTester
-		SccProjectUniqueName12 = Tools\\PMUConnectionTester\\PMUConnectionTesterSetup\\PMUConnectionTesterSetup.vdproj
+		SccProjectName11 = Applications/openPDCManager/WebSetup
+		SccLocalPath11 = Applications\\openPDCManager\\WebSetup
+		SccProjectUniqueName12 = Applications\\openPDCManager\\ServicesSetup\\ServicesSetup.vdproj
 		SccProjectTopLevelParentUniqueName12 = Synchrophasor.sln
-		SccProjectName12 = Tools/PMUConnectionTester/PMUConnectionTesterSetup
-		SccLocalPath12 = Tools\\PMUConnectionTester\\PMUConnectionTesterSetup
-		SccProjectUniqueName13 = Applications\\openPDCManager\\WebSetup\\WebSetup.vdproj
+		SccProjectName12 = Applications/openPDCManager/ServicesSetup
+		SccLocalPath12 = Applications\\openPDCManager\\ServicesSetup
+		SccProjectUniqueName13 = Libraries\\Adapters\\MySqlAdapters\\MySqlAdapters.csproj
 		SccProjectTopLevelParentUniqueName13 = Synchrophasor.sln
-		SccProjectName13 = Applications/openPDCManager/WebSetup
-		SccLocalPath13 = Applications\\openPDCManager\\WebSetup
-		SccProjectUniqueName14 = Applications\\openPDCManager\\ServicesSetup\\ServicesSetup.vdproj
+		SccProjectName13 = Libraries/Adapters/MySqlAdapters
+		SccLocalPath13 = Libraries\\Adapters\\MySqlAdapters
+		SccProjectUniqueName14 = Libraries\\Adapters\\DataQualityMonitoring\\DataQualityMonitoring.csproj
 		SccProjectTopLevelParentUniqueName14 = Synchrophasor.sln
-		SccProjectName14 = Applications/openPDCManager/ServicesSetup
-		SccLocalPath14 = Applications\\openPDCManager\\ServicesSetup
-		SccProjectUniqueName15 = Libraries\\Adapters\\MySqlAdapters\\MySqlAdapters.csproj
+		SccProjectName14 = Libraries/Adapters/DataQualityMonitoring
+		SccLocalPath14 = Libraries\\Adapters\\DataQualityMonitoring
+		SccProjectUniqueName15 = Libraries\\Adapters\\ICCPExport\\ICCPExport.csproj
 		SccProjectTopLevelParentUniqueName15 = Synchrophasor.sln
-		SccProjectName15 = Libraries/Adapters/MySqlAdapters
-		SccLocalPath15 = Libraries\\Adapters\\MySqlAdapters
-		SccProjectUniqueName16 = Libraries\\Adapters\\DataQualityMonitoring\\DataQualityMonitoring.csproj
+		SccProjectName15 = Libraries/Adapters/ICCPExport
+		SccLocalPath15 = Libraries\\Adapters\\ICCPExport
+		SccProjectUniqueName16 = Libraries\\Adapters\\CsvAdapters\\CsvAdapters.csproj
 		SccProjectTopLevelParentUniqueName16 = Synchrophasor.sln
-		SccProjectName16 = Libraries/Adapters/DataQualityMonitoring
-		SccLocalPath16 = Libraries\\Adapters\\DataQualityMonitoring
-		SccProjectUniqueName17 = Libraries\\Adapters\\ICCPExport\\ICCPExport.csproj
+		SccProjectName16 = Libraries/Adapters/CsvAdapters
+		SccLocalPath16 = Libraries\\Adapters\\CsvAdapters
+		SccProjectUniqueName17 = Applications\\openPDC\\openPDCServices\\openPDCServices.csproj
 		SccProjectTopLevelParentUniqueName17 = Synchrophasor.sln
-		SccProjectName17 = Libraries/Adapters/ICCPExport
-		SccLocalPath17 = Libraries\\Adapters\\ICCPExport
-		SccProjectUniqueName18 = Libraries\\Adapters\\CsvAdapters\\CsvAdapters.csproj
+		SccProjectName17 = Applications/openPDC/openPDCServices
+		SccLocalPath17 = Applications\\openPDC\\openPDCServices
+		SccProjectUniqueName18 = Libraries\\Adapters\\PowerCalculations\\PowerCalculations.csproj
 		SccProjectTopLevelParentUniqueName18 = Synchrophasor.sln
-		SccProjectName18 = Libraries/Adapters/CsvAdapters
-		SccLocalPath18 = Libraries\\Adapters\\CsvAdapters
-		SccProjectUniqueName19 = Applications\\openPDC\\openPDCServices\\openPDCServices.csproj
+		SccProjectName18 = Libraries/Adapters/PowerCalculations
+		SccLocalPath18 = Libraries\\Adapters\\PowerCalculations
+		SccProjectUniqueName19 = Libraries\\Test\\TVA.PhasorProtocols.Test\\TVA.PhasorProtocols.Test.csproj
 		SccProjectTopLevelParentUniqueName19 = Synchrophasor.sln
-		SccProjectName19 = Applications/openPDC/openPDCServices
-		SccLocalPath19 = Applications\\openPDC\\openPDCServices
-		SccProjectUniqueName20 = Libraries\\Adapters\\PowerCalculations\\PowerCalculations.csproj
+		SccProjectName19 = Libraries/Test/TVA.PhasorProtocols.Test
+		SccLocalPath19 = Libraries\\Test\\TVA.PhasorProtocols.Test
+		SccProjectUniqueName20 = Applications\\openPDC\\openPDCSetup\\openPDCSetup64.vdproj
 		SccProjectTopLevelParentUniqueName20 = Synchrophasor.sln
-		SccProjectName20 = Libraries/Adapters/PowerCalculations
-		SccLocalPath20 = Libraries\\Adapters\\PowerCalculations
-		SccProjectUniqueName21 = Libraries\\Test\\TVA.PhasorProtocols.Test\\TVA.PhasorProtocols.Test.csproj
+		SccProjectName20 = Applications/openPDC/openPDCSetup
+		SccLocalPath20 = Applications\\openPDC\\openPDCSetup
+		SccProjectUniqueName21 = Applications\\openPDCManager\\WPF\\WPF.csproj
 		SccProjectTopLevelParentUniqueName21 = Synchrophasor.sln
-		SccProjectName21 = Libraries/Test/TVA.PhasorProtocols.Test
-		SccLocalPath21 = Libraries\\Test\\TVA.PhasorProtocols.Test
-		SccProjectUniqueName22 = Applications\\openPDC\\openPDCSetup\\openPDCSetup64.vdproj
+		SccProjectName21 = Applications/openPDCManager/WPF
+		SccLocalPath21 = Applications\\openPDCManager\\WPF
+		SccProjectUniqueName22 = Tools\\DatabaseSetupUtility\\DatabaseSetupUtility.csproj
 		SccProjectTopLevelParentUniqueName22 = Synchrophasor.sln
-		SccProjectName22 = Applications/openPDC/openPDCSetup
-		SccLocalPath22 = Applications\\openPDC\\openPDCSetup
-		SccProjectUniqueName23 = Tools\\PMUConnectionTester\\PMUConnectionTesterSetup\\PMUConnectionTesterSetup64.vdproj
+		SccProjectName22 = Tools/DatabaseSetupUtility
+		SccLocalPath22 = Tools\\DatabaseSetupUtility
+		SccProjectUniqueName23 = Tools\\MacrodyneController\\MacrodyneController.csproj
 		SccProjectTopLevelParentUniqueName23 = Synchrophasor.sln
-		SccProjectName23 = Tools/PMUConnectionTester/PMUConnectionTesterSetup
-		SccLocalPath23 = Tools\\PMUConnectionTester\\PMUConnectionTesterSetup
-		SccProjectUniqueName24 = Applications\\openPDCManager\\WPF\\WPF.csproj
+		SccProjectName23 = Tools/MacrodyneController
+		SccLocalPath23 = Tools\\MacrodyneController
+		SccProjectUniqueName24 = Libraries\\Adapters\\COMTRADE\\COMTRADE.csproj
 		SccProjectTopLevelParentUniqueName24 = Synchrophasor.sln
-		SccProjectName24 = Applications/openPDCManager/WPF
-		SccLocalPath24 = Applications\\openPDCManager\\WPF
-		SccProjectUniqueName25 = Tools\\DatabaseSetupUtility\\DatabaseSetupUtility.csproj
+		SccProjectName24 = Libraries/Adapters/COMTRADE
+		SccLocalPath24 = Libraries\\Adapters\\COMTRADE
+		SccProjectUniqueName25 = Applications\\openPDCManager\\Web.Data\\Data.csproj
 		SccProjectTopLevelParentUniqueName25 = Synchrophasor.sln
-		SccProjectName25 = Tools/DatabaseSetupUtility
-		SccLocalPath25 = Tools\\DatabaseSetupUtility
-		SccProjectUniqueName26 = Tools\\MacrodyneController\\MacrodyneController.csproj
+		SccProjectName25 = Applications/openPDCManager/Web.Data
+		SccLocalPath25 = Applications\\openPDCManager\\Web.Data
+		SccProjectUniqueName26 = Libraries\\TimeSeriesFramework\\TimeSeriesFramework.csproj
 		SccProjectTopLevelParentUniqueName26 = Synchrophasor.sln
-		SccProjectName26 = Tools/MacrodyneController
-		SccLocalPath26 = Tools\\MacrodyneController
-		SccProjectUniqueName27 = Libraries\\Adapters\\COMTRADE\\COMTRADE.csproj
-		SccProjectTopLevelParentUniqueName27 = Synchrophasor.sln
-		SccProjectName27 = Libraries/Adapters/COMTRADE
-		SccLocalPath27 = Libraries\\Adapters\\COMTRADE
-		SccProjectUniqueName28 = Applications\\openPDCManager\\Web.Data\\Data.csproj
-		SccProjectTopLevelParentUniqueName28 = Synchrophasor.sln
-		SccProjectName28 = Applications/openPDCManager/Web.Data
-		SccLocalPath28 = Applications\\openPDCManager\\Web.Data
-		SccProjectUniqueName29 = Libraries\\TimeSeriesFramework\\TimeSeriesFramework.csproj
-		SccProjectTopLevelParentUniqueName29 = Synchrophasor.sln
-		SccProjectName29 = Libraries/TimeSeriesFramework
-		SccLocalPath29 = Libraries\\TimeSeriesFramework
+		SccProjectName26 = Libraries/TimeSeriesFramework
+		SccLocalPath26 = Libraries\\TimeSeriesFramework
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor.vsmdi
@@ -396,14 +355,6 @@ Global
 		{F8902AA2-1A9A-451B-89D1-7FEA30C34C48}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F8902AA2-1A9A-451B-89D1-7FEA30C34C48}.Release|x86.ActiveCfg = Release|x86
 		{F8902AA2-1A9A-451B-89D1-7FEA30C34C48}.Release|x86.Build.0 = Release|x86
-		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Debug|x86.ActiveCfg = Debug|x86
-		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Debug|x86.Build.0 = Debug|x86
-		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Release|x86.ActiveCfg = Release|x86
-		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38}.Release|x86.Build.0 = Release|x86
 		{5314055B-EA03-4E15-8653-83F011D7A00E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5314055B-EA03-4E15-8653-83F011D7A00E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5314055B-EA03-4E15-8653-83F011D7A00E}.Debug|x86.ActiveCfg = Debug|x86
@@ -458,12 +409,6 @@ Global
 		{27A26713-8779-41AB-AFF1-BAB6BB0228E8}.Release|Any CPU.ActiveCfg = Release
 		{27A26713-8779-41AB-AFF1-BAB6BB0228E8}.Release|x86.ActiveCfg = Release
 		{27A26713-8779-41AB-AFF1-BAB6BB0228E8}.Release|x86.Build.0 = Release
-		{A519E312-66F5-4725-A88E-9B62242CBCB7}.Debug|Any CPU.ActiveCfg = Debug
-		{A519E312-66F5-4725-A88E-9B62242CBCB7}.Debug|x86.ActiveCfg = Debug
-		{A519E312-66F5-4725-A88E-9B62242CBCB7}.Debug|x86.Build.0 = Debug
-		{A519E312-66F5-4725-A88E-9B62242CBCB7}.Release|Any CPU.ActiveCfg = Release
-		{A519E312-66F5-4725-A88E-9B62242CBCB7}.Release|x86.ActiveCfg = Release
-		{A519E312-66F5-4725-A88E-9B62242CBCB7}.Release|x86.Build.0 = Release
 		{955C76BA-E809-4732-A15C-CD3607F66EC8}.Debug|Any CPU.ActiveCfg = Debug
 		{955C76BA-E809-4732-A15C-CD3607F66EC8}.Debug|x86.ActiveCfg = Debug
 		{955C76BA-E809-4732-A15C-CD3607F66EC8}.Debug|x86.Build.0 = Debug
@@ -538,12 +483,6 @@ Global
 		{C0CAE6E7-454E-44C2-B2CF-BAF002E25D87}.Release|Any CPU.ActiveCfg = Release
 		{C0CAE6E7-454E-44C2-B2CF-BAF002E25D87}.Release|x86.ActiveCfg = Release
 		{C0CAE6E7-454E-44C2-B2CF-BAF002E25D87}.Release|x86.Build.0 = Release
-		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Debug|Any CPU.ActiveCfg = Debug
-		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Debug|x86.ActiveCfg = Debug
-		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Debug|x86.Build.0 = Debug
-		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Release|Any CPU.ActiveCfg = Release
-		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Release|x86.ActiveCfg = Release
-		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641}.Release|x86.Build.0 = Release
 		{66DE6E45-E538-480D-8928-9C86390E60FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{66DE6E45-E538-480D-8928-9C86390E60FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66DE6E45-E538-480D-8928-9C86390E60FE}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -588,12 +527,12 @@ Global
 		{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{392338BF-FBE0-4672-880B-AB9145DEC7AC} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{F92C9476-E7E7-458C-B6C4-2E4707052345} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
+		{A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{532E7465-B8A6-41BA-B4BF-D23504645007} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{412F9F59-D9B9-4C8E-96D2-20492644198C} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{DDCC02C0-E3BE-4989-996E-DFB0402F47A5} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
-		{9049F37F-1DE9-4F22-8F62-24D0814A80C6} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{F7821DF0-BD48-481E-9DF9-D64AEFD24F57} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{A2151D77-6595-41C0-BDB2-7689110EF7C6} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{20A58D77-CB7C-444E-A084-C61B40639B60} = {3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}
@@ -624,9 +563,6 @@ Global
 		{27A26713-8779-41AB-AFF1-BAB6BB0228E8} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{C0CAE6E7-454E-44C2-B2CF-BAF002E25D87} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
-		{AB9A5D8C-38C2-4393-93D9-BC548ED0AB38} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
-		{A519E312-66F5-4725-A88E-9B62242CBCB7} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
-		{3672EED3-F56F-4DAA-8E91-C7CEFE87D641} = {9049F37F-1DE9-4F22-8F62-24D0814A80C6}
 		{36D4CA56-E2DA-4435-B370-4867A83B6379} = {532E7465-B8A6-41BA-B4BF-D23504645007}
 		{80424C23-52C7-40E6-8F4A-F4FAD30AEEAE} = {F7821DF0-BD48-481E-9DF9-D64AEFD24F57}
 		{334BA160-26D6-4A3B-92E2-42DEB4381176} = {A2151D77-6595-41C0-BDB2-7689110EF7C6}
