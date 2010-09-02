@@ -33,21 +33,21 @@ namespace openPDCManager.Utilities
     {
         static IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForAssembly();
         
-        public static void SaveInputMonitoringPoints(List<int> pointList)
+        public static void SaveInputMonitoringPoints(List<string> pointList)
         {
             using (StreamWriter writer = new StreamWriter(new IsolatedStorageFileStream("InputMonitoringPoints.txt", FileMode.Create, storage)))
             {
                 StringBuilder sb = new StringBuilder();                
-                foreach (int value in pointList)
-                    sb.Append(value.ToString() + ";");
+                foreach (string value in pointList)
+                    sb.Append(value + ";");
 
                 writer.Write(sb.ToString());            
             }         
         }
 
-        public static List<int> ReadInputMonitoringPoints()
+        public static List<string> ReadInputMonitoringPoints()
         {
-            List<int> pointList = new List<int>();
+            List<string> pointList = new List<string>();
             using (StreamReader reader = new StreamReader(new IsolatedStorageFileStream("InputMonitoringPoints.txt", FileMode.OpenOrCreate, storage)))
             {
                 if (reader != null)
@@ -57,7 +57,7 @@ namespace openPDCManager.Utilities
                     foreach (string value in points)
                     {
                         if (!string.IsNullOrEmpty(value))
-                            pointList.Add(Convert.ToInt32(value));
+                            pointList.Add(value);
                     }
                 }
             }

@@ -88,11 +88,17 @@
                     <TextBlock x:Name="TextBlockRefreshInterval" Text="Refresh Interval: 10 sec" Grid.Row="0" Grid.Column="0"  HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="{StaticResource SmallTextSize}" Padding="5"/>
                     <TextBlock x:Name="TextBlockLastRefresh" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="{StaticResource SmallTextSize}" Padding="5"/>
 
-                    <TreeView x:Name="TreeViewDeviceMeasurements" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Path=DeviceMeasurementDataList, Mode=TwoWay}" ItemContainerStyle="{StaticResource ExpandedItemStyle}" ItemTemplate="{StaticResource RootNodeTemplate}" Height="750" Margin="0,-20,0,0" VerticalAlignment="Top" />
-
-                    <StackPanel Orientation="Vertical" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" VerticalAlignment="Top">
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
+                        <Button x:Name="ButtonSave" Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Save Display Settings" ToolTip="Click Here to Save Current Display Settings" VerticalAlignment="Center" Click="ButtonSave_Click"/>
+                        <TextBlock Text="|" Margin="5,0,5,0" />
+                        <Button x:Name="ButtonLoad" Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Load Display Settings" ToolTip="Click Here to Load Previous Display Settings" VerticalAlignment="Center" Margin="0,0,5,0" Click="ButtonLoad_Click"/>
+                    </StackPanel>
                     
-                        <d3:ChartPlotter Name="ChartPlotterDynamic" VerticalAlignment="Top" Margin="5" Background="Transparent" Height="400"
+                    <TreeView x:Name="TreeViewDeviceMeasurements" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Path=DeviceMeasurementDataList, Mode=TwoWay}" ItemContainerStyle="{StaticResource ExpandedItemStyle}" ItemTemplate="{StaticResource RootNodeTemplate}" Height="750" Margin="0" VerticalAlignment="Top" />
+
+                    <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top">
+                    
+                        <d3:ChartPlotter Name="ChartPlotterDynamic" VerticalAlignment="Top" Margin="5" Background="Transparent" Height="375"
                                          MainHorizontalAxisVisibility="Hidden" MainVerticalAxisVisibility="Collapsed">
 
                             <d3:InjectedPlotter Name="FrequencyPlotter" SetViewportBinding="False">

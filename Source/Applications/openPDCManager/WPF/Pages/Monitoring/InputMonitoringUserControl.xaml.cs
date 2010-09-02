@@ -41,6 +41,9 @@ using openPDCManager.Pages.Adapters;
 using openPDCManager.Utilities;
 using TVA.Configuration;
 using openPDCManager.UserControls.CommonControls;
+using Microsoft.Win32;
+using System.IO;
+using System.Text;
 
 namespace openPDCManager.Pages.Monitoring
 {
@@ -100,10 +103,10 @@ namespace openPDCManager.Pages.Monitoring
         {
             try
             {
-                List<int> pointList = new List<int>();
+                List<string> pointList = new List<string>();
                 foreach (KeyValuePair<int, MeasurementInfo> pointToPlot in m_pointsToPlot)
                 {
-                    pointList.Add(pointToPlot.Value.PointID);
+                    pointList.Add(pointToPlot.Value.SignalReference);
                 }
                 IsolatedStorageManager.SaveInputMonitoringPoints(pointList);
             }
@@ -415,7 +418,7 @@ namespace openPDCManager.Pages.Monitoring
             {
                 m_deviceMeasurementDataList = CommonFunctions.GetDeviceMeasurementData(((App)Application.Current).NodeValue);
 
-                List<int> pointList = IsolatedStorageManager.ReadInputMonitoringPoints();
+                List<string> pointList = IsolatedStorageManager.ReadInputMonitoringPoints();
 
                 if (pointList.Count > 0)
                 { 
@@ -425,7 +428,7 @@ namespace openPDCManager.Pages.Monitoring
                         {
                             foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
                             {
-                                if (pointList.Contains(measurementInfo.PointID))
+                                if (pointList.Contains(measurementInfo.SignalReference))
                                 {
                                     measurementInfo.IsSelected = true;
                                     deviceInfo.IsExpanded = true;
@@ -438,7 +441,7 @@ namespace openPDCManager.Pages.Monitoring
                                             m_pointsToPlot.Add(measurementInfo.PointID, measurementInfo);
 
                                         //start chart
-                                        ThreadPool.QueueUserWorkItem(GetChartData, measurementInfo);
+                                        //ThreadPool.QueueUserWorkItem(GetChartData, measurementInfo);
                                         StartChartRefreshTimer();
                                     }                                     
                                 }
@@ -643,6 +646,76 @@ namespace openPDCManager.Pages.Monitoring
 
         #endregion
 
-                
+        private void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Title = "Save Current Display Settings";
+            saveDialog.Filter = "Input Monitoring Display Settings (*.imsettings)|*.imsettings|All Files (*.*)|*.*";
+            bool? result = saveDialog.ShowDialog(Window.GetWindow(this));
+            if (result != null && (bool)result == true)
+            {                
+                using (StreamWriter writer = new StreamWriter(saveDialog.FileName))
+                {
+                    StringBuilder sb = new StringBuilder();
+                    foreach (KeyValuePair<int, MeasurementInfo> pointToPlot in m_pointsToPlot)
+                    {
+                        sb.Append(pointToPlot.Value.SignalReference + ";");
+                    }
+                    writer.Write(sb.ToString());
+                }
+            }
+        }
+
+        private void ButtonLoad_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openDialog = new OpenFileDialog();
+            openDialog.Multiselect = false;
+            openDialog.Filter = "Input Monitoring Display Settings (*.imsettings)|*.imsettings|All Files (*.*)|*.*";
+            bool? result = openDialog.ShowDialog(Window.GetWindow(this));
+            if (result != null && (bool)result == true)
+            {
+                using (StreamReader reader = new StreamReader(openDialog.OpenFile()))
+                {
+                    string selection = reader.ReadLine();
+                    string[] signalReferences = selection.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (DeviceMeasurementData deviceMeasurementData in m_dataForBinding.DeviceMeasurementDataList)
+                    {
+                        deviceMeasurementData.IsExpanded = false;
+                        foreach (DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
+                        {
+                            deviceInfo.IsExpanded = false;
+                            foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
+                            {
+                                if (signalReferences.Contains(measurementInfo.SignalReference))
+                                {
+                                    measurementInfo.IsSelected = true;
+                                    deviceInfo.IsExpanded = true;
+                                    deviceMeasurementData.IsExpanded = true;
+
+                                    // Add measurement info to m_pointsToPlot collection.
+                                    if (!m_pointsToPlot.ContainsKey(measurementInfo.PointID))
+                                    {
+                                        lock (m_pointsToPlot)
+                                            m_pointsToPlot.Add(measurementInfo.PointID, measurementInfo);
+
+                                        StartChartRefreshTimer();
+                                    }
+                                }
+                                else
+                                {
+                                    measurementInfo.IsSelected = false;
+                                    if (m_pointsToPlot.ContainsKey(measurementInfo.PointID))
+                                        RemoveLineGraph(measurementInfo);
+                                }                                    
+                            }
+                        }
+                    }
+                    m_dataForBinding.IsExpanded = false;
+                    TreeViewDeviceMeasurements.Items.Refresh();
+                    TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
+                }
+            }
+        }                
     }
 }
