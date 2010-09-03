@@ -239,7 +239,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 using TVA.Units;
-using TVA.Measurements;
+using TimeSeriesFramework;
 
 namespace TVA.PhasorProtocols
 {

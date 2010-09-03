@@ -68,9 +68,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+using TimeSeriesFramework;
 using TVA.Communication;
 using TVA.IO;
-using TVA.Measurements;
 using TVA.Units;
 
 namespace TVA.PhasorProtocols

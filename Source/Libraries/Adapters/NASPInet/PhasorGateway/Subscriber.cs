@@ -232,7 +232,7 @@
 #endregion
 
 using System;
-using TVA.Measurements.Routing;
+using TimeSeriesFramework.Adapters;
 
 namespace NASPInet.PhasorGateway
 {

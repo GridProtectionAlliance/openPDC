@@ -236,8 +236,8 @@ using System.Text;
 using System.Timers;
 using MySql.Data.MySqlClient;
 using TVA;
-using TVA.Measurements;
-using TVA.Measurements.Routing;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 using System.Data;
 
 namespace MySqlAdapters

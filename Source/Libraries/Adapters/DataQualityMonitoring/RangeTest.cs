@@ -234,8 +234,8 @@ using System.Collections.Generic;
 using System.Timers;
 using DataQualityMonitoring.Services;
 using TVA;
-using TVA.Measurements;
-using TVA.Measurements.Routing;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 
 namespace DataQualityMonitoring
 {
@@ -471,7 +471,7 @@ namespace DataQualityMonitoring
         /// concentration will fall behind. A small amount of this time is required by the <see cref="ConcentratorBase"/> for processing overhead, so actual total time
         /// available for user function process will always be slightly less than <c>1 / <see cref="ConcentratorBase.FramesPerSecond"/></c> seconds.
         /// </remarks>
-        protected override void PublishFrame(TVA.Measurements.IFrame frame, int index)
+        protected override void PublishFrame(TimeSeriesFramework.IFrame frame, int index)
         {
             IMeasurement measurement = null;
 

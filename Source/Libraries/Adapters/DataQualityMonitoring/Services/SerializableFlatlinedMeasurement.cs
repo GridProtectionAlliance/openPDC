@@ -236,7 +236,7 @@
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using TVA;
-using TVA.Measurements;
+using TimeSeriesFramework;
 
 namespace DataQualityMonitoring.Services
 {

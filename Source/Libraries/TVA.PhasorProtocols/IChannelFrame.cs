@@ -233,7 +233,7 @@
 
 using System;
 using System.Runtime.Serialization;
-using TVA.Measurements;
+using TimeSeriesFramework;
 
 namespace TVA.PhasorProtocols
 {

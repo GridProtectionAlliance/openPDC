@@ -241,8 +241,8 @@ using NASPInet.Packets;
 using NASPInet.Signals;
 using TVA;
 using TVA.Communication;
-using TVA.Measurements;
-using TVA.Measurements.Routing;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 
 namespace NASPInet.PhasorGateway
 {

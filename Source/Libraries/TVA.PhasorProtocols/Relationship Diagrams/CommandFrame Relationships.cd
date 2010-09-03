@@ -78,7 +78,7 @@
       <FileName>IChannel.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="TVA.Measurements.IFrame">
+  <Interface Name="TimeSeriesFramework.IFrame">
     <Position X="9.75" Y="3.5" Width="1.5" />
     <TypeIdentifier />
   </Interface>

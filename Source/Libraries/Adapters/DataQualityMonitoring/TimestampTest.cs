@@ -233,8 +233,8 @@ using System;
 using System.Collections.Generic;
 using DataQualityMonitoring.Services;
 using TVA;
-using TVA.Measurements;
-using TVA.Measurements.Routing;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 using System.Threading;
 
 namespace DataQualityMonitoring

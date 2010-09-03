@@ -234,7 +234,7 @@
 #endregion
 
 using System;
-using TVA.Measurements;
+using TimeSeriesFramework;
 using TVA.Parsing;
 
 namespace TVA.PhasorProtocols

@@ -414,7 +414,7 @@ namespace TVA.PhasorProtocols
             return 0;
         }
 
-        TVA.Measurements.IMeasurement TVA.Measurements.IFrame.LastSortedMeasurement
+        TimeSeriesFramework.IMeasurement TimeSeriesFramework.IFrame.LastSortedMeasurement
         {
             get
             {
@@ -426,7 +426,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        IDictionary<TVA.Measurements.MeasurementKey, TVA.Measurements.IMeasurement> TVA.Measurements.IFrame.Measurements
+        IDictionary<TimeSeriesFramework.MeasurementKey, TimeSeriesFramework.IMeasurement> TimeSeriesFramework.IFrame.Measurements
         {
             get
             {
@@ -434,7 +434,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        bool TVA.Measurements.IFrame.Published
+        bool TimeSeriesFramework.IFrame.Published
         {
             get
             {
@@ -446,7 +446,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        int TVA.Measurements.IFrame.SortedMeasurements
+        int TimeSeriesFramework.IFrame.SortedMeasurements
         {
             get
             {
@@ -458,7 +458,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        Ticks TVA.Measurements.IFrame.Timestamp
+        Ticks TimeSeriesFramework.IFrame.Timestamp
         {
             get
             {
@@ -470,12 +470,12 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        bool IEquatable<TVA.Measurements.IFrame>.Equals(TVA.Measurements.IFrame other)
+        bool IEquatable<TimeSeriesFramework.IFrame>.Equals(TimeSeriesFramework.IFrame other)
         {
             return false;
         }
 
-        int IComparable<TVA.Measurements.IFrame>.CompareTo(TVA.Measurements.IFrame other)
+        int IComparable<TimeSeriesFramework.IFrame>.CompareTo(TimeSeriesFramework.IFrame other)
         {
             return 1;
         }

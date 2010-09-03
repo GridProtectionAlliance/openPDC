@@ -243,8 +243,8 @@ using System.Text;
 using TVA;
 using TVA.Communication;
 using TVA.Historian;
-using TVA.Measurements;
-using TVA.Measurements.Routing;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 
 namespace HistorianAdapters
 {

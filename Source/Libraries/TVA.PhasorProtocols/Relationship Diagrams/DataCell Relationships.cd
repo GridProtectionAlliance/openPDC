@@ -164,7 +164,7 @@
     <Position X="7" Y="1.25" Width="2" />
     <TypeIdentifier />
   </Interface>
-  <Interface Name="TVA.Measurements.IMeasurement" Collapsed="true">
+  <Interface Name="TimeSeriesFramework.IMeasurement" Collapsed="true">
     <Position X="11.5" Y="1.5" Width="2.25" />
     <InheritanceLine Type="System.IEquatable&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
       <Path>

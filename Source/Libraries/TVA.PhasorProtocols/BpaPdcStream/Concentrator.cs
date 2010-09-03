@@ -236,8 +236,8 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using TVA.IO;
-using TVA.Measurements;
-using TVA.Measurements.Routing;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 
 namespace TVA.PhasorProtocols.BpaPdcStream
 {

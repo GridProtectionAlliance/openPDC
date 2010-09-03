@@ -155,7 +155,7 @@
       <FileName>IChannel.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="TVA.Measurements.IFrame">
+  <Interface Name="TimeSeriesFramework.IFrame">
     <Position X="6.5" Y="6.5" Width="1.5" />
     <TypeIdentifier />
   </Interface>

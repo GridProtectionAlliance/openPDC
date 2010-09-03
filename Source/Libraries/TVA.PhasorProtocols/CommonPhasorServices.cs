@@ -33,12 +33,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using TimeSeriesFramework;
 using TVA.Configuration;
 using TVA.Data;
 using TVA.IO;
-using TVA.Measurements;
-using TVA.Measurements.Routing;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 using TVA.PhasorProtocols.Anonymous;
 using TVA.Units;
 
@@ -267,7 +266,7 @@ namespace TVA.PhasorProtocols
         private int m_outputStreamStatisticsMaxIndex;
         private Dictionary<string, IMeasurement> m_definedMeasurements;
         private System.Timers.Timer m_statisticCalculationTimer;
-        private DataPublisher m_dataPublisher;
+        private TimeSeriesFramework.DataPublisher m_dataPublisher;
         private bool m_enabled;
         private bool m_initialized;
         private bool m_disposed;
@@ -311,7 +310,7 @@ namespace TVA.PhasorProtocols
             m_frameParser.SkipDisableRealTimeData = true;
 
             // Create a new data publishing server
-            m_dataPublisher = new DataPublisher();
+            m_dataPublisher = new TimeSeriesFramework.DataPublisher();
         }
 
         /// <summary>
@@ -748,9 +747,9 @@ namespace TVA.PhasorProtocols
                         {
                             m_dataPublisher.StatusMessage -= StatusMessage;
                             m_dataPublisher.ProcessException -= ProcessException;
-                            m_dataPublisher.NewMeasurements -= NewMeasurements;
+                            //m_dataPublisher.NewMeasurements -= NewMeasurements;
                             m_dataPublisher.UnpublishedSamples -= UnpublishedSamples;
-                            m_dataPublisher.DiscardingMeasurements -= DiscardingMeasurements;
+                            //m_dataPublisher.DiscardingMeasurements -= DiscardingMeasurements;
                             m_dataPublisher.Dispose();
                         }
                         m_dataPublisher = null;
@@ -816,9 +815,9 @@ namespace TVA.PhasorProtocols
                 m_dataPublisher.Name = "dataPublisher";
                 m_dataPublisher.StatusMessage += StatusMessage;
                 m_dataPublisher.ProcessException += ProcessException;
-                m_dataPublisher.NewMeasurements += NewMeasurements;
+                //m_dataPublisher.NewMeasurements += NewMeasurements;
                 m_dataPublisher.UnpublishedSamples += UnpublishedSamples;
-                m_dataPublisher.DiscardingMeasurements += DiscardingMeasurements;
+                //m_dataPublisher.DiscardingMeasurements += DiscardingMeasurements;
                 m_dataPublisher.Initialize();
             }
         }
@@ -1035,8 +1034,8 @@ namespace TVA.PhasorProtocols
         /// <param name="measurements">Collection of measurements to queue for processing.</param>
         public void QueueMeasurementsForProcessing(IEnumerable<IMeasurement> measurements)
         {
-            if (m_dataPublisher != null)
-                m_dataPublisher.QueueMeasurementsForProcessing(measurements);
+            //if (m_dataPublisher != null)
+            //    m_dataPublisher.QueueMeasurementsForProcessing(measurements);
         }
 
         /// <summary>

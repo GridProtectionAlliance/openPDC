@@ -164,7 +164,7 @@
     <Position X="6.75" Y="0.5" Width="2" />
     <TypeIdentifier />
   </Interface>
-  <Interface Name="TVA.Measurements.IFrame" Collapsed="true">
+  <Interface Name="TimeSeriesFramework.IFrame" Collapsed="true">
     <Position X="11.25" Y="1" Width="1.5" />
     <TypeIdentifier />
   </Interface>

@@ -271,8 +271,8 @@ using TVA.Historian.Files;
 using TVA.Historian.MetadataProviders;
 using TVA.Historian.Replication;
 using TVA.IO;
-using TVA.Measurements;
-using TVA.Measurements.Routing;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 using System.Configuration;
 
 namespace HistorianAdapters

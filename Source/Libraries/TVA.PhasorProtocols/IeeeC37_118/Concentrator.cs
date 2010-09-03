@@ -236,8 +236,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using TVA.Communication;
-using TVA.Measurements;
-using TVA.Measurements.Routing;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 
 namespace TVA.PhasorProtocols.IeeeC37_118
 {

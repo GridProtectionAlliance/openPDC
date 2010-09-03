@@ -2029,17 +2029,17 @@
             </summary>
             <param name="dataPoint">A time-series data point.</param>
         </member>
-        <member name="M:TVA.Historian.Files.ArchiveDataPoint.#ctor(TVA.Measurements.IMeasurement)">
+        <member name="M:TVA.Historian.Files.ArchiveDataPoint.#ctor(TimeSeriesFramework.IMeasurement)">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> class from a <see cref="T:TVA.Measurements.IMeasurement"/> value.
+            Initializes a new instance of the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> class from a <see cref="T:TimeSeriesFramework.IMeasurement"/> value.
             </summary>
-            <param name="measurement">Object that implements the <see cref="T:TVA.Measurements.IMeasurement"/> interface.</param>
+            <param name="measurement">Object that implements the <see cref="T:TimeSeriesFramework.IMeasurement"/> interface.</param>
         </member>
-        <member name="M:TVA.Historian.Files.ArchiveDataPoint.#ctor(TVA.Measurements.IMeasurement,TVA.Historian.Quality)">
+        <member name="M:TVA.Historian.Files.ArchiveDataPoint.#ctor(TimeSeriesFramework.IMeasurement,TVA.Historian.Quality)">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> class from a <see cref="T:TVA.Measurements.IMeasurement"/> value.
+            Initializes a new instance of the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> class from a <see cref="T:TimeSeriesFramework.IMeasurement"/> value.
             </summary>
-            <param name="measurement">Object that implements the <see cref="T:TVA.Measurements.IMeasurement"/> interface.</param>
+            <param name="measurement">Object that implements the <see cref="T:TimeSeriesFramework.IMeasurement"/> interface.</param>
             <param name="quality">Specific <see cref="P:TVA.Historian.Files.ArchiveDataPoint.Quality"/> value to apply to new <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.</param>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveDataPoint.#ctor(System.Int32,TVA.Historian.TimeTag,System.Single,TVA.Historian.Quality)">
@@ -3533,7 +3533,7 @@
             </summary>
             <param name="dataPoints">A collection of time-series data points.</param>
         </member>
-        <member name="M:TVA.Historian.Packets.PacketType101.#ctor(System.Collections.Generic.IEnumerable{TVA.Measurements.IMeasurement})">
+        <member name="M:TVA.Historian.Packets.PacketType101.#ctor(System.Collections.Generic.IEnumerable{TimeSeriesFramework.IMeasurement})">
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Packets.PacketType101"/> class.
             </summary>
@@ -6333,11 +6333,11 @@
             </summary>
             <param name="dataPoint">A time-series data point.</param>
         </member>
-        <member name="M:TVA.Historian.Packets.PacketType101DataPoint.#ctor(TVA.Measurements.IMeasurement)">
+        <member name="M:TVA.Historian.Packets.PacketType101DataPoint.#ctor(TimeSeriesFramework.IMeasurement)">
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Packets.PacketType101DataPoint"/> class.
             </summary>
-            <param name="measurement">Object that implements the <see cref="T:TVA.Measurements.IMeasurement"/> interface.</param>
+            <param name="measurement">Object that implements the <see cref="T:TimeSeriesFramework.IMeasurement"/> interface.</param>
         </member>
         <member name="M:TVA.Historian.Packets.PacketType101DataPoint.#ctor(System.Int32,TVA.Historian.TimeTag,System.Single,TVA.Historian.Quality)">
             <summary>
@@ -7136,11 +7136,11 @@
             </summary>
             <param name="dataPoint">Object that implements the <see cref="T:TVA.Historian.IDataPoint"/> interface.</param>
         </member>
-        <member name="M:TVA.Historian.Packets.PacketType1.#ctor(TVA.Measurements.IMeasurement)">
+        <member name="M:TVA.Historian.Packets.PacketType1.#ctor(TimeSeriesFramework.IMeasurement)">
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Packets.PacketType1"/> class.
             </summary>
-            <param name="measurement">Object that implements the <see cref="T:TVA.Measurements.IMeasurement"/> interface.</param>
+            <param name="measurement">Object that implements the <see cref="T:TimeSeriesFramework.IMeasurement"/> interface.</param>
         </member>
         <member name="M:TVA.Historian.Packets.PacketType1.#ctor(System.Byte[],System.Int32,System.Int32)">
             <summary>

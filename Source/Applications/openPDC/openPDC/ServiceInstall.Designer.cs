@@ -65,7 +65,7 @@ namespace openPDC
             this.serviceInstaller.Description = "Provides processing for streaming time-series data in real-time including phasor " +
                 "data concentration services for synchrophasor applications.";
             this.serviceInstaller.DisplayName = "openPDC";
-            this.serviceInstaller.ServiceName = "IaonHost";
+            this.serviceInstaller.ServiceName = "openPDC";
             this.serviceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ServiceInstall

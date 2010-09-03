@@ -235,7 +235,7 @@
 
 using System;
 using System.ComponentModel;
-using TVA.Measurements;
+using TimeSeriesFramework;
 
 namespace TVA.PhasorProtocols
 {

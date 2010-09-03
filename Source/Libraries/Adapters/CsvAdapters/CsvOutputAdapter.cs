@@ -233,8 +233,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using TVA;
-using TVA.Measurements;
-using TVA.Measurements.Routing;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 
 namespace CsvAdapters
 {

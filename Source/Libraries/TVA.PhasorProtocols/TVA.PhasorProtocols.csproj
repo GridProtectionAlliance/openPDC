@@ -88,6 +88,9 @@
     <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="TimeSeriesFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>C:\Projects\Applications\openPDC\Synchrophasor\Current Version\Source\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
+    </Reference>
     <Reference Include="TVA.Communication, Version=1.1.36.46795, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath Condition=" '$(SignAssembly)' != 'true' ">..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
@@ -362,12 +365,6 @@
     <None Include="Relationship Diagrams\HeaderFrame Relationships.cd" />
     <None Include="Relationship Diagrams\Phasor Definition Relationships.cd" />
     <None Include="Relationship Diagrams\Phasor Value Relationships.cd" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TimeSeriesFramework\TimeSeriesFramework.csproj">
-      <Project>{412F9F59-D9B9-4C8E-96D2-20492644198C}</Project>
-      <Name>TimeSeriesFramework</Name>
-    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

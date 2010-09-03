@@ -102,6 +102,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
+    <Reference Include="TimeSeriesFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>C:\Projects\Applications\openPDC\Synchrophasor\Current Version\Source\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
+    </Reference>
     <Reference Include="TVA.Communication, Version=1.0.13.31178, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
@@ -119,9 +122,6 @@
     <Compile Include="DebugHost.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DebugHost.Designer.cs">
-      <DependentUpon>DebugHost.cs</DependentUpon>
-    </Compile>
     <Compile Include="ServiceInstall.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -131,19 +131,10 @@
     <Compile Include="ServiceHost.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ServiceHost.Designer.cs">
-      <DependentUpon>ServiceHost.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DebugHost.resx">
-      <DependentUpon>DebugHost.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ServiceHost.resx">
-      <DependentUpon>ServiceHost.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ServiceInstall.resx">
       <DependentUpon>ServiceInstall.cs</DependentUpon>
     </EmbeddedResource>
@@ -188,12 +179,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Libraries\TimeSeriesFramework\TimeSeriesFramework.csproj">
-      <Project>{412F9F59-D9B9-4C8E-96D2-20492644198C}</Project>
-      <Name>TimeSeriesFramework</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -236,7 +236,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TVA.Measurements;
+using TimeSeriesFramework;
 using TVA.PhasorProtocols;
 
 namespace PowerCalculations

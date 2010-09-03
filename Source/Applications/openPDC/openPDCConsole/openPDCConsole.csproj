@@ -88,6 +88,9 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="TimeSeriesFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>C:\Projects\Applications\openPDC\Synchrophasor\Current Version\Source\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
+    </Reference>
     <Reference Include="TVA.Communication, Version=1.0.13.31178, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
@@ -107,14 +110,6 @@
     <Compile Include="ServiceClient.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ServiceClient.Designer.cs">
-      <DependentUpon>ServiceClient.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ServiceClient.resx">
-      <DependentUpon>ServiceClient.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -238,7 +238,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TVA.Collections;
-using TVA.Measurements;
+using TimeSeriesFramework;
 using TVA.PhasorProtocols;
 using TVA.Units;
 

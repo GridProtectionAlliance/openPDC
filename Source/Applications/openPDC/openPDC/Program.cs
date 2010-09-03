@@ -16,10 +16,8 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  05/14/2009 - J. Ritchie Carroll
+//  09/02/2010 - J. Ritchie Carroll
 //       Generated original version of source code.
-//  10/06/2009 - Pinal C. Patel
-//       Modified to run the service as application by default in Debug mode.
 //
 //******************************************************************************************************
 
@@ -42,19 +40,16 @@ namespace openPDC
         /// </summary>
         static void Main()
         {
+            ServiceHost host = new ServiceHost();
+
 #if RunAsService
             // Run as Windows Service.
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[] 
-            { 
-                new ServiceHost() 
-            };
-            ServiceBase.Run(ServicesToRun);
+            ServiceBase.Run(new ServiceBase[] { host });
 #else
             // Run as Windows Application.
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DebugHost());
+            Application.Run(new DebugHost(host));
 #endif
         }
     }
