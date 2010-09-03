@@ -235,11 +235,14 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Text;
 using System.Timers;
 using DataQualityMonitoring.Services;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
 using TVA;
+using TVA.Net.Smtp;
 
 namespace DataQualityMonitoring
 {
@@ -254,9 +257,15 @@ namespace DataQualityMonitoring
         // Fields
         private Ticks m_minFlatline;
         private Ticks m_warnInterval;
+        private Ticks m_emailInterval;
+        private string m_adminEmailAddress;
+        private string m_smtpServer;
+
         private Dictionary<MeasurementKey, IMeasurement> m_lastChange;
+        private Dictionary<MeasurementKey, Ticks> m_lastNotified;
         private System.Timers.Timer m_warningTimer;
         private FlatlineService m_flatlineService;
+
         private bool m_disposed;
 
         #endregion
@@ -270,7 +279,11 @@ namespace DataQualityMonitoring
         {
             m_minFlatline = Ticks.FromSeconds(4);
             m_warnInterval = Ticks.FromSeconds(4);
+            m_emailInterval = Ticks.FromSeconds(3600);
+            m_smtpServer = Mail.DefaultSmtpServer;
+
             m_lastChange = new Dictionary<MeasurementKey, IMeasurement>();
+            m_lastNotified = new Dictionary<MeasurementKey, Ticks>();
             m_warningTimer = new System.Timers.Timer();
         }
 
@@ -293,6 +306,16 @@ namespace DataQualityMonitoring
 
             if (settings.TryGetValue("warnInterval", out setting))
                 m_warnInterval = Ticks.FromSeconds(double.Parse(setting));
+
+            if (settings.TryGetValue("adminEmailAddress", out m_adminEmailAddress))
+            {
+                // emailInterval is entered in minutes.
+                if (settings.TryGetValue("emailInterval", out setting))
+                    m_emailInterval = Ticks.FromSeconds(long.Parse(setting) * 60);
+            }
+
+            if (settings.TryGetValue("smtpServer", out setting))
+                m_smtpServer = setting;
 
             m_warningTimer.Interval = m_warnInterval.ToMilliseconds();
             m_warningTimer.Elapsed += m_warningTimer_Elapsed;
@@ -344,6 +367,8 @@ namespace DataQualityMonitoring
                         m_lastChange[key] = measurement;
                 }
             }
+
+            SendEmailNotifications();
         }
 
         /// <summary>
@@ -423,6 +448,68 @@ namespace DataQualityMonitoring
                 if (!m_lastChange.ContainsKey(key))
                     m_lastChange.Add(key, new Measurement(key.ID, key.Source, double.NaN, timestamp));
             }
+        }
+
+        // Sends email notifications about changes in the flatlined status of measurements.
+        private void SendEmailNotifications()
+        {
+            Ticks now = DateTime.Now.Ticks;
+            ICollection<IMeasurement> allFlatlinedMeasurements = GetFlatlinedMeasurements();
+            IEnumerable<IMeasurement> flatlined, noLongerFlatlined;
+
+            lock (m_lastChange)
+            {
+                flatlined = m_lastNotified
+                    .Where(pair => now - pair.Value > m_emailInterval)
+                    .Select(pair => m_lastChange[pair.Key])
+                    .Concat(allFlatlinedMeasurements.Where(measurement => !m_lastNotified.Keys.Contains(measurement.Key)))
+                    .ToList();
+
+                noLongerFlatlined = m_lastNotified
+                    .Where(pair => !allFlatlinedMeasurements.Any(measurement => pair.Key == measurement.Key))
+                    .Select(pair => m_lastChange[pair.Key])
+                    .ToList();
+            }
+
+            if (flatlined.Count() > 0)
+                SendEmailNotification(flatlined, true);
+
+            if (noLongerFlatlined.Count() > 0)
+                SendEmailNotification(noLongerFlatlined, false);
+        }
+
+        // Send an email address notifying the admin of a changes in the flatlined status of measurements.
+        private void SendEmailNotification(IEnumerable<IMeasurement> measurements, bool flatlined)
+        {
+            Ticks now = DateTime.Now.Ticks;
+            Mail message = new Mail("notifications@openpdc.com", m_adminEmailAddress, m_smtpServer);
+            StringBuilder body = new StringBuilder();
+
+            body.AppendLine("Measurement Key, Value, Timestamp");
+
+            foreach (IMeasurement measurement in measurements)
+            {
+                body.Append(measurement.Key);
+                body.Append(", ");
+                body.Append(measurement.AdjustedValue);
+                body.Append(", ");
+                body.Append(measurement.Timestamp);
+                body.AppendLine();
+
+                if (flatlined)
+                    m_lastNotified[measurement.Key] = now;
+                else
+                    m_lastNotified.Remove(measurement.Key);
+            }
+
+            if (flatlined)
+                message.Subject = "Flatlined measurements";
+            else
+                message.Subject = "No longer flatlined measurements";
+
+            message.Body = body.ToString();
+            message.Send();
+            message.Dispose();
         }
 
         private void m_warningTimer_Elapsed(object sender, ElapsedEventArgs e)
