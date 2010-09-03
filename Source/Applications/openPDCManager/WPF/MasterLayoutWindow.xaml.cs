@@ -32,6 +32,7 @@ using openPDCManager.Pages.Manage;
 using openPDCManager.Pages.Monitoring;
 using openPDCManager.UserControls.CommonControls;
 using openPDCManager.UserControls.OutputStreamControls;
+using openPDCManager.Utilities;
 
 namespace openPDCManager
 {
@@ -67,6 +68,7 @@ namespace openPDCManager
 
         void MasterLayoutWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            IsolatedStorageManager.SetDefuaultStorage(false);
             //SystemMonitor test = new SystemMonitor();
             //ContentFrame.Navigate(test);
             HomePageUserControl home = new HomePageUserControl();
@@ -263,6 +265,11 @@ namespace openPDCManager
             {
                 InputWizardUserControl wizardControl = new InputWizardUserControl();
                 ContentFrame.Navigate(wizardControl);
+            }
+            else if (item.Name == "Settings")
+            {
+                SystemSettings systemSettings = new SystemSettings();
+                ContentFrame.Navigate(systemSettings);
             }
         }
 

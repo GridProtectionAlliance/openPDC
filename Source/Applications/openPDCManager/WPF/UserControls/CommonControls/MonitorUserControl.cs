@@ -55,7 +55,7 @@ namespace openPDCManager.UserControls.CommonControls
 
         void Initialize()
         {
-            m_numberOfMessagesOnMonitor = 50;
+            m_numberOfMessagesOnMonitor = IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfMessages") == null ? 50 : Convert.ToInt32(IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfMessages"));
             this.Unloaded += new RoutedEventHandler(MonitorUserControl_Unloaded);
         }
 

@@ -64,5 +64,33 @@ namespace openPDCManager.Utilities
 
             return pointList;
         }
+
+        public static void SaveIntoIsolatedStorage(string storageName, object storageValue)
+        {
+            using (StreamWriter writer = new StreamWriter(new IsolatedStorageFileStream(storageName, FileMode.Create, storage)))
+                writer.Write(storageValue.ToString());
+        }
+
+        public static object ReadFromIsolatedStorage(string storageName)
+        {
+            using (StreamReader reader = new StreamReader(new IsolatedStorageFileStream(storageName, FileMode.OpenOrCreate, storage)))
+            {
+                if (reader != null)
+                {
+                    return reader.ReadToEnd();
+                }
+                else
+                    return null;
+            }
+        }
+
+        public static void SetDefuaultStorage(bool overWrite)
+        {
+            if (!storage.FileExists("NumberOfMessages") || overWrite)
+                SaveIntoIsolatedStorage("NumberOfMessages", "75");
+
+            if (!storage.FileExists("ForceIPv4") || overWrite)
+                SaveIntoIsolatedStorage("ForceIPv4", "true");
+        }
     }
 }
