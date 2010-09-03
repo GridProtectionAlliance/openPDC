@@ -231,9 +231,9 @@
 */
 #endregion
 
-using TVA;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
+using TVA;
 
 namespace TestingAdapters
 {

@@ -243,11 +243,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 using TVA;
 using TVA.Communication;
 using TVA.Historian.Packets;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
 
 namespace HistorianAdapters
 {

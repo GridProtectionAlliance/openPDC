@@ -24,14 +24,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using System.Windows.Navigation;
 using openPDCManager.ModalDialogs;
 using openPDCManager.PhasorDataServiceProxy;
 using openPDCManager.Utilities;

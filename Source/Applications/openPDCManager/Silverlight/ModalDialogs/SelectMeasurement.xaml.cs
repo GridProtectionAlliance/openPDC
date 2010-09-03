@@ -28,9 +28,9 @@ using System.Linq;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using openPDCManager.PhasorDataServiceProxy;
 using openPDCManager.Utilities;
-using System.Windows.Data;
 
 namespace openPDCManager.ModalDialogs
 {

@@ -23,13 +23,12 @@
 //
 //******************************************************************************************************
 
-using System;
 using System.Collections.Generic;
-using System.ServiceModel;
-using openPDCManager.Data.Entities;
-using openPDCManager.Data.BusinessObjects;
-using System.IO;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.ServiceModel;
+using openPDCManager.Data.BusinessObjects;
+using openPDCManager.Data.Entities;
 
 namespace openPDCManager.Services.Service
 {

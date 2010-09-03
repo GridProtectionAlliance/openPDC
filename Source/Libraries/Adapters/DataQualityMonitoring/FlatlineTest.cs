@@ -234,12 +234,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Timers;
 using DataQualityMonitoring.Services;
-using TVA;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
-using System.Data;
+using TVA;
 
 namespace DataQualityMonitoring
 {

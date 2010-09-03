@@ -21,15 +21,7 @@
 //
 //******************************************************************************************************
 
-using System;
-using System.ServiceModel;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using System.Windows.Navigation;
-using openPDCManager.ModalDialogs;
-using openPDCManager.PhasorDataServiceProxy;
-using openPDCManager.Utilities;
 
 namespace openPDCManager.Pages.Manage
 {

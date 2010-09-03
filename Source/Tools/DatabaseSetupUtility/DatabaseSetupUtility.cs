@@ -29,8 +29,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
-using TVA.Security.Cryptography;
 using Microsoft.Win32;
+using TVA.Security.Cryptography;
 
 namespace DatabaseSetupUtility
 {

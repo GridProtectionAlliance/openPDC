@@ -22,14 +22,10 @@
 //******************************************************************************************************
 
 using System;
-using System.Collections.Generic;
 using System.ServiceModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Animation;
+using openPDCManager.ModalDialogs;
 using openPDCManager.PhasorDataServiceProxy;
 using openPDCManager.Utilities;
-using openPDCManager.ModalDialogs;
 
 namespace openPDCManager.UserControls.PopupControls
 {

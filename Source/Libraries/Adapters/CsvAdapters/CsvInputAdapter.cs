@@ -233,9 +233,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using TVA;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
+using TVA;
 
 namespace CsvAdapters
 {

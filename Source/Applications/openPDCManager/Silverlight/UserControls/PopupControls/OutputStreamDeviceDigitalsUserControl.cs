@@ -23,12 +23,9 @@
 
 using System;
 using System.ServiceModel;
-using System.Windows;
-using System.Windows.Controls;
+using openPDCManager.ModalDialogs;
 using openPDCManager.PhasorDataServiceProxy;
 using openPDCManager.Utilities;
-using System.Windows.Media.Animation;
-using openPDCManager.ModalDialogs;
 
 namespace openPDCManager.UserControls.PopupControls
 {

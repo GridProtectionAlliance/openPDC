@@ -236,7 +236,6 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 

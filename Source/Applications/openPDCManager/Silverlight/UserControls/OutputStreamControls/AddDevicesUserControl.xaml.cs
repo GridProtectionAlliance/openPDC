@@ -27,13 +27,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
-using openPDCManager.Utilities;
-using System.Windows.Media;
 using openPDCManager.ModalDialogs;
-using System.Windows.Media.Imaging;
+using openPDCManager.Utilities;
+
 #if SILVERLIGHT
-using System.ServiceModel;
-using openPDCManager.PhasorDataServiceProxy;
+
 #else
 
 #endif

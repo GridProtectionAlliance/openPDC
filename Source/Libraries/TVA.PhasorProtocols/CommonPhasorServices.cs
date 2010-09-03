@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -33,11 +32,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 using TVA.Configuration;
 using TVA.Data;
 using TVA.IO;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
 using TVA.PhasorProtocols.Anonymous;
 using TVA.Units;
 

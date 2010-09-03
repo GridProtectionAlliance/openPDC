@@ -23,18 +23,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using openPDCManager.ModalDialogs;
-using openPDCManager.Utilities;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.DataVisualization.Charting;
 using System.Windows.Media.Animation;
 #if SILVERLIGHT
-using System.Windows.Navigation;
-using System.ServiceModel;
 using openPDCManager.LivePhasorDataServiceProxy;
-using openPDCManager.PhasorDataServiceProxy;
+
 #else
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;

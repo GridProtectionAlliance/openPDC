@@ -24,16 +24,12 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Navigation;
+
 #if SILVERLIGHT
-using openPDCManager.LivePhasorDataServiceProxy;
+
 #endif
 using openPDCManager.ModalDialogs;
-using openPDCManager.Utilities;
-using System.Windows.Media.Imaging;
 
 namespace openPDCManager.UserControls.CommonControls
 {

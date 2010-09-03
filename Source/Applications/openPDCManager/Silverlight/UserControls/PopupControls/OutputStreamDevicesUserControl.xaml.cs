@@ -30,7 +30,6 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 #if SILVERLIGHT
 using openPDCManager.PhasorDataServiceProxy;
-using System.ServiceModel;
 using openPDCManager.ModalDialogs.OutputStreamWizard;
 #else
 using openPDCManager.Data;

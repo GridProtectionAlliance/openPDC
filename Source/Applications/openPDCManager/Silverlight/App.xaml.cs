@@ -22,11 +22,11 @@
 //******************************************************************************************************
 
 using System;
+using System.Text;
 using System.Windows;
 using Microsoft.Maps.MapControl;
-using openPDCManager.Utilities;
 using openPDCManager.ModalDialogs;
-using System.Text;
+using openPDCManager.Utilities;
 
 namespace openPDCManager
 {

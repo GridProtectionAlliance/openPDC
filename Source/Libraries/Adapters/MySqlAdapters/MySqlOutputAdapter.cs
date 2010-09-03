@@ -229,13 +229,13 @@
 */
 #endregion
 
+using System.Data;
 using System.Linq;
 using System.Text;
 using MySql.Data.MySqlClient;
-using TVA;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
-using System.Data;
+using TVA;
 
 namespace MySqlAdapters
 {

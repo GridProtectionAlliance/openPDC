@@ -234,7 +234,6 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace TVA.PhasorProtocols.SelFastMessage
 {

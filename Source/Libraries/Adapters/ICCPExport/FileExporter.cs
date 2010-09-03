@@ -241,14 +241,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
-using System.Data;
+using TimeSeriesFramework;
 using TVA;
 using TVA.Collections;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
-using TVA.NumericalAnalysis;
 using TVA.IO;
 using TVA.PhasorProtocols;
 

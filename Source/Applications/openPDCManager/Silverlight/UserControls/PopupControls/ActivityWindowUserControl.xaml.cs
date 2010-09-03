@@ -22,8 +22,6 @@
 //******************************************************************************************************
 
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-using System;
 
 namespace openPDCManager.UserControls.PopupControls
 {

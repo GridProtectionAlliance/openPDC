@@ -258,11 +258,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
-using System.Linq;
 using System.IO;
 using System.Text;
 using System.Threading;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 using TVA;
 using TVA.Configuration;
 using TVA.Data;
@@ -271,9 +273,6 @@ using TVA.Historian.Files;
 using TVA.Historian.MetadataProviders;
 using TVA.Historian.Replication;
 using TVA.IO;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
-using System.Configuration;
 
 namespace HistorianAdapters
 {

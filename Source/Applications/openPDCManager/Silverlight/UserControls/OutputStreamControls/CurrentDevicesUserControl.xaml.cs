@@ -25,11 +25,10 @@ using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using openPDCManager.ModalDialogs;
 using openPDCManager.ModalDialogs.OutputStreamWizard;
 using openPDCManager.Utilities;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
 
 namespace openPDCManager.UserControls.OutputStreamControls
 {

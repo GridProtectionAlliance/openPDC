@@ -245,8 +245,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TVA.Collections;
 using TimeSeriesFramework;
+using TVA.Collections;
 using TVA.PhasorProtocols;
 
 namespace PowerCalculations

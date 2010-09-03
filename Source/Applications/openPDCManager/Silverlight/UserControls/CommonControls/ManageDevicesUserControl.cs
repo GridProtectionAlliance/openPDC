@@ -29,7 +29,6 @@ using System.Windows.Controls;
 using openPDCManager.ModalDialogs;
 using openPDCManager.PhasorDataServiceProxy;
 using openPDCManager.Utilities;
-using System.Windows.Navigation;
 
 namespace openPDCManager.UserControls.CommonControls
 {

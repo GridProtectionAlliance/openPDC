@@ -27,7 +27,6 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using openPDCManager.ModalDialogs;
-using System.Windows;
 
 namespace openPDCManager.Utilities
 {

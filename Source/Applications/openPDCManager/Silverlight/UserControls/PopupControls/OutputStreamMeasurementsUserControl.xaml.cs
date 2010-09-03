@@ -29,7 +29,7 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 #if SILVERLIGHT
 using openPDCManager.PhasorDataServiceProxy;
-using System.ServiceModel;
+
 #else
 using openPDCManager.Data.Entities;
 using System.Windows.Media.Imaging;

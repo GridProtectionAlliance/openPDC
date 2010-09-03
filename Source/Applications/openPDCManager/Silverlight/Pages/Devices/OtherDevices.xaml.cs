@@ -22,8 +22,6 @@
 //******************************************************************************************************
 
 using System.Windows.Controls;
-using System;
-using System.Windows;
 
 namespace openPDCManager.Pages.Devices
 {

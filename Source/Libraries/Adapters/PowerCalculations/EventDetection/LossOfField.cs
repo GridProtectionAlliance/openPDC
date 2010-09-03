@@ -237,8 +237,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TVA.Collections;
 using TimeSeriesFramework;
+using TVA.Collections;
 using TVA.PhasorProtocols;
 using TVA.Units;
 

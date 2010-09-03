@@ -25,13 +25,13 @@
 //
 //******************************************************************************************************
 
+using System.Collections.Generic;
 using System.Threading;
+using openPDCManager.Data;
+using openPDCManager.Data.Entities;
 using openPDCManager.Data.ServiceCommunication;
 using TVA;
 using TVA.Services;
-using openPDCManager.Data.Entities;
-using System.Collections.Generic;
-using openPDCManager.Data;
 
 namespace openPDCManager.Services.DuplexService
 {   

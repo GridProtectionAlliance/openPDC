@@ -239,9 +239,9 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using TVA.Communication;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
+using TVA.Communication;
 using TVA.PhasorProtocols.Anonymous;
 using TVA.Units;
 

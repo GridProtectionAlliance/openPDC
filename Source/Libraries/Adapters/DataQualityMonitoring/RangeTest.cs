@@ -233,9 +233,9 @@ using System;
 using System.Collections.Generic;
 using System.Timers;
 using DataQualityMonitoring.Services;
-using TVA;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
+using TVA;
 
 namespace DataQualityMonitoring
 {

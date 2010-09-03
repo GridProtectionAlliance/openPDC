@@ -25,17 +25,15 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
-using System.Windows.Navigation;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 #if SILVERLIGHT
 using openPDCManager.PhasorDataServiceProxy;
-using System.ServiceModel;
+
 #else
 using openPDCManager.Data.BusinessObjects;
 using openPDCManager.Data;

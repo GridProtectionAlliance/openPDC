@@ -21,7 +21,6 @@
 //
 //******************************************************************************************************
 
-using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using openPDCManager.Data.BusinessObjects;

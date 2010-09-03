@@ -240,11 +240,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 using TVA;
 using TVA.Communication;
 using TVA.Historian;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
 
 namespace HistorianAdapters
 {

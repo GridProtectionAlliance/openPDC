@@ -21,9 +21,9 @@ using System.Windows.Forms;
 using TVA;
 using TVA.Communication;
 using TVA.IO.Checksums;
+using TVA.PhasorProtocols.Macrodyne;
 using TVA.Reflection;
 using TVA.Windows.Forms;
-using TVA.PhasorProtocols.Macrodyne;
 
 namespace MacrodyneController
 {
