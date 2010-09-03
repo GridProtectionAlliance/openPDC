@@ -88,6 +88,8 @@ namespace openPDCManager.Pages.Manage
 			
 			IsolatedStorageManager.SaveIntoIsolatedStorage("MaintainAspectRatio", CheckboxMaintainAspectRatio.IsChecked);
 
+            IsolatedStorageManager.SaveIntoIsolatedStorage("ForceIPv4", CheckboxForceIPv4.IsChecked);
+
 			if (!string.IsNullOrEmpty(TextBoxNumberOfMessagesOnMonitor.Text))
 				IsolatedStorageManager.SaveIntoIsolatedStorage("NumberOfMessagesOnMonitor", Convert.ToInt32(TextBoxNumberOfMessagesOnMonitor.Text));
 
@@ -125,6 +127,7 @@ namespace openPDCManager.Pages.Manage
 			TextBoxNumberOfMessagesOnMonitor.Text = IsolatedStorageManager.LoadFromIsolatedStorage("NumberOfMessagesOnMonitor").ToString();
 			CheckboxResizeWithBrowser.IsChecked = (bool)IsolatedStorageManager.LoadFromIsolatedStorage("ResizeWithBrowser");
 			CheckboxMaintainAspectRatio.IsChecked = (bool)IsolatedStorageManager.LoadFromIsolatedStorage("MaintainAspectRatio");
+            CheckboxForceIPv4.IsChecked = (bool)IsolatedStorageManager.LoadFromIsolatedStorage("ForceIPv4");
 		}
 
 		#endregion

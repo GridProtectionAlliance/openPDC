@@ -355,6 +355,11 @@ namespace openPDCManager.ModalDialogs
             ComboboxBaudRate.Items.Add(1200);
             ComboboxBaudRate.SelectedIndex = 0;
 
+            if (IsolatedStorageManager.LoadFromIsolatedStorage("ForceIPv4") != null && (bool)IsolatedStorageManager.LoadFromIsolatedStorage("ForceIPv4"))
+                CheckboxForceIPv4.IsChecked = true;
+            else
+                CheckboxForceIPv4.IsChecked = false;
+
             // populate connection info	if already provided from the parent window
             ParseConnectionString();
         }

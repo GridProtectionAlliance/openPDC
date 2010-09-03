@@ -125,6 +125,9 @@ namespace openPDCManager.Utilities
 
             if (!IsolatedStorageManager.Contains("NumberOfMessagesOnMonitor") || overWrite)
                 IsolatedStorageManager.SaveIntoIsolatedStorage("NumberOfMessagesOnMonitor", 75);
+
+            if (!IsolatedStorageManager.Contains("ForceIPv4") || overWrite)
+                IsolatedStorageManager.SaveIntoIsolatedStorage("ForceIPv4", true);
         }
 
         #endregion

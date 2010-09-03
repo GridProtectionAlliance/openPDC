@@ -39,6 +39,7 @@
                         <CheckBox x:Name="CheckboxMaintainAspectRatio" Content="Maintain Aspect Ratio" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="# Of Messages On Monitor" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                         <TextBox x:Name="TextBoxNumberOfMessagesOnMonitor" Grid.Row="3" Grid.Column="1" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                        <CheckBox x:Name="CheckboxForceIPv4" Content="Force IPv4" Grid.Row="3" Grid.Column="3" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                         
                         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Restore Default Settings" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">

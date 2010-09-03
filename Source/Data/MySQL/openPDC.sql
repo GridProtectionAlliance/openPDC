@@ -655,7 +655,7 @@ ORDER BY CalculatedMeasurement.LoadOrder;
 
 CREATE VIEW ActiveMeasurement
 AS
-SELECT COALESCE(Historian.NodeID, Device.NodeID) AS NodeID, COALESCE(Historian.NodeID, Device.NodeID) AS SourceNodeID, CONCAT_WS(':', COALESCE(Historian.Acronym, Device.Acronym, '__'), CAST(Measurement.PointID AS CHAR)) AS ID, Measurement.SignalID, Measurement.PointTag, 
+SELECT COALESCE(Historian.NodeID, Device.NodeID) AS NodeID, COALESCE(Device.NodeID, Historian.NodeID) AS SourceNodeID, CONCAT_WS(':', COALESCE(Historian.Acronym, Device.Acronym, '__'), CAST(Measurement.PointID AS CHAR)) AS ID, Measurement.SignalID, Measurement.PointTag, 
 	Measurement.AlternateTag, Measurement.SignalReference, Device.Acronym AS Device, CASE WHEN Device.IsConcentrator = 0 AND Device.ParentID IS NOT NULL THEN RuntimeP.ID ELSE Runtime.ID END AS DeviceID,
 	COALESCE(Device.FramesPerSecond, 30) AS FramesPerSecond, Protocol.Acronym AS Protocol, SignalType.Acronym AS SignalType, Phasor.ID AS PhasorID, Phasor.Type AS PhasorType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier,
 	Company.Acronym AS Company, Device.Longitude, Device.Latitude, Measurement.Description
@@ -718,7 +718,7 @@ CREATE VIEW MeasurementDetail
 AS
 SELECT     Device.CompanyID, Company.Acronym AS CompanyAcronym, Company.Name AS CompanyName, Measurement.SignalID, 
                       Measurement.HistorianID, Historian.Acronym AS HistorianAcronym, Historian.ConnectionString AS HistorianConnectionString, 
-                      Measurement.PointID, Measurement.PointTag, Measurement.AlternateTag, Measurement.DeviceID,  COALESCE (Historian.NodeID, Device.NodeID) AS NodeID, 
+                      Measurement.PointID, Measurement.PointTag, Measurement.AlternateTag, Measurement.DeviceID,  COALESCE (Device.NodeID, Historian.NodeID) AS NodeID, 
                       Device.Acronym AS DeviceAcronym, Device.Name AS DeviceName, COALESCE(Device.FramesPerSecond, 30) AS FramesPerSecond, Device.Enabled AS DeviceEnabled, Device.ContactList, 
                       Device.VendorDeviceID, VendorDevice.Name AS VendorDeviceName, VendorDevice.Description AS VendorDeviceDescription, 
                       Device.ProtocolID, Protocol.Acronym AS ProtocolAcronym, Protocol.Name AS ProtocolName, Measurement.SignalTypeID, 
