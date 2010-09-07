@@ -101,7 +101,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="TimeSeriesFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>C:\Projects\Applications\openPDC\Synchrophasor\Current Version\Source\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
     </Reference>
     <Reference Include="TVA.Core, Version=1.1.36.46795, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
