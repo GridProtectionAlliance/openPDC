@@ -30,6 +30,7 @@ using System.Windows.Media.Animation;
 
 #endif
 using openPDCManager.ModalDialogs;
+using System.Windows.Media.Imaging;
 
 namespace openPDCManager.UserControls.CommonControls
 {

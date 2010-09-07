@@ -29,6 +29,7 @@ using System.Windows.Media.Animation;
 using openPDCManager.ModalDialogs;
 using openPDCManager.ModalDialogs.OutputStreamWizard;
 using openPDCManager.Utilities;
+using System.Windows.Media.Imaging;
 
 namespace openPDCManager.UserControls.OutputStreamControls
 {
