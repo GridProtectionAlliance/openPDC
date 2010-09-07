@@ -441,6 +441,8 @@ namespace openPDCManager.UserControls.CommonControls
             if (ComboboxVendorDevice.Items.Count > 0)
                 ComboboxVendorDevice.SelectedIndex = 0;
 
+            TextBlockRuntimeID.Text = string.Empty;
+
             m_inEditMode = false;
             m_deviceID = 0;
         }

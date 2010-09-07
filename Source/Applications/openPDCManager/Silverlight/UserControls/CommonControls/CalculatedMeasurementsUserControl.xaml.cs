@@ -88,6 +88,7 @@ namespace openPDCManager.UserControls.CommonControls
             m_inEditMode = false;
             m_calculatedMeasurementID = 0;
             ListBoxCalculatedMeasurementList.SelectedIndex = -1;
+            TextBlockRuntimeID.Text = string.Empty;
         }
 
         bool IsValid()
@@ -270,6 +271,7 @@ namespace openPDCManager.UserControls.CommonControls
                 ComboboxDownsamplingMethod.SelectedItem = selectedCalculatedMeasurement.DownsamplingMethod;
                 m_calculatedMeasurementID = selectedCalculatedMeasurement.ID;
                 m_inEditMode = true;
+                DisplayRuntimeID();
             }
         }
 

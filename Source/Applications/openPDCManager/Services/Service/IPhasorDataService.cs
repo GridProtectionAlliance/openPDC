@@ -415,5 +415,9 @@ namespace openPDCManager.Services.Service
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
 		ObservableCollection<StatisticMeasurementData> GetStatisticMeasurementData(string nodeID);
+
+        [OperationContract]
+        [FaultContract(typeof(CustomServiceFault))]
+        string GetRuntimeID(string sourceTable, int sourceID);        
 	}
 }

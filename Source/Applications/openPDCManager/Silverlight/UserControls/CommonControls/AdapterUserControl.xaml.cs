@@ -100,6 +100,7 @@ namespace openPDCManager.UserControls.CommonControls
                 ComboboxNode.SelectedItem = new KeyValuePair<string, string>(selectedAdapter.NodeID, selectedAdapter.NodeName);
                 m_inEditMode = true;
                 m_adapterID = selectedAdapter.ID;
+                DisplayRuntimeID();                
             }
         }
 
@@ -173,6 +174,7 @@ namespace openPDCManager.UserControls.CommonControls
             m_inEditMode = false;
             m_adapterID = 0;
             ListBoxAdapterList.SelectedIndex = -1;
+            TextBlockRuntimeID.Text = string.Empty;
         }
 
         public void SetAdapterType(AdapterType adpType)

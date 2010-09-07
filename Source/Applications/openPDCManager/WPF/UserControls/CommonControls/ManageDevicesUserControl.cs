@@ -108,6 +108,8 @@ namespace openPDCManager.UserControls.CommonControls
                     StackPanelPhasorsMeassurements.Visibility = Visibility.Visible;
                     StackPanelDeviceList.Visibility = Visibility.Collapsed;
                 }
+
+                TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID("Device", deviceID);
             }
             catch (Exception ex)
             {

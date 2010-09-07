@@ -45,7 +45,8 @@ namespace openPDCManager.UserControls.CommonControls
             m_client.GetHistorianListCompleted += new EventHandler<GetHistorianListCompletedEventArgs>(client_GetHistorianListCompleted);
             m_client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
             m_client.SaveHistorianCompleted += new EventHandler<SaveHistorianCompletedEventArgs>(client_SaveHistorianCompleted);
-        }
+            m_client.GetRuntimeIDCompleted += new EventHandler<GetRuntimeIDCompletedEventArgs>(m_client_GetRuntimeIDCompleted);
+        }       
 
         void GetHistorians()
         {
@@ -62,9 +63,21 @@ namespace openPDCManager.UserControls.CommonControls
             m_client.SaveHistorianAsync(historian, isNew);
         }
 
+        void DisplayRuntimeID()
+        {
+            m_client.GetRuntimeIDAsync("Historian", m_historianID);
+        }
+
         #endregion
 
         #region [ Service Event Handlers ]
+
+        void m_client_GetRuntimeIDCompleted(object sender, GetRuntimeIDCompletedEventArgs e)
+        {
+            if (e.Error == null)
+                TextBlockRuntimeID.Text = e.Result;
+
+        }
 
         void client_SaveHistorianCompleted(object sender, SaveHistorianCompletedEventArgs e)
         {

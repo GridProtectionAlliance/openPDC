@@ -80,6 +80,7 @@ namespace openPDCManager.UserControls.CommonControls
                 CheckboxIsLocal.IsChecked = selectedHistorian.IsLocal;
                 m_inEditMode = true;
                 m_historianID = selectedHistorian.ID;
+                DisplayRuntimeID();                
             }
         }
 
@@ -156,6 +157,7 @@ namespace openPDCManager.UserControls.CommonControls
             CheckboxIsLocal.IsChecked = false;
             m_inEditMode = false;
             m_historianID = 0;
+            TextBlockRuntimeID.Text = string.Empty;
         }
 
         bool IsValid()

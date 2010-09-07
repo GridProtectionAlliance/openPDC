@@ -45,6 +45,7 @@ namespace openPDCManager.UserControls.CommonControls
             m_client.GetCalculatedMeasurementListCompleted += new EventHandler<GetCalculatedMeasurementListCompletedEventArgs>(client_GetCalculatedMeasurementListCompleted);
             m_client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
             m_client.SaveCalculatedMeasurementCompleted += new EventHandler<SaveCalculatedMeasurementCompletedEventArgs>(client_SaveCalculatedMeasurementCompleted);
+            m_client.GetRuntimeIDCompleted += new EventHandler<GetRuntimeIDCompletedEventArgs>(m_client_GetRuntimeIDCompleted);
         }
 
         void GetCalculatedMeasurements()
@@ -60,6 +61,11 @@ namespace openPDCManager.UserControls.CommonControls
         void SaveCalculatedMeasurement(CalculatedMeasurement calculatedMeasurement, bool isNew)
         {
             m_client.SaveCalculatedMeasurementAsync(calculatedMeasurement, isNew);
+        }
+
+        void DisplayRuntimeID()
+        {
+            m_client.GetRuntimeIDAsync("CalculatedMeasurement", m_calculatedMeasurementID);
         }
 
         #endregion
@@ -133,6 +139,12 @@ namespace openPDCManager.UserControls.CommonControls
 
                 sm.ShowPopup();
             }
+        }
+
+        void m_client_GetRuntimeIDCompleted(object sender, GetRuntimeIDCompletedEventArgs e)
+        {
+            if (e.Error == null)
+                TextBlockRuntimeID.Text = e.Result;
         }
 
         #endregion

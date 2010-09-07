@@ -1014,5 +1014,10 @@ namespace openPDCManager.Services.Service
 				throw new FaultException<CustomServiceFault>(fault);
 			}
 		}
+
+        public string GetRuntimeID(string sourceTable, int sourceID)
+        {
+            return CommonFunctions.GetRuntimeID(sourceTable, sourceID);
+        }   
 	}
 }

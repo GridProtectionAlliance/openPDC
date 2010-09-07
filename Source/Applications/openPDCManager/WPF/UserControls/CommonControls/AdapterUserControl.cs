@@ -96,6 +96,16 @@ namespace openPDCManager.UserControls.CommonControls
             }                        
         }
 
+        void DisplayRuntimeID()
+        {
+            if (m_adapterType == AdapterType.Action)
+                TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID("CustomActionAdapter", m_adapterID);
+            else if (m_adapterType == AdapterType.Input)
+                TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID("CustomInputAdapter", m_adapterID);
+            else if (m_adapterType == AdapterType.Output)
+                TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID("CustomOutputAdapter", m_adapterID);
+        }
+
         #endregion
     }
 }

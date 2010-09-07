@@ -45,6 +45,12 @@ namespace openPDCManager.UserControls.OutputStreamControls
             m_client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
             m_client.GetOutputStreamListCompleted += new EventHandler<GetOutputStreamListCompletedEventArgs>(client_GetOutputStreamListCompleted);
             m_client.SaveOutputStreamCompleted += new EventHandler<SaveOutputStreamCompletedEventArgs>(client_SaveOutputStreamCompleted);
+            m_client.GetRuntimeIDCompleted += new EventHandler<GetRuntimeIDCompletedEventArgs>(m_client_GetRuntimeIDCompleted);
+        }
+
+        void DisplayRuntimeID()
+        {
+            m_client.GetRuntimeIDAsync("OutputStream", m_outputStreamID);
         }
 
         void GetNodes()
@@ -133,6 +139,12 @@ namespace openPDCManager.UserControls.OutputStreamControls
             }
             if (ComboBoxNode.Items.Count > 0)
                 ComboBoxNode.SelectedIndex = 0;
+        }
+
+        void m_client_GetRuntimeIDCompleted(object sender, GetRuntimeIDCompletedEventArgs e)
+        {
+            if (e.Error == null)
+                TextBlockRuntimeID.Text = e.Result;
         }
 
         #endregion

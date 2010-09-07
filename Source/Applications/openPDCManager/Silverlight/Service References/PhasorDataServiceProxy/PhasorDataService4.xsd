@@ -235,6 +235,21 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="GetRuntimeID">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="sourceTable" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="sourceID" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetRuntimeIDResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetRuntimeIDResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="GetMeasurementList">
     <xs:complexType>
       <xs:sequence>

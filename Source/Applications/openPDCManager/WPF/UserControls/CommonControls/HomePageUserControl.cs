@@ -33,6 +33,7 @@ using openPDCManager.Data.BusinessObjects;
 using openPDCManager.Data.Entities;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
+using System.Threading;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -80,7 +81,7 @@ namespace openPDCManager.UserControls.CommonControls
             m_secondsTimer.Start();
         }
 
-        void GetTimeSeriesData(string timeSeriesDataServiceUrl)
+        void GetTimeSeriesData(object timeSeriesDataServiceUrl)
         {
             if (!m_retrievingData)
             {
@@ -89,29 +90,32 @@ namespace openPDCManager.UserControls.CommonControls
                     m_retrievingData = true;
                     //App app = (App)Application.Current;
                     List<TimeSeriesDataPoint> temp = new List<TimeSeriesDataPoint>();
-                    temp = CommonFunctions.GetTimeSeriesData(timeSeriesDataServiceUrl);
+                    temp = CommonFunctions.GetTimeSeriesData(timeSeriesDataServiceUrl.ToString());
 
-                    if (temp.Count > framesPerSecond)
+                    ChartRealTimeData.Dispatcher.BeginInvoke((Action)delegate()
                     {
-                        for (int i = 0; i < (int)(temp.Count / framesPerSecond); i++)
+                        if (temp.Count > framesPerSecond)
+                        {
+                            for (int i = 0; i < (int)(temp.Count / framesPerSecond); i++)
+                            {
+                                if (timeSeriesDataList.Count == 0)
+                                    timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = temp[(i * framesPerSecond)].Value });
+                                else
+                                    timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = temp[(i * framesPerSecond)].Value });
+                            }
+                        }
+                        else if (temp.Count > 0)
                         {
                             if (timeSeriesDataList.Count == 0)
-                                timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = temp[(i * framesPerSecond)].Value });
+                                timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = temp[0].Value });
                             else
-                                timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = temp[(i * framesPerSecond)].Value });
+                                timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = temp[0].Value });
                         }
-                    }
-                    else if (temp.Count > 0)
-                    {
-                        if (timeSeriesDataList.Count == 0)
-                            timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = temp[0].Value });
-                        else
-                            timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = temp[0].Value });
-                    }
-                    if (timeSeriesDataList.Count > 30)
-                        timeSeriesDataList.RemoveAt(0);
-
-                    ChartRealTimeData.DataContext = timeSeriesDataList;
+                        if (timeSeriesDataList.Count > 30)
+                            timeSeriesDataList.RemoveAt(0);
+                                            
+                        ChartRealTimeData.DataContext = timeSeriesDataList;
+                    });                    
 
                     if (m_secondsTimer == null)
                         StartSecondsTimer();
@@ -125,7 +129,10 @@ namespace openPDCManager.UserControls.CommonControls
                     {
                         m_secondsTimer.Stop();
                         m_secondsTimer = null;
-                    }
+                    }                    
+                }
+                finally
+                {
                     m_retrievingData = false;
                 }
             }
@@ -245,9 +252,14 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                m_secondsTimer.Stop();
+                m_secondsTimer.Stop();               
+                m_secondsTimer = null;                
+            }
+            catch { }
+
+            try
+            {
                 m_thirtySecondsTimer.Stop();
-                m_secondsTimer = null;
                 m_thirtySecondsTimer = null;
             }
             catch { }
@@ -262,7 +274,8 @@ namespace openPDCManager.UserControls.CommonControls
         void secondsTimer_Tick(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(m_url))
-                GetTimeSeriesData(m_url);
+                ThreadPool.QueueUserWorkItem(GetTimeSeriesData, m_url);
+                //GetTimeSeriesData(m_url);
         }
 
         #endregion

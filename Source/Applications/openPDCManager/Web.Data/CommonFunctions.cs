@@ -661,7 +661,7 @@ namespace openPDCManager.Data
             catch (Exception ex)
             {
                 LogException("GetRealTimeDataDetail", ex);
-                //throw ex;
+                throw ex;
             }
 
             return timeSeriesData;
@@ -821,6 +821,33 @@ namespace openPDCManager.Data
                 parityList.Add(parity);
 
             return parityList;
+        }
+
+        public static string GetRuntimeID(string sourceTable, int sourceID)
+        {
+            string returnValue = string.Empty;
+            DataConnection connection = new DataConnection();
+            try
+            {
+                IDbCommand command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = "Select ID From Runtime Where SourceID = @sourceID AND SourceTable = @sourceTable";
+                command.Parameters.Add(AddWithValue(command, "@sourceID", sourceID));
+                command.Parameters.Add(AddWithValue(command, "@sourceTable", sourceTable));
+                object temp = command.ExecuteScalar();
+
+                if (temp != null)
+                    returnValue = temp.ToString();
+            }
+            catch (Exception ex)
+            {                
+                LogException("GetRuntimeID", ex);
+            }
+            finally
+            {
+                connection.Dispose();
+            }
+            return returnValue;
         }
 
         #region " Manage Companies Code"

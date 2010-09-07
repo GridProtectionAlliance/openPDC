@@ -115,6 +115,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 CheckBoxUseLocalClockAsRealTime.IsChecked = selectedOutputStream.UseLocalClockAsRealTime;
                 m_outputStreamID = selectedOutputStream.ID;
                 m_inEditMode = true;
+                DisplayRuntimeID();
             }
         }
 
@@ -469,6 +470,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             m_inEditMode = false;
             m_outputStreamID = 0;
             ListBoxOutputStreamList.SelectedIndex = -1;
+            TextBlockRuntimeID.Text = string.Empty;
         }
 
         #endregion

@@ -125,6 +125,8 @@
                     <TextBox x:Name="TextBoxLoadOrder" Grid.Row="13" Grid.Column="1" Text="{Binding Path=LoadOrder}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <TextBlock Grid.Row="13" Grid.Column="2" Text="Contact List" Style="{StaticResource GenericLabelStyle}"/>
                     <TextBox x:Name="TextBoxContactList" Grid.Row="13" Grid.Column="3" Text="{Binding Path=ContactList}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <TextBlock Grid.Row="14" Grid.Column="0" Text="Runtime ID" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBlock Grid.Row="14" Grid.Column="1" x:Name="TextBlockRuntimeID" VerticalAlignment="Center"/>                    
                     <CheckBox x:Name="CheckboxConcentrator" Grid.Row="14" Grid.Column="2" IsChecked="{Binding Path=IsConcentrator}" Content="Concentrator" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                     <CheckBox x:Name="CheckboxEnabled" Grid.Row="14" Grid.Column="3" IsChecked="{Binding Path=Enabled}" Content="Enabled" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="15" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">

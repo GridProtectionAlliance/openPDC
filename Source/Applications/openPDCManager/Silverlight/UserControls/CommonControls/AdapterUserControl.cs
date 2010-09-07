@@ -45,6 +45,17 @@ namespace openPDCManager.UserControls.CommonControls
             m_client.GetAdapterListCompleted += new EventHandler<GetAdapterListCompletedEventArgs>(client_GetAdapterListCompleted);
             m_client.SaveAdapterCompleted += new EventHandler<SaveAdapterCompletedEventArgs>(client_SaveAdapterCompleted);
             m_client.GetNodesCompleted += new EventHandler<GetNodesCompletedEventArgs>(client_GetNodesCompleted);
+            m_client.GetRuntimeIDCompleted += new EventHandler<GetRuntimeIDCompletedEventArgs>(m_client_GetRuntimeIDCompleted);
+        }
+
+        void DisplayRuntimeID()
+        {
+            if (m_adapterType == AdapterType.Action)
+                m_client.GetRuntimeIDAsync("CustomActionAdapter", m_adapterID);
+            else if (m_adapterType == AdapterType.Input)
+                m_client.GetRuntimeIDAsync("CustomInputAdapter", m_adapterID);
+            else if (m_adapterType == AdapterType.Output)
+                m_client.GetRuntimeIDAsync("CustomOutputAdapter", m_adapterID);
         }
 
         void GetNodes()
@@ -132,6 +143,12 @@ namespace openPDCManager.UserControls.CommonControls
 
                 sm.ShowPopup();
             }
+        }
+
+        void m_client_GetRuntimeIDCompleted(object sender, GetRuntimeIDCompletedEventArgs e)
+        {
+            if (e.Error == null)
+                TextBlockRuntimeID.Text = e.Result;
         }
 
         #endregion

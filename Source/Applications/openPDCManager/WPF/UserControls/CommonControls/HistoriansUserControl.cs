@@ -95,6 +95,11 @@ namespace openPDCManager.UserControls.CommonControls
             }
         }
 
+        void DisplayRuntimeID()
+        {
+            TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID("Historian", m_historianID);
+        }
+
         #endregion
     }
 }

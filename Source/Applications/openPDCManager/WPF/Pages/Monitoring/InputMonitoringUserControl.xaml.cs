@@ -24,7 +24,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,17 +35,15 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
+using Microsoft.Win32;
 using openPDCManager.Data;
 using openPDCManager.Data.BusinessObjects;
 using openPDCManager.Data.Entities;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Pages.Adapters;
+using openPDCManager.UserControls.CommonControls;
 using openPDCManager.Utilities;
 using TVA.Configuration;
-using openPDCManager.UserControls.CommonControls;
-using Microsoft.Win32;
-using System.IO;
-using System.Text;
 
 namespace openPDCManager.Pages.Monitoring
 {
@@ -226,6 +226,11 @@ namespace openPDCManager.Pages.Monitoring
         }
 
         void m_chartRefreshTimer_Tick(object sender, EventArgs e)
+        {
+            ThreadPool.QueueUserWorkItem(RefreshChart, null);
+        }
+
+        void RefreshChart(object state)
         {
             if (!m_refreshingChart)
             {
@@ -492,92 +497,99 @@ namespace openPDCManager.Pages.Monitoring
 
         void GetChartData(object state)
         {
-            MeasurementInfo measurementInfo = (MeasurementInfo)state;
-
-            int pointID = measurementInfo.PointID;
-            string signalReference = measurementInfo.SignalReference;
-                        
-            List<TimeSeriesDataPointDetail> measurements;
-            EnumerableDataSource<double> yDataSource;
-            if (!m_yAxisSourceCollection.TryGetValue(pointID, out yDataSource))
+            try
             {
-                measurements = CommonFunctions.GetTimeSeriesDataDetail(m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-10S/*/XML");                        
-                List<double> values = new List<double>();
-                InputMonitorData inputMonitorData = new InputMonitorData();
-                foreach (TimeSeriesDataPointDetail point in measurements)
+                MeasurementInfo measurementInfo = (MeasurementInfo)state;
+
+                int pointID = measurementInfo.PointID;
+                string signalReference = measurementInfo.SignalReference;
+
+                List<TimeSeriesDataPointDetail> measurements;
+                EnumerableDataSource<double> yDataSource;
+                if (!m_yAxisSourceCollection.TryGetValue(pointID, out yDataSource))
                 {
-                    values.Add(point.Value);
-                    if (values.Count == 300)
-                    {
-                        inputMonitorData.PointID = pointID;
-                        inputMonitorData.SignalReference = signalReference;
-                        inputMonitorData.EngineeringUnit = measurementInfo.EngineeringUnits;
-                        inputMonitorData.Description = measurementInfo.Description;
-                        inputMonitorData.TimeStamp = point.TimeStamp;
-                        inputMonitorData.Value = point.Value;
-                        inputMonitorData.Quality = point.Quality;
-                        break;
-                    }                        
-                }
-                if (values.Count > 0)
-                {
-                    m_yAxisDataCollection.Add(pointID, values);
-                    m_yAxisSourceCollection.Add(pointID, new EnumerableDataSource<double>(m_yAxisDataCollection.Last().Value));
-                    m_yAxisSourceCollection[pointID].SetYMapping(y => y);
+                    measurements = CommonFunctions.GetTimeSeriesDataDetail(m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-10S/*/XML");
                     
+                    List<double> values = new List<double>();
+                    InputMonitorData inputMonitorData = new InputMonitorData();
+                    foreach (TimeSeriesDataPointDetail point in measurements)
+                    {
+                        values.Add(point.Value);
+                        if (values.Count == 300)
+                        {
+                            inputMonitorData.PointID = pointID;
+                            inputMonitorData.SignalReference = signalReference;
+                            inputMonitorData.EngineeringUnit = measurementInfo.EngineeringUnits;
+                            inputMonitorData.Description = measurementInfo.Description;
+                            inputMonitorData.TimeStamp = point.TimeStamp;
+                            inputMonitorData.Value = point.Value;
+                            inputMonitorData.Quality = point.Quality;
+                            break;
+                        }
+                    }
+                    if (values.Count > 0)
+                    {
+                        m_yAxisDataCollection.Add(pointID, values);
+                        m_yAxisSourceCollection.Add(pointID, new EnumerableDataSource<double>(m_yAxisDataCollection.Last().Value));
+                        m_yAxisSourceCollection[pointID].SetYMapping(y => y);
+
+                        ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
+                        {
+                            LineGraph line = null;
+                            if (measurementInfo.SignalAcronym == "FREQ")
+                                line = FrequencyPlotter.AddLineGraph(new CompositeDataSource(m_xAxisSource, m_yAxisSourceCollection[pointID]), 2, signalReference);
+                            else if (measurementInfo.SignalAcronym == "IPHA" || measurementInfo.SignalAcronym == "VPHA")
+                                line = PhaseAnglePlotter.AddLineGraph(new CompositeDataSource(m_xAxisSource, m_yAxisSourceCollection[pointID]), 2, signalReference);
+                            else if (measurementInfo.SignalAcronym == "VPHM")
+                                line = VoltageMagnitudePlotter.AddLineGraph(new CompositeDataSource(m_xAxisSource, m_yAxisSourceCollection[pointID]), 2, signalReference);
+                            else if (measurementInfo.SignalAcronym == "IPHM")
+                                line = CurrentMagnitudePlotter.AddLineGraph(new CompositeDataSource(m_xAxisSource, m_yAxisSourceCollection[pointID]), 2, signalReference);
+
+                            if (line != null)
+                            {
+                                m_lineGraphCollection.Add(pointID, line);
+                                inputMonitorData.Background = (SolidColorBrush)line.LinePen.Brush;
+                            }
+                        });
+
+                        m_currentValuesList.Add(pointID, inputMonitorData);
+                        ListBoxCurrentValues.Dispatcher.BeginInvoke((Action)delegate()
+                        {
+                            ListBoxCurrentValues.ItemsSource = m_currentValuesList;
+                        });
+                    }
+                }
+                else
+                {
+                    measurements = CommonFunctions.GetTimeSeriesDataDetail(m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-1S/*/XML");
+                    List<double> yData = m_yAxisDataCollection[pointID];
+                    InputMonitorData inputMonitorData = m_currentValuesList[pointID];
+                    foreach (TimeSeriesDataPointDetail point in measurements)
+                    {
+                        yData.RemoveAt(0);
+                        yData.Insert(yData.Count - 1, point.Value);
+                        inputMonitorData.Value = point.Value;
+                        inputMonitorData.TimeStamp = point.TimeStamp;
+                        inputMonitorData.Quality = point.Quality;
+
+                    }
 
                     ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
-                    {                        
-                        LineGraph line = null;
-                        if (measurementInfo.SignalAcronym == "FREQ")
-                            line = FrequencyPlotter.AddLineGraph(new CompositeDataSource(m_xAxisSource, m_yAxisSourceCollection[pointID]), 2, signalReference);
-                        else if (measurementInfo.SignalAcronym == "IPHA" || measurementInfo.SignalAcronym == "VPHA")
-                            line = PhaseAnglePlotter.AddLineGraph(new CompositeDataSource(m_xAxisSource, m_yAxisSourceCollection[pointID]), 2, signalReference);
-                        else if (measurementInfo.SignalAcronym == "VPHM")
-                            line = VoltageMagnitudePlotter.AddLineGraph(new CompositeDataSource(m_xAxisSource, m_yAxisSourceCollection[pointID]), 2, signalReference);
-                        else if (measurementInfo.SignalAcronym == "IPHM")
-                            line = CurrentMagnitudePlotter.AddLineGraph(new CompositeDataSource(m_xAxisSource, m_yAxisSourceCollection[pointID]), 2, signalReference);
-
-                        if (line != null)
-                        {
-                            m_lineGraphCollection.Add(pointID, line);
-                            inputMonitorData.Background = (SolidColorBrush)line.LinePen.Brush;
-                        }
+                    {
+                        lock (m_yAxisSourceCollection)
+                            m_yAxisSourceCollection[pointID].RaiseDataChanged();
                     });
 
-                    m_currentValuesList.Add(pointID, inputMonitorData);
                     ListBoxCurrentValues.Dispatcher.BeginInvoke((Action)delegate()
                     {
+                        ListBoxCurrentValues.Items.Refresh();
                         ListBoxCurrentValues.ItemsSource = m_currentValuesList;
                     });
                 }
             }
-            else
+            catch (Exception ex)
             {
-                measurements = CommonFunctions.GetTimeSeriesDataDetail(m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-1S/*/XML");
-                List<double> yData = m_yAxisDataCollection[pointID];
-                InputMonitorData inputMonitorData = m_currentValuesList[pointID];
-                foreach (TimeSeriesDataPointDetail point in measurements)
-                {
-                    yData.RemoveAt(0);
-                    yData.Insert(yData.Count - 1, point.Value);
-                    inputMonitorData.Value = point.Value;
-                    inputMonitorData.TimeStamp = point.TimeStamp;
-                    inputMonitorData.Quality = point.Quality;
-
-                }
-
-                ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
-                {
-                    lock (m_yAxisSourceCollection)
-                        m_yAxisSourceCollection[pointID].RaiseDataChanged();
-                });
-
-                ListBoxCurrentValues.Dispatcher.BeginInvoke((Action)delegate()
-                {
-                    ListBoxCurrentValues.Items.Refresh();
-                    ListBoxCurrentValues.ItemsSource = m_currentValuesList;
-                });
+                CommonFunctions.LogException("WPF.GetChartData", ex);
             }
         }
 

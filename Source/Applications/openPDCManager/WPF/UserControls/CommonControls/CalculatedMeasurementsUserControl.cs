@@ -94,6 +94,12 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.ShowPopup();
             }
         }
+        
+        void DisplayRuntimeID()
+        {
+            TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID("CalculatedMeasurement", m_calculatedMeasurementID);
+        }
+
         #endregion
     }
 }

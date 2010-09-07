@@ -57,7 +57,10 @@ namespace openPDCManager.UserControls.CommonControls
             m_client.GetDeviceByDeviceIDCompleted += new EventHandler<GetDeviceByDeviceIDCompletedEventArgs>(client_GetDeviceByDeviceIDCompleted);
             m_client.GetConcentratorDeviceCompleted += new EventHandler<GetConcentratorDeviceCompletedEventArgs>(client_GetConcentratorDeviceCompleted);
             m_client.GetDeviceListByParentIDCompleted += new EventHandler<GetDeviceListByParentIDCompletedEventArgs>(client_GetDeviceListByParentIDCompleted);
+            m_client.GetRuntimeIDCompleted += new EventHandler<GetRuntimeIDCompletedEventArgs>(m_client_GetRuntimeIDCompleted);
         }
+
+        
 
         public void GetDeviceByDeviceID(int deviceID)
         {
@@ -225,6 +228,8 @@ namespace openPDCManager.UserControls.CommonControls
                     StackPanelPhasorsMeassurements.Visibility = Visibility.Visible;
                     StackPanelDeviceList.Visibility = Visibility.Collapsed;
                 }
+
+                m_client.GetRuntimeIDAsync("Device", m_deviceToEdit.ID);
             }
             else
             {
@@ -486,6 +491,14 @@ namespace openPDCManager.UserControls.CommonControls
 
             if (m_deviceToEdit != null && m_deviceToEdit.ParentID.HasValue)
                 ComboboxParent.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.ParentID, m_deviceToEdit.ParentAcronym);
+        }
+
+        void m_client_GetRuntimeIDCompleted(object sender, GetRuntimeIDCompletedEventArgs e)
+        {
+            if (e.Error == null)
+                TextBlockRuntimeID.Text = e.Result;
+            else
+                TextBlockRuntimeID.Text = string.Empty;
         }
 
         #endregion

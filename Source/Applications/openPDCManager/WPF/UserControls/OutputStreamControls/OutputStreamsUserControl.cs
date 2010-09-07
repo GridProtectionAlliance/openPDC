@@ -38,6 +38,11 @@ namespace openPDCManager.UserControls.OutputStreamControls
         {           
         }
 
+        void DisplayRuntimeID()
+        {
+            TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID("OutputStream", m_outputStreamID);
+        }
+
         void GetNodes()
         {
             try

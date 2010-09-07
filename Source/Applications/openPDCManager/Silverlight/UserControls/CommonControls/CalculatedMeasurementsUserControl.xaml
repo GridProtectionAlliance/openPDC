@@ -97,6 +97,8 @@
                     <CheckBox x:Name="CheckBoxAllowSorts" Grid.Row="8" Grid.Column="3" Content="Allow Sorts By Arrival" IsChecked="{Binding Path=AllowSortsByArrival}" FontWeight="Bold" VerticalAlignment="Center"/>
                     <CheckBox x:Name="CheckBoxIgnoreBadTimeStamps" Grid.Row="9" Grid.Column="1" Content="Ignore Bad Time Stamps" IsChecked="{Binding Path=IgnoreBadTimeStamps}" FontWeight="Bold" VerticalAlignment="Center"/>
                     <CheckBox x:Name="CheckBoxAllowPreemptivePublishing" Grid.Row="9" Grid.Column="3" Content="Allow Preemptive Publishing" IsChecked="{Binding Path=AllowPreemptivePublishing}" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="10" Grid.Column="0" Text="Runtime ID" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBlock Grid.Row="10" Grid.Column="1" x:Name="TextBlockRuntimeID" VerticalAlignment="Center"/>
                     <CheckBox x:Name="CheckBoxEnabled" Grid.Row="10" Grid.Column="3" Content="Enabled" IsChecked="{Binding Path=Enabled}" FontWeight="Bold" VerticalAlignment="Center"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                         <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
@@ -130,7 +132,7 @@
                 </StackPanel>
             </Border>
             <Border Background="{StaticResource PortletBackgroundBrush}">
-                <ScrollViewer BorderThickness="0" Padding="0" Height="330">
+                <ScrollViewer BorderThickness="0" Padding="0" Height="320">
                     <ScrollViewer.Content>
                         <ListBox x:Name="ListBoxCalculatedMeasurementList" Margin="0" Padding="0">
                             <ListBox.ItemTemplate>
