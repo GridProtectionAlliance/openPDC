@@ -101,6 +101,27 @@ namespace openPDCManager.UserControls.OutputStreamControls
             GetOutputStreamList();
         }
 
+        void DeleteOutputStream(int outputStreamID)
+        {
+            SystemMessages sm;
+            try
+            {
+                string result = CommonFunctions.DeleteOutputStream(outputStreamID);
+                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                        ButtonType.OkOnly);
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException("WPF.DeleteOutputStream", ex);
+                sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Output Stream Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+            }
+            sm.Owner = Window.GetWindow(this);
+            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            sm.ShowPopup();
+            GetOutputStreamList();
+        }
+
         #endregion
     }
 }

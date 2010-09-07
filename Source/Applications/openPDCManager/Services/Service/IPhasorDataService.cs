@@ -286,6 +286,10 @@ namespace openPDCManager.Services.Service
 		[FaultContract(typeof(CustomServiceFault))]
 		string SaveOutputStream(OutputStream outputStream, bool isNew);
 
+        [OperationContract]
+        [FaultContract(typeof(CustomServiceFault))]
+        string DeleteOutputStream(int outputStreamID);
+
 		#endregion
 
 		#region " Manage Output Stream Device Code"

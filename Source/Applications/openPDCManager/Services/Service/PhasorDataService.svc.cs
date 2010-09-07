@@ -653,6 +653,20 @@ namespace openPDCManager.Services.Service
 			}
 		}
 
+        public string DeleteOutputStream(int outputStreamID)
+        {
+            try
+            {
+                return CommonFunctions.DeleteOutputStream(outputStreamID);
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException("Service.DeleteOutputStream", ex);
+                CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Delete Output Stream Information", SystemMessage = ex.Message };
+                throw new FaultException<CustomServiceFault>(fault);
+            }
+        }
+
 		#endregion
 		
 		#region " Manage Output Stream Device Code"

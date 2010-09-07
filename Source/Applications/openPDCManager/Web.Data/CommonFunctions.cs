@@ -1082,6 +1082,25 @@ namespace openPDCManager.Data
             }
         }
 
+        public static string DeleteOutputStream(int outputStreamID)
+        {
+             DataConnection connection = new DataConnection();
+             try
+             {
+                 IDbCommand command = connection.Connection.CreateCommand();
+                 command.CommandType = CommandType.Text;
+                 command.CommandText = "Delete From OutputStream Where ID = @outputStreamID";
+                 command.Parameters.Add(AddWithValue(command, "@outputStreamID", outputStreamID));                 
+                 command.ExecuteNonQuery();
+
+                 return "Output Stream Deleted Successfully";
+             }
+             finally
+             {
+                 connection.Dispose();
+             }
+        }
+
         #endregion
 
         #region " Manage Output Stream Measurements Code"

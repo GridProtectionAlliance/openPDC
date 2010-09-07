@@ -46,8 +46,9 @@ namespace openPDCManager.UserControls.OutputStreamControls
             m_client.GetOutputStreamListCompleted += new EventHandler<GetOutputStreamListCompletedEventArgs>(client_GetOutputStreamListCompleted);
             m_client.SaveOutputStreamCompleted += new EventHandler<SaveOutputStreamCompletedEventArgs>(client_SaveOutputStreamCompleted);
             m_client.GetRuntimeIDCompleted += new EventHandler<GetRuntimeIDCompletedEventArgs>(m_client_GetRuntimeIDCompleted);
+            m_client.DeleteOutputStreamCompleted += new EventHandler<DeleteOutputStreamCompletedEventArgs>(m_client_DeleteOutputStreamCompleted);
         }
-
+        
         void DisplayRuntimeID()
         {
             m_client.GetRuntimeIDAsync("OutputStream", m_outputStreamID);
@@ -66,6 +67,11 @@ namespace openPDCManager.UserControls.OutputStreamControls
         void SaveOutputStream(OutputStream outputStream, bool isNew)
         {
             m_client.SaveOutputStreamAsync(outputStream, isNew);
+        }
+
+        void DeleteOutputStream(int outputStreamID)
+        {
+            m_client.DeleteOutputStreamAsync(outputStreamID);
         }
 
         #endregion
@@ -145,6 +151,30 @@ namespace openPDCManager.UserControls.OutputStreamControls
         {
             if (e.Error == null)
                 TextBlockRuntimeID.Text = e.Result;
+        }
+
+        void m_client_DeleteOutputStreamCompleted(object sender, DeleteOutputStreamCompletedEventArgs e)
+        {
+            SystemMessages sm;
+            if (e.Error == null)
+            {                
+                sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                        ButtonType.OkOnly);
+            }
+            else
+            {
+                if (e.Error is FaultException<CustomServiceFault>)
+                {
+                    FaultException<CustomServiceFault> fault = e.Error as FaultException<CustomServiceFault>;
+                    sm = new SystemMessages(new Message() { UserMessage = fault.Detail.UserMessage, SystemMessage = fault.Detail.SystemMessage, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                }
+                else
+                    sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Output Stream Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+            }
+            sm.ShowPopup();
+            GetOutputStreamList();
         }
 
         #endregion
