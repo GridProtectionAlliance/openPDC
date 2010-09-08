@@ -48,6 +48,16 @@ namespace openPDCManager.UserControls.OutputStreamControls
             m_client.GetRuntimeIDCompleted += new EventHandler<GetRuntimeIDCompletedEventArgs>(m_client_GetRuntimeIDCompleted);
             m_client.DeleteOutputStreamCompleted += new EventHandler<DeleteOutputStreamCompletedEventArgs>(m_client_DeleteOutputStreamCompleted);
         }
+
+        void SendInitialize()
+        {
+            
+        }
+
+        void SendUpdateConfiguration(int outputStreamID)
+        {
+
+        }
         
         void DisplayRuntimeID()
         {

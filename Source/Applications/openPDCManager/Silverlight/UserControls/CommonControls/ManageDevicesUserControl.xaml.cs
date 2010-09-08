@@ -61,6 +61,7 @@ namespace openPDCManager.UserControls.CommonControls
 #endif
             Loaded += new RoutedEventHandler(AddNew_Loaded);
             Initialize();
+            ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
             ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
             ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
             ButtonView.Click += new RoutedEventHandler(ButtonView_Click);
@@ -361,6 +362,35 @@ namespace openPDCManager.UserControls.CommonControls
 #endif
         }
 
+        void ButtonInitialize_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to send Initialize command?", SystemMessage = "Device Acronym: " + ((Button)sender).Tag.ToString(), UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)sm.DialogResult)
+                        SendInitialize();
+                });
+
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+            catch (Exception ex)
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to send Initialize command.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+        }
+
         #endregion
 
         #region [ Page Event Handlers ]
@@ -386,6 +416,7 @@ namespace openPDCManager.UserControls.CommonControls
                 m_activityWindow.Owner = Window.GetWindow(this);
                 m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 m_activityWindow.Show();
+                ButtonInitialize.Visibility = System.Windows.Visibility.Visible;
 #endif
                 m_inEditMode = true;
                 GetDeviceByDeviceID(m_deviceID);               
@@ -442,6 +473,7 @@ namespace openPDCManager.UserControls.CommonControls
                 ComboboxVendorDevice.SelectedIndex = 0;
 
             TextBlockRuntimeID.Text = string.Empty;
+            ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
 
             m_inEditMode = false;
             m_deviceID = 0;

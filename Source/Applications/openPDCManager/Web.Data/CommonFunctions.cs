@@ -850,6 +850,32 @@ namespace openPDCManager.Data
             return returnValue;
         }
 
+        public static string SendCommandToWindowsService(string connectionString, int connectionAttempts, string command)
+        {               
+            WindowsServiceClient m_serviceClient = new WindowsServiceClient(connectionString);
+            try
+            {
+                m_serviceClient.Helper.RemotingClient.MaxConnectionAttempts = connectionAttempts;
+                m_serviceClient.Helper.Connect();
+
+                if (m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                    m_serviceClient.Helper.SendRequest(command);
+                else
+                    throw new Exception("Failed to Connect to openPDC Windows Service (" + connectionString + ").");
+
+                return "Successfully sent " + command + " command.";
+            }
+            finally
+            {
+                try
+                {
+                    if (m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                        m_serviceClient.Helper.Disconnect();
+                }
+                catch { }
+            }
+        }
+
         #region " Manage Companies Code"
 
         public static List<Company> GetCompanyList()

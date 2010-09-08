@@ -52,8 +52,11 @@
                     <TextBox x:Name="TextBoxMeasurementReportingInterval" Grid.Row="4" Grid.Column="3" Text="{Binding Path=MeasurementReportingInterval}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
 
                     <TextBlock Grid.Row="5" Grid.Column="0" Text="Runtime ID" Style="{StaticResource GenericLabelStyle}"/>
-                    <TextBlock Grid.Row="5" Grid.Column="1" x:Name="TextBlockRuntimeID" VerticalAlignment="Center"/>
-                    
+                    <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1">
+                        <TextBlock x:Name="TextBlockRuntimeID" VerticalAlignment="Center"/>
+                        <TextBlock Text="" Width="{StaticResource BlankItemSize}" />
+                        <Button Content="Initialize" x:Name="ButtonInitialize" Tag="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" VerticalAlignment="Center" Click="ButtonInitialize_Click" />
+                    </StackPanel>
                     <CheckBox x:Name="CheckboxIsLocal" Content="Local" IsChecked="{Binding IsLocal}" Grid.Row="5" Grid.Column="2" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                     <CheckBox x:Name="CheckboxEnabled" Content="Enabled" IsChecked="{Binding Enabled}" Grid.Row="5" Grid.Column="3" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
 

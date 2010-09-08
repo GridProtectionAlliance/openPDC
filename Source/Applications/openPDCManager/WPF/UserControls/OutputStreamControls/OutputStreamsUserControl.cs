@@ -38,6 +38,45 @@ namespace openPDCManager.UserControls.OutputStreamControls
         {           
         }
 
+        void SendInitialize()
+        {
+            SystemMessages sm;
+            try
+            {
+                string result = CommonFunctions.SendCommandToWindowsService(((App)Application.Current).RemoteStatusServiceUrl, 10, "Initialize " + Convert.ToInt32(TextBlockRuntimeID.Text));
+                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException("WPF.SendInitialize", ex);
+                sm = new SystemMessages(new Message() { UserMessage = "Failed to Send Initialize Command", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);                
+            }
+            sm.Owner = Window.GetWindow(this);
+            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            sm.ShowPopup();
+        }
+
+        void SendUpdateConfiguration(int outputStreamID)
+        {
+            SystemMessages sm;
+            try
+            {
+                string runtimeID = CommonFunctions.GetRuntimeID("OutputStream", outputStreamID);
+                string result = CommonFunctions.SendCommandToWindowsService(((App)Application.Current).RemoteStatusServiceUrl, 10, "Invoke " + runtimeID + " UpdateConfiguration");
+                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException("WPF.SendUpdateConfiguration", ex);
+                sm = new SystemMessages(new Message() { UserMessage = "Failed to Update Configuration", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+            }
+            sm.Owner = Window.GetWindow(this);
+            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            sm.ShowPopup();
+        }
+
         void DisplayRuntimeID()
         {
             TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID("OutputStream", m_outputStreamID);

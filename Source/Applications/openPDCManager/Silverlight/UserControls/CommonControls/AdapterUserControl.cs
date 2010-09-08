@@ -48,6 +48,11 @@ namespace openPDCManager.UserControls.CommonControls
             m_client.GetRuntimeIDCompleted += new EventHandler<GetRuntimeIDCompletedEventArgs>(m_client_GetRuntimeIDCompleted);
         }
 
+        void SendInitialize()
+        {
+
+        }
+
         void DisplayRuntimeID()
         {
             if (m_adapterType == AdapterType.Action)

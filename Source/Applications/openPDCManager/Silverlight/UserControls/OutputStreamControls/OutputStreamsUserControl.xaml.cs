@@ -52,6 +52,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
         {
             InitializeComponent();
             Initialize();
+            ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
 #if !SILVERLIGHT
             ButtonSave.Content = new BitmapImage(new Uri(@"images/Save.png", UriKind.Relative));
             ButtonClear.Content = new BitmapImage(new Uri(@"images/Cancel.png", UriKind.Relative));
@@ -116,6 +117,9 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 m_outputStreamID = selectedOutputStream.ID;
                 m_inEditMode = true;
                 DisplayRuntimeID();
+#if !SILVERLIGHT
+                ButtonInitialize.Visibility = System.Windows.Visibility.Visible;
+#endif
             }
         }
 
@@ -266,26 +270,97 @@ namespace openPDCManager.UserControls.OutputStreamControls
         }
 
         void ButtonDelete_Click(object sender, RoutedEventArgs e)
-        {    
-            int outputStreamId;
-            Button deleteButton = (Button) sender;            
-                      
-            SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete output stream?", SystemMessage = "Output Stream Acronym: " + ToolTipService.GetToolTip(deleteButton).ToString(), UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
-            sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+        {
+            try
             {
-                if ((bool)sm.DialogResult)
-                {
-                    if (int.TryParse(((Button)sender).Tag.ToString(), out outputStreamId)) 
-                        DeleteOutputStream(outputStreamId);
+                int outputStreamId;
+                Button deleteButton = (Button)sender;
 
-                    ClearForm();
-                }
-            });
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete output stream?", SystemMessage = "Output Stream Acronym: " + ToolTipService.GetToolTip(deleteButton).ToString(), UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)sm.DialogResult)
+                    {
+                        if (int.TryParse(((Button)sender).Tag.ToString(), out outputStreamId))
+                            DeleteOutputStream(outputStreamId);
+
+                        ClearForm();
+                    }
+                });
 #if !SILVERLIGHT
-            sm.Owner = Window.GetWindow(this);
-            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-#endif            
-            sm.ShowPopup();
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+            catch (Exception ex)
+            {                
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to delete output stream.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+        }
+
+        void ButtonInitialize_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to send Initialize command?", SystemMessage = "Output Stream Acronym: " + ((Button)sender).Tag.ToString(), UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)sm.DialogResult)
+                        SendInitialize();
+                });
+
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+            catch (Exception ex)
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to send Initialize command.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+        }
+
+        void ButtonUpdateConfig_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to update configuration?", SystemMessage = "", UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)sm.DialogResult)
+                        SendUpdateConfiguration(Convert.ToInt32(((Button) sender).Tag));
+                });
+
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+            catch (Exception ex)
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to send Update Configuration command.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
         }
 
         #endregion
@@ -494,6 +569,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             m_outputStreamID = 0;
             ListBoxOutputStreamList.SelectedIndex = -1;
             TextBlockRuntimeID.Text = string.Empty;
+            ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         #endregion

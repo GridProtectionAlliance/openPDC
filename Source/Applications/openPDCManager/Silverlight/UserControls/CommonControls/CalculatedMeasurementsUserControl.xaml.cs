@@ -60,6 +60,7 @@ namespace openPDCManager.UserControls.CommonControls
             UpdateLayout();
 #endif
             Loaded += new RoutedEventHandler(CalculatedMeasurementsUserControl_Loaded);
+            ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
             ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
             ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
             ListBoxCalculatedMeasurementList.SelectionChanged += new SelectionChangedEventHandler(ListBoxCalculatedMeasurementList_SelectionChanged);
@@ -89,6 +90,7 @@ namespace openPDCManager.UserControls.CommonControls
             m_calculatedMeasurementID = 0;
             ListBoxCalculatedMeasurementList.SelectedIndex = -1;
             TextBlockRuntimeID.Text = string.Empty;
+            ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         bool IsValid()
@@ -272,6 +274,7 @@ namespace openPDCManager.UserControls.CommonControls
                 m_calculatedMeasurementID = selectedCalculatedMeasurement.ID;
                 m_inEditMode = true;
                 DisplayRuntimeID();
+                ButtonInitialize.Visibility = System.Windows.Visibility.Visible;
             }
         }
 
@@ -328,6 +331,35 @@ namespace openPDCManager.UserControls.CommonControls
                 }
                 else
                     SaveCalculatedMeasurement(calculatedMeasurement, false);
+            }
+        }
+
+        void ButtonInitialize_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to send Initialize command?", SystemMessage = "Calculated Measurement Acronym: " + ((Button)sender).Tag.ToString(), UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)sm.DialogResult)
+                        SendInitialize();
+                });
+
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+            catch (Exception ex)
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to send Initialize command.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
             }
         }
 

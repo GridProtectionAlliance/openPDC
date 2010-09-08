@@ -48,6 +48,11 @@ namespace openPDCManager.UserControls.CommonControls
             m_client.GetRuntimeIDCompleted += new EventHandler<GetRuntimeIDCompletedEventArgs>(m_client_GetRuntimeIDCompleted);
         }       
 
+        void SendInitialize()
+        {
+
+        }
+
         void GetHistorians()
         {
             m_client.GetHistorianListAsync(m_nodeID);

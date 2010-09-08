@@ -60,6 +60,7 @@ namespace openPDCManager.UserControls.CommonControls
             UpdateLayout();
 #endif
             Loaded += new RoutedEventHandler(HistoriansUserControl_Loaded);
+            ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
             ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
             ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
             ListBoxHistorianList.SelectionChanged += new SelectionChangedEventHandler(ListBoxHistorianList_SelectionChanged);
@@ -80,7 +81,10 @@ namespace openPDCManager.UserControls.CommonControls
                 CheckboxIsLocal.IsChecked = selectedHistorian.IsLocal;
                 m_inEditMode = true;
                 m_historianID = selectedHistorian.ID;
-                DisplayRuntimeID();                
+                DisplayRuntimeID();
+#if !SILVERLIGHT
+                ButtonInitialize.Visibility = System.Windows.Visibility.Visible;
+#endif
             }
         }
 
@@ -131,6 +135,35 @@ namespace openPDCManager.UserControls.CommonControls
             ClearForm();
         }
 
+        void ButtonInitialize_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to send Initialize command?", SystemMessage = "Historian Acronym: " + ((Button)sender).Tag.ToString(), UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)sm.DialogResult)
+                        SendInitialize();
+                });
+
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+            catch (Exception ex)
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to send Initialize command.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+        }
+
         #endregion
 
         #region [ Page Event Handlers ]
@@ -158,6 +191,7 @@ namespace openPDCManager.UserControls.CommonControls
             m_inEditMode = false;
             m_historianID = 0;
             TextBlockRuntimeID.Text = string.Empty;
+            ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         bool IsValid()

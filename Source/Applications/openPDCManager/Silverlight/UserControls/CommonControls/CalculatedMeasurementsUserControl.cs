@@ -48,6 +48,11 @@ namespace openPDCManager.UserControls.CommonControls
             m_client.GetRuntimeIDCompleted += new EventHandler<GetRuntimeIDCompletedEventArgs>(m_client_GetRuntimeIDCompleted);
         }
 
+        void SendInitialize()
+        {
+
+        }
+
         void GetCalculatedMeasurements()
         {
             m_client.GetCalculatedMeasurementListAsync(m_nodeID);            

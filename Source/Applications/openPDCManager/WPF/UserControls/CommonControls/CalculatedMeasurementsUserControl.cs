@@ -39,6 +39,25 @@ namespace openPDCManager.UserControls.CommonControls
 
         }
 
+        void SendInitialize()
+        {
+            SystemMessages sm;
+            try
+            {
+                string result = CommonFunctions.SendCommandToWindowsService(((App)Application.Current).RemoteStatusServiceUrl, 10, "Initialize " + Convert.ToInt32(TextBlockRuntimeID.Text));
+                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException("WPF.SendInitialize", ex);
+                sm = new SystemMessages(new Message() { UserMessage = "Failed to Send Initialize Command", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+            }
+            sm.Owner = Window.GetWindow(this);
+            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            sm.ShowPopup();
+        }
+
         void GetCalculatedMeasurements()
         {
             try

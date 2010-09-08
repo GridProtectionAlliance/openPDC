@@ -82,6 +82,7 @@ namespace openPDCManager.UserControls.CommonControls
             UpdateLayout();
 #endif
             Loaded += new RoutedEventHandler(AdaptersUserControl_Loaded);
+            ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
             ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
             ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
             ListBoxAdapterList.SelectionChanged += new SelectionChangedEventHandler(ListBoxAdapterList_SelectionChanged);
@@ -100,7 +101,8 @@ namespace openPDCManager.UserControls.CommonControls
                 ComboboxNode.SelectedItem = new KeyValuePair<string, string>(selectedAdapter.NodeID, selectedAdapter.NodeName);
                 m_inEditMode = true;
                 m_adapterID = selectedAdapter.ID;
-                DisplayRuntimeID();                
+                DisplayRuntimeID();
+                ButtonInitialize.Visibility = System.Windows.Visibility.Visible;
             }
         }
 
@@ -162,6 +164,35 @@ namespace openPDCManager.UserControls.CommonControls
             ClearForm();
         }
 
+        void ButtonInitialize_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to send Initialize command?", SystemMessage = "Adapter Acronym: " + ((Button)sender).Tag.ToString(), UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)sm.DialogResult)
+                        SendInitialize();
+                });
+
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+            catch (Exception ex)
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to send Initialize command.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
@@ -175,6 +206,7 @@ namespace openPDCManager.UserControls.CommonControls
             m_adapterID = 0;
             ListBoxAdapterList.SelectedIndex = -1;
             TextBlockRuntimeID.Text = string.Empty;
+            ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         public void SetAdapterType(AdapterType adpType)

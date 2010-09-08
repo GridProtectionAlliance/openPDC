@@ -141,7 +141,11 @@
                     <TextBox x:Name="TextBoxLoadOrder" Grid.Row="13" Grid.Column="1" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <CheckBox x:Name="CheckBoxEnabled" Grid.Row="13" Grid.Column="3" Content="Enabled" IsChecked="{Binding Path=Enabled}" FontWeight="Bold" VerticalAlignment="Center"/>
                     <TextBlock Grid.Row="14" Grid.Column="0" Text="Runtime ID" Style="{StaticResource GenericLabelStyle}"/>
-                    <TextBlock Grid.Row="14" Grid.Column="1" x:Name="TextBlockRuntimeID" VerticalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="14" Grid.Column="1">
+                        <TextBlock x:Name="TextBlockRuntimeID" VerticalAlignment="Center"/>
+                        <TextBlock Text="" Width="{StaticResource BlankItemSize}" />
+                        <Button Content="Initialize" x:Name="ButtonInitialize" Tag="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" VerticalAlignment="Center" Click="ButtonInitialize_Click" />
+                    </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="14" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                         <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
                             <Button.RenderTransform>
@@ -164,7 +168,7 @@
                         <TextBlock Text="Acronym" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </Border>
                     <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                        <TextBlock Text="Name" Width="{StaticResource XXLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        <TextBlock Text="Name" Width="{StaticResource LargerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </Border>
                     <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                         <TextBlock Text="Type" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
@@ -181,7 +185,10 @@
                     <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                         <TextBlock Text="" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </Border>
-                    <TextBlock Text="" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <TextBlock Text="" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </Border>
+                    <TextBlock Text="" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                 </StackPanel>
             </Border>
             <Border Background="{StaticResource PortletBackgroundBrush}">
@@ -195,7 +202,7 @@
                                             <TextBlock Text="{Binding Path=Acronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
                                         </Border>
                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                            <TextBlock Text="{Binding Path=Name}" Width="{StaticResource XXLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                            <TextBlock Text="{Binding Path=Name}" Width="{StaticResource LargerItemSize}" TextAlignment="Left" Padding="1"/>
                                         </Border>
                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                             <TextBlock Text="{Binding Path=TypeName}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="1"/>
@@ -215,6 +222,9 @@
                                         </Border>
                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                             <Button Content="Delete" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalContentAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" Click="ButtonDelete_Click" />
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <Button Content="Update Configuration" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalContentAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" Click="ButtonUpdateConfig_Click" />
                                         </Border>
                                     </StackPanel>
                                 </DataTemplate>
