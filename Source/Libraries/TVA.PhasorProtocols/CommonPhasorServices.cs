@@ -34,6 +34,7 @@ using System.Text;
 using System.Threading;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
+using TimeSeriesFramework.Transport;
 using TVA.Configuration;
 using TVA.Data;
 using TVA.IO;
@@ -265,7 +266,7 @@ namespace TVA.PhasorProtocols
         private int m_outputStreamStatisticsMaxIndex;
         private Dictionary<string, IMeasurement> m_definedMeasurements;
         private System.Timers.Timer m_statisticCalculationTimer;
-        private TimeSeriesFramework.DataPublisher m_dataPublisher;
+        private DataPublisher m_dataPublisher;
         private bool m_enabled;
         private bool m_initialized;
         private bool m_disposed;
@@ -309,7 +310,7 @@ namespace TVA.PhasorProtocols
             m_frameParser.SkipDisableRealTimeData = true;
 
             // Create a new data publishing server
-            m_dataPublisher = new TimeSeriesFramework.DataPublisher();
+            m_dataPublisher = new DataPublisher();
         }
 
         /// <summary>
@@ -1033,8 +1034,8 @@ namespace TVA.PhasorProtocols
         /// <param name="measurements">Collection of measurements to queue for processing.</param>
         public void QueueMeasurementsForProcessing(IEnumerable<IMeasurement> measurements)
         {
-            //if (m_dataPublisher != null)
-            //    m_dataPublisher.QueueMeasurementsForProcessing(measurements);
+            if (m_dataPublisher != null)
+                m_dataPublisher.QueueMeasurementsForProcessing(measurements);
         }
 
         /// <summary>

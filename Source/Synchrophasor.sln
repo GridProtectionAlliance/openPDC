@@ -87,6 +87,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openPDC", "openPDC", "{CE26
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVA", "TVA", "{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B}"
 	ProjectSection(SolutionItems) = preProject
+		Dependencies\TVA\Hadoop.Replication.dll = Dependencies\TVA\Hadoop.Replication.dll
 		Dependencies\TVA\Hadoop.Replication.XML = Dependencies\TVA\Hadoop.Replication.XML
 		Dependencies\TVA\TVA.Communication.dll = Dependencies\TVA\TVA.Communication.dll
 		Dependencies\TVA\TVA.Communication.xml = Dependencies\TVA\TVA.Communication.xml
