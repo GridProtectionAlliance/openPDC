@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="DatabaseSetupUtility.UpdateConfigurationScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=FrameworkElement, AncestorLevel=1}, Path=ActualWidth}">
+    <DockPanel Name="dockPanel1">
+        <Label Content="Update configuration" DockPanel.Dock="Top" Margin="10" HorizontalContentAlignment="Center" FontWeight="Bold" FontSize="16" />
+        <StackPanel DockPanel.Dock="Bottom">
+            <TextBlock Text="Do you want to upgrade your existing configuration to the latest schema?" TextAlignment="Center" TextWrapping="Wrap" Margin="20,0,20,10" />
+            <StackPanel HorizontalAlignment="Center">
+                <RadioButton Content="I want to upgrade to the latest schema." Height="16" IsChecked="True" Checked="UpdateConfigurationRadioButton_Checked" />
+                <RadioButton Content="I want to use my existing database as it is." Height="16" Checked="UseExistingConfigurationRadioButton_Checked" />
+            </StackPanel>
+        </StackPanel>
+    </DockPanel>
+</UserControl>

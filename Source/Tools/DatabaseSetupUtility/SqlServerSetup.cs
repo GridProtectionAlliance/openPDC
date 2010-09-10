@@ -114,7 +114,9 @@ namespace DatabaseSetupUtility
             }
             set
             {
-                if (!string.IsNullOrEmpty(value))
+                if (string.IsNullOrEmpty(value))
+                    m_settings.Remove("User Id");
+                else
                     m_settings["User Id"] = value;
             }
         }
@@ -133,7 +135,9 @@ namespace DatabaseSetupUtility
             }
             set
             {
-                if (!string.IsNullOrEmpty(value))
+                if (string.IsNullOrEmpty(value))
+                    m_settings.Remove("Password");
+                else
                     m_settings["Password"] = value;
             }
         }

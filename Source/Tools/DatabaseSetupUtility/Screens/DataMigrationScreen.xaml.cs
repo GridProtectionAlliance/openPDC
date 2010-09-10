@@ -1,5 +1,5 @@
 ﻿//******************************************************************************************************
-//  PageControl.cs - Gbtc
+//  DataMigrationScreen.xaml.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -16,134 +16,140 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  07/01/2010 - Stephen C. Wills
+//  09/09/2010 - Stephen C. Wills
 //       Generated original version of source code.
 //
 //******************************************************************************************************
 
+using System;
 using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace DatabaseSetupUtility
 {
     /// <summary>
-    /// This class represents a list of pages that keeps track of the previous, current, and next pages to be displayed.
+    /// Interaction logic for DataMigrationScreen.xaml
     /// </summary>
-    public class PageControl : List<Page>
+    public partial class DataMigrationScreen : UserControl, IScreen
     {
 
         #region [ Members ]
 
+        // Nested Types
+
+        // Constants
+
+        // Delegates
+
+        // Events
+
         // Fields
 
-        private int m_currentPage;
+        #endregion
+
+        #region [ Constructors ]
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="DataMigrationScreen"/> class.
+        /// </summary>
+        public DataMigrationScreen()
+        {
+            InitializeComponent();
+        }
 
         #endregion
 
         #region [ Properties ]
 
         /// <summary>
-        /// Gets the index of the current page.
+        /// Gets the screen to be displayed when the user clicks the "Next" button.
         /// </summary>
-        public int CurrentPageIndex
+        public IScreen NextScreen
         {
             get
             {
-                return m_currentPage;
+                return State["databaseSetupScreen"] as IScreen;
             }
         }
 
         /// <summary>
-        /// Gets the page before the current page.
+        /// Gets a boolean indicating whether the user can advance to
+        /// the next screen from the current screen.
         /// </summary>
-        public Page PreviousPage
+        public bool CanGoForward
         {
             get
             {
-                if (m_currentPage > 0)
-                    return this[m_currentPage - 1];
-                else
-                    return null;
+                return true;
             }
         }
 
         /// <summary>
-        /// Gets the current page.
+        /// Gets a boolean indicating whether the user can return to
+        /// the previous screen from the current screen.
         /// </summary>
-        public Page CurrentPage
+        public bool CanGoBack
         {
             get
             {
-                return this[m_currentPage];
+                return true;
             }
         }
 
         /// <summary>
-        /// Gets the page after the current page.
+        /// Gets a boolean indicating whether the user can cancel the
+        /// setup process from the current screen.
         /// </summary>
-        public Page NextPage
+        public bool CanCancel
         {
             get
             {
-                if (m_currentPage + 1 < Count)
-                    return this[m_currentPage + 1];
-                else
-                    return null;
+                return true;
             }
         }
 
         /// <summary>
-        /// Determines whether the previous page is accessible.
+        /// Gets a boolean indicating whether the user input is valid on the current page.
         /// </summary>
-        public bool PreviousPageAccessible
+        public bool UserInputIsValid
         {
             get
             {
-                return (PreviousPage != null) && PreviousPage.Accessible && CurrentPage.CanGoBack;
+                return true;
             }
         }
 
         /// <summary>
-        /// Determines whether the next page is accessible.
+        /// Collection shared among screens that represents the state of the setup.
         /// </summary>
-        public bool NextPageAccessible
-        {
-            get
-            {
-                return (NextPage == null) || (NextPage.Accessible && CurrentPage.CanGoForward);
-            }
-        }
+        public Dictionary<string, object> State { get; set; }
+
+        /// <summary>
+        /// Allows the screen to update the navigation buttons after a change is made
+        /// that would affect the user's ability to navigate to other screens.
+        /// </summary>
+        public Action UpdateNavigation { get; set; }
 
         #endregion
 
         #region [ Methods ]
 
-        /// <summary>
-        /// Moves to the next page.
-        /// </summary>
-        public void GoToNextPage()
-        {
-            if (NextPageAccessible && CurrentPage.UserInputIsValid())
-            {
-                this[m_currentPage].Visible = false;
-                m_currentPage++;
-                this[m_currentPage].Visible = true;
-            }
-        }
+        #endregion
 
-        /// <summary>
-        /// Moves to the previous page.
-        /// </summary>
-        public void GoToPreviousPage()
-        {
-            if (PreviousPageAccessible)
-            {
-                this[m_currentPage].Visible = false;
-                m_currentPage--;
-                this[m_currentPage].Visible = true;
-            }
-        }
+        #region [ Operators ]
 
         #endregion
-        
+
+        #region [ Static ]
+
+        // Static Fields
+
+        // Static Constructor
+
+        // Static Properties
+
+        // Static Methods
+
+        #endregion
     }
 }

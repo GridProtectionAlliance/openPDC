@@ -1,5 +1,5 @@
 ﻿//******************************************************************************************************
-//  Program.cs - Gbtc
+//  App.xaml.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -16,27 +16,24 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  06/29/2010 - Stephen C. Wills
+//  09/07/2010 - Stephen C. Wills
 //       Generated original version of source code.
 //
 //******************************************************************************************************
 
 using System;
-using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Windows;
 
 namespace DatabaseSetupUtility
 {
-    static class Program
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
+    public partial class App : Application
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DatabaseSetupUtility());
-        }
     }
 }

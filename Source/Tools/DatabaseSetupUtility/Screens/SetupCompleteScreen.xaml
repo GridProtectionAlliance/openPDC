@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="DatabaseSetupUtility.SetupCompleteScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=FrameworkElement, AncestorLevel=1}, Path=ActualWidth}">
+    <DockPanel>
+        <Label Content="Database setup complete" Margin="10" HorizontalContentAlignment="Center" DockPanel.Dock="Top" FontSize="16" FontWeight="Bold" />
+        <TextBlock Name="textBlock1" Text="The database setup is complete. Click Finish to exit the Database Setup Utility." DockPanel.Dock="Bottom" TextAlignment="Center" TextWrapping="Wrap" Margin="20,0" />
+    </DockPanel>
+</UserControl>

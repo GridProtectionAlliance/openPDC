@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="DatabaseSetupUtility.DatabaseSetupScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=FrameworkElement, AncestorLevel=1}, Path=ActualWidth}">
+    <DockPanel>
+        <Label Content="Set up a database" DockPanel.Dock="Top" Margin="10" HorizontalContentAlignment="Center" FontSize="16" FontWeight="Bold" />
+        <StackPanel DockPanel.Dock="Bottom">
+            <TextBlock Text="Please select the type of database you would like to have set up." TextAlignment="Center" Margin="20,0,20,10" TextWrapping="Wrap" />
+            <StackPanel HorizontalAlignment="Center">
+                <RadioButton Content="Access (32-bit only)" Height="16" Checked="AccessDatabaseRadioButton_Checked" />
+                <RadioButton Content="SQL Server" Height="16" IsChecked="True" Checked="SqlServerDatabaseRadioButton_Checked" />
+                <RadioButton Content="MySQL" Height="16" Checked="MySqlRadioButton_Checked" Margin="0,0,0,10" />
+                <CheckBox Content="Run initial data script" Height="16" IsChecked="True" Name="m_initialDataScriptCheckBox" Checked="InitialDataScriptCheckBox_Checked" Unchecked="InitialDataScriptCheckBox_Unchecked" />
+                <CheckBox Content="Run sample data script" Height="16" Margin="15,0,0,0" IsEnabled="{Binding ElementName=m_initialDataScriptCheckBox, Path=IsChecked}" Checked="SampleDataScriptCheckBox_Checked" Unchecked="SampleDataScriptCheckBox_Unchecked" Name="m_sampleDataScriptCheckBox" />
+            </StackPanel>
+        </StackPanel>
+    </DockPanel>
+</UserControl>
