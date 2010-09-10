@@ -6240,7 +6240,7 @@ namespace openPDCManager.PhasorDataServiceProxy {
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IPhasorDataService/GetHistorians", ReplyAction="http://tempuri.org/IPhasorDataService/GetHistoriansResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(openPDCManager.PhasorDataServiceProxy.CustomServiceFault), Action="http://tempuri.org/IPhasorDataService/GetHistoriansCustomServiceFaultFault", Name="CustomServiceFault", Namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects")]
-        System.IAsyncResult BeginGetHistorians(bool enabledOnly, bool isOptional, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginGetHistorians(bool enabledOnly, bool isOptional, bool includeSTAT, System.AsyncCallback callback, object asyncState);
         
         System.Collections.Generic.Dictionary<int, string> EndGetHistorians(System.IAsyncResult result);
         
@@ -11012,8 +11012,8 @@ namespace openPDCManager.PhasorDataServiceProxy {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult openPDCManager.PhasorDataServiceProxy.IPhasorDataService.BeginGetHistorians(bool enabledOnly, bool isOptional, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetHistorians(enabledOnly, isOptional, callback, asyncState);
+        System.IAsyncResult openPDCManager.PhasorDataServiceProxy.IPhasorDataService.BeginGetHistorians(bool enabledOnly, bool isOptional, bool includeSTAT, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetHistorians(enabledOnly, isOptional, includeSTAT, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -11024,7 +11024,8 @@ namespace openPDCManager.PhasorDataServiceProxy {
         private System.IAsyncResult OnBeginGetHistorians(object[] inValues, System.AsyncCallback callback, object asyncState) {
             bool enabledOnly = ((bool)(inValues[0]));
             bool isOptional = ((bool)(inValues[1]));
-            return ((openPDCManager.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetHistorians(enabledOnly, isOptional, callback, asyncState);
+            bool includeSTAT = ((bool)(inValues[2]));
+            return ((openPDCManager.PhasorDataServiceProxy.IPhasorDataService)(this)).BeginGetHistorians(enabledOnly, isOptional, includeSTAT, callback, asyncState);
         }
         
         private object[] OnEndGetHistorians(System.IAsyncResult result) {
@@ -11040,11 +11041,11 @@ namespace openPDCManager.PhasorDataServiceProxy {
             }
         }
         
-        public void GetHistoriansAsync(bool enabledOnly, bool isOptional) {
-            this.GetHistoriansAsync(enabledOnly, isOptional, null);
+        public void GetHistoriansAsync(bool enabledOnly, bool isOptional, bool includeSTAT) {
+            this.GetHistoriansAsync(enabledOnly, isOptional, includeSTAT, null);
         }
         
-        public void GetHistoriansAsync(bool enabledOnly, bool isOptional, object userState) {
+        public void GetHistoriansAsync(bool enabledOnly, bool isOptional, bool includeSTAT, object userState) {
             if ((this.onBeginGetHistoriansDelegate == null)) {
                 this.onBeginGetHistoriansDelegate = new BeginOperationDelegate(this.OnBeginGetHistorians);
             }
@@ -11056,7 +11057,8 @@ namespace openPDCManager.PhasorDataServiceProxy {
             }
             base.InvokeAsync(this.onBeginGetHistoriansDelegate, new object[] {
                         enabledOnly,
-                        isOptional}, this.onEndGetHistoriansDelegate, this.onGetHistoriansCompletedDelegate, userState);
+                        isOptional,
+                        includeSTAT}, this.onEndGetHistoriansDelegate, this.onGetHistoriansCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -12725,10 +12727,11 @@ namespace openPDCManager.PhasorDataServiceProxy {
                 return _result;
             }
             
-            public System.IAsyncResult BeginGetHistorians(bool enabledOnly, bool isOptional, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[2];
+            public System.IAsyncResult BeginGetHistorians(bool enabledOnly, bool isOptional, bool includeSTAT, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[3];
                 _args[0] = enabledOnly;
                 _args[1] = isOptional;
+                _args[2] = includeSTAT;
                 System.IAsyncResult _result = base.BeginInvoke("GetHistorians", _args, callback, asyncState);
                 return _result;
             }

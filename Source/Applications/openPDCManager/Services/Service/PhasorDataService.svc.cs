@@ -106,11 +106,11 @@ namespace openPDCManager.Services.Service
 				throw new FaultException<CustomServiceFault>(fault);
 			}
 		}
-		public Dictionary<int, string> GetHistorians(bool enabledOnly, bool isOptional)
+		public Dictionary<int, string> GetHistorians(bool enabledOnly, bool isOptional, bool includeSTAT)
 		{
 			try
 			{
-				return CommonFunctions.GetHistorians(enabledOnly, isOptional);
+				return CommonFunctions.GetHistorians(enabledOnly, isOptional, includeSTAT);
 			}
 			catch (Exception ex)
 			{

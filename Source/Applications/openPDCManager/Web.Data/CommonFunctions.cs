@@ -1740,7 +1740,7 @@ namespace openPDCManager.Data
             }			
         }
 
-        public static Dictionary<int, string> GetHistorians(bool enabledOnly, bool isOptional)
+        public static Dictionary<int, string> GetHistorians(bool enabledOnly, bool isOptional, bool includeSTAT)
         {
             DataConnection connection = new DataConnection();
             try
@@ -1763,8 +1763,15 @@ namespace openPDCManager.Data
                 resultTable.Load(command.ExecuteReader());
                 foreach (DataRow row in resultTable.Rows)
                 {
-                    if (!historianList.ContainsKey(Convert.ToInt32(row["ID"])))
-                        historianList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
+                    if (!includeSTAT && row["Acronym"].ToString().ToUpper().StartsWith("STAT"))
+                    {
+                        //do not add
+                    }
+                    else
+                    {
+                        if (!historianList.ContainsKey(Convert.ToInt32(row["ID"])))
+                            historianList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
+                    }
                 }
                 return historianList;
             }			
@@ -1773,7 +1780,7 @@ namespace openPDCManager.Data
                 connection.Dispose();
             }			
         }
-
+                
         public static string SaveHistorian(Historian historian, bool isNew)
         {
             DataConnection connection = new DataConnection();

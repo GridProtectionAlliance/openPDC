@@ -97,7 +97,7 @@ namespace openPDCManager.UserControls.CommonControls
 
         public void GetHistorians()
         {
-            m_client.GetHistoriansAsync(true, true);
+            m_client.GetHistoriansAsync(true, true, false);
         }
 
         public void GetInterconnections()

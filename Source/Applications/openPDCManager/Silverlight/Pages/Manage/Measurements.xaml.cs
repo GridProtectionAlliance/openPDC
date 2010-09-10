@@ -437,7 +437,7 @@ namespace openPDCManager.Pages.Manage
 			App app = (App)Application.Current;
 			m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
 			m_activityWindow.Show();
-			m_client.GetHistoriansAsync(true, true);
+			m_client.GetHistoriansAsync(true, true, true);
 			m_client.GetDevicesAsync(DeviceType.NonConcentrator, app.NodeValue, true);
 			m_client.GetSignalTypesAsync(false);
 

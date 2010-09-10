@@ -88,7 +88,7 @@ namespace openPDCManager.Services.Service
 
 		[OperationContract]
 		[FaultContract(typeof(CustomServiceFault))]
-		Dictionary<int, string> GetHistorians(bool enabledOnly, bool isOptional);
+		Dictionary<int, string> GetHistorians(bool enabledOnly, bool isOptional, bool includeSTAT);
 
 		#endregion
 

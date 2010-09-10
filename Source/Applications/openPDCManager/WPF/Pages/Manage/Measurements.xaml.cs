@@ -380,7 +380,7 @@ namespace openPDCManager.Pages.Manage
         {
             try
             {
-                ComboBoxHistorian.ItemsSource = CommonFunctions.GetHistorians(true, true);
+                ComboBoxHistorian.ItemsSource = CommonFunctions.GetHistorians(true, true, true);
                 if (ComboBoxHistorian.Items.Count > 0)
                     ComboBoxHistorian.SelectedIndex = 0;                
             }

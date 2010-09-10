@@ -31,6 +31,7 @@ using openPDCManager.Data.BusinessObjects;
 using openPDCManager.Data.Entities;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
+using openPDCManager.Pages.Devices;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -196,17 +197,24 @@ namespace openPDCManager.UserControls.CommonControls
                 string result = CommonFunctions.SaveWizardConfigurationInfo(nodeID, new List<WizardDeviceInfo>(wizardDeviceInfoList), connectionString, protocolID, companyID, historianID, interconnectionID, parentID, skipDisableRealTimeData);
                 sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Success },
                         ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+
+                BrowseDevicesUserControl browseDevices = new BrowseDevicesUserControl();
+                ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(browseDevices);
             }
             catch (Exception ex)
             {
                 CommonFunctions.LogException("WPF.SaveWizardConfigurationInfo", ex);
                 sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Save Configuration Information", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
             }
 
-            sm.Owner = Window.GetWindow(this);
-            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            sm.ShowPopup();
+            
 
             nextButtonClicked = false;
             if (m_activityWindow != null)
@@ -306,7 +314,7 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboboxHistorian.ItemsSource = CommonFunctions.GetHistorians(true, true);
+                ComboboxHistorian.ItemsSource = CommonFunctions.GetHistorians(true, true, false);
                 if (ComboboxHistorian.Items.Count > 0)
                     ComboboxHistorian.SelectedIndex = 0;
             }

@@ -115,7 +115,7 @@ namespace openPDCManager.UserControls.CommonControls
 
         void GetHistorians()
         {
-            m_client.GetHistoriansAsync(true, true);
+            m_client.GetHistoriansAsync(true, true, false);
         }
 
         void GetCompanies()
@@ -412,6 +412,11 @@ namespace openPDCManager.UserControls.CommonControls
             nextButtonClicked = false;
             if (m_activityWindow != null)
                 m_activityWindow.Close();
+
+            if (e.Error == null)
+            {
+
+            }
         }
 
         void client_GetDeviceByAcronymCompleted(object sender, GetDeviceByAcronymCompletedEventArgs e)

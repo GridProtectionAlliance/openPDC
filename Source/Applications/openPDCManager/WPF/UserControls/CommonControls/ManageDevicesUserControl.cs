@@ -238,7 +238,7 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboboxHistorian.ItemsSource = CommonFunctions.GetHistorians(true, true);
+                ComboboxHistorian.ItemsSource = CommonFunctions.GetHistorians(true, true, false);
             }
             catch (Exception ex)
             {

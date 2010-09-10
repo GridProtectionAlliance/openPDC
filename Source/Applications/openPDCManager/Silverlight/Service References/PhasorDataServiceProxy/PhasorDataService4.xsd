@@ -805,6 +805,7 @@
       <xs:sequence>
         <xs:element minOccurs="0" name="enabledOnly" type="xs:boolean" />
         <xs:element minOccurs="0" name="isOptional" type="xs:boolean" />
+        <xs:element minOccurs="0" name="includeSTAT" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
