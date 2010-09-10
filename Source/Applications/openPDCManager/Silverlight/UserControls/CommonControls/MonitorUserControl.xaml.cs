@@ -68,6 +68,7 @@ namespace openPDCManager.UserControls.CommonControls
             if (!string.IsNullOrEmpty(TextBoxServiceRequest.Text))
             {
                 SendRequest();
+                TextBoxServiceRequest.SelectAll();
             }
         }
 
