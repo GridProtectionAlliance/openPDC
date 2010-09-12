@@ -53,7 +53,7 @@
                 <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
                     <TextBlock x:Name="TextBlockRuntimeID" VerticalAlignment="Center"/>
                     <TextBlock Text="" Width="{StaticResource BlankItemSize}" />
-                    <Button Content="Initialize" x:Name="ButtonInitialize" Tag="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" VerticalAlignment="Center" Click="ButtonInitialize_Click" />
+                    <Button Content="Initialize" x:Name="ButtonInitialize" Tag="{Binding Path=AdapterName}" Template="{StaticResource HyperlinkStyleButtonTemplate}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" VerticalAlignment="Center" Click="ButtonInitialize_Click" />
                 </StackPanel>                            
                 <CheckBox x:Name="CheckboxEnabled" Grid.Row="3" Grid.Column="3" IsChecked="{Binding Path=Enabled}" Content="Enabled" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                 <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
