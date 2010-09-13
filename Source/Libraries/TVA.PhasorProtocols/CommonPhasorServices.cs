@@ -1484,7 +1484,7 @@ namespace TVA.PhasorProtocols
 
         // Apply start-up phasor data source validations
         [SuppressMessage("Microsoft.Maintainability", "CA1502")]
-        private static void PhasorDataSourceValidation(IDbConnection connection, Type adapterType, string nodeIDQueryString, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
+        public static void PhasorDataSourceValidation(IDbConnection connection, Type adapterType, string nodeIDQueryString, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
         {
             // Make sure setting exists to allow user to by-pass phasor data source validation at startup
             ConfigurationFile configFile = ConfigurationFile.Current;
