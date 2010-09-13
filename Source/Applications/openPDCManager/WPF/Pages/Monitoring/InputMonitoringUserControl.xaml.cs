@@ -227,7 +227,8 @@ namespace openPDCManager.Pages.Monitoring
 
         void m_chartRefreshTimer_Tick(object sender, EventArgs e)
         {
-            ThreadPool.QueueUserWorkItem(RefreshChart, null);
+            //ThreadPool.QueueUserWorkItem(RefreshChart, null);
+            RefreshChart(null);
         }
 
         void RefreshChart(object state)
@@ -512,10 +513,18 @@ namespace openPDCManager.Pages.Monitoring
                     
                     List<double> values = new List<double>();
                     InputMonitorData inputMonitorData = new InputMonitorData();
+                    double lastValue = 0;
+                    
                     foreach (TimeSeriesDataPointDetail point in measurements)
                     {
-                        values.Add(point.Value);
-                        if (values.Count == 300)
+                        System.Diagnostics.Debug.WriteLine("10 seconds measurements count = " + measurements.Count.ToString());
+
+                        if (point.Value != double.NaN)
+                            lastValue = point.Value;
+
+                        values.Add(lastValue);
+
+                        if (values.Count == measurements.Count)
                         {
                             inputMonitorData.PointID = pointID;
                             inputMonitorData.SignalReference = signalReference;
@@ -529,6 +538,14 @@ namespace openPDCManager.Pages.Monitoring
                     }
                     if (values.Count > 0)
                     {
+                        System.Diagnostics.Debug.WriteLine("values count is = " + values.Count.ToString());
+
+                        if (values.Count < 300)
+                        {
+                            while (values.Count < 300)
+                                values.Add(lastValue);
+                        }
+
                         m_yAxisDataCollection.Add(pointID, values);
                         m_yAxisSourceCollection.Add(pointID, new EnumerableDataSource<double>(m_yAxisDataCollection.Last().Value));
                         m_yAxisSourceCollection[pointID].SetYMapping(y => y);
@@ -562,22 +579,32 @@ namespace openPDCManager.Pages.Monitoring
                 else
                 {
                     measurements = CommonFunctions.GetTimeSeriesDataDetail(m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-1S/*/XML");
+
+                    System.Diagnostics.Debug.WriteLine("1 seconds measurements are = " + measurements.Count.ToString());
+
                     List<double> yData = m_yAxisDataCollection[pointID];
                     InputMonitorData inputMonitorData = m_currentValuesList[pointID];
                     foreach (TimeSeriesDataPointDetail point in measurements)
                     {
-                        yData.RemoveAt(0);
-                        yData.Insert(yData.Count - 1, point.Value);
-                        inputMonitorData.Value = point.Value;
-                        inputMonitorData.TimeStamp = point.TimeStamp;
-                        inputMonitorData.Quality = point.Quality;
-
+                        if (point.Value != double.NaN)
+                        {
+                            if (yData.Count >= 300)
+                                yData.RemoveAt(0);
+                            yData.Insert(yData.Count - 1, point.Value);
+                            inputMonitorData.Value = point.Value;
+                            inputMonitorData.TimeStamp = point.TimeStamp;
+                            inputMonitorData.Quality = point.Quality;
+                        }
                     }
 
                     ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
                     {
-                        lock (m_yAxisSourceCollection)
-                            m_yAxisSourceCollection[pointID].RaiseDataChanged();
+                        try
+                        {
+                            lock (m_yAxisSourceCollection)
+                                m_yAxisSourceCollection[pointID].RaiseDataChanged();
+                        }
+                        catch { }
                     });
 
                     ListBoxCurrentValues.Dispatcher.BeginInvoke((Action)delegate()
