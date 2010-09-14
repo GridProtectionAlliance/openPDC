@@ -27,7 +27,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 
-namespace DatabaseSetupUtility
+namespace ConfigurationSetupUtility
 {
     /// <summary>
     /// Interaction logic for XmlSetupScreen.xaml

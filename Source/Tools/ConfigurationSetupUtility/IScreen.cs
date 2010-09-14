@@ -24,7 +24,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DatabaseSetupUtility
+namespace ConfigurationSetupUtility
 {
     /// <summary>
     /// Represents a screen in the setup process.

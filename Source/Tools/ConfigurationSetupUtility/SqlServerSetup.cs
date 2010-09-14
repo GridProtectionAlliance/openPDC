@@ -28,7 +28,7 @@ using System.IO;
 using System.Text;
 using TVA;
 
-namespace DatabaseSetupUtility
+namespace ConfigurationSetupUtility
 {
     /// <summary>
     /// This class is used to aid in the manipulation of a SQL Server connection string as well as running the sqlcmd.exe process.

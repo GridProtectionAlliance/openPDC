@@ -32,7 +32,7 @@ using System.Xml;
 using Microsoft.Win32;
 using TVA.Security.Cryptography;
 
-namespace DatabaseSetupUtility
+namespace ConfigurationSetupUtility
 {
     /// <summary>
     /// Interaction logic for SetupInProgressScreen.xaml

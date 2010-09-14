@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace DatabaseSetupUtility
+namespace ConfigurationSetupUtility
 {
     /// <summary>
     /// Interaction logic for ConfigurationTypeScreen.xaml

@@ -25,7 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 
-namespace DatabaseSetupUtility
+namespace ConfigurationSetupUtility
 {
     /// <summary>
     /// Interaction logic for DataMigrationScreen.xaml

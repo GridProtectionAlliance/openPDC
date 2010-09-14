@@ -28,7 +28,7 @@ using System.IO;
 using System.Text;
 using TVA;
 
-namespace DatabaseSetupUtility
+namespace ConfigurationSetupUtility
 {
     /// <summary>
     /// This class is used to aid in the manipulation of a MySQL connection string as well as running the mysql.exe process.

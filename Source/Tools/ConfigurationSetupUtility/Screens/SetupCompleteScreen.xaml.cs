@@ -29,7 +29,7 @@ using System.Windows.Controls;
 using TVA.Configuration;
 using TVA.IO;
 
-namespace DatabaseSetupUtility
+namespace ConfigurationSetupUtility
 {
     /// <summary>
     /// Interaction logic for SetupCompleteScreen.xaml

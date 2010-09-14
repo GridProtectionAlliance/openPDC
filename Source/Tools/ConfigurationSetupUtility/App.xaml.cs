@@ -28,7 +28,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 
-namespace DatabaseSetupUtility
+namespace ConfigurationSetupUtility
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -26,7 +26,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System;
 
-namespace DatabaseSetupUtility
+namespace ConfigurationSetupUtility
 {
     public class ScreenManager
     {
