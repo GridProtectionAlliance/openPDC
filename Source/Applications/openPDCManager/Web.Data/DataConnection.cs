@@ -120,6 +120,11 @@ namespace openPDCManager.Data
             }
         }
 
+        public Type AdapterType
+        {
+            get { return s_adapterType; }
+        }
+
         #endregion
 
         #region [ Methods ]

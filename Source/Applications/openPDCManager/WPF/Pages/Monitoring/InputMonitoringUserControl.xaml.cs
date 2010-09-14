@@ -205,7 +205,10 @@ namespace openPDCManager.Pages.Monitoring
                 if (!m_pointsToPlot.ContainsKey(pointID))
                 {
                     lock (m_pointsToPlot)
-                        m_pointsToPlot.Add(pointID, measurementInfo);
+                    {
+                        if (!m_pointsToPlot.ContainsKey(pointID))
+                            m_pointsToPlot.Add(pointID, measurementInfo);
+                    }
                 }                    
 
                 ThreadPool.QueueUserWorkItem(GetChartData, measurementInfo);
@@ -444,8 +447,10 @@ namespace openPDCManager.Pages.Monitoring
                                     if (!m_pointsToPlot.ContainsKey(measurementInfo.PointID))
                                     {
                                         lock (m_pointsToPlot)
-                                            m_pointsToPlot.Add(measurementInfo.PointID, measurementInfo);
-
+                                        {
+                                            if (!m_pointsToPlot.ContainsKey(measurementInfo.PointID))
+                                                m_pointsToPlot.Add(measurementInfo.PointID, measurementInfo);
+                                        }
                                         //start chart
                                         //ThreadPool.QueueUserWorkItem(GetChartData, measurementInfo);
                                         StartChartRefreshTimer();
@@ -546,8 +551,17 @@ namespace openPDCManager.Pages.Monitoring
                                 values.Add(lastValue);
                         }
 
-                        m_yAxisDataCollection.Add(pointID, values);
-                        m_yAxisSourceCollection.Add(pointID, new EnumerableDataSource<double>(m_yAxisDataCollection.Last().Value));
+                        if (m_yAxisDataCollection.ContainsKey(pointID))
+                            m_yAxisDataCollection[pointID] = values;
+                        else
+                            m_yAxisDataCollection.Add(pointID, values);
+                        
+                        if (m_yAxisSourceCollection.ContainsKey(pointID))
+                            m_yAxisSourceCollection[pointID] = new EnumerableDataSource<double>(m_yAxisDataCollection.Last().Value);
+                        else
+                            m_yAxisSourceCollection.Add(pointID, new EnumerableDataSource<double>(m_yAxisDataCollection.Last().Value));
+                        
+                        
                         m_yAxisSourceCollection[pointID].SetYMapping(y => y);
 
                         ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
@@ -564,12 +578,17 @@ namespace openPDCManager.Pages.Monitoring
 
                             if (line != null)
                             {
-                                m_lineGraphCollection.Add(pointID, line);
+                                if (!m_lineGraphCollection.ContainsKey(pointID))
+                                    m_lineGraphCollection.Add(pointID, line);
                                 inputMonitorData.Background = (SolidColorBrush)line.LinePen.Brush;
                             }
                         });
 
-                        m_currentValuesList.Add(pointID, inputMonitorData);
+                        if (m_currentValuesList.ContainsKey(pointID))
+                            m_currentValuesList[pointID] = inputMonitorData;
+                        else
+                            m_currentValuesList.Add(pointID, inputMonitorData);
+
                         ListBoxCurrentValues.Dispatcher.BeginInvoke((Action)delegate()
                         {
                             ListBoxCurrentValues.ItemsSource = m_currentValuesList;
@@ -736,8 +755,10 @@ namespace openPDCManager.Pages.Monitoring
                                     if (!m_pointsToPlot.ContainsKey(measurementInfo.PointID))
                                     {
                                         lock (m_pointsToPlot)
-                                            m_pointsToPlot.Add(measurementInfo.PointID, measurementInfo);
-
+                                        {
+                                            if (!m_pointsToPlot.ContainsKey(measurementInfo.PointID))
+                                                m_pointsToPlot.Add(measurementInfo.PointID, measurementInfo);
+                                        }
                                         StartChartRefreshTimer();
                                     }
                                 }

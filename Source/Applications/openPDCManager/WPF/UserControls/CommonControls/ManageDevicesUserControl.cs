@@ -31,15 +31,24 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using System.Windows.Controls;
 using System.Windows;
+using openPDCManager.Data.ServiceCommunication;
+using openPDCManager.Pages.Devices;
 
 namespace openPDCManager.UserControls.CommonControls
 {
     public partial class ManageDevicesUserControl
     {
+        #region [ Members ]
+
+        WindowsServiceClient serviceClient;
+
+        #endregion
+
         #region [ Methods ]
 
         void Initialize()
-        {  
+        {            
+            serviceClient = ((App)Application.Current).ServiceClient;         
         }
 
         void SendInitialize()
@@ -47,8 +56,13 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SendCommandToWindowsService(((App)Application.Current).RemoteStatusServiceUrl, 10, "Initialize " + Convert.ToInt32(TextBlockRuntimeID.Text));
-                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
+                if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                {
+                    string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + Convert.ToInt32(TextBlockRuntimeID.Text));
+                    sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
+                }
+                else
+                    sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);
             }
             catch (Exception ex)
             {
@@ -342,7 +356,27 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
 
+                //Update Metadata in the openPDC Service.
+                try
+                {
+                    WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
+                    if (device.HistorianID != null)
+                    {
+                        string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID);                        
+                        if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
+                    }
+                    if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                        CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
+                }
+                catch (Exception ex)
+                {
+                    CommonFunctions.LogException("SaveDevice.RefreshMetadata", ex);
+                }
+
                 //Navigate to Browse screen upon successful save.
+                BrowseDevicesUserControl browseDevices = new BrowseDevicesUserControl();
+                ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(browseDevices);
             }
             catch (Exception ex)
             {

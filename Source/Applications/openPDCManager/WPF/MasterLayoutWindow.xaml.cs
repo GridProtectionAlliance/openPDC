@@ -33,6 +33,9 @@ using openPDCManager.Pages.Monitoring;
 using openPDCManager.UserControls.CommonControls;
 using openPDCManager.UserControls.OutputStreamControls;
 using openPDCManager.Utilities;
+using openPDCManager.Data.ServiceCommunication;
+using openPDCManager.Data;
+using System.Windows.Media;
 
 namespace openPDCManager
 {
@@ -45,6 +48,7 @@ namespace openPDCManager
 
         const double layoutRootHeight = 900;
         const double layoutRootWidth = 1200;
+        WindowsServiceClient serviceClient;
 
         #endregion
 
@@ -67,17 +71,16 @@ namespace openPDCManager
         #region [ Windows Event Handlers ]
 
         void MasterLayoutWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            IsolatedStorageManager.SetDefuaultStorage(false);
-            //SystemMonitor test = new SystemMonitor();
-            //ContentFrame.Navigate(test);
+        {            
+            IsolatedStorageManager.SetDefuaultStorage(false);            
             HomePageUserControl home = new HomePageUserControl();
-            ContentFrame.Navigate(home);                       
+            ContentFrame.Navigate(home);            
         }
 
         void MasterLayoutWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Properties.Settings.Default.Save();
+            DisconnectFromService();
         }
 
         void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -90,6 +93,129 @@ namespace openPDCManager
         {
             if (e.ChangedButton == System.Windows.Input.MouseButton.Left)
                 this.DragMove();
+        }
+
+        void ConnectToService()
+        {
+            if (((App)Application.Current).RemoteStatusServiceUrl != null)
+            {
+                serviceClient = new WindowsServiceClient(((App)Application.Current).RemoteStatusServiceUrl);
+                try
+                {
+                    serviceClient.Helper.RemotingClient.ConnectionEstablished += new EventHandler(RemotingClient_ConnectionEstablished);
+                    serviceClient.Helper.RemotingClient.ConnectionTerminated += new EventHandler(RemotingClient_ConnectionTerminated);                    
+                    serviceClient.Helper.RemotingClient.MaxConnectionAttempts = -1;
+                    serviceClient.Helper.Connect();
+                    
+                    if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                    {
+                        EllipseConnectionState.Fill = Application.Current.Resources["GreenRadialGradientBrush"] as RadialGradientBrush;
+                        ToolTipService.SetToolTip(EllipseConnectionState, "Connected to openPDC Service");
+                    }
+                    else
+                    {
+                        EllipseConnectionState.Fill = Application.Current.Resources["RedRadialGradientBrush"] as RadialGradientBrush;
+                        ToolTipService.SetToolTip(EllipseConnectionState, "Disconnected from openPDC Service");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    CommonFunctions.LogException("MasterLayoutWindow_Loaded", ex);
+                }
+
+                ((App)Application.Current).ServiceClient = serviceClient;
+            }
+        }
+
+        void DisconnectFromService()
+        {
+            try
+            {
+                if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                    serviceClient.Helper.Disconnect();
+            }
+            catch { }
+        }
+                
+        void RemotingClient_ConnectionTerminated(object sender, EventArgs e)
+        {
+            EllipseConnectionState.Dispatcher.BeginInvoke((Action)delegate()
+            {
+                EllipseConnectionState.Fill = Application.Current.Resources["RedRadialGradientBrush"] as RadialGradientBrush;
+                ToolTipService.SetToolTip(EllipseConnectionState, "Disconnected from openPDC Service");
+
+                if (ContentFrame.Content.GetType() == typeof(OutputStreamsUserControl))
+                {
+                    OutputStreamsUserControl osuc = (OutputStreamsUserControl)ContentFrame.Content;
+                    osuc.ButtonInitialize.IsEnabled = false;
+                    osuc.ButtonInitialize.Foreground = new SolidColorBrush(Color.FromArgb(255, 100, 100, 100));
+                }
+                else if (ContentFrame.Content.GetType() == typeof(HistoriansUserControl))
+                {
+                    HistoriansUserControl historianUserControl = (HistoriansUserControl)ContentFrame.Content;
+                    historianUserControl.ButtonInitialize.IsEnabled = false;
+                    historianUserControl.ButtonInitialize.Foreground = new SolidColorBrush(Color.FromArgb(255, 100, 100, 100));
+                }
+                else if (ContentFrame.Content.GetType() == typeof(CalculatedMeasurementsUserControl))
+                {
+                    CalculatedMeasurementsUserControl calculatedMeasurementsUserControl = (CalculatedMeasurementsUserControl)ContentFrame.Content;
+                    calculatedMeasurementsUserControl.ButtonInitialize.IsEnabled = false;
+                    calculatedMeasurementsUserControl.ButtonInitialize.Foreground = new SolidColorBrush(Color.FromArgb(255, 100, 100, 100));
+                }
+                else if (ContentFrame.Content.GetType() == typeof(ManageDevicesUserControl))
+                {
+                    ManageDevicesUserControl manageDevicesUserControl = (ManageDevicesUserControl)ContentFrame.Content;
+                    manageDevicesUserControl.ButtonInitialize.IsEnabled = false;
+                    manageDevicesUserControl.ButtonInitialize.Foreground = new SolidColorBrush(Color.FromArgb(255, 100, 100, 100));
+                }
+                else if (ContentFrame.Content.GetType() == typeof(AdapterUserControl))
+                {
+                    AdapterUserControl adapterUserControl = (AdapterUserControl)ContentFrame.Content;
+                    adapterUserControl.ButtonInitialize.IsEnabled = false;
+                    adapterUserControl.ButtonInitialize.Foreground = new SolidColorBrush(Color.FromArgb(255, 100, 100, 100));
+                }
+            });
+        }
+
+        void RemotingClient_ConnectionEstablished(object sender, EventArgs e)
+        {
+            EllipseConnectionState.Dispatcher.BeginInvoke((Action)delegate()
+            {
+                EllipseConnectionState.Fill = Application.Current.Resources["GreenRadialGradientBrush"] as RadialGradientBrush;
+                ToolTipService.SetToolTip(EllipseConnectionState, "Connected to openPDC Service");
+
+                if (ContentFrame.Content.GetType() == typeof(OutputStreamsUserControl))
+                {
+                    OutputStreamsUserControl outputStreamUserControl = (OutputStreamsUserControl)ContentFrame.Content;
+                    outputStreamUserControl.ButtonInitialize.IsEnabled = true;
+                    outputStreamUserControl.ButtonInitialize.Foreground = new SolidColorBrush(Color.FromArgb(255, 9, 81, 136));
+                }
+                else if (ContentFrame.Content.GetType() == typeof(HistoriansUserControl))
+                {
+                    HistoriansUserControl historianUserControl = (HistoriansUserControl)ContentFrame.Content;
+                    historianUserControl.ButtonInitialize.IsEnabled = true;
+                    historianUserControl.ButtonInitialize.Foreground = new SolidColorBrush(Color.FromArgb(255, 9, 81, 136));
+                }
+                else if (ContentFrame.Content.GetType() == typeof(CalculatedMeasurementsUserControl))
+                {
+                    CalculatedMeasurementsUserControl calculatedMeasurementsUserControl = (CalculatedMeasurementsUserControl)ContentFrame.Content;
+                    calculatedMeasurementsUserControl.ButtonInitialize.IsEnabled = true;
+                    calculatedMeasurementsUserControl.ButtonInitialize.Foreground = new SolidColorBrush(Color.FromArgb(255, 9, 81, 136));
+                }
+                else if (ContentFrame.Content.GetType() == typeof(ManageDevicesUserControl))
+                {
+                    ManageDevicesUserControl manageDevicesUserControl = (ManageDevicesUserControl)ContentFrame.Content;
+                    manageDevicesUserControl.ButtonInitialize.IsEnabled = true;
+                    manageDevicesUserControl.ButtonInitialize.Foreground = new SolidColorBrush(Color.FromArgb(255, 9, 81, 136));
+                }
+                else if (ContentFrame.Content.GetType() == typeof(AdapterUserControl))
+                {
+                    AdapterUserControl adapterUserControl = (AdapterUserControl)ContentFrame.Content;
+                    adapterUserControl.ButtonInitialize.IsEnabled = true;
+                    adapterUserControl.ButtonInitialize.Foreground = new SolidColorBrush(Color.FromArgb(255, 9, 81, 136));
+                }
+
+            });            
         }
 
         #endregion
@@ -123,6 +249,9 @@ namespace openPDCManager
                 TextBlockNode.Text = ((Node)UserControlSelectNode.ComboboxNode.SelectedItem).Name;
             HomePageUserControl home = new HomePageUserControl();
             ContentFrame.Navigate(home);
+
+            if (serviceClient == null || serviceClient.Helper.RemotingClient.ConnectionString != ((App)Application.Current).RemoteStatusServiceUrl || serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Disconnected)
+                ConnectToService();
         }
 
         void UserControlSelectNode_NodeCollectionChanged(object sender, RoutedEventArgs e)

@@ -33,6 +33,7 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Pages.Manage;
 using openPDCManager.UserControls.CommonControls;
 using openPDCManager.Utilities;
+using openPDCManager.Data.ServiceCommunication;
 
 namespace openPDCManager.Pages.Devices
 {
@@ -132,6 +133,22 @@ namespace openPDCManager.Pages.Devices
                 string result = CommonFunctions.SaveDevice(device, false, 0, 0);
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
+
+                //Update Metadata in the openPDC Service.
+                try
+                {
+                    if (device.HistorianID != null)
+                    {
+                        string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID);
+                        WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
+                        if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    CommonFunctions.LogException("ButtonSave_Click.RefreshMetadata", ex);
+                }
 
             }
             catch (Exception ex)

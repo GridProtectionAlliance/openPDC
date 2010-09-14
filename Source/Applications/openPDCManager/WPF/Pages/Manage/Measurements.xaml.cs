@@ -32,6 +32,7 @@ using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
+using openPDCManager.Data.ServiceCommunication;
 
 namespace openPDCManager.Pages.Manage
 {
@@ -237,6 +238,23 @@ namespace openPDCManager.Pages.Manage
                     GetMeasurementsByDevice();
                 else
                     GetMeasurementList();
+
+                //Update Metadata in the openPDC Service.
+                try
+                {
+                    if (measurement.HistorianID != null)
+                    {
+                        string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)measurement.HistorianID);
+                        WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
+                        if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    CommonFunctions.LogException("SaveMeasurement.RefreshMetadata", ex);
+                }
+
                 ClearForm();
             }
             catch (Exception ex)

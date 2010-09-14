@@ -27,16 +27,23 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
+using openPDCManager.Data.ServiceCommunication;
 
 namespace openPDCManager.UserControls.CommonControls
 {
     public partial class CalculatedMeasurementsUserControl
     {
+        #region [ Members ]
+
+        WindowsServiceClient serviceClient;
+
+        #endregion
+
         #region [ Methods ]
 
         void Initialize()
-        {
-
+        {            
+            serviceClient = ((App)Application.Current).ServiceClient;         
         }
 
         void SendInitialize()
@@ -44,8 +51,14 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SendCommandToWindowsService(((App)Application.Current).RemoteStatusServiceUrl, 10, "Initialize " + Convert.ToInt32(TextBlockRuntimeID.Text));
-                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
+                if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                {
+                    string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + Convert.ToInt32(TextBlockRuntimeID.Text));
+                    sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
+                }
+                else
+                    sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);
+                
             }
             catch (Exception ex)
             {

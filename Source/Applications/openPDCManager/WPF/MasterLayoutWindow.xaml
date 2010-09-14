@@ -32,7 +32,10 @@
 
                     <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Background="{StaticResource HeaderBackgroundBrush}">
                         <StackPanel Orientation="Vertical"  HorizontalAlignment="Stretch">
-                            <TextBlock x:Name="TextBlockNode" Text="" Style="{StaticResource LargeWhiteTextWithEffectStyle}" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="TextBlockNode" Text="" Style="{StaticResource LargeWhiteTextWithEffectStyle}" />
+                                <Ellipse x:Name="EllipseConnectionState" Width="16" Height="16" Margin="5, 0, 5, 0" VerticalAlignment="Center"/>
+                            </StackPanel>                            
                             <TextBlock Text="openPDC Manager" Style="{StaticResource MainTitleStyle}" />
                         </StackPanel>
                     </StackPanel>

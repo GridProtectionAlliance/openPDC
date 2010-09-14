@@ -850,29 +850,29 @@ namespace openPDCManager.Data
             return returnValue;
         }
 
-        public static string SendCommandToWindowsService(string connectionString, int connectionAttempts, string command)
+        public static string SendCommandToWindowsService(WindowsServiceClient serviceClient, string command)
         {               
-            WindowsServiceClient m_serviceClient = new WindowsServiceClient(connectionString);
+            //WindowsServiceClient serviceClient = new WindowsServiceClient(connectionString);
             try
             {
-                m_serviceClient.Helper.RemotingClient.MaxConnectionAttempts = connectionAttempts;
-                m_serviceClient.Helper.Connect();
+                //serviceClient.Helper.RemotingClient.MaxConnectionAttempts = connectionAttempts;
+                //serviceClient.Helper.Connect();
 
-                if (m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                    m_serviceClient.Helper.SendRequest(command);
+                if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                    serviceClient.Helper.SendRequest(command);
                 else
-                    throw new Exception("Failed to Connect to openPDC Windows Service (" + connectionString + ").");
+                    throw new Exception("Failed to Connect to openPDC Windows Service (" + serviceClient.Helper.RemotingClient.ConnectionString + ").");
 
                 return "Successfully sent " + command + " command.";
             }
             finally
             {
-                try
-                {
-                    if (m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                        m_serviceClient.Helper.Disconnect();
-                }
-                catch { }
+                //try
+                //{
+                //    if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                //        serviceClient.Helper.Disconnect();
+                //}
+                //catch { }
             }
         }
 
@@ -1098,6 +1098,17 @@ namespace openPDCManager.Data
                     command.Parameters.Add(AddWithValue(command, "@id", outputStream.ID));
 
                 command.ExecuteNonQuery();
+
+                try
+                {
+                    // Generate Statistical Measurements for the device.
+                    //CommonPhasorServices.ValidateStatistics(connection.Connection, connection.AdapterType, "'" + outputStream.NodeID + "'", new Action<object, EventArgs<string>>(StatusMessageHandler), new Action<object, EventArgs<Exception>>(ProcessExceptionHandler));
+                }
+                catch (Exception ex)
+                {
+                    //Do not do anything. If this fails then we dont want to interrupt save operation.
+                    LogException("SaveOutputStream: PhasorDataSourceValidation", ex);
+                }
 
                 return "Output Stream Information Saved Successfully";
             }
@@ -2434,6 +2445,16 @@ namespace openPDCManager.Data
                     }
                 }
 
+                try
+                {
+                    // Generate Statistical Measurements for the device.
+                    //CommonPhasorServices.ValidateStatistics(connection.Connection, connection.AdapterType, "'" + device.NodeID + "'", new Action<object, EventArgs<string>>(StatusMessageHandler), new Action<object, EventArgs<Exception>>(ProcessExceptionHandler));
+                }
+                catch (Exception ex)
+                {
+                    //Do not do anything. If this fails then we dont want to interrupt save operation.
+                    LogException("SaveDevice: PhasorDataSourceValidation", ex);
+                }
                 return "Device Information Saved Successfully";
             }
             
@@ -2442,7 +2463,7 @@ namespace openPDCManager.Data
                 connection.Dispose();
             }
         }
-
+                
         public static Dictionary<int, string> GetDevices(DeviceType deviceType, string nodeID, bool isOptional)
         {
             DataConnection connection = new DataConnection();

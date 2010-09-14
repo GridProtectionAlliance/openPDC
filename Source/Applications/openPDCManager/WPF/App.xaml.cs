@@ -22,6 +22,7 @@
 //******************************************************************************************************
 
 using System.Windows;
+using openPDCManager.Data.ServiceCommunication;
 
 namespace openPDCManager
 {
@@ -30,6 +31,8 @@ namespace openPDCManager
     /// </summary>
     public partial class App : Application
     {
+        WindowsServiceClient m_serviceClient;
+
         #region [ Properties ]
 
         public string NodeValue { get; set; }
@@ -38,8 +41,11 @@ namespace openPDCManager
         public string RemoteStatusServiceUrl { get; set; }
         public string RealTimeStatisticServiceUrl { get; set; }
         //public ApplicationIdCredentialsProvider Credentials { get; set; }
+        public WindowsServiceClient ServiceClient { get; set; }
+        
 
         #endregion
+           
     }
 
 }
