@@ -1,5 +1,5 @@
 ﻿//******************************************************************************************************
-//  WelcomePage.xaml.cs - Gbtc
+//  WarningMessageScreen.xaml.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -18,41 +18,32 @@
 //  ----------------------------------------------------------------------------------------------------
 //  09/07/2010 - Stephen C. Wills
 //       Generated original version of source code.
+//  09/14/2010 - J. Ritchie Carroll
+//       Added help button that just browses to codeplex site for now...
 //
 //******************************************************************************************************
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Controls;
+using System.Diagnostics;
 
 namespace DatabaseSetupUtility
 {
     /// <summary>
-    /// Interaction logic for WelcomePage.xaml
+    /// Interaction logic for WarningMessageScreen.xaml
     /// </summary>
-    public partial class WelcomeScreen : UserControl, IScreen
+    public partial class WarningMessageScreen : UserControl, IScreen
     {
-
-        #region [ Members ]
-
-        // Fields
-
-        private IScreen m_nextPage;
-
-        #endregion
 
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new instance of the <see cref="WelcomeScreen"/> class.
+        /// Creates a new instance of the <see cref="WarningMessageScreen"/> class.
         /// </summary>
-        public WelcomeScreen()
+        public WarningMessageScreen()
         {
             InitializeComponent();
-            InitializeWelcomeMessage();
-
-            m_nextPage = new ExistingConfigurationScreen();
         }
 
         #endregion
@@ -62,13 +53,7 @@ namespace DatabaseSetupUtility
         /// <summary>
         /// Gets the screen to be displayed when the user clicks the "Next" button.
         /// </summary>
-        public IScreen NextScreen
-        {
-            get
-            {
-                return m_nextPage;
-            }
-        }
+        public IScreen NextScreen { get; set; }
 
         /// <summary>
         /// Gets a boolean indicating whether the user can advance to
@@ -90,7 +75,7 @@ namespace DatabaseSetupUtility
         {
             get
             {
-                return false;
+                return true;
             }
         }
 
@@ -132,25 +117,11 @@ namespace DatabaseSetupUtility
 
         #region [ Methods ]
 
-        // Initializes the welcome message based on the existence of the -install flag.
-        private void InitializeWelcomeMessage()
+        private void hyperlinkHelp_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            string[] args = Environment.GetCommandLineArgs();
-            bool installFlag = args.Contains("-install", StringComparer.CurrentCultureIgnoreCase);
-
-            if (installFlag)
-            {
-                m_welcomeMessageTextBlock.Text = "You now need to set up the openPDC configuration."
-                    + " This wizard will walk you through the needed steps to easily set up your system configuration.";
-            }
-            else
-            {
-                m_welcomeMessageTextBlock.Text = "Welcome to the openPDC configuration wizard."
-                    + " The next screens will walk you through the needed steps so you can easily set up your system configuration.";
-            }
+            Process.Start("http://openpdc.codeplex.com/documentation/");
         }
 
         #endregion
-
     }
 }

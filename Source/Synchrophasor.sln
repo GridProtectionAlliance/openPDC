@@ -119,7 +119,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Synchrophasor.vsmdi = Synchrophasor.vsmdi
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DatabaseSetupUtility", "DatabaseSetupUtility", "{F7821DF0-BD48-481E-9DF9-D64AEFD24F57}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConfigurationSetupUtility", "ConfigurationSetupUtility", "{F7821DF0-BD48-481E-9DF9-D64AEFD24F57}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MacrodyneController", "MacrodyneController", "{A2151D77-6595-41C0-BDB2-7689110EF7C6}"
 EndProject
@@ -179,8 +179,6 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "openPDCSetup64", "Applicati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF", "Applications\openPDCManager\WPF\WPF.csproj", "{66DE6E45-E538-480D-8928-9C86390E60FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseSetupUtility", "Tools\DatabaseSetupUtility\DatabaseSetupUtility.csproj", "{2A74EACF-8291-47C7-A2ED-0D58771F24E2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacrodyneController", "Tools\MacrodyneController\MacrodyneController.csproj", "{334BA160-26D6-4A3B-92E2-42DEB4381176}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COMTRADE", "Libraries\Adapters\COMTRADE\COMTRADE.csproj", "{9B93C212-786C-45C9-9B90-8CEFD24EF19D}"
@@ -204,9 +202,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimeSeriesFramework", "Time
 		Dependencies\TimeSeriesFramework\TimeSeriesFramework.XML = Dependencies\TimeSeriesFramework\TimeSeriesFramework.XML
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationCreationWizard", "Tools\ConfigurationCreator\ConfigurationCreationWizard.csproj", "{AD6D9140-F758-470E-B345-B8F5DF2F6B89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationSetupUtility", "Tools\ConfigurationSetupUtility\ConfigurationSetupUtility.csproj", "{2A74EACF-8291-47C7-A2ED-0D58771F24E2}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 25
+		SccNumberOfProjects = 26
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
 		SccLocalPath0 = .
@@ -290,22 +292,26 @@ Global
 		SccProjectTopLevelParentUniqueName20 = Synchrophasor.sln
 		SccProjectName20 = Applications/openPDCManager/WPF
 		SccLocalPath20 = Applications\\openPDCManager\\WPF
-		SccProjectUniqueName21 = Tools\\DatabaseSetupUtility\\DatabaseSetupUtility.csproj
+		SccProjectUniqueName21 = Tools\\MacrodyneController\\MacrodyneController.csproj
 		SccProjectTopLevelParentUniqueName21 = Synchrophasor.sln
-		SccProjectName21 = Tools/DatabaseSetupUtility
-		SccLocalPath21 = Tools\\DatabaseSetupUtility
-		SccProjectUniqueName22 = Tools\\MacrodyneController\\MacrodyneController.csproj
+		SccProjectName21 = Tools/MacrodyneController
+		SccLocalPath21 = Tools\\MacrodyneController
+		SccProjectUniqueName22 = Libraries\\Adapters\\COMTRADE\\COMTRADE.csproj
 		SccProjectTopLevelParentUniqueName22 = Synchrophasor.sln
-		SccProjectName22 = Tools/MacrodyneController
-		SccLocalPath22 = Tools\\MacrodyneController
-		SccProjectUniqueName23 = Libraries\\Adapters\\COMTRADE\\COMTRADE.csproj
+		SccProjectName22 = Libraries/Adapters/COMTRADE
+		SccLocalPath22 = Libraries\\Adapters\\COMTRADE
+		SccProjectUniqueName23 = Applications\\openPDCManager\\Web.Data\\Data.csproj
 		SccProjectTopLevelParentUniqueName23 = Synchrophasor.sln
-		SccProjectName23 = Libraries/Adapters/COMTRADE
-		SccLocalPath23 = Libraries\\Adapters\\COMTRADE
-		SccProjectUniqueName24 = Applications\\openPDCManager\\Web.Data\\Data.csproj
+		SccProjectName23 = Applications/openPDCManager/Web.Data
+		SccLocalPath23 = Applications\\openPDCManager\\Web.Data
+		SccProjectUniqueName24 = Tools\\ConfigurationCreator\\ConfigurationCreationWizard.csproj
 		SccProjectTopLevelParentUniqueName24 = Synchrophasor.sln
-		SccProjectName24 = Applications/openPDCManager/Web.Data
-		SccLocalPath24 = Applications\\openPDCManager\\Web.Data
+		SccProjectName24 = Tools/ConfigurationCreator
+		SccLocalPath24 = Tools\\ConfigurationCreator
+		SccProjectUniqueName25 = Tools\\ConfigurationSetupUtility\\ConfigurationSetupUtility.csproj
+		SccProjectTopLevelParentUniqueName25 = Synchrophasor.sln
+		SccProjectName25 = Tools/ConfigurationSetupUtility
+		SccLocalPath25 = Tools\\ConfigurationSetupUtility
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor.vsmdi
@@ -561,16 +567,6 @@ Global
 		{66DE6E45-E538-480D-8928-9C86390E60FE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{66DE6E45-E538-480D-8928-9C86390E60FE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{66DE6E45-E538-480D-8928-9C86390E60FE}.Release|x86.ActiveCfg = Release|Any CPU
-		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Release|x86.ActiveCfg = Release|Any CPU
 		{334BA160-26D6-4A3B-92E2-42DEB4381176}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{334BA160-26D6-4A3B-92E2-42DEB4381176}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{334BA160-26D6-4A3B-92E2-42DEB4381176}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -593,6 +589,28 @@ Global
 		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Release|Mixed Platforms.Build.0 = Release|x86
 		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Release|x86.ActiveCfg = Release|x86
 		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Release|x86.Build.0 = Release|x86
+		{AD6D9140-F758-470E-B345-B8F5DF2F6B89}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{AD6D9140-F758-470E-B345-B8F5DF2F6B89}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{AD6D9140-F758-470E-B345-B8F5DF2F6B89}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{AD6D9140-F758-470E-B345-B8F5DF2F6B89}.Debug|x86.ActiveCfg = Debug|x86
+		{AD6D9140-F758-470E-B345-B8F5DF2F6B89}.Debug|x86.Build.0 = Debug|x86
+		{AD6D9140-F758-470E-B345-B8F5DF2F6B89}.Release|Any CPU.ActiveCfg = Release|x86
+		{AD6D9140-F758-470E-B345-B8F5DF2F6B89}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{AD6D9140-F758-470E-B345-B8F5DF2F6B89}.Release|Mixed Platforms.Build.0 = Release|x86
+		{AD6D9140-F758-470E-B345-B8F5DF2F6B89}.Release|x86.ActiveCfg = Release|x86
+		{AD6D9140-F758-470E-B345-B8F5DF2F6B89}.Release|x86.Build.0 = Release|x86
+		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Debug|x86.ActiveCfg = Debug|x86
+		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Debug|x86.Build.0 = Debug|x86
+		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Release|x86.ActiveCfg = Release|x86
+		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -612,6 +630,7 @@ Global
 		{DDCC02C0-E3BE-4989-996E-DFB0402F47A5} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{F7821DF0-BD48-481E-9DF9-D64AEFD24F57} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{A2151D77-6595-41C0-BDB2-7689110EF7C6} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
+		{AD6D9140-F758-470E-B345-B8F5DF2F6B89} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{20A58D77-CB7C-444E-A084-C61B40639B60} = {3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}
 		{8A1BCFAA-19E8-408A-8C72-170B1211DC27} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{1338A569-A156-4122-8B65-8D4C147AA348} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}

@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=FrameworkElement, AncestorLevel=1}, Path=ActualWidth}">
     <DockPanel>
-        <Label Content="Database setup complete" Margin="10" HorizontalContentAlignment="Center" DockPanel.Dock="Top" FontSize="16" FontWeight="Bold" />
-        <TextBlock Name="textBlock1" Text="The database setup is complete. Click Finish to exit the Database Setup Utility." DockPanel.Dock="Bottom" TextAlignment="Center" TextWrapping="Wrap" Margin="20,0" />
+        <Label Content="Configuration setup complete" Margin="10" HorizontalContentAlignment="Center" DockPanel.Dock="Top" FontSize="16" FontWeight="Bold" />
+        <TextBlock Name="textBlock1" Text="The configuration setup is complete. Click Finish to exit the Configuration Setup Utility." DockPanel.Dock="Bottom" TextAlignment="Center" TextWrapping="Wrap" Margin="20,0" />
     </DockPanel>
 </UserControl>

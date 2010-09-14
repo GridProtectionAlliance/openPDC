@@ -6,7 +6,7 @@
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=FrameworkElement, AncestorLevel=1}, Path=ActualWidth}" HorizontalAlignment="Center">
     <DockPanel>
-        <Label Content="Welcome to the Database Setup Utility" DockPanel.Dock="Top" FontWeight="Bold" FontSize="16" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10" />
+        <Label Content="Welcome to the Configuration Setup Utility" DockPanel.Dock="Top" FontWeight="Bold" FontSize="16" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10" />
         <TextBlock Name="m_welcomeMessageTextBlock" Text="" TextAlignment="Center" TextWrapping="Wrap" Margin="20,0" DockPanel.Dock="Bottom" />
     </DockPanel>
 </UserControl>

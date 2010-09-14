@@ -1,5 +1,5 @@
 ﻿//******************************************************************************************************
-//  WarningMessageScreen.xaml.cs - Gbtc
+//  WelcomePage.xaml.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -23,24 +23,36 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls;
 
 namespace DatabaseSetupUtility
 {
     /// <summary>
-    /// Interaction logic for WarningMessageScreen.xaml
+    /// Interaction logic for WelcomePage.xaml
     /// </summary>
-    public partial class WarningMessageScreen : UserControl, IScreen
+    public partial class WelcomeScreen : UserControl, IScreen
     {
+
+        #region [ Members ]
+
+        // Fields
+
+        private IScreen m_nextPage;
+
+        #endregion
 
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new instance of the <see cref="WarningMessageScreen"/> class.
+        /// Creates a new instance of the <see cref="WelcomeScreen"/> class.
         /// </summary>
-        public WarningMessageScreen()
+        public WelcomeScreen()
         {
             InitializeComponent();
+            InitializeWelcomeMessage();
+
+            m_nextPage = new ExistingConfigurationScreen();
         }
 
         #endregion
@@ -50,7 +62,13 @@ namespace DatabaseSetupUtility
         /// <summary>
         /// Gets the screen to be displayed when the user clicks the "Next" button.
         /// </summary>
-        public IScreen NextScreen { get; set; }
+        public IScreen NextScreen
+        {
+            get
+            {
+                return m_nextPage;
+            }
+        }
 
         /// <summary>
         /// Gets a boolean indicating whether the user can advance to
@@ -72,7 +90,7 @@ namespace DatabaseSetupUtility
         {
             get
             {
-                return true;
+                return false;
             }
         }
 
@@ -111,5 +129,25 @@ namespace DatabaseSetupUtility
         public Action UpdateNavigation { get; set; }
 
         #endregion
+
+        #region [ Methods ]
+
+        // Initializes the welcome message based on the existence of the -install flag.
+        private void InitializeWelcomeMessage()
+        {
+            string[] args = Environment.GetCommandLineArgs();
+            bool installFlag = args.Contains("-install", StringComparer.CurrentCultureIgnoreCase);
+
+            if (installFlag)
+                m_welcomeMessageTextBlock.Text = "You now need to set up the openPDC configuration.\r\n";
+            else
+                m_welcomeMessageTextBlock.Text = "";
+
+            
+            m_welcomeMessageTextBlock.Text += "\r\nThis wizard will walk you through the needed steps so you can easily set up your system configuration.";
+        }
+
+        #endregion
+
     }
 }

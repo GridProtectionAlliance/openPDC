@@ -13,7 +13,7 @@
                 <RowDefinition />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <TextBlock Text="Please wait while the setup utility configures your database." Margin="20,0" TextAlignment="Center" TextWrapping="Wrap" />
+            <TextBlock Text="Please wait while the utility initializes your configuration." Margin="20,0" TextAlignment="Center" TextWrapping="Wrap" />
             <TextBox Name="m_setupStatusTextBox" TextWrapping="WrapWithOverflow" Margin="20,10" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" IsReadOnly="True" Grid.Row="1" />
             <ProgressBar Grid.Row="2" Height="20" Margin="20,10" Name="m_progressBar" />
         </Grid>
