@@ -199,6 +199,8 @@ namespace DatabaseSetupUtility
 
                 if (!m_state.ContainsKey("encryptSqlServerConnectionStrings"))
                     m_state.Add("encryptSqlServerConnectionStrings", false);
+
+                m_databaseNameTextBox.Text = migrate ? "openPDCv2" : "openPDC";
             }
         }
 

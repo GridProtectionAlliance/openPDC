@@ -54,6 +54,7 @@ namespace DatabaseSetupUtility
         private bool m_canCancel;
         private IScreen m_nextScreen;
         private Dictionary<string, object> m_state;
+        private string m_oldConnectionString;
 
         #endregion
 
@@ -207,6 +208,7 @@ namespace DatabaseSetupUtility
             {
                 string filePath = null;
                 string destination = m_state["accessDatabaseFilePath"].ToString();
+                string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + destination;
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
 
@@ -234,7 +236,9 @@ namespace DatabaseSetupUtility
 
                 // Modify the openPDC configuration file.
                 AppendStatusMessage("Attempting to modify configuration files...");
-                ModifyConfigFiles("Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + destination, "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter", false);
+                ModifyConfigFiles(connectionString, "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter", false);
+                m_state["oldOleDbConnectionString"] = m_oldConnectionString;
+                m_state["newOleDbConnectionString"] = connectionString;
                 AppendStatusMessage("Modification of configuration files was successful.");
                 OnSetupSucceeded();
             }
@@ -252,12 +256,17 @@ namespace DatabaseSetupUtility
 
             try
             {
+                MySqlSetup oldConnectionStringSetup = new MySqlSetup();
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+                string adminUserName, adminPassword;
 
                 mySqlSetup = m_state["mySqlSetup"] as MySqlSetup;
                 mySqlSetup.OutputDataReceived += MySqlSetup_OutputDataReceived;
                 mySqlSetup.ErrorDataReceived += MySqlSetup_ErrorDataReceived;
+                m_state["newOleDbConnectionString"] = mySqlSetup.ConnectionString;
+                adminUserName = mySqlSetup.UserName;
+                adminPassword = mySqlSetup.Password;
 
                 if (!existing || migrate)
                 {
@@ -324,6 +333,12 @@ namespace DatabaseSetupUtility
                 // Modify the openPDC configuration file.
                 AppendStatusMessage("Attempting to modify configuration files...");
                 ModifyConfigFiles(mySqlSetup.ConnectionString, "AssemblyName={MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter", Convert.ToBoolean(m_state["encryptMySqlConnectionStrings"]));
+
+                oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
+                oldConnectionStringSetup.UserName = adminUserName;
+                oldConnectionStringSetup.Password = adminPassword;
+                m_state["oldOleDbConnectionString"] = oldConnectionStringSetup.OleDbConnectionString;
+
                 AppendStatusMessage("Modification of configuration files was successful.");
                 OnSetupSucceeded();
             }
@@ -349,12 +364,17 @@ namespace DatabaseSetupUtility
 
             try
             {
+                SqlServerSetup oldConnectionStringSetup = new SqlServerSetup();
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+                string adminUserName, adminPassword;
 
                 sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;
                 sqlServerSetup.OutputDataReceived += SqlServerSetup_OutputDataReceived;
                 sqlServerSetup.ErrorDataReceived += SqlServerSetup_ErrorDataReceived;
+                m_state["newOleDbConnectionString"] = sqlServerSetup.OleDbConnectionString;
+                adminUserName = sqlServerSetup.UserName;
+                adminPassword = sqlServerSetup.Password;
 
                 if (!existing || migrate)
                 {
@@ -389,6 +409,8 @@ namespace DatabaseSetupUtility
                         AppendStatusMessage(string.Format("{0} ran successfully.", scriptName));
                         AppendStatusMessage(string.Empty);
                     }
+
+                    m_state["oleDbConnectionString"] = "Provider=SQLOLEDB; " + sqlServerSetup.ConnectionString;
 
                     // Create new SQL Server database user.
                     if (createNewUser)
@@ -431,6 +453,12 @@ namespace DatabaseSetupUtility
                 // Modify the openPDC configuration file.
                 AppendStatusMessage("Attempting to modify configuration files...");
                 ModifyConfigFiles(sqlServerSetup.ConnectionString, "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter", Convert.ToBoolean(m_state["encryptSqlServerConnectionStrings"]));
+
+                oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
+                oldConnectionStringSetup.UserName = adminUserName;
+                oldConnectionStringSetup.Password = adminPassword;
+                m_state["oldOleDbConnectionString"] = oldConnectionStringSetup.OleDbConnectionString;
+
                 AppendStatusMessage("Modification of configuration files was successful.");
                 OnSetupSucceeded();
             }
@@ -517,6 +545,16 @@ namespace DatabaseSetupUtility
                         child.Attributes["value"].Value = dataProviderString;
                     else if (child.Attributes["name"].Value == "ConnectionString")
                     {
+                        if (m_oldConnectionString == null)
+                        {
+                            // Retrieve the old connection string from the config file.
+                            m_oldConnectionString = child.Attributes["value"].Value;
+
+                            if (Convert.ToBoolean(child.Attributes["encrypted"].Value))
+                                m_oldConnectionString = Cipher.Decrypt(m_oldConnectionString, DefaultCryptoKey, CryptoStrength);
+                        }
+
+                        // Modify the config file settings to the new values.
                         child.Attributes["value"].Value = connectionString;
                         child.Attributes["encrypted"].Value = encrypted.ToString();
                     }

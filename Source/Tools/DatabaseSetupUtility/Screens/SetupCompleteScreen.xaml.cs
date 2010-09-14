@@ -24,7 +24,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Controls;
+using TVA.Configuration;
+using TVA.IO;
 
 namespace DatabaseSetupUtility
 {
@@ -136,6 +139,42 @@ namespace DatabaseSetupUtility
 
                     try
                     {
+                        string dataFolder = FilePath.GetApplicationDataFolder();
+                        string migrationDataFolder = dataFolder + "\\..\\DataMigrationUtility";
+                        string oldOleDbConnectionString = State["oldOleDbConnectionString"].ToString();
+                        string newOleDbConnectionString = State["newOleDbConnectionString"].ToString();
+                        string databaseType = State["databaseType"].ToString().Replace(" ", "");
+                        ConfigurationFile configFile = null;
+                        CategorizedSettingsElementCollection applicationSettings = null;
+
+                        // Copy user-level DataMigrationUtility config file to the DatabaseSetupUtility application folder.
+                        if (File.Exists(migrationDataFolder + "\\Settings.xml"))
+                        {
+                            if (!Directory.Exists(dataFolder))
+                                Directory.CreateDirectory(dataFolder);
+
+                            File.Copy(migrationDataFolder + "\\Settings.xml", dataFolder + "\\Settings.xml", true);
+                        }
+
+                        // Modify OleDB configuration file settings for the DataMigrationUtility.
+                        configFile = ConfigurationFile.Open("DataMigrationUtility.exe.config");
+                        applicationSettings = configFile.Settings["applicationSettings"];
+                        applicationSettings["FromConnectionString"].Value = oldOleDbConnectionString;
+                        applicationSettings["FromDataType"].Value = databaseType;
+                        applicationSettings["ToConnectionString"].Value = newOleDbConnectionString;
+                        applicationSettings["ToDataType"].Value = databaseType;
+                        configFile.Save();
+
+                        // Copy user-level DatabaseSetupUtility config file to DataMigrationUtility application folder.
+                        if (File.Exists(dataFolder + "\\Settings.xml"))
+                        {
+                            if (!Directory.Exists(migrationDataFolder))
+                                Directory.CreateDirectory(migrationDataFolder);
+
+                            File.Copy(dataFolder + "\\Settings.xml", migrationDataFolder + "\\Settings.xml", true);
+                        }
+
+                        // Run the DataMigrationUtility.
                         migrationProcess = new Process();
                         migrationProcess.StartInfo.FileName = "DataMigrationUtility.exe";
                         migrationProcess.StartInfo.UseShellExecute = false;

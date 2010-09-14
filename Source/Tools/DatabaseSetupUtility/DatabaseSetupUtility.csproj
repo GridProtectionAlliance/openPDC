@@ -78,6 +78,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -87,8 +88,8 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="TVA.Core">
-      <HintPath>..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
+    <Reference Include="TVA.Core, Version=4.0.1.56957, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>C:\Projects\openPDC\Synchrophasor\Current Version\Source\Dependencies\TVA\TVA.Core.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />

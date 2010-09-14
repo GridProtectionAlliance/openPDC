@@ -167,6 +167,37 @@ namespace DatabaseSetupUtility
             }
         }
 
+        /// <summary>
+        /// Converts the current settings to an OleDB connection string.
+        /// </summary>
+        public string OleDbConnectionString
+        {
+            get
+            {
+                StringBuilder builder = new StringBuilder();
+
+                builder.Append("Provider=MySQLProv");
+                builder.Append("; location=");
+                builder.Append(HostName.Replace("localhost", "MACHINE"));
+                builder.Append("; Data Source=");
+                builder.Append(DatabaseName);
+
+                if (!string.IsNullOrEmpty(UserName))
+                {
+                    builder.Append("; User Id=");
+                    builder.Append(UserName);
+                }
+
+                if (!string.IsNullOrEmpty(Password))
+                {
+                    builder.Append("; Password=");
+                    builder.Append(Password);
+                }
+
+                return builder.ToString();
+            }
+        }
+
         #endregion
 
         #region [ Methods ]

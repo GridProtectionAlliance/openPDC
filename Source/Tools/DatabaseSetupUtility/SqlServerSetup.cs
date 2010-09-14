@@ -167,6 +167,17 @@ namespace DatabaseSetupUtility
             }
         }
 
+        /// <summary>
+        /// Converts the current settings to an OleDB connection string.
+        /// </summary>
+        public string OleDbConnectionString
+        {
+            get
+            {
+                return "Provider=SQLOLEDB; " + ConnectionString;
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
