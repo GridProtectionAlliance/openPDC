@@ -63,7 +63,7 @@ namespace openPDCManager.UserControls.CommonControls
         {
             m_serviceClient.Helper.ReceivedServiceUpdate -= Helper_ReceivedServiceUpdate;
             m_serviceClient.Helper.ReceivedServiceResponse -= Helper_ReceivedServiceResponse;
-            m_serviceClient.Dispose();
+            //m_serviceClient.Dispose();
         }
 
         void SendRequest()
@@ -73,8 +73,10 @@ namespace openPDCManager.UserControls.CommonControls
 
         void ReconnectToService()
         {
-            m_serviceClient = new WindowsServiceClient(((App)Application.Current).RemoteStatusServiceUrl);
-            m_serviceClient.Helper.RemotingClient.MaxConnectionAttempts = 10;
+            //m_serviceClient = new WindowsServiceClient(((App)Application.Current).RemoteStatusServiceUrl);
+            //m_serviceClient.Helper.RemotingClient.MaxConnectionAttempts = 10;
+
+            m_serviceClient = ((App)Application.Current).ServiceClient;
             m_serviceClient.Helper.ReceivedServiceUpdate += new EventHandler<TVA.EventArgs<UpdateType, string>>(Helper_ReceivedServiceUpdate);        // += ClientHelper_ReceivedServiceUpdate;
             m_serviceClient.Helper.ReceivedServiceResponse +=new EventHandler<TVA.EventArgs<ServiceResponse>>(Helper_ReceivedServiceResponse);          //+= ClientHelper_ReceivedServiceResponse;
             //ThreadPool.QueueUserWorkItem(ConnectWindowsServiceClient, m_serviceClient);
@@ -133,19 +135,19 @@ namespace openPDCManager.UserControls.CommonControls
 
         void ConnectWindowsServiceClient(object state)
         {
-            try
-            {
-                ((WindowsServiceClient)state).Helper.Connect();
-            }
-            catch (Exception ex)
-            {
-                CommonFunctions.LogException("WPF.ConnectWindowsServiceClient", ex);
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Connect to Windows Service (" + ((App)Application.Current).RemoteStatusServiceUrl + ").", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
-                        ButtonType.OkOnly);                
-                sm.Owner = Window.GetWindow(this);
-                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;                
-                sm.ShowPopup();
-            }
+            //try
+            //{
+            //    ((WindowsServiceClient)state).Helper.Connect();
+            //}
+            //catch (Exception ex)
+            //{
+            //    CommonFunctions.LogException("WPF.ConnectWindowsServiceClient", ex);
+            //    SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Connect to Windows Service (" + ((App)Application.Current).RemoteStatusServiceUrl + ").", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+            //            ButtonType.OkOnly);                
+            //    sm.Owner = Window.GetWindow(this);
+            //    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;                
+            //    sm.ShowPopup();
+            //}
 
             if (((WindowsServiceClient)state).Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                 DisplayMessage(UpdateType.Information, ((WindowsServiceClient)state).CachedStatus);
