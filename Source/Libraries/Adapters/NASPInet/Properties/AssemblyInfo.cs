@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 
 // Assembly identity attributes.
-[assembly: AssemblyVersion("1.1.93.57252")]
+[assembly: AssemblyVersion("1.1.94.57254")]
 
 // Informational attributes.
 [assembly: AssemblyCompany("Grid Protection Alliance")]
