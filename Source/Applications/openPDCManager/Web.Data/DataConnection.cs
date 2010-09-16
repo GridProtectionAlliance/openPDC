@@ -37,26 +37,26 @@ namespace openPDCManager.Data
 	/// <summary>
 	/// Creates a new <see cref="IDbConnection"/> to configured ADO.NET data source.
 	/// </summary>
-    public class DataConnection : IDisposable
-    {
-        #region [ Members ]
+	public class DataConnection : IDisposable
+	{
+		#region [ Members ]
 
-        // Fields
-        IDbConnection m_connection;
-        private bool m_disposed;
+		// Fields
+		IDbConnection m_connection;
+		private bool m_disposed;
 
-        #endregion
+		#endregion
 
-        #region [ Constructors ]
+		#region [ Constructors ]
 
-        /// <summary>
-        /// Creates a new <see cref="DataConnection"/>.
-        /// </summary>
-        public DataConnection()
-        {
-            // Only need to establish data types and load settings once
-            if (s_connectionType == null || string.IsNullOrEmpty(s_connectionString))
-            {
+		/// <summary>
+		/// Creates a new <see cref="DataConnection"/>.
+		/// </summary>
+		public DataConnection()
+		{
+			// Only need to establish data types and load settings once
+			if (s_connectionType == null || string.IsNullOrEmpty(s_connectionString))
+			{
 				// Load connection settings from the system settings category				
 				ConfigurationFile config = ConfigurationFile.Current; //new ConfigurationFile("~/web.config", ApplicationType.Web);
 				CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
@@ -86,91 +86,91 @@ namespace openPDCManager.Data
 				if (string.IsNullOrEmpty(adapterTypeName))
 					throw new NullReferenceException("Database adapter type was undefined.");
 
-                assembly = Assembly.Load(new AssemblyName(assemblyName));
-                s_connectionType = assembly.GetType(connectionTypeName);
-                s_adapterType = assembly.GetType(adapterTypeName);
-            }
+				assembly = Assembly.Load(new AssemblyName(assemblyName));
+				s_connectionType = assembly.GetType(connectionTypeName);
+				s_adapterType = assembly.GetType(adapterTypeName);
+			}
 
-            // Open ADO.NET provider connection
-            m_connection = (IDbConnection)Activator.CreateInstance(s_connectionType);
-            m_connection.ConnectionString = s_connectionString;			
-            m_connection.Open();
-        }
+			// Open ADO.NET provider connection
+			m_connection = (IDbConnection)Activator.CreateInstance(s_connectionType);
+			m_connection.ConnectionString = s_connectionString;			
+			m_connection.Open();
+		}
 
-        /// <summary>
-        /// Releases the unmanaged resources before the <see cref="DataConnection"/> object is reclaimed by <see cref="GC"/>.
-        /// </summary>
-        ~DataConnection()
-        {
-            Dispose(false);
-        }
+		/// <summary>
+		/// Releases the unmanaged resources before the <see cref="DataConnection"/> object is reclaimed by <see cref="GC"/>.
+		/// </summary>
+		~DataConnection()
+		{
+			Dispose(false);
+		}
 
-        #endregion
+		#endregion
 
-        #region [ Properties ]
+		#region [ Properties ]
 
-        /// <summary>
-        /// Gets an open <see cref="IDbConnection"/> to configured ADO.NET data source.
-        /// </summary>
-        public IDbConnection Connection
-        {
-            get
-            {
-                return m_connection;
-            }
-        }
+		/// <summary>
+		/// Gets an open <see cref="IDbConnection"/> to configured ADO.NET data source.
+		/// </summary>
+		public IDbConnection Connection
+		{
+			get
+			{
+				return m_connection;
+			}
+		}
 
-        public Type AdapterType
-        {
-            get { return s_adapterType; }
-        }
+		public Type AdapterType
+		{
+			get { return s_adapterType; }
+		}
 
-        #endregion
+		#endregion
 
-        #region [ Methods ]
+		#region [ Methods ]
 
-        /// <summary>
-        /// Releases all the resources used by the <see cref="DataConnection"/> object.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+		/// <summary>
+		/// Releases all the resources used by the <see cref="DataConnection"/> object.
+		/// </summary>
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 
-        /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="DataConnection"/> object and optionally releases the managed resources.
-        /// </summary>
-        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!m_disposed)
-            {
-                try
-                {
-                    if (disposing)
-                    {
-                        if (m_connection != null)
-                            m_connection.Dispose();
-                        m_connection = null;
-                    }
-                }
-                finally
-                {
-                    m_disposed = true;  // Prevent duplicate dispose.
-                }
-            }
-        }
-        
-        #endregion
+		/// <summary>
+		/// Releases the unmanaged resources used by the <see cref="DataConnection"/> object and optionally releases the managed resources.
+		/// </summary>
+		/// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!m_disposed)
+			{
+				try
+				{
+					if (disposing)
+					{
+						if (m_connection != null)
+							m_connection.Dispose();
+						m_connection = null;
+					}
+				}
+				finally
+				{
+					m_disposed = true;  // Prevent duplicate dispose.
+				}
+			}
+		}
+		
+		#endregion
 
-        #region [ Static ]
+		#region [ Static ]
 
-        // Static Fields
-        static Type s_connectionType;
-        static Type s_adapterType;
-        static string s_connectionString;
+		// Static Fields
+		static Type s_connectionType;
+		static Type s_adapterType;
+		static string s_connectionString;
 
-        #endregion        
-    }
+		#endregion        
+	}
 }

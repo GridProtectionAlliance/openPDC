@@ -216,21 +216,48 @@ namespace openPDCManager.UserControls.CommonControls
             }
 
             //Update Metadata in the openPDC Service.
+            WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
             try
             {
                 if (historianID != null)
                 {
-                    string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)historianID);
-                    WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
-                    if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                    string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)historianID);                    
+                    if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                         CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
                 }
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("SaveWizardConfigurationInfo.RefreshMetadata", ex);
+                CommonFunctions.LogException("SaveWizardConfigurationInfo.RefreshMetadata", ex);                
             }
 
+            //Send Initialize command to openPDC windows service.
+            if (parentID != null)   // devices are being added to PDC then initialize PDC only and not individual devices.
+            {
+                string runtimeID = CommonFunctions.GetRuntimeID("Device", (int)parentID);
+                if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + runtimeID);
+            }
+            else    //Otherwise go through the list and intialize each device by retrieving its runtime ID from database.
+            {
+                try
+                {
+                    foreach (WizardDeviceInfo deviceInfo in wizardDeviceInfoList)
+                    {
+                        if (deviceInfo.Include)
+                        {
+                            Device device = CommonFunctions.GetDeviceByAcronym(deviceInfo.Acronym);
+                            if (device != null)
+                            {
+                                string runtimeID = CommonFunctions.GetRuntimeID("Device", device.ID);
+                                if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + runtimeID);
+                            }
+                        }
+                    }
+                }
+                catch { }
+            }
             nextButtonClicked = false;
             if (m_activityWindow != null)
                 m_activityWindow.Close();

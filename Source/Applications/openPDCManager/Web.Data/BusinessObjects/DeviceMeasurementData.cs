@@ -33,6 +33,7 @@ namespace openPDCManager.Data.BusinessObjects
 		public string CompanyName { get; set; }
         public bool IsExpanded { get; set; }
         public string StatusColor { get; set; }
+        public bool Enabled { get; set; }
         public ObservableCollection<DeviceInfo> DeviceList { get; set; }
 	}
 
@@ -47,6 +48,7 @@ namespace openPDCManager.Data.BusinessObjects
 		public string ParentAcronym { get; set; }
         public bool IsExpanded { get; set; }
         public string StatusColor { get; set; }
+        public bool Enabled { get; set; }
 		public ObservableCollection<MeasurementInfo> MeasurementList { get; set; }
 	}
 

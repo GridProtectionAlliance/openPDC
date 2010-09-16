@@ -328,7 +328,10 @@ namespace openPDCManager.Pages.Monitoring
                     foreach (DeviceMeasurementData deviceMeasurement in m_deviceMeasurementDataList)
                     {
                         int statusPointID;
-                        if (m_deviceIDsWithStatusPointIDs.TryGetValue(deviceMeasurement.ID, out statusPointID))
+
+                        if (!deviceMeasurement.Enabled && deviceMeasurement.StatusColor != "Transparent")
+                            deviceMeasurement.StatusColor = "Gray";
+                        else if (m_deviceIDsWithStatusPointIDs.TryGetValue(deviceMeasurement.ID, out statusPointID))
                         {
                             if (timeTaggedMeasurements.ContainsKey(statusPointID))
                             {
@@ -341,7 +344,9 @@ namespace openPDCManager.Pages.Monitoring
 
                         foreach (DeviceInfo device in deviceMeasurement.DeviceList)
                         {
-                            if (device.ID != null)
+                            if (!deviceMeasurement.Enabled && deviceMeasurement.StatusColor != "Transparent")
+                                device.StatusColor = "Gray";
+                            else if (device.ID != null)
                             {
                                 if (m_deviceIDsWithStatusPointIDs.TryGetValue((int)device.ID, out statusPointID))
                                 {
@@ -393,7 +398,14 @@ namespace openPDCManager.Pages.Monitoring
                                     measurement.CurrentQuality = timeTaggedMeasurement.Quality;
                                     if (measurement.SignalAcronym == "FLAG")
                                     {
-                                        if (deviceMeasurement.StatusColor == "Red")
+                                        if (!deviceMeasurement.Enabled && deviceMeasurement.StatusColor != "Transparent")
+                                        {
+                                            deviceMeasurement.StatusColor = "Gray";
+                                            device.StatusColor = "Gray";
+                                        }
+                                        else if (!device.Enabled)
+                                            device.StatusColor = "Gray";
+                                        else if (deviceMeasurement.StatusColor == "Red")
                                             device.StatusColor = "Red";
                                         else if (timeTaggedMeasurement.Quality.ToUpper() == "GOOD")
                                             device.StatusColor = "Green";

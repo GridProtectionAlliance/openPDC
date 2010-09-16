@@ -51,18 +51,13 @@ namespace openPDCManager.UserControls.OutputStreamControls
             SystemMessages sm;
             try
             {
-                if (serviceClient != null)
+                if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                 {
-                    if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                    {
-                        string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + Convert.ToInt32(TextBlockRuntimeID.Text));
-                        sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
-                    }
-                    else
-                        sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);
+                    string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + TextBlockRuntimeID.Text);
+                    sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
                 }
                 else
-                    sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);
+                    sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);             
             }
             catch (Exception ex)
             {
@@ -79,20 +74,15 @@ namespace openPDCManager.UserControls.OutputStreamControls
         {
             SystemMessages sm;
             try
-            {
-                if (serviceClient != null)
+            {                
+                if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                 {
-                string runtimeID = CommonFunctions.GetRuntimeID("OutputStream", outputStreamID);
-                if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                {
+                    string runtimeID = CommonFunctions.GetRuntimeID("OutputStream", outputStreamID);
                     string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " UpdateConfiguration");
                     sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
                 }
                 else
-                    sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);
-                }
-                else
-                    sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);
+                    sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);                             
             }
             catch (Exception ex)
             {
@@ -160,7 +150,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 try
                 {                    
                         WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
-                        if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)                 
+                        if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)                 
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.                 
                 }
                 catch (Exception ex)

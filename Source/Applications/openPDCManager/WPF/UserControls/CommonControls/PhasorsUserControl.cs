@@ -58,13 +58,25 @@ namespace openPDCManager.UserControls.CommonControls
                 try
                 {
                     Device device = CommonFunctions.GetDeviceByDeviceID(phasor.DeviceID);
+                    WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
 
-                    if (device.HistorianID != null)
+                    if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                     {
-                        string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID);
-                        WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
-                        if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                        if (device.HistorianID != null)
+                        {
+                            string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID);                           
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
+                        }
+
+                        if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.
+                        {
+                            if (device.ParentID == null)
+                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID("Device", device.ID));
+                            else
+                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID("Device", (int)device.ParentID));
+                        }
+                        else
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
                     }
                 }
                 catch (Exception ex)

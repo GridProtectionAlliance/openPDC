@@ -55,19 +55,14 @@ namespace openPDCManager.UserControls.CommonControls
         {
             SystemMessages sm;
             try
-            {
-                if (serviceClient != null)
+            {                
+                if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                 {
-                    if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                    {
-                        string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + Convert.ToInt32(TextBlockRuntimeID.Text));
-                        sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
-                    }
-                    else
-                        sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);
+                    string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + Convert.ToInt32(TextBlockRuntimeID.Text));
+                    sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
                 }
                 else
-                    sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);
+                    sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);             
             }
             catch (Exception ex)
             {
@@ -354,7 +349,7 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 string result = CommonFunctions.SaveDevice(device, isNew, digitalCount, analogCount);
-                ClearForm();
+                
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -367,11 +362,14 @@ namespace openPDCManager.UserControls.CommonControls
                     WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
                     if (device.HistorianID != null)
                     {
-                        string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID);                        
-                        if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                        string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID);
+                        if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
                     }
-                    if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+
+                    if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.
+                        SendInitialize();
+                    else if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                         CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
                 }
                 catch (Exception ex)
@@ -379,6 +377,7 @@ namespace openPDCManager.UserControls.CommonControls
                     CommonFunctions.LogException("SaveDevice.RefreshMetadata", ex);
                 }
 
+                ClearForm();
                 //Navigate to Browse screen upon successful save.
                 BrowseDevicesUserControl browseDevices = new BrowseDevicesUserControl();
                 ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(browseDevices);

@@ -176,7 +176,11 @@ namespace openPDCManager.Data
 
         public static List<WizardDeviceInfo> GetWizardConfigurationInfo(Stream inputStream)
         {				
-            return ParseConfigurationFrame(TVA.PhasorProtocols.Common.DeserializeConfigurationFrame(inputStream));
+            SoapFormatter sf = new SoapFormatter();
+            sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
+            sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
+            IConfigurationFrame configurationFrame = sf.Deserialize(inputStream) as IConfigurationFrame;								
+            return ParseConfigurationFrame(configurationFrame);
         }
 
         public static List<WizardDeviceInfo> ParseConfigurationFrame(IConfigurationFrame configurationFrame)
@@ -644,11 +648,19 @@ namespace openPDCManager.Data
                         
                         foreach (XElement element in timeSeriesDataPoints.Element("TimeSeriesDataPoints").Elements("TimeSeriesDataPoint"))
                         {
+                            DateTime sourceDateTime;
+                            string quality;
+                            //if timestamp is older than 30 seconds, report unknown quality.
+                            if (DateTime.TryParseExact(element.Element("Time").Value, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out sourceDateTime) && DateTime.UtcNow.Subtract(sourceDateTime).TotalSeconds > 30)
+                                quality = "Unknown";
+                            else
+                                quality = element.Element("Quality").Value;
+
                             timeSeriesData.Add(new TimeSeriesDataPointDetail()
                             {                        
                                 TimeStamp =  element.Element("Time").Value,
                                 Value = Convert.ToDouble(element.Element("Value").Value),
-                                Quality = element.Element("Quality").Value
+                                Quality = quality
                             });                            
                         }
                     }
@@ -678,13 +690,21 @@ namespace openPDCManager.Data
                         XElement timeSeriesDataPoints = XElement.Parse(reader.ReadToEnd());
 
                         foreach (XElement element in timeSeriesDataPoints.Element("TimeSeriesDataPoints").Elements("TimeSeriesDataPoint"))
-                        {                            
+                        {
+                            DateTime sourceDateTime;
+                            string quality;
+                            //if timestamp is older than 30 seconds, report unknown quality.
+                            if (DateTime.TryParseExact(element.Element("Time").Value, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out sourceDateTime) && DateTime.UtcNow.Subtract(sourceDateTime).TotalSeconds > 30)
+                                quality = "Unknown";
+                            else
+                                quality = element.Element("Quality").Value;
+
                             timeTaggedMeasurementList.Add(Convert.ToInt32(element.Element("HistorianID").Value), new TimeTaggedMeasurement()
                             {
                                 //PointID = Convert.ToInt32(element.Element("HistorianID").Value),
                                 TimeTag = element.Element("Time").Value,
                                 CurrentValue = element.Element("Value").Value,
-                                Quality = element.Element("Quality").Value
+                                Quality = quality
                             });
                         }
                     }
@@ -718,12 +738,20 @@ namespace openPDCManager.Data
                             BasicStatisticInfo basicStatisticInfo;
                             if (basicStatisticList.TryGetValue(Convert.ToInt32(element.Element("HistorianID").Value), out basicStatisticInfo))
                             {
+                                //System.Diagnostics.Debug.WriteLine(element.Element("HistorianID").Value);
+                                DateTime sourceDateTime;
+                                string quality;
+                                if (DateTime.TryParseExact(element.Element("Time").Value, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out sourceDateTime) && DateTime.UtcNow.Subtract(sourceDateTime).TotalSeconds > 30)
+                                    quality = "Unknown";
+                                else
+                                    quality = element.Element("Quality").Value;
+
                                 statisticMeasurementList.Add(Convert.ToInt32(element.Element("HistorianID").Value), new TimeTaggedMeasurement()
                                 {
                                     //PointID = Convert.ToInt32(element.Element("HistorianID").Value),
                                     TimeTag = element.Element("Time").Value,
                                     CurrentValue = string.Format(basicStatisticInfo.DisplayFormat, ConvertValueToType(element.Element("Value").Value, basicStatisticInfo.DataType)),
-                                    Quality = element.Element("Quality").Value
+                                    Quality = quality
                                 });
                             }                           
                         }
@@ -2441,16 +2469,16 @@ namespace openPDCManager.Data
                     }
                 }
 
-                try
-                {
-                    // Generate Statistical Measurements for the device.
-                    //CommonPhasorServices.ValidateStatistics(connection.Connection, connection.AdapterType, "'" + device.NodeID + "'", new Action<object, EventArgs<string>>(StatusMessageHandler), new Action<object, EventArgs<Exception>>(ProcessExceptionHandler));
-                }
-                catch (Exception ex)
-                {
-                    //Do not do anything. If this fails then we dont want to interrupt save operation.
-                    LogException("SaveDevice: PhasorDataSourceValidation", ex);
-                }
+                //try
+                //{
+                //    // Generate Statistical Measurements for the device.
+                //    //CommonPhasorServices.ValidateStatistics(connection.Connection, connection.AdapterType, "'" + device.NodeID + "'", new Action<object, EventArgs<string>>(StatusMessageHandler), new Action<object, EventArgs<Exception>>(ProcessExceptionHandler));
+                //}
+                //catch (Exception ex)
+                //{
+                //    //Do not do anything. If this fails then we dont want to interrupt save operation.
+                //    LogException("SaveDevice: PhasorDataSourceValidation", ex);
+                //}
                 return "Device Information Saved Successfully";
             }
             
@@ -3830,7 +3858,7 @@ namespace openPDCManager.Data
                 IDbCommand commandPdc = connection.Connection.CreateCommand();
                 commandPdc.CommandType = CommandType.Text;				
                 //Get PDCs list
-                commandPdc.CommandText = "Select ID, Acronym, Name, CompanyName From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator";
+                commandPdc.CommandText = "Select ID, Acronym, Name, CompanyName, Enabled From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator";
                 if (commandPdc.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                     commandPdc.Parameters.Add(AddWithValue(commandPdc, "@nodeID", "{" + nodeID + "}"));
                 else
@@ -3846,12 +3874,13 @@ namespace openPDCManager.Data
                 row["Acronym"] = string.Empty;
                 row["Name"] = "Devices Connected Directly";
                 row["CompanyName"] = string.Empty;
+                row["Enabled"] = false;
                 resultTable.Rows.Add(row);
 
                 //Get Non PDC Devices
                 IDbCommand commandDevices = connection.Connection.CreateCommand();
                 commandDevices.CommandType = CommandType.Text;
-                commandDevices.CommandText = "Select ID, Acronym, Name,CompanyName, ProtocolName, VendorDeviceName, ParentAcronym From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator";
+                commandDevices.CommandText = "Select ID, Acronym, Name,CompanyName, ProtocolName, VendorDeviceName, ParentAcronym, Enabled From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator";
                 if (commandDevices.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                     commandDevices.Parameters.Add(AddWithValue(commandDevices, "@nodeID", "{" + nodeID + "}"));
                 else
@@ -3870,6 +3899,7 @@ namespace openPDCManager.Data
                 row["ProtocolName"] = string.Empty;
                 row["VendorDeviceName"] = string.Empty;
                 row["ParentAcronym"] = string.Empty;
+                row["Enabled"] = false;
                 resultTable.Rows.Add(row);
 
                 //Get Measurements
@@ -3897,6 +3927,7 @@ namespace openPDCManager.Data
                                                  Name = pdc.Field<string>("Name"),
                                                  CompanyName = pdc.Field<string>("CompanyName"),
                                                  StatusColor = string.IsNullOrEmpty(pdc.Field<string>("Acronym")) ? "Transparent" : "Gray",
+                                                 Enabled = Convert.ToBoolean(pdc.Field<object>("Enabled")),
                                                  IsExpanded = false,
                                                  DeviceList = new ObservableCollection<DeviceInfo>((from device in resultSet.Tables["DeviceTable"].AsEnumerable()
                                                                where device.Field<string>("ParentAcronym") == pdc.Field<string>("Acronym")
@@ -3911,6 +3942,7 @@ namespace openPDCManager.Data
                                                                    ParentAcronym = string.IsNullOrEmpty(device.Field<string>("ParentAcronym")) ? "DIRECT CONNECTED" : device.Field<string>("ParentAcronym"),
                                                                    IsExpanded = false,
                                                                    StatusColor = device.Field<int?>("ID") == null ? "Transparent" : "Gray",
+                                                                   Enabled = Convert.ToBoolean(device.Field<object>("Enabled")),
                                                                    MeasurementList = new ObservableCollection<MeasurementInfo>((from measurement in resultSet.Tables["MeasurementTable"].AsEnumerable()
                                                                                       where measurement.Field<int?>("DeviceID") == device.Field<int?>("ID")
                                                                                       select new MeasurementInfo()

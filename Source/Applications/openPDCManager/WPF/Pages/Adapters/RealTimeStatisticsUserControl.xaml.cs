@@ -122,16 +122,21 @@ namespace openPDCManager.Pages.Adapters
                                         TimeTaggedMeasurement timeTaggedMeasurement;
                                         if (timeTaggedMeasurements.TryGetValue(detailStatistic.PointID, out timeTaggedMeasurement))
                                         {
+                                            detailStatistic.Statistics.Value = timeTaggedMeasurement.CurrentValue;
+                                            detailStatistic.Statistics.TimeTag = timeTaggedMeasurement.TimeTag;
+                                            detailStatistic.Statistics.Quality = timeTaggedMeasurement.Quality;
+
                                             if (detailStatistic.Statistics.IsConnectedState == true)
-                                            {   
-                                                if (Convert.ToBoolean(timeTaggedMeasurement.CurrentValue))
+                                            {
+                                                DateTime sourceDateTime;
+                                                if (DateTime.TryParseExact(timeTaggedMeasurement.TimeTag, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out sourceDateTime) && DateTime.UtcNow.Subtract(sourceDateTime).TotalSeconds > 60)
+                                                    streamInfo.StatusColor = "Gray";                                                                                                    
+                                                else if (Convert.ToBoolean(timeTaggedMeasurement.CurrentValue))
                                                     streamInfo.StatusColor = "Green";
                                                 else
                                                     streamInfo.StatusColor = "Red";
                                             }
-                                            detailStatistic.Statistics.Value = timeTaggedMeasurement.CurrentValue;
-                                            detailStatistic.Statistics.TimeTag = timeTaggedMeasurement.TimeTag;
-                                            detailStatistic.Statistics.Quality = timeTaggedMeasurement.Quality;
+                                            
                                         }
                                     }
                                 }
