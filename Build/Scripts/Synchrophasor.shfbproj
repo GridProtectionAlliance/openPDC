@@ -16,22 +16,19 @@
     <!-- SHFB properties -->
     <OutputPath>..\Output\$(Configuration)\Libraries\Help\</OutputPath>
     <HtmlHelpName>openPDC.Synchrophasor</HtmlHelpName>
-    <FrameworkVersion>3.5</FrameworkVersion>
+    <FrameworkVersion>4.0.30319</FrameworkVersion>
     <HelpTitle>openPDC Synchrophasor Help</HelpTitle>
     <PresentationStyle>Prototype</PresentationStyle>
     <MissingTags>Summary, Parameter, Returns, AutoDocumentCtors, Namespace, TypeParameter</MissingTags>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\HistorianAdapters.dll" xmlns="" />
-      <DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\HistorianAdapters.xml" xmlns="" />
-      <DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\NASPInet.dll" xmlns="" />
-      <DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\NASPInet.xml" xmlns="" />
-      <DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\TVA.PhasorProtocols.dll" xmlns="" />
-      <DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\TVA.PhasorProtocols.xml" xmlns="" />
-    </DocumentationSources>
+      <DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\HistorianAdapters.dll" />
+<DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\HistorianAdapters.xml" />
+<DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\TVA.PhasorProtocols.dll" />
+<DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\TVA.PhasorProtocols.xml" /></DocumentationSources>
     <HelpFileFormat>Help1xAndHelp2x</HelpFileFormat>
-    <CopyrightHref>https://naspi.tva.com/PhasorMeasurementData/Documents/TVA%2520Open%2520Source%2520Agreement.txt</CopyrightHref>
-    <CopyrightText>Tennessee Valley Authority, 2009. No copyright is claimed pursuant to 17 USC &amp;#167%3b 105.  All Other Rights Reserved.</CopyrightText>
-    <FeedbackEMailAddress>jrcarrol%40tva.gov</FeedbackEMailAddress>
+    <CopyrightHref>http://openpdc.codeplex.com/license</CopyrightHref>
+    <CopyrightText>Copyright &amp;#169%3b 2010, Grid Protection Alliance.  All Rights Reserved.</CopyrightText>
+    <FeedbackEMailAddress>rcarroll%40gridprotectionalliance.org</FeedbackEMailAddress>
     <FeedbackEMailLinkText>J. Ritchie Carroll</FeedbackEMailLinkText>
     <Preliminary>False</Preliminary>
     <VisibleItems>Attributes, InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
