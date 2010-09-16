@@ -364,6 +364,7 @@ namespace TVA.PhasorProtocols.Anonymous
 
             if (e != null)
             {
+                FileStream configFile = null;
                 IConfigurationFrame configurationFrame = e.Argument1;
                 Action<Exception> exceptionHandler = e.Argument2;
                 string configurationName = e.Argument3;
@@ -371,18 +372,21 @@ namespace TVA.PhasorProtocols.Anonymous
                 try
                 {
                     // Serialize configuration frame to a file
-                    FileStream configFile = File.Create(GetConfigurationCacheFileName(configurationName));
                     SoapFormatter xmlSerializer = new SoapFormatter();
-
                     xmlSerializer.AssemblyFormat = FormatterAssemblyStyle.Simple;
                     xmlSerializer.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
+                    
+                    configFile = File.Create(GetConfigurationCacheFileName(configurationName));
                     xmlSerializer.Serialize(configFile, configurationFrame);
-
-                    configFile.Close();
                 }
                 catch (Exception ex)
                 {
                     exceptionHandler(new InvalidOperationException(string.Format("Failed to serialize configuration frame: {0}", ex.Message), ex));
+                }
+                finally
+                {
+                    if (configFile != null)
+                        configFile.Close();
                 }
             }
         }
@@ -393,7 +397,7 @@ namespace TVA.PhasorProtocols.Anonymous
         /// <param name="configurationName">Name of the configuration to get file name for.</param>
         /// <returns>File name with path of the specified <paramref name="configurationName"/>.</returns>
         public static string GetConfigurationCacheFileName(string configurationName)
-        {            
+        {
             return string.Format("{0}{1}.configuration.xml", ConfigurationCachePath, configurationName.ReplaceCharacters('_', c => Path.GetInvalidFileNameChars().Contains(c)));
         }
 
@@ -419,6 +423,6 @@ namespace TVA.PhasorProtocols.Anonymous
             return configFrame;
         }
 
-        #endregion        
+        #endregion
     }
 }

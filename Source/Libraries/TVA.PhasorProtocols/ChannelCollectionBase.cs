@@ -234,6 +234,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Runtime.Serialization;
 using TVA.Parsing;
 
@@ -250,9 +251,16 @@ namespace TVA.PhasorProtocols
     /// </remarks>
     /// <typeparam name="T">Specific <see cref="IChannel"/> type that the <see cref="ChannelCollectionBase{T}"/> contains.</typeparam>
     [Serializable()]
-    public abstract class ChannelCollectionBase<T> : Collection<T>, IChannelCollection<T> where T : IChannel
+    public abstract class ChannelCollectionBase<T> : Collection<T>, IChannelCollection<T>, INotifyCollectionChanged where T : IChannel
     {
         #region [ Members ]
+
+        // Events
+
+        /// <summary>
+        /// Notifies listeners of dynamic changes, such as when items get added and removed or the whole list is refreshed.
+        /// </summary>
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
 
         // Fields
         private int m_lastValidIndex;                       // Last valid index in the collection (i.e., maximum value count - 1)
@@ -455,6 +463,59 @@ namespace TVA.PhasorProtocols
                 throw new OverflowException("Maximum " + this.GetType().Name + " item limit reached");
 
             base.InsertItem(index, item);
+
+            if (CollectionChanged != null)
+                CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
+        }
+
+        /// <summary>
+        /// Removes the element at the specified index of the <see cref="ChannelCollectionBase{T}"/>.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to remove.</param>
+        protected override void RemoveItem(int index)
+        {
+            base.RemoveItem(index);
+
+            if (CollectionChanged != null)
+                CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, Items[index], index));
+        }
+
+        /// <summary>
+        /// Replaces the element at the specified index.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to replace.</param>
+        /// <param name="item">The new value for the element at the specified index. The value can be null for reference types.</param>
+        protected override void SetItem(int index, T item)
+        {
+            if (CollectionChanged != null)
+            {
+                T oldItem = Items[index];
+                base.SetItem(index, item);
+                CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, oldItem, index));
+            }
+            else
+                base.SetItem(index, item);
+        }
+
+        /// <summary>
+        /// Removes all elements from the <see cref="ChannelCollectionBase{T}"/>.
+        /// </summary>
+        protected override void ClearItems()
+        {
+            base.ClearItems();
+
+            if (CollectionChanged != null)
+                CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        /// <summary>
+        /// Raises the <see cref="NotifyCollectionChangedEventHandler"/> event.
+        /// </summary>
+        /// <param name="e">Changed event arguments.</param>
+        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (CollectionChanged != null)
+                CollectionChanged(this, e);
         }
 
         // Collections are not designed to parse binary images
@@ -479,6 +540,11 @@ namespace TVA.PhasorProtocols
                 info.AddValue("item" + x, this[x], typeof(T));
             }
         }
+
+        #endregion
+
+        #region INotifyCollectionChanged Members
+
 
         #endregion
     }

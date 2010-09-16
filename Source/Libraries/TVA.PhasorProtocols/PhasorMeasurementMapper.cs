@@ -991,6 +991,7 @@ namespace TVA.PhasorProtocols
                         if (m_labelDefinedDevices.ContainsKey(definedDevice.IDLabel))
                         {
                             OnProcessException(new InvalidOperationException(string.Format("ERROR: Device ID \"{0}\", labeled \"{1}\", was not unique in the {2} input stream. Data from devices that are not distinctly defined by ID code or label will not be correctly parsed until uniquely identified.", definedDevice.IDCode, definedDevice.IDLabel, Name)));
+                            definedDevice.Dispose();
                         }
                         else
                         {

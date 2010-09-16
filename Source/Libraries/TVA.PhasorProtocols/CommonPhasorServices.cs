@@ -1128,7 +1128,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Loads or reloads system statistics.
         /// </summary>
-        [AdapterCommand("Reloads system statistics."), SuppressMessage("Microsoft.Reliability", "CA2001")]
+        [AdapterCommand("Reloads system statistics."), SuppressMessage("Microsoft.Reliability", "CA2001"), SuppressMessage("Microsoft.Maintainability", "CA1502")]
         public void ReloadStatistics()
         {
             // Make sure setting exists to allow user to by-pass phasor data source validation at startup
@@ -1484,7 +1484,7 @@ namespace TVA.PhasorProtocols
 
         // Apply start-up phasor data source validations
         [SuppressMessage("Microsoft.Maintainability", "CA1502")]
-        public static void PhasorDataSourceValidation(IDbConnection connection, Type adapterType, string nodeIDQueryString, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
+        private static void PhasorDataSourceValidation(IDbConnection connection, Type adapterType, string nodeIDQueryString, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
         {
             // Make sure setting exists to allow user to by-pass phasor data source validation at startup
             ConfigurationFile configFile = ConfigurationFile.Current;
@@ -1593,8 +1593,10 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", device.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
-                            IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, device.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description);
-                            command.ExecuteNonQuery();
+                            using (IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, device.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
+                            {                                
+                                command.ExecuteNonQuery();  
+                            } 
                         }
                     }
                 }
@@ -1617,8 +1619,10 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", inputStream.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
-                            IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, inputStream.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description);
-                            command.ExecuteNonQuery();
+                            using (IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, inputStream.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
+                            {
+                                command.ExecuteNonQuery();
+                            }
                         }
                     }
                 }
@@ -1644,8 +1648,10 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} Statistic for {1}", outputStream.Field<string>("Name"), statistic.Field<string>("Description"));
 
-                            IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, NULL, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, pointTag, statSignalTypeID, signalReference, description);
-                            command.ExecuteNonQuery();
+                            using (IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, NULL, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, pointTag, statSignalTypeID, signalReference, description))
+                            {
+                                command.ExecuteNonQuery();
+                            }
                         }
                     }
                 }
@@ -1661,6 +1667,7 @@ namespace TVA.PhasorProtocols
         /// <param name="sql">The SQL statement.</param>
         /// <param name="args">The parameters for the command in the order that they appear in the SQL statement.</param>
         /// <returns>The parameterized command.</returns>
+        [SuppressMessage("Microsoft.Security", "CA2100")]
         private static IDbCommand CreateParameterizedCommand(IDbConnection connection, string sql, params object[] args)
         {
             // TODO: Move function to TVA.Data.DataExtensions as an extension...
@@ -1840,6 +1847,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
+        [SuppressMessage("Microsoft.Security", "CA2100")]
         private static void LoadStatistic(IDbConnection connection, string commandText, string displayFormat)
         {
             IDbCommand command = connection.CreateCommand();

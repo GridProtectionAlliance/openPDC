@@ -324,7 +324,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Deserializes a configuration frame from an XML stream.
         /// </summary>
-        /// <param name="configStream"><see cref="Streamn"/> that contains an XML serialized configuration frame.</param>
+        /// <param name="configStream"><see cref="Stream"/> that contains an XML serialized configuration frame.</param>
         /// <returns>Deserialized <see cref="IConfigurationFrame"/>.</returns>
         public static IConfigurationFrame DeserializeConfigurationFrame(Stream configStream)
         {

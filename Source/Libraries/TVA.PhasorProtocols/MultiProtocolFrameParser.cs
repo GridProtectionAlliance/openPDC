@@ -1734,15 +1734,18 @@ namespace TVA.PhasorProtocols
                     m_dataChannel = new SerialClient();
                     break;
                 case TransportProtocol.File:
+                    m_dataChannel = new FileClient();
+
                     // For file based playback, we allow the option of auto-repeat
-                    FileClient fileClient = new FileClient();
+                    FileClient fileClient = m_dataChannel as FileClient;
 
-                    fileClient.FileOpenMode = FileMode.Open;
-                    fileClient.FileAccessMode = FileAccess.Read;
-                    fileClient.FileShareMode = FileShare.Read;
-                    fileClient.AutoRepeat = m_autoRepeatCapturedPlayback;
-
-                    m_dataChannel = fileClient;
+                    if (fileClient != null)
+                    {
+                        fileClient.FileOpenMode = FileMode.Open;
+                        fileClient.FileAccessMode = FileAccess.Read;
+                        fileClient.FileShareMode = FileShare.Read;
+                        fileClient.AutoRepeat = m_autoRepeatCapturedPlayback;
+                    }
                     break;
                 default:
                     throw new InvalidOperationException(string.Format("Transport protocol \"{0}\" is not recognized, failed to initialize data channel", m_transportProtocol));
@@ -2571,13 +2574,7 @@ namespace TVA.PhasorProtocols
         #region [ Static ]
 
         // Static Fields
-        private static Dictionary<int, PrecisionInputTimer> s_inputTimers;
-
-        // Static Constructor
-        static MultiProtocolFrameParser()
-        {
-            s_inputTimers = new Dictionary<int, PrecisionInputTimer>();
-        }
+        private static Dictionary<int, PrecisionInputTimer> s_inputTimers = new Dictionary<int, PrecisionInputTimer>();
 
         #endregion
 

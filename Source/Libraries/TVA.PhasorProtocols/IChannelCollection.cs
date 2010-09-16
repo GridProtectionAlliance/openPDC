@@ -232,6 +232,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Runtime.Serialization;
 
 namespace TVA.PhasorProtocols
@@ -243,7 +244,7 @@ namespace TVA.PhasorProtocols
     /// protocols library; it is the root of the collection interface hierarchy.
     /// </summary>
     /// <typeparam name="T">Specific <see cref="IChannel"/> type that the <see cref="IChannelCollection{T}"/> contains.</typeparam>
-    public interface IChannelCollection<T> : IChannel, IList<T>, ISerializable where T : IChannel
+    public interface IChannelCollection<T> : IChannel, IList<T>, INotifyCollectionChanged, ISerializable where T : IChannel
     {
         // Note that the channel collection interface inherits IChannel hence providing cumulative imaging properties
     }

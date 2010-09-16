@@ -366,6 +366,9 @@
     <None Include="Relationship Diagrams\Phasor Definition Relationships.cd" />
     <None Include="Relationship Diagrams\Phasor Value Relationships.cd" />
   </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="CodeAnalysisDictionary.xml" />
+  </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

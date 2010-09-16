@@ -351,9 +351,10 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             // Create a default INI file if one doesn't exist
             if (!File.Exists(m_iniFileName))
             {
-                StreamWriter iniFile = File.CreateText(m_iniFileName);
-                iniFile.Write(BpaPdcStream.ConfigurationFrame.GetIniFileImage(baseConfigurationFrame));
-                iniFile.Close();
+                using (StreamWriter iniFile = File.CreateText(m_iniFileName))
+                {
+                    iniFile.Write(BpaPdcStream.ConfigurationFrame.GetIniFileImage(baseConfigurationFrame));
+                }
             }
 
             // Create a new BPA PDCstream configuration frame using base configuration

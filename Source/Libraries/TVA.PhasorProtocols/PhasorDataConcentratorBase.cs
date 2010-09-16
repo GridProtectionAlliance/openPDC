@@ -884,7 +884,7 @@ namespace TVA.PhasorProtocols
         public override void Initialize()
         {
             base.Initialize();
-            string errorMessage = "{0} is missing from Settings - Example: IDCode=235; dataChannel={Port=0; Clients=localhost:8800}";
+            string errorMessage = "{0} is missing from Settings - Example: IDCode=235; dataChannel={{Port=0; Clients=localhost:8800}}";
 
             Dictionary<string, string> settings = Settings;
             string setting, dataChannel, commandChannel;
@@ -994,8 +994,7 @@ namespace TVA.PhasorProtocols
         public void UpdateConfiguration()
         {
             const int labelLength = 16;
-            Dictionary<string, int> signalCellIndexes = new Dictionary<string, int>();
-            ConfigurationCell cell;
+            Dictionary<string, int> signalCellIndexes = new Dictionary<string, int>();            
             SignalReference signal;
             SignalReference[] signals;
             MeasurementKey measurementKey;
@@ -1015,7 +1014,7 @@ namespace TVA.PhasorProtocols
                 try
                 {
                     // Create a new configuration cell
-                    cell = new ConfigurationCell(m_baseConfigurationFrame, ushort.Parse(deviceRow["ID"].ToString()));
+                    ConfigurationCell cell = new ConfigurationCell(m_baseConfigurationFrame, ushort.Parse(deviceRow["ID"].ToString()));
 
                     // Assign user selected data and coordinate formats, derived classes can change
                     string formatString;
