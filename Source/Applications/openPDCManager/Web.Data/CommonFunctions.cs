@@ -176,11 +176,7 @@ namespace openPDCManager.Data
 
         public static List<WizardDeviceInfo> GetWizardConfigurationInfo(Stream inputStream)
         {				
-            SoapFormatter sf = new SoapFormatter();
-            sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
-            sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
-            IConfigurationFrame configurationFrame = sf.Deserialize(inputStream) as IConfigurationFrame;								
-            return ParseConfigurationFrame(configurationFrame);
+            return ParseConfigurationFrame(TVA.PhasorProtocols.Common.DeserializeConfigurationFrame(inputStream));
         }
 
         public static List<WizardDeviceInfo> ParseConfigurationFrame(IConfigurationFrame configurationFrame)

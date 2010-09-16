@@ -414,23 +414,7 @@ namespace TVA.PhasorProtocols.Anonymous
                 configFileName = configurationName;
 
             if (File.Exists(configFileName))
-            {
-                FileStream configFile = null;
-                SoapFormatter xmlSerializer = new SoapFormatter();
-
-                try 
-	            {
-                    configFile = File.Open(configFileName, FileMode.Open);
-                    xmlSerializer.AssemblyFormat = FormatterAssemblyStyle.Simple;
-                    xmlSerializer.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
-                    configFrame = xmlSerializer.Deserialize(configFile) as IConfigurationFrame;
-                }
-	            finally
-	            {
-                    if (configFile != null)
-                        configFile.Close();
-	            }
-            }
+                configFrame = Common.DeserializeConfigurationFrame(configFileName);
 
             return configFrame;
         }

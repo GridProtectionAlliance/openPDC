@@ -234,8 +234,16 @@
 #endregion
 
 using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Soap;
+using System.Runtime.Serialization.Formatters;
+using System.Xml;
 using TimeSeriesFramework;
+using TVA;
 using TVA.Parsing;
+using System.Text;
+using TVA.IO;
+using System.Runtime.Serialization;
 
 namespace TVA.PhasorProtocols
 {
@@ -287,6 +295,54 @@ namespace TVA.PhasorProtocols
         public static void CopyImage(this ISupportBinaryImage channel, byte[] destination, ref int index)
         {
             channel.BinaryImage.CopyImage(destination, ref index, channel.BinaryLength);
+        }
+
+        /// <summary>
+        /// Deserializes a configuration frame from an XML file.
+        /// </summary>
+        /// <param name="configFileName">Path and file name of XML configuration file.</param>
+        /// <returns>Deserialized <see cref="IConfigurationFrame"/>.</returns>
+        public static IConfigurationFrame DeserializeConfigurationFrame(string configFileName)
+        {
+            IConfigurationFrame configFrame = null;
+            FileStream configFile = null;
+
+            try
+            {
+                configFile = File.Open(configFileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+                configFrame = DeserializeConfigurationFrame(configFile);
+            }
+            finally
+            {
+                if (configFile != null)
+                    configFile.Close();
+            }
+
+            return configFrame;
+        }
+
+        /// <summary>
+        /// Deserializes a configuration frame from an XML stream.
+        /// </summary>
+        /// <param name="configStream"><see cref="Streamn"/> that contains an XML serialized configuration frame.</param>
+        /// <returns>Deserialized <see cref="IConfigurationFrame"/>.</returns>
+        public static IConfigurationFrame DeserializeConfigurationFrame(Stream configStream)
+        {
+            IConfigurationFrame configFrame = null;
+            SoapFormatter xmlSerializer = new SoapFormatter();
+
+            // TODO: When project is renamed to "PhasorProtocols.dll", uncomment the following:
+            //string xmlFile = Encoding.Default.GetString(configStream.ReadStream());            
+            //xmlFile = xmlFile.Replace("TVA.Phasors", "PhasorProtocols");
+            //xmlFile = xmlFile.Replace("TVA.PhasorProtocols", "PhasorProtocols");
+            
+            xmlSerializer.AssemblyFormat = FormatterAssemblyStyle.Simple;
+            xmlSerializer.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
+
+            //configFrame = xmlSerializer.Deserialize(new MemoryStream(Encoding.Default.GetBytes(xmlFile))) as IConfigurationFrame;
+            configFrame = xmlSerializer.Deserialize(configStream) as IConfigurationFrame;
+
+            return configFrame;
         }
 
         /// <summary>

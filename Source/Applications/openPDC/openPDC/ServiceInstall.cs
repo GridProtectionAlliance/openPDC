@@ -99,7 +99,7 @@ namespace openPDC
                 try
                 {
                     databaseSetup = new Process();
-                    databaseSetup.StartInfo.FileName = targetDir + "DatabaseSetupUtility.exe";
+                    databaseSetup.StartInfo.FileName = targetDir + "ConfigurationSetupUtility.exe";
                     databaseSetup.StartInfo.Arguments = "-install";
                     databaseSetup.StartInfo.WorkingDirectory = targetDir;
                     databaseSetup.StartInfo.UseShellExecute = false;
@@ -115,7 +115,7 @@ namespace openPDC
 
                 // Make sure configuration editor and database setup utility are run in admin mode since they
                 // modify configuration file in programs folder
-                Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "DatabaseSetupUtility.exe", "RUNASADMIN", RegistryValueKind.String);
+                Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigurationSetupUtility.exe", "RUNASADMIN", RegistryValueKind.String);
                 Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigurationEditor.exe", "RUNASADMIN", RegistryValueKind.String);
                 Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigCrypter.exe", "RUNASADMIN", RegistryValueKind.String);
             }
