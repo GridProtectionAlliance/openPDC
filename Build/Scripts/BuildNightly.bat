@@ -10,8 +10,11 @@
 ::  -----------------------------------------------------------------------------------------------------
 ::  10/20/2009 - Pinal C. Patel
 ::       Generated original version of source code.
-::
+::  09/14/2010 - Mihir Brahmbhatt
+::		 Change Framework path from v3.5 to v4.0
+::	09/15/2010 - Mihir Brahmbhatt
+::		Add parameters to skip help files
 ::*******************************************************************************************************
 
 @ECHO OFF
-C:\WINDOWS\Microsoft.NET\Framework\v3.5\msbuild.exe Synchrophasor.buildproj /l:FileLogger,Microsoft.Build.Engine;logfile=Synchrophasor.output
+C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\msbuild.exe Synchrophasor.buildproj /p:SkipHelpFiles=true /l:FileLogger,Microsoft.Build.Engine;logfile=Synchrophasor.output
