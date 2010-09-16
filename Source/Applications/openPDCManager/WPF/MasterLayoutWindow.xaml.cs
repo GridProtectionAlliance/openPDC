@@ -48,7 +48,7 @@ namespace openPDCManager
 
         const double layoutRootHeight = 900;
         const double layoutRootWidth = 1200;
-        WindowsServiceClient serviceClient;
+        WindowsServiceClient m_serviceClient;
 
         #endregion
 
@@ -99,23 +99,23 @@ namespace openPDCManager
         {
             if (((App)Application.Current).RemoteStatusServiceUrl != null)
             {
-                serviceClient = new WindowsServiceClient(((App)Application.Current).RemoteStatusServiceUrl);
+                m_serviceClient = new WindowsServiceClient(((App)Application.Current).RemoteStatusServiceUrl);
                 try
                 {
-                    serviceClient.Helper.RemotingClient.ConnectionEstablished += new EventHandler(RemotingClient_ConnectionEstablished);
-                    serviceClient.Helper.RemotingClient.ConnectionTerminated += new EventHandler(RemotingClient_ConnectionTerminated);                    
-                    serviceClient.Helper.RemotingClient.MaxConnectionAttempts = -1;
-                    serviceClient.Helper.Connect();
+                    m_serviceClient.Helper.RemotingClient.ConnectionEstablished += new EventHandler(RemotingClient_ConnectionEstablished);
+                    m_serviceClient.Helper.RemotingClient.ConnectionTerminated += new EventHandler(RemotingClient_ConnectionTerminated);                    
+                    m_serviceClient.Helper.RemotingClient.MaxConnectionAttempts = -1;
+                    System.Threading.ThreadPool.QueueUserWorkItem(ConnectAsync, null);
                     
-                    if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                    if (m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                     {
-                        EllipseConnectionState.Fill = Application.Current.Resources["GreenRadialGradientBrush"] as RadialGradientBrush;
-                        ToolTipService.SetToolTip(EllipseConnectionState, "Connected to openPDC Service");
+                            EllipseConnectionState.Fill = Application.Current.Resources["GreenRadialGradientBrush"] as RadialGradientBrush;
+                            ToolTipService.SetToolTip(EllipseConnectionState, "Connected to openPDC Service");                     
                     }
                     else
                     {
-                        EllipseConnectionState.Fill = Application.Current.Resources["RedRadialGradientBrush"] as RadialGradientBrush;
-                        ToolTipService.SetToolTip(EllipseConnectionState, "Disconnected from openPDC Service");
+                            EllipseConnectionState.Fill = Application.Current.Resources["RedRadialGradientBrush"] as RadialGradientBrush;
+                            ToolTipService.SetToolTip(EllipseConnectionState, "Disconnected from openPDC Service");                        
                     }
                 }
                 catch (Exception ex)
@@ -123,16 +123,21 @@ namespace openPDCManager
                     CommonFunctions.LogException("MasterLayoutWindow_Loaded", ex);
                 }
 
-                ((App)Application.Current).ServiceClient = serviceClient;
+                ((App)Application.Current).ServiceClient = m_serviceClient;
             }
+        }
+
+        void ConnectAsync(object state)
+        {
+            m_serviceClient.Helper.Connect();
         }
 
         void DisconnectFromService()
         {
             try
             {
-                if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                    serviceClient.Helper.Disconnect();
+                if (m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                    m_serviceClient.Helper.Disconnect();
             }
             catch { }
         }
@@ -214,6 +219,11 @@ namespace openPDCManager
                     adapterUserControl.ButtonInitialize.IsEnabled = true;
                     adapterUserControl.ButtonInitialize.Foreground = new SolidColorBrush(Color.FromArgb(255, 9, 81, 136));
                 }
+                else if (ContentFrame.Content.GetType() == typeof(MonitorUserControl))
+                {
+                    MonitorUserControl monitorUserControl = (MonitorUserControl)ContentFrame.Content;
+                    monitorUserControl.ReconnectToService();
+                }
 
             });            
         }
@@ -250,7 +260,7 @@ namespace openPDCManager
             HomePageUserControl home = new HomePageUserControl();
             ContentFrame.Navigate(home);
 
-            if (serviceClient == null || serviceClient.Helper.RemotingClient.ConnectionString != ((App)Application.Current).RemoteStatusServiceUrl || serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Disconnected)
+            if (m_serviceClient == null || m_serviceClient.Helper.RemotingClient.ConnectionString != ((App)Application.Current).RemoteStatusServiceUrl || m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Disconnected)
                 ConnectToService();
         }
 
@@ -387,6 +397,7 @@ namespace openPDCManager
             }
             else if (item.Name == "InputMonitor")
             {
+                //InputStatusUserControl inputMonitor = new InputStatusUserControl();
                 InputMonitoringUserControl inputMonitor = new InputMonitoringUserControl();
                 ContentFrame.Navigate(inputMonitor);
             }

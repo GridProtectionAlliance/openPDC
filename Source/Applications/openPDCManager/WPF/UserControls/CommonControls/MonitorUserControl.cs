@@ -61,8 +61,11 @@ namespace openPDCManager.UserControls.CommonControls
 
         void MonitorUserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            m_serviceClient.Helper.ReceivedServiceUpdate -= Helper_ReceivedServiceUpdate;
-            m_serviceClient.Helper.ReceivedServiceResponse -= Helper_ReceivedServiceResponse;
+            if (m_serviceClient != null)
+            {
+                m_serviceClient.Helper.ReceivedServiceUpdate -= Helper_ReceivedServiceUpdate;
+                m_serviceClient.Helper.ReceivedServiceResponse -= Helper_ReceivedServiceResponse;
+            }
             //m_serviceClient.Dispose();
         }
 
@@ -71,16 +74,18 @@ namespace openPDCManager.UserControls.CommonControls
             m_serviceClient.Helper.SendRequest(TextBoxServiceRequest.Text);            
         }
 
-        void ReconnectToService()
+        public void ReconnectToService()
         {
             //m_serviceClient = new WindowsServiceClient(((App)Application.Current).RemoteStatusServiceUrl);
             //m_serviceClient.Helper.RemotingClient.MaxConnectionAttempts = 10;
-
+            
             m_serviceClient = ((App)Application.Current).ServiceClient;
-            m_serviceClient.Helper.ReceivedServiceUpdate += new EventHandler<TVA.EventArgs<UpdateType, string>>(Helper_ReceivedServiceUpdate);        // += ClientHelper_ReceivedServiceUpdate;
-            m_serviceClient.Helper.ReceivedServiceResponse +=new EventHandler<TVA.EventArgs<ServiceResponse>>(Helper_ReceivedServiceResponse);          //+= ClientHelper_ReceivedServiceResponse;
-            //ThreadPool.QueueUserWorkItem(ConnectWindowsServiceClient, m_serviceClient);
-            ConnectWindowsServiceClient(m_serviceClient);
+            if (m_serviceClient != null)
+            {
+                m_serviceClient.Helper.ReceivedServiceUpdate += new EventHandler<TVA.EventArgs<UpdateType, string>>(Helper_ReceivedServiceUpdate);        // += ClientHelper_ReceivedServiceUpdate;
+                m_serviceClient.Helper.ReceivedServiceResponse += new EventHandler<TVA.EventArgs<ServiceResponse>>(Helper_ReceivedServiceResponse);          //+= ClientHelper_ReceivedServiceResponse;
+                ConnectWindowsServiceClient(m_serviceClient);
+            }
         }
 
         void Helper_ReceivedServiceResponse(object sender, TVA.EventArgs<ServiceResponse> e)
