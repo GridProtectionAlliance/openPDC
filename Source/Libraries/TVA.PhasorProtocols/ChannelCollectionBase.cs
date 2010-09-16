@@ -474,10 +474,14 @@ namespace TVA.PhasorProtocols
         /// <param name="index">The zero-based index of the element to remove.</param>
         protected override void RemoveItem(int index)
         {
-            base.RemoveItem(index);
-
             if (CollectionChanged != null)
-                CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, Items[index], index));
+            {
+                T oldItem = Items[index];
+                base.RemoveItem(index);
+                CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, oldItem, index));
+            }
+            else
+                base.RemoveItem(index);
         }
 
         /// <summary>
