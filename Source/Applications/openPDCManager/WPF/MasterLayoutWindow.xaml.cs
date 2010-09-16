@@ -36,6 +36,7 @@ using openPDCManager.Utilities;
 using openPDCManager.Data.ServiceCommunication;
 using openPDCManager.Data;
 using System.Windows.Media;
+using System.Diagnostics;
 
 namespace openPDCManager
 {
@@ -411,6 +412,8 @@ namespace openPDCManager
                 SystemSettings systemSettings = new SystemSettings();
                 ContentFrame.Navigate(systemSettings);
             }
+            else if (item.Name == "Help")
+                Process.Start("http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration");
         }
 
         #endregion
