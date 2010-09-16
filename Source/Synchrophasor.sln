@@ -178,6 +178,9 @@ EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "openPDCSetup64", "Applications\openPDC\openPDCSetup\openPDCSetup64.vdproj", "{C0CAE6E7-454E-44C2-B2CF-BAF002E25D87}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF", "Applications\openPDCManager\WPF\WPF.csproj", "{66DE6E45-E538-480D-8928-9C86390E60FE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {54CA98CC-2F0A-41F2-879D-0E42B17E8544}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacrodyneController", "Tools\MacrodyneController\MacrodyneController.csproj", "{334BA160-26D6-4A3B-92E2-42DEB4381176}"
 EndProject
@@ -304,14 +307,14 @@ Global
 		SccProjectTopLevelParentUniqueName23 = Synchrophasor.sln
 		SccProjectName23 = Applications/openPDCManager/Web.Data
 		SccLocalPath23 = Applications\\openPDCManager\\Web.Data
-		SccProjectUniqueName24 = Tools\\ConfigurationCreator\\ConfigurationCreationWizard.csproj
+		SccProjectUniqueName24 = Tools\\ConfigurationSetupUtility\\ConfigurationSetupUtility.csproj
 		SccProjectTopLevelParentUniqueName24 = Synchrophasor.sln
-		SccProjectName24 = Tools/ConfigurationCreator
-		SccLocalPath24 = Tools\\ConfigurationCreator
-		SccProjectUniqueName25 = Tools\\ConfigurationSetupUtility\\ConfigurationSetupUtility.csproj
+		SccProjectName24 = Tools/ConfigurationSetupUtility
+		SccLocalPath24 = Tools\\ConfigurationSetupUtility
+		SccProjectUniqueName25 = Tools\\ConfigurationCreator\\ConfigurationCreationWizard.csproj
 		SccProjectTopLevelParentUniqueName25 = Synchrophasor.sln
-		SccProjectName25 = Tools/ConfigurationSetupUtility
-		SccLocalPath25 = Tools\\ConfigurationSetupUtility
+		SccProjectName25 = Tools/ConfigurationCreator
+		SccLocalPath25 = Tools\\ConfigurationCreator
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor.vsmdi
