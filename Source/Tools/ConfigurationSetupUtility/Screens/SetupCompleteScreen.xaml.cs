@@ -197,7 +197,7 @@ namespace ConfigurationSetupUtility
                     // If the user requested it, start the openPDC service.
                     if (m_serviceStartCheckBox.IsChecked.Value)
                     {
-                        iaonHostController = new ServiceController("IaonHost");
+                        iaonHostController = new ServiceController("openPDC");
 
                         if (iaonHostController.Status == ServiceControllerStatus.Stopped)
                             iaonHostController.Start();
