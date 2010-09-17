@@ -42,6 +42,7 @@ namespace ConfigurationSetupUtility
         private SqlServerDatabaseSetupScreen m_sqlServerDatabaseSetupScreen;
         private MySqlDatabaseSetupScreen m_mySqlDatabaseSetupScreen;
         private Dictionary<string, object> m_state;
+        private bool m_sampleScriptChanged;
 
         #endregion
 
@@ -185,6 +186,9 @@ namespace ConfigurationSetupUtility
         {
             if (m_state != null)
                 m_state["databaseType"] = "access";
+
+            if (!m_sampleScriptChanged && m_sampleDataScriptCheckBox != null)
+                m_sampleDataScriptCheckBox.IsChecked = true;
         }
 
         // Occurs when the user chooses to set up a SQL Server database.
@@ -192,6 +196,9 @@ namespace ConfigurationSetupUtility
         {
             if (m_state != null)
                 m_state["databaseType"] = "sql server";
+
+            if (!m_sampleScriptChanged && m_sampleDataScriptCheckBox != null)
+                m_sampleDataScriptCheckBox.IsChecked = false;
         }
 
         // Occurs when the user chooses to set up a MySQL database.
@@ -199,6 +206,9 @@ namespace ConfigurationSetupUtility
         {
             if (m_state != null)
                 m_state["databaseType"] = "mysql";
+
+            if (!m_sampleScriptChanged && m_sampleDataScriptCheckBox != null)
+                m_sampleDataScriptCheckBox.IsChecked = false;
         }
 
         // Occurs when the user chooses to run the initial data script when setting up their database.
@@ -213,6 +223,12 @@ namespace ConfigurationSetupUtility
         {
             if (m_state != null)
                 m_state["initialDataScript"] = false;
+        }
+
+        // Occurs when the user explicitly changes the sample data script check box.
+        private void SampleDataScriptCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            m_sampleScriptChanged = true;
         }
 
         // Occurs when the user chooses to run the sample data script when setting up their database.

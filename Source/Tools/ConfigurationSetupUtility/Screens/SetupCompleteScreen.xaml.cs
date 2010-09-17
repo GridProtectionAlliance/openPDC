@@ -38,6 +38,15 @@ namespace ConfigurationSetupUtility
     public partial class SetupCompleteScreen : UserControl, IScreen
     {
 
+        #region [ Members ]
+
+        // Fields
+
+        private Dictionary<string, object> m_state;
+        private ServiceController m_openPdcServiceController;
+
+        #endregion
+
         #region [ Constructors ]
 
         /// <summary>
@@ -114,7 +123,18 @@ namespace ConfigurationSetupUtility
         /// <summary>
         /// Collection shared among screens that represents the state of the setup.
         /// </summary>
-        public Dictionary<string, object> State { get; set; }
+        public Dictionary<string, object> State
+        {
+            get
+            {
+                return m_state;
+            }
+            set
+            {
+                m_state = value;
+                InitializeOpenPdcServiceController();
+            }
+        }
 
         /// <summary>
         /// Allows the screen to update the navigation buttons after a change is made
@@ -126,31 +146,39 @@ namespace ConfigurationSetupUtility
 
         #region [ Methods ]
 
+        // Initializes the openPDC service controller.
+        private void InitializeOpenPdcServiceController()
+        {
+            m_openPdcServiceController = new ServiceController("openPDC");
+
+            if (m_openPdcServiceController.Status == ServiceControllerStatus.Running)
+                m_serviceStartCheckBox.Content = "Restart the openPDC";
+        }
+
         // Occurs just before the application shuts down.
         private void Current_Exit(object sender, System.Windows.ExitEventArgs e)
         {
-            if (State != null)
+            if (m_state != null)
             {
-                ServiceController iaonHostController = null;
+                Process migrationProcess = null;
                 Process managerProcess = null;
-                bool existing = Convert.ToBoolean(State["existing"]);
-                bool migrate = existing && Convert.ToBoolean(State["updateConfiguration"]);
 
-                if (migrate)
+                try
                 {
-                    Process migrationProcess = null;
+                    bool existing = Convert.ToBoolean(m_state["existing"]);
+                    bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
 
-                    try
+                    if (migrate)
                     {
                         string dataFolder = FilePath.GetApplicationDataFolder();
                         string migrationDataFolder = dataFolder + "\\..\\DataMigrationUtility";
-                        string oldOleDbConnectionString = State["oldOleDbConnectionString"].ToString();
-                        string newOleDbConnectionString = State["newOleDbConnectionString"].ToString();
-                        string databaseType = State["databaseType"].ToString().Replace(" ", "");
+                        string oldOleDbConnectionString = m_state["oldOleDbConnectionString"].ToString();
+                        string newOleDbConnectionString = m_state["newOleDbConnectionString"].ToString();
+                        string databaseType = m_state["databaseType"].ToString().Replace(" ", "");
                         ConfigurationFile configFile = null;
                         CategorizedSettingsElementCollection applicationSettings = null;
 
-                        // Copy user-level DataMigrationUtility config file to the DatabaseSetupUtility application folder.
+                        // Copy user-level DataMigrationUtility config file to the ConfigurationSetupUtility application folder.
                         if (File.Exists(migrationDataFolder + "\\Settings.xml"))
                         {
                             if (!Directory.Exists(dataFolder))
@@ -168,7 +196,7 @@ namespace ConfigurationSetupUtility
                         applicationSettings["ToDataType", true].Value = databaseType;
                         configFile.Save();
 
-                        // Copy user-level DatabaseSetupUtility config file to DataMigrationUtility application folder.
+                        // Copy user-level ConfigurationSetupUtility config file to DataMigrationUtility application folder.
                         if (File.Exists(dataFolder + "\\Settings.xml"))
                         {
                             if (!Directory.Exists(migrationDataFolder))
@@ -185,22 +213,18 @@ namespace ConfigurationSetupUtility
                         migrationProcess.Start();
                         migrationProcess.WaitForExit();
                     }
-                    finally
-                    {
-                        if (migrationProcess != null)
-                            migrationProcess.Close();
-                    }
-                }
 
-                try
-                {
-                    // If the user requested it, start the openPDC service.
+                    // If the user requested it, start or restart the openPDC service.
                     if (m_serviceStartCheckBox.IsChecked.Value)
                     {
-                        iaonHostController = new ServiceController("openPDC");
+                        if (m_openPdcServiceController.Status == ServiceControllerStatus.Running)
+                        {
+                            m_openPdcServiceController.Stop();
+                            m_openPdcServiceController.WaitForStatus(ServiceControllerStatus.Stopped);
+                        }
 
-                        if (iaonHostController.Status == ServiceControllerStatus.Stopped)
-                            iaonHostController.Start();
+                        if (m_openPdcServiceController.Status == ServiceControllerStatus.Stopped)
+                            m_openPdcServiceController.Start();
                     }
 
                     // If the user requested it, start the openPDC Manager.
@@ -215,11 +239,14 @@ namespace ConfigurationSetupUtility
                 }
                 finally
                 {
+                    if (m_openPdcServiceController != null)
+                        m_openPdcServiceController.Close();
+
+                    if (migrationProcess != null)
+                        migrationProcess.Close();
+
                     if (managerProcess != null)
                         managerProcess.Close();
-
-                    if (iaonHostController != null)
-                        iaonHostController.Close();
                 }
             }
         }

@@ -182,6 +182,8 @@ namespace ConfigurationSetupUtility
                 Visibility newUserVisibility = (existing && !migrate) ? Visibility.Collapsed : Visibility.Visible;
 
                 m_state["sqlServerSetup"] = m_sqlServerSetup;
+                m_sqlServerSetup.HostName = m_hostNameTextBox.Text;
+                m_sqlServerSetup.DatabaseName = m_databaseNameTextBox.Text;
                 m_createNewUserCheckBox.Visibility = newUserVisibility;
                 m_newUserNameLabel.Visibility = newUserVisibility;
                 m_newUserPasswordLabel.Visibility = newUserVisibility;
