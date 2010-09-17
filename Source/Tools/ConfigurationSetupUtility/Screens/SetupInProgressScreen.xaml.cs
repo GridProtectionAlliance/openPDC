@@ -236,7 +236,7 @@ namespace ConfigurationSetupUtility
 
                 // Modify the openPDC configuration file.
                 AppendStatusMessage("Attempting to modify configuration files...");
-                ModifyConfigFiles(connectionString, "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter", false);
+                ModifyConfigFiles(connectionString, "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter", false);
                 m_state["oldOleDbConnectionString"] = m_oldConnectionString;
                 m_state["newOleDbConnectionString"] = connectionString;
                 AppendStatusMessage("Modification of configuration files was successful.");
@@ -452,7 +452,7 @@ namespace ConfigurationSetupUtility
 
                 // Modify the openPDC configuration file.
                 AppendStatusMessage("Attempting to modify configuration files...");
-                ModifyConfigFiles(sqlServerSetup.ConnectionString, "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter", Convert.ToBoolean(m_state["encryptSqlServerConnectionStrings"]));
+                ModifyConfigFiles(sqlServerSetup.ConnectionString, "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter", Convert.ToBoolean(m_state["encryptSqlServerConnectionStrings"]));
 
                 oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
                 oldConnectionStringSetup.UserName = adminUserName;
