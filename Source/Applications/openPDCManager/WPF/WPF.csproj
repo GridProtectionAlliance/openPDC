@@ -61,7 +61,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>AppLogo.ico</ApplicationIcon>
+    <ApplicationIcon>openPDC.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DynamicDataDisplay">
@@ -833,7 +833,7 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="AppLogo.ico" />
+    <Resource Include="openPDC.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
