@@ -634,6 +634,7 @@ namespace TVA.PhasorProtocols
         private bool m_injectSimulatedTimestamp;
         private long m_totalFramesReceived;
         private long m_totalMissingFrames;
+        private long m_missingFramesOverflow;
         private long m_totalCrcExceptions;
         private int m_frameRateTotal;
         private int m_byteRateTotal;
@@ -2180,7 +2181,19 @@ namespace TVA.PhasorProtocols
             m_calculatedFrameRate = (double)m_frameRateTotal / time;
             m_calculatedByteRate = (double)m_byteRateTotal / time;
 
-            m_totalMissingFrames += (long)(m_configuredFrameRate * m_rateCalcTimer.Interval * SI.Milli) - m_frameRateTotal;
+            // Since rate calculation timer is not precise, the missing frames calculation can be calculated out
+            // of sequence with the total frames. If there is a negative balance, we cache the value so it can
+            // be applied to the next calculation to keep calculation more accurate.
+            long missingFrames = (long)(m_configuredFrameRate * m_rateCalcTimer.Interval * SI.Milli) - m_frameRateTotal;
+
+            if (missingFrames > 0)
+            {
+                m_totalMissingFrames += (missingFrames + m_missingFramesOverflow);
+                m_missingFramesOverflow = 0;
+            }
+            else
+                m_missingFramesOverflow = missingFrames;
+
             m_totalFramesReceived += m_frameRateTotal;
             m_totalBytesReceived += m_byteRateTotal;
 

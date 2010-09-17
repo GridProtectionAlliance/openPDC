@@ -98,7 +98,8 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.XML" />
-    <Reference Include="TimeSeriesFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TimeSeriesFramework, Version=1.0.1.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
     </Reference>
     <Reference Include="TVA.Communication, Version=1.1.36.46795, Culture=neutral, processorArchitecture=MSIL">

@@ -87,16 +87,21 @@ namespace TVA.PhasorProtocols
             /// <returns>Difference from last cached statistic value.</returns>
             public double GetDifference()
             {
-                double value = CurrentState - PreviousState;
+                if (CurrentState > 0.0D)
+                {
+                    double value = CurrentState - PreviousState;
 
-                // If value is negative, statistics may have been reset by user
-                if (value < 0.0D)
-                    value = CurrentState;
+                    // If value is negative, statistics may have been reset by user
+                    if (value < 0.0D)
+                        value = CurrentState;
 
-                // Track last value
-                PreviousState = CurrentState;
+                    // Track last value
+                    PreviousState = CurrentState;
 
-                return value;
+                    return value;
+                }
+
+                return 0.0D;
             }
         }
 
@@ -310,7 +315,7 @@ namespace TVA.PhasorProtocols
             m_frameParser.SkipDisableRealTimeData = true;
 
             // Create a new data publishing server
-            m_dataPublisher = new DataPublisher();
+            //m_dataPublisher = new DataPublisher();
         }
 
         /// <summary>
@@ -1476,9 +1481,13 @@ namespace TVA.PhasorProtocols
 
         // Static Fields
         private static StatisticValueStateCache s_statisticValueCache = new StatisticValueStateCache();
-        private static long s_maximumLatency;   // Cached maximum latency
-        private static long s_averageLatency;   // Cached average latency
-        private static long s_configChanges;    // Cached configuration changes
+        private static long s_maximumLatency;       // Cached maximum latency
+        private static long s_averageLatency;       // Cached average latency
+        private static long s_configChanges;        // Cached configuration changes
+        private static double s_missingFrames;      // Cached missing frames
+        private static double s_totalDataFrames;    // Cached total data frames
+        private static double s_totalConfigFrames;  // Cached total configuration frames
+        private static double s_totalHeaderFrames;  // Cached total header frames
 
         // Static Methods
 
@@ -1850,16 +1859,18 @@ namespace TVA.PhasorProtocols
         [SuppressMessage("Microsoft.Security", "CA2100")]
         private static void LoadStatistic(IDbConnection connection, string commandText, string displayFormat)
         {
-            IDbCommand command = connection.CreateCommand();
-            IDbDataParameter parameter = command.CreateParameter();
+            using (IDbCommand command = connection.CreateCommand())
+            {
+                IDbDataParameter parameter = command.CreateParameter();
 
-            parameter.ParameterName = "@displayFormat";
-            parameter.Value = displayFormat;
-            parameter.Direction = ParameterDirection.Input;
+                parameter.ParameterName = "@displayFormat";
+                parameter.Value = displayFormat;
+                parameter.Direction = ParameterDirection.Input;
 
-            command.Parameters.Add(parameter);
-            command.CommandText = commandText;
-            command.ExecuteNonQuery();
+                command.Parameters.Add(parameter);
+                command.CommandText = commandText;
+                command.ExecuteNonQuery();
+            }
         }
 
         #region [ Device Statistic Calculators ]
@@ -1924,6 +1935,9 @@ namespace TVA.PhasorProtocols
         /// </summary>
         /// <param name="source">Source InputStream.</param>
         /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <remarks>
+        /// This statistic also calculates the other frame count statistics so its load order must occur first.
+        /// </remarks>
         /// <returns>Total Frames Statistic.</returns>
         private static double GetInputStreamStatistic_TotalFrames(object source, string arguments)
         {
@@ -1931,7 +1945,20 @@ namespace TVA.PhasorProtocols
             PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
 
             if (inputStream != null)
-                statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.TotalFrames, "TotalFrames");
+            {
+                // We get all frame count statistics in close sequence for improved accuracy
+                long totalFrames = inputStream.TotalFrames;
+                long missingFrames = inputStream.MissingFrames;
+                long totalDataFrames = inputStream.TotalDataFrames;
+                long totalConfigFrames = inputStream.TotalConfigurationFrames;
+                long totalHeaderFrames = inputStream.TotalHeaderFrames;
+
+                statistic = s_statisticValueCache.GetDifference(inputStream, totalFrames, "TotalFrames");
+                s_missingFrames = s_statisticValueCache.GetDifference(inputStream, missingFrames, "MissingFrames");
+                s_totalDataFrames = s_statisticValueCache.GetDifference(inputStream, totalDataFrames, "TotalDataFrames");
+                s_totalConfigFrames = s_statisticValueCache.GetDifference(inputStream, totalConfigFrames, "TotalConfigurationFrames");
+                s_totalHeaderFrames = s_statisticValueCache.GetDifference(inputStream, totalHeaderFrames, "TotalHeaderFrames");
+            }
 
             return statistic;
         }
@@ -1968,13 +1995,7 @@ namespace TVA.PhasorProtocols
         /// <returns>Missing Frames Statistic.</returns>
         private static double GetInputStreamStatistic_MissingFrames(object source, string arguments)
         {
-            double statistic = 0.0D;
-            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
-
-            if (inputStream != null)
-                statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.MissingFrames, "MissingFrames");
-
-            return statistic;
+            return s_missingFrames;
         }
 
         /// <summary>
@@ -2076,7 +2097,10 @@ namespace TVA.PhasorProtocols
             PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
 
             if (inputStream != null)
-                statistic = (s_statisticValueCache.GetDifference(inputStream, inputStream.ConnectionAttempts, "ConnectionAttempts") == 0.0D ? 1.0D : 0.0D);
+            {
+                if (inputStream.IsConnected)
+                    statistic = (s_statisticValueCache.GetDifference(inputStream, inputStream.ConnectionAttempts, "ConnectionAttempts") == 0.0D ? 1.0D : 0.0D);
+            }
 
             return statistic;
         }
@@ -2125,13 +2149,7 @@ namespace TVA.PhasorProtocols
         /// <returns>Total Data Frames Statistic.</returns>
         private static double GetInputStreamStatistic_TotalDataFrames(object source, string arguments)
         {
-            double statistic = 0.0D;
-            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
-
-            if (inputStream != null)
-                statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.TotalDataFrames, "TotalDataFrames");
-
-            return statistic;
+            return s_totalDataFrames;
         }
 
         /// <summary>
@@ -2142,13 +2160,7 @@ namespace TVA.PhasorProtocols
         /// <returns>Total Configuration Frames Statistic.</returns>
         private static double GetInputStreamStatistic_TotalConfigurationFrames(object source, string arguments)
         {
-            double statistic = 0.0D;
-            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
-
-            if (inputStream != null)
-                statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.TotalConfigurationFrames, "TotalConfigurationFrames");
-
-            return statistic;
+            return s_totalConfigFrames;
         }
 
         /// <summary>
@@ -2159,13 +2171,7 @@ namespace TVA.PhasorProtocols
         /// <returns>Total Header Frames Statistic.</returns>
         private static double GetInputStreamStatistic_TotalHeaderFrames(object source, string arguments)
         {
-            double statistic = 0.0D;
-            PhasorMeasurementMapper inputStream = source as PhasorMeasurementMapper;
-
-            if (inputStream != null)
-                statistic = s_statisticValueCache.GetDifference(inputStream, inputStream.TotalHeaderFrames, "TotalHeaderFrames");
-
-            return statistic;
+            return s_totalHeaderFrames;
         }
 
         /// <summary>
@@ -2405,7 +2411,10 @@ namespace TVA.PhasorProtocols
             PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
 
             if (outputStream != null)
-                statistic = (s_statisticValueCache.GetDifference(outputStream, outputStream.ConnectionAttempts, "ConnectionAttempts") == 0.0D ? 1.0D : 0.0D);
+            {
+                if (outputStream.Enabled)
+                    statistic = (s_statisticValueCache.GetDifference(outputStream, outputStream.ConnectionAttempts, "ConnectionAttempts") == 0.0D ? 1.0D : 0.0D);
+            }
 
             return statistic;
         }

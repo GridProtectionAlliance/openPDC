@@ -91,7 +91,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TimeSeriesFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TimeSeriesFramework">
       <HintPath>..\..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
     </Reference>
     <Reference Include="TVA.Communication, Version=1.1.59.53605, Culture=neutral, processorArchitecture=MSIL">
@@ -101,10 +101,6 @@
     <Reference Include="TVA.Core, Version=1.1.59.53605, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.PhasorProtocols, Version=1.1.93.57252, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Build\Output\Release\Libraries\TVA.PhasorProtocols.dll</HintPath>
     </Reference>
     <Reference Include="TVA.Services, Version=1.1.59.53605, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -685,6 +681,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Libraries\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj">
+      <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>
+      <Name>TVA.PhasorProtocols</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Web.Data\Data.csproj">
       <Project>{5314055B-EA03-4E15-8653-83F011D7A00E}</Project>
       <Name>Data %28Applications\openPDCManager\Data%29</Name>
