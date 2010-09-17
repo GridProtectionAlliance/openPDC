@@ -7,6 +7,12 @@
              d:DesignHeight="300" d:DesignWidth="300" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=FrameworkElement, AncestorLevel=1}, Path=ActualWidth}">
     <DockPanel>
         <Label Content="Configuration setup complete" Margin="10" HorizontalContentAlignment="Center" DockPanel.Dock="Top" FontSize="16" FontWeight="Bold" />
-        <TextBlock Name="textBlock1" Text="The configuration setup is complete. Click Finish to exit the Configuration Setup Utility." DockPanel.Dock="Bottom" TextAlignment="Center" TextWrapping="Wrap" Margin="20,0" />
+        <StackPanel DockPanel.Dock="Bottom">
+            <TextBlock Name="textBlock1" Text="The configuration setup is complete. Click Finish to exit the Configuration Setup Utility." TextAlignment="Center" TextWrapping="Wrap" Margin="20,0,20,10" />
+            <StackPanel HorizontalAlignment="Center">
+                <CheckBox Content="Start the openPDC" IsChecked="True" Name="m_serviceStartCheckBox" />
+                <CheckBox Content="Start the openPDC Manager" IsChecked="True" Name="m_managerStartCheckBox" />
+            </StackPanel>
+        </StackPanel>
     </DockPanel>
 </UserControl>

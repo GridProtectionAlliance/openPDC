@@ -28,6 +28,7 @@ using System.IO;
 using System.Windows.Controls;
 using TVA.Configuration;
 using TVA.IO;
+using System.ServiceProcess;
 
 namespace ConfigurationSetupUtility
 {
@@ -130,6 +131,8 @@ namespace ConfigurationSetupUtility
         {
             if (State != null)
             {
+                ServiceController iaonHostController = null;
+                Process managerProcess = null;
                 bool existing = Convert.ToBoolean(State["existing"]);
                 bool migrate = existing && Convert.ToBoolean(State["updateConfiguration"]);
 
@@ -180,12 +183,43 @@ namespace ConfigurationSetupUtility
                         migrationProcess.StartInfo.UseShellExecute = false;
                         migrationProcess.StartInfo.CreateNoWindow = true;
                         migrationProcess.Start();
+                        migrationProcess.WaitForExit();
                     }
                     finally
                     {
                         if (migrationProcess != null)
                             migrationProcess.Close();
                     }
+                }
+
+                try
+                {
+                    // If the user requested it, start the openPDC service.
+                    if (m_serviceStartCheckBox.IsChecked.Value)
+                    {
+                        iaonHostController = new ServiceController("IaonHost");
+
+                        if (iaonHostController.Status == ServiceControllerStatus.Stopped)
+                            iaonHostController.Start();
+                    }
+
+                    // If the user requested it, start the openPDC Manager.
+                    if (m_managerStartCheckBox.IsChecked.Value)
+                    {
+                        managerProcess = new Process();
+                        managerProcess.StartInfo.FileName = "openPDCManager.exe";
+                        managerProcess.StartInfo.UseShellExecute = false;
+                        managerProcess.StartInfo.CreateNoWindow = true;
+                        managerProcess.Start();
+                    }
+                }
+                finally
+                {
+                    if (managerProcess != null)
+                        managerProcess.Close();
+
+                    if (iaonHostController != null)
+                        iaonHostController.Close();
                 }
             }
         }
