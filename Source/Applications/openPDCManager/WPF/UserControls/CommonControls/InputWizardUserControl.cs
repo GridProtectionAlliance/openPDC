@@ -33,6 +33,7 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using openPDCManager.Pages.Devices;
 using openPDCManager.Data.ServiceCommunication;
+using System.Text;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -202,6 +203,68 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
 
+                //Update Metadata in the openPDC Service.                
+                try
+                {
+                    WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;                
+                    if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                    {
+                        if (historianID != null)
+                        {
+                            string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)historianID);                            
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");                            
+                        }
+
+                        //now also update Stat historian metadata.
+                        Historian statHistorian = CommonFunctions.GetHistorianByAcronym("STAT");
+                        if (statHistorian != null)
+                        {
+                            string statRuntimeID = CommonFunctions.GetRuntimeID("Historian", statHistorian.ID);                            
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshmetadata");                            
+                        }
+
+                        //Send Initialize command to openPDC windows service.
+                        if (parentID != null)   // devices are being added to PDC then initialize PDC only and not individual devices.
+                        {                            
+                            string runtimeID = CommonFunctions.GetRuntimeID("Device", (int)parentID);
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + runtimeID);                         
+                        }
+                        else    //Otherwise go through the list and intialize each device by retrieving its runtime ID from database.
+                        {
+                            foreach (WizardDeviceInfo deviceInfo in wizardDeviceInfoList)
+                            {
+                                if (deviceInfo.Include)
+                                {
+                                    Device device = CommonFunctions.GetDeviceByAcronym(deviceInfo.Acronym);
+                                    if (device != null)
+                                    {
+                                        string runtimeID = CommonFunctions.GetRuntimeID("Device", device.ID);                                        
+                                        CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + runtimeID);                                        
+                                    }
+                                }
+                            }                            
+                        }
+                        //Issue reload statistics command for CommonPhasorServices to pick up change in statistics measurement if any.
+                        CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");
+                    }
+                    else
+                    {
+                        sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        sm.ShowPopup();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm.ShowPopup();
+                    CommonFunctions.LogException("SaveWizardConfigurationInfo.RefreshMetadata", ex);
+                } 
+                
+                //navigate to browse devices screen.
                 BrowseDevicesUserControl browseDevices = new BrowseDevicesUserControl();
                 ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(browseDevices);
             }
@@ -214,50 +277,7 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
             }
-
-            //Update Metadata in the openPDC Service.
-            WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
-            try
-            {
-                if (historianID != null)
-                {
-                    string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)historianID);                    
-                    if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                        CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
-                }
-            }
-            catch (Exception ex)
-            {
-                CommonFunctions.LogException("SaveWizardConfigurationInfo.RefreshMetadata", ex);                
-            }
-
-            //Send Initialize command to openPDC windows service.
-            if (parentID != null)   // devices are being added to PDC then initialize PDC only and not individual devices.
-            {
-                string runtimeID = CommonFunctions.GetRuntimeID("Device", (int)parentID);
-                if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + runtimeID);
-            }
-            else    //Otherwise go through the list and intialize each device by retrieving its runtime ID from database.
-            {
-                try
-                {
-                    foreach (WizardDeviceInfo deviceInfo in wizardDeviceInfoList)
-                    {
-                        if (deviceInfo.Include)
-                        {
-                            Device device = CommonFunctions.GetDeviceByAcronym(deviceInfo.Acronym);
-                            if (device != null)
-                            {
-                                string runtimeID = CommonFunctions.GetRuntimeID("Device", device.ID);
-                                if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + runtimeID);
-                            }
-                        }
-                    }
-                }
-                catch { }
-            }
+            
             nextButtonClicked = false;
             if (m_activityWindow != null)
                 m_activityWindow.Close();

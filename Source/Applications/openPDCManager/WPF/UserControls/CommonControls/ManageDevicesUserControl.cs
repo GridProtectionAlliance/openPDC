@@ -60,6 +60,7 @@ namespace openPDCManager.UserControls.CommonControls
                 {
                     string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + Convert.ToInt32(TextBlockRuntimeID.Text));
                     sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
+                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");
                 }
                 else
                     sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);             
@@ -356,24 +357,46 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
 
-                //Update Metadata in the openPDC Service.
+                //Update Metadata in the openPDC Service.                
                 try
-                {
-                    WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
-                    if (device.HistorianID != null)
+                {                    
+                    if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                     {
-                        string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID);
-                        if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                        if (device.HistorianID != null) //Update historian metadata
+                        {
+                            string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID);
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
-                    }
+                        }
 
-                    if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.
-                        SendInitialize();
-                    else if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                        CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
-                }
+                        //now also update Stat historian metadata.
+                        Historian statHistorian = CommonFunctions.GetHistorianByAcronym("STAT");
+                        if (statHistorian != null)
+                        {
+                            string statRuntimeID = CommonFunctions.GetRuntimeID("Historian", statHistorian.ID);
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshmetadata");
+                        }
+
+                        if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + Convert.ToInt32(TextBlockRuntimeID.Text));
+                        else 
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
+
+                        CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");
+                    }
+                    else
+                    {
+                        sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        sm.ShowPopup();
+                    }
+                }                
                 catch (Exception ex)
                 {
+                    sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm.ShowPopup();
                     CommonFunctions.LogException("SaveDevice.RefreshMetadata", ex);
                 }
 

@@ -64,7 +64,7 @@ namespace openPDCManager.UserControls.CommonControls
                     {
                         if (device.HistorianID != null)
                         {
-                            string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID);                           
+                            string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID);
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
                         }
 
@@ -77,10 +77,22 @@ namespace openPDCManager.UserControls.CommonControls
                         }
                         else
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
+                                                
+                    }
+                    else
+                    {
+                        sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        sm.ShowPopup();
                     }
                 }
                 catch (Exception ex)
                 {
+                    sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm.ShowPopup();
                     CommonFunctions.LogException("SavePhasor.RefreshMetadata", ex);
                 }
             }

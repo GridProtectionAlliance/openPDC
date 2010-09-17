@@ -52,9 +52,10 @@ namespace openPDCManager.UserControls.OutputStreamControls
             try
             {
                 if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                {
-                    string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + TextBlockRuntimeID.Text);
+                {                    
+                    string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + TextBlockRuntimeID.Text);                    
                     sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
+                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");
                 }
                 else
                     sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);             
@@ -78,7 +79,8 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                 {
                     string runtimeID = CommonFunctions.GetRuntimeID("OutputStream", outputStreamID);
-                    string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " UpdateConfiguration");
+                    string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "reloadconfig");
+                    result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " UpdateConfiguration");
                     sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
                 }
                 else
@@ -148,13 +150,23 @@ namespace openPDCManager.UserControls.OutputStreamControls
 
                 //Update Metadata in the openPDC Service.
                 try
-                {                    
-                        WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
-                        if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)                 
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.                 
+                {
+                    if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                        CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
+                    else
+                    {
+                        sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        sm.ShowPopup();
+                    }
                 }
                 catch (Exception ex)
                 {
+                    sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm.ShowPopup();
                     CommonFunctions.LogException("SaveOutputStream.RefreshMetadata", ex);
                 }
 

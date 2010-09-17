@@ -146,6 +146,15 @@ namespace openPDCManager.Pages.Devices
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
                         }
 
+                        //now also update Stat historian metadata.
+                        Historian statHistorian = CommonFunctions.GetHistorianByAcronym("STAT");
+                        if (statHistorian != null)
+                        {
+                            string statRuntimeID = CommonFunctions.GetRuntimeID("Historian", statHistorian.ID);
+                            if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshmetadata");
+                        }
+
                         if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.
                         {
                             if (device.ParentID == null)
@@ -155,10 +164,23 @@ namespace openPDCManager.Pages.Devices
                         }
                         else
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
+
+                        CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");
+                    }
+                    else
+                    {                     
+                        sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        sm.ShowPopup();
                     }
                 }
                 catch (Exception ex)
                 {
+                    sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm.ShowPopup();
                     CommonFunctions.LogException("ButtonSave_Click.RefreshMetadata", ex);
                 }
 

@@ -1854,6 +1854,26 @@ namespace openPDCManager.Data
             }
         }
 
+        public static Historian GetHistorianByAcronym(string acronym)
+        {           
+            try
+            {
+                List<Historian> historianList = new List<Historian>();
+                historianList = (from item in GetHistorianList(string.Empty)
+                              where item.Acronym.ToUpper() == acronym.ToUpper()
+                              select item).ToList();
+                if (historianList.Count > 0)
+                    return historianList[0];
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                LogException("GetDeviceByAcronym", ex);
+                return null;
+            }
+        }        
+
         #endregion
 
         #region " Manage Nodes Code"
@@ -2565,7 +2585,7 @@ namespace openPDCManager.Data
             {
                 List<Device> deviceList = new List<Device>();
                 deviceList = (from item in GetDeviceList(string.Empty)
-                              where item.Acronym == acronym
+                              where item.Acronym.ToUpper() == acronym.ToUpper()
                               select item).ToList();
                 if (deviceList.Count > 0)
                     return deviceList[0];
