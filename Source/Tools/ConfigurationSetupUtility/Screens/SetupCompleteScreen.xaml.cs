@@ -159,10 +159,10 @@ namespace ConfigurationSetupUtility
                         // Modify OleDB configuration file settings for the DataMigrationUtility.
                         configFile = ConfigurationFile.Open("DataMigrationUtility.exe.config");
                         applicationSettings = configFile.Settings["applicationSettings"];
-                        applicationSettings["FromConnectionString"].Value = oldOleDbConnectionString;
-                        applicationSettings["FromDataType"].Value = databaseType;
-                        applicationSettings["ToConnectionString"].Value = newOleDbConnectionString;
-                        applicationSettings["ToDataType"].Value = databaseType;
+                        applicationSettings["FromConnectionString", true].Value = oldOleDbConnectionString;
+                        applicationSettings["FromDataType", true].Value = databaseType;
+                        applicationSettings["ToConnectionString", true].Value = newOleDbConnectionString;
+                        applicationSettings["ToDataType", true].Value = databaseType;
                         configFile.Save();
 
                         // Copy user-level DatabaseSetupUtility config file to DataMigrationUtility application folder.
