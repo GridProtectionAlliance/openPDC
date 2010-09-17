@@ -129,7 +129,7 @@ namespace openPDCManager.Pages.Adapters
                                             if (detailStatistic.Statistics.IsConnectedState == true)
                                             {
                                                 DateTime sourceDateTime;
-                                                if (DateTime.TryParseExact(timeTaggedMeasurement.TimeTag, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out sourceDateTime) && DateTime.UtcNow.Subtract(sourceDateTime).TotalSeconds > 60)
+                                                if (DateTime.TryParseExact(timeTaggedMeasurement.TimeTag, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out sourceDateTime) && DateTime.UtcNow.Subtract(sourceDateTime).TotalSeconds > 30)
                                                     streamInfo.StatusColor = "Gray";                                                                                                    
                                                 else if (Convert.ToBoolean(timeTaggedMeasurement.CurrentValue))
                                                     streamInfo.StatusColor = "Green";
