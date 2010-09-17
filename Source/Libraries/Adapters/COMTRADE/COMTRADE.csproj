@@ -99,21 +99,23 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
     </Reference>
+    <Reference Include="TVA.Communication, Version=4.0.1.56957, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
+    </Reference>
     <Reference Include="TVA.Core, Version=1.1.36.46795, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath Condition=" '$(SignAssembly)' != 'true' ">..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
       <HintPath Condition=" '$(SignAssembly)' == 'true' ">..\..\..\Dependencies\TVA\Signed\TVA.Core.dll</HintPath>
     </Reference>
+    <Reference Include="TVA.PhasorProtocols, Version=1.2.26.57261, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Build\Output\Release\Libraries\TVA.PhasorProtocols.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileExporter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj">
-      <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>
-      <Name>TVA.PhasorProtocols</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
