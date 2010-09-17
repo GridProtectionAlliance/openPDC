@@ -103,10 +103,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Core, Version=1.1.36.46795, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Core, Version=4.0.1.56957, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath Condition=" '$(SignAssembly)' != 'true' ">..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
-      <HintPath Condition=" '$(SignAssembly)' == 'true' ">..\..\..\Dependencies\TVA\Signed\TVA.Core.dll</HintPath>
+      <HintPath>..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
     </Reference>
     <Reference Include="TVA.PhasorProtocols, Version=1.2.26.57261, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
