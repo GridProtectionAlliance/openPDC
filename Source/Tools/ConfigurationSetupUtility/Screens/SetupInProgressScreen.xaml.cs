@@ -264,7 +264,7 @@ namespace ConfigurationSetupUtility
                 mySqlSetup = m_state["mySqlSetup"] as MySqlSetup;
                 mySqlSetup.OutputDataReceived += MySqlSetup_OutputDataReceived;
                 mySqlSetup.ErrorDataReceived += MySqlSetup_ErrorDataReceived;
-                m_state["newOleDbConnectionString"] = mySqlSetup.ConnectionString;
+                m_state["newOleDbConnectionString"] = mySqlSetup.OleDbConnectionString;
                 adminUserName = mySqlSetup.UserName;
                 adminPassword = mySqlSetup.Password;
 
@@ -274,6 +274,7 @@ namespace ConfigurationSetupUtility
                     bool initialDataScript = !migrate && Convert.ToBoolean(m_state["initialDataScript"]);
                     bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
                     bool createNewUser = Convert.ToBoolean(m_state["createNewMySqlUser"]);
+                    int progress = 0;
 
                     // Determine which scripts need to be run.
                     scriptNames.Add("openPDC.sql");
@@ -287,7 +288,6 @@ namespace ConfigurationSetupUtility
                     foreach (string scriptName in scriptNames)
                     {
                         string scriptPath = Directory.GetCurrentDirectory() + "\\Database scripts\\MySQL\\" + scriptName;
-                        int progress = 0;
                         AppendStatusMessage(string.Format("Attempting to run {0} script...", scriptName));
 
                         if (!mySqlSetup.ExecuteScript(scriptPath))
@@ -382,6 +382,7 @@ namespace ConfigurationSetupUtility
                     bool initialDataScript = !migrate && Convert.ToBoolean(m_state["initialDataScript"]);
                     bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
                     bool createNewUser = Convert.ToBoolean(m_state["createNewSqlServerUser"]);
+                    int progress = 0;
 
                     // Determine which scripts need to be run.
                     scriptNames.Add("openPDC.sql");
@@ -395,7 +396,6 @@ namespace ConfigurationSetupUtility
                     foreach (string scriptName in scriptNames)
                     {
                         string scriptPath = Directory.GetCurrentDirectory() + "\\Database scripts\\SQL Server\\" + scriptName;
-                        int progress = 0;
                         AppendStatusMessage(string.Format("Attempting to run {0} script...", scriptName));
 
                         if (!sqlServerSetup.ExecuteScript(scriptPath))
