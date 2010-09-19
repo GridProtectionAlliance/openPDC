@@ -17,7 +17,9 @@
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
 //  09/09/2010 - Stephen C. Wills
-//       Generated original version of source code.
+//      Generated original version of source code.
+//  09/19/2010 - J. Ritchie Carroll
+//      Made default path for Access database point to a non-restrictive location.
 //
 //******************************************************************************************************
 
@@ -26,6 +28,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
+using System.IO;
 
 namespace ConfigurationSetupUtility
 {
@@ -51,6 +54,22 @@ namespace ConfigurationSetupUtility
         public AccessDatabaseSetupScreen()
         {
             InitializeComponent();
+
+            try
+            {
+                // Set a default path for Access database that will allow non-restrictive read/write access
+                string accessDatabaseFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "openPDC\\");
+
+                // Make sure path exists
+                if (!Directory.Exists(accessDatabaseFilePath))
+                    Directory.CreateDirectory(accessDatabaseFilePath);
+
+                m_accessDatabaseFilePathTextBox.Text = Path.Combine(accessDatabaseFilePath, "openPDC.mdb");
+            }
+            catch
+            {
+                m_accessDatabaseFilePathTextBox.Text = "openPDC.mdb";
+            }
         }
 
         #endregion
@@ -143,7 +162,7 @@ namespace ConfigurationSetupUtility
                 m_state = value;
 
                 if (!m_state.ContainsKey("accessDatabaseFilePath"))
-                    m_state.Add("accessDatabaseFilePath", "openPDC.mdb");
+                    m_state.Add("accessDatabaseFilePath", m_accessDatabaseFilePathTextBox.Text);
             }
         }
 
