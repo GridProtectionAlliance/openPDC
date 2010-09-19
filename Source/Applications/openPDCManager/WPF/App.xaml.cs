@@ -18,10 +18,14 @@
 //  ----------------------------------------------------------------------------------------------------
 //  08/31/2010 - Mehulbhai P Thakkar
 //       Generated original version of source code.
+//  09/19/2010 - J. Ritchie Carroll
+//       Added unhandled exception logger with dialog for better end user problem diagnosis.
 //
 //******************************************************************************************************
 
+using System;
 using System.Windows;
+using TVA.ErrorManagement;
 using openPDCManager.Data.ServiceCommunication;
 
 namespace openPDCManager
@@ -31,7 +35,31 @@ namespace openPDCManager
     /// </summary>
     public partial class App : Application
     {
-        WindowsServiceClient m_serviceClient;
+        #region [ Members ]
+
+        private ErrorLogger m_errorLogger;
+        private Func<string> m_defaultErrorText;
+
+        #endregion
+
+        #region [ Constructors ]
+
+        public App()
+        {
+            m_errorLogger = new ErrorLogger();
+            m_defaultErrorText = m_errorLogger.ErrorTextMethod;
+            m_errorLogger.ErrorTextMethod = ErrorText;
+            m_errorLogger.ExitOnUnhandledException = false;
+            m_errorLogger.HandleUnhandledException = true;
+            m_errorLogger.LogToEmail = false;
+            m_errorLogger.LogToEventLog = true;
+            m_errorLogger.LogToFile = true;
+            m_errorLogger.LogToScreenshot = true;
+            m_errorLogger.LogToUI = true;
+            m_errorLogger.Initialize();
+        }
+
+        #endregion
 
         #region [ Properties ]
 
@@ -42,10 +70,28 @@ namespace openPDCManager
         public string RealTimeStatisticServiceUrl { get; set; }
         //public ApplicationIdCredentialsProvider Credentials { get; set; }
         public WindowsServiceClient ServiceClient { get; set; }
-        
 
         #endregion
-           
+
+        #region [ Methods ]
+
+        private string ErrorText()
+        {
+            string errorMessage = m_defaultErrorText();
+            Exception ex = m_errorLogger.LastException;
+
+            if (ex != null)
+            {
+                if (string.Compare(ex.Message, "UnhandledException", true) == 0 && ex.InnerException != null)
+                    ex = ex.InnerException;
+
+                errorMessage = string.Format("{0}\r\n\r\nError details: {1}", errorMessage, ex.Message);
+            }
+
+            return errorMessage;
+        }
+
+        #endregion
     }
 
 }

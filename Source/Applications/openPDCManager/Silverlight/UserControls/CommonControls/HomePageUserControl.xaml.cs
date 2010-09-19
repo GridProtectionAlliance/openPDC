@@ -29,7 +29,6 @@ using System.Windows.Controls;
 using System.Windows.Media.Animation;
 #if SILVERLIGHT
 using openPDCManager.LivePhasorDataServiceProxy;
-
 #else
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;

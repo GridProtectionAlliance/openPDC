@@ -57,44 +57,58 @@ namespace openPDCManager.Data
 			// Only need to establish data types and load settings once
 			if (s_connectionType == null || string.IsNullOrEmpty(s_connectionString))
 			{
-				// Load connection settings from the system settings category				
-				ConfigurationFile config = ConfigurationFile.Current; //new ConfigurationFile("~/web.config", ApplicationType.Web);
-				CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
+                try
+                {
+                    // Load connection settings from the system settings category				
+                    ConfigurationFile config = ConfigurationFile.Current; //new ConfigurationFile("~/web.config", ApplicationType.Web);
+                    CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
 
-				string dataProviderString = configSettings["DataProviderString"].Value;
-				s_connectionString = configSettings["ConnectionString"].Value;
+                    string dataProviderString = configSettings["DataProviderString"].Value;
+                    s_connectionString = configSettings["ConnectionString"].Value;
 
-				if (string.IsNullOrEmpty(s_connectionString))
-					throw new NullReferenceException("ConnectionString setting was undefined.");
+                    if (string.IsNullOrEmpty(s_connectionString))
+                        throw new NullReferenceException("ConnectionString setting was undefined.");
 
-				if (string.IsNullOrEmpty(dataProviderString))
-					throw new NullReferenceException("DataProviderString setting was undefined.");
+                    if (string.IsNullOrEmpty(dataProviderString))
+                        throw new NullReferenceException("DataProviderString setting was undefined.");
 
-				// Attempt to load configuration from an ADO.NET database connection
-				Dictionary<string, string> settings;
-				string assemblyName, connectionTypeName, adapterTypeName;
-				Assembly assembly;
+                    // Attempt to load configuration from an ADO.NET database connection
+                    Dictionary<string, string> settings;
+                    string assemblyName, connectionTypeName, adapterTypeName;
+                    Assembly assembly;
 
-				settings = dataProviderString.ParseKeyValuePairs();
-				assemblyName = settings["AssemblyName"].ToNonNullString();
-				connectionTypeName = settings["ConnectionType"].ToNonNullString();
-				adapterTypeName = settings["AdapterType"].ToNonNullString();
+                    settings = dataProviderString.ParseKeyValuePairs();
+                    assemblyName = settings["AssemblyName"].ToNonNullString();
+                    connectionTypeName = settings["ConnectionType"].ToNonNullString();
+                    adapterTypeName = settings["AdapterType"].ToNonNullString();
 
-				if (string.IsNullOrEmpty(connectionTypeName))
-					throw new NullReferenceException("Database connection type was undefined.");
+                    if (string.IsNullOrEmpty(connectionTypeName))
+                        throw new NullReferenceException("Database connection type was undefined.");
 
-				if (string.IsNullOrEmpty(adapterTypeName))
-					throw new NullReferenceException("Database adapter type was undefined.");
+                    if (string.IsNullOrEmpty(adapterTypeName))
+                        throw new NullReferenceException("Database adapter type was undefined.");
 
-				assembly = Assembly.Load(new AssemblyName(assemblyName));
-				s_connectionType = assembly.GetType(connectionTypeName);
-				s_adapterType = assembly.GetType(adapterTypeName);
+                    assembly = Assembly.Load(new AssemblyName(assemblyName));
+                    s_connectionType = assembly.GetType(connectionTypeName);
+                    s_adapterType = assembly.GetType(adapterTypeName);
+                }
+                catch (Exception ex)
+                {                    
+                    throw new InvalidOperationException("Failed to load defined data provider - check \"DataProviderString\" in configuration file: " + ex.Message, ex);
+                }
 			}
 
-			// Open ADO.NET provider connection
-			m_connection = (IDbConnection)Activator.CreateInstance(s_connectionType);
-			m_connection.ConnectionString = s_connectionString;			
-			m_connection.Open();
+            try
+            {
+                // Open ADO.NET provider connection
+                m_connection = (IDbConnection)Activator.CreateInstance(s_connectionType);
+                m_connection.ConnectionString = s_connectionString;
+                m_connection.Open();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Failed to open data connection - check \"ConnectionString\" in configuration file: " + ex.Message, ex);
+            }
 		}
 
 		/// <summary>
