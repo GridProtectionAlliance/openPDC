@@ -18,11 +18,15 @@
 //  ----------------------------------------------------------------------------------------------------
 //  09/09/2010 - Stephen C. Wills
 //       Generated original version of source code.
+//  09/19/2010 - J. Ritchie Carroll
+//       Added security warning message for non-local MySql host addresses.
 //
 //******************************************************************************************************
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -239,7 +243,26 @@ namespace ConfigurationSetupUtility
         // Occurs when the user changes the host name of the MySQL instance.
         private void HostNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            m_hostNameTextBox.Text = m_hostNameTextBox.Text.Trim();
             m_mySqlSetup.HostName = m_hostNameTextBox.Text;
+        }
+
+        // Occurs when the user leaves the host name field
+        private void m_hostNameTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                IPAddress[] hostIPs = Dns.GetHostAddresses(m_hostNameTextBox.Text);
+                IEnumerable<IPAddress> localIPs = Dns.GetHostAddresses("localhost").Concat(Dns.GetHostAddresses(Dns.GetHostName()));
+
+                // Check to see if entered host name corresponds to a local IP address
+                if (!hostIPs.Any(ip => localIPs.Contains(ip)))
+                    MessageBox.Show("You have entered a non-local host name for your MySql instance. By default remote access to MySQL database server is disabled for security reasons. You may want to execute the database scripts directly on the remote MySQL database server.", "MySql Security", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            catch
+            {
+                MessageBox.Show("The configuration utility could not determine if you entered a non-local host name for your MySql instance. Keep in mind that remote access to MySQL database server is disabled by default for security reasons. If you are not connecting to a local MySql instance you may want to execute the database scripts directly on the remote MySQL database server.", "MySql Security", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         // Occurs when the user changes the database name.

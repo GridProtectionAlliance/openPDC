@@ -239,6 +239,7 @@ namespace ConfigurationSetupUtility
         // Occurs when the user changes the host name of the SQL Server instance.
         private void HostNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            m_hostNameTextBox.Text = m_hostNameTextBox.Text.Trim();
             m_sqlServerSetup.HostName = m_hostNameTextBox.Text;
         }
 

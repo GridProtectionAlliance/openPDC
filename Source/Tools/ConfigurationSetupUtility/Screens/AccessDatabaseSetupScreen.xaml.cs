@@ -20,6 +20,7 @@
 //      Generated original version of source code.
 //  09/19/2010 - J. Ritchie Carroll
 //      Made default path for Access database point to a non-restrictive location.
+//      Added user verification for override of existing Access configuration.
 //
 //******************************************************************************************************
 
@@ -138,7 +139,12 @@ namespace ConfigurationSetupUtility
             get
             {
                 if (!string.IsNullOrEmpty(m_accessDatabaseFilePathTextBox.Text))
+                {
+                    if (!Convert.ToBoolean(m_state["existing"]) && File.Exists(m_accessDatabaseFilePathTextBox.Text))
+                        return (MessageBox.Show("An Access database already exists at the selected location. Are you sure you want to override the existing configuration?", "Configuration Already Exists", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes);
+
                     return true;
+                }
                 else
                 {
                     MessageBox.Show("Please enter a location for the Access database file.");
