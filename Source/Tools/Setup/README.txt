@@ -1,0 +1,1 @@
+Unzip all files and run "Setup.exe" to install application.

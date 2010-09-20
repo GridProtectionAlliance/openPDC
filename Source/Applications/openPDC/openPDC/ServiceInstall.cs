@@ -46,7 +46,7 @@ namespace openPDC
             try
             {
                 // Open the configuration file as an XML document.
-                string targetDir = FilePath.AddPathSuffix(Context.Parameters["DP_TargetDir"]);
+                string targetDir = FilePath.AddPathSuffix(Context.Parameters["DP_TargetDir"]).Replace("\\\\", "\\");
                 string configFilePath = targetDir + "openPDC.exe.Config";
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(configFilePath);
