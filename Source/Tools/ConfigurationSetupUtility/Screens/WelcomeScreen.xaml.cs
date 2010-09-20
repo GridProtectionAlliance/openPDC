@@ -18,6 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  09/07/2010 - Stephen C. Wills
 //       Generated original version of source code.
+//  09/19/2010 - J. Ritchie Carroll
+//       Added code to cache 64-bit installation state when passed as a command line argument
 //
 //******************************************************************************************************
 
@@ -39,6 +41,7 @@ namespace ConfigurationSetupUtility
         // Fields
 
         private IScreen m_nextPage;
+        private Dictionary<string, object> m_state;
 
         #endregion
 
@@ -50,8 +53,6 @@ namespace ConfigurationSetupUtility
         public WelcomeScreen()
         {
             InitializeComponent();
-            InitializeWelcomeMessage();
-
             m_nextPage = new ExistingConfigurationScreen();
         }
 
@@ -120,7 +121,18 @@ namespace ConfigurationSetupUtility
         /// <summary>
         /// Collection shared among screens that represents the state of the setup.
         /// </summary>
-        public Dictionary<string, object> State { get; set; }
+        public Dictionary<string, object> State
+        {
+            get
+            {
+                return m_state;
+            }
+            set
+            {
+                m_state = value;
+                InitializeWelcomeMessage();
+            }
+        }
 
         /// <summary>
         /// Allows the screen to update the navigation buttons after a change is made
@@ -138,6 +150,9 @@ namespace ConfigurationSetupUtility
             string[] args = Environment.GetCommandLineArgs();
             bool installFlag = args.Contains("-install", StringComparer.CurrentCultureIgnoreCase);
 
+            if (m_state != null)
+                m_state["64bit"] = args.Contains("-64bit", StringComparer.CurrentCultureIgnoreCase);
+    
             if (installFlag)
                 m_welcomeMessageTextBlock.Text = "You now need to set up the openPDC configuration.\r\n";
             else

@@ -53,18 +53,27 @@ namespace openPDC
                 XmlNode node = xmlDoc.SelectSingleNode("configuration/categorizedSettings/systemSettings");
                 XmlNode companyName = null;
                 XmlNode companyAcronym = null;
+                string installedBitSize = null;
+                string attributeValue;
 
-                // Find the CompanyName and CompanyAcronym parameters if they already exist.
+                // Find the needed installation parameters if they already exist.
                 foreach (XmlNode child in node.ChildNodes)
                 {
-                    if (child.Attributes["name"].Value == "CompanyName")
-                        companyName = child;
-                    else if (child.Attributes["name"].Value == "CompanyAcronym")
-                        companyAcronym = child;
+                    attributeValue = child.Attributes["name"].Value;
 
-                    if (companyName != null && companyAcronym != null)
-                        break;
+                    if (attributeValue == "CompanyName")
+                        companyName = child;
+                    else if (attributeValue == "CompanyAcronym")
+                        companyAcronym = child;
+                    else if (attributeValue == "InstalledBitSize")
+                        installedBitSize = child.Attributes["value"].Value;
                 }
+
+                // Default to 32 if no target installation bit size was found
+                if (string.IsNullOrWhiteSpace(installedBitSize))
+                    installedBitSize = "32";
+
+                installedBitSize += "bit";
 
                 // Modify or add the CompanyName parameter.
                 if (companyName != null)
@@ -100,7 +109,7 @@ namespace openPDC
                 {
                     databaseSetup = new Process();
                     databaseSetup.StartInfo.FileName = targetDir + "ConfigurationSetupUtility.exe";
-                    databaseSetup.StartInfo.Arguments = "-install";
+                    databaseSetup.StartInfo.Arguments = "-install -" + installedBitSize;
                     databaseSetup.StartInfo.WorkingDirectory = targetDir;
                     databaseSetup.StartInfo.UseShellExecute = false;
                     databaseSetup.StartInfo.CreateNoWindow = true;

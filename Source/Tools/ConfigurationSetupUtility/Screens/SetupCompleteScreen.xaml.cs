@@ -18,6 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  09/10/2010 - Stephen C. Wills
 //       Generated original version of source code.
+//  09/19/2010 - J. Ritchie Carroll
+//       Modified code to take into account that service will normally be stopped on this screen.
 //
 //******************************************************************************************************
 
@@ -151,7 +153,7 @@ namespace ConfigurationSetupUtility
         {
             m_openPdcServiceController = new ServiceController("openPDC");
 
-            if (m_openPdcServiceController.Status == ServiceControllerStatus.Running)
+            if (Convert.ToBoolean(m_state["restarting"]))
                 m_serviceStartCheckBox.Content = "Restart the openPDC";
         }
 
@@ -217,12 +219,6 @@ namespace ConfigurationSetupUtility
                     // If the user requested it, start or restart the openPDC service.
                     if (m_serviceStartCheckBox.IsChecked.Value)
                     {
-                        if (m_openPdcServiceController.Status == ServiceControllerStatus.Running)
-                        {
-                            m_openPdcServiceController.Stop();
-                            m_openPdcServiceController.WaitForStatus(ServiceControllerStatus.Stopped);
-                        }
-
                         if (m_openPdcServiceController.Status == ServiceControllerStatus.Stopped)
                             m_openPdcServiceController.Start();
                     }

@@ -18,13 +18,18 @@
 //  ----------------------------------------------------------------------------------------------------
 //  09/09/2010 - Stephen C. Wills
 //       Generated original version of source code.
+//  09/19/2010 - J. Ritchie Carroll
+//       Added code to stop key processes prior to modification of configuration files.
+//       Fixed error with AdoMetadataProvider section updates.
 //
 //******************************************************************************************************
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.ServiceProcess;
 using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -228,18 +233,18 @@ namespace ConfigurationSetupUtility
                     AppendStatusMessage(string.Format("Attempting to copy file {0} to {1}...", filePath, destination));
 
                     // Copy the file to the specified path.
-                    File.Copy(filePath, destination);
+                    File.Copy(filePath, destination, true);
                     UpdateProgressBar(95);
                     AppendStatusMessage("File copy successful.");
                     AppendStatusMessage(string.Empty);
                 }
 
                 // Modify the openPDC configuration file.
-                AppendStatusMessage("Attempting to modify configuration files...");
                 ModifyConfigFiles(connectionString, "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter", false);
+                
                 m_state["oldOleDbConnectionString"] = m_oldConnectionString;
                 m_state["newOleDbConnectionString"] = connectionString;
-                AppendStatusMessage("Modification of configuration files was successful.");
+
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -331,7 +336,6 @@ namespace ConfigurationSetupUtility
                 }
 
                 // Modify the openPDC configuration file.
-                AppendStatusMessage("Attempting to modify configuration files...");
                 ModifyConfigFiles(mySqlSetup.ConnectionString, "AssemblyName={MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter", Convert.ToBoolean(m_state["encryptMySqlConnectionStrings"]));
 
                 oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
@@ -339,7 +343,6 @@ namespace ConfigurationSetupUtility
                 oldConnectionStringSetup.Password = adminPassword;
                 m_state["oldOleDbConnectionString"] = oldConnectionStringSetup.OleDbConnectionString;
 
-                AppendStatusMessage("Modification of configuration files was successful.");
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -451,7 +454,6 @@ namespace ConfigurationSetupUtility
                 }
 
                 // Modify the openPDC configuration file.
-                AppendStatusMessage("Attempting to modify configuration files...");
                 ModifyConfigFiles(sqlServerSetup.ConnectionString, "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter", Convert.ToBoolean(m_state["encryptSqlServerConnectionStrings"]));
 
                 oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
@@ -459,7 +461,6 @@ namespace ConfigurationSetupUtility
                 oldConnectionStringSetup.Password = adminPassword;
                 m_state["oldOleDbConnectionString"] = oldConnectionStringSetup.OleDbConnectionString;
 
-                AppendStatusMessage("Modification of configuration files was successful.");
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -483,9 +484,7 @@ namespace ConfigurationSetupUtility
             try
             {
                 // Modify the openPDC configuration file.
-                AppendStatusMessage("Attempting to modify configuration files...");
                 ModifyConfigFiles(m_state["xmlFilePath"].ToString(), string.Empty, false);
-                AppendStatusMessage("Modification of configuration files was successful.");
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -501,9 +500,7 @@ namespace ConfigurationSetupUtility
             try
             {
                 // Modify the openPDC configuration file.
-                AppendStatusMessage("Attempting to modify configuration files...");
                 ModifyConfigFiles(m_state["webServiceUrl"].ToString(), string.Empty, false);
-                AppendStatusMessage("Modification of configuration files was successful.");
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -513,16 +510,87 @@ namespace ConfigurationSetupUtility
             }
         }
 
+        // Attempt to stop key processes/services before modifying their configuration files
+        private void AttemptToStopKeyProcesses()
+        {
+            m_state["restarting"] = false;
+
+            try
+            {
+                Process[] instances = Process.GetProcessesByName("openPDCManager");
+
+                if (instances.Length > 0)
+                {
+                    int total = 0;
+                    AppendStatusMessage("Attempting to stop running instances of the openPDC Manager...");
+
+                    // Terminate all instances of openPDC Manager running on the local computer
+                    foreach (Process process in instances)
+                    {
+                        process.Kill();
+                        total++;
+                    }
+
+                    if (total > 0)
+                        AppendStatusMessage(string.Format("Stopped {0} openPDC Manager instance{1}.", total, total > 1 ? "s" : ""));
+                    
+                    // Add an extra line for visual separation of process termination status
+                    AppendStatusMessage("");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendStatusMessage("Failed to terminate running instances of the openPDC Manager: " + ex.Message + "\r\nModifications continuing anyway...\r\n");
+            }
+
+            try
+            {
+                ServiceController openPdcServiceController = new ServiceController("openPDC");
+
+                if (openPdcServiceController.Status == ServiceControllerStatus.Running)
+                {
+                    AppendStatusMessage("Attempting to stop the openPDC Windows service...");
+                    
+                    openPdcServiceController.Stop();
+
+                    // Can't wait forever for service to stop, so we time-out after 60 seconds
+                    openPdcServiceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromMinutes(1.0D));
+
+                    if (openPdcServiceController.Status == ServiceControllerStatus.Stopped)
+                    {
+                        m_state["restarting"] = true;
+                        AppendStatusMessage("Successfully stopped openPDC Windows service.");
+                    }
+                    else
+                        AppendStatusMessage("Failed to stop openPDC Windows service after trying for 60 seconds.\r\nModifications continuing anyway...");
+
+                    // Add an extra line for visual separation of service termination status
+                    AppendStatusMessage("");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendStatusMessage("Failed to stop the openPDC Windows service: " + ex.Message + "\r\nModifications continuing anyway...\r\n");
+            }
+        }
+
         // Modifies the configuration files to contain the given connection string and data provider string.
         private void ModifyConfigFiles(string connectionString, string dataProviderString, bool encrypted)
         {
+            // Before modification of configuration files we try to stop key process
+            AttemptToStopKeyProcesses();
+
             object webManagerDir = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\openPDCManagerServices", "Installation Path", null) ?? Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\openPDCManagerServices", "Installation Path", null);
+
+            AppendStatusMessage("Attempting to modify configuration files...");
 
             ModifyConfigFile(Directory.GetCurrentDirectory() + "\\openPDC.exe.config", connectionString, dataProviderString, encrypted);
             ModifyConfigFile(Directory.GetCurrentDirectory() + "\\openPDCManager.exe.config", connectionString, dataProviderString, encrypted);
 
             if (webManagerDir != null)
                 ModifyConfigFile(webManagerDir.ToString() + "\\Web.config", connectionString, dataProviderString, encrypted);
+
+            AppendStatusMessage("Modification of configuration files was successful.");
         }
 
         // Modifies the configuration file with the given file name to contain the given connection string and data provider string.
@@ -562,21 +630,45 @@ namespace ConfigurationSetupUtility
             }
 
             // Modify ADO metadata provider sections.
-            IEnumerable<XmlNode> adoProviderSections = categorizedSettings.ChildNodes
-                .Cast<XmlNode>().Where(node => node.Name.EndsWith("AdoMetadataProvider"));
-
-            foreach (XmlNode section in adoProviderSections)
+            foreach (XmlNode node in categorizedSettings.ChildNodes)
             {
-                XmlAttribute connectionAttribute = section.Attributes.Cast<XmlAttribute>().SingleOrDefault(attribute => attribute["name"].Value == "ConnectionString");
-                XmlAttribute dataProviderAttribute = section.Attributes.Cast<XmlAttribute>().SingleOrDefault(attribute => attribute["value"].Value == "DataProviderString");
-
-                if (connectionAttribute != null && dataProviderAttribute != null)
+                if (node.Attributes != null)
                 {
-                    connectionAttribute["value"].Value = connectionString;
-                    connectionAttribute["encrypted"].Value = encrypted.ToString();
-                    dataProviderAttribute["value"].Value = dataProviderString;
+                    if (node.Name.EndsWith("AdoMetadataProvider"))
+                    {
+                        foreach (XmlNode child in node.ChildNodes)
+                        {
+                            if (child.Attributes != null)
+                            {
+                                if (child.Attributes["name"].Value == "DataProviderString")
+                                    child.Attributes["value"].Value = dataProviderString;
+                                else if (child.Attributes["name"].Value == "ConnectionString")
+                                {
+                                    // Modify the config file settings to the new values.
+                                    child.Attributes["value"].Value = connectionString;
+                                    child.Attributes["encrypted"].Value = encrypted.ToString();
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
+            // Following Linq version was failing without error - section attributes were always null
+            //IEnumerable<XmlNode> adoProviderSections = categorizedSettings.ChildNodes.Cast<XmlNode>().Where(node => node.Name.EndsWith("AdoMetadataProvider"));
+
+            //foreach (XmlNode section in adoProviderSections)
+            //{
+            //    XmlAttribute connectionAttribute = section.Attributes.Cast<XmlAttribute>().SingleOrDefault(attribute => attribute["name"].Value == "ConnectionString");
+            //    XmlAttribute dataProviderAttribute = section.Attributes.Cast<XmlAttribute>().SingleOrDefault(attribute => attribute["value"].Value == "DataProviderString");
+
+            //    if (connectionAttribute != null && dataProviderAttribute != null)
+            //    {
+            //        connectionAttribute["value"].Value = connectionString;
+            //        connectionAttribute["encrypted"].Value = encrypted.ToString();
+            //        dataProviderAttribute["value"].Value = dataProviderString;
+            //    }
+            //}
 
             configFile.Save(configFileName);
         }

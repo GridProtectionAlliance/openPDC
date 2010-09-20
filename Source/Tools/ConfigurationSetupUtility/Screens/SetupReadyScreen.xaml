@@ -7,6 +7,10 @@
              d:DesignHeight="300" d:DesignWidth="300" MinWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=FrameworkElement, AncestorLevel=1}, Path=ActualWidth}">
     <DockPanel>
         <Label Content="Setup is ready" Margin="10" HorizontalContentAlignment="Center" DockPanel.Dock="Top" FontSize="16" FontWeight="Bold" />
-        <TextBlock Name="textBlock1" Text="The setup utility is ready to set up your configuration. Select &quot;Next&quot; to continue." TextAlignment="Center" DockPanel.Dock="Bottom" TextWrapping="Wrap" Margin="20,0" />
+        <TextBlock Name="textBlock1" TextAlignment="Center" DockPanel.Dock="Bottom" TextWrapping="Wrap" Margin="20,0">
+            The configuration setup utility is now ready to modify your configuration.<LineBreak/><LineBreak/>
+            Note that if either the openPDC Windows service or the openPDC Manager are running they will be stopped before configuration changes are made.<LineBreak/><LineBreak/>
+            Select &quot;Next&quot; to continue.
+        </TextBlock>
     </DockPanel>
 </UserControl>

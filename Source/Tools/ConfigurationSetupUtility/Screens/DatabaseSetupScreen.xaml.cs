@@ -18,6 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  09/07/2010 - Stephen C. Wills
 //       Generated original version of source code.
+//  09/19/2010 - J. Ritchie Carroll
+//       Added code to hide Access database option for 64-bit installations
 //
 //******************************************************************************************************
 
@@ -161,6 +163,9 @@ namespace ConfigurationSetupUtility
 
                 m_initialDataScriptCheckBox.Visibility = checkBoxVisibility;
                 m_sampleDataScriptCheckBox.Visibility = checkBoxVisibility;
+
+                // Access database will not work in 64-bit installations
+                m_accessDatabaseRadioButton.Visibility = Convert.ToBoolean(m_state["64bit"]) ? Visibility.Collapsed : Visibility.Visible;
 
                 if (!m_state.ContainsKey("databaseType"))
                     m_state.Add("databaseType", "sql server");

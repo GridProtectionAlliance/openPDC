@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DatabaseSetupUtility")]
+[assembly: AssemblyTitle("Configuration Setup Utility")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Grid Protection Alliance")]
-[assembly: AssemblyProduct("DatabaseSetupUtility")]
+[assembly: AssemblyProduct("openPDC")]
 [assembly: AssemblyCopyright("Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -202,43 +202,13 @@
         "Entry"
         {
         "MsmKey" = "8:_2E9B26E92916F2E01F6B0C6E97F8DD8E"
-        "OwnerKey" = "8:_47E39753A64F4436AE84CC3D0A590D84"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2E9B26E92916F2E01F6B0C6E97F8DD8E"
-        "OwnerKey" = "8:_FD853BB567A749A68DE44CE4F37A6195"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2E9B26E92916F2E01F6B0C6E97F8DD8E"
-        "OwnerKey" = "8:_DB63F68E55664C108D5B4E0A624AF886"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2E9B26E92916F2E01F6B0C6E97F8DD8E"
-        "OwnerKey" = "8:_B91E164300C54B1587666D7B153DFF2F"
+        "OwnerKey" = "8:_24CEE139092CAFD90003CD95C5C47465"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_2E9B26E92916F2E01F6B0C6E97F8DD8E"
         "OwnerKey" = "8:_A0E91B76E11475E6050D723EF8200EAA"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2E9B26E92916F2E01F6B0C6E97F8DD8E"
-        "OwnerKey" = "8:_800B7CA0991A46A384640F0EE3509A7E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2E9B26E92916F2E01F6B0C6E97F8DD8E"
-        "OwnerKey" = "8:_24CEE139092CAFD90003CD95C5C47465"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -323,12 +293,6 @@
         {
         "MsmKey" = "8:_7A43B8D8BF2EB2D59CC4972E3E4816EF"
         "OwnerKey" = "8:_D182912502E8E3CFCD773E8B388E4263"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7BF3AFA5C5E14E9BAC9D14B159996C7B"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -442,13 +406,13 @@
         "Entry"
         {
         "MsmKey" = "8:_7C11F6677B2495456FFFF39C92A4880C"
-        "OwnerKey" = "8:_24CEE139092CAFD90003CD95C5C47465"
+        "OwnerKey" = "8:_2E9B26E92916F2E01F6B0C6E97F8DD8E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_7C11F6677B2495456FFFF39C92A4880C"
-        "OwnerKey" = "8:_2E9B26E92916F2E01F6B0C6E97F8DD8E"
+        "OwnerKey" = "8:_24CEE139092CAFD90003CD95C5C47465"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -755,12 +719,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_A50E62101042478D9FC4BCFAE000F53B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7BF3AFA5C5E14E9BAC9D14B159996C7B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1303,16 +1261,16 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TVA.Security, Version=4.0.1.56957, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:TVA.Security, Version=4.0.1.56093, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_2E9B26E92916F2E01F6B0C6E97F8DD8E"
                     {
-                    "Name" = "8:TVA.Security.dll"
+                    "Name" = "8:TVA.Security.DLL"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:TVA.Security.dll"
+            "SourcePath" = "8:TVA.Security.DLL"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
@@ -1541,37 +1499,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7BF3AFA5C5E14E9BAC9D14B159996C7B"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:MySql.Data, Version=5.2.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_7BF3AFA5C5E14E9BAC9D14B159996C7B"
-                    {
-                    "Name" = "8:MySql.Data.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:..\\..\\..\\Dependencies\\MySQL\\MySql.Data.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7C11F6677B2495456FFFF39C92A4880C"
@@ -2156,7 +2083,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:openPDC 32-bit"
         "ProductCode" = "8:{493D6CED-50C6-4CF5-93A3-306C364F10A3}"
-        "PackageCode" = "8:{C653CBB4-61ED-418D-9D0A-32530F483C25}"
+        "PackageCode" = "8:{69B35A93-F96D-4EA1-872C-0FF94316A896}"
         "UpgradeCode" = "8:{672ED075-C482-49A6-86D5-7B3FEB4AEAC8}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -2329,7 +2256,7 @@
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_97E3E2FE6941495FAA54CDD6A3ACC5CF"
             {
             "Name" = "8:Configuration Setup Utility"
-            "Arguments" = "8:"
+            "Arguments" = "8:-32bit"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:32512"
