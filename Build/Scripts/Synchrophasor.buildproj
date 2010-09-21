@@ -35,6 +35,8 @@
 ** 09/15/2010 - Mihir Brahmbhatt
 **       Modified the build script for Framework v4.0 and change BuildDeployFolder and 
 **       ArchiveDestinations path to gpaweb shared folder.
+** 09/21/2010 - Mihir Brahmbhatt
+**       Update to include openPDCManager projects to versioning 
 **
 *******************************************************************************************************
 -->
@@ -63,7 +65,8 @@
   <Target Name="BeforeVersionSource">
     <ItemGroup>
       <!-- List of files to be versioned. -->
-      <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*" Exclude="$(LocalFolder)\Source\Applications\openPDCManager\**\AssemblyInfo.*">
+      <!--<FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*" Exclude="$(LocalFolder)\Source\Applications\openPDCManager\**\AssemblyInfo.*"> -->
+      <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*">
         <VersionRegex>(?'BeforeVersion'AssemblyVersion\(%22)(?'CoreVersion'(\*|\d+)\.)+(\*|\d+)(?'AfterVersion'%22\))</VersionRegex>
       </FilesToVersion>
       <!--
