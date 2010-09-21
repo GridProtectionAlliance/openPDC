@@ -92,11 +92,17 @@ namespace ConfigurationSetupUtility
         {
             get
             {
-                return m_settings["Database"];
+                if (m_settings.ContainsKey("Database"))
+                    return m_settings["Database"];
+                else
+                    return null;
             }
             set
             {
-                m_settings["Database"] = value;
+                if (string.IsNullOrEmpty(value))
+                    m_settings.Remove("Database");
+                else
+                    m_settings["Database"] = value;
             }
         }
 

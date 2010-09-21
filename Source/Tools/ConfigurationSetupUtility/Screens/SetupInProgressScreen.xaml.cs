@@ -60,6 +60,7 @@ namespace ConfigurationSetupUtility
         private IScreen m_nextScreen;
         private Dictionary<string, object> m_state;
         private string m_oldConnectionString;
+        private string m_oldDataProviderString;
 
         #endregion
 
@@ -261,7 +262,6 @@ namespace ConfigurationSetupUtility
 
             try
             {
-                MySqlSetup oldConnectionStringSetup = new MySqlSetup();
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
                 string adminUserName, adminPassword;
@@ -337,11 +337,7 @@ namespace ConfigurationSetupUtility
 
                 // Modify the openPDC configuration file.
                 ModifyConfigFiles(mySqlSetup.ConnectionString, "AssemblyName={MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter", Convert.ToBoolean(m_state["encryptMySqlConnectionStrings"]));
-
-                oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
-                oldConnectionStringSetup.UserName = adminUserName;
-                oldConnectionStringSetup.Password = adminPassword;
-                m_state["oldOleDbConnectionString"] = oldConnectionStringSetup.OleDbConnectionString;
+                SaveOldConnectionString();
 
                 OnSetupSucceeded();
             }
@@ -367,7 +363,6 @@ namespace ConfigurationSetupUtility
 
             try
             {
-                SqlServerSetup oldConnectionStringSetup = new SqlServerSetup();
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
                 string adminUserName, adminPassword;
@@ -455,11 +450,7 @@ namespace ConfigurationSetupUtility
 
                 // Modify the openPDC configuration file.
                 ModifyConfigFiles(sqlServerSetup.ConnectionString, "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter", Convert.ToBoolean(m_state["encryptSqlServerConnectionStrings"]));
-
-                oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
-                oldConnectionStringSetup.UserName = adminUserName;
-                oldConnectionStringSetup.Password = adminPassword;
-                m_state["oldOleDbConnectionString"] = oldConnectionStringSetup.OleDbConnectionString;
+                SaveOldConnectionString();
 
                 OnSetupSucceeded();
             }
@@ -483,8 +474,14 @@ namespace ConfigurationSetupUtility
         {
             try
             {
+                // Before modification of configuration files we try to stop key process
+                AttemptToStopKeyProcesses();
+
                 // Modify the openPDC configuration file.
-                ModifyConfigFiles(m_state["xmlFilePath"].ToString(), string.Empty, false);
+                AppendStatusMessage("Attempting to modify openPDC.exe.config...");
+                ModifyConfigFile(Directory.GetCurrentDirectory() + "\\openPDC.exe.config", m_state["xmlFilePath"].ToString(), string.Empty, false);
+                AppendStatusMessage("Modification of configuration files was successful.");
+
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -499,8 +496,14 @@ namespace ConfigurationSetupUtility
         {
             try
             {
+                // Before modification of configuration files we try to stop key process
+                AttemptToStopKeyProcesses();
+
                 // Modify the openPDC configuration file.
-                ModifyConfigFiles(m_state["webServiceUrl"].ToString(), string.Empty, false);
+                AppendStatusMessage("Attempting to modify openPDC.exe.config...");
+                ModifyConfigFile(Directory.GetCurrentDirectory() + "\\openPDC.exe.config", m_state["webServiceUrl"].ToString(), string.Empty, false);
+                AppendStatusMessage("Modification of configuration files was successful.");
+
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -610,7 +613,13 @@ namespace ConfigurationSetupUtility
                 if (child.Attributes != null)
                 {
                     if (child.Attributes["name"].Value == "DataProviderString")
+                    {
+                        // Retrieve the old data provider string from the config file.
+                        if (m_oldDataProviderString == null)
+                            m_oldDataProviderString = child.Attributes["value"].Value;
+
                         child.Attributes["value"].Value = dataProviderString;
+                    }
                     else if (child.Attributes["name"].Value == "ConnectionString")
                     {
                         if (m_oldConnectionString == null)
@@ -655,22 +664,48 @@ namespace ConfigurationSetupUtility
             }
 
             // Following Linq version was failing without error - section attributes were always null
+            //  It should be fixed now.
             //IEnumerable<XmlNode> adoProviderSections = categorizedSettings.ChildNodes.Cast<XmlNode>().Where(node => node.Name.EndsWith("AdoMetadataProvider"));
 
             //foreach (XmlNode section in adoProviderSections)
             //{
-            //    XmlAttribute connectionAttribute = section.Attributes.Cast<XmlAttribute>().SingleOrDefault(attribute => attribute["name"].Value == "ConnectionString");
-            //    XmlAttribute dataProviderAttribute = section.Attributes.Cast<XmlAttribute>().SingleOrDefault(attribute => attribute["value"].Value == "DataProviderString");
+            //    XmlNode connectionNode = section.ChildNodes.Cast<XmlNode>().SingleOrDefault(node => node.Attributes != null && node.Attributes["name"].Value == "ConnectionString");
+            //    XmlNode dataProviderNode = section.ChildNodes.Cast<XmlNode>().SingleOrDefault(node => node.Attributes != null && node.Attributes["name"].Value == "DataProviderString");
 
-            //    if (connectionAttribute != null && dataProviderAttribute != null)
+            //    if (connectionNode != null && dataProviderNode != null)
             //    {
-            //        connectionAttribute["value"].Value = connectionString;
-            //        connectionAttribute["encrypted"].Value = encrypted.ToString();
-            //        dataProviderAttribute["value"].Value = dataProviderString;
+            //        connectionNode.Attributes["value"].Value = connectionString;
+            //        connectionNode.Attributes["encrypted"].Value = encrypted.ToString();
+            //        dataProviderNode.Attributes["value"].Value = dataProviderString;
             //    }
             //}
 
             configFile.Save(configFileName);
+        }
+
+        // Saves the old connection string as an OleDB connection string.
+        private void SaveOldConnectionString()
+        {
+            // Determine the type of connection string and convert it to OleDB.
+            if (m_oldDataProviderString.Contains("MySqlConnection"))
+            {
+                // Assume it's a MySQL ODBC connection string.
+                MySqlSetup oldConnectionStringSetup = new MySqlSetup();
+                oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
+                m_state["oldOleDbConnectionString"] = oldConnectionStringSetup.OleDbConnectionString;
+            }
+            else if (m_oldDataProviderString.Contains("OleDbConnection"))
+            {
+                // Assume it's already an OleDB connection string.
+                m_state["oldOleDbConnectionString"] = m_oldConnectionString;
+            }
+            else
+            {
+                // Assume it's a SQL Server connection string.
+                SqlServerSetup oldConnectionStringSetup = new SqlServerSetup();
+                oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
+                m_state["oldOleDbConnectionString"] = oldConnectionStringSetup.OleDbConnectionString;
+            }
         }
 
         // Called when mysql.exe receives data on its standard output stream.

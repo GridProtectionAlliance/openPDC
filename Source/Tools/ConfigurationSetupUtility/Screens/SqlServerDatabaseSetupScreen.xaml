@@ -4,13 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" MinWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=FrameworkElement, AncestorLevel=1}, Path=ActualWidth}" IsVisibleChanged="SqlServerDatabaseSetupScreen_IsVisibleChanged">
+             d:DesignHeight="350" d:DesignWidth="350" MinWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=FrameworkElement, AncestorLevel=1}, Path=ActualWidth}" IsVisibleChanged="SqlServerDatabaseSetupScreen_IsVisibleChanged">
     <DockPanel>
         <Label Content="Set up a SQL Server database" HorizontalContentAlignment="Center" Margin="10" DockPanel.Dock="Top" FontWeight="Bold" FontSize="16" />
         <StackPanel DockPanel.Dock="Bottom">
             <TextBlock Text="Please enter the following information about your SQL Server database." TextAlignment="Center" Margin="20,0,20,10" TextWrapping="Wrap" />
             <Grid HorizontalAlignment="Center">
                 <Grid.RowDefinitions>
+                    <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
@@ -31,11 +32,12 @@
                 <TextBox Grid.Column="1" Grid.Row="1" Height="23" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" Text="openPDC" Name="m_databaseNameTextBox" TextChanged="DatabaseNameTextBox_TextChanged" />
                 <TextBox Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" Name="m_adminUserNameTextBox" TextChanged="AdminUserNameTextBox_TextChanged" />
                 <PasswordBox Grid.Row="3" Height="23" HorizontalAlignment="Left" Name="m_adminPasswordTextBox" VerticalAlignment="Center" Width="150" Grid.Column="1" PasswordChanged="AdminPasswordTextBox_PasswordChanged" />
-                <CheckBox Content="Create new user" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="4" Margin="5,20,0,5" Name="m_createNewUserCheckBox" Checked="CreateNewUserCheckBox_Checked" Unchecked="CreateNewUserCheckBox_Unchecked" />
-                <Label Content="User name:" Grid.Row="5" HorizontalAlignment="Left" Height="26" VerticalAlignment="Bottom" IsEnabled="{Binding ElementName=m_createNewUserCheckBox, Path=IsChecked}" Name="m_newUserNameLabel" />
-                <Label Content="Password:" Grid.Row="6" HorizontalAlignment="Left" Margin="0,0,5,0" IsEnabled="{Binding ElementName=m_createNewUserCheckBox, Path=IsChecked}" Name="m_newUserPasswordLabel" />
-                <TextBox Grid.Row="5" Height="23" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" Grid.Column="1" IsEnabled="{Binding ElementName=m_createNewUserCheckBox, Path=IsChecked}" Name="m_newUserNameTextBox" TextChanged="NewUserNameTextBox_TextChanged" />
-                <PasswordBox Grid.Row="6" Height="23" HorizontalAlignment="Left" Name="m_newUserPasswordTextBox" VerticalAlignment="Center" Width="150" Grid.Column="1" IsEnabled="{Binding ElementName=m_createNewUserCheckBox, Path=IsChecked}" PasswordChanged="NewUserPasswordTextBox_PasswordChanged" />
+                <Button Content="Test Connection" Height="20" HorizontalAlignment="Right" Width="100" FontSize="11" Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Top" Click="TestConnectionButton_Click" />
+                <CheckBox Content="Create new user" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="5" Margin="5,20,0,5" Name="m_createNewUserCheckBox" Checked="CreateNewUserCheckBox_Checked" Unchecked="CreateNewUserCheckBox_Unchecked" />
+                <Label Content="User name:" Grid.Row="6" HorizontalAlignment="Left" Height="26" VerticalAlignment="Bottom" IsEnabled="{Binding ElementName=m_createNewUserCheckBox, Path=IsChecked}" Name="m_newUserNameLabel" />
+                <Label Content="Password:" Grid.Row="7" HorizontalAlignment="Left" Margin="0,0,5,0" IsEnabled="{Binding ElementName=m_createNewUserCheckBox, Path=IsChecked}" Name="m_newUserPasswordLabel" />
+                <TextBox Grid.Row="6" Height="23" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" Grid.Column="1" IsEnabled="{Binding ElementName=m_createNewUserCheckBox, Path=IsChecked}" Name="m_newUserNameTextBox" TextChanged="NewUserNameTextBox_TextChanged" />
+                <PasswordBox Grid.Row="7" Height="23" HorizontalAlignment="Left" Name="m_newUserPasswordTextBox" VerticalAlignment="Center" Width="150" Grid.Column="1" IsEnabled="{Binding ElementName=m_createNewUserCheckBox, Path=IsChecked}" PasswordChanged="NewUserPasswordTextBox_PasswordChanged" />
             </Grid>
         </StackPanel>
     </DockPanel>

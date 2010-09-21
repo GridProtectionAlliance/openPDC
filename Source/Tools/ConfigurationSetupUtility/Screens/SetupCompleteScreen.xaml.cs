@@ -27,10 +27,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.ServiceProcess;
 using System.Windows.Controls;
 using TVA.Configuration;
 using TVA.IO;
-using System.ServiceProcess;
 
 namespace ConfigurationSetupUtility
 {
@@ -57,6 +58,9 @@ namespace ConfigurationSetupUtility
         public SetupCompleteScreen()
         {
             InitializeComponent();
+            InitializeOpenPdcServiceController();
+            InitializeServiceCheckboxState();
+            InitializeManagerCheckboxState();
             App.Current.Exit += Current_Exit;
         }
 
@@ -134,7 +138,9 @@ namespace ConfigurationSetupUtility
             set
             {
                 m_state = value;
-                InitializeOpenPdcServiceController();
+
+                if (Convert.ToBoolean(m_state["restarting"]))
+                    m_serviceStartCheckBox.Content = "Restart the openPDC";
             }
         }
 
@@ -151,10 +157,24 @@ namespace ConfigurationSetupUtility
         // Initializes the openPDC service controller.
         private void InitializeOpenPdcServiceController()
         {
-            m_openPdcServiceController = new ServiceController("openPDC");
+            ServiceController[] services = ServiceController.GetServices();
+            m_openPdcServiceController = services.SingleOrDefault(svc => svc.ServiceName == "openPDC");
+        }
 
-            if (Convert.ToBoolean(m_state["restarting"]))
-                m_serviceStartCheckBox.Content = "Restart the openPDC";
+        // Initializes the state of the openPDC service checkbox.
+        private void InitializeServiceCheckboxState()
+        {
+            bool serviceInstalled = m_openPdcServiceController != null;
+            m_serviceStartCheckBox.IsChecked = serviceInstalled;
+            m_serviceStartCheckBox.IsEnabled = serviceInstalled;
+        }
+
+        // Initializes the state of the openPDC Manager checkbox.
+        private void InitializeManagerCheckboxState()
+        {
+            bool managerInstalled = File.Exists("openPDCManager.exe");
+            m_managerStartCheckBox.IsChecked = managerInstalled;
+            m_managerStartCheckBox.IsEnabled = managerInstalled;
         }
 
         // Occurs just before the application shuts down.
@@ -193,7 +213,7 @@ namespace ConfigurationSetupUtility
                         configFile = ConfigurationFile.Open("DataMigrationUtility.exe.config");
                         applicationSettings = configFile.Settings["applicationSettings"];
                         applicationSettings["FromConnectionString", true].Value = oldOleDbConnectionString;
-                        applicationSettings["FromDataType", true].Value = databaseType;
+                        applicationSettings["FromDataType", true].Value = "Unspecified";
                         applicationSettings["ToConnectionString", true].Value = newOleDbConnectionString;
                         applicationSettings["ToDataType", true].Value = databaseType;
                         configFile.Save();

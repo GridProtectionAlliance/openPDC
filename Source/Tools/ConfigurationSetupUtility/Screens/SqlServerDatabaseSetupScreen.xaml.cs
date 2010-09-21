@@ -26,6 +26,9 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Data;
+using System.Reflection;
+using TVA;
 
 namespace ConfigurationSetupUtility
 {
@@ -190,6 +193,9 @@ namespace ConfigurationSetupUtility
                 m_newUserNameTextBox.Visibility = newUserVisibility;
                 m_newUserPasswordTextBox.Visibility = newUserVisibility;
 
+                if (!m_state.ContainsKey("sqlServerDataProviderString"))
+                    m_state.Add("sqlServerDataProviderString", "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter");
+
                 if (!m_state.ContainsKey("createNewSqlServerUser"))
                     m_state.Add("createNewSqlServerUser", m_createNewUserCheckBox.IsChecked.Value);
 
@@ -263,6 +269,62 @@ namespace ConfigurationSetupUtility
             m_sqlServerSetup.Password = adminPassword;
         }
 
+        // Occurs when the user chooses to test their database connection.
+        private void TestConnectionButton_Click(object sender, RoutedEventArgs e)
+        {
+            IDbConnection connection = null;
+            Dictionary<string, string> settings;
+            string assemblyName, connectionTypeName, adapterTypeName;
+            Assembly assembly;
+            Type connectionType, adapterType;
+            string dataProviderString;
+            string databaseName = null;
+
+            try
+            {
+                databaseName = m_sqlServerSetup.DatabaseName;
+                m_sqlServerSetup.DatabaseName = null;
+
+                dataProviderString = m_state["sqlServerDataProviderString"].ToString();
+                settings = dataProviderString.ParseKeyValuePairs();
+                assemblyName = settings["AssemblyName"].ToNonNullString();
+                connectionTypeName = settings["ConnectionType"].ToNonNullString();
+                adapterTypeName = settings["AdapterType"].ToNonNullString();
+
+                if (string.IsNullOrEmpty(connectionTypeName))
+                    throw new InvalidOperationException("Database connection type was not defined.");
+
+                if (string.IsNullOrEmpty(adapterTypeName))
+                    throw new InvalidOperationException("Database adapter type was not defined.");
+
+                assembly = Assembly.Load(new AssemblyName(assemblyName));
+                connectionType = assembly.GetType(connectionTypeName);
+                adapterType = assembly.GetType(adapterTypeName);
+
+                connection = (IDbConnection)Activator.CreateInstance(connectionType);
+                connection.ConnectionString = m_sqlServerSetup.ConnectionString;
+                connection.Open();
+
+                MessageBox.Show("Database connection succeeded.");
+            }
+            catch
+            {
+                string failMessage = "Database connection failed."
+                    + " Please check your username and password."
+                    + " Additionally, you may need to modify your connection under advanced settings.";
+
+                MessageBox.Show(failMessage);
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Dispose();
+
+                if (databaseName != null)
+                    m_sqlServerSetup.DatabaseName = databaseName;
+            }
+        }
+
         // Occurs when the user chooses to create a new database user.
         private void CreateNewUserCheckBox_Checked(object sender, RoutedEventArgs e)
         {
@@ -297,17 +359,20 @@ namespace ConfigurationSetupUtility
             if (m_state != null)
             {
                 string password = m_sqlServerSetup.Password;
+                string dataProviderString = m_state["sqlServerDataProviderString"].ToString();
                 bool encrypt = Convert.ToBoolean(m_state["encryptSqlServerConnectionStrings"]);
                 string connectionString;
                 AdvancedSettingsWindow advancedWindow;
 
                 m_sqlServerSetup.Password = null;
                 connectionString = m_sqlServerSetup.ConnectionString;
-                advancedWindow = new AdvancedSettingsWindow(connectionString, encrypt);
+                advancedWindow = new AdvancedSettingsWindow(connectionString, dataProviderString, encrypt);
+                advancedWindow.Owner = App.Current.MainWindow;
 
                 if (advancedWindow.ShowDialog() == true)
                 {
                     m_sqlServerSetup.ConnectionString = advancedWindow.ConnectionString;
+                    m_state["sqlServerDataProviderString"] = advancedWindow.DataProviderString;
                     m_state["encryptSqlServerConnectionStrings"] = advancedWindow.Encrypt;
                 }
 

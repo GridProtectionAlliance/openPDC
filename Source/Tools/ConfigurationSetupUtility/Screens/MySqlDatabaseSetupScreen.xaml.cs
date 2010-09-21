@@ -25,11 +25,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using TVA;
 
 namespace ConfigurationSetupUtility
 {
@@ -73,10 +76,10 @@ namespace ConfigurationSetupUtility
             {
                 IScreen readyScreen;
 
-                if (!State.ContainsKey("readyScreen"))
-                    State.Add("readyScreen", new SetupReadyScreen());
+                if (!m_state.ContainsKey("readyScreen"))
+                    m_state.Add("readyScreen", new SetupReadyScreen());
 
-                readyScreen = State["readyScreen"] as IScreen;
+                readyScreen = m_state["readyScreen"] as IScreen;
 
                 return readyScreen;
             }
@@ -194,6 +197,9 @@ namespace ConfigurationSetupUtility
                 m_newUserNameTextBox.Visibility = newUserVisibility;
                 m_newUserPasswordTextBox.Visibility = newUserVisibility;
 
+                if (!m_state.ContainsKey("mySqlDataProviderString"))
+                    m_state.Add("mySqlDataProviderString", "AssemblyName={MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter");
+
                 if (!m_state.ContainsKey("createNewMySqlUser"))
                     m_state.Add("createNewMySqlUser", m_createNewUserCheckBox.IsChecked.Value);
 
@@ -285,6 +291,62 @@ namespace ConfigurationSetupUtility
             m_mySqlSetup.Password = adminPassword;
         }
 
+        // Occurs when the user chooses to test their database connection.
+        private void TestConnectionButton_Click(object sender, RoutedEventArgs e)
+        {
+            IDbConnection connection = null;
+            Dictionary<string, string> settings;
+            string assemblyName, connectionTypeName, adapterTypeName;
+            Assembly assembly;
+            Type connectionType, adapterType;
+            string dataProviderString;
+            string databaseName = null;
+
+            try
+            {
+                databaseName = m_mySqlSetup.DatabaseName;
+                m_mySqlSetup.DatabaseName = null;
+
+                dataProviderString = m_state["mySqlDataProviderString"].ToString();
+                settings = dataProviderString.ParseKeyValuePairs();
+                assemblyName = settings["AssemblyName"].ToNonNullString();
+                connectionTypeName = settings["ConnectionType"].ToNonNullString();
+                adapterTypeName = settings["AdapterType"].ToNonNullString();
+
+                if (string.IsNullOrEmpty(connectionTypeName))
+                    throw new InvalidOperationException("Database connection type was not defined.");
+
+                if (string.IsNullOrEmpty(adapterTypeName))
+                    throw new InvalidOperationException("Database adapter type was not defined.");
+
+                assembly = Assembly.Load(new AssemblyName(assemblyName));
+                connectionType = assembly.GetType(connectionTypeName);
+                adapterType = assembly.GetType(adapterTypeName);
+
+                connection = (IDbConnection)Activator.CreateInstance(connectionType);
+                connection.ConnectionString = m_mySqlSetup.ConnectionString;
+                connection.Open();
+
+                MessageBox.Show("Database connection succeeded.");
+            }
+            catch
+            {
+                string failMessage = "Database connection failed."
+                    + " Please check your username and password."
+                    + " Additionally, you may need to modify your connection under advanced settings.";
+
+                MessageBox.Show(failMessage);
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Dispose();
+
+                if (databaseName != null)
+                    m_mySqlSetup.DatabaseName = databaseName;
+            }
+        }
+
         // Occurs when the user chooses to create a new database user.
         private void CreateNewUserCheckBox_Checked(object sender, RoutedEventArgs e)
         {
@@ -319,17 +381,20 @@ namespace ConfigurationSetupUtility
             if (m_state != null)
             {
                 string password = m_mySqlSetup.Password;
+                string dataProviderString = m_state["mySqlDataProviderString"].ToString();
                 bool encrypt = Convert.ToBoolean(m_state["encryptMySqlConnectionStrings"]);
                 string connectionString;
                 AdvancedSettingsWindow advancedWindow;
 
                 m_mySqlSetup.Password = null;
                 connectionString = m_mySqlSetup.ConnectionString;
-                advancedWindow = new AdvancedSettingsWindow(connectionString, encrypt);
+                advancedWindow = new AdvancedSettingsWindow(connectionString, dataProviderString, encrypt);
+                advancedWindow.Owner = App.Current.MainWindow;
 
                 if (advancedWindow.ShowDialog() == true)
                 {
                     m_mySqlSetup.ConnectionString = advancedWindow.ConnectionString;
+                    m_state["mySqlDataProviderString"] = advancedWindow.DataProviderString;
                     m_state["encryptMySqlConnectionStrings"] = advancedWindow.Encrypt;
                 }
 

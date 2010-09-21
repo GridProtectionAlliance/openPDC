@@ -92,11 +92,17 @@ namespace ConfigurationSetupUtility
         {
             get
             {
-                return m_settings["Initial Catalog"];
+                if (m_settings.ContainsKey("Initial Catalog"))
+                    return m_settings["Initial Catalog"];
+                else
+                    return null;
             }
             set
             {
-                m_settings["Initial Catalog"] = value;
+                if (string.IsNullOrEmpty(value))
+                    m_settings.Remove("Initial Catalog");
+                else
+                    m_settings["Initial Catalog"] = value;
             }
         }
 

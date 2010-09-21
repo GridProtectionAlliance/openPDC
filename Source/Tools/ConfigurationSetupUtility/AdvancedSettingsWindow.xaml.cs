@@ -63,11 +63,12 @@ namespace ConfigurationSetupUtility
         /// </summary>
         /// <param name="connectionString">The connection string to be displayed initially in the connection string text box.</param>
         /// <param name="encrypt">Determines whether the encrypt check box is initially checked or unchecked.</param>
-        public AdvancedSettingsWindow(string connectionString, bool encrypt)
+        public AdvancedSettingsWindow(string connectionString, string dataProviderString, bool encrypt)
         {
             InitializeComponent();
 
             m_connectionStringTextBox.Text = connectionString;
+            m_dataProviderStringTextBox.Text = dataProviderString;
             m_encryptCheckBox.IsChecked = encrypt;
         }
 
@@ -83,6 +84,17 @@ namespace ConfigurationSetupUtility
             get
             {
                 return m_connectionStringTextBox.Text;
+            }
+        }
+
+        /// <summary>
+        /// Gets the data provider string the user specified in the <see cref="AdvancedSettingsWindow"/>.
+        /// </summary>
+        public string DataProviderString
+        {
+            get
+            {
+                return m_dataProviderStringTextBox.Text;
             }
         }
 
