@@ -336,7 +336,17 @@ namespace ConfigurationSetupUtility
                 }
 
                 // Modify the openPDC configuration file.
-                ModifyConfigFiles(mySqlSetup.ConnectionString, "AssemblyName={MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter", Convert.ToBoolean(m_state["encryptMySqlConnectionStrings"]));
+                object dataProviderStringValue;
+                string dataProviderString = null;
+
+                // Get user customized data provider string
+                if (m_state.TryGetValue("mySqlDataProviderString", out dataProviderStringValue))
+                    dataProviderString = dataProviderStringValue.ToString();
+
+                if (string.IsNullOrWhiteSpace(dataProviderString))
+                    dataProviderString = "AssemblyName={MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
+
+                ModifyConfigFiles(mySqlSetup.ConnectionString, dataProviderString, Convert.ToBoolean(m_state["encryptMySqlConnectionStrings"]));
                 SaveOldConnectionString();
 
                 OnSetupSucceeded();
@@ -449,7 +459,17 @@ namespace ConfigurationSetupUtility
                 }
 
                 // Modify the openPDC configuration file.
-                ModifyConfigFiles(sqlServerSetup.ConnectionString, "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter", Convert.ToBoolean(m_state["encryptSqlServerConnectionStrings"]));
+                object dataProviderStringValue;
+                string dataProviderString = null;
+
+                // Get user customized data provider string
+                if (m_state.TryGetValue("sqlServerDataProviderString", out dataProviderStringValue))
+                    dataProviderString = dataProviderStringValue.ToString();
+
+                if (string.IsNullOrWhiteSpace(dataProviderString))
+                    dataProviderString = "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter";
+
+                ModifyConfigFiles(sqlServerSetup.ConnectionString, dataProviderString, Convert.ToBoolean(m_state["encryptSqlServerConnectionStrings"]));
                 SaveOldConnectionString();
 
                 OnSetupSucceeded();
@@ -663,8 +683,9 @@ namespace ConfigurationSetupUtility
                 }
             }
 
-            // Following Linq version was failing without error - section attributes were always null
-            //  It should be fixed now.
+            // JRC: Following Linq version was failing without error - section attributes were always null
+            // SCW: It should be fixed now.
+            // JRC: Thanks! We'll keep your linq code here for reference... :)
             //IEnumerable<XmlNode> adoProviderSections = categorizedSettings.ChildNodes.Cast<XmlNode>().Where(node => node.Name.EndsWith("AdoMetadataProvider"));
 
             //foreach (XmlNode section in adoProviderSections)

@@ -194,7 +194,7 @@ namespace ConfigurationSetupUtility
                 m_newUserPasswordTextBox.Visibility = newUserVisibility;
 
                 if (!m_state.ContainsKey("sqlServerDataProviderString"))
-                    m_state.Add("sqlServerDataProviderString", "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter");
+                    m_state.Add("sqlServerDataProviderString", "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter");
 
                 if (!m_state.ContainsKey("createNewSqlServerUser"))
                     m_state.Add("createNewSqlServerUser", m_createNewUserCheckBox.IsChecked.Value);
