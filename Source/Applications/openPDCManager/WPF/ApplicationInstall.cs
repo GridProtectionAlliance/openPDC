@@ -127,15 +127,15 @@ namespace openPDC
                 // modify configuration file in programs folder
                 using (RegistryKey settings = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", true))
                 {
-                    settings.DeleteValue(targetDir + "DatabaseSetupUtility.exe");
+                    settings.DeleteValue(targetDir + "ConfigurationSetupUtility.exe");
                     settings.DeleteValue(targetDir + "ConfigurationEditor.exe");
                     settings.DeleteValue(targetDir + "ConfigCrypter.exe");
                 }
             }
-            catch (Exception ex)
+            catch 
             {
                 // Not failing uninstall if we can't perform these steps...
-                MessageBox.Show("There was an exception detected during the uninstall process, this did not affect the uninstall. The exception reported was: " + ex.Message);
+               // MessageBox.Show("There was an exception detected during the uninstall process, this did not affect the uninstall. The exception reported was: " + ex.Message);
             }
         }
     }
