@@ -1,5 +1,5 @@
 ﻿//******************************************************************************************************
-//  ServiceInstall.cs - Gbtc
+//  ApplicationInstall.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -16,7 +16,7 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  05/04/2009 - J. Ritchie Carroll
+//  09/21/2010 - Mehulbhai P Thakkar
 //       Generated original version of source code.
 //
 //******************************************************************************************************
@@ -25,19 +25,19 @@ using System.Collections;
 using System.ComponentModel;
 using System.Configuration.Install;
 using System.Diagnostics;
+using System.IO;
 using System.Xml;
 using Microsoft.Win32;
 using TVA.IO;
-using System.IO;
-using System.Windows.Forms;
+using System.Windows;
 using System;
 
 namespace openPDC
 {
     [RunInstaller(true)]
-    public partial class ServiceInstall : Installer
+    public partial class ApplicationInstall : Installer
     {
-        public ServiceInstall()
+        public ApplicationInstall()
         {
             InitializeComponent();
         }
@@ -47,71 +47,42 @@ namespace openPDC
             base.Install(stateSaver);
 
             try
-            {
+            {                
                 // Open the configuration file as an XML document.
                 string targetDir = FilePath.AddPathSuffix(Context.Parameters["DP_TargetDir"]).Replace("\\\\", "\\");
-                string configFilePath = targetDir + "openPDC.exe.Config";
+                string configFilePath = targetDir + "openPDCManager.exe.Config";
                 string installedBitSize = "32bit";
 
                 if (File.Exists(configFilePath))
-                {
+                {             
                     XmlDocument xmlDoc = new XmlDocument();
                     xmlDoc.Load(configFilePath);
                     XmlNode node = xmlDoc.SelectSingleNode("configuration/categorizedSettings/systemSettings");
-                    XmlNode companyName = null;
-                    XmlNode companyAcronym = null;
                     string attributeValue;
-
+                    
                     // Find the needed installation parameters if they already exist.
                     foreach (XmlNode child in node.ChildNodes)
-                    {
-                        attributeValue = child.Attributes["name"].Value;
+                    {                        
+                        try
+                        {                            
+                            attributeValue = child.Attributes["name"].Value;
+                        
+                            if (attributeValue == "InstalledBitSize")
+                            {
+                                installedBitSize = child.Attributes["value"].Value;
 
-                        if (attributeValue == "CompanyName")
-                            companyName = child;
-                        else if (attributeValue == "CompanyAcronym")
-                            companyAcronym = child;
-                        else if (attributeValue == "InstalledBitSize")
-                        {
-                            installedBitSize = child.Attributes["value"].Value;
+                                // Default to 32 if no target installation bit size was found
+                                if (string.IsNullOrWhiteSpace(installedBitSize))
+                                    installedBitSize = "32";
 
-                            // Default to 32 if no target installation bit size was found
-                            if (string.IsNullOrWhiteSpace(installedBitSize))
-                                installedBitSize = "32";
-
-                            installedBitSize += "bit";
+                                installedBitSize += "bit";
+                                break;
+                            }
                         }
+                        catch { }
                     }
-
-                    // Modify or add the CompanyName parameter.
-                    if (companyName != null)
-                        companyName.Attributes["value"].Value = Context.Parameters["DP_CompanyName"];
-                    else
-                    {
-                        companyName = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
-                        companyName.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyName"));
-                        companyName.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyName"]));
-                        companyName.Attributes.Append(CreateAttribute(xmlDoc, "description", "The name of the company who owns this instance of the openPDC."));
-                        companyName.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
-                        node.AppendChild(companyName);
-                    }
-
-                    // Modify or add the CompanyAcronym parameter.
-                    if (companyAcronym != null)
-                        companyAcronym.Attributes["value"].Value = Context.Parameters["DP_CompanyAcronym"];
-                    else
-                    {
-                        companyAcronym = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
-                        companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyAcronym"));
-                        companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyAcronym"]));
-                        companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "description", "The acronym representing the company who owns this instance of the openPDC."));
-                        companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
-                        node.AppendChild(companyAcronym);
-                    }
-
-                    xmlDoc.Save(configFilePath);
                 }
-
+                                
                 // Run database setup utility
                 Process databaseSetup = null;
                 try
@@ -137,7 +108,7 @@ namespace openPDC
                 Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigurationEditor.exe", "RUNASADMIN", RegistryValueKind.String);
                 Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigCrypter.exe", "RUNASADMIN", RegistryValueKind.String);
             }
-            catch(Exception ex)
+            catch (Exception ex) 
             {
                 // Not failing install if we can't perform these steps...
                 MessageBox.Show("There was an exception detected during the install process, this did not affect the install. The exception reported was: " + ex.Message);
@@ -163,15 +134,9 @@ namespace openPDC
             }
             catch (Exception ex)
             {
+                // Not failing uninstall if we can't perform these steps...
                 MessageBox.Show("There was an exception detected during the uninstall process, this did not affect the uninstall. The exception reported was: " + ex.Message);
             }
-        }
-
-        private XmlAttribute CreateAttribute(XmlDocument doc, string name, string value)
-        {
-            XmlAttribute attribute = doc.CreateAttribute(name);
-            attribute.Value = value;
-            return attribute;
         }
     }
 }
