@@ -215,6 +215,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Setup", "Setup", "{D71CBFB5-291F-484E-9DAE-7442F4CA746A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Setup", "Tools\Setup\Setup.csproj", "{A4C500AC-70AC-4869-8A08-E10CCD45F64F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{27A26713-8779-41AB-AFF1-BAB6BB0228E8} = {27A26713-8779-41AB-AFF1-BAB6BB0228E8}
+		{C0CAE6E7-454E-44C2-B2CF-BAF002E25D87} = {C0CAE6E7-454E-44C2-B2CF-BAF002E25D87}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
