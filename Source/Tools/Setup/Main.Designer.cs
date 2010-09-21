@@ -33,12 +33,12 @@
             this.pictureBoxLogo = new System.Windows.Forms.PictureBox();
             this.labelNotes = new System.Windows.Forms.Label();
             this.groupBoxInstallationOptions = new System.Windows.Forms.GroupBox();
+            this.buttonUninstall = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonInstall = new System.Windows.Forms.Button();
             this.checkBoxConnectionTester = new System.Windows.Forms.CheckBox();
             this.radioButton64bit = new System.Windows.Forms.RadioButton();
             this.radioButton32bit = new System.Windows.Forms.RadioButton();
-            this.buttonUninstall = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
             this.groupBoxInstallationOptions.SuspendLayout();
             this.SuspendLayout();
@@ -95,6 +95,16 @@
             this.groupBoxInstallationOptions.TabStop = false;
             this.groupBoxInstallationOptions.Text = "Installation Options";
             // 
+            // buttonUninstall
+            // 
+            this.buttonUninstall.Location = new System.Drawing.Point(359, 45);
+            this.buttonUninstall.Name = "buttonUninstall";
+            this.buttonUninstall.Size = new System.Drawing.Size(100, 31);
+            this.buttonUninstall.TabIndex = 4;
+            this.buttonUninstall.Text = "&Uninstall";
+            this.buttonUninstall.UseVisualStyleBackColor = true;
+            this.buttonUninstall.Click += new System.EventHandler(this.buttonUninstall_Click);
+            // 
             // buttonCancel
             // 
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
@@ -123,7 +133,7 @@
             this.checkBoxConnectionTester.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxConnectionTester.Location = new System.Drawing.Point(16, 78);
             this.checkBoxConnectionTester.Name = "checkBoxConnectionTester";
-            this.checkBoxConnectionTester.Size = new System.Drawing.Size(160, 20);
+            this.checkBoxConnectionTester.Size = new System.Drawing.Size(140, 17);
             this.checkBoxConnectionTester.TabIndex = 2;
             this.checkBoxConnectionTester.Text = "PMU Connection Tester";
             this.checkBoxConnectionTester.UseVisualStyleBackColor = true;
@@ -133,7 +143,7 @@
             this.radioButton64bit.AutoSize = true;
             this.radioButton64bit.Location = new System.Drawing.Point(16, 51);
             this.radioButton64bit.Name = "radioButton64bit";
-            this.radioButton64bit.Size = new System.Drawing.Size(196, 20);
+            this.radioButton64bit.Size = new System.Drawing.Size(167, 17);
             this.radioButton64bit.TabIndex = 1;
             this.radioButton64bit.TabStop = true;
             this.radioButton64bit.Text = "64-bit version of the openPDC";
@@ -145,21 +155,11 @@
             this.radioButton32bit.Checked = true;
             this.radioButton32bit.Location = new System.Drawing.Point(16, 24);
             this.radioButton32bit.Name = "radioButton32bit";
-            this.radioButton32bit.Size = new System.Drawing.Size(196, 20);
+            this.radioButton32bit.Size = new System.Drawing.Size(167, 17);
             this.radioButton32bit.TabIndex = 0;
             this.radioButton32bit.TabStop = true;
             this.radioButton32bit.Text = "32-bit version of the openPDC";
             this.radioButton32bit.UseVisualStyleBackColor = true;
-            // 
-            // buttonUninstall
-            // 
-            this.buttonUninstall.Location = new System.Drawing.Point(359, 45);
-            this.buttonUninstall.Name = "buttonUninstall";
-            this.buttonUninstall.Size = new System.Drawing.Size(100, 31);
-            this.buttonUninstall.TabIndex = 4;
-            this.buttonUninstall.Text = "&Uninstall";
-            this.buttonUninstall.UseVisualStyleBackColor = true;
-            this.buttonUninstall.Click += new System.EventHandler(this.buttonUninstall_Click);
             // 
             // Main
             // 
