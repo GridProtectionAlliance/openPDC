@@ -68,7 +68,7 @@ namespace openPDCManager
             ButtonErrorLog.Click += new RoutedEventHandler(ButtonErrorLog_Click);
 
             Version appVersion = AssemblyInfo.EntryAssembly.Version;
-            TextBlockVersion.Text = " v" + appVersion.Major + "." + appVersion.Minor + "." + appVersion.Build + "." + appVersion.Revision;
+            Title = "openPDC Manager" + " v" + appVersion.Major + "." + appVersion.Minor + "." + appVersion.Build + "." + appVersion.Revision;
         }
         
         #endregion
@@ -90,8 +90,8 @@ namespace openPDCManager
 
         void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            LayoutRootScale.ScaleX = e.NewSize.Width / layoutRootWidth;
-            LayoutRootScale.ScaleY = e.NewSize.Height / layoutRootHeight;
+            LayoutRootScale.ScaleX = (e.NewSize.Width - 15)/ layoutRootWidth;
+            LayoutRootScale.ScaleY = (e.NewSize.Height - 35)/ layoutRootHeight;
         }
 
         void MainWindow_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

@@ -7,11 +7,11 @@
     Width="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationWidth, Mode=TwoWay}" 
     Left="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationLeft, Mode=TwoWay}"
     Top="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationTop, Mode=TwoWay}"
-    ResizeMode="CanResizeWithGrip" MinHeight="600" MinWidth="800" Icon="openPDC.ico"
-    xmlns:uc="clr-namespace:openPDCManager.UserControls.CommonControls" WindowStyle="None" Background="Transparent" AllowsTransparency="True" MouseDown="MainWindow_MouseDown"
+    ResizeMode="CanResize"  MinHeight="600" MinWidth="800" Icon="openPDC.ico"
+    xmlns:uc="clr-namespace:openPDCManager.UserControls.CommonControls" WindowStyle="SingleBorderWindow"  Background="Transparent" MouseDown="MainWindow_MouseDown"
     >
 
-    <Border CornerRadius="10" Background="{StaticResource PageBackgroundBrush}">
+    <Border CornerRadius="0" Background="{StaticResource PageBackgroundBrush}">
         
         <Grid x:Name="GridLayoutRoot" Background="Transparent" HorizontalAlignment="Stretch">
                        
@@ -35,22 +35,19 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock x:Name="TextBlockNode" Text="" Style="{StaticResource LargeWhiteTextWithEffectStyle}" />
                                 <Ellipse x:Name="EllipseConnectionState" Width="16" Height="16" Margin="5, 0, 5, 0" VerticalAlignment="Center"/>
-                            </StackPanel>    
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="openPDC Manager" Style="{StaticResource MainTitleStyle}" />
-                                <TextBlock x:Name="TextBlockVersion" Text="" Style="{StaticResource LargeWhiteTextWithEffectStyle}" VerticalAlignment="Bottom" Margin="0,0,0,12"/>
-                            </StackPanel>
+                            </StackPanel>                                
+                            <TextBlock Text="openPDC Manager" Style="{StaticResource MainTitleStyle}" />                                
                         </StackPanel>
                     </StackPanel>
                     <Border Grid.Row="0" Grid.Column="1" Background="{StaticResource HeaderBackgroundBrush}">
-                        <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-                                <Button x:Name="ButtonMinimize" FontWeight="Bold" Width="30" Margin="0,5,0,10" ToolTip="Minimize" Click="ButtonMinimize_Click">_</Button>
-                                <Button x:Name="ButtonMaximize" FontWeight="Bold" Width="30" Margin="0,5,0,10" ToolTip="Maximize" Click="ButtonMaximize_Click">[]</Button>
-                                <Button x:Name="ButtonClose" FontWeight="Bold" Width="30" Margin="2,5,10,10" ToolTip="Close" Click="ButtonClose_Click">X</Button>
+                                <Button x:Name="ButtonMinimize" Visibility="Collapsed" FontWeight="Bold" Width="30" Margin="0,5,0,10" ToolTip="Minimize" Click="ButtonMinimize_Click">_</Button>
+                                <Button x:Name="ButtonMaximize" Visibility="Collapsed" FontWeight="Bold" Width="30" Margin="0,5,0,10" ToolTip="Maximize" Click="ButtonMaximize_Click">[]</Button>
+                                <Button x:Name="ButtonClose" Visibility="Collapsed" FontWeight="Bold" Width="30" Margin="2,5,10,10" ToolTip="Close" Click="ButtonClose_Click">X</Button>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                                <Menu x:Name="MenuMain" Style="{StaticResource MainMenuStyle}">
+                                <Menu x:Name="MenuMain" Style="{StaticResource MainMenuStyle}" VerticalAlignment="Bottom" Margin="0,0,0,10">
                                     <MenuItem Header="Home" Style="{StaticResource MainMenuItemStyle}" x:Name="Home" Click="MenuItem_Click"/>
                                     <MenuItem Header="Monitoring" Style="{StaticResource MainMenuItemStyle}">
                                         <MenuItem Header="Real-Time Measurements" Style="{StaticResource MainSubMenuItemStyle}" x:Name="RealTimeMeasurements" Click="MenuItem_Click">
@@ -189,10 +186,10 @@
                                     </MenuItem>
                                     <MenuItem Header="Help" Style="{StaticResource MainMenuItemStyle}" x:Name="Help" Click="MenuItem_Click" />
                                 </Menu>
-                                <TextBlock Text="" Width="{StaticResource XXXSmallItemSize}" />
-                                <TextBlock Text="Node: " FontWeight="Bold" Margin="5" Foreground="#FFFFFFFF" />                            
-                                <uc:SelectNode x:Name="UserControlSelectNode" Background="Transparent" Margin="5,-5,5,10" />
-                                <Button x:Name="ButtonErrorLog" Content="images/Log.png" ToolTip="Error Log" Tag="" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,-5,5,5" Cursor="Hand"/>
+                                <TextBlock Text="" Width="{StaticResource XXXSmallItemSize}" VerticalAlignment="Bottom" Margin="10"/>
+                                <TextBlock Text="Node: " FontWeight="Bold" Margin="0,0,0,10" Foreground="#FFFFFFFF" VerticalAlignment="Bottom" />
+                                <uc:SelectNode x:Name="UserControlSelectNode" Background="Transparent" Margin="5,0,0,0" VerticalAlignment="Bottom"/>
+                                <Button x:Name="ButtonErrorLog" Content="images/Log.png" ToolTip="Error Log" Tag="" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,5,5" Cursor="Hand"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
