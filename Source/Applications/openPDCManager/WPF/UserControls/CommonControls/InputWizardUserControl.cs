@@ -64,7 +64,7 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 m_wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>(CommonFunctions.RetrieveConfigurationFrame(((App)Application.Current).RemoteStatusServiceUrl, this.ConnectionString(), ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key));
-                if (m_wizardDeviceInfoList.Count > 0)
+                if (m_wizardDeviceInfoList.Count > 10)
                     m_bindingDevices = true;
                 else
                     m_bindingDevices = false;
