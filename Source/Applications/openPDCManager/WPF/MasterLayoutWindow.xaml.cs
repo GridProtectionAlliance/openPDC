@@ -37,6 +37,7 @@ using openPDCManager.Data.ServiceCommunication;
 using openPDCManager.Data;
 using System.Windows.Media;
 using System.Diagnostics;
+using TVA.Reflection;
 
 namespace openPDCManager
 {
@@ -65,6 +66,9 @@ namespace openPDCManager
             Loaded += new RoutedEventHandler(MasterLayoutWindow_Loaded);
             Closing += new System.ComponentModel.CancelEventHandler(MasterLayoutWindow_Closing);
             ButtonErrorLog.Click += new RoutedEventHandler(ButtonErrorLog_Click);
+
+            Version appVersion = AssemblyInfo.EntryAssembly.Version;
+            TextBlockVersion.Text = " v" + appVersion.Major + "." + appVersion.Minor + "." + appVersion.Build + "." + appVersion.Revision;
         }
         
         #endregion
