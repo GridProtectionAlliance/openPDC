@@ -3878,7 +3878,7 @@ namespace openPDCManager.Data
                 IDbCommand commandPdc = connection.Connection.CreateCommand();
                 commandPdc.CommandType = CommandType.Text;				
                 //Get PDCs list
-                commandPdc.CommandText = "Select ID, Acronym, Name, CompanyName, Enabled From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator";
+                commandPdc.CommandText = "Select ID, Acronym, Name, CompanyName, Enabled From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator Order By Acronym";
                 if (commandPdc.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                     commandPdc.Parameters.Add(AddWithValue(commandPdc, "@nodeID", "{" + nodeID + "}"));
                 else
@@ -3900,7 +3900,7 @@ namespace openPDCManager.Data
                 //Get Non PDC Devices
                 IDbCommand commandDevices = connection.Connection.CreateCommand();
                 commandDevices.CommandType = CommandType.Text;
-                commandDevices.CommandText = "Select ID, Acronym, Name,CompanyName, ProtocolName, VendorDeviceName, ParentAcronym, Enabled From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator";
+                commandDevices.CommandText = "Select ID, Acronym, Name,CompanyName, ProtocolName, VendorDeviceName, ParentAcronym, Enabled From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator Order By Acronym";
                 if (commandDevices.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                     commandDevices.Parameters.Add(AddWithValue(commandDevices, "@nodeID", "{" + nodeID + "}"));
                 else
@@ -3925,7 +3925,7 @@ namespace openPDCManager.Data
                 //Get Measurements
                 IDbCommand commandMeasurements = connection.Connection.CreateCommand();
                 commandMeasurements.CommandType = CommandType.Text;
-                commandMeasurements.CommandText = "Select DeviceID, SignalID, PointID, PointTag, SignalReference, SignalAcronym, Description, SignalName, EngineeringUnits From MeasurementDetail Where NodeID = @nodeID AND SignalAcronym <> 'STAT'";
+                commandMeasurements.CommandText = "Select DeviceID, SignalID, PointID, PointTag, SignalReference, SignalAcronym, Description, SignalName, EngineeringUnits From MeasurementDetail Where NodeID = @nodeID AND SignalAcronym <> 'STAT' Order By SignalReference";
                 if (commandMeasurements.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                     commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", "{" + nodeID + "}"));
                 else
