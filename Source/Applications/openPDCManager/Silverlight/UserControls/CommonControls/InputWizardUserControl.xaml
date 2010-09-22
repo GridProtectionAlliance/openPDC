@@ -254,7 +254,7 @@
                                                             <TextBlock Text="Phase" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                                                         </Border>
                                                         <Border Style="{StaticResource HeaderRowBorderStyle}">
-                                                            <TextBlock Text="Destination" Width="{StaticResource XLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                            <TextBlock Text="Destination" Width="0" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                                                         </Border>
                                                     </StackPanel>
                                                     <ItemsControl x:Name="ItemControlPhasorList" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding Path=PhasorList}">
@@ -281,7 +281,7 @@
                                                                         <TextBlock Text="{Binding Path=Phase, Converter={StaticResource stringToPhaseConverter}}" Width="{StaticResource SmallItemSize}" TextAlignment="Center"  HorizontalAlignment="Center"/>
                                                                     </Border>
                                                                     <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                                        <TextBox Text="{Binding Path=DestinationLabel, Mode=TwoWay}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
+                                                                        <TextBox Text="{Binding Path=DestinationLabel, Mode=TwoWay}" Width="0" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
                                                                     </Border>
                                                                 </StackPanel>
                                                             </DataTemplate>

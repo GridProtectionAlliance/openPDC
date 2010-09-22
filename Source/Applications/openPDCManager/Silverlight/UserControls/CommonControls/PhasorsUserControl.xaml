@@ -28,8 +28,8 @@
                     <ComboBox x:Name="ComboboxType" Grid.Row="0" Grid.Column="3" Margin="5" DisplayMemberPath="Value"/>
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Phase" Style="{StaticResource GenericLabelStyle}"/>
                     <ComboBox x:Name="ComboboxPhase" Grid.Row="1" Grid.Column="1" Margin="5" DisplayMemberPath="Value"/>
-                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Destination Phasor" Style="{StaticResource GenericLabelStyle}"/>
-                    <ComboBox x:Name="ComboboxDestinationPhasor" Grid.Row="1" Grid.Column="3" Margin="5" DisplayMemberPath="Value" />
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Destination Phasor" Style="{StaticResource GenericLabelStyle}" Visibility="Collapsed"/>
+                    <ComboBox x:Name="ComboboxDestinationPhasor" Grid.Row="1" Grid.Column="3" Margin="5" DisplayMemberPath="Value" Visibility="Collapsed"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0">
                         <TextBlock Text="Source Index" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
