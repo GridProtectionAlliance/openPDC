@@ -177,10 +177,10 @@ namespace openPDCManager.Pages.Devices
                 }
                 catch (Exception ex)
                 {
-                    sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
-                    sm.Owner = Window.GetWindow(this);
-                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                    sm.ShowPopup();
+                    SystemMessages sm1 = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                    sm1.Owner = Window.GetWindow(this);
+                    sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm1.ShowPopup();
                     CommonFunctions.LogException("ButtonSave_Click.RefreshMetadata", ex);
                 }
 

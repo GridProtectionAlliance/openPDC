@@ -147,6 +147,9 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
 
                 //Update Metadata in the openPDC Service.
                 try
@@ -176,10 +179,10 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 CommonFunctions.LogException("WPF.SaveOutputStream", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
-            }
-            sm.Owner = Window.GetWindow(this);
-            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            sm.ShowPopup();
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+            }            
             GetOutputStreamList();
         }
 

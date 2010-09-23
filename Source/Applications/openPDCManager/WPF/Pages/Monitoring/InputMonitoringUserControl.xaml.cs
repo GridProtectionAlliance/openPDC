@@ -622,6 +622,10 @@ namespace openPDCManager.Pages.Monitoring
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException("WPF.AddNewChartData", ex);
+            }
             finally
             {
                 addingOrRemovingChart = false;
