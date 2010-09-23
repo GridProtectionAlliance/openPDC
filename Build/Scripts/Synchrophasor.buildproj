@@ -59,6 +59,7 @@
       <ProjectSolution>$(LocalFolder)\Source\$(ProjectName).sln</ProjectSolution>
       <!--<BuildDeployFolder Condition="'$(BuildDeployFolder)' == ''">\\rgocopgfs1\Applications\openPDC\$(ProjectName)\Beta</BuildDeployFolder>-->
       <BuildDeployFolder Condition="'$(BuildDeployFolder)' == ''">\\gpaweb\NightlyBuilds\openPDC\$(ProjectName)\Beta</BuildDeployFolder>
+      <Buildx86DeployFolder Condition="'$(Buildx86DeployFolder)' == ''">\\gpaweb\NightlyBuilds\openPDC\x86Version\$(ProjectName)\Beta</Buildx86DeployFolder>
     </PropertyGroup>
   </Target>
 
@@ -77,7 +78,46 @@
       -->
     </ItemGroup>
   </Target>
+  <!-- x86 32-bit Build-->
+  <Target Name="Beforex86BuildProjects">
+    <ItemGroup>
+      <!-- List of projects to build. -->
+      <ProjectsToBuild Include="$(ProjectSolution)"/>
+      <ProjectsToBuild Include="$(LocalFolder)\Source\Libraries\**\*.csproj" Exclude="$(LocalFolder)\Source\Libraries\**\*.Test.csproj" Condition="'$(SkipSigning)' == ''">
+        <Properties>SignAssembly=true;AssemblyOriginatorKeyFile=$(LocalFolder)\Source\openPDC.snk;OutputPath=$(BuildOutputFolder)\Libraries\Signed</Properties>
+      </ProjectsToBuild>
+      <ProjectsToBuild Include="$(LocalFolder)\Build\Scripts\$(ProjectName).shfbproj" Condition="'$(SkipHelpFiles)' == ''"/>
+      <!-- List of installs to build. -->
+      <InstallsToBuild Include="$(LocalFolder)\Source\**\*.vdproj"/>
+    </ItemGroup>
+  </Target>
 
+  <Target Name="Beforex86ExecuteUnitTests">
+    <ItemGroup>
+      <!-- List of unit test assemblies. -->
+      <UnitTestAssemblies Include="$(BuildOutputFolder)\**\*.Test.dll"/>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="Afterx86ExecuteUnitTests">
+    <!-- Clean-up after all unit tests have been executed and passed. -->
+    <RemoveDir Directories="%(UnitTestAssemblies.RootDir)%(UnitTestAssemblies.Directory)" Condition="Exists('%(UnitTestAssemblies.RootDir)%(UnitTestAssemblies.Directory)')"/>
+  </Target>
+
+  <Target Name="Beforex86DeployBuild">
+    <ItemGroup>
+      <!-- List of binaries to archive. -->
+      <Binariesx86ToArchive Include="$(BuildOutputFolder)\**\*.*"/>
+      <!-- List of installs to archive. -->
+      <Installsx86ToArchive Include="$(BuildOutputFolder)\**\*.msi"/>
+      <!-- Destinations of archive files (*.zip). -->
+      <Archivex86Destinations Include="$(Buildx86DeployFolder)"/>
+      <!--<ArchiveDestinations Include="\\socppmuweb\naspi\openPDC;\\rocppmuweb\naspi\openPDC" Condition="'$(SkipPublicArchive)' != 'true'"/> -->
+      <!--<ArchiveDestinations Include="\\gpaweb\NightlyBuilds\openPDCArchive;" Condition="'$(SkipPublicArchive)' != 'true'"/> -->
+    </ItemGroup>
+  </Target>
+  <!-- x86 32-bit Build End-->
+  
   <Target Name="BeforeBuildProjects">
     <ItemGroup>
       <!-- List of projects to build. -->
@@ -106,9 +146,9 @@
   <Target Name="BeforeDeployBuild">
     <ItemGroup>
       <!-- List of binaries to archive. -->
-      <BinariesToArchive Include="$(BuildOutputFolder)\**\*.*"/> 
+      <BinariesToArchive Include="$(BuildDeployFolder)\**\*.*"/> 
       <!-- List of installs to archive. -->
-      <InstallsToArchive Include="$(BuildOutputFolder)\**\*.msi"/>
+      <InstallsToArchive Include="$(BuildDeployFolder)\**\*.msi"/>
       <!-- Destinations of archive files (*.zip). -->
       <ArchiveDestinations Include="$(BuildDeployFolder)"/>
       <!--<ArchiveDestinations Include="\\socppmuweb\naspi\openPDC;\\rocppmuweb\naspi\openPDC" Condition="'$(SkipPublicArchive)' != 'true'"/> -->
