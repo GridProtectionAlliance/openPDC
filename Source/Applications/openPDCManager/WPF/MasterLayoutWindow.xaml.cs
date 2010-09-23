@@ -22,10 +22,14 @@
 //******************************************************************************************************
 
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using openPDCManager.Data;
 using openPDCManager.Data.Entities;
+using openPDCManager.Data.ServiceCommunication;
 using openPDCManager.Pages.Adapters;
 using openPDCManager.Pages.Devices;
 using openPDCManager.Pages.Manage;
@@ -33,10 +37,6 @@ using openPDCManager.Pages.Monitoring;
 using openPDCManager.UserControls.CommonControls;
 using openPDCManager.UserControls.OutputStreamControls;
 using openPDCManager.Utilities;
-using openPDCManager.Data.ServiceCommunication;
-using openPDCManager.Data;
-using System.Windows.Media;
-using System.Diagnostics;
 using TVA.Reflection;
 
 namespace openPDCManager

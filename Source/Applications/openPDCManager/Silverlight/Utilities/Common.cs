@@ -25,9 +25,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
+using System.Windows.Media;
 using System.Xml.Linq;
 using openPDCManager.ModalDialogs;
-using System.Windows;
 
 namespace openPDCManager.Utilities
 {
@@ -275,7 +276,24 @@ namespace openPDCManager.Utilities
             sm.ShowDialog();            
 #endif
         }
-                
+
+        public static void GetChildren(UIElement parent, Type targetType, ref List<UIElement> children)
+        {
+            int count = VisualTreeHelper.GetChildrenCount(parent);
+            if (count > 0)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    UIElement child = (UIElement)VisualTreeHelper.GetChild(parent, i);
+                    if (child.GetType() == targetType)
+                    {
+                        children.Add(child);
+                    }
+                    GetChildren(child, targetType, ref children);
+                }
+            }
+        }
+
 		#endregion
 
 	}

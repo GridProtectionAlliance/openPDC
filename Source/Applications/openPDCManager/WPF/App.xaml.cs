@@ -25,8 +25,8 @@
 
 using System;
 using System.Windows;
-using TVA.ErrorManagement;
 using openPDCManager.Data.ServiceCommunication;
+using TVA.ErrorManagement;
 
 namespace openPDCManager
 {
@@ -56,7 +56,7 @@ namespace openPDCManager
             m_errorLogger.LogToFile = true;
             m_errorLogger.LogToScreenshot = true;
             m_errorLogger.LogToUI = true;
-            m_errorLogger.Initialize();
+            m_errorLogger.Initialize();            
         }
 
         #endregion

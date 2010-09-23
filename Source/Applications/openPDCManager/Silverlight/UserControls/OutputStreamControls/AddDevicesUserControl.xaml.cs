@@ -26,11 +26,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
-using System.Windows.Media.Imaging;
-using System.Windows.Media;
 
 #if SILVERLIGHT
 
@@ -167,7 +165,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
         private void CheckAllCheckBoxes()
         {
             List<UIElement> checkboxlist = new List<UIElement>();
-            GetChildren(ListBoxDeviceList, typeof(CheckBox), ref checkboxlist);
+            Common.GetChildren(ListBoxDeviceList, typeof(CheckBox), ref checkboxlist);
 
             if (checkboxlist.Count > 0)
             {
@@ -181,7 +179,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
         private void UncheckAllCheckBoxes()
         {
             List<UIElement> checkboxlist = new List<UIElement>();
-            GetChildren(ListBoxDeviceList, typeof(CheckBox), ref checkboxlist);
+            Common.GetChildren(ListBoxDeviceList, typeof(CheckBox), ref checkboxlist);
 
             if (checkboxlist.Count > 0)
             {
@@ -190,29 +188,6 @@ namespace openPDCManager.UserControls.OutputStreamControls
                     ((CheckBox)element).IsChecked = false;
                 }
             }
-        }
-
-        private void GetChildren(UIElement parent, Type targetType, ref List<UIElement> children)
-        {
-            int count = VisualTreeHelper.GetChildrenCount(parent);
-            if (count > 0)
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    UIElement child = (UIElement)VisualTreeHelper.GetChild(parent, i);
-                    if (child.GetType() == targetType)
-                    {
-                        children.Add(child);
-                    }
-                    GetChildren(child, targetType, ref children);
-                }
-            }
-        }
-
-        private void CheckBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == System.Windows.Input.Key.Space)
-                ((CheckBox)sender).IsChecked = !(bool)((CheckBox)sender).IsChecked;
         }
 
     }

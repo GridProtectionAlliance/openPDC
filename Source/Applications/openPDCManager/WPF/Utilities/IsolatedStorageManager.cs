@@ -26,6 +26,7 @@ using System.IO.IsolatedStorage;
 using System.Collections.Generic;
 using System;
 using System.Text;
+using System.Net;
 
 namespace openPDCManager.Utilities
 {
@@ -90,7 +91,13 @@ namespace openPDCManager.Utilities
                 SaveIntoIsolatedStorage("NumberOfMessages", "75");
 
             if (!storage.FileExists("ForceIPv4") || overWrite)
-                SaveIntoIsolatedStorage("ForceIPv4", "true");
+            {
+                if (Dns.GetHostEntry(IPAddress.Loopback).AddressList[0].AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                    SaveIntoIsolatedStorage("ForceIPv4", "false");
+                else
+                    SaveIntoIsolatedStorage("ForceIPv4", "true");
+            }
+
         }
     }
 }
