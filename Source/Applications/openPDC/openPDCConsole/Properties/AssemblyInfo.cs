@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 
 // Assembly identity attributes.
-[assembly: AssemblyVersion("1.2.56.57602")]
+[assembly: AssemblyVersion("1.2.57.57605")]
 
 // Informational attributes.
 [assembly: AssemblyCompany("Grid Protection Alliance")]
