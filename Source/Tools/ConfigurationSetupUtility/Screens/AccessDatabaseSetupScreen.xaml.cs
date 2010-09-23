@@ -166,9 +166,7 @@ namespace ConfigurationSetupUtility
             set
             {
                 m_state = value;
-
-                if (!m_state.ContainsKey("accessDatabaseFilePath"))
-                    m_state.Add("accessDatabaseFilePath", m_accessDatabaseFilePathTextBox.Text);
+                InitializeState();
             }
         }
 
@@ -181,6 +179,20 @@ namespace ConfigurationSetupUtility
         #endregion
 
         #region [ Methods ]
+
+        // Initializes the state keys to their default values.
+        private void InitializeState()
+        {
+            bool existing = Convert.ToBoolean(m_state["existing"]);
+            bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+            string newDatabaseMessage = "Please select the location in which to save the new database file.";
+            string oldDatabaseMessage = "Please select the location of your existing database file.";
+
+            m_accessDatabaseInstructionTextBlock.Text = (!existing || migrate) ? newDatabaseMessage : oldDatabaseMessage;
+
+            if (!m_state.ContainsKey("accessDatabaseFilePath"))
+                m_state.Add("accessDatabaseFilePath", m_accessDatabaseFilePathTextBox.Text);
+        }
 
         // Occurs when the user changes the path name of the Access database file.
         private void AccessDatabaseFilePathTextBox_TextChanged(object sender, TextChangedEventArgs e)

@@ -183,6 +183,8 @@ namespace ConfigurationSetupUtility
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
                 Visibility newUserVisibility = (existing && !migrate) ? Visibility.Collapsed : Visibility.Visible;
+                string newDatabaseMessage = "Please enter the following information about the database you would like to create.";
+                string oldDatabaseMessage = "Please enter the following information about your existing database.";
 
                 m_state["sqlServerSetup"] = m_sqlServerSetup;
                 m_sqlServerSetup.HostName = m_hostNameTextBox.Text;
@@ -192,6 +194,7 @@ namespace ConfigurationSetupUtility
                 m_newUserPasswordLabel.Visibility = newUserVisibility;
                 m_newUserNameTextBox.Visibility = newUserVisibility;
                 m_newUserPasswordTextBox.Visibility = newUserVisibility;
+                m_sqlServerDatabaseInstructionTextBlock.Text = (!existing || migrate) ? newDatabaseMessage : oldDatabaseMessage;
 
                 if (!m_state.ContainsKey("sqlServerDataProviderString"))
                     m_state.Add("sqlServerDataProviderString", "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter");

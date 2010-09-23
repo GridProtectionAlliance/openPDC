@@ -8,7 +8,7 @@
     <DockPanel>
         <Label Content="Set up a SQL Server database" HorizontalContentAlignment="Center" Margin="10" DockPanel.Dock="Top" FontWeight="Bold" FontSize="16" />
         <StackPanel DockPanel.Dock="Bottom">
-            <TextBlock Text="Please enter the following information about your SQL Server database." TextAlignment="Center" Margin="20,0,20,10" TextWrapping="Wrap" />
+            <TextBlock Text="Please enter the following information about the database you would like to create." TextAlignment="Center" Margin="20,0,20,10" TextWrapping="Wrap" Name="m_sqlServerDatabaseInstructionTextBlock" />
             <Grid HorizontalAlignment="Center">
                 <Grid.RowDefinitions>
                     <RowDefinition />

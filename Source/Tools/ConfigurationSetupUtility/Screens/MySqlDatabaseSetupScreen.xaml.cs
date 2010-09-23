@@ -187,6 +187,8 @@ namespace ConfigurationSetupUtility
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
                 Visibility newUserVisibility = (existing && !migrate) ? Visibility.Collapsed : Visibility.Visible;
+                string newDatabaseMessage = "Please enter the following information about the database you would like to create.";
+                string oldDatabaseMessage = "Please enter the following information about your existing database.";
 
                 m_state["mySqlSetup"] = m_mySqlSetup;
                 m_mySqlSetup.HostName = m_hostNameTextBox.Text;
@@ -196,6 +198,7 @@ namespace ConfigurationSetupUtility
                 m_newUserPasswordLabel.Visibility = newUserVisibility;
                 m_newUserNameTextBox.Visibility = newUserVisibility;
                 m_newUserPasswordTextBox.Visibility = newUserVisibility;
+                m_mySqlDatabaseInstructionTextBlock.Text = (!existing || migrate) ? newDatabaseMessage : oldDatabaseMessage;
 
                 if (!m_state.ContainsKey("mySqlDataProviderString"))
                     m_state.Add("mySqlDataProviderString", "AssemblyName={MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter");

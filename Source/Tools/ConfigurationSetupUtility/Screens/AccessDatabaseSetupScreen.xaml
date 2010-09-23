@@ -8,7 +8,7 @@
     <DockPanel>
         <Label Content="Set up an Access database" Margin="10" HorizontalContentAlignment="Center" DockPanel.Dock="Top" FontSize="16" FontWeight="Bold" />
         <StackPanel DockPanel.Dock="Bottom">
-            <TextBlock Name="textBlock1" Text="Please select the location of your Access database file." TextAlignment="Center" TextWrapping="Wrap" Margin="20,0" />
+            <TextBlock Name="m_accessDatabaseInstructionTextBlock" Text="Please select the location in which to save the new database file." TextAlignment="Center" TextWrapping="Wrap" Margin="20,0" />
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                 <TextBox Height="23" Width="240" Margin="0,0,5,0" TextChanged="AccessDatabaseFilePathTextBox_TextChanged" Name="m_accessDatabaseFilePathTextBox" Text="openPDC.mdb" />
                 <Button Content="Browse..." Height="23" Width="75" Click="BrowseButton_Click" />
