@@ -30,6 +30,7 @@ using System.Windows.Media.Animation;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 #if SILVERLIGHT
 
@@ -139,6 +140,16 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 m_devicesToBeAdded.Add(deviceID, deviceAcronym);
         }
 
+        private void CheckAll_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckAllCheckBoxes();
+        }
+
+        private void CheckAll_Unchecked(object sender, RoutedEventArgs e)
+        {
+            UncheckAllCheckBoxes();
+        }
+
         #endregion
 
         #region [ Page Event Handlers ]
@@ -152,5 +163,57 @@ namespace openPDCManager.UserControls.OutputStreamControls
         }
 
         #endregion
+
+        private void CheckAllCheckBoxes()
+        {
+            List<UIElement> checkboxlist = new List<UIElement>();
+            GetChildren(ListBoxDeviceList, typeof(CheckBox), ref checkboxlist);
+
+            if (checkboxlist.Count > 0)
+            {
+                foreach (UIElement element in checkboxlist)
+                {
+                    ((CheckBox)element).IsChecked = true;
+                }
+            }
+        }
+
+        private void UncheckAllCheckBoxes()
+        {
+            List<UIElement> checkboxlist = new List<UIElement>();
+            GetChildren(ListBoxDeviceList, typeof(CheckBox), ref checkboxlist);
+
+            if (checkboxlist.Count > 0)
+            {
+                foreach (UIElement element in checkboxlist)
+                {
+                    ((CheckBox)element).IsChecked = false;
+                }
+            }
+        }
+
+        private void GetChildren(UIElement parent, Type targetType, ref List<UIElement> children)
+        {
+            int count = VisualTreeHelper.GetChildrenCount(parent);
+            if (count > 0)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    UIElement child = (UIElement)VisualTreeHelper.GetChild(parent, i);
+                    if (child.GetType() == targetType)
+                    {
+                        children.Add(child);
+                    }
+                    GetChildren(child, targetType, ref children);
+                }
+            }
+        }
+
+        private void CheckBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Space)
+                ((CheckBox)sender).IsChecked = !(bool)((CheckBox)sender).IsChecked;
+        }
+
     }
 }

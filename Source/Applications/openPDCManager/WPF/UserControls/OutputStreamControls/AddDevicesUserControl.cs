@@ -38,9 +38,9 @@ namespace openPDCManager.UserControls.OutputStreamControls
 
         void Initialize()
         {
-           
+            //this.KeyDown += new System.Windows.Input.KeyEventHandler(AddDevicesUserControl_KeyDown);  
         }
-
+        
         void GetDevicesForOutputStream()
         {
             try
@@ -70,6 +70,10 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 GetDevicesForOutputStream();
+                if ((bool)CheckAll.IsChecked)
+                    CheckAll.IsChecked = false;
+
+                //Window.GetWindow(this).Close();
             }
             catch (Exception ex)
             {

@@ -1458,48 +1458,51 @@ namespace openPDCManager.Data
                     int analogIndex = 0;
                     foreach (Measurement measurement in measurementList)
                     {
-                        OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
-                        outputStreamMeasurement.NodeID = device.NodeID;
-                        outputStreamMeasurement.AdapterID = outputStreamID;
-                        outputStreamMeasurement.HistorianID = measurement.HistorianID;
-                        outputStreamMeasurement.PointID = measurement.PointID;
-                        outputStreamMeasurement.SignalReference = measurement.SignalReference;
-
-                        if (measurement.SignalSuffix == "AV")
+                        if (measurement.HistorianAcronym != "STAT")
                         {
-                            if (addAnalogs)
+                            OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
+                            outputStreamMeasurement.NodeID = device.NodeID;
+                            outputStreamMeasurement.AdapterID = outputStreamID;
+                            outputStreamMeasurement.HistorianID = measurement.HistorianID;
+                            outputStreamMeasurement.PointID = measurement.PointID;
+                            outputStreamMeasurement.SignalReference = measurement.SignalReference;
+
+                            if (measurement.SignalSuffix == "AV")
                             {
+                                if (addAnalogs)
+                                {
+                                    SaveOutputStreamMeasurement(outputStreamMeasurement, true);
+
+                                    OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
+                                    outputStreamDeviceAnalog.NodeID = device.NodeID;
+                                    outputStreamDeviceAnalog.OutputStreamDeviceID = savedOutputStreamDeviceID;
+                                    outputStreamDeviceAnalog.Label = device.Acronym.Length > 12 ? device.Acronym.Substring(0, 12) + ":A" + analogIndex.ToString() : device.Acronym + ":A" + analogIndex.ToString(); // measurement.PointTag;
+                                    outputStreamDeviceAnalog.Type = 0;	//default
+                                    outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
+                                    outputStreamDeviceAnalog.ScalingValue = 0;
+                                    SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, true);
+                                    analogIndex += 1;
+                                }
+                            }
+                            else if (measurement.SignalSuffix == "DV")
+                            {
+                                if (addDigitals)
+                                {
+                                    SaveOutputStreamMeasurement(outputStreamMeasurement, true);
+
+                                    OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
+                                    outputStreamDeviceDigital.NodeID = device.NodeID;
+                                    outputStreamDeviceDigital.OutputStreamDeviceID = savedOutputStreamDeviceID;
+                                    outputStreamDeviceDigital.Label = digitalLabel;     // measurement.PointTag;
+                                    outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
+                                    outputStreamDeviceDigital.MaskValue = 0;
+                                    SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, true);
+                                }
+                            }
+                            else
                                 SaveOutputStreamMeasurement(outputStreamMeasurement, true);
 
-                                OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
-                                outputStreamDeviceAnalog.NodeID = device.NodeID;
-                                outputStreamDeviceAnalog.OutputStreamDeviceID = savedOutputStreamDeviceID;
-                                outputStreamDeviceAnalog.Label = device.Acronym.Length > 12 ? device.Acronym.Substring(0, 12) + ":A" + analogIndex.ToString() : device.Acronym + ":A" + analogIndex.ToString(); // measurement.PointTag;
-                                outputStreamDeviceAnalog.Type = 0;	//default
-                                outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
-                                outputStreamDeviceAnalog.ScalingValue = 0;
-                                SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, true);
-                                analogIndex += 1;
-                            }
                         }
-                        else if (measurement.SignalSuffix == "DV")
-                        {
-                            if (addDigitals)
-                            {
-                                SaveOutputStreamMeasurement(outputStreamMeasurement, true);
-
-                                OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
-                                outputStreamDeviceDigital.NodeID = device.NodeID;
-                                outputStreamDeviceDigital.OutputStreamDeviceID = savedOutputStreamDeviceID;
-                                outputStreamDeviceDigital.Label = digitalLabel;     // measurement.PointTag;
-                                outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
-                                outputStreamDeviceDigital.MaskValue = 0;
-                                SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, true);
-                            }
-                        }
-                        else
-                            SaveOutputStreamMeasurement(outputStreamMeasurement, true);
-
                     }
                     //********************************************
                 }
