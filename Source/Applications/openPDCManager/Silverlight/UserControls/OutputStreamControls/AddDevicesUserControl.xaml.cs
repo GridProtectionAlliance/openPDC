@@ -29,6 +29,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
+using System.Windows.Media.Animation;
 
 #if SILVERLIGHT
 
