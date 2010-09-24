@@ -67,13 +67,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboboxCompany.ItemsSource = CommonFunctions.GetCompanies(true);
+                ComboboxCompany.ItemsSource = CommonFunctions.GetCompanies(null, true);
                 if (ComboboxCompany.Items.Count > 0)
                     ComboboxCompany.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetCompanies", ex);
+                CommonFunctions.LogException(null, "WPF.GetCompanies", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -86,13 +86,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboboxVendorDevice.ItemsSource = CommonFunctions.GetVendorDevices(true);
+                ComboboxVendorDevice.ItemsSource = CommonFunctions.GetVendorDevices(null, true);
                 if (ComboboxVendorDevice.Items.Count > 0)
                     ComboboxVendorDevice.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetVendorDevices", ex);
+                CommonFunctions.LogException(null, "WPF.GetVendorDevices", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -105,13 +105,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboboxInterconnection.ItemsSource = CommonFunctions.GetInterconnections(true);
+                ComboboxInterconnection.ItemsSource = CommonFunctions.GetInterconnections(null, true);
                 if (ComboboxInterconnection.Items.Count > 0)
                     ComboboxInterconnection.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetInterconnections", ex);
+                CommonFunctions.LogException(null, "WPF.GetInterconnections", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -126,7 +126,7 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveOtherDevice(otherDevice, isNew);
+                string result = CommonFunctions.SaveOtherDevice(null, otherDevice, isNew);
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
@@ -138,7 +138,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveOtherDevice", ex);
+                CommonFunctions.LogException(null, "WPF.SaveOtherDevice", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Other Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -152,7 +152,7 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 OtherDevice deviceToEdit = new OtherDevice();
-                deviceToEdit = CommonFunctions.GetOtherDeviceByDeviceID(deviceID);
+                deviceToEdit = CommonFunctions.GetOtherDeviceByDeviceID(null, deviceID);
                 GridOtherDeviceDetail.DataContext = deviceToEdit;
                 if (deviceToEdit.CompanyID.HasValue)
                     ComboboxCompany.SelectedItem = new KeyValuePair<int, string>((int)deviceToEdit.CompanyID, deviceToEdit.CompanyName);
@@ -169,7 +169,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetOtherDeviceByDeviceID", ex);
+                CommonFunctions.LogException(null, "WPF.GetOtherDeviceByDeviceID", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Other Device Information by ID", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

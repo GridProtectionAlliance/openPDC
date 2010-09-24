@@ -45,14 +45,14 @@ namespace openPDCManager.UserControls.OutputStreamControls
         {
             try
             {
-                m_deviceList = CommonFunctions.GetDevicesForOutputStream(m_sourceOutputStreamID, m_nodeValue);
+                m_deviceList = CommonFunctions.GetDevicesForOutputStream(null, m_sourceOutputStreamID, m_nodeValue);
                 ListBoxDeviceList.ItemsSource = m_deviceList;
                 if (ListBoxDeviceList.Items.Count > 0)
                     ListBoxDeviceList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetDevicesForOutputStream", ex);
+                CommonFunctions.LogException(null, "WPF.GetDevicesForOutputStream", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device for Output Stream", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -66,7 +66,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.AddDevices(m_sourceOutputStreamID, m_devicesToBeAdded, (bool)CheckAddDigitals.IsChecked, (bool)CheckAddAnalog.IsChecked);
+                string result = CommonFunctions.AddDevices(null, m_sourceOutputStreamID, m_devicesToBeAdded, (bool)CheckAddDigitals.IsChecked, (bool)CheckAddAnalog.IsChecked);
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 GetDevicesForOutputStream();
@@ -77,7 +77,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.AddDevices", ex);
+                CommonFunctions.LogException(null, "WPF.AddDevices", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Add Output Stream Device(s)", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                            ButtonType.OkOnly);
             }

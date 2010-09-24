@@ -43,7 +43,7 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveVendorDevice(vendorDevice, isNew);
+                string result = CommonFunctions.SaveVendorDevice(null, vendorDevice, isNew);
                 GetVendorDevices();
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
@@ -55,7 +55,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveVendorDevice", ex);
+                CommonFunctions.LogException(null, "WPF.SaveVendorDevice", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Vendor Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -68,13 +68,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboBoxVendor.ItemsSource = CommonFunctions.GetVendors(false);
+                ComboBoxVendor.ItemsSource = CommonFunctions.GetVendors(null, false);
                 if (ComboBoxVendor.Items.Count > 0)
                     ComboBoxVendor.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetVendors", ex);
+                CommonFunctions.LogException(null, "WPF.GetVendors", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendors", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -87,11 +87,11 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ListBoxVendorDeviceList.ItemsSource = CommonFunctions.GetVendorDeviceList();
+                ListBoxVendorDeviceList.ItemsSource = CommonFunctions.GetVendorDeviceList(null);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetVendorDevices", ex);
+                CommonFunctions.LogException(null, "WPF.GetVendorDevices", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor Device List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

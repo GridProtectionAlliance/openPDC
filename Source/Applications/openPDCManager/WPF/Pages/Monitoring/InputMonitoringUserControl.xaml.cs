@@ -166,7 +166,7 @@ namespace openPDCManager.Pages.Monitoring
             m_xAxisSource.SetXMapping(x => x);
 
             GetDeviceMeasurementData();
-            m_deviceIDsWithStatusPointIDs = CommonFunctions.GetDeviceIDsWithStatusPointIDs(app.NodeValue);
+            m_deviceIDsWithStatusPointIDs = CommonFunctions.GetDeviceIDsWithStatusPointIDs(null, app.NodeValue);
             GetTimeTaggedMeasurementsForStatus(m_urlForStatistics);
             GetTimeTaggedMeasurements(m_urlForTree);
         }
@@ -254,13 +254,13 @@ namespace openPDCManager.Pages.Monitoring
                         }
                         catch (Exception ex)
                         {
-                            CommonFunctions.LogException("WPF.GetChartData", ex);
+                            CommonFunctions.LogException(null, "WPF.GetChartData", ex);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    CommonFunctions.LogException("WPF.m_chartRefreshTimer_Tick", ex);
+                    CommonFunctions.LogException(null, "WPF.m_chartRefreshTimer_Tick", ex);
                 }
                 finally
                 {
@@ -272,7 +272,7 @@ namespace openPDCManager.Pages.Monitoring
         private void ButtonGetStatistics_Click(object sender, RoutedEventArgs e)
         {
             string deviceAcronym = ((Button)sender).Content.ToString();
-            Device deviceInfo = CommonFunctions.GetDeviceByAcronym(deviceAcronym);
+            Device deviceInfo = CommonFunctions.GetDeviceByAcronym(null, deviceAcronym);
             UserControlDeviceDetailInfo.Initialize(deviceInfo);
             UserControlDeviceDetailInfo.Visibility = Visibility.Visible;
         }
@@ -313,7 +313,7 @@ namespace openPDCManager.Pages.Monitoring
 
         void GetMinMaxPointIDs()
         {
-            m_minMaxPointIDs = CommonFunctions.GetMinMaxPointIDs(((App)Application.Current).NodeValue);
+            m_minMaxPointIDs = CommonFunctions.GetMinMaxPointIDs(null, ((App)Application.Current).NodeValue);
         }
 
         void GetTimeTaggedMeasurementsForStatus(string url)
@@ -365,7 +365,7 @@ namespace openPDCManager.Pages.Monitoring
                 }
                 catch (Exception ex)
                 {
-                    CommonFunctions.LogException("WPF.GetTimeTaggedMeasurements", ex);
+                    CommonFunctions.LogException(null, "WPF.GetTimeTaggedMeasurements", ex);
                 }
                 finally
                 {
@@ -424,7 +424,7 @@ namespace openPDCManager.Pages.Monitoring
                 }
                 catch (Exception ex)
                 {
-                    CommonFunctions.LogException("WPF.GetTimeTaggedMeasurements", ex);
+                    CommonFunctions.LogException(null, "WPF.GetTimeTaggedMeasurements", ex);
                 }
                 finally
                 {
@@ -437,7 +437,7 @@ namespace openPDCManager.Pages.Monitoring
         {
             try
             {
-                m_deviceMeasurementDataList = CommonFunctions.GetDeviceMeasurementData(((App)Application.Current).NodeValue);
+                m_deviceMeasurementDataList = CommonFunctions.GetDeviceMeasurementData(null, ((App)Application.Current).NodeValue);
 
                 List<string> pointList = IsolatedStorageManager.ReadInputMonitoringPoints();
 
@@ -476,7 +476,7 @@ namespace openPDCManager.Pages.Monitoring
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetDeviceMeasurementsData", ex);
+                CommonFunctions.LogException(null, "WPF.GetDeviceMeasurementsData", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Current Device Measurements Tree Data", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -624,7 +624,7 @@ namespace openPDCManager.Pages.Monitoring
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.AddNewChartData", ex);
+                CommonFunctions.LogException(null, "WPF.AddNewChartData", ex);
             }
             finally
             {
@@ -696,7 +696,7 @@ namespace openPDCManager.Pages.Monitoring
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetChartData", ex);
+                CommonFunctions.LogException(null, "WPF.GetChartData", ex);
             }
         }
 

@@ -231,7 +231,7 @@ namespace openPDCManager.Pages.Manage
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveMeasurement(measurement, isNew);
+                string result = CommonFunctions.SaveMeasurement(null, measurement, isNew);
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 if (m_deviceID > 0)
@@ -244,7 +244,7 @@ namespace openPDCManager.Pages.Manage
                 {
                     if (measurement.HistorianID != null)
                     {
-                        string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)measurement.HistorianID);
+                        string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)measurement.HistorianID);
                         WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
                         if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
@@ -252,14 +252,14 @@ namespace openPDCManager.Pages.Manage
                 }
                 catch (Exception ex)
                 {
-                    CommonFunctions.LogException("SaveMeasurement.RefreshMetadata", ex);
+                    CommonFunctions.LogException(null, "SaveMeasurement.RefreshMetadata", ex);
                 }
 
                 ClearForm();
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveMeasurement", ex);
+                CommonFunctions.LogException(null, "WPF.SaveMeasurement", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Measurement Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
@@ -272,7 +272,7 @@ namespace openPDCManager.Pages.Manage
         {
             try
             {
-                ComboBoxPhasorSource.ItemsSource = CommonFunctions.GetPhasors(deviceID, isOptional);
+                ComboBoxPhasorSource.ItemsSource = CommonFunctions.GetPhasors(null, deviceID, isOptional);
                 if (ComboBoxPhasorSource.Items.Count > 0)
                 {
                     ComboBoxPhasorSource.SelectedIndex = 0;
@@ -297,7 +297,7 @@ namespace openPDCManager.Pages.Manage
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetPhasors", ex);
+                CommonFunctions.LogException(null, "WPF.GetPhasors", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasors", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -311,7 +311,7 @@ namespace openPDCManager.Pages.Manage
             try
             {
                 m_bindingData = false;
-                m_measurementList = CommonFunctions.GetMeasurementsByDevice(m_deviceID);
+                m_measurementList = CommonFunctions.GetMeasurementsByDevice(null, m_deviceID);
                 if (m_measurementList.Count > 30)
                     m_bindingData = true;
 
@@ -322,7 +322,7 @@ namespace openPDCManager.Pages.Manage
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetMeasurementsByDevice", ex);
+                CommonFunctions.LogException(null, "WPF.GetMeasurementsByDevice", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Measurements for Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -335,12 +335,12 @@ namespace openPDCManager.Pages.Manage
         {
             try
             {
-                Device device = CommonFunctions.GetDeviceByDeviceID(m_deviceID);
+                Device device = CommonFunctions.GetDeviceByDeviceID(null, m_deviceID);
                 TextBlockHeading.Text = "Manage Measurements For Device: " + device.Acronym;                
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetDeviceByDeviceID", ex);
+                CommonFunctions.LogException(null, "WPF.GetDeviceByDeviceID", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -354,7 +354,7 @@ namespace openPDCManager.Pages.Manage
             try
             {
                 m_bindingData = false;
-                m_measurementList = CommonFunctions.GetMeasurementList(((App)Application.Current).NodeValue);
+                m_measurementList = CommonFunctions.GetMeasurementList(null, ((App)Application.Current).NodeValue);
 
                 if (m_measurementList.Count > 30)
                     m_bindingData = true;
@@ -366,7 +366,7 @@ namespace openPDCManager.Pages.Manage
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetMeasurementList", ex);
+                CommonFunctions.LogException(null, "WPF.GetMeasurementList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Measurement List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -379,13 +379,13 @@ namespace openPDCManager.Pages.Manage
         {
             try
             {
-                ComboBoxSignalType.ItemsSource = CommonFunctions.GetSignalTypes(false); 
+                ComboBoxSignalType.ItemsSource = CommonFunctions.GetSignalTypes(null, false); 
                 if (ComboBoxSignalType.Items.Count > 0)
                     ComboBoxSignalType.SelectedIndex = 0;                
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetSignalTypes", ex);
+                CommonFunctions.LogException(null, "WPF.GetSignalTypes", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Signal Types", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -398,13 +398,13 @@ namespace openPDCManager.Pages.Manage
         {
             try
             {
-                ComboBoxHistorian.ItemsSource = CommonFunctions.GetHistorians(true, true, true);
+                ComboBoxHistorian.ItemsSource = CommonFunctions.GetHistorians(null, true, true, true);
                 if (ComboBoxHistorian.Items.Count > 0)
                     ComboBoxHistorian.SelectedIndex = 0;                
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetHistorians", ex);
+                CommonFunctions.LogException(null, "WPF.GetHistorians", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -417,13 +417,13 @@ namespace openPDCManager.Pages.Manage
         {
             try
             {
-                ComboBoxDevice.ItemsSource = CommonFunctions.GetDevices(DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, true);
+                ComboBoxDevice.ItemsSource = CommonFunctions.GetDevices(null, DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, true);
                 if (ComboBoxDevice.Items.Count > 0)
                     ComboBoxDevice.SelectedIndex = 0;                
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetDevices", ex);
+                CommonFunctions.LogException(null, "WPF.GetDevices", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Devices", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

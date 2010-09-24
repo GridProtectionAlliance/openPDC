@@ -62,7 +62,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SendInitialize", ex);
+                CommonFunctions.LogException(null, "WPF.SendInitialize", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Send Initialize Command", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);                
             }
@@ -78,7 +78,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             {                
                 if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                 {
-                    string runtimeID = CommonFunctions.GetRuntimeID("OutputStream", outputStreamID);
+                    string runtimeID = CommonFunctions.GetRuntimeID(null, "OutputStream", outputStreamID);
                     string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "reloadconfig");
                     result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " UpdateConfiguration");
                     sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
@@ -88,7 +88,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SendUpdateConfiguration", ex);
+                CommonFunctions.LogException(null, "WPF.SendUpdateConfiguration", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Update Configuration", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
@@ -99,20 +99,20 @@ namespace openPDCManager.UserControls.OutputStreamControls
 
         void DisplayRuntimeID()
         {
-            TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID("OutputStream", m_outputStreamID);
+            TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID(null, "OutputStream", m_outputStreamID);
         }
 
         void GetNodes()
         {
             try
             {
-                ComboBoxNode.ItemsSource = CommonFunctions.GetNodes(true, false);
+                ComboBoxNode.ItemsSource = CommonFunctions.GetNodes(null, true, false);
                 if (ComboBoxNode.Items.Count > 0)
                     ComboBoxNode.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetNodes", ex);
+                CommonFunctions.LogException(null, "WPF.GetNodes", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -125,11 +125,11 @@ namespace openPDCManager.UserControls.OutputStreamControls
         {
             try
             {
-                ListBoxOutputStreamList.ItemsSource = CommonFunctions.GetOutputStreamList(false, m_nodeValue);
+                ListBoxOutputStreamList.ItemsSource = CommonFunctions.GetOutputStreamList(null, false, m_nodeValue);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetOutputStreamList", ex);
+                CommonFunctions.LogException(null, "WPF.GetOutputStreamList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -143,7 +143,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveOutputStream(outputStream, isNew);
+                string result = CommonFunctions.SaveOutputStream(null, outputStream, isNew);
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
@@ -170,13 +170,13 @@ namespace openPDCManager.UserControls.OutputStreamControls
                     sm.Owner = Window.GetWindow(this);
                     sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                     sm.ShowPopup();
-                    CommonFunctions.LogException("SaveOutputStream.RefreshMetadata", ex);
+                    CommonFunctions.LogException(null, "SaveOutputStream.RefreshMetadata", ex);
                 }
 
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveOutputStream", ex);
+                CommonFunctions.LogException(null, "WPF.SaveOutputStream", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -191,13 +191,13 @@ namespace openPDCManager.UserControls.OutputStreamControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.DeleteOutputStream(outputStreamID);
+                string result = CommonFunctions.DeleteOutputStream(null, outputStreamID);
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.DeleteOutputStream", ex);
+                CommonFunctions.LogException(null, "WPF.DeleteOutputStream", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Output Stream Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }

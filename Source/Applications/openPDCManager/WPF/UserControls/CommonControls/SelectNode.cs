@@ -42,12 +42,12 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboboxNode.ItemsSource = CommonFunctions.GetNodeList(true);
+                ComboboxNode.ItemsSource = CommonFunctions.GetNodeList(null, true);
                 SetGlobalVariables();
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.RefreshNodeList", ex);
+                CommonFunctions.LogException(null, "WPF.RefreshNodeList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

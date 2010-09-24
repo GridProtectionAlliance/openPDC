@@ -58,7 +58,7 @@ namespace openPDCManager.Pages.Monitoring
                 {
                     m_nodeID = ((App)Application.Current).NodeValue;
                     GridDeviceInfo.DataContext = deviceInfo;
-                    m_deviceStatisticInfoList = CommonFunctions.GetDeviceStatisticMeasurements(deviceInfo.ID);
+                    m_deviceStatisticInfoList = CommonFunctions.GetDeviceStatisticMeasurements(null, deviceInfo.ID);
                     ListBoxStatisticsList.ItemsSource = m_deviceStatisticInfoList;
                     if (m_deviceStatisticInfoList.Count > 0)
                     {
@@ -88,7 +88,7 @@ namespace openPDCManager.Pages.Monitoring
                 }
                 catch (Exception ex)
                 {
-                    CommonFunctions.LogException("WPF.Initialize", ex);
+                    CommonFunctions.LogException(null, "WPF.Initialize", ex);
                 }
             }
         }

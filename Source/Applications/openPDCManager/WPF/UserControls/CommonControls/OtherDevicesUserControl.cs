@@ -43,12 +43,12 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                m_otherDeviceList = new ObservableCollection<OtherDevice>(CommonFunctions.GetOtherDeviceList());
+                m_otherDeviceList = new ObservableCollection<OtherDevice>(CommonFunctions.GetOtherDeviceList(null));
                 ListBoxOtherDeviceList.ItemsSource = m_otherDeviceList;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetOtherDeviceList", ex);
+                CommonFunctions.LogException(null, "WPF.GetOtherDeviceList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Other Device List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

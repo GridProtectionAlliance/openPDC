@@ -42,11 +42,11 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ListBoxVendorList.ItemsSource = CommonFunctions.GetVendorList();        
+                ListBoxVendorList.ItemsSource = CommonFunctions.GetVendorList(null);        
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetVendors", ex);
+                CommonFunctions.LogException(null, "WPF.GetVendors", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Vendor List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -59,7 +59,7 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveVendor(vendor, isNew);
+                string result = CommonFunctions.SaveVendor(null, vendor, isNew);
                 GetVendors();
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
@@ -69,7 +69,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveVendor", ex);
+                CommonFunctions.LogException(null, "WPF.SaveVendor", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Vendor Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

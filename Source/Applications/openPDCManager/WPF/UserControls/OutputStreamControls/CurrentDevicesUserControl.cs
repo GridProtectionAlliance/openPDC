@@ -42,11 +42,11 @@ namespace openPDCManager.UserControls.OutputStreamControls
         {
             try
             {
-                ListBoxOutputStreamDeviceList.ItemsSource = CommonFunctions.GetOutputStreamDeviceList(m_sourceOutputStreamID, true);
+                ListBoxOutputStreamDeviceList.ItemsSource = CommonFunctions.GetOutputStreamDeviceList(null, m_sourceOutputStreamID, true);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetOutputStreamDeviceList", ex);
+                CommonFunctions.LogException(null, "WPF.GetOutputStreamDeviceList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -60,14 +60,14 @@ namespace openPDCManager.UserControls.OutputStreamControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.DeleteOutputStreamDevice(m_sourceOutputStreamID, new List<string>(m_devicesToBeDeleted));
+                string result = CommonFunctions.DeleteOutputStreamDevice(null, m_sourceOutputStreamID, new List<string>(m_devicesToBeDeleted));
                 GetOutputStreamDeviceList();
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.DeleteOutputStreamDevice", ex);
+                CommonFunctions.LogException(null, "WPF.DeleteOutputStreamDevice", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Output Stream Device(s)", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }

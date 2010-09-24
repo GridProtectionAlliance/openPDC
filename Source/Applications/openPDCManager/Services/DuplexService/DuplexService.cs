@@ -103,16 +103,16 @@ namespace openPDCManager.Services.DuplexService
 			minMaxPointIDsPerNode = new Dictionary<string, KeyValuePair<int, int>>();
 
             List<Node> nodeList = new List<Node>();
-            nodeList = CommonFunctions.GetNodeList(true);
+            nodeList = CommonFunctions.GetNodeList(null, true);
             foreach (Node node in nodeList)
             {
                 //lock (syncRoot)
                 lock (minMaxPointIDsPerNode)
                 {
                     if (minMaxPointIDsPerNode.ContainsKey(node.ID))
-                        minMaxPointIDsPerNode[node.ID] = CommonFunctions.GetMinMaxPointIDs(node.ID);
+                        minMaxPointIDsPerNode[node.ID] = CommonFunctions.GetMinMaxPointIDs(null, node.ID);
                     else
-                        minMaxPointIDsPerNode.Add(node.ID, CommonFunctions.GetMinMaxPointIDs(node.ID));
+                        minMaxPointIDsPerNode.Add(node.ID, CommonFunctions.GetMinMaxPointIDs(null, node.ID));
                 }
             }
 
@@ -189,8 +189,8 @@ namespace openPDCManager.Services.DuplexService
 					PushMessageToClient(session, new LivePhasorDataMessage()
 											{
 												//PmuDistributionList = CommonFunctions.GetPmuDistribution(),
-												DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(currentClient.NodeID),
-												InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus(currentClient.NodeID)
+                                                DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(null, currentClient.NodeID),
+                                                InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus(null, currentClient.NodeID)
 											}
 										);
 
@@ -277,14 +277,14 @@ namespace openPDCManager.Services.DuplexService
         {   			
 			//nodesInDatabase = CommonFunctions.GetNodeList(true);
 			List<Node> nodeList = new List<Node>();
-			nodeList = CommonFunctions.GetNodeList(true);
+            nodeList = CommonFunctions.GetNodeList(null, true);
 			foreach (Node node in nodeList)
             {
 				LivePhasorDataMessage message = new LivePhasorDataMessage()
                 {
 					//PmuDistributionList = CommonFunctions.GetPmuDistribution(),
-                    DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(node.ID),
-                    InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus(node.ID)
+                    DeviceDistributionList = CommonFunctions.GetVendorDeviceDistribution(null, node.ID),
+                    InterconnectionStatusList = CommonFunctions.GetInterconnectionStatus(null, node.ID)
                 };
 			
 				//lock (syncRoot)
@@ -301,16 +301,16 @@ namespace openPDCManager.Services.DuplexService
 		protected void RefreshTimeTaggedMeasurementsPerNode()
 		{
 			List<Node> nodeList = new List<Node>();
-			nodeList = CommonFunctions.GetNodeList(true);
+            nodeList = CommonFunctions.GetNodeList(null, true);
 			foreach (Node node in nodeList)
 			{
 				//lock (syncRoot)
 				lock (minMaxPointIDsPerNode)
 				{
 					if (minMaxPointIDsPerNode.ContainsKey(node.ID))
-						minMaxPointIDsPerNode[node.ID] = CommonFunctions.GetMinMaxPointIDs(node.ID);
+                        minMaxPointIDsPerNode[node.ID] = CommonFunctions.GetMinMaxPointIDs(null, node.ID);
 					else
-						minMaxPointIDsPerNode.Add(node.ID, CommonFunctions.GetMinMaxPointIDs(node.ID));
+                        minMaxPointIDsPerNode.Add(node.ID, CommonFunctions.GetMinMaxPointIDs(null, node.ID));
 				}
 			}
 					
@@ -340,7 +340,7 @@ namespace openPDCManager.Services.DuplexService
         protected void RefreshRealTimeStatisticsPerNode()
         {
             List<Node> nodeList = new List<Node>();
-            nodeList = CommonFunctions.GetNodeList(true);
+            nodeList = CommonFunctions.GetNodeList(null, true);
             //foreach (Node node in nodeList)
             //{
             //    //lock (syncRoot)

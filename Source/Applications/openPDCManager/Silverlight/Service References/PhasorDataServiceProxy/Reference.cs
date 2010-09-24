@@ -476,6 +476,8 @@ namespace openPDCManager.PhasorDataServiceProxy {
         
         private System.Collections.ObjectModel.ObservableCollection<openPDCManager.PhasorDataServiceProxy.DeviceInfo> DeviceListField;
         
+        private bool EnabledField;
+        
         private int IDField;
         
         private bool IsExpandedField;
@@ -519,6 +521,19 @@ namespace openPDCManager.PhasorDataServiceProxy {
                 if ((object.ReferenceEquals(this.DeviceListField, value) != true)) {
                     this.DeviceListField = value;
                     this.RaisePropertyChanged("DeviceList");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Enabled {
+            get {
+                return this.EnabledField;
+            }
+            set {
+                if ((this.EnabledField.Equals(value) != true)) {
+                    this.EnabledField = value;
+                    this.RaisePropertyChanged("Enabled");
                 }
             }
         }
@@ -594,6 +609,8 @@ namespace openPDCManager.PhasorDataServiceProxy {
         
         private string CompanyNameField;
         
+        private bool EnabledField;
+        
         private System.Nullable<int> IDField;
         
         private bool IsExpandedField;
@@ -632,6 +649,19 @@ namespace openPDCManager.PhasorDataServiceProxy {
                 if ((object.ReferenceEquals(this.CompanyNameField, value) != true)) {
                     this.CompanyNameField = value;
                     this.RaisePropertyChanged("CompanyName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Enabled {
+            get {
+                return this.EnabledField;
+            }
+            set {
+                if ((this.EnabledField.Equals(value) != true)) {
+                    this.EnabledField = value;
+                    this.RaisePropertyChanged("Enabled");
                 }
             }
         }

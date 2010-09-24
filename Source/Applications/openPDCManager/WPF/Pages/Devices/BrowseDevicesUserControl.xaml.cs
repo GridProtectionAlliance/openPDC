@@ -130,7 +130,7 @@ namespace openPDCManager.Pages.Devices
             {
                 Device device = new Device();
                 device = ((Button)sender).DataContext as Device;
-                string result = CommonFunctions.SaveDevice(device, false, 0, 0);
+                string result = CommonFunctions.SaveDevice(null, device, false, 0, 0);
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
 
@@ -142,15 +142,15 @@ namespace openPDCManager.Pages.Devices
                     {
                         if (device.HistorianID != null)
                         {
-                            string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID);
+                            string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)device.HistorianID);
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
                         }
 
                         //now also update Stat historian metadata.
-                        Historian statHistorian = CommonFunctions.GetHistorianByAcronym("STAT");
+                        Historian statHistorian = CommonFunctions.GetHistorianByAcronym(null, "STAT");
                         if (statHistorian != null)
                         {
-                            string statRuntimeID = CommonFunctions.GetRuntimeID("Historian", statHistorian.ID);
+                            string statRuntimeID = CommonFunctions.GetRuntimeID(null, "Historian", statHistorian.ID);
                             if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                                 CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshmetadata");
                         }
@@ -158,9 +158,9 @@ namespace openPDCManager.Pages.Devices
                         if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.
                         {
                             if (device.ParentID == null)
-                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID("Device", device.ID));
+                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", device.ID));
                             else
-                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID("Device", (int)device.ParentID));
+                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", (int)device.ParentID));
                         }
                         else
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
@@ -181,13 +181,13 @@ namespace openPDCManager.Pages.Devices
                     sm1.Owner = Window.GetWindow(this);
                     sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                     sm1.ShowPopup();
-                    CommonFunctions.LogException("ButtonSave_Click.RefreshMetadata", ex);
+                    CommonFunctions.LogException(null, "ButtonSave_Click.RefreshMetadata", ex);
                 }
 
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveDevice", ex);
+                CommonFunctions.LogException(null, "WPF.SaveDevice", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
@@ -210,7 +210,7 @@ namespace openPDCManager.Pages.Devices
                 {
                     if ((bool)sm.DialogResult)
                     {
-                       result = CommonFunctions.DeleteDevice(device.ID);                    
+                        result = CommonFunctions.DeleteDevice(null, device.ID);                    
                         SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                             ButtonType.OkOnly);
                         sm1.Owner = Window.GetWindow(this);
@@ -227,12 +227,12 @@ namespace openPDCManager.Pages.Devices
                                 if (device.ParentID == null)
                                     CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig");
                                 else
-                                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID("Device", (int)device.ParentID));                                
+                                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", (int)device.ParentID));                                
                             }
                         }
                         catch (Exception ex)
                         {
-                            CommonFunctions.LogException("ButtonSave_Click.RefreshMetadata", ex);
+                            CommonFunctions.LogException(null, "ButtonSave_Click.RefreshMetadata", ex);
                         }
 
                     }
@@ -240,7 +240,7 @@ namespace openPDCManager.Pages.Devices
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.DeleteDevice", ex);
+                CommonFunctions.LogException(null, "WPF.DeleteDevice", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);                
             }
@@ -272,12 +272,12 @@ namespace openPDCManager.Pages.Devices
             string nodeID = app.NodeValue;
             try
             {
-                m_deviceList = CommonFunctions.GetDeviceList(nodeID);             
+                m_deviceList = CommonFunctions.GetDeviceList(null, nodeID);             
                 BindData(m_deviceList);                
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetDeviceList", ex);
+                CommonFunctions.LogException(null, "WPF.GetDeviceList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

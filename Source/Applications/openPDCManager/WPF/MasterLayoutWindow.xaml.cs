@@ -125,7 +125,7 @@ namespace openPDCManager
                 }
                 catch (Exception ex)
                 {
-                    CommonFunctions.LogException("MasterLayoutWindow_Loaded", ex);
+                    CommonFunctions.LogException(null, "MasterLayoutWindow_Loaded", ex);
                 }
 
                 ((App)Application.Current).ServiceClient = m_serviceClient;

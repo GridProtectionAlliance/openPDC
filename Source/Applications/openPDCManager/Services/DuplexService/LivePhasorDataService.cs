@@ -62,8 +62,8 @@ namespace openPDCManager.Services.DuplexService
             livePhasorDataTimer = new Timer(LivePhasorDataUpdate, null, 0, 30000);
             timeSeriesDataTimer = new Timer(TimeSeriesDataUpdate, null, 0, 1000);			
 			serviceClientListTimer = new Timer(RefreshServiceClientList, null, 0, 30000);
-			timeTaggedMeasurementDataTimer = new Timer(TimeTaggedMeasurementDataUpdate, null, 0, 30000);            
-			nodeList = CommonFunctions.GetNodeList(true);
+			timeTaggedMeasurementDataTimer = new Timer(TimeTaggedMeasurementDataUpdate, null, 0, 30000);
+            nodeList = CommonFunctions.GetNodeList(null, true);
         }
 
         #endregion
@@ -134,7 +134,7 @@ namespace openPDCManager.Services.DuplexService
 		private void RefreshServiceClientList(object obj)
 		{
 			System.Diagnostics.Debug.WriteLine("Refreshing Service Clients List");
-			nodeList = CommonFunctions.GetNodeList(true);
+            nodeList = CommonFunctions.GetNodeList(null, true);
 			
 			//For each node defined in the database, we need to have a TCP client created to listen to the events.
 			foreach (Node node in nodeList)

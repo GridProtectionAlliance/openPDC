@@ -61,7 +61,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SendInitialize", ex);
+                CommonFunctions.LogException(null, "WPF.SendInitialize", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Send Initialize Command", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
@@ -74,11 +74,11 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ListBoxCalculatedMeasurementList.ItemsSource = CommonFunctions.GetCalculatedMeasurementList(m_nodeID);
+                ListBoxCalculatedMeasurementList.ItemsSource = CommonFunctions.GetCalculatedMeasurementList(null, m_nodeID);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetCalculatedMeasurementList", ex);
+                CommonFunctions.LogException(null, "WPF.GetCalculatedMeasurementList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Calculated Measurement List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                          ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -90,13 +90,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboBoxNode.ItemsSource = CommonFunctions.GetNodes(true, false);
+                ComboBoxNode.ItemsSource = CommonFunctions.GetNodes(null, true, false);
                 if (ComboBoxNode.Items.Count > 0)
                     ComboBoxNode.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetNodes", ex);
+                CommonFunctions.LogException(null, "WPF.GetNodes", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -109,7 +109,7 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveCalculatedMeasurement(calculatedMeasurement, isNew);
+                string result = CommonFunctions.SaveCalculatedMeasurement(null, calculatedMeasurement, isNew);
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);                
@@ -118,7 +118,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveCalculatedMeasurement", ex);
+                CommonFunctions.LogException(null, "WPF.SaveCalculatedMeasurement", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Calculated Measurement Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -128,7 +128,7 @@ namespace openPDCManager.UserControls.CommonControls
         
         void DisplayRuntimeID()
         {
-            TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID("CalculatedMeasurement", m_calculatedMeasurementID);
+            TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID(null, "CalculatedMeasurement", m_calculatedMeasurementID);
         }
 
         #endregion

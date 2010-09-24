@@ -47,11 +47,11 @@ namespace openPDCManager.UserControls.CommonControls
                 m_activityWindow.Owner = Window.GetWindow(this);
                 m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 m_activityWindow.Show();
-                ListBoxNodeList.ItemsSource = CommonFunctions.GetNodeList(false);
+                ListBoxNodeList.ItemsSource = CommonFunctions.GetNodeList(null, false);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetNodeList", ex);
+                CommonFunctions.LogException(null, "WPF.GetNodeList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Node Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -67,13 +67,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboBoxCompany.ItemsSource = CommonFunctions.GetCompanies(true);
+                ComboBoxCompany.ItemsSource = CommonFunctions.GetCompanies(null, true);
                 if (ComboBoxCompany.Items.Count > 0)
                     ComboBoxCompany.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetCompanies", ex);
+                CommonFunctions.LogException(null, "WPF.GetCompanies", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                          ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -86,7 +86,7 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveNode(node, isNew);
+                string result = CommonFunctions.SaveNode(null, node, isNew);
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -97,7 +97,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveNode", ex);
+                CommonFunctions.LogException(null, "WPF.SaveNode", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Node Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                        ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

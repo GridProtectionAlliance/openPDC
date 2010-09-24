@@ -48,7 +48,7 @@
                                     <Button x:Name="ButtonBrowseConnectionFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand" IsTabStop="True" TabIndex="1">
                                         <Button.RenderTransform>
                                             <ScaleTransform x:Name="ButtonBrowseConnectionFileTransform" ScaleX="1" ScaleY="1" />
-                                        </Button.RenderTransform>
+                                        </Button.RenderTransform>                                        
                                     </Button>
                                 </StackPanel>
                                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Connection String" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>

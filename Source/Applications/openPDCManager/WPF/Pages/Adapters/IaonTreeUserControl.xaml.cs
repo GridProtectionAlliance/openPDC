@@ -60,11 +60,11 @@ namespace openPDCManager.Pages.Adapters
         {
             try
             {
-                TreeViewIaon.ItemsSource = CommonFunctions.GetIaonTreeData(((App)Application.Current).NodeValue);
+                TreeViewIaon.ItemsSource = CommonFunctions.GetIaonTreeData(null, ((App)Application.Current).NodeValue);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetIaonTreeData", ex);
+                CommonFunctions.LogException(null, "WPF.GetIaonTreeData", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Iaon Tree Data", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

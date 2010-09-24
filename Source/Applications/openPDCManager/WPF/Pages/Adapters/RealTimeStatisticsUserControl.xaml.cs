@@ -95,7 +95,7 @@ namespace openPDCManager.Pages.Adapters
 
         void GetMinMaxPointIDs()
         {
-            m_minMaxPointIDs = CommonFunctions.GetMinMaxPointIDs(((App)Application.Current).NodeValue);
+            m_minMaxPointIDs = CommonFunctions.GetMinMaxPointIDs(null, ((App)Application.Current).NodeValue);
         }
 
         void GetTimeTaggedMeasurements(string url)
@@ -151,7 +151,7 @@ namespace openPDCManager.Pages.Adapters
                 }
                 catch (Exception ex)
                 {
-                    CommonFunctions.LogException("WPF.TimeTaggedMeasurements", ex);
+                    CommonFunctions.LogException(null, "WPF.TimeTaggedMeasurements", ex);
                 }
                 finally
                 {
@@ -164,14 +164,14 @@ namespace openPDCManager.Pages.Adapters
         {
             try
             {
-                m_statisticMeasurementDataList = CommonFunctions.GetStatisticMeasurementData(((App)Application.Current).NodeValue);
+                m_statisticMeasurementDataList = CommonFunctions.GetStatisticMeasurementData(null, ((App)Application.Current).NodeValue);
                 m_dataForBinding.StatisticMeasurementDataList = m_statisticMeasurementDataList;                
                 m_dataForBinding.IsExpanded = false;
                 TreeViewRealTimeStatistics.DataContext = m_dataForBinding;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetStatisticsMeasurementData", ex);
+                CommonFunctions.LogException(null, "WPF.GetStatisticsMeasurementData", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to RetrieveStatistics Measurements Data", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

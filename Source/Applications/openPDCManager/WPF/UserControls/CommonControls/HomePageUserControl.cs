@@ -124,7 +124,7 @@ namespace openPDCManager.UserControls.CommonControls
                 }
                 catch (Exception ex)
                 {
-                    CommonFunctions.LogException("WPF.GetTimeSeriesData", ex);
+                    CommonFunctions.LogException(null, "WPF.GetTimeSeriesData", ex);
                     if (m_secondsTimer != null)
                     {
                         m_secondsTimer.Stop();
@@ -142,7 +142,7 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ChartDeviceDistribution.DataContext = CommonFunctions.GetVendorDeviceDistribution(((App)Application.Current).NodeValue);
+                ChartDeviceDistribution.DataContext = CommonFunctions.GetVendorDeviceDistribution(null, ((App)Application.Current).NodeValue);
                 if (m_thirtySecondsTimer == null)
                     StartThirtySecondsTimer();
             }
@@ -158,7 +158,7 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ItemControlInterconnectionStatus.ItemsSource = CommonFunctions.GetInterconnectionStatus(((App)Application.Current).NodeValue);
+                ItemControlInterconnectionStatus.ItemsSource = CommonFunctions.GetInterconnectionStatus(null, ((App)Application.Current).NodeValue);
                 if (m_thirtySecondsTimer == null)
                     StartThirtySecondsTimer();
             }
@@ -174,13 +174,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboBoxMeasurements.ItemsSource = CommonFunctions.GetFilteredMeasurementsByDevice(((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key);
+                ComboBoxMeasurements.ItemsSource = CommonFunctions.GetFilteredMeasurementsByDevice(null, ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key);
                 if (ComboBoxMeasurements.Items.Count > 0)
                     ComboBoxMeasurements.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetFilteredMeasurementsByDevice", ex);
+                CommonFunctions.LogException(null, "WPF.GetFilteredMeasurementsByDevice", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Measurements for Device", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -193,13 +193,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboBoxDevice.ItemsSource = CommonFunctions.GetDevices(DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, false);
+                ComboBoxDevice.ItemsSource = CommonFunctions.GetDevices(null, DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, false);
                 if (ComboBoxDevice.Items.Count > 0)
                     ComboBoxDevice.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetDevices", ex);
+                CommonFunctions.LogException(null, "WPF.GetDevices", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Devices", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

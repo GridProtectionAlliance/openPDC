@@ -106,7 +106,7 @@ namespace openPDCManager.Pages.Adapters
 
         void GetMinMaxPointIDs()
         {
-             m_minMaxPointIDs = CommonFunctions.GetMinMaxPointIDs(((App)Application.Current).NodeValue);
+            m_minMaxPointIDs = CommonFunctions.GetMinMaxPointIDs(null, ((App)Application.Current).NodeValue);
         }
 
         void GetTimeTaggesMeasurements(string url)
@@ -143,7 +143,7 @@ namespace openPDCManager.Pages.Adapters
                 }
                 catch (Exception ex)
                 {
-                    CommonFunctions.LogException("WPF.GetTimeTaggedMeasurements", ex);
+                    CommonFunctions.LogException(null, "WPF.GetTimeTaggedMeasurements", ex);
                 }
                 finally
                 {
@@ -156,7 +156,7 @@ namespace openPDCManager.Pages.Adapters
         {
             try
             {
-                m_deviceMeasurementDataList = CommonFunctions.GetDeviceMeasurementData(((App)Application.Current).NodeValue);
+                m_deviceMeasurementDataList = CommonFunctions.GetDeviceMeasurementData(null, ((App)Application.Current).NodeValue);
                 m_dataForBinding.DeviceMeasurementDataList = m_deviceMeasurementDataList;
                 m_dataForBinding.IsExpanded = false;
                 TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
@@ -165,7 +165,7 @@ namespace openPDCManager.Pages.Adapters
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetDeviceMeasurementsData", ex);
+                CommonFunctions.LogException(null, "WPF.GetDeviceMeasurementsData", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Current Device Measurements Tree Data", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

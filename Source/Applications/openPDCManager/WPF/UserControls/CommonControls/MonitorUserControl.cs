@@ -146,7 +146,7 @@ namespace openPDCManager.UserControls.CommonControls
             //}
             //catch (Exception ex)
             //{
-            //    CommonFunctions.LogException("WPF.ConnectWindowsServiceClient", ex);
+            //    CommonFunctions.LogException(null, "WPF.ConnectWindowsServiceClient", ex);
             //    SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Connect to Windows Service (" + ((App)Application.Current).RemoteStatusServiceUrl + ").", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
             //            ButtonType.OkOnly);                
             //    sm.Owner = Window.GetWindow(this);

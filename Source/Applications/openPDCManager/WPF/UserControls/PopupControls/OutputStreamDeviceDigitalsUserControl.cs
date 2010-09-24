@@ -45,11 +45,11 @@ namespace openPDCManager.UserControls.PopupControls
         {
             try
             {
-                ListBoxOutputStreamDeviceDigitalList.ItemsSource = CommonFunctions.GetOutputStreamDeviceDigitalList(m_sourceOutputStreamDeviceID);
+                ListBoxOutputStreamDeviceDigitalList.ItemsSource = CommonFunctions.GetOutputStreamDeviceDigitalList(null, m_sourceOutputStreamDeviceID);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetOutputStreamDeviceDigitalList", ex);
+                CommonFunctions.LogException(null, "WPF.GetOutputStreamDeviceDigitalList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device Digital List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -63,7 +63,7 @@ namespace openPDCManager.UserControls.PopupControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, isNew);                
+                string result = CommonFunctions.SaveOutputStreamDeviceDigital(null, outputStreamDeviceDigital, isNew);                
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 ClearForm();
@@ -71,7 +71,7 @@ namespace openPDCManager.UserControls.PopupControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveOutputStreamDeviceDigital", ex);
+                CommonFunctions.LogException(null, "WPF.SaveOutputStreamDeviceDigital", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Digital Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }

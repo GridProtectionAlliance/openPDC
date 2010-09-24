@@ -50,11 +50,11 @@ namespace openPDCManager.UserControls.PopupControls
         {
             try
             {
-                ListBoxOutputStreamMeasurementList.ItemsSource = CommonFunctions.GetOutputStreamMeasurementList(m_sourceOutputStreamID);
+                ListBoxOutputStreamMeasurementList.ItemsSource = CommonFunctions.GetOutputStreamMeasurementList(null, m_sourceOutputStreamID);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetOutputStreamMeasurementList", ex);
+                CommonFunctions.LogException(null, "WPF.GetOutputStreamMeasurementList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Measurement List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -70,14 +70,14 @@ namespace openPDCManager.UserControls.PopupControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveOutputStreamMeasurement(m_selectedOutputStreamMeasurement, false);
+                string result = CommonFunctions.SaveOutputStreamMeasurement(null, m_selectedOutputStreamMeasurement, false);
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveOutputStreamMeasurement", ex);
+                CommonFunctions.LogException(null, "WPF.SaveOutputStreamMeasurement", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Measurement Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
@@ -92,14 +92,14 @@ namespace openPDCManager.UserControls.PopupControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.DeleteOutputStreamMeasurement(outputStreamMeasurementId);
+                string result = CommonFunctions.DeleteOutputStreamMeasurement(null, outputStreamMeasurementId);
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.DeleteOutputStreamMeasurement", ex);
+                CommonFunctions.LogException(null, "WPF.DeleteOutputStreamMeasurement", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Output Stream Measurement", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }

@@ -42,11 +42,11 @@ namespace openPDCManager.UserControls.PopupControls
         {
             try
             {
-                ListBoxOutputStreamDevicePhasorList.ItemsSource = CommonFunctions.GetOutputStreamDevicePhasorList(m_sourceOutputStreamDeviceID);
+                ListBoxOutputStreamDevicePhasorList.ItemsSource = CommonFunctions.GetOutputStreamDevicePhasorList(null, m_sourceOutputStreamDeviceID);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetOutputStreamDevicePhasorList", ex);
+                CommonFunctions.LogException(null, "WPF.GetOutputStreamDevicePhasorList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Output Stream Device Phasor List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -60,7 +60,7 @@ namespace openPDCManager.UserControls.PopupControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveOutputStreamDevicePhasor(outputStreamDevicePhasor, isNew);
+                string result = CommonFunctions.SaveOutputStreamDevicePhasor(null, outputStreamDevicePhasor, isNew);
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
@@ -68,7 +68,7 @@ namespace openPDCManager.UserControls.PopupControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveOutputStreamDevicePhasor", ex);
+                CommonFunctions.LogException(null, "WPF.SaveOutputStreamDevicePhasor", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Phasor Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }

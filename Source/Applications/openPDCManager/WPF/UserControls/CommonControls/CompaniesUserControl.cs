@@ -42,11 +42,11 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ListBoxCompanyList.ItemsSource = CommonFunctions.GetCompanyList();
+                ListBoxCompanyList.ItemsSource = CommonFunctions.GetCompanyList(null);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetCompanyList", ex);
+                CommonFunctions.LogException(null, "WPF.GetCompanyList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Company List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -60,7 +60,7 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveCompany(company, isNew);
+                string result = CommonFunctions.SaveCompany(null, company, isNew);
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -70,7 +70,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveCompany", ex);
+                CommonFunctions.LogException(null, "WPF.SaveCompany", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Company Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

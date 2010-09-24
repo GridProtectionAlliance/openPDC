@@ -74,7 +74,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.RetrieveConfigurationFrame", ex);
+                CommonFunctions.LogException(null, "WPF.RetrieveConfigurationFrame", ex);
                 sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Configuration", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
             }
@@ -89,7 +89,7 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                int protocolID = CommonFunctions.GetProtocolIDByAcronym(m_connectionSettings.PhasorProtocol.ToString());
+                int protocolID = CommonFunctions.GetProtocolIDByAcronym(null, m_connectionSettings.PhasorProtocol.ToString());
                 if (protocolID > 0)
                 {
                     foreach (KeyValuePair<int, string> item in ComboboxProtocol.Items)
@@ -104,7 +104,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetProtocolIDByAcronym", ex);
+                CommonFunctions.LogException(null, "WPF.GetProtocolIDByAcronym", ex);
             }            
         }
 
@@ -121,12 +121,12 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                string result = CommonFunctions.SaveDevice(device, isNew, digitalCount, analogCount);
+                string result = CommonFunctions.SaveDevice(null, device, isNew, digitalCount, analogCount);
                 GetDeviceByAcronym(TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveDevice", ex);
+                CommonFunctions.LogException(null, "WPF.SaveDevice", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Save Device Information", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -140,7 +140,7 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 Device device = new Device();
-                device = CommonFunctions.GetDeviceByAcronym(acronym);
+                device = CommonFunctions.GetDeviceByAcronym(null, acronym);
                 if (device != null && device.IsConcentrator)
                     m_parentID = device.ID;
                 else
@@ -180,7 +180,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetDeviceByAcronym", ex);
+                CommonFunctions.LogException(null, "WPF.GetDeviceByAcronym", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Device Information by Acronym", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -196,7 +196,7 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveWizardConfigurationInfo(nodeID, new List<WizardDeviceInfo>(wizardDeviceInfoList), connectionString, protocolID, companyID, historianID, interconnectionID, parentID, skipDisableRealTimeData);
+                string result = CommonFunctions.SaveWizardConfigurationInfo(null, nodeID, new List<WizardDeviceInfo>(wizardDeviceInfoList), connectionString, protocolID, companyID, historianID, interconnectionID, parentID, skipDisableRealTimeData);
                 sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Success },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -211,22 +211,22 @@ namespace openPDCManager.UserControls.CommonControls
                     {
                         if (historianID != null)
                         {
-                            string runtimeID = CommonFunctions.GetRuntimeID("Historian", (int)historianID);                            
+                            string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)historianID);                            
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");                            
                         }
 
                         //now also update Stat historian metadata.
-                        Historian statHistorian = CommonFunctions.GetHistorianByAcronym("STAT");
+                        Historian statHistorian = CommonFunctions.GetHistorianByAcronym(null, "STAT");
                         if (statHistorian != null)
                         {
-                            string statRuntimeID = CommonFunctions.GetRuntimeID("Historian", statHistorian.ID);                            
+                            string statRuntimeID = CommonFunctions.GetRuntimeID(null, "Historian", statHistorian.ID);                            
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshmetadata");                            
                         }
 
                         //Send Initialize command to openPDC windows service.
                         if (parentID != null)   // devices are being added to PDC then initialize PDC only and not individual devices.
-                        {                            
-                            string runtimeID = CommonFunctions.GetRuntimeID("Device", (int)parentID);
+                        {
+                            string runtimeID = CommonFunctions.GetRuntimeID(null, "Device", (int)parentID);
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + runtimeID);                         
                         }
                         else    //Otherwise go through the list and intialize each device by retrieving its runtime ID from database.
@@ -235,10 +235,10 @@ namespace openPDCManager.UserControls.CommonControls
                             {
                                 if (deviceInfo.Include)
                                 {
-                                    Device device = CommonFunctions.GetDeviceByAcronym(deviceInfo.Acronym);
+                                    Device device = CommonFunctions.GetDeviceByAcronym(null, deviceInfo.Acronym);
                                     if (device != null)
                                     {
-                                        string runtimeID = CommonFunctions.GetRuntimeID("Device", device.ID);                                        
+                                        string runtimeID = CommonFunctions.GetRuntimeID(null, "Device", device.ID);                                        
                                         CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + runtimeID);                                        
                                     }
                                 }
@@ -261,7 +261,7 @@ namespace openPDCManager.UserControls.CommonControls
                     sm.Owner = Window.GetWindow(this);
                     sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                     sm.ShowPopup();
-                    CommonFunctions.LogException("SaveWizardConfigurationInfo.RefreshMetadata", ex);
+                    CommonFunctions.LogException(null, "SaveWizardConfigurationInfo.RefreshMetadata", ex);
                 } 
                 
                 //navigate to browse devices screen.
@@ -270,7 +270,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveWizardConfigurationInfo", ex);
+                CommonFunctions.LogException(null, "WPF.SaveWizardConfigurationInfo", ex);
                 sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Save Configuration Information", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -297,7 +297,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetWizardConfigurationInfo", ex);
+                CommonFunctions.LogException(null, "WPF.GetWizardConfigurationInfo", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Parse Configuration File", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -344,7 +344,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetConnectionSettings", ex);
+                CommonFunctions.LogException(null, "WPF.GetConnectionSettings", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Parse Connection File", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -357,13 +357,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboboxInterconnection.ItemsSource = CommonFunctions.GetInterconnections(true);
+                ComboboxInterconnection.ItemsSource = CommonFunctions.GetInterconnections(null, true);
                 if (ComboboxInterconnection.Items.Count > 0)
                     ComboboxInterconnection.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetInterconnections", ex);
+                CommonFunctions.LogException(null, "WPF.GetInterconnections", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -376,13 +376,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboboxHistorian.ItemsSource = CommonFunctions.GetHistorians(true, true, false);
+                ComboboxHistorian.ItemsSource = CommonFunctions.GetHistorians(null, true, true, false);
                 if (ComboboxHistorian.Items.Count > 0)
                     ComboboxHistorian.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetHistorians", ex);
+                CommonFunctions.LogException(null, "WPF.GetHistorians", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -395,13 +395,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboboxCompany.ItemsSource = CommonFunctions.GetCompanies(false);
+                ComboboxCompany.ItemsSource = CommonFunctions.GetCompanies(null, false);
                 if (ComboboxCompany.Items.Count > 0)
                     ComboboxCompany.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetCompanies", ex);
+                CommonFunctions.LogException(null, "WPF.GetCompanies", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Companies", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -414,13 +414,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ComboboxProtocol.ItemsSource = CommonFunctions.GetProtocols(false);
+                ComboboxProtocol.ItemsSource = CommonFunctions.GetProtocols(null, false);
                 if (ComboboxProtocol.Items.Count > 0)
                     ComboboxProtocol.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetProtocols", ex);
+                CommonFunctions.LogException(null, "WPF.GetProtocols", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Protocols", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -433,7 +433,7 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                m_vendorDeviceList = CommonFunctions.GetVendorDevices(true);
+                m_vendorDeviceList = CommonFunctions.GetVendorDevices(null, true);
                 ComboboxPDCVendor.ItemsSource = m_vendorDeviceList;
 
                 if (ComboboxPDCVendor.Items.Count > 0)
@@ -441,7 +441,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetVendorDevices", ex);
+                CommonFunctions.LogException(null, "WPF.GetVendorDevices", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);

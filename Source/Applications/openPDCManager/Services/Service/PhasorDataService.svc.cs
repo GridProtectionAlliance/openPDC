@@ -41,11 +41,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetCompanyList();
+				return CommonFunctions.GetCompanyList(null);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetCompanyList", ex);
+				CommonFunctions.LogException(null, "Service.GetCompanyList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Company List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}			
@@ -54,11 +54,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetCompanies(isOptional);
+				return CommonFunctions.GetCompanies(null, isOptional);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetCompanies", ex);
+				CommonFunctions.LogException(null, "Service.GetCompanyList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Companies", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -67,11 +67,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveCompany(company, isNew);
+				return CommonFunctions.SaveCompany(null, company, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveCompany", ex);
+				CommonFunctions.LogException(null, "Service.SaveCompany", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Company Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -84,11 +84,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetHistorianList(nodeID);
+				return CommonFunctions.GetHistorianList(null, nodeID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetHistorianList", ex);
+				CommonFunctions.LogException(null, "Service.GetHistorianList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Historian List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -97,11 +97,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveHistorian(historian, isNew);
+				return CommonFunctions.SaveHistorian(null, historian, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveHistorian", ex);
+				CommonFunctions.LogException(null, "Service.SaveHistorian", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Historian Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -110,11 +110,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetHistorians(enabledOnly, isOptional, includeSTAT);
+                return CommonFunctions.GetHistorians(null, enabledOnly, isOptional, includeSTAT);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetHistorians", ex);
+				CommonFunctions.LogException(null, "Service.GetHistorians", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Historians", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -126,11 +126,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetVendorList();
+				return CommonFunctions.GetVendorList(null);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetVendorList", ex);
+				CommonFunctions.LogException(null, "Service.GetVendorList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Vendor List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -139,11 +139,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetVendors(isOptional);
+                return CommonFunctions.GetVendors(null, isOptional);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetVendors", ex);
+				CommonFunctions.LogException(null, "Service.GetVendors", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Vendors", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}			
@@ -152,11 +152,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveVendor(vendor, isNew);
+                return CommonFunctions.SaveVendor(null, vendor, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveVendor", ex);
+				CommonFunctions.LogException(null, "Service.SaveVendor", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Vendor Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}			
@@ -168,11 +168,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetVendorDeviceList();
+				return CommonFunctions.GetVendorDeviceList(null);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetVendorDeviceList", ex);
+				CommonFunctions.LogException(null, "Service.GetVendorDeviceList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Vendor Device List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -181,11 +181,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveVendorDevice(vendorDevice, isNew);
+                return CommonFunctions.SaveVendorDevice(null, vendorDevice, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveVendorDevice", ex);
+				CommonFunctions.LogException(null, "Service.SaveVendorDevice", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Vendor Device Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -194,11 +194,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetVendorDevices(isOptional);
+                return CommonFunctions.GetVendorDevices(null, isOptional);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetVendorDevices", ex);
+				CommonFunctions.LogException(null, "Service.GetVendorDevices", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Vendor Devices", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -210,11 +210,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetNodeList(enabledOnly);
+                return CommonFunctions.GetNodeList(null, enabledOnly);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetNodeList", ex);
+				CommonFunctions.LogException(null, "Service.GetNodeList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Node List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -223,11 +223,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetNodes(enabledOnly, isOptional);
+                return CommonFunctions.GetNodes(null, enabledOnly, isOptional);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetNodes", ex);
+				CommonFunctions.LogException(null, "Service.GetNodes", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -236,18 +236,18 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveNode(node, isNew);
+                return CommonFunctions.SaveNode(null, node, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveNode", ex);
+				CommonFunctions.LogException(null, "Service.SaveNode", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Node Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
 		}
 		public Node GetNodeByID(string id)
 		{
-			return CommonFunctions.GetNodeByID(id);
+            return CommonFunctions.GetNodeByID(null, id);
 		}
 		#endregion
 
@@ -256,28 +256,28 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetDeviceList(nodeID);
+                return CommonFunctions.GetDeviceList(null, nodeID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetDeviceList", ex);
+				CommonFunctions.LogException(null, "Service.GetDeviceList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Device List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
 		}
 		public List<Device> GetDeviceListByParentID(int parentID)
 		{
-			return CommonFunctions.GetDeviceListByParentID(parentID);
+            return CommonFunctions.GetDeviceListByParentID(null, parentID);
 		}
 		public Dictionary<int, string> GetDevices(DeviceType deviceType, string nodeID, bool isOptional)
 		{
 			try
 			{
-				return CommonFunctions.GetDevices(deviceType, nodeID, isOptional);
+                return CommonFunctions.GetDevices(null, deviceType, nodeID, isOptional);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetDevices", ex);
+				CommonFunctions.LogException(null, "Service.GetDevices", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Devices", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -286,49 +286,49 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveDevice(device, isNew, digitalCount, analogCount);
+				return CommonFunctions.SaveDevice(null, device, isNew, digitalCount, analogCount);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveDevice", ex);
+				CommonFunctions.LogException(null, "Service.SaveDevice", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Device Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
 		}
 		public Device GetDeviceByDeviceID(int deviceID)
 		{
-			return CommonFunctions.GetDeviceByDeviceID(deviceID);
+            return CommonFunctions.GetDeviceByDeviceID(null, deviceID);
 		}
 		public Device GetDeviceByAcronym(string acronym)
 		{
-			return CommonFunctions.GetDeviceByAcronym(acronym);
+            return CommonFunctions.GetDeviceByAcronym(null, acronym);
 		}
 		public Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID, string nodeID)
 		{
 			try
 			{
-				return CommonFunctions.GetDevicesForOutputStream(outputStreamID, nodeID);
+                return CommonFunctions.GetDevicesForOutputStream(null, outputStreamID, nodeID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetDevicesForOutputStream", ex);
+				CommonFunctions.LogException(null, "Service.GetDevicesForOutputStream", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Devices For Output Stream", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
 		}
 		public Device GetConcentratorDevice(int deviceID)
 		{
-			return CommonFunctions.GetConcentratorDevice(deviceID);
+            return CommonFunctions.GetConcentratorDevice(null, deviceID);
 		}
 		public string DeleteDevice(int deviceID)
 		{
 			try
 			{
-				return CommonFunctions.DeleteDevice(deviceID);
+                return CommonFunctions.DeleteDevice(null, deviceID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.DeleteDevice", ex);
+				CommonFunctions.LogException(null, "Service.DeleteDevice", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Delete Device", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -341,11 +341,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetPhasorList(deviceID);
+                return CommonFunctions.GetPhasorList(null, deviceID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetPhasorList", ex);
+				CommonFunctions.LogException(null, "Service.GetPhasorList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Phasor List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -355,11 +355,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetPhasors(deviceID, isOptional);
+                return CommonFunctions.GetPhasors(null, deviceID, isOptional);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SavePhasor", ex);
+				CommonFunctions.LogException(null, "Service.SavePhasor", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Phasors", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -369,11 +369,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SavePhasor(phasor, isNew);
+				return CommonFunctions.SavePhasor(null, phasor, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SavePhasor", ex);
+				CommonFunctions.LogException(null, "Service.SavePhasor", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Phasor Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -387,11 +387,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetMeasurementList(nodeID);
+                return CommonFunctions.GetMeasurementList(null, nodeID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetMeasurementList", ex);
+				CommonFunctions.LogException(null, "Service.GetMeasurementList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Measurement List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -401,11 +401,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetFilteredMeasurementsByDevice(deviceID);
+                return CommonFunctions.GetFilteredMeasurementsByDevice(null, deviceID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetFilteredMeasurementsByDevice", ex);
+				CommonFunctions.LogException(null, "Service.GetFilteredMeasurementsByDevice", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Filtered Measurements By Device", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -415,11 +415,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveMeasurement(measurement, isNew);
+				return CommonFunctions.SaveMeasurement(null, measurement, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveMeasurement", ex);
+				CommonFunctions.LogException(null, "Service.SaveMeasurement", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Measurement Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -429,11 +429,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetMeasurementsByDevice(deviceID);
+                return CommonFunctions.GetMeasurementsByDevice(null, deviceID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetMeasurementsByDevice", ex);
+				CommonFunctions.LogException(null, "Service.GetMeasurementsByDevice", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Measurements By Device", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -442,11 +442,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetMeasurementsForOutputStream(nodeID, outputStreamID);
+                return CommonFunctions.GetMeasurementsForOutputStream(null, nodeID, outputStreamID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetMeasurementsForOutputStream", ex);
+				CommonFunctions.LogException(null, "Service.GetMeasurementsForOutputStream", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Measurements For Output Stream", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -459,11 +459,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetOtherDeviceList();
+				return CommonFunctions.GetOtherDeviceList(null);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetOtherDeviceList", ex);
+				CommonFunctions.LogException(null, "Service.GetOtherDeviceList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Other Device List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -473,11 +473,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveOtherDevice(otherDevice, isNew);
+                return CommonFunctions.SaveOtherDevice(null, otherDevice, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveOtherDevice", ex);
+				CommonFunctions.LogException(null, "Service.SaveOtherDevice", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Other Device Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -485,7 +485,7 @@ namespace openPDCManager.Services.Service
 
 		public OtherDevice GetOtherDeviceByDeviceID(int deviceID)
 		{
-			return CommonFunctions.GetOtherDeviceByDeviceID(deviceID);
+            return CommonFunctions.GetOtherDeviceByDeviceID(null, deviceID);
 		}
 		#endregion
 
@@ -494,11 +494,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetInterconnections(isOptional);
+                return CommonFunctions.GetInterconnections(null, isOptional);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetInterconnections", ex);
+				CommonFunctions.LogException(null, "Service.GetInterconnections", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Interconnections", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -511,11 +511,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetProtocols(isOptional);
+                return CommonFunctions.GetProtocols(null, isOptional);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetProtocols", ex);
+				CommonFunctions.LogException(null, "Service.GetProtocols", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Protocols", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -523,7 +523,7 @@ namespace openPDCManager.Services.Service
 
 		public int GetProtocolIDByAcronym(string acronym)
 		{
-			return CommonFunctions.GetProtocolIDByAcronym(acronym);
+            return CommonFunctions.GetProtocolIDByAcronym(null, acronym);
 		}
 
 		#endregion
@@ -534,11 +534,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetSignalTypes(isOptional);
+                return CommonFunctions.GetSignalTypes(null, isOptional);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetSignalTypes", ex);
+				CommonFunctions.LogException(null, "Service.GetSignalTypes", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Signal Types", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -552,11 +552,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetCalculatedMeasurementList(nodeID);
+                return CommonFunctions.GetCalculatedMeasurementList(null, nodeID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetCalculatedMeasurementList", ex);
+				CommonFunctions.LogException(null, "Service.GetCalculatedMeasurementList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Calculated Measurement List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -566,11 +566,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveCalculatedMeasurement(calculatedMeasurement, isNew);
+                return CommonFunctions.SaveCalculatedMeasurement(null, calculatedMeasurement, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveCalculatedMeasurement", ex);
+				CommonFunctions.LogException(null, "Service.SaveCalculatedMeasurement", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Calculated Measurement Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -584,11 +584,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-			return CommonFunctions.GetAdapterList(enabledOnly, adapterType, nodeID);
+                return CommonFunctions.GetAdapterList(null, enabledOnly, adapterType, nodeID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetAdapterList", ex);
+				CommonFunctions.LogException(null, "Service.GetAdapterList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Adapter List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -598,11 +598,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveAdapter(adapter, isNew);
+                return CommonFunctions.SaveAdapter(null, adapter, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveAdapter", ex);
+				CommonFunctions.LogException(null, "Service.SaveAdapter", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Adapter Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -612,11 +612,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetIaonTreeData(nodeID);
+				return CommonFunctions.GetIaonTreeData(null, nodeID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetIaonTreeData", ex);
+				CommonFunctions.LogException(null, "Service.GetIaonTreeData", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Iaon Tree Data", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -629,11 +629,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetOutputStreamList(enabledOnly, nodeID);
+                return CommonFunctions.GetOutputStreamList(null, enabledOnly, nodeID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetOutputStreamList", ex);
+				CommonFunctions.LogException(null, "Service.GetOutputStreamList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Output Stream List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -643,11 +643,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveOutputStream(outputStream, isNew);
+                return CommonFunctions.SaveOutputStream(null, outputStream, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveOutputStream", ex);
+				CommonFunctions.LogException(null, "Service.SaveOutputStream", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -657,11 +657,11 @@ namespace openPDCManager.Services.Service
         {
             try
             {
-                return CommonFunctions.DeleteOutputStream(outputStreamID);
+                return CommonFunctions.DeleteOutputStream(null, outputStreamID);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("Service.DeleteOutputStream", ex);
+                CommonFunctions.LogException(null, "Service.DeleteOutputStream", ex);
                 CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Delete Output Stream Information", SystemMessage = ex.Message };
                 throw new FaultException<CustomServiceFault>(fault);
             }
@@ -675,11 +675,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetOutputStreamDeviceList(outputStreamID, enabledOnly);
+                return CommonFunctions.GetOutputStreamDeviceList(null, outputStreamID, enabledOnly);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetOutputStreamDeviceList", ex);
+				CommonFunctions.LogException(null, "Service.GetOutputStreamDeviceList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Output Stream Device List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -689,11 +689,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveOutputStreamDevice(outputStreamDevice, isNew, originalAcronym);
+				return CommonFunctions.SaveOutputStreamDevice(null, outputStreamDevice, isNew, originalAcronym);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveOutputStreamDevice", ex);
+				CommonFunctions.LogException(null, "Service.SaveOutputStreamDevice", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Device Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -703,11 +703,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.DeleteOutputStreamDevice(outputStreamID, devicesToBeDeleted);
+                return CommonFunctions.DeleteOutputStreamDevice(null, outputStreamID, devicesToBeDeleted);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.DeleteOutputStreamDevice", ex);
+				CommonFunctions.LogException(null, "Service.DeleteOutputStreamDevice", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Delete Output Stream Device", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -717,11 +717,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.AddDevices(outputStreamID, devicesToBeAdded, addDigitals, addAnalogs);
+                return CommonFunctions.AddDevices(null, outputStreamID, devicesToBeAdded, addDigitals, addAnalogs);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.AddDevices", ex);
+				CommonFunctions.LogException(null, "Service.AddDevices", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Device(s)", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -734,11 +734,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetOutputStreamMeasurementList(outputStreamID);
+                return CommonFunctions.GetOutputStreamMeasurementList(null, outputStreamID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetOutputStreamMeasurementList", ex);
+				CommonFunctions.LogException(null, "Service.GetOutputStreamMeasurementList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Output Stream Measurement List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -748,11 +748,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveOutputStreamMeasurement(outputStreamMeasurement, isNew);
+				return CommonFunctions.SaveOutputStreamMeasurement(null, outputStreamMeasurement, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveOutputStreamMeasurement", ex);
+				CommonFunctions.LogException(null, "Service.SaveOutputStreamMeasurement", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Measurement Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -762,11 +762,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.DeleteOutputStreamMeasurement(outputStreamMeasurementID);
+                return CommonFunctions.DeleteOutputStreamMeasurement(null, outputStreamMeasurementID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.DeleteOutputStreamMeasurement", ex);
+				CommonFunctions.LogException(null, "Service.DeleteOutputStreamMeasurement", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Delete Output Stream Measurement", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -780,11 +780,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetOutputStreamDevicePhasorList(outputStreamDeviceID);
+                return CommonFunctions.GetOutputStreamDevicePhasorList(null, outputStreamDeviceID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetOutputStreamDevicePhasorList", ex);
+				CommonFunctions.LogException(null, "Service.GetOutputStreamDevicePhasorList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Output Stream Device Phasor List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -794,11 +794,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveOutputStreamDevicePhasor(outputStreamDevicePhasor, isNew);
+				return CommonFunctions.SaveOutputStreamDevicePhasor(null, outputStreamDevicePhasor, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveOutputStreamDevicePhasor", ex);
+				CommonFunctions.LogException(null, "Service.SaveOutputStreamDevicePhasor", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Device Phasor Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -812,11 +812,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetOutputStreamDeviceAnalogList(outputStreamDeviceID);
+                return CommonFunctions.GetOutputStreamDeviceAnalogList(null, outputStreamDeviceID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetOutputStreamDeviceAnalogList", ex);
+				CommonFunctions.LogException(null, "Service.GetOutputStreamDeviceAnalogList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Output Stream Device Analog List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -826,11 +826,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, isNew);
+				return CommonFunctions.SaveOutputStreamDeviceAnalog(null, outputStreamDeviceAnalog, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveOutputStreamDeviceAnalog", ex);
+				CommonFunctions.LogException(null, "Service.SaveOutputStreamDeviceAnalog", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Device Analog Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -844,11 +844,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetOutputStreamDeviceDigitalList(outputStreamDeviceID);
+                return CommonFunctions.GetOutputStreamDeviceDigitalList(null, outputStreamDeviceID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetOutputStreamDeviceDigitalList", ex);
+				CommonFunctions.LogException(null, "Service.GetOutputStreamDeviceDigitalList", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Output Stream Device Digital List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -858,11 +858,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, isNew);
+				return CommonFunctions.SaveOutputStreamDeviceDigital(null, outputStreamDeviceDigital, isNew);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveOutputStreamDeviceDigital", ex);
+				CommonFunctions.LogException(null, "Service.SaveOutputStreamDeviceDigital", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Output Stream Device Digital Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -876,11 +876,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetDeviceMeasurementData(nodeID);
+                return CommonFunctions.GetDeviceMeasurementData(null, nodeID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetDeviceMeasurementsData", ex);
+				CommonFunctions.LogException(null, "Service.GetDeviceMeasurementsData", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Current Device Measurement Data", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -896,7 +896,7 @@ namespace openPDCManager.Services.Service
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetTimeZones", ex);
+				CommonFunctions.LogException(null, "Service.GetTimeZones", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Get Timezones List", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -906,11 +906,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetMapData(mapType, nodeID);
+                return CommonFunctions.GetMapData(null, mapType, nodeID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetMapData", ex);
+				CommonFunctions.LogException(null, "Service.GetMapData", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Map Data", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -924,7 +924,7 @@ namespace openPDCManager.Services.Service
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetConnectionSettings", ex);
+				CommonFunctions.LogException(null, "Service.GetConnectionSettings", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Parse Connection File", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -938,7 +938,7 @@ namespace openPDCManager.Services.Service
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetWizardConfigurationInfo", ex);
+				CommonFunctions.LogException(null, "Service.GetWizardConfigurationInfo", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Parse Configuration File", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -952,7 +952,7 @@ namespace openPDCManager.Services.Service
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.RetrieveConfigurationFrame", ex);
+				CommonFunctions.LogException(null, "Service.RetrieveConfigurationFrame", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Configuration", SystemMessage = ex.Message + " Error details: " + Environment.NewLine + CommonFunctions.s_responseMessage };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -962,11 +962,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.SaveWizardConfigurationInfo(nodeID, wizardDeviceInfoList, connectionString, protocolID, companyID, historianID, interconnectionID, parentID, skipDisableRealTimeData);
+                return CommonFunctions.SaveWizardConfigurationInfo(null, nodeID, wizardDeviceInfoList, connectionString, protocolID, companyID, historianID, interconnectionID, parentID, skipDisableRealTimeData);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveWizardConfigurationInfo", ex);
+				CommonFunctions.LogException(null, "Service.SaveWizardConfigurationInfo", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Save Configuration Information", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -980,7 +980,7 @@ namespace openPDCManager.Services.Service
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetExecutingAssemblyPath", ex);
+				CommonFunctions.LogException(null, "Service.GetExecutingAssemblyPath", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Current Execution Path", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -994,7 +994,7 @@ namespace openPDCManager.Services.Service
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.SaveIniFile", ex);
+				CommonFunctions.LogException(null, "Service.SaveIniFile", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Upload INI File", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -1019,11 +1019,11 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-				return CommonFunctions.GetStatisticMeasurementData(nodeID);
+                return CommonFunctions.GetStatisticMeasurementData(null, nodeID);
 			}
 			catch (Exception ex)
 			{
-				CommonFunctions.LogException("Service.GetStatisticMeasurementData", ex);
+				CommonFunctions.LogException(null, "Service.GetStatisticMeasurementData", ex);
 				CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Retrieve Statistic Measurements Data", SystemMessage = ex.Message };
 				throw new FaultException<CustomServiceFault>(fault);
 			}
@@ -1031,7 +1031,7 @@ namespace openPDCManager.Services.Service
 
         public string GetRuntimeID(string sourceTable, int sourceID)
         {
-            return CommonFunctions.GetRuntimeID(sourceTable, sourceID);
+            return CommonFunctions.GetRuntimeID(null, sourceTable, sourceID);
         }   
 	}
 }

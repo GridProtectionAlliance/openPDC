@@ -45,11 +45,11 @@ namespace openPDCManager.UserControls.PopupControls
         {
             try
             {
-                ListBoxOutputStreamDeviceAnalogList.ItemsSource = CommonFunctions.GetOutputStreamDeviceAnalogList(m_sourceOutputStreamDeviceID);
+                ListBoxOutputStreamDeviceAnalogList.ItemsSource = CommonFunctions.GetOutputStreamDeviceAnalogList(null, m_sourceOutputStreamDeviceID);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetOutputStreamDeviceAnalogList", ex);
+                CommonFunctions.LogException(null, "WPF.GetOutputStreamDeviceAnalogList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Ouptu Stream Device Analog List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -64,7 +64,7 @@ namespace openPDCManager.UserControls.PopupControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, isNew);                
+                string result = CommonFunctions.SaveOutputStreamDeviceAnalog(null, outputStreamDeviceAnalog, isNew);                
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 ClearForm();
@@ -72,7 +72,7 @@ namespace openPDCManager.UserControls.PopupControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveOutputStreamDeviceAnalog", ex);
+                CommonFunctions.LogException(null, "WPF.SaveOutputStreamDeviceAnalog", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Analog Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }

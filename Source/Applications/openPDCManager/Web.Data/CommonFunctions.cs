@@ -105,15 +105,22 @@ namespace openPDCManager.Data
             }
             finally
             {
-                connection.Dispose();
+                if (connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static void LogException(string source, Exception ex)
+        public static void LogException(DataConnection connection, string source, Exception ex)
         {
-            DataConnection connection = new DataConnection();
+            //DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Insert Into ErrorLog (Source, Message, Detail) Values (@source, @message, @detail)";
@@ -128,7 +135,8 @@ namespace openPDCManager.Data
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
@@ -206,7 +214,7 @@ namespace openPDCManager.Data
                                                 AnalogCount = cell.AnalogDefinitions.Count(),
                                                 AddDigitals = false,
                                                 AddAnalogs = false,
-                                                IsNew = GetDeviceByAcronym(cell.StationName.Replace(" ", "").ToUpper()) == null ? true : false,
+                                                IsNew = GetDeviceByAcronym(null, cell.StationName.Replace(" ", "").ToUpper()) == null ? true : false,
                                                 PhasorList = new ObservableCollection<PhasorInfo>( (from phasor in cell.PhasorDefinitions
                                                               select new PhasorInfo()
                                                               {
@@ -269,7 +277,7 @@ namespace openPDCManager.Data
                     if (deviceConnectionString.ToLower().Contains("phasorprotocol"))
                         windowsServiceClient.Helper.SendRequest(string.Format("invoke 0 requestdeviceconfiguration \"{0}\"", deviceConnectionString));
                     else
-                        windowsServiceClient.Helper.SendRequest(string.Format("invoke 0 requestdeviceconfiguration \"{0}\"", deviceConnectionString + "; phasorProtocol=" + GetProtocolAcronymByID(protocolID)));
+                        windowsServiceClient.Helper.SendRequest(string.Format("invoke 0 requestdeviceconfiguration \"{0}\"", deviceConnectionString + "; phasorProtocol=" + GetProtocolAcronymByID(null, protocolID)));
 
                     if (s_responseWaitHandle.WaitOne(65000))
                     {
@@ -326,11 +334,17 @@ namespace openPDCManager.Data
             }
         }
 
-        public static string SaveWizardConfigurationInfo(string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, 
+        public static string SaveWizardConfigurationInfo(DataConnection connection, string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, 
                 int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID, bool skipDisableRealTimeData)
         {
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }                
                 List<string> nondistinctAcronymList = new List<string>();
                 nondistinctAcronymList = (from item in wizardDeviceInfoList
                                           where item.Include == true
@@ -397,7 +411,7 @@ namespace openPDCManager.Data
                             analogCount = info.AnalogCount;
                         }
 
-                        Device existingDevice = GetDeviceByAcronym(info.Acronym);
+                        Device existingDevice = GetDeviceByAcronym(connection, info.Acronym);
                         if (existingDevice != null)
                         {
                             device.ID = existingDevice.ID;
@@ -406,12 +420,12 @@ namespace openPDCManager.Data
                             device.DataLossInterval = existingDevice.DataLossInterval;
                             device.MeasuredLines = existingDevice.MeasuredLines;
                             device.ContactList = existingDevice.ContactList;
-                            SaveDevice(device, false, digitalCount, analogCount);
+                            SaveDevice(connection, device, false, digitalCount, analogCount);
                         }
                         else
-                            SaveDevice(device, true, digitalCount, analogCount);
+                            SaveDevice(connection, device, true, digitalCount, analogCount);
 
-                        Device addedDevice = GetDeviceByAcronym(info.Acronym);
+                        Device addedDevice = GetDeviceByAcronym(connection, info.Acronym);
                         int count = 1;
                         foreach (PhasorInfo phasorInfo in info.PhasorList)
                         {
@@ -425,14 +439,14 @@ namespace openPDCManager.Data
                                 phasor.DestinationPhasorID = null;
                                 phasor.SourceIndex = count;
 
-                                Phasor existingPhasor = GetPhasorBySourceIndex(addedDevice.ID, phasor.SourceIndex);
+                                Phasor existingPhasor = GetPhasorBySourceIndex(connection, addedDevice.ID, phasor.SourceIndex);
                                 if (existingPhasor != null)
                                 {
                                     phasor.ID = existingPhasor.ID;
-                                    SavePhasor(phasor, false);
+                                    SavePhasor(connection, phasor, false);
                                 }
                                 else
-                                    SavePhasor(phasor, true);
+                                    SavePhasor(connection, phasor, true);
                             }
                             count++;
                         }
@@ -441,7 +455,11 @@ namespace openPDCManager.Data
                 }
                 return "Configuration Information Saved Successfully";
             }
-            finally { }
+            finally 
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
         }
 
         public static IDbDataParameter AddWithValue(IDbCommand command, string name, object value)
@@ -458,12 +476,19 @@ namespace openPDCManager.Data
             return param;
         }
 
-        public static bool MasterNode(string nodeID)
+        public static bool MasterNode(DataConnection connection, string nodeID)
         {	
             bool isMaster = false;
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
+            
             try
-            {	
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Select Master From Node Where ID = @id";
@@ -473,11 +498,12 @@ namespace openPDCManager.Data
             catch (Exception ex)
             {
                 isMaster = false;
-                LogException("MasterNode", ex);
+                LogException(connection, "MasterNode", ex);
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
             return isMaster;
         }
@@ -498,12 +524,20 @@ namespace openPDCManager.Data
                 return timeZonesList;
         }
 
-        public static Dictionary<string, int> GetVendorDeviceDistribution(string nodeID)
+        public static Dictionary<string, int> GetVendorDeviceDistribution(DataConnection connection, string nodeID)
         {
-            DataConnection connection = new DataConnection();
+            //DataConnection connection = new DataConnection();
             Dictionary<string, int> deviceDistribution = new Dictionary<string, int>();
+            bool createdConnection = false;
+
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 if (!string.IsNullOrEmpty(nodeID))
                 {
                     IDbCommand command = connection.Connection.CreateCommand();
@@ -525,23 +559,32 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetVendorDeviceDistribution", ex);
+                LogException(connection, "GetVendorDeviceDistribution", ex);
                 //CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Get Vendor Device Distribution", SystemMessage = ex.Message };
                 //throw new FaultException<CustomServiceFault>(fault);
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
             return deviceDistribution;
         }
 
-        public static List<InterconnectionStatus> GetInterconnectionStatus(string nodeID)
+        public static List<InterconnectionStatus> GetInterconnectionStatus(DataConnection connection, string nodeID)
         {
-            DataConnection connection = new DataConnection();
+            //DataConnection connection = new DataConnection();
             List<InterconnectionStatus> interConnectionStatusList = new List<InterconnectionStatus>();
+            bool createdConnection = false;
+
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 if (!string.IsNullOrEmpty(nodeID))
                 {
                     //throw new ArgumentException("Invalid value of NodeID.");
@@ -587,13 +630,14 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetInterconnectionStatus", ex);
+                LogException(connection, "GetInterconnectionStatus", ex);
                 //CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Get Interconnection Status", SystemMessage = ex.Message };
                 //throw new FaultException<CustomServiceFault>(fault);
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
             return interConnectionStatusList;
         }
@@ -626,7 +670,7 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetRealTimeData", ex);
+                LogException(null, "GetRealTimeData", ex);
                 //throw ex;
             }
 
@@ -668,7 +712,7 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetRealTimeDataDetail", ex);
+                LogException(null, "GetRealTimeDataDetail", ex);
                 throw ex;
             }
 
@@ -712,7 +756,7 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetTimeTaggedMeasurements", ex);
+                LogException(null, "GetTimeTaggedMeasurements", ex);
             }
 
             return timeTaggedMeasurementList;
@@ -721,7 +765,7 @@ namespace openPDCManager.Data
         public static Dictionary<int, TimeTaggedMeasurement> GetStatisticMeasurements(string statisticDataUrl, string nodeID)
         {
             Dictionary<int, TimeTaggedMeasurement> statisticMeasurementList = new Dictionary<int, TimeTaggedMeasurement>();
-            Dictionary<int, BasicStatisticInfo> basicStatisticList = new Dictionary<int, BasicStatisticInfo>(GetBasicStatisticInfoList(nodeID));
+            Dictionary<int, BasicStatisticInfo> basicStatisticList = new Dictionary<int, BasicStatisticInfo>(GetBasicStatisticInfoList(null, nodeID));
 
             try
             {
@@ -760,7 +804,7 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetTimeTaggedMeasurements", ex);
+                LogException(null, "GetTimeTaggedMeasurements", ex);
             }
 
             return statisticMeasurementList;
@@ -785,12 +829,20 @@ namespace openPDCManager.Data
             return "".ConvertToType(dataType);
         }
 
-        public static KeyValuePair<int, int> GetMinMaxPointIDs(string nodeID)
+        public static KeyValuePair<int, int> GetMinMaxPointIDs(DataConnection connection, string nodeID)
         {
             KeyValuePair<int, int> minMaxPointIDs = new KeyValuePair<int, int>(1, 5000);
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
+            
+            //DataConnection connection = new DataConnection();
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Select MIN(PointID) AS MinPointID, MAX(PointID) AS MaxPointID From MeasurementDetail Where NodeID = @nodeID";
@@ -807,26 +859,17 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetMinMaxPointIDs", ex);
+                LogException(connection, "GetMinMaxPointIDs", ex);
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
 
             return minMaxPointIDs;
         }
-                
-        //public static List<string> GetPorts()
-        //{
-        //    List<string> portsList = new List<string>();
-
-        //    foreach (string port in System.IO.Ports.SerialPort.GetPortNames())
-        //        portsList.Add(port);
-
-        //    return portsList;
-        //}
-
+      
         public static List<string> GetStopBits()
         {
             List<string> stopBitsList = new List<string>();
@@ -847,12 +890,19 @@ namespace openPDCManager.Data
             return parityList;
         }
 
-        public static string GetRuntimeID(string sourceTable, int sourceID)
+        public static string GetRuntimeID(DataConnection connection, string sourceTable, int sourceID)
         {
             string returnValue = string.Empty;
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
+            //DataConnection connection = new DataConnection();
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Select ID From Runtime Where SourceID = @sourceID AND SourceTable = @sourceTable";
@@ -865,11 +915,12 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {                
-                LogException("GetRuntimeID", ex);
+                LogException(connection, "GetRuntimeID", ex);
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
             return returnValue;
         }
@@ -902,11 +953,18 @@ namespace openPDCManager.Data
 
         #region " Manage Companies Code"
 
-        public static List<Company> GetCompanyList()
+        public static List<Company> GetCompanyList(DataConnection connection)
         {
-            DataConnection connection = new DataConnection();
+            //DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 List<Company> companyList = new List<Company>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -929,15 +987,23 @@ namespace openPDCManager.Data
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
 
-        public static Dictionary<int, string> GetCompanies(bool isOptional)
+        public static Dictionary<int, string> GetCompanies(DataConnection connection, bool isOptional)
         {
-            DataConnection connection = new DataConnection();
+            //DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 Dictionary<int, string> companyList = new Dictionary<int, string>();
                 if (isOptional)
                     companyList.Add(0, "Select Company");
@@ -961,15 +1027,22 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
 
-        public static string SaveCompany(Company company, bool isNew)
+        public static string SaveCompany(DataConnection connection, Company company, bool isNew)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
 
@@ -992,7 +1065,8 @@ namespace openPDCManager.Data
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
@@ -1000,11 +1074,17 @@ namespace openPDCManager.Data
 
         #region " Manage Output Streams Code"
 
-        public static List<OutputStream> GetOutputStreamList(bool enabledOnly, string nodeID)
+        public static List<OutputStream> GetOutputStreamList(DataConnection connection, bool enabledOnly, string nodeID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 List<OutputStream> outputStreamList = new List<OutputStream>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -1064,15 +1144,22 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
 
-        public static string SaveOutputStream(OutputStream outputStream, bool isNew)
+        public static string SaveOutputStream(DataConnection connection, OutputStream outputStream, bool isNew)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
 
@@ -1131,7 +1218,7 @@ namespace openPDCManager.Data
                 catch (Exception ex)
                 {
                     //Do not do anything. If this fails then we dont want to interrupt save operation.
-                    LogException("SaveOutputStream: PhasorDataSourceValidation", ex);
+                    LogException(connection, "SaveOutputStream: PhasorDataSourceValidation", ex);
                 }
 
                 return "Output Stream Information Saved Successfully";
@@ -1139,15 +1226,23 @@ namespace openPDCManager.Data
             
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static string DeleteOutputStream(int outputStreamID)
+        public static string DeleteOutputStream(DataConnection connection, int outputStreamID)
         {
-             DataConnection connection = new DataConnection();
+            bool createdConnection = false;
+
              try
              {
+                 if (connection == null)
+                 {
+                     connection = new DataConnection();
+                     createdConnection = true;
+                 }
+
                  IDbCommand command = connection.Connection.CreateCommand();
                  command.CommandType = CommandType.Text;
                  command.CommandText = "Delete From OutputStream Where ID = @outputStreamID";
@@ -1158,7 +1253,8 @@ namespace openPDCManager.Data
              }
              finally
              {
-                 connection.Dispose();
+                 if (createdConnection && connection != null)
+                    connection.Dispose();
              }
         }
 
@@ -1166,11 +1262,17 @@ namespace openPDCManager.Data
 
         #region " Manage Output Stream Measurements Code"
 
-        public static List<OutputStreamMeasurement> GetOutputStreamMeasurementList(int outputStreamID)
+        public static List<OutputStreamMeasurement> GetOutputStreamMeasurementList(DataConnection connection, int outputStreamID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 List<OutputStreamMeasurement> outputStreamMeasurementList = new List<OutputStreamMeasurement>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -1196,15 +1298,23 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
 
-        public static string SaveOutputStreamMeasurement(OutputStreamMeasurement outputStreamMeasurement, bool isNew)
+        public static string SaveOutputStreamMeasurement(DataConnection connection, OutputStreamMeasurement outputStreamMeasurement, bool isNew)
         {
-            DataConnection connection = new DataConnection();
+            //DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
 
@@ -1229,15 +1339,22 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static string DeleteOutputStreamMeasurement(int outputStreamMeasurementID)	// we can just use ID column in the database for delete as it is auto increament.
+        public static string DeleteOutputStreamMeasurement(DataConnection connection, int outputStreamMeasurementID)	// we can just use ID column in the database for delete as it is auto increament.
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Delete From OutputStreamMeasurement Where ID = @id";
@@ -1248,7 +1365,8 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
@@ -1256,11 +1374,17 @@ namespace openPDCManager.Data
 
         #region " Manage Output Stream Devices Code"
 
-        public static List<OutputStreamDevice> GetOutputStreamDeviceList(int outputStreamID, bool enabledOnly)
+        public static List<OutputStreamDevice> GetOutputStreamDeviceList(DataConnection connection, int outputStreamID, bool enabledOnly)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 List<OutputStreamDevice> outputStreamDeviceList = new List<OutputStreamDevice>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -1297,16 +1421,17 @@ namespace openPDCManager.Data
             }		
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
 
-        public static OutputStreamDevice GetOutputStreamDevice(int outputStreamID, string acronym)
+        public static OutputStreamDevice GetOutputStreamDevice(DataConnection connection, int outputStreamID, string acronym)
         {
             try
             {
                 List<OutputStreamDevice> ouputStreamDeviceList = new List<OutputStreamDevice>();
-                ouputStreamDeviceList = (from item in GetOutputStreamDeviceList(outputStreamID, false)
+                ouputStreamDeviceList = (from item in GetOutputStreamDeviceList(connection, outputStreamID, false)
                                          where item.Acronym == acronym
                                          select item).ToList();
                 if (ouputStreamDeviceList.Count > 0)
@@ -1316,16 +1441,23 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetOutputStreamDevice", ex);
+                LogException(connection, "GetOutputStreamDevice", ex);
                 return null;
             }
         }
 
-        public static string SaveOutputStreamDevice(OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym)
+        public static string SaveOutputStreamDevice(DataConnection connection, OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym)
         {
-            DataConnection connection = new DataConnection();
+            //DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
 
@@ -1373,15 +1505,22 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static string DeleteOutputStreamDevice(int outputStreamID, List<string> devicesToBeDeleted)
+        public static string DeleteOutputStreamDevice(DataConnection connection, int outputStreamID, List<string> devicesToBeDeleted)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 foreach (string acronym in devicesToBeDeleted)
                 {
                     IDbCommand command = connection.Connection.CreateCommand();
@@ -1403,19 +1542,26 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
         public static string digitalLabel = "DIGITAL0        DIGITAL1        DIGITAL2        DIGITAL3        DIGITAL4        DIGITAL5        DIGITAL6        DIGITAL7        DIGITAL8        DIGITAL9        DIGITAL10       DIGITAL11       DIGITAL12       DIGITAL13       DIGITAL14       DIGITAL15       ";
-        public static string AddDevices(int outputStreamID, Dictionary<int, string> devicesToBeAdded, bool addDigitals, bool addAnalogs)
+        public static string AddDevices(DataConnection connection, int outputStreamID, Dictionary<int, string> devicesToBeAdded, bool addDigitals, bool addAnalogs)
         {
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }                
                 foreach (KeyValuePair<int, string> deviceInfo in devicesToBeAdded)	//loop through all the devices that needs to be added.
                 {
                     Device device = new Device();
-                    device = GetDeviceByDeviceID(deviceInfo.Key);	//Get alll the information about the device to be added.
+                    device = GetDeviceByDeviceID(connection, deviceInfo.Key);	//Get alll the information about the device to be added.
                     OutputStreamDevice outputStreamDevice = new OutputStreamDevice();
                     outputStreamDevice.NodeID = device.NodeID;
                     outputStreamDevice.AdapterID = outputStreamID;
@@ -1428,14 +1574,14 @@ namespace openPDCManager.Data
                     outputStreamDevice.FrequencyDataFormat = string.Empty;
                     outputStreamDevice.AnalogDataFormat = string.Empty;
                     outputStreamDevice.CoordinateFormat = string.Empty;
-                    SaveOutputStreamDevice(outputStreamDevice, true, string.Empty);	//save in to OutputStreamDevice Table.
+                    SaveOutputStreamDevice(connection, outputStreamDevice, true, string.Empty);	//save in to OutputStreamDevice Table.
 
-                    int savedOutputStreamDeviceID = GetOutputStreamDevice(outputStreamID, device.Acronym).ID;
+                    int savedOutputStreamDeviceID = GetOutputStreamDevice(connection, outputStreamID, device.Acronym).ID;
 
 
                     //********************************************
                     List<Phasor> phasorList = new List<Phasor>();
-                    phasorList = GetPhasorList(deviceInfo.Key);			//Get all the phasor information for the device to be added.
+                    phasorList = GetPhasorList(connection, deviceInfo.Key);			//Get all the phasor information for the device to be added.
 
                     foreach (Phasor phasor in phasorList)
                     {
@@ -1447,18 +1593,18 @@ namespace openPDCManager.Data
                         outputStreamDevicePhasor.Phase = phasor.Phase;
                         outputStreamDevicePhasor.LoadOrder = phasor.SourceIndex;
                         outputStreamDevicePhasor.ScalingValue = 0;
-                        SaveOutputStreamDevicePhasor(outputStreamDevicePhasor, true);
+                        SaveOutputStreamDevicePhasor(connection, outputStreamDevicePhasor, true);
                     }
                     //********************************************
 
                     //********************************************
                     List<Measurement> measurementList = new List<Measurement>();
-                    measurementList = GetMeasurementsByDevice(deviceInfo.Key);
+                    measurementList = GetMeasurementsByDevice(connection, deviceInfo.Key);
 
                     int analogIndex = 0;
                     foreach (Measurement measurement in measurementList)
                     {
-                        if (measurement.HistorianAcronym != "STAT")
+                        if (measurement.SignalAcronym != "STAT")
                         {
                             OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
                             outputStreamMeasurement.NodeID = device.NodeID;
@@ -1467,11 +1613,11 @@ namespace openPDCManager.Data
                             outputStreamMeasurement.PointID = measurement.PointID;
                             outputStreamMeasurement.SignalReference = measurement.SignalReference;
 
-                            if (measurement.SignalSuffix == "AV")
+                            if (measurement.SignalAcronym == "ALOG")
                             {
                                 if (addAnalogs)
                                 {
-                                    SaveOutputStreamMeasurement(outputStreamMeasurement, true);
+                                    SaveOutputStreamMeasurement(connection, outputStreamMeasurement, true);
 
                                     OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
                                     outputStreamDeviceAnalog.NodeID = device.NodeID;
@@ -1480,15 +1626,15 @@ namespace openPDCManager.Data
                                     outputStreamDeviceAnalog.Type = 0;	//default
                                     outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
                                     outputStreamDeviceAnalog.ScalingValue = 0;
-                                    SaveOutputStreamDeviceAnalog(outputStreamDeviceAnalog, true);
+                                    SaveOutputStreamDeviceAnalog(connection, outputStreamDeviceAnalog, true);
                                     analogIndex += 1;
                                 }
                             }
-                            else if (measurement.SignalSuffix == "DV")
+                            else if (measurement.SignalAcronym == "DIGI")
                             {
                                 if (addDigitals)
                                 {
-                                    SaveOutputStreamMeasurement(outputStreamMeasurement, true);
+                                    SaveOutputStreamMeasurement(connection, outputStreamMeasurement, true);
 
                                     OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
                                     outputStreamDeviceDigital.NodeID = device.NodeID;
@@ -1496,11 +1642,11 @@ namespace openPDCManager.Data
                                     outputStreamDeviceDigital.Label = digitalLabel;     // measurement.PointTag;
                                     outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
                                     outputStreamDeviceDigital.MaskValue = 0;
-                                    SaveOutputStreamDeviceDigital(outputStreamDeviceDigital, true);
+                                    SaveOutputStreamDeviceDigital(connection, outputStreamDeviceDigital, true);
                                 }
                             }
                             else
-                                SaveOutputStreamMeasurement(outputStreamMeasurement, true);
+                                SaveOutputStreamMeasurement(connection, outputStreamMeasurement, true);
 
                         }
                     }
@@ -1509,18 +1655,28 @@ namespace openPDCManager.Data
 
                 return "Output Stream Device(s) Added Successfully";
             }
-            finally { }
+            finally 
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
         }
 
         #endregion
 
         #region " Manage Output Stream Device Phasor Code"
 
-        public static List<OutputStreamDevicePhasor> GetOutputStreamDevicePhasorList(int outputStreamDeviceID)
+        public static List<OutputStreamDevicePhasor> GetOutputStreamDevicePhasorList(DataConnection connection, int outputStreamDeviceID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 List<OutputStreamDevicePhasor> outputStreamDevicePhasorList = new List<OutputStreamDevicePhasor>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -1548,15 +1704,23 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
 
-        public static string SaveOutputStreamDevicePhasor(OutputStreamDevicePhasor outputStreamDevicePhasor, bool isNew)
+        public static string SaveOutputStreamDevicePhasor(DataConnection connection, OutputStreamDevicePhasor outputStreamDevicePhasor, bool isNew)
         {
-            DataConnection connection = new DataConnection();
+            //DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
 
@@ -1583,7 +1747,8 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
@@ -1591,11 +1756,17 @@ namespace openPDCManager.Data
 
         #region " Manage Output Stream Device Analogs Code"
 
-        public static List<OutputStreamDeviceAnalog> GetOutputStreamDeviceAnalogList(int outputStreamDeviceID)
+        public static List<OutputStreamDeviceAnalog> GetOutputStreamDeviceAnalogList(DataConnection connection, int outputStreamDeviceID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 List<OutputStreamDeviceAnalog> outputStreamDeviceAnalogList = new List<OutputStreamDeviceAnalog>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -1621,15 +1792,23 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
 
-        public static string SaveOutputStreamDeviceAnalog(OutputStreamDeviceAnalog outputStreamDeviceAnalog, bool isNew)
+        public static string SaveOutputStreamDeviceAnalog(DataConnection connection, OutputStreamDeviceAnalog outputStreamDeviceAnalog, bool isNew)
         {
-            DataConnection connection = new DataConnection();
+            //DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
 
@@ -1655,7 +1834,8 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
@@ -1663,11 +1843,17 @@ namespace openPDCManager.Data
 
         #region " Manage Output Stream Device Digitals Code"
 
-        public static List<OutputStreamDeviceDigital> GetOutputStreamDeviceDigitalList(int outputStreamDeviceID)
+        public static List<OutputStreamDeviceDigital> GetOutputStreamDeviceDigitalList(DataConnection connection, int outputStreamDeviceID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 List<OutputStreamDeviceDigital> outputStreamDeviceDigitalList = new List<OutputStreamDeviceDigital>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -1691,15 +1877,23 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
 
-        public static string SaveOutputStreamDeviceDigital(OutputStreamDeviceDigital outputStreamDeviceDigital, bool isNew)
+        public static string SaveOutputStreamDeviceDigital(DataConnection connection, OutputStreamDeviceDigital outputStreamDeviceDigital, bool isNew)
         {
-            DataConnection connection = new DataConnection();
+            //DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
 
@@ -1723,7 +1917,8 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
@@ -1731,15 +1926,21 @@ namespace openPDCManager.Data
 
         #region " Manage Historians Code"
 
-        public static List<Historian> GetHistorianList(string nodeID)
+        public static List<Historian> GetHistorianList(DataConnection connection, string nodeID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 List<Historian> historianList = new List<Historian>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
+                if (string.IsNullOrEmpty(nodeID) || MasterNode(connection, nodeID))
                     command.CommandText = "Select * From HistorianDetail Order By LoadOrder";
                 else
                 {
@@ -1774,15 +1975,22 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
 
-        public static Dictionary<int, string> GetHistorians(bool enabledOnly, bool isOptional, bool includeSTAT)
+        public static Dictionary<int, string> GetHistorians(DataConnection connection, bool enabledOnly, bool isOptional, bool includeSTAT)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 Dictionary<int, string> historianList = new Dictionary<int, string>();
                 if (isOptional)
                     historianList.Add(0, "Select Historian");
@@ -1815,15 +2023,22 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
                 
-        public static string SaveHistorian(Historian historian, bool isNew)
+        public static string SaveHistorian(DataConnection connection, Historian historian, bool isNew)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 if (isNew)
@@ -1853,16 +2068,17 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static Historian GetHistorianByAcronym(string acronym)
+        public static Historian GetHistorianByAcronym(DataConnection connection, string acronym)
         {           
             try
             {
                 List<Historian> historianList = new List<Historian>();
-                historianList = (from item in GetHistorianList(string.Empty)
+                historianList = (from item in GetHistorianList(connection, string.Empty)
                               where item.Acronym.ToUpper() == acronym.ToUpper()
                               select item).ToList();
                 if (historianList.Count > 0)
@@ -1872,7 +2088,7 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetDeviceByAcronym", ex);
+                LogException(connection, "GetDeviceByAcronym", ex);
                 return null;
             }
         }        
@@ -1881,11 +2097,17 @@ namespace openPDCManager.Data
 
         #region " Manage Nodes Code"
         
-        public static List<Node> GetNodeList(bool enabledOnly)
+        public static List<Node> GetNodeList(DataConnection connection, bool enabledOnly)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 List<Node> nodeList = new List<Node>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -1921,15 +2143,22 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
         
-        public static Dictionary<string, string> GetNodes(bool enabledOnly, bool isOptional)
+        public static Dictionary<string, string> GetNodes(DataConnection connection, bool enabledOnly, bool isOptional)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 Dictionary<string, string> nodeList = new Dictionary<string, string>();
                 if (isOptional)
                     nodeList.Add(string.Empty, "Select Node");
@@ -1956,15 +2185,22 @@ namespace openPDCManager.Data
             }            
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
         
-        public static string SaveNode(Node node, bool isNew)
+        public static string SaveNode(DataConnection connection, Node node, bool isNew)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
-            {				
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+				
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
 
@@ -2002,16 +2238,17 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static Node GetNodeByID(string id)
+        public static Node GetNodeByID(DataConnection connection, string id)
         {			
             try
             {
                 List<Node> nodeList = new List<Node>();
-                nodeList = (from item in GetNodeList(false)
+                nodeList = (from item in GetNodeList(connection, false)
                             where item.ID == id
                             select item).ToList();
                 if (nodeList.Count > 0)
@@ -2021,7 +2258,7 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetNodeByID", ex);
+                LogException(connection, "GetNodeByID", ex);
                 return null;
             }
         }
@@ -2030,11 +2267,17 @@ namespace openPDCManager.Data
         
         #region " Manage Vendors Code"
         
-        public static List<Vendor> GetVendorList()
+        public static List<Vendor> GetVendorList(DataConnection connection)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 List<Vendor> vendorList = new List<Vendor>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -2056,15 +2299,21 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
         
-        public static Dictionary<int, string> GetVendors(bool isOptional)
+        public static Dictionary<int, string> GetVendors(DataConnection connection, bool isOptional)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 Dictionary<int, string> vendorList = new Dictionary<int, string>();
                 if (isOptional)
                     vendorList.Add(0, "Select Vendor");
@@ -2085,15 +2334,21 @@ namespace openPDCManager.Data
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
         
-        public static string SaveVendor(Vendor vendor, bool isNew)
+        public static string SaveVendor(DataConnection connection, Vendor vendor, bool isNew)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 if (isNew)
@@ -2115,7 +2370,8 @@ namespace openPDCManager.Data
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
         
@@ -2123,11 +2379,16 @@ namespace openPDCManager.Data
 
         #region " Manage Vendor Devices Code"
         
-        public static List<VendorDevice> GetVendorDeviceList()
+        public static List<VendorDevice> GetVendorDeviceList(DataConnection connection)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 List<VendorDevice> vendorDeviceList = new List<VendorDevice>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -2149,15 +2410,21 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
         
-        public static string SaveVendorDevice(VendorDevice vendorDevice, bool isNew)
+        public static string SaveVendorDevice(DataConnection connection, VendorDevice vendorDevice, bool isNew)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 if (isNew)
@@ -2179,15 +2446,21 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static Dictionary<int, string> GetVendorDevices(bool isOptional)
+        public static Dictionary<int, string> GetVendorDevices(DataConnection connection, bool isOptional)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 Dictionary<int, string> vendorDeviceList = new Dictionary<int, string>();
                 if (isOptional)
                     vendorDeviceList.Add(0, "Select Vendor Device");
@@ -2208,7 +2481,8 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
         
@@ -2216,15 +2490,22 @@ namespace openPDCManager.Data
 
         #region " Manage Device Code"
 
-        public static List<Device> GetDeviceList(string nodeID)
+        public static List<Device> GetDeviceList(DataConnection connection, string nodeID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
+//            DataConnection connection = new DataConnection();
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 List<Device> deviceList = new List<Device>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
+                if (string.IsNullOrEmpty(nodeID) || MasterNode(connection, nodeID))
                     command.CommandText = "Select * From DeviceDetail Order By Acronym";
                 else
                 {
@@ -2285,31 +2566,39 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
 
-        public static List<Device> GetDeviceListByParentID(int parentID)
+        public static List<Device> GetDeviceListByParentID(DataConnection connection, int parentID)
         {
             List<Device> deviceList = new List<Device>();
             try
             {				
-                deviceList = (from item in GetDeviceList(string.Empty)
+                deviceList = (from item in GetDeviceList(connection, string.Empty)
                               where item.ParentID == parentID
                               select item).ToList();				
             }
             catch (Exception ex)
             {
-                LogException("GetDeviceListByParentID", ex);
+                LogException(connection, "GetDeviceListByParentID", ex);
             }
             return deviceList;
         }
 
-        public static string SaveDevice(Device device, bool isNew, int digitalCount, int analogCount)
+        public static string SaveDevice(DataConnection connection, Device device, bool isNew, int digitalCount, int analogCount)
         {
-            DataConnection connection = new DataConnection();
+            //DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 IDbCommand command = connection.Connection.CreateCommand();
 
                 if (isNew)
@@ -2364,18 +2653,18 @@ namespace openPDCManager.Data
                     return "Concentrator Device Information Saved Successfully";		//As we do not add measurements for PDC device or device which is concentrator.
 
                 DataTable pmuSignalTypes = new DataTable();
-                pmuSignalTypes = GetPmuSignalTypes();
+                pmuSignalTypes = GetPmuSignalTypes(connection);
 
                 Measurement measurement;				
 
                 Device addedDevice = new Device();
-                addedDevice = GetDeviceByAcronym(device.Acronym);
+                addedDevice = GetDeviceByAcronym(connection, device.Acronym);
 
                 //We will try again in a while if addedDevice is NULL. This is done because MS Access is very slow and was returning NULL.
                 if (addedDevice == null)
                 {
                     System.Threading.Thread.Sleep(500);
-                    addedDevice = GetDeviceByAcronym(device.Acronym);
+                    addedDevice = GetDeviceByAcronym(connection, device.Acronym);
                 }
                             
                 foreach (DataRow row in pmuSignalTypes.Rows)	//This will only create or update PMU related measurements and not phasor related.
@@ -2393,18 +2682,18 @@ namespace openPDCManager.Data
                     measurement.Description = addedDevice.Name + " " + addedDevice.VendorDeviceName + " " + row["Name"].ToString();
                     measurement.Enabled = true;
                     if (isNew)	//if it is a new device then measurements are new too. So don't worry about updating them.
-                        SaveMeasurement(measurement, true);
+                        SaveMeasurement(connection, measurement, true);
                     else	//if device is existing one, then check and see if its measusremnts exist, if so then update measurements.
                     {
                         Measurement existingMeasurement = new Measurement();
-                        existingMeasurement = GetMeasurementInfo(measurement.DeviceID, row["Suffix"].ToString(), measurement.PhasorSourceIndex);
+                        existingMeasurement = GetMeasurementInfo(connection, measurement.DeviceID, row["Suffix"].ToString(), measurement.PhasorSourceIndex);
 
                         if (existingMeasurement == null)	//measurement does not exist for this device and signal type then add as a new measurement otherwise update.
-                            SaveMeasurement(measurement, true);
+                            SaveMeasurement(connection, measurement, true);
                         else
                         {
                             measurement.SignalID = existingMeasurement.SignalID;
-                            SaveMeasurement(measurement, false);
+                            SaveMeasurement(connection, measurement, false);
                         }
                     }
                 }
@@ -2418,7 +2707,7 @@ namespace openPDCManager.Data
                         measurement.DeviceID = addedDevice.ID;
                         measurement.PointTag = addedDevice.CompanyAcronym + "_" + addedDevice.Acronym + ":" + addedDevice.VendorAcronym + "D" + i.ToString();
                         measurement.AlternateTag = string.Empty;
-                        measurement.SignalTypeID = GetSignalTypeID("DV");
+                        measurement.SignalTypeID = GetSignalTypeID(connection, "DV");
                         measurement.PhasorSourceIndex = (int?)null;
                         measurement.SignalReference = addedDevice.Acronym + "-DV" + i.ToString();
                         measurement.Adder = 0.0d;
@@ -2426,19 +2715,19 @@ namespace openPDCManager.Data
                         measurement.Description = addedDevice.Name + " " + addedDevice.VendorDeviceName + " Digital Value " + i.ToString();
                         measurement.Enabled = true;
                         if (isNew)	//if it is a new device then measurements are new too. So don't worry about updating them.
-                            SaveMeasurement(measurement, true);
+                            SaveMeasurement(connection, measurement, true);
                         else	//if device is existing one, then check and see if its measusremnts exist, if so then update measurements.
                         {
                             Measurement existingMeasurement = new Measurement();
                             //we will compare using signal reference as signal suffix doesn't provide uniqueness.
-                            existingMeasurement = GetMeasurementInfoBySignalReference(measurement.DeviceID, measurement.SignalReference, measurement.PhasorSourceIndex);
+                            existingMeasurement = GetMeasurementInfoBySignalReference(connection, measurement.DeviceID, measurement.SignalReference, measurement.PhasorSourceIndex);
 
                             if (existingMeasurement == null)	//measurement does not exist for this device and signal type then add as a new measurement otherwise update.
-                                SaveMeasurement(measurement, true);
+                                SaveMeasurement(connection, measurement, true);
                             else
                             {
                                 measurement.SignalID = existingMeasurement.SignalID;
-                                SaveMeasurement(measurement, false);
+                                SaveMeasurement(connection, measurement, false);
                             }
                         }
                     }
@@ -2453,7 +2742,7 @@ namespace openPDCManager.Data
                         measurement.DeviceID = addedDevice.ID;
                         measurement.PointTag = addedDevice.CompanyAcronym + "_" + addedDevice.Acronym + ":" + addedDevice.VendorAcronym + "A" + i.ToString();
                         measurement.AlternateTag = string.Empty;
-                        measurement.SignalTypeID = GetSignalTypeID("AV");
+                        measurement.SignalTypeID = GetSignalTypeID(connection, "AV");
                         measurement.PhasorSourceIndex = (int?)null;
                         measurement.SignalReference = addedDevice.Acronym + "-AV" + i.ToString();
                         measurement.Adder = 0.0d;
@@ -2461,18 +2750,18 @@ namespace openPDCManager.Data
                         measurement.Description = addedDevice.Name + " " + addedDevice.VendorDeviceName + " Analog Value " + i.ToString();
                         measurement.Enabled = true;
                         if (isNew)	//if it is a new device then measurements are new too. So don't worry about updating them.
-                            SaveMeasurement(measurement, true);
+                            SaveMeasurement(connection, measurement, true);
                         else	//if device is existing one, then check and see if its measusremnts exist, if so then update measurements.
                         {
                             Measurement existingMeasurement = new Measurement();
-                            existingMeasurement = GetMeasurementInfoBySignalReference(measurement.DeviceID, measurement.SignalReference, measurement.PhasorSourceIndex);
+                            existingMeasurement = GetMeasurementInfoBySignalReference(connection, measurement.DeviceID, measurement.SignalReference, measurement.PhasorSourceIndex);
 
                             if (existingMeasurement == null)	//measurement does not exist for this device and signal type then add as a new measurement otherwise update.
-                                SaveMeasurement(measurement, true);
+                                SaveMeasurement(connection, measurement, true);
                             else
                             {
                                 measurement.SignalID = existingMeasurement.SignalID;
-                                SaveMeasurement(measurement, false);
+                                SaveMeasurement(connection, measurement, false);
                             }
                         }
                     }
@@ -2485,9 +2774,9 @@ namespace openPDCManager.Data
                     //We are not going to make any changes to the Phasor definition itselft but only to reflect PMU related
                     //changes in the measurement.
 
-                    foreach (Phasor phasor in GetPhasorList(addedDevice.ID))
+                    foreach (Phasor phasor in GetPhasorList(connection, addedDevice.ID))
                     {
-                        SavePhasor(phasor, false);	//we will save phasor without modifying it so that only measurements will reflect changes related to PMU.
+                        SavePhasor(connection, phasor, false);	//we will save phasor without modifying it so that only measurements will reflect changes related to PMU.
                         //nothing will change in phasor itself.
                     }
                 }
@@ -2507,15 +2796,21 @@ namespace openPDCManager.Data
             
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
                 
-        public static Dictionary<int, string> GetDevices(DeviceType deviceType, string nodeID, bool isOptional)
+        public static Dictionary<int, string> GetDevices(DataConnection connection, DeviceType deviceType, string nodeID, bool isOptional)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 Dictionary<int, string> deviceList = new Dictionary<int, string>();
                 if (!string.IsNullOrEmpty(nodeID))
                 {
@@ -2558,16 +2853,17 @@ namespace openPDCManager.Data
             }            
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
 
-        public static Device GetDeviceByDeviceID(int deviceID)
+        public static Device GetDeviceByDeviceID(DataConnection connection, int deviceID)
         {
             try
             {
                 List<Device> deviceList = new List<Device>();
-                deviceList = (from item in GetDeviceList(string.Empty)
+                deviceList = (from item in GetDeviceList(connection, string.Empty)
                               where item.ID == deviceID
                               select item).ToList();
                 if (deviceList.Count > 0)
@@ -2577,17 +2873,17 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetDeviceByDeviceID", ex);
+                LogException(connection, "GetDeviceByDeviceID", ex);
                 return null;
             }
         }
 
-        public static Device GetDeviceByAcronym(string acronym)
+        public static Device GetDeviceByAcronym(DataConnection connection, string acronym)
         {
             try
             {
                 List<Device> deviceList = new List<Device>();
-                deviceList = (from item in GetDeviceList(string.Empty)
+                deviceList = (from item in GetDeviceList(connection, string.Empty)
                               where item.Acronym.ToUpper() == acronym.ToUpper()
                               select item).ToList();
                 if (deviceList.Count > 0)
@@ -2597,16 +2893,21 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetDeviceByAcronym", ex);
+                LogException(connection, "GetDeviceByAcronym", ex);
                 return null;
             }
         }
 
-        public static Dictionary<int, string> GetDevicesForOutputStream(int outputStreamID, string nodeID)
+        public static Dictionary<int, string> GetDevicesForOutputStream(DataConnection connection, int outputStreamID, string nodeID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 Dictionary<int, string> deviceList = new Dictionary<int, string>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -2630,16 +2931,17 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
 
-        public static Device GetConcentratorDevice(int deviceID)
+        public static Device GetConcentratorDevice(DataConnection connection, int deviceID)
         {
             try
             {
                 Device device = new Device();
-                device = GetDeviceByDeviceID(deviceID);
+                device = GetDeviceByDeviceID(connection, deviceID);
                 if (device.IsConcentrator)
                     return device;
                 else
@@ -2647,17 +2949,22 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetConcentratorDevice", ex);
+                LogException(connection, "GetConcentratorDevice", ex);
                 return null;
             }
         }
 
-        public static string DeleteDevice(int deviceID)
+        public static string DeleteDevice(DataConnection connection, int deviceID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
-                Device device = GetDeviceByDeviceID(deviceID);
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+                Device device = GetDeviceByDeviceID(connection, deviceID);
                 string deviceAcronym = device.Acronym;
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -2683,7 +2990,8 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
@@ -2691,11 +2999,16 @@ namespace openPDCManager.Data
 
         #region " Manage Phasor Code"
 
-        public static List<Phasor> GetPhasorList(int deviceID)
+        public static List<Phasor> GetPhasorList(DataConnection connection, int deviceID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 List<Phasor> phasorList = new List<Phasor>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -2722,15 +3035,21 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }						
         }
 
-        public static Dictionary<int, string> GetPhasors(int deviceID, bool isOptional)
+        public static Dictionary<int, string> GetPhasors(DataConnection connection, int deviceID, bool isOptional)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 Dictionary<int, string> phasorList = new Dictionary<int, string>();
                 if (isOptional)
                     phasorList.Add(0, "Select Phasor");
@@ -2751,15 +3070,23 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static string SavePhasor(Phasor phasor, bool isNew)
+        public static string SavePhasor(DataConnection connection, Phasor phasor, bool isNew)
         {
-            DataConnection connection = new DataConnection();
+            //DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
                 IDbCommand command = connection.Connection.CreateCommand();
 
                 if (isNew)
@@ -2782,23 +3109,23 @@ namespace openPDCManager.Data
                 command.ExecuteNonQuery();							
 
                 Device device = new Device();
-                device = GetDeviceByDeviceID(phasor.DeviceID);
+                device = GetDeviceByDeviceID(connection, phasor.DeviceID);
 
                 Measurement measurement;
 
                 DataTable phasorSignalTypes = new DataTable();
-                phasorSignalTypes = GetPhasorSignalTypes(phasor.Type);
+                phasorSignalTypes = GetPhasorSignalTypes(connection, phasor.Type);
                 
                 Phasor addedPhasor = new Phasor();				
                 //addedPhasor = GetPhasorByLabel(phasor.DeviceID, phasor.Label);
-                addedPhasor = GetPhasorBySourceIndex(phasor.DeviceID, phasor.SourceIndex);
+                addedPhasor = GetPhasorBySourceIndex(connection, phasor.DeviceID, phasor.SourceIndex);
 
                 //we will try again just to make sure we get information back about the added phasor. As MS Access is very slow and sometimes fails to retrieve data.
                 if (addedPhasor == null)
                 {
                     System.Threading.Thread.Sleep(500);
                     //addedPhasor = GetPhasorByLabel(phasor.DeviceID, phasor.Label);
-                    addedPhasor = GetPhasorBySourceIndex(phasor.DeviceID, phasor.SourceIndex);
+                    addedPhasor = GetPhasorBySourceIndex(connection, phasor.DeviceID, phasor.SourceIndex);
                 }
 
                 foreach (DataRow row in phasorSignalTypes.Rows)
@@ -2807,7 +3134,7 @@ namespace openPDCManager.Data
                     measurement.HistorianID = device.HistorianID;
                     measurement.DeviceID = device.ID;
                     if (addedPhasor.DestinationPhasorID.HasValue)
-                        measurement.PointTag = device.CompanyAcronym + "_" + device.Acronym + "-" + GetPhasorByID(addedPhasor.DeviceID, (int)addedPhasor.DestinationPhasorID).Label + ":" + device.VendorAcronym + row["Abbreviation"].ToString();
+                        measurement.PointTag = device.CompanyAcronym + "_" + device.Acronym + "-" + GetPhasorByID(connection, addedPhasor.DeviceID, (int)addedPhasor.DestinationPhasorID).Label + ":" + device.VendorAcronym + row["Abbreviation"].ToString();
                     else
                         measurement.PointTag = device.CompanyAcronym + "_" + device.Acronym + "-" + row["Suffix"].ToString() + addedPhasor.SourceIndex.ToString() + ":" + device.VendorAcronym + row["Abbreviation"].ToString();
                     measurement.AlternateTag = string.Empty;
@@ -2819,17 +3146,17 @@ namespace openPDCManager.Data
                     measurement.Description = device.Name + " " + addedPhasor.Label + " " + device.VendorDeviceName + " " + addedPhasor.PhaseType + " " + row["Name"].ToString();
                     measurement.Enabled = true;
                     if (isNew)	//if it is a new phasor then add measurements as new.
-                        SaveMeasurement(measurement, true);
+                        SaveMeasurement(connection, measurement, true);
                     else //Check if measurement exists, if so then update them otherwise add new.
                     {
                         Measurement existingMeasurement = new Measurement();
-                        existingMeasurement = GetMeasurementInfo(measurement.DeviceID, row["Suffix"].ToString(), measurement.PhasorSourceIndex);
+                        existingMeasurement = GetMeasurementInfo(connection, measurement.DeviceID, row["Suffix"].ToString(), measurement.PhasorSourceIndex);
                         if (existingMeasurement == null)
-                            SaveMeasurement(measurement, true);
+                            SaveMeasurement(connection, measurement, true);
                         else
                         {
                             measurement.SignalID = existingMeasurement.SignalID;
-                            SaveMeasurement(measurement, false);
+                            SaveMeasurement(connection, measurement, false);
                         }
                     }
                 }
@@ -2838,16 +3165,17 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        static Phasor GetPhasorByLabel(int deviceID, string label)
+        static Phasor GetPhasorByLabel(DataConnection connection, int deviceID, string label)
         {
             try
             {
                 List<Phasor> phasorList = new List<Phasor>();
-                phasorList = (from item in GetPhasorList(deviceID)
+                phasorList = (from item in GetPhasorList(connection, deviceID)
                               where item.Label == label
                               select item).ToList();
                 if (phasorList.Count > 0)
@@ -2857,17 +3185,17 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetPhasorByLabel", ex);
+                LogException(connection, "GetPhasorByLabel", ex);
                 return null;
             }
         }
 
-        static Phasor GetPhasorByID(int deviceID, int phasorID)
+        static Phasor GetPhasorByID(DataConnection connection, int deviceID, int phasorID)
         {
             try
             {
                 List<Phasor> phasorList = new List<Phasor>();
-                phasorList = (from item in GetPhasorList(deviceID)
+                phasorList = (from item in GetPhasorList(connection, deviceID)
                               where item.ID == phasorID
                               select item).ToList();
                 if (phasorList.Count > 0)
@@ -2877,17 +3205,17 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetPhasorByID", ex);
+                LogException(connection, "GetPhasorByID", ex);
                 return null;
             }
         }
 
-        static Phasor GetPhasorBySourceIndex(int deviceID, int sourceIndex)
+        static Phasor GetPhasorBySourceIndex(DataConnection connection, int deviceID, int sourceIndex)
         {
             try
             {
                 List<Phasor> phasorList = new List<Phasor>();
-                phasorList = (from item in GetPhasorList(deviceID)
+                phasorList = (from item in GetPhasorList(connection, deviceID)
                               where item.SourceIndex == sourceIndex
                               select item).ToList();
                 if (phasorList.Count > 0)
@@ -2897,7 +3225,7 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetPhasorBySourceIndex", ex);
+                LogException(connection, "GetPhasorBySourceIndex", ex);
                 return null;
             }
         }
@@ -2906,15 +3234,20 @@ namespace openPDCManager.Data
 
         #region " Manage Measurements Code"
 
-        public static List<Measurement> GetMeasurementList(string nodeID)
+        public static List<Measurement> GetMeasurementList(DataConnection connection, string nodeID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 List<Measurement> measurementList = new List<Measurement>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
+                if (string.IsNullOrEmpty(nodeID) || MasterNode(connection, nodeID))
                     command.CommandText = "Select SignalID, HistorianID, PointID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, " +
                         "Adder, Multiplier, Description, Enabled, HistorianAcronym, DeviceAcronym, SignalName, SignalAcronym, SignalTypeSuffix, PhasorLabel From MeasurementDetail Order By PointTag";
                 else
@@ -2958,15 +3291,21 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }						
         }
 
-        public static List<Measurement> GetMeasurementsByDevice(int deviceID)
+        public static List<Measurement> GetMeasurementsByDevice(DataConnection connection, int deviceID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 List<Measurement> measurementList = new List<Measurement>();
                 IDbCommand commnad = connection.Connection.CreateCommand();
                 commnad.CommandType = CommandType.Text;
@@ -3000,15 +3339,22 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
         
-        public static string SaveMeasurement(Measurement measurement, bool isNew)
+        public static string SaveMeasurement(DataConnection connection, Measurement measurement, bool isNew)
         {
-            DataConnection connection = new DataConnection();
+            //DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 IDbCommand command = connection.Connection.CreateCommand();
 
                 if (isNew)
@@ -3043,19 +3389,25 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static List<Measurement> GetMeasurementsForOutputStream(string nodeID, int outputStreamID)
+        public static List<Measurement> GetMeasurementsForOutputStream(DataConnection connection, string nodeID, int outputStreamID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 List<Measurement> measurementList = new List<Measurement>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
+                if (string.IsNullOrEmpty(nodeID) || MasterNode(connection, nodeID))
                     command.CommandText = "Select * From MeasurementDetail Where PointID Not In (Select PointID From OutputStreamMeasurement Where AdapterID = @outputStreamID)";
                 else
                 {
@@ -3095,16 +3447,17 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static Measurement GetMeasurementInfo(int? deviceID, string signalSuffix, int? phasorSourceIndex)	//we are using signal suffix because it remains same if phasor is current or voltage which helps in modifying existing measurement if phasor changes from voltage to current.
+        public static Measurement GetMeasurementInfo(DataConnection connection, int? deviceID, string signalSuffix, int? phasorSourceIndex)	//we are using signal suffix because it remains same if phasor is current or voltage which helps in modifying existing measurement if phasor changes from voltage to current.
         {
             try
             {
                 List<Measurement> measurementList = new List<Measurement>();
-                measurementList = (from item in GetMeasurementsByDevice((int)deviceID)
+                measurementList = (from item in GetMeasurementsByDevice(connection, (int)deviceID)
                                    where item.SignalSuffix == signalSuffix && item.PhasorSourceIndex == phasorSourceIndex
                                    select item).ToList();
                 if (measurementList.Count > 0)
@@ -3114,17 +3467,17 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetMeasurementsForOutputStream", ex);
+                LogException(connection, "GetMeasurementsForOutputStream", ex);
                 return null;
             }
         }		
         
-        private static Measurement GetMeasurementInfoBySignalReference(int? deviceID, string signalReference, int? phasorSourceIndex)
+        private static Measurement GetMeasurementInfoBySignalReference(DataConnection connection, int? deviceID, string signalReference, int? phasorSourceIndex)
         {
             try
             {
                 List<Measurement> measurementList = new List<Measurement>();
-                measurementList = (from item in GetMeasurementsByDevice((int)deviceID)
+                measurementList = (from item in GetMeasurementsByDevice(connection, (int)deviceID)
                                    where item.SignalReference == signalReference && item.PhasorSourceIndex == phasorSourceIndex
                                    select item).ToList();
                 if (measurementList.Count > 0)
@@ -3134,16 +3487,21 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetMeasurementsForOutputStream", ex);
+                LogException(connection, "GetMeasurementsForOutputStream", ex);
                 return null;
             }
         }
 
-        public static List<Measurement> GetFilteredMeasurementsByDevice(int deviceID)
+        public static List<Measurement> GetFilteredMeasurementsByDevice(DataConnection connection, int deviceID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 List<Measurement> measurementList = new List<Measurement>();
                 IDbCommand commnad = connection.Connection.CreateCommand();
                 commnad.CommandType = CommandType.Text;
@@ -3178,7 +3536,8 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
 
@@ -3186,11 +3545,16 @@ namespace openPDCManager.Data
 
         #region " Manage Other Devices"
 
-        public static List<OtherDevice> GetOtherDeviceList()
+        public static List<OtherDevice> GetOtherDeviceList(DataConnection connection)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 List<OtherDevice> otherDeviceList = new List<OtherDevice>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -3221,15 +3585,21 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static string SaveOtherDevice(OtherDevice otherDevice, bool isNew)
+        public static string SaveOtherDevice(DataConnection connection, OtherDevice otherDevice, bool isNew)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 if (isNew)
@@ -3259,16 +3629,17 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static OtherDevice GetOtherDeviceByDeviceID(int deviceID)
+        public static OtherDevice GetOtherDeviceByDeviceID(DataConnection connection, int deviceID)
         {
             try
             {
                 List<OtherDevice> otherDeviceList = new List<OtherDevice>();
-                otherDeviceList = (from item in GetOtherDeviceList()
+                otherDeviceList = (from item in GetOtherDeviceList(connection)
                                    where item.ID == deviceID
                                    select item).ToList();
                 if (otherDeviceList.Count > 0)
@@ -3278,7 +3649,7 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetOtherDeviceByDeviceID", ex);
+                LogException(connection, "GetOtherDeviceByDeviceID", ex);
                 return null;
             }
         }
@@ -3287,11 +3658,16 @@ namespace openPDCManager.Data
 
         #region " Manage Interconnections Code"
 
-        public static Dictionary<int, string> GetInterconnections(bool isOptional)
+        public static Dictionary<int, string> GetInterconnections(DataConnection connection, bool isOptional)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 Dictionary<int, string> interconnectionList = new Dictionary<int, string>();
                 if (isOptional)
                     interconnectionList.Add(0, "Select Interconnection");
@@ -3312,7 +3688,8 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
@@ -3320,15 +3697,19 @@ namespace openPDCManager.Data
 
         #region " Manage Protocols Code"
 
-        public static Dictionary<int, string> GetProtocols(bool isOptional)
+        public static Dictionary<int, string> GetProtocols(DataConnection connection, bool isOptional)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 Dictionary<int, string> protocolList = new Dictionary<int, string>();
                 if (isOptional)
                     protocolList.Add(0, "Select Protocol");
-
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -3346,15 +3727,21 @@ namespace openPDCManager.Data
             
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static int GetProtocolIDByAcronym(string acronym)
+        public static int GetProtocolIDByAcronym(DataConnection connection, string acronym)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Select ID From Protocol Where Acronym = @acronym";
@@ -3368,20 +3755,26 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetProtocolIDByAcronym", ex);
+                LogException(connection, "GetProtocolIDByAcronym", ex);
                 return 0;
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        private static string GetProtocolAcronymByID(int id)
+        private static string GetProtocolAcronymByID(DataConnection connection, int id)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Select Acronym From Protocol Where ID = @id";
@@ -3395,12 +3788,13 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetProtocolAcronymByID", ex);
+                LogException(connection, "GetProtocolAcronymByID", ex);
                 return string.Empty;
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
@@ -3408,11 +3802,16 @@ namespace openPDCManager.Data
 
         #region " Manage Signal Types Code"
 
-        public static Dictionary<int, string> GetSignalTypes(bool isOptional)
-        {	
-            DataConnection connection = new DataConnection();
+        public static Dictionary<int, string> GetSignalTypes(DataConnection connection, bool isOptional)
+        {
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 Dictionary<int, string> signalTypeList = new Dictionary<int, string>();
                 if (isOptional)
                     signalTypeList.Add(0, "Select Signal Type");
@@ -3433,16 +3832,22 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        static DataTable GetPmuSignalTypes()	//Do not use this method in WCF call or silverlight. It is for internal use only.
+        static DataTable GetPmuSignalTypes(DataConnection connection)	//Do not use this method in WCF call or silverlight. It is for internal use only.
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             DataTable resultTable = new DataTable();
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Select * From SignalType Where Source = 'PMU' AND Suffix IN ('FQ', 'DF', 'SF')";
@@ -3451,22 +3856,27 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetPmuSignalTypes", ex);
+                LogException(connection, "GetPmuSignalTypes", ex);
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
             return resultTable;
         }
 
-        static DataTable GetPhasorSignalTypes(string phasorType)
-        {
-            DataConnection connection = new DataConnection();
+        static DataTable GetPhasorSignalTypes(DataConnection connection, string phasorType)
+        {            
             DataTable resultTable = new DataTable();
+            bool createdConnection = false;
             try
             {
-
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 if (phasorType == "V")
@@ -3478,21 +3888,27 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetPhasorSignalTypes", ex);
+                LogException(connection, "GetPhasorSignalTypes", ex);
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
             return resultTable;
         }
 
-        static int GetSignalTypeID(string suffix)
+        static int GetSignalTypeID(DataConnection connection, string suffix)
         {
             int signalTypeID = 0;
-            DataConnection connection = new DataConnection();			
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Select ID From SignalType Where Suffix = @suffix";
@@ -3501,11 +3917,12 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetSignalTypeID", ex);
+                LogException(connection, "GetSignalTypeID", ex);
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
             return signalTypeID;
         }
@@ -3514,15 +3931,20 @@ namespace openPDCManager.Data
 
         #region " Manage Calculated Measurements"
 
-        public static List<CalculatedMeasurement> GetCalculatedMeasurementList(string nodeID)
-        {			
-            DataConnection connection = new DataConnection();
+        public static List<CalculatedMeasurement> GetCalculatedMeasurementList(DataConnection connection, string nodeID)
+        {
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 List<CalculatedMeasurement> calculatedMeasurementList = new List<CalculatedMeasurement>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
+                if (string.IsNullOrEmpty(nodeID) || MasterNode(connection, nodeID))
                     command.CommandText = "Select * From CalculatedMeasurementDetail Order By LoadOrder";
                 else
                 {
@@ -3568,15 +3990,21 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static string SaveCalculatedMeasurement(CalculatedMeasurement calculatedMeasurement, bool isNew)
+        public static string SaveCalculatedMeasurement(DataConnection connection, CalculatedMeasurement calculatedMeasurement, bool isNew)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
 
@@ -3621,7 +4049,8 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
@@ -3629,11 +4058,16 @@ namespace openPDCManager.Data
 
         #region " Manage Custom Adapters Code"
 
-        public static List<Adapter> GetAdapterList(bool enabledOnly, AdapterType adapterType, string nodeID)
+        public static List<Adapter> GetAdapterList(DataConnection connection, bool enabledOnly, AdapterType adapterType, string nodeID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 List<Adapter> adapterList = new List<Adapter>();
                 string viewName;
                 if (adapterType == AdapterType.Action)
@@ -3645,7 +4079,7 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                if (string.IsNullOrEmpty(nodeID) || MasterNode(nodeID))
+                if (string.IsNullOrEmpty(nodeID) || MasterNode(connection, nodeID))
                     command.CommandText = "Select * From " + viewName + " Order By LoadOrder";
                 else
                 {
@@ -3678,11 +4112,12 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }			
         }
 
-        public static string SaveAdapter(Adapter adapter, bool isNew)
+        public static string SaveAdapter(DataConnection connection, Adapter adapter, bool isNew)
         {
             string tableName;
             AdapterType adapterType = adapter.adapterType;
@@ -3694,9 +4129,14 @@ namespace openPDCManager.Data
             else
                 tableName = "CustomOutputAdapter";
 
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
 
@@ -3724,15 +4164,21 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static List<IaonTree> GetIaonTreeData(string nodeID)
+        public static List<IaonTree> GetIaonTreeData(DataConnection connection, string nodeID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 List<IaonTree> iaonTreeList = new List<IaonTree>();
                 DataTable rootNodesTable = new DataTable();
                 rootNodesTable.Columns.Add(new DataColumn("AdapterType", Type.GetType("System.String")));
@@ -3790,7 +4236,8 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
@@ -3798,11 +4245,16 @@ namespace openPDCManager.Data
 
         #region " Manage Map Data"
 
-        public static List<MapData> GetMapData(MapType mapType, string nodeID)
-        {						
-            DataConnection connection = new DataConnection();
+        public static List<MapData> GetMapData(DataConnection connection, MapType mapType, string nodeID)
+        {
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 List<MapData> mapDataList = new List<MapData>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -3859,7 +4311,8 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
@@ -3867,11 +4320,16 @@ namespace openPDCManager.Data
     
         #region " Current Device Measurements Code"
 
-        public static ObservableCollection<DeviceMeasurementData> GetDeviceMeasurementData(string nodeID)
+        public static ObservableCollection<DeviceMeasurementData> GetDeviceMeasurementData(DataConnection connection, string nodeID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 List<DeviceMeasurementData> deviceMeasurementDataList = new List<DeviceMeasurementData>();
                 DataSet resultSet = new DataSet();
                 resultSet.EnforceConstraints = false;
@@ -3992,7 +4450,8 @@ namespace openPDCManager.Data
             
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
@@ -4000,11 +4459,16 @@ namespace openPDCManager.Data
 
         #region " Statistics Hierarchy Code"
 
-        public static ObservableCollection<StatisticMeasurementData> GetStatisticMeasurementData(string nodeID)
+        public static ObservableCollection<StatisticMeasurementData> GetStatisticMeasurementData(DataConnection connection, string nodeID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 ObservableCollection<StatisticMeasurementData> staticMeasurementDataList = new ObservableCollection<StatisticMeasurementData>();
                 ObservableCollection<StreamInfo> inputStreamInfoList = new ObservableCollection<StreamInfo>();
                 ObservableCollection<StreamInfo> outputStreamInfoList = new ObservableCollection<StreamInfo>();
@@ -4175,17 +4639,23 @@ namespace openPDCManager.Data
             }			
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
-        public static Dictionary<int, BasicStatisticInfo> GetBasicStatisticInfoList(string nodeID)
+        public static Dictionary<int, BasicStatisticInfo> GetBasicStatisticInfoList(DataConnection connection, string nodeID)
         {
              Dictionary<int, BasicStatisticInfo> basicStatisticInfoList = new Dictionary<int, BasicStatisticInfo>();
 
-             DataConnection connection = new DataConnection();
+             bool createdConnection = false;
              try
              {
+                 if (connection == null)
+                 {
+                     connection = new DataConnection();
+                     createdConnection = true;
+                 }
                  DataSet resultSet = new DataSet();
                  resultSet.EnforceConstraints = false;
                  DataTable resultTable;
@@ -4241,21 +4711,27 @@ namespace openPDCManager.Data
              }
              catch (Exception ex)
              {
-                 LogException("GetBasicStatisticInfoList", ex);                 
+                 LogException(connection, "GetBasicStatisticInfoList", ex);                 
              }
              finally
              {
-                 connection.Dispose();
+                 if (createdConnection && connection != null)
+                    connection.Dispose();
              }
 
             return basicStatisticInfoList;
         }
 
-        public static ObservableCollection<DetailStatisticInfo> GetDeviceStatisticMeasurements(int deviceID)
+        public static ObservableCollection<DetailStatisticInfo> GetDeviceStatisticMeasurements(DataConnection connection, int deviceID)
         {
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
                 ObservableCollection<DetailStatisticInfo> deviceStatisticList;
                 DataSet resultSet = new DataSet();
                 resultSet.EnforceConstraints = false;
@@ -4311,23 +4787,29 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetDeviceStatisticMeasurements", ex);
+                LogException(connection, "GetDeviceStatisticMeasurements", ex);
                 return new ObservableCollection<DetailStatisticInfo>();
             }
             finally
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
         }
 
         //This function returns DeviceID with Statistic Measurement PointID which is used to check device status (green or red).
-        public static Dictionary<int, int> GetDeviceIDsWithStatusPointIDs(string nodeID)
+        public static Dictionary<int, int> GetDeviceIDsWithStatusPointIDs(DataConnection connection, string nodeID)
         {
             Dictionary<int, int> deviceIdsWithStatusPointIDs = new Dictionary<int, int>();
-            DataConnection connection = new DataConnection();
+            bool createdConnection = false;
             try
             {
-                List<Device> deviceList = GetDeviceList(nodeID);
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+                List<Device> deviceList = GetDeviceList(connection, nodeID);
                 foreach (Device device in deviceList)
                 {
                     int deviceIDToLookFor;
@@ -4335,7 +4817,7 @@ namespace openPDCManager.Data
                         deviceIDToLookFor = device.ID;
                     else
                         deviceIDToLookFor = (int)device.ParentID;
-                    ObservableCollection<DetailStatisticInfo> detailStatisticsList = GetDeviceStatisticMeasurements(deviceIDToLookFor);
+                    ObservableCollection<DetailStatisticInfo> detailStatisticsList = GetDeviceStatisticMeasurements(connection, deviceIDToLookFor);
                     foreach (DetailStatisticInfo detailStatistic in detailStatisticsList)
                     {
                         if (detailStatistic.Statistics.IsConnectedState && !deviceIdsWithStatusPointIDs.ContainsKey(deviceIDToLookFor))
@@ -4345,11 +4827,12 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException("GetDeviceIDsWithStatusPointIDs", ex);
+                LogException(connection, "GetDeviceIDsWithStatusPointIDs", ex);
             }
             finally 
             {
-                connection.Dispose();
+                if (createdConnection && connection != null)
+                    connection.Dispose();
             }
 
             return deviceIdsWithStatusPointIDs;

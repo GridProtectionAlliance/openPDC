@@ -61,7 +61,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SendInitialize", ex);
+                CommonFunctions.LogException(null, "WPF.SendInitialize", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Send Initialize Command", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
@@ -74,13 +74,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-              ComboboxNode.ItemsSource = CommonFunctions.GetNodes(true, false);
+                ComboboxNode.ItemsSource = CommonFunctions.GetNodes(null, true, false);
               if (ComboboxNode.Items.Count > 0)
                   ComboboxNode.SelectedIndex = 0;
             }            
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetNodes", ex);
+                CommonFunctions.LogException(null, "WPF.GetNodes", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Nodes", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                        ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -92,11 +92,11 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ListBoxAdapterList.ItemsSource = CommonFunctions.GetAdapterList(false, m_adapterType, m_nodeID);
+                ListBoxAdapterList.ItemsSource = CommonFunctions.GetAdapterList(null, false, m_adapterType, m_nodeID);
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.GetAdapterList", ex);
+                CommonFunctions.LogException(null, "WPF.GetAdapterList", ex);
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Adapter List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                          ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -109,7 +109,7 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveAdapter(adapter, isNew);
+                string result = CommonFunctions.SaveAdapter(null, adapter, isNew);
                 GetAdapterList();
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
@@ -119,7 +119,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException("WPF.SaveAdapter", ex);
+                CommonFunctions.LogException(null, "WPF.SaveAdapter", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Adapter Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -130,11 +130,11 @@ namespace openPDCManager.UserControls.CommonControls
         void DisplayRuntimeID()
         {
             if (m_adapterType == AdapterType.Action)
-                TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID("CustomActionAdapter", m_adapterID);
+                TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID(null, "CustomActionAdapter", m_adapterID);
             else if (m_adapterType == AdapterType.Input)
-                TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID("CustomInputAdapter", m_adapterID);
+                TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID(null, "CustomInputAdapter", m_adapterID);
             else if (m_adapterType == AdapterType.Output)
-                TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID("CustomOutputAdapter", m_adapterID);
+                TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID(null, "CustomOutputAdapter", m_adapterID);
         }
 
         #endregion
