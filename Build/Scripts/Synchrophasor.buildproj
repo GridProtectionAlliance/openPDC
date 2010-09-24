@@ -65,9 +65,9 @@
 
   <Target Name="BeforeVersionSource">
     <ItemGroup>
-      <!-- List of files to be versioned. -->
-      <!--<FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*" Exclude="$(LocalFolder)\Source\Applications\openPDCManager\**\AssemblyInfo.*"> -->
-      <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*">
+      <!-- List of files to be versioned. except OpenPDC Manage Data project -->
+      <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*" Exclude="$(LocalFolder)\Source\Applications\openPDCManager\Data\**\AssemblyInfo.*">
+      <!--<FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*"> -->
         <VersionRegex>(?'BeforeVersion'AssemblyVersion\(%22)(?'CoreVersion'(\*|\d+)\.)+(\*|\d+)(?'AfterVersion'%22\))</VersionRegex>
       </FilesToVersion>
       <!--
