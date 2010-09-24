@@ -143,12 +143,24 @@
     <RemoveDir Directories="%(UnitTestAssemblies.RootDir)%(UnitTestAssemblies.Directory)" Condition="Exists('%(UnitTestAssemblies.RootDir)%(UnitTestAssemblies.Directory)')"/>
   </Target>
 
+  <Target Name="BeforeCleanBuild">
+    <!-- Before clean all files it copy setup to temp -->
+    <Copy SourceFiles="$(BuildOutputFolder)\Setup\setup.exe" DestinationFiles="$(BuildOutputFolder)\Setup\temp.exe" ContinueOnError="true"/>
+  </Target>
+
+  <Target Name="AfterCleanBuild">
+    <!-- After clean all files it copy temp to setup and then remove temp.exe-->
+    <Copy SourceFiles="$(BuildOutputFolder)\Setup\temp.exe" DestinationFiles="$(BuildOutputFolder)\Setup\setup.exe" ContinueOnError="true"/>
+    <Delete Files="$(BuildOutputFolder)\Setup\temp.exe" ContinueOnError="true"/>
+  </Target>
+  
   <Target Name="BeforeDeployBuild">
     <ItemGroup>
       <!-- List of binaries to archive. -->
       <BinariesToArchive Include="$(BuildDeployFolder)\**\*.*"/> 
       <!-- List of installs to archive. -->
       <InstallsToArchive Include="$(BuildDeployFolder)\**\*.msi"/>
+      <InstallsToArchive Include="$(BuildDeployFolder)\**\setup.exe"/>
       <!-- Destinations of archive files (*.zip). -->
       <ArchiveDestinations Include="$(BuildDeployFolder)"/>
       <!--<ArchiveDestinations Include="\\socppmuweb\naspi\openPDC;\\rocppmuweb\naspi\openPDC" Condition="'$(SkipPublicArchive)' != 'true'"/> -->
