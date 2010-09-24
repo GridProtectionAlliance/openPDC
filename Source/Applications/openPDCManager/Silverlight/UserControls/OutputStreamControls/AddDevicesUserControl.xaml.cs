@@ -110,7 +110,11 @@ namespace openPDCManager.UserControls.OutputStreamControls
             sb.Begin();
 #endif
             if (m_devicesToBeAdded.Count > 0)
+            {
                 AddDevices();
+                if ((bool)CheckAll.IsChecked)
+                    CheckAll.IsChecked = false;
+            }
             else
             {
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please Select Device(s) to Add", SystemMessage = string.Empty, UserMessageType = MessageType.Information },
@@ -163,6 +167,8 @@ namespace openPDCManager.UserControls.OutputStreamControls
 
         #endregion
 
+        #region [ Methods ]
+                
         private void CheckAllCheckBoxes()
         {
             List<UIElement> checkboxlist = new List<UIElement>();
@@ -190,6 +196,8 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 }
             }
         }
+
+        #endregion
 
     }
 }

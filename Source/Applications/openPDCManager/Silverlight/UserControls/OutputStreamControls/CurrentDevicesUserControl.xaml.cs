@@ -30,6 +30,7 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.ModalDialogs.OutputStreamWizard;
 using openPDCManager.Utilities;
 using System.Windows.Media.Imaging;
+using System.Collections.Generic;
 
 namespace openPDCManager.UserControls.OutputStreamControls
 {
@@ -73,7 +74,11 @@ namespace openPDCManager.UserControls.OutputStreamControls
             sb.Begin();
 #endif
             if (m_devicesToBeDeleted.Count > 0)
-                DeleteOutputStreamDevice();                
+            {
+                DeleteOutputStreamDevice();
+                if ((bool)CheckAll.IsChecked)
+                    CheckAll.IsChecked = false;
+            }
             else
             {
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please select device(s) to delete", SystemMessage = string.Empty, UserMessageType = MessageType.Information }, ButtonType.OkOnly);
@@ -87,6 +92,8 @@ namespace openPDCManager.UserControls.OutputStreamControls
 
         void ButtonAdd_Click(object sender, RoutedEventArgs e)
         {
+            if ((bool)CheckAll.IsChecked)
+                CheckAll.IsChecked = false;
 #if SILVERLIGHT
             Storyboard sb = new Storyboard();
             sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
@@ -119,6 +126,16 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 m_devicesToBeDeleted.Add(deviceAcronym);
         }
 
+        private void CheckAll_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckAllCheckBoxes();
+        }
+
+        private void CheckAll_Unchecked(object sender, RoutedEventArgs e)
+        {
+            UncheckAllCheckBoxes();
+        }
+
         #endregion
 
         #region [ Page Event Handlers ]
@@ -135,5 +152,34 @@ namespace openPDCManager.UserControls.OutputStreamControls
         }
 
         #endregion
+
+        private void CheckAllCheckBoxes()
+        {
+            List<UIElement> checkboxlist = new List<UIElement>();
+            Common.GetChildren(ListBoxOutputStreamDeviceList, typeof(CheckBox), ref checkboxlist);
+
+            if (checkboxlist.Count > 0)
+            {
+                foreach (UIElement element in checkboxlist)
+                {
+                    ((CheckBox)element).IsChecked = true;
+                }
+            }
+        }
+
+        private void UncheckAllCheckBoxes()
+        {
+            List<UIElement> checkboxlist = new List<UIElement>();
+            Common.GetChildren(ListBoxOutputStreamDeviceList, typeof(CheckBox), ref checkboxlist);
+
+            if (checkboxlist.Count > 0)
+            {
+                foreach (UIElement element in checkboxlist)
+                {
+                    ((CheckBox)element).IsChecked = false;
+                }
+            }
+        }
+    
     }
 }

@@ -8,7 +8,7 @@
             <StackPanel.Resources>
                 <converter:InvertBooleanConverter x:Key="invertBooleanConverter" />
             </StackPanel.Resources>
-
+            <CheckBox x:Name="CheckAll" Content="" Margin="5, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="CheckAll_Checked" Unchecked="CheckAll_Unchecked" />
             <ScrollViewer BorderThickness="0" Padding="0" Height="{StaticResource XXXLargeItemSize}">
                 <ScrollViewer.Content>
                     <ListBox x:Name="ListBoxOutputStreamDeviceList" Margin="0" Padding="0">
