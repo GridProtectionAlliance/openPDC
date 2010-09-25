@@ -787,11 +787,12 @@ namespace HistorianAdapters
                 psi.UseShellExecute = false;
                 psi.Arguments = parameters;
 
-                Process shell = new Process();
-                shell.StartInfo = psi;
-                shell.Start();
-                shell.WaitForExit(5000);
-                shell.Close();
+                using (Process shell = new Process())
+                {
+                    shell.StartInfo = psi;
+                    shell.Start();
+                    shell.WaitForExit(5000);
+                }
             }
         }
 
