@@ -26,7 +26,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using Microsoft.Win32;
 using TVA;
+using TVA.IO;
 
 namespace ConfigurationSetupUtility
 {
@@ -53,6 +55,7 @@ namespace ConfigurationSetupUtility
         // Fields
 
         private Dictionary<string, string> m_settings;
+        private string m_mysqlExe;
 
         #endregion
 
@@ -64,6 +67,19 @@ namespace ConfigurationSetupUtility
         public MySqlSetup()
         {
             m_settings = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+
+            try
+            {
+                // Try to get path for mysql executable based on registered Windows service path, if this fails, fall back on just the executable name which will require a proper environmental path to run
+                m_mysqlExe = FilePath.GetDirectoryName(Registry.GetValue("HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\services\\MySQL", "ImagePath", "mysql.exe").ToString().Split(new string[] { "\" " }, StringSplitOptions.RemoveEmptyEntries)[0].Replace("\"", "")) + "mysql.exe";
+
+                if (!File.Exists(m_mysqlExe))
+                    m_mysqlExe = "mysql.exe";
+            }
+            catch
+            {
+                m_mysqlExe = "mysql.exe";
+            }
         }
 
         #endregion
@@ -246,7 +262,7 @@ namespace ConfigurationSetupUtility
 
                 // Start mysql.exe.
                 mySqlProcess = new Process();
-                mySqlProcess.StartInfo.FileName = "mysql.exe";
+                mySqlProcess.StartInfo.FileName = m_mysqlExe;
                 mySqlProcess.StartInfo.Arguments = args.ToString();
                 mySqlProcess.StartInfo.UseShellExecute = false;
                 mySqlProcess.StartInfo.RedirectStandardError = true;
@@ -305,7 +321,7 @@ namespace ConfigurationSetupUtility
 
                 // Start mysql.exe.
                 mySqlProcess = new Process();
-                mySqlProcess.StartInfo.FileName = "mysql.exe";
+                mySqlProcess.StartInfo.FileName = m_mysqlExe;
                 mySqlProcess.StartInfo.Arguments = args.ToString();
                 mySqlProcess.StartInfo.UseShellExecute = false;
                 mySqlProcess.StartInfo.RedirectStandardError = true;
