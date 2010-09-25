@@ -10,10 +10,14 @@
         <StackPanel DockPanel.Dock="Bottom">
             <TextBlock Text="Please select the type of configuration to be set up." TextAlignment="Center" TextWrapping="Wrap" Margin="20,0,20,10" />
             <StackPanel HorizontalAlignment="Center">
-                <RadioButton Height="16" Checked="DatabaseRadioButton_Checked" IsChecked="True" Name="m_databaseRadioButton" />
-                <RadioButton Content="XML" Height="16" Checked="XmlRadioButton_Checked" />
-                <RadioButton Content="Web service" Height="16" Checked="WebServiceRadioButton_Checked" />
+                <RadioButton Content="Database" Height="16" Checked="DatabaseRadioButton_Checked" IsChecked="True" Name="m_databaseRadioButton" />
+                <RadioButton Content="XML" Height="16" Checked="XmlRadioButton_Checked" Name="m_xmlRadioButton" />
+                <RadioButton Content="Web service" Height="16" Checked="WebServiceRadioButton_Checked" Name="m_webServiceRadioButton" />
             </StackPanel>
+            <TextBlock TextAlignment="Center" TextWrapping="Wrap" Margin="20,0,20,10">
+                <LineBreak/>
+                XML and Web service configuration types are only available for the openPDC. The openPDC Manager requires a database for operation.
+            </TextBlock>
         </StackPanel>
     </DockPanel>
 </UserControl>

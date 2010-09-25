@@ -21,121 +21,19 @@
 //
 //******************************************************************************************************
 
-using System.Collections;
 using System.ComponentModel;
-using System.Configuration.Install;
-using System.Diagnostics;
-using System.IO;
-using System.Xml;
-using Microsoft.Win32;
-using TVA.IO;
-using System.Windows;
-using System;
+using TVA.PhasorProtocols;
 
-namespace openPDC
+namespace openPDCManager
 {
     [RunInstaller(true)]
-    public partial class ApplicationInstall : Installer
+    public partial class ApplicationInstall : InstallerBase
     {
-        public ApplicationInstall()
+        protected override string ConfigurationName
         {
-            InitializeComponent();
-        }
-
-        public override void Install(IDictionary stateSaver)
-        {
-            base.Install(stateSaver);
-
-            try
-            {                
-                // Open the configuration file as an XML document.
-                string targetDir = FilePath.AddPathSuffix(Context.Parameters["DP_TargetDir"]).Replace("\\\\", "\\");
-                string configFilePath = targetDir + "openPDCManager.exe.Config";
-                string installedBitSize = "32bit";
-
-                if (File.Exists(configFilePath))
-                {             
-                    XmlDocument xmlDoc = new XmlDocument();
-                    xmlDoc.Load(configFilePath);
-                    XmlNode node = xmlDoc.SelectSingleNode("configuration/categorizedSettings/systemSettings");
-                    string attributeValue;
-                    
-                    // Find the needed installation parameters if they already exist.
-                    foreach (XmlNode child in node.ChildNodes)
-                    {                        
-                        try
-                        {                            
-                            attributeValue = child.Attributes["name"].Value;
-                        
-                            if (attributeValue == "InstalledBitSize")
-                            {
-                                installedBitSize = child.Attributes["value"].Value;
-
-                                // Default to 32 if no target installation bit size was found
-                                if (string.IsNullOrWhiteSpace(installedBitSize))
-                                    installedBitSize = "32";
-
-                                installedBitSize += "bit";
-                                break;
-                            }
-                        }
-                        catch { }
-                    }
-                }
-                                
-                // Run database setup utility
-                Process databaseSetup = null;
-                try
-                {
-                    databaseSetup = new Process();
-                    databaseSetup.StartInfo.FileName = targetDir + "ConfigurationSetupUtility.exe";
-                    databaseSetup.StartInfo.Arguments = "-install -" + installedBitSize;
-                    databaseSetup.StartInfo.WorkingDirectory = targetDir;
-                    databaseSetup.StartInfo.UseShellExecute = false;
-                    databaseSetup.StartInfo.CreateNoWindow = true;
-                    databaseSetup.Start();
-                    databaseSetup.WaitForExit();
-                }
-                finally
-                {
-                    if (databaseSetup != null)
-                        databaseSetup.Close();
-                }
-
-                // Make sure configuration editor and database setup utility are run in admin mode since they
-                // modify configuration file in programs folder
-                Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigurationSetupUtility.exe", "RUNASADMIN", RegistryValueKind.String);
-                Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigurationEditor.exe", "RUNASADMIN", RegistryValueKind.String);
-                Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigCrypter.exe", "RUNASADMIN", RegistryValueKind.String);
-            }
-            catch (Exception ex) 
+            get
             {
-                // Not failing install if we can't perform these steps...
-                MessageBox.Show("There was an exception detected during the install process, this did not affect the install. The exception reported was: " + ex.Message);
-            }
-        }
-
-        public override void Uninstall(IDictionary savedState)
-        {
-            base.Uninstall(savedState);
-
-            try
-            {
-                string targetDir = FilePath.AddPathSuffix(Context.Parameters["DP_TargetDir"].ToString());
-
-                // Make sure configuration editor and database setup utility are run in admin mode since they
-                // modify configuration file in programs folder
-                using (RegistryKey settings = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", true))
-                {
-                    settings.DeleteValue(targetDir + "ConfigurationSetupUtility.exe");
-                    settings.DeleteValue(targetDir + "ConfigurationEditor.exe");
-                    settings.DeleteValue(targetDir + "ConfigCrypter.exe");
-                }
-            }
-            catch 
-            {
-                // Not failing uninstall if we can't perform these steps...
-               // MessageBox.Show("There was an exception detected during the uninstall process, this did not affect the uninstall. The exception reported was: " + ex.Message);
+                return "openPDCManager.exe.Config";
             }
         }
     }

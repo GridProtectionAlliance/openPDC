@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -56,6 +57,26 @@ namespace ConfigurationSetupUtility
         {
             InitializeComponent();
             InitializeNextScreens();
+
+            try
+            {
+                // Determine if the openPDC is installed in this folder (could be stand-alone debug application or service), we check exe
+                // instead of config file since config file can remain between installations. Since only the openPDC can be setup with a
+                // XML or web service configuration, we disable these radio buttons for openPDC Manager only installations.
+                string exeFileName = Directory.GetCurrentDirectory() + "\\openPDC.exe";
+
+                if (!File.Exists(exeFileName))
+                {
+                    // If the openPDC is not be installed user may have chosen to only install the openPDC Manager on this system,
+                    // so we disable the non-database options...
+                    m_xmlRadioButton.IsEnabled = false;
+                    m_webServiceRadioButton.IsEnabled = false;
+                }
+            }
+            catch
+            {
+                // Not failing if we cannot determine if openPDC is available...
+            }
         }
 
         #endregion

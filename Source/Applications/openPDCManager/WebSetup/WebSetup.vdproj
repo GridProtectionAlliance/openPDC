@@ -211,15 +211,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:openPDC Manager"
-        "ProductCode" = "8:{E4C4BE1C-0EC5-4266-841B-F62F99E8E03E}"
-        "PackageCode" = "8:{3FDAC0E9-8DD1-425D-86C9-AB70C8DCF248}"
+        "ProductCode" = "8:{9A71C1D0-920D-4332-8F83-AE162FA11039}"
+        "PackageCode" = "8:{00D8C59F-3B4A-47DB-8559-0F5BEF59660A}"
         "UpgradeCode" = "8:{91EBCCD7-3161-4214-B76F-3993F481597D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.1.3"
+        "ProductVersion" = "8:1.2.1"
         "Manufacturer" = "8:Grid Protection Alliance"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -692,7 +692,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CFA632EEEF42498DA35EFF4C389D274D"
             {
-            "SourcePath" = "8:..\\Web\\obj\\Release\\openPDCManager.Web.dll"
+            "SourcePath" = "8:..\\Web\\obj\\Debug\\openPDCManager.Web.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_5CEB7ECEC1A5438EA37E99598A96A67C"

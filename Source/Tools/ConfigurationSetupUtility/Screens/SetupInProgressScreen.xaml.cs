@@ -566,34 +566,67 @@ namespace ConfigurationSetupUtility
                 AppendStatusMessage("Failed to terminate running instances of the openPDC Manager: " + ex.Message + "\r\nModifications continuing anyway...\r\n");
             }
 
+            // Attempt to access service controller for the openPDC
+            ServiceController openPdcServiceController = ServiceController.GetServices().SingleOrDefault(svc => svc.ServiceName == "openPDC");
+
+            if (openPdcServiceController != null)
+            {
+                try
+                {
+                    if (openPdcServiceController.Status == ServiceControllerStatus.Running)
+                    {
+                        AppendStatusMessage("Attempting to stop the openPDC Windows service...");
+
+                        openPdcServiceController.Stop();
+
+                        // Can't wait forever for service to stop, so we time-out after 60 seconds
+                        openPdcServiceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromMinutes(1.0D));
+
+                        if (openPdcServiceController.Status == ServiceControllerStatus.Stopped)
+                        {
+                            m_state["restarting"] = true;
+                            AppendStatusMessage("Successfully stopped openPDC Windows service.");
+                        }
+                        else
+                            AppendStatusMessage("Failed to stop openPDC Windows service after trying for 60 seconds.\r\nModifications continuing anyway...");
+
+                        // Add an extra line for visual separation of service termination status
+                        AppendStatusMessage("");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppendStatusMessage("Failed to stop the openPDC Windows service: " + ex.Message + "\r\nModifications continuing anyway...\r\n");
+                }
+            }
+            
+            // If the openPDC service failed to stop or it is installed as stand-alone debug application, we try to stop any remaining running instances
             try
             {
-                ServiceController openPdcServiceController = new ServiceController("openPDC");
+                Process[] instances = Process.GetProcessesByName("openPDC");
 
-                if (openPdcServiceController.Status == ServiceControllerStatus.Running)
+                if (instances.Length > 0)
                 {
-                    AppendStatusMessage("Attempting to stop the openPDC Windows service...");
-                    
-                    openPdcServiceController.Stop();
+                    int total = 0;
+                    AppendStatusMessage("Attempting to stop running instances of the openPDC...");
 
-                    // Can't wait forever for service to stop, so we time-out after 60 seconds
-                    openPdcServiceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromMinutes(1.0D));
-
-                    if (openPdcServiceController.Status == ServiceControllerStatus.Stopped)
+                    // Terminate all instances of openPDC running on the local computer
+                    foreach (Process process in instances)
                     {
-                        m_state["restarting"] = true;
-                        AppendStatusMessage("Successfully stopped openPDC Windows service.");
+                        process.Kill();
+                        total++;
                     }
-                    else
-                        AppendStatusMessage("Failed to stop openPDC Windows service after trying for 60 seconds.\r\nModifications continuing anyway...");
 
-                    // Add an extra line for visual separation of service termination status
+                    if (total > 0)
+                        AppendStatusMessage(string.Format("Stopped {0} openPDC instance{1}.", total, total > 1 ? "s" : ""));
+
+                    // Add an extra line for visual separation of process termination status
                     AppendStatusMessage("");
                 }
             }
             catch (Exception ex)
             {
-                AppendStatusMessage("Failed to stop the openPDC Windows service: " + ex.Message + "\r\nModifications continuing anyway...\r\n");
+                AppendStatusMessage("Failed to terminate running instances of the openPDC: " + ex.Message + "\r\nModifications continuing anyway...\r\n");
             }
         }
 
@@ -604,14 +637,27 @@ namespace ConfigurationSetupUtility
             AttemptToStopKeyProcesses();
 
             object webManagerDir = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\openPDCManagerServices", "Installation Path", null) ?? Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\openPDCManagerServices", "Installation Path", null);
+            string configFile;
 
             AppendStatusMessage("Attempting to modify configuration files...");
 
-            ModifyConfigFile(Directory.GetCurrentDirectory() + "\\openPDC.exe.config", connectionString, dataProviderString, encrypted);
-            ModifyConfigFile(Directory.GetCurrentDirectory() + "\\openPDCManager.exe.config", connectionString, dataProviderString, encrypted);
+            configFile = Directory.GetCurrentDirectory() + "\\openPDC.exe.config";
+
+            if (File.Exists(configFile))
+                ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted);
+
+            configFile = Directory.GetCurrentDirectory() + "\\openPDCManager.exe.config";
+
+            if (File.Exists(configFile)) 
+                ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted);
 
             if (webManagerDir != null)
-                ModifyConfigFile(webManagerDir.ToString() + "\\Web.config", connectionString, dataProviderString, encrypted);
+            {
+                configFile = webManagerDir.ToString();
+                
+                if (File.Exists(configFile))
+                    ModifyConfigFile(webManagerDir.ToString() + "\\Web.config", connectionString, dataProviderString, encrypted);
+            }
 
             AppendStatusMessage("Modification of configuration files was successful.");
         }

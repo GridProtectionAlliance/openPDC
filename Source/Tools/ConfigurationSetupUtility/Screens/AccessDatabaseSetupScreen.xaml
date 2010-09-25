@@ -13,6 +13,12 @@
                 <TextBox Height="23" Width="240" Margin="0,0,5,0" TextChanged="AccessDatabaseFilePathTextBox_TextChanged" Name="m_accessDatabaseFilePathTextBox" Text="openPDC.mdb" />
                 <Button Content="Browse..." Height="23" Width="75" Click="BrowseButton_Click" />
             </StackPanel>
+            <TextBlock TextAlignment="Center" TextWrapping="Wrap" Margin="20,0,20,10">
+                <LineBreak/>
+                Please note that you need to select a location for your database file for which you will have read/write access.
+                It is recommended that you avoid using the "Program Files" folder as the path for your Access database file since
+                in newer versions of Windows this is a protected location.
+            </TextBlock>
         </StackPanel>
     </DockPanel>
 </UserControl>

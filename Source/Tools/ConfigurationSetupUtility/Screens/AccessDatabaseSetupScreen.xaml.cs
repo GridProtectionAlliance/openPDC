@@ -221,7 +221,7 @@ namespace ConfigurationSetupUtility
                 browseDialog.DefaultExt = "mdb";
             }
 
-            browseDialog.Filter = "MDB files (*.mdb)|*.mdb|All Files|*.*";
+            browseDialog.Filter = "MDB Files (*.mdb)|*.mdb|All Files|*.*";
 
             if (browseDialog.ShowDialog() == true)
                 m_accessDatabaseFilePathTextBox.Text = browseDialog.FileName;

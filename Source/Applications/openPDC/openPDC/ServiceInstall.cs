@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.Xml;
 using Microsoft.Win32;
 using TVA.IO;
+using TVA.PhasorProtocols;
 using System.IO;
 using System.Windows.Forms;
 using System;
@@ -35,135 +36,56 @@ using System;
 namespace openPDC
 {
     [RunInstaller(true)]
-    public partial class ServiceInstall : Installer
+    public partial class ServiceInstall : InstallerBase
     {
         public ServiceInstall()
         {
             InitializeComponent();
         }
 
-        public override void Install(IDictionary stateSaver)
+        // Get the configuration file name to use for system settings
+        protected override string ConfigurationName
         {
-            base.Install(stateSaver);
-
-            try
+            get
             {
-                // Open the configuration file as an XML document.
-                string targetDir = FilePath.AddPathSuffix(Context.Parameters["DP_TargetDir"]).Replace("\\\\", "\\");
-                string configFilePath = targetDir + "openPDC.exe.Config";
-                string installedBitSize = "32bit";
-
-                if (File.Exists(configFilePath))
-                {
-                    XmlDocument xmlDoc = new XmlDocument();
-                    xmlDoc.Load(configFilePath);
-                    XmlNode node = xmlDoc.SelectSingleNode("configuration/categorizedSettings/systemSettings");
-                    XmlNode companyName = null;
-                    XmlNode companyAcronym = null;
-                    string attributeValue;
-
-                    // Find the needed installation parameters if they already exist.
-                    foreach (XmlNode child in node.ChildNodes)
-                    {
-                        attributeValue = child.Attributes["name"].Value;
-
-                        if (attributeValue == "CompanyName")
-                            companyName = child;
-                        else if (attributeValue == "CompanyAcronym")
-                            companyAcronym = child;
-                        else if (attributeValue == "InstalledBitSize")
-                        {
-                            installedBitSize = child.Attributes["value"].Value;
-
-                            // Default to 32 if no target installation bit size was found
-                            if (string.IsNullOrWhiteSpace(installedBitSize))
-                                installedBitSize = "32";
-
-                            installedBitSize += "bit";
-                        }
-                    }
-
-                    // Modify or add the CompanyName parameter.
-                    if (companyName != null)
-                        companyName.Attributes["value"].Value = Context.Parameters["DP_CompanyName"];
-                    else
-                    {
-                        companyName = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
-                        companyName.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyName"));
-                        companyName.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyName"]));
-                        companyName.Attributes.Append(CreateAttribute(xmlDoc, "description", "The name of the company who owns this instance of the openPDC."));
-                        companyName.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
-                        node.AppendChild(companyName);
-                    }
-
-                    // Modify or add the CompanyAcronym parameter.
-                    if (companyAcronym != null)
-                        companyAcronym.Attributes["value"].Value = Context.Parameters["DP_CompanyAcronym"];
-                    else
-                    {
-                        companyAcronym = xmlDoc.CreateNode(XmlNodeType.Element, "add", string.Empty);
-                        companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "name", "CompanyAcronym"));
-                        companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "value", Context.Parameters["DP_CompanyAcronym"]));
-                        companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "description", "The acronym representing the company who owns this instance of the openPDC."));
-                        companyAcronym.Attributes.Append(CreateAttribute(xmlDoc, "encrypted", "false"));
-                        node.AppendChild(companyAcronym);
-                    }
-
-                    xmlDoc.Save(configFilePath);
-                }
-
-                // Run database setup utility
-                Process databaseSetup = null;
-                try
-                {
-                    databaseSetup = new Process();
-                    databaseSetup.StartInfo.FileName = targetDir + "ConfigurationSetupUtility.exe";
-                    databaseSetup.StartInfo.Arguments = "-install -" + installedBitSize;
-                    databaseSetup.StartInfo.WorkingDirectory = targetDir;
-                    databaseSetup.StartInfo.UseShellExecute = false;
-                    databaseSetup.StartInfo.CreateNoWindow = true;
-                    databaseSetup.Start();
-                    databaseSetup.WaitForExit();
-                }
-                finally
-                {
-                    if (databaseSetup != null)
-                        databaseSetup.Close();
-                }
-
-                // Make sure configuration editor and database setup utility are run in admin mode since they
-                // modify configuration file in programs folder
-                Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigurationSetupUtility.exe", "RUNASADMIN", RegistryValueKind.String);
-                Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigurationEditor.exe", "RUNASADMIN", RegistryValueKind.String);
-                Registry.SetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", targetDir + "ConfigCrypter.exe", "RUNASADMIN", RegistryValueKind.String);
-            }
-            catch(Exception ex)
-            {
-                // Not failing install if we can't perform these steps...
-                MessageBox.Show("There was an exception detected during the install process, this did not affect the install. The exception reported was: " + ex.Message);
+                return "openPDC.exe.Config";
             }
         }
 
-        public override void Uninstall(IDictionary savedState)
+        // Make sure the default company name and acronym are in the config file under system settings
+        protected override void OnSystemSettingsLoaded(XmlDocument configurationFile, XmlNode systemSettingsNode)
         {
-            base.Uninstall(savedState);
+            XmlNode companyNameNode = systemSettingsNode.SelectSingleNode("add[@name = 'CompanyName']");
+            XmlNode companyAcronymNode = systemSettingsNode.SelectSingleNode("add[@name = 'CompanyAcronym']");
 
-            try
+            // Modify or add the CompanyName parameter.
+            if (companyNameNode != null)
             {
-                string targetDir = FilePath.AddPathSuffix(Context.Parameters["DP_TargetDir"].ToString());
-
-                // Make sure configuration editor and database setup utility are run in admin mode since they
-                // modify configuration file in programs folder
-                using (RegistryKey settings = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", true))
-                {
-                    settings.DeleteValue(targetDir + "ConfigurationSetupUtility.exe");
-                    settings.DeleteValue(targetDir + "ConfigurationEditor.exe");
-                    settings.DeleteValue(targetDir + "ConfigCrypter.exe");
-                }
+                companyNameNode.Attributes["value"].Value = Context.Parameters["DP_CompanyName"];
             }
-            catch 
+            else
             {
-                //MessageBox.Show("There was an exception detected during the uninstall process, this did not affect the uninstall. The exception reported was: " + ex.Message);
+                companyNameNode = configurationFile.CreateNode(XmlNodeType.Element, "add", string.Empty);
+                companyNameNode.Attributes.Append(CreateAttribute(configurationFile, "name", "CompanyName"));
+                companyNameNode.Attributes.Append(CreateAttribute(configurationFile, "value", Context.Parameters["DP_CompanyName"]));
+                companyNameNode.Attributes.Append(CreateAttribute(configurationFile, "description", "The name of the company who owns this instance of the openPDC."));
+                companyNameNode.Attributes.Append(CreateAttribute(configurationFile, "encrypted", "false"));
+                systemSettingsNode.AppendChild(companyNameNode);
+            }
+
+            // Modify or add the CompanyAcronym parameter.
+            if (companyAcronymNode != null)
+            {
+                companyAcronymNode.Attributes["value"].Value = Context.Parameters["DP_CompanyAcronym"];
+            }
+            else
+            {
+                companyAcronymNode = configurationFile.CreateNode(XmlNodeType.Element, "add", string.Empty);
+                companyAcronymNode.Attributes.Append(CreateAttribute(configurationFile, "name", "CompanyAcronym"));
+                companyAcronymNode.Attributes.Append(CreateAttribute(configurationFile, "value", Context.Parameters["DP_CompanyAcronym"]));
+                companyAcronymNode.Attributes.Append(CreateAttribute(configurationFile, "description", "The acronym representing the company who owns this instance of the openPDC."));
+                companyAcronymNode.Attributes.Append(CreateAttribute(configurationFile, "encrypted", "false"));
+                systemSettingsNode.AppendChild(companyAcronymNode);
             }
         }
 

@@ -171,9 +171,6 @@
     <Compile Include="ApplicationInstall.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ApplicationInstall.Designer.cs">
-      <DependentUpon>ApplicationInstall.cs</DependentUpon>
-    </Compile>
     <Compile Include="Utilities\IsolatedStorageManager.cs" />
     <Page Include="..\Silverlight\Resources\CommonResource.xaml">
       <Link>Resources\CommonResource.xaml</Link>
@@ -711,9 +708,6 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ApplicationInstall.resx">
-      <DependentUpon>ApplicationInstall.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="App64.config" />

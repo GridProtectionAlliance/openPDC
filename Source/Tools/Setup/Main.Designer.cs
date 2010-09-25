@@ -39,6 +39,7 @@
             this.checkBoxConnectionTester = new System.Windows.Forms.CheckBox();
             this.radioButton64bit = new System.Windows.Forms.RadioButton();
             this.radioButton32bit = new System.Windows.Forms.RadioButton();
+            this.labelVersion = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
             this.groupBoxInstallationOptions.SuspendLayout();
             this.SuspendLayout();
@@ -70,10 +71,10 @@
             // 
             this.labelNotes.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.labelNotes.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelNotes.Location = new System.Drawing.Point(0, 193);
+            this.labelNotes.Location = new System.Drawing.Point(0, 195);
             this.labelNotes.Name = "labelNotes";
-            this.labelNotes.Padding = new System.Windows.Forms.Padding(9, 0, 0, 0);
-            this.labelNotes.Size = new System.Drawing.Size(494, 161);
+            this.labelNotes.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.labelNotes.Size = new System.Drawing.Size(494, 162);
             this.labelNotes.TabIndex = 1;
             this.labelNotes.Text = resources.GetString("labelNotes.Text");
             this.labelNotes.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -86,18 +87,19 @@
             this.groupBoxInstallationOptions.Controls.Add(this.checkBoxConnectionTester);
             this.groupBoxInstallationOptions.Controls.Add(this.radioButton64bit);
             this.groupBoxInstallationOptions.Controls.Add(this.radioButton32bit);
-            this.groupBoxInstallationOptions.Location = new System.Drawing.Point(10, 77);
+            this.groupBoxInstallationOptions.Location = new System.Drawing.Point(10, 82);
             this.groupBoxInstallationOptions.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBoxInstallationOptions.Name = "groupBoxInstallationOptions";
             this.groupBoxInstallationOptions.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBoxInstallationOptions.Size = new System.Drawing.Size(474, 114);
+            this.groupBoxInstallationOptions.Size = new System.Drawing.Size(472, 114);
             this.groupBoxInstallationOptions.TabIndex = 0;
             this.groupBoxInstallationOptions.TabStop = false;
             this.groupBoxInstallationOptions.Text = "Installation Options";
             // 
             // buttonUninstall
             // 
-            this.buttonUninstall.Location = new System.Drawing.Point(359, 45);
+            this.buttonUninstall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonUninstall.Location = new System.Drawing.Point(357, 45);
             this.buttonUninstall.Name = "buttonUninstall";
             this.buttonUninstall.Size = new System.Drawing.Size(100, 31);
             this.buttonUninstall.TabIndex = 4;
@@ -107,8 +109,9 @@
             // 
             // buttonCancel
             // 
+            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(359, 77);
+            this.buttonCancel.Location = new System.Drawing.Point(357, 77);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(100, 31);
             this.buttonCancel.TabIndex = 5;
@@ -118,7 +121,8 @@
             // 
             // buttonInstall
             // 
-            this.buttonInstall.Location = new System.Drawing.Point(359, 13);
+            this.buttonInstall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonInstall.Location = new System.Drawing.Point(357, 13);
             this.buttonInstall.Name = "buttonInstall";
             this.buttonInstall.Size = new System.Drawing.Size(100, 31);
             this.buttonInstall.TabIndex = 3;
@@ -133,7 +137,7 @@
             this.checkBoxConnectionTester.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxConnectionTester.Location = new System.Drawing.Point(16, 78);
             this.checkBoxConnectionTester.Name = "checkBoxConnectionTester";
-            this.checkBoxConnectionTester.Size = new System.Drawing.Size(140, 17);
+            this.checkBoxConnectionTester.Size = new System.Drawing.Size(160, 20);
             this.checkBoxConnectionTester.TabIndex = 2;
             this.checkBoxConnectionTester.Text = "PMU Connection Tester";
             this.checkBoxConnectionTester.UseVisualStyleBackColor = true;
@@ -143,7 +147,7 @@
             this.radioButton64bit.AutoSize = true;
             this.radioButton64bit.Location = new System.Drawing.Point(16, 51);
             this.radioButton64bit.Name = "radioButton64bit";
-            this.radioButton64bit.Size = new System.Drawing.Size(167, 17);
+            this.radioButton64bit.Size = new System.Drawing.Size(196, 20);
             this.radioButton64bit.TabIndex = 1;
             this.radioButton64bit.TabStop = true;
             this.radioButton64bit.Text = "64-bit version of the openPDC";
@@ -155,11 +159,23 @@
             this.radioButton32bit.Checked = true;
             this.radioButton32bit.Location = new System.Drawing.Point(16, 24);
             this.radioButton32bit.Name = "radioButton32bit";
-            this.radioButton32bit.Size = new System.Drawing.Size(167, 17);
+            this.radioButton32bit.Size = new System.Drawing.Size(196, 20);
             this.radioButton32bit.TabIndex = 0;
             this.radioButton32bit.TabStop = true;
             this.radioButton32bit.Text = "32-bit version of the openPDC";
             this.radioButton32bit.UseVisualStyleBackColor = true;
+            // 
+            // labelVersion
+            // 
+            this.labelVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelVersion.AutoSize = true;
+            this.labelVersion.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelVersion.Location = new System.Drawing.Point(369, 74);
+            this.labelVersion.Name = "labelVersion";
+            this.labelVersion.Size = new System.Drawing.Size(125, 13);
+            this.labelVersion.TabIndex = 2;
+            this.labelVersion.Text = "Version: {0}.{1}.{2}.{3}";
+            this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Main
             // 
@@ -167,7 +183,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(494, 354);
+            this.ClientSize = new System.Drawing.Size(494, 357);
+            this.Controls.Add(this.labelVersion);
             this.Controls.Add(this.groupBoxInstallationOptions);
             this.Controls.Add(this.labelNotes);
             this.Controls.Add(this.labelWelcome);
@@ -201,6 +218,7 @@
         private System.Windows.Forms.RadioButton radioButton64bit;
         private System.Windows.Forms.RadioButton radioButton32bit;
         private System.Windows.Forms.Button buttonUninstall;
+        private System.Windows.Forms.Label labelVersion;
     }
 }
 
