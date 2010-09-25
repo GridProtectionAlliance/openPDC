@@ -469,17 +469,24 @@ namespace HistorianAdapters
             e.Argument.Enabled = true;
             e.Argument.SettingsCategory = InstanceName + e.Argument.SettingsCategory;
 
+            string serviceUri = null;
+
             try
             {
                 // Attempt to reserve the http namespace reservation for this data service URI
                 IDataService provider = e.Argument;
 
-                if (provider != null && !string.IsNullOrWhiteSpace(provider.ServiceUri))
-                    SetNamespaceReservation(new Uri(provider.ServiceUri));
+                if (provider != null)
+                {
+                    serviceUri = provider.ServiceUri;
+
+                    if (!string.IsNullOrWhiteSpace(serviceUri))
+                        SetNamespaceReservation(new Uri(serviceUri));
+                }
             }
             catch (Exception ex)
             {
-                OnStatusMessage("An exception occured while attempting to set namespace reservation: " + ex.Message);
+                OnStatusMessage("Unable to set namespace reservation for \"{0}\", this may not be required on this OS version. Message was: {1}", serviceUri.ToNonNullString("http://??"), ex.Message);
             }
         }
 
