@@ -26,8 +26,8 @@
                 </Grid.RowDefinitions>
                 <Label Content="Host name:" HorizontalAlignment="Left" Margin="0,0,5,0" VerticalAlignment="Stretch" />
                 <Label Content="Database name:" Grid.Row="1" HorizontalAlignment="Left" Margin="0,0,5,0" VerticalAlignment="Stretch" />
-                <Label Content="Admin user name:" Grid.Row="2" HorizontalAlignment="Left" Margin="0,0,5,0" VerticalAlignment="Stretch" />
-                <Label Content="Admin password:" Grid.Row="3" HorizontalAlignment="Left" Margin="0,0,5,0" VerticalAlignment="Stretch" />
+                <Label Content="Admin user name:" Grid.Row="2" HorizontalAlignment="Left" Margin="0,0,5,0" VerticalAlignment="Stretch" Name="m_userNameLabel" />
+                <Label Content="Admin password:" Grid.Row="3" HorizontalAlignment="Left" Margin="0,0,5,0" VerticalAlignment="Stretch" Name="m_passwordLabel" />
                 <TextBox Grid.Column="1" HorizontalAlignment="Left" Name="m_hostNameTextBox" Text="localhost" TextChanged="HostNameTextBox_TextChanged" VerticalAlignment="Center" Width="150" LostFocus="m_hostNameTextBox_LostFocus" />
                 <TextBox Grid.Column="1" Grid.Row="1" Height="23" HorizontalAlignment="Left" Name="m_databaseNameTextBox" Text="openPDC" TextChanged="DatabaseNameTextBox_TextChanged" VerticalAlignment="Center" Width="150" />
                 <TextBox Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" Name="m_adminUserNameTextBox" TextChanged="AdminUserNameTextBox_TextChanged" VerticalAlignment="Center" Width="150" />

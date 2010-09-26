@@ -234,6 +234,13 @@ namespace ConfigurationSetupUtility
                 m_newUserPasswordTextBox.Visibility = newUserVisibility;
                 m_mySqlDatabaseInstructionTextBlock.Text = (!existing || migrate) ? newDatabaseMessage : oldDatabaseMessage;
 
+                // If connecting to existing database, user name and password need not be admin user:
+                if (existing && !migrate)
+                {
+                    m_userNameLabel.Content = "User name:";
+                    m_passwordLabel.Content = "Password:";
+                }
+
                 if (!m_state.ContainsKey("mySqlDataProviderString"))
                     m_state.Add("mySqlDataProviderString", m_dataProviderString);
 
