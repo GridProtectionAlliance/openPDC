@@ -377,7 +377,10 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 ComboboxHistorian.ItemsSource = CommonFunctions.GetHistorians(null, true, true, false);
-                if (ComboboxHistorian.Items.Count > 0)
+                
+                if (ComboboxHistorian.Items.Count > 1)
+                    ComboboxHistorian.SelectedIndex = 1;
+                else if (ComboboxHistorian.Items.Count > 0)
                     ComboboxHistorian.SelectedIndex = 0;
             }
             catch (Exception ex)
