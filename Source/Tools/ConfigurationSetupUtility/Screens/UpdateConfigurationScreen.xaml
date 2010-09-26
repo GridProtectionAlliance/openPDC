@@ -6,12 +6,15 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=FrameworkElement, AncestorLevel=1}, Path=ActualWidth}">
     <DockPanel Name="dockPanel1">
-        <Label Content="Update configuration" DockPanel.Dock="Top" Margin="10" HorizontalContentAlignment="Center" FontWeight="Bold" FontSize="16" />
+        <Label Content="Database schema update" DockPanel.Dock="Top" Margin="10" HorizontalContentAlignment="Center" FontWeight="Bold" FontSize="16" />
         <StackPanel DockPanel.Dock="Bottom">
-            <TextBlock Text="Do you want to upgrade your existing configuration to the latest schema?" TextAlignment="Center" TextWrapping="Wrap" Margin="20,0,20,10" />
+            <TextBlock TextAlignment="Center" TextWrapping="Wrap" Margin="20,0,20,10">
+                Do you want to upgrade an existing configuration<LineBreak />
+                database to the latest schema?
+            </TextBlock>
             <StackPanel HorizontalAlignment="Center">
-                <RadioButton Content="I want to upgrade to the latest schema." Height="16" IsChecked="True" Checked="UpdateConfigurationRadioButton_Checked" />
-                <RadioButton Content="I want to use my existing database as it is." Height="16" Checked="UseExistingConfigurationRadioButton_Checked" />
+                <RadioButton Content="I want to upgrade to the latest schema." Height="18" IsChecked="True" Checked="UpdateConfigurationRadioButton_Checked" />
+                <RadioButton Content="I want to use an existing database as-is." Height="18" Checked="UseExistingConfigurationRadioButton_Checked" />
             </StackPanel>
         </StackPanel>
     </DockPanel>

@@ -20,6 +20,9 @@
 //       Generated original version of source code.
 //  09/19/2010 - J. Ritchie Carroll
 //       Added security warning message for non-local MySql host addresses.
+//  09/26/2010 - J. Ritchie Carroll
+//       Added typical versions of the MySQL Connector/NET so the data provider string could be
+//       automatically defined.
 //
 //******************************************************************************************************
 
@@ -49,6 +52,7 @@ namespace ConfigurationSetupUtility
         private MySqlSetup m_mySqlSetup;
         private Dictionary<string, object> m_state;
         private Button m_advancedButton;
+        private string m_dataProviderString;
 
         #endregion
 
@@ -61,6 +65,36 @@ namespace ConfigurationSetupUtility
         {
             m_mySqlSetup = new MySqlSetup();
             InitializeComponent();
+
+            string[] mySQLConnectorNetVersions = { "6.3.4.0", "6.2.4.0", "6.1.5.0", "6.0.7.0", "5.2.7.0", "5.1.7.0", "5.0.9.0" };
+            string assemblyNamePrefix = "MySql.Data, Version=";
+            string assemblyNameSuffix = ", Culture=neutral, PublicKeyToken=c5687fc88969c44d";
+            string assemblyName;
+
+            m_dataProviderString = null;
+
+            // Attempt to load latest version of the MySQL connector net to creator the proper data provider string
+            foreach (string connectorNetVersion in mySQLConnectorNetVersions)
+            {
+                try
+                {
+                    // Create an assembly name based on this version of the MySQL Connector/NET
+                    assemblyName = assemblyNamePrefix + connectorNetVersion + assemblyNameSuffix;
+
+                    // See if this version of the MySQL Connector/NET can be loaded
+                    Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
+
+                    // If assembly load succeeded, create a valid data provider string
+                    m_dataProviderString = "AssemblyName={" + assemblyName + "}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
+                }
+                catch
+                {
+                    // Nothing to do but try next version
+                }
+            }
+
+            if (string.IsNullOrEmpty(m_dataProviderString))
+                m_dataProviderString = "AssemblyName={MySql.Data, Version=6.3.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
         }
 
         #endregion
@@ -201,7 +235,7 @@ namespace ConfigurationSetupUtility
                 m_mySqlDatabaseInstructionTextBlock.Text = (!existing || migrate) ? newDatabaseMessage : oldDatabaseMessage;
 
                 if (!m_state.ContainsKey("mySqlDataProviderString"))
-                    m_state.Add("mySqlDataProviderString", "AssemblyName={MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter");
+                    m_state.Add("mySqlDataProviderString", m_dataProviderString);
 
                 if (!m_state.ContainsKey("createNewMySqlUser"))
                     m_state.Add("createNewMySqlUser", m_createNewUserCheckBox.IsChecked.Value);
@@ -266,11 +300,11 @@ namespace ConfigurationSetupUtility
 
                 // Check to see if entered host name corresponds to a local IP address
                 if (!hostIPs.Any(ip => localIPs.Contains(ip)))
-                    MessageBox.Show("You have entered a non-local host name for your MySql instance. By default remote access to MySQL database server is disabled for security reasons. You may want to execute the database scripts directly on the remote MySQL database server.", "MySql Security", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("You have entered a non-local host name for your MySql instance. By default remote access to MySQL database server is disabled for security reasons. If you have trouble connecting, check the security settings on the remote MySQL database server.", "MySql Security", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             catch
             {
-                MessageBox.Show("The configuration utility could not determine if you entered a non-local host name for your MySql instance. Keep in mind that remote access to MySQL database server is disabled by default for security reasons. If you are not connecting to a local MySql instance you may want to execute the database scripts directly on the remote MySQL database server.", "MySql Security", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("The configuration utility could not determine if you entered a non-local host name for your MySql instance. Keep in mind that remote access to MySQL database server is disabled by default for security reasons. If you have trouble connecting, check the security settings on the remote MySQL database server.", "MySql Security", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
