@@ -10,6 +10,9 @@
         <TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" TextWrapping="Wrap" Margin="20,0,20,10">
             Make sure the openPDC configuration is defined before you click next.<LineBreak/><LineBreak/>
             See online <Hyperlink Click="hyperlinkHelp_Click">help</Hyperlink> for more detail...
+            <LineBreak/><LineBreak/>
+            Note that configuration updates for a non-database configuration type are only applied to the openPDC.
+            The openPDC Manager configuration will not be affected by this operation.
         </TextBlock>
     </DockPanel>
 </UserControl>

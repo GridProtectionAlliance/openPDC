@@ -10,8 +10,8 @@
         <StackPanel DockPanel.Dock="Bottom">
             <TextBlock Name="textBlock1" Text="The configuration setup is complete. Click Finish to exit the Configuration Setup Utility." TextAlignment="Center" TextWrapping="Wrap" Margin="20,0,20,10" />
             <StackPanel HorizontalAlignment="Center">
-                <CheckBox Content="Start the openPDC" IsChecked="True" Name="m_serviceStartCheckBox" />
-                <CheckBox Content="Start the openPDC Manager" IsChecked="True" Name="m_managerStartCheckBox" />
+                <CheckBox Content="Start the openPDC" Height="18" IsChecked="True" Name="m_serviceStartCheckBox" />
+                <CheckBox Content="Start the openPDC Manager" Height="18" IsChecked="True" Name="m_managerStartCheckBox" />
             </StackPanel>
         </StackPanel>
     </DockPanel>

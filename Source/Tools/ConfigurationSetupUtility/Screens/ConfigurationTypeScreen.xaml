@@ -10,9 +10,9 @@
         <StackPanel DockPanel.Dock="Bottom">
             <TextBlock Text="Please select the type of configuration to be set up." TextAlignment="Center" TextWrapping="Wrap" Margin="20,0,20,10" />
             <StackPanel HorizontalAlignment="Center">
-                <RadioButton Content="Database" Height="16" Checked="DatabaseRadioButton_Checked" IsChecked="True" Name="m_databaseRadioButton" />
-                <RadioButton Content="XML" Height="16" Checked="XmlRadioButton_Checked" Name="m_xmlRadioButton" />
-                <RadioButton Content="Web service" Height="16" Checked="WebServiceRadioButton_Checked" Name="m_webServiceRadioButton" />
+                <RadioButton Content="Database" Height="18" Checked="DatabaseRadioButton_Checked" IsChecked="True" Name="m_databaseRadioButton" />
+                <RadioButton Content="XML" Height="18" Checked="XmlRadioButton_Checked" Name="m_xmlRadioButton" />
+                <RadioButton Content="Web service" Height="18" Checked="WebServiceRadioButton_Checked" Name="m_webServiceRadioButton" />
             </StackPanel>
             <TextBlock TextAlignment="Center" TextWrapping="Wrap" Margin="20,0,20,10">
                 <LineBreak/>

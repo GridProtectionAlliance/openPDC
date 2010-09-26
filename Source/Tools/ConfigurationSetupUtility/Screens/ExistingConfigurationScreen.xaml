@@ -10,8 +10,8 @@
         <StackPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
             <TextBlock Text="Do you want to set up your openPDC with an existing configuration?" DockPanel.Dock="Top" Margin="20,0,20,10" TextAlignment="Center" />
             <StackPanel HorizontalAlignment="Center">
-                <RadioButton Content="I want to set up a new configuration." Height="16" DockPanel.Dock="Bottom" IsChecked="True" Checked="NewConfigurationRadioButton_Checked" />
-                <RadioButton Content="I want to use my existing configuration." Height="16" DockPanel.Dock="Bottom" Checked="ExistingConfigurationRadioButton_Checked" />
+                <RadioButton Content="I want to set up a new configuration." Height="18" DockPanel.Dock="Bottom" IsChecked="True" Checked="NewConfigurationRadioButton_Checked" />
+                <RadioButton Content="I want to use an existing configuration." Height="18" DockPanel.Dock="Bottom" Checked="ExistingConfigurationRadioButton_Checked" />
             </StackPanel>
         </StackPanel>
     </DockPanel>

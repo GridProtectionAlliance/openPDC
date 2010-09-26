@@ -159,10 +159,17 @@ namespace ConfigurationSetupUtility
         {
             if (m_state != null)
             {
-                Visibility checkBoxVisibility = Convert.ToBoolean(m_state["existing"]) ? Visibility.Collapsed : Visibility.Visible;
+                Visibility existingVisibility = Convert.ToBoolean(m_state["existing"]) ? Visibility.Collapsed : Visibility.Visible;
+                object value;
 
-                m_initialDataScriptCheckBox.Visibility = checkBoxVisibility;
-                m_sampleDataScriptCheckBox.Visibility = checkBoxVisibility;
+                m_initialDataScriptCheckBox.Visibility = existingVisibility;
+                m_sampleDataScriptCheckBox.Visibility = existingVisibility;
+
+                // Show new database warning anytime user will be creating a new database
+                if (m_state.TryGetValue("updateConfiguration", out value))
+                    m_newDatabaseWarning.Visibility = Convert.ToBoolean(value) ? Visibility.Visible : Visibility.Collapsed;
+                else
+                    m_newDatabaseWarning.Visibility = existingVisibility;
 
                 // Access database will not work in 64-bit installations
                 m_accessDatabaseRadioButton.Visibility = Convert.ToBoolean(m_state["64bit"]) ? Visibility.Collapsed : Visibility.Visible;
