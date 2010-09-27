@@ -377,6 +377,15 @@ namespace TVA.PhasorProtocols
         #region [ Methods ]
 
         /// <summary>
+        /// Gets the string respresentation of this <see cref="PhasorDefinitionBase"/>.
+        /// </summary>
+        /// <returns>String respresentation of this <see cref="PhasorDefinitionBase"/>.</returns>
+        public override string ToString()
+        {
+            return (PhasorType == PhasorProtocols.PhasorType.Current ? "I: " : "V: ") + Label;
+        }
+
+        /// <summary>
         /// Populates a <see cref="SerializationInfo"/> with the data needed to serialize the target object.
         /// </summary>
         /// <param name="info">The <see cref="SerializationInfo"/> to populate with data.</param>

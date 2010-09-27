@@ -607,6 +607,15 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Gets the string respresentation of this <see cref="ChannelDefinitionBase"/>.
+        /// </summary>
+        /// <returns>String respresentation of this <see cref="ChannelDefinitionBase"/>.</returns>
+        public override string ToString()
+        {
+            return Label;
+        }
+
+        /// <summary>
         /// Populates a <see cref="SerializationInfo"/> with the data needed to serialize the target object.
         /// </summary>
         /// <param name="info">The <see cref="SerializationInfo"/> to populate with data.</param>

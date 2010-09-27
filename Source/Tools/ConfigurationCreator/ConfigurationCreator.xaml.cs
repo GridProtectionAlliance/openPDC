@@ -1,4 +1,27 @@
-﻿using System;
+﻿//******************************************************************************************************
+//  ConfigurationCreator.xaml.cs - Gbtc
+//
+//  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
+//
+//  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
+//  the NOTICE file distributed with this work for additional information regarding copyright ownership.
+//  The GPA licenses this file to you under the Eclipse Public License -v 1.0 (the "License"); you may
+//  not use this file except in compliance with the License. You may obtain a copy of the License at:
+//
+//      http://www.opensource.org/licenses/eclipse-1.0.php
+//
+//  Unless agreed to in writing, the subject software distributed under the License is distributed on an
+//  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
+//  License for the specific language governing permissions and limitations.
+//
+//  Code Modification History:
+//  ----------------------------------------------------------------------------------------------------
+//  09/27/2010 - J. Ritchie Carroll
+//       Generated original version of source code.
+//
+//******************************************************************************************************
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,19 +45,21 @@ namespace ConfigurationCreationWizard
     /// </summary>
     public partial class ConfigurationCreator : UserControl
     {
+        #region [ Members ]
 
+        // Fields
         private ConfigurationFrame m_configurationFrame;
 
+        #endregion
+
+        #region [ Constructors ]
+
+        /// <summary>
+        /// Creates a new <see cref="ConfigurationCreator"/>.
+        /// </summary>
         public ConfigurationCreator()
         {
             InitializeComponent();
-
-            foreach (PhasorProtocol protocol in Enum.GetValues(typeof(PhasorProtocol)))
-            {
-                comboBoxProtocols.Items.Add(protocol.GetFormattedProtocolName());
-            }
-
-            comboBoxProtocols.SelectedIndex = 0;
 
             m_configurationFrame = new ConfigurationFrame((ushort)0, (Ticks)0, (ushort)30);
 
@@ -42,18 +67,120 @@ namespace ConfigurationCreationWizard
             listBoxDevices.SelectedValuePath = "@IDCode";
         }
 
-        private ConfigurationCell SelectedItem
+        #endregion
+
+        #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets the manually tweaked configuration frame.
+        /// </summary>
+        public IConfigurationFrame ConfigurationFrame
         {
             get
             {
-                int selectedIndex = listBoxDevices.SelectedIndex;
+                return m_configurationFrame;
+            }
+            set
+            {
+                IConfigurationFrame sourceFrame = value;
 
-                if (selectedIndex >= 0 && selectedIndex < m_configurationFrame.Cells.Count)
-                    return m_configurationFrame.Cells[selectedIndex];
+                // Make sure consumer actually provided a valid configuration frame
+                if (sourceFrame != null)
+                {
+                    // Use configuration frame as-is if it already anonymous
+                    ConfigurationFrame derivedFrame = value as ConfigurationFrame;
+
+                    if (derivedFrame == null)
+                    {
+                        // Create a new anonymous configuration frame converted from equivalent configuration information
+                        ConfigurationCell derivedCell;
+                        IFrequencyDefinition sourceFrequency;
+
+                        derivedFrame = new ConfigurationFrame(sourceFrame.IDCode, sourceFrame.Timestamp, sourceFrame.FrameRate);
+
+                        foreach (IConfigurationCell sourceCell in sourceFrame.Cells)
+                        {
+                            // Create new derived configuration cell
+                            derivedCell = new ConfigurationCell(derivedFrame, sourceCell.IDCode);
+
+                            // Create equivalent derived phasor definitions
+                            foreach (IPhasorDefinition sourcePhasor in sourceCell.PhasorDefinitions)
+                            {
+                                derivedCell.PhasorDefinitions.Add(new PhasorDefinition(derivedCell, sourcePhasor.Label, sourcePhasor.ScalingValue, sourcePhasor.PhasorType, null));
+                            }
+
+                            // Create equivalent dervied frequency definition
+                            sourceFrequency = sourceCell.FrequencyDefinition;
+
+                            if (sourceFrequency != null)
+                                derivedCell.FrequencyDefinition = new FrequencyDefinition(derivedCell, sourceFrequency.Label);
+
+                            // Create equivalent dervied analog definitions (assuming analog type = SinglePointOnWave)
+                            foreach (IAnalogDefinition sourceAnalog in sourceCell.AnalogDefinitions)
+                            {
+                                derivedCell.AnalogDefinitions.Add(new AnalogDefinition(derivedCell, sourceAnalog.Label, sourceAnalog.ScalingValue, sourceAnalog.AnalogType));
+                            }
+
+                            // Create equivalent dervied digital definitions
+                            foreach (IDigitalDefinition sourceDigital in sourceCell.DigitalDefinitions)
+                            {
+                                derivedCell.DigitalDefinitions.Add(new DigitalDefinition(derivedCell, sourceDigital.Label, 0));
+                            }
+
+                            // Add cell to frame
+                            derivedFrame.Cells.Add(derivedCell);
+                        }
+                    }
+                    
+                    // Update working configuration frame and refresh the screen binding
+                    m_configurationFrame = derivedFrame;
+                    m_configurationFrame.Cells.RefreshBinding();
+                    
+                    if (m_configurationFrame.Cells.Count > 0)
+                        listBoxDevices.SelectedIndex = 0;
+                }
+            }
+        }
+
+        // Gets the currently selected device, no null if no devices exist or are selected
+        private ConfigurationCell SelectedDevice
+        {
+            get
+            {
+                if (listBoxDevices != null && m_configurationFrame != null && m_configurationFrame.Cells.Count > 0)
+                {
+                    int selectedIndex = listBoxDevices.SelectedIndex;
+
+                    if (selectedIndex >= 0 && selectedIndex < m_configurationFrame.Cells.Count)
+                        return m_configurationFrame.Cells[selectedIndex];
+                }
 
                 return null;
             }
         }
+
+        // Gets the currently selected phasor, no null if no phasors exist or are selected
+        private PhasorDefinition SelectedPhasor
+        {
+            get
+            {
+                ConfigurationCell selectedDevice = this.SelectedDevice;
+
+                if (listBoxPhasors != null && selectedDevice != null && selectedDevice.PhasorDefinitions.Count > 0)
+                {
+                    int selectedIndex = listBoxPhasors.SelectedIndex;
+
+                    if (selectedIndex >= 0 && selectedIndex < selectedDevice.PhasorDefinitions.Count)
+                        return selectedDevice.PhasorDefinitions[selectedIndex] as PhasorDefinition;
+                }
+
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region [ Methods ]
 
         private void buttonDeviceAdd_Click(object sender, RoutedEventArgs e)
         {
@@ -68,7 +195,7 @@ namespace ConfigurationCreationWizard
         private void buttonDeviceDelete_Click(object sender, RoutedEventArgs e)
         {
             m_configurationFrame.Cells.Remove(listBoxDevices.SelectedItem as IConfigurationCell);
-            
+
             if (m_configurationFrame.Cells.Count > 0)
                 listBoxDevices.SelectedIndex = 0;
         }
@@ -77,52 +204,52 @@ namespace ConfigurationCreationWizard
         {
             if (listBoxDevices.SelectedItems.Count > 0)
             {
-                ConfigurationCell[] selectedItems = listBoxDevices.SelectedItems.Cast<ConfigurationCell>().ToArray();
+                ConfigurationCell[] selectedDevices = listBoxDevices.SelectedItems.Cast<ConfigurationCell>().ToArray();
 
-                foreach (ConfigurationCell selectedItem in selectedItems)
+                foreach (ConfigurationCell selectedDevice in selectedDevices)
                 {
-                    if (selectedItem != null)
-                        CopyCell(selectedItem);
+                    if (selectedDevice != null)
+                        CopyDevice(selectedDevice);
                 }
             }
             else
                 MessageBox.Show("No items were selected to copy.");
         }
 
-        private void CopyCell(ConfigurationCell sourceCell)
+        private void CopyDevice(ConfigurationCell sourceDevice)
         {
             // Create a new configuration cell to hold copied information
-            ConfigurationCell copiedCell = new ConfigurationCell(m_configurationFrame, 0);
+            ConfigurationCell copiedDevice = new ConfigurationCell(m_configurationFrame, 0);
 
-            copiedCell.IDCode = (ushort)m_configurationFrame.Cells.Count;
-            copiedCell.IDLabel = "Device " + (copiedCell.IDCode + 1);
+            copiedDevice.IDCode = (ushort)m_configurationFrame.Cells.Count;
+            copiedDevice.IDLabel = "Device " + (copiedDevice.IDCode + 1);
 
             // Create equivalent derived phasor definitions
-            foreach (PhasorDefinition sourcePhasor in sourceCell.PhasorDefinitions)
+            foreach (PhasorDefinition sourcePhasor in sourceDevice.PhasorDefinitions)
             {
-                copiedCell.PhasorDefinitions.Add(new PhasorDefinition(copiedCell, sourcePhasor.Label, sourcePhasor.ScalingValue, sourcePhasor.PhasorType, null));
+                copiedDevice.PhasorDefinitions.Add(new PhasorDefinition(copiedDevice, sourcePhasor.Label, sourcePhasor.ScalingValue, sourcePhasor.PhasorType, null));
             }
 
             // Create equivalent dervied frequency definition
-            IFrequencyDefinition sourceFrequency = sourceCell.FrequencyDefinition;
+            IFrequencyDefinition sourceFrequency = sourceDevice.FrequencyDefinition;
 
             if (sourceFrequency != null)
-                copiedCell.FrequencyDefinition = new FrequencyDefinition(copiedCell, sourceFrequency.Label);
+                copiedDevice.FrequencyDefinition = new FrequencyDefinition(copiedDevice, sourceFrequency.Label);
 
             // Create equivalent dervied analog definitions (assuming analog type = SinglePointOnWave)
-            foreach (AnalogDefinition sourceAnalog in sourceCell.AnalogDefinitions)
+            foreach (AnalogDefinition sourceAnalog in sourceDevice.AnalogDefinitions)
             {
-                copiedCell.AnalogDefinitions.Add(new AnalogDefinition(copiedCell, sourceAnalog.Label, sourceAnalog.ScalingValue, sourceAnalog.AnalogType));
+                copiedDevice.AnalogDefinitions.Add(new AnalogDefinition(copiedDevice, sourceAnalog.Label, sourceAnalog.ScalingValue, sourceAnalog.AnalogType));
             }
 
             // Create equivalent dervied digital definitions
-            foreach (DigitalDefinition sourceDigital in sourceCell.DigitalDefinitions)
+            foreach (DigitalDefinition sourceDigital in sourceDevice.DigitalDefinitions)
             {
-                copiedCell.DigitalDefinitions.Add(new DigitalDefinition(copiedCell, sourceDigital.Label, sourceDigital.MaskValue));
+                copiedDevice.DigitalDefinitions.Add(new DigitalDefinition(copiedDevice, sourceDigital.Label, sourceDigital.MaskValue));
             }
 
             // Add new copied cell to the list and select it
-            m_configurationFrame.Cells.Add(copiedCell);
+            m_configurationFrame.Cells.Add(copiedDevice);
             listBoxDevices.SelectedIndex = (m_configurationFrame.Cells.Count - 1);
         }
 
@@ -132,9 +259,9 @@ namespace ConfigurationCreationWizard
 
             if (selectedIndex > 0 && selectedIndex < m_configurationFrame.Cells.Count)
             {
-                ConfigurationCell selectedItem = m_configurationFrame.Cells[selectedIndex];
+                ConfigurationCell selectedDevice = m_configurationFrame.Cells[selectedIndex];
                 m_configurationFrame.Cells.RemoveAt(selectedIndex);
-                m_configurationFrame.Cells.Insert(selectedIndex - 1, selectedItem);
+                m_configurationFrame.Cells.Insert(selectedIndex - 1, selectedDevice);
                 listBoxDevices.SelectedIndex = selectedIndex - 1;
             }
         }
@@ -145,32 +272,62 @@ namespace ConfigurationCreationWizard
 
             if (selectedIndex >= 0 && selectedIndex < m_configurationFrame.Cells.Count - 1)
             {
-                ConfigurationCell selectedItem = m_configurationFrame.Cells[selectedIndex];
+                ConfigurationCell selectedDevice = m_configurationFrame.Cells[selectedIndex];
                 m_configurationFrame.Cells.RemoveAt(selectedIndex);
-                m_configurationFrame.Cells.Insert(selectedIndex + 1, selectedItem);
+                m_configurationFrame.Cells.Insert(selectedIndex + 1, selectedDevice);
                 listBoxDevices.SelectedIndex = selectedIndex + 1;
             }
         }
 
         private void listBoxDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ConfigurationCell selectedItem = this.SelectedItem;
+            ConfigurationCell selectedDevice = this.SelectedDevice;
 
-            if (selectedItem != null)
+            if (selectedDevice != null)
             {
-                textBoxName.Text = selectedItem.IDLabel;
-                textBoxDeviceIDCode.Text = selectedItem.IDCode.ToString();
+                textBoxDeviceName.Text = selectedDevice.IDLabel;
+                textBoxDeviceIDCode.Text = selectedDevice.IDCode.ToString();
+
+                if (selectedDevice.PhasorCoordinateFormat == TVA.PhasorProtocols.CoordinateFormat.Polar)
+                    radioButtonPhasorPolar.IsChecked = true;
+                else
+                    radioButtonPhasorRectangular.IsChecked = true;
+
+                if (selectedDevice.PhasorDataFormat == TVA.PhasorProtocols.DataFormat.FloatingPoint)
+                    radioButtonPhasorFloatingPoint.IsChecked = true;
+                else
+                    radioButtonPhasorScaledInteger.IsChecked = true;
+
+                if (selectedDevice.FrequencyDataFormat == TVA.PhasorProtocols.DataFormat.FloatingPoint)
+                    radioButtonFrequencyFloatingPoint.IsChecked = true;
+                else
+                    radioButtonFrequencyScaledInteger.IsChecked = true;
+
+                if (selectedDevice.AnalogDataFormat == TVA.PhasorProtocols.DataFormat.FloatingPoint)
+                    radioButtonAnalogFloatingPoint.IsChecked = true;
+                else
+                    radioButtonAnalogScaledInteger.IsChecked = true;
+
+                textBoxAnalogs.Text = selectedDevice.AnalogDefinitions.Count.ToString();
+
+                textBoxDigitals.Text = selectedDevice.DigitalDefinitions.Count.ToString();
+
+                listBoxPhasors.ItemsSource = selectedDevice.PhasorDefinitions;
+                listBoxPhasors.SelectedValuePath = "@Index";
+
+                if (selectedDevice.PhasorDefinitions.Count > 0)
+                    listBoxPhasors.SelectedIndex = 0;
             }
         }
 
         private void textBoxName_TextChanged(object sender, TextChangedEventArgs e)
         {
-            ConfigurationCell selectedItem = this.SelectedItem;
+            ConfigurationCell selectedDevice = this.SelectedDevice;
 
-            if (selectedItem != null)
+            if (selectedDevice != null)
             {
-                selectedItem.IDLabel = textBoxName.Text;
-                //listBoxDevices.InputBindings
+                selectedDevice.IDLabel = textBoxDeviceName.Text;
+                m_configurationFrame.Cells.RefreshBinding();
             }
         }
 
@@ -178,22 +335,363 @@ namespace ConfigurationCreationWizard
         {
             textBoxDeviceIDCode.Text = textBoxDeviceIDCode.Text.RemoveCharacters(c => !Char.IsDigit(c));
 
-            ConfigurationCell selectedItem = this.SelectedItem;
+            ConfigurationCell selectedDevice = this.SelectedDevice;
 
-            if (selectedItem != null)
+            if (selectedDevice != null)
             {
                 ushort idCode;
 
                 if (ushort.TryParse(textBoxDeviceIDCode.Text, out idCode))
-                    selectedItem.IDCode = idCode;
+                    selectedDevice.IDCode = GenerateUniqueIDCode(idCode);
                 else
-                    textBoxDeviceIDCode.Text = "0";
+                    textBoxDeviceIDCode.Text = GenerateUniqueIDCode((ushort)m_configurationFrame.Cells.Count).ToString();
             }
+        }
+
+        private ushort GenerateUniqueIDCode(ushort suggested)
+        {
+            IConfigurationCell cell;
+
+            // If suggested ID code already exists, try another
+            if (m_configurationFrame.Cells.TryGetByIDCode(suggested, out cell) && cell != this.SelectedDevice)
+                return GenerateUniqueIDCode((ushort)(suggested + 1));
+
+            return suggested;
         }
 
         private void textBoxDeviceIDCode_PreviewKeyUp(object sender, KeyEventArgs e)
         {
             textBoxDeviceIDCode.Text = textBoxDeviceIDCode.Text.RemoveCharacters(c => !Char.IsDigit(c));
         }
+
+        private void radioButtonPhasorPolar_Checked(object sender, RoutedEventArgs e)
+        {
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+                selectedDevice.PhasorCoordinateFormat = TVA.PhasorProtocols.CoordinateFormat.Polar;
+        }
+
+        private void radioButtonPhasorRectangular_Checked(object sender, RoutedEventArgs e)
+        {
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+                selectedDevice.PhasorCoordinateFormat = TVA.PhasorProtocols.CoordinateFormat.Rectangular;
+        }
+
+        private void radioButtonPhasorFloatingPoint_Checked(object sender, RoutedEventArgs e)
+        {
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+                selectedDevice.PhasorDataFormat = TVA.PhasorProtocols.DataFormat.FloatingPoint;
+        }
+
+        private void radioButtonPhasorScaledInteger_Checked(object sender, RoutedEventArgs e)
+        {
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+                selectedDevice.PhasorDataFormat = TVA.PhasorProtocols.DataFormat.FixedInteger;
+        }
+
+        private void radioButtonFrequencyFloatingPoint_Checked(object sender, RoutedEventArgs e)
+        {
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+                selectedDevice.FrequencyDataFormat = TVA.PhasorProtocols.DataFormat.FloatingPoint;
+        }
+
+        private void radioButtonFrequencyScaledInteger_Checked(object sender, RoutedEventArgs e)
+        {
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+                selectedDevice.FrequencyDataFormat = TVA.PhasorProtocols.DataFormat.FixedInteger;
+        }
+
+        private void radioButtonAnalogFloatingPoint_Checked(object sender, RoutedEventArgs e)
+        {
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+                selectedDevice.AnalogDataFormat = TVA.PhasorProtocols.DataFormat.FloatingPoint;
+        }
+
+        private void radioButtonAnalogScaledInteger_Checked(object sender, RoutedEventArgs e)
+        {
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+                selectedDevice.AnalogDataFormat = TVA.PhasorProtocols.DataFormat.FixedInteger;
+        }
+
+        private void textBoxAnalogs_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            textBoxAnalogs.Text = textBoxAnalogs.Text.RemoveCharacters(c => !Char.IsDigit(c));
+
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+            {
+                ushort analogCount;
+
+                if (ushort.TryParse(textBoxAnalogs.Text, out analogCount))
+                {
+                    int difference = analogCount - selectedDevice.AnalogDefinitions.Count;
+
+                    if (difference > 0)
+                    {
+                        for (int i = 0; i < difference; i++)
+                        {
+                            selectedDevice.AnalogDefinitions.Add(new AnalogDefinition(selectedDevice, "Analog " + selectedDevice.AnalogDefinitions.Count, 0, AnalogType.SinglePointOnWave));
+                        }
+                    }
+                    else if (difference < 0)
+                    {
+                        for (int i = 0; i < difference; i++)
+                        {
+                            selectedDevice.AnalogDefinitions.RemoveAt(selectedDevice.AnalogDefinitions.Count - 1);
+                        }
+                    }
+                }
+                else
+                    selectedDevice.AnalogDefinitions.Clear();
+            }
+        }
+
+        private void textBoxDigitals_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            textBoxDigitals.Text = textBoxDigitals.Text.RemoveCharacters(c => !Char.IsDigit(c));
+
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+            {
+                ushort digitalCount;
+
+                if (ushort.TryParse(textBoxDigitals.Text, out digitalCount))
+                {
+                    int difference = digitalCount - selectedDevice.DigitalDefinitions.Count;
+
+                    if (difference > 0)
+                    {
+                        for (int i = 0; i < difference; i++)
+                        {
+                            selectedDevice.DigitalDefinitions.Add(new DigitalDefinition(selectedDevice, "Digital " + selectedDevice.DigitalDefinitions.Count, 0));
+                        }
+                    }
+                    else if (difference < 0)
+                    {
+                        for (int i = 0; i < difference; i++)
+                        {
+                            selectedDevice.DigitalDefinitions.RemoveAt(selectedDevice.DigitalDefinitions.Count - 1);
+                        }
+                    }
+                }
+                else
+                    selectedDevice.DigitalDefinitions.Clear();
+            }
+        }
+
+        private void textBoxAnalogs_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            textBoxAnalogs.Text = textBoxAnalogs.Text.RemoveCharacters(c => !Char.IsDigit(c));
+        }
+
+        private void textBoxDigitals_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            textBoxDigitals.Text = textBoxDigitals.Text.RemoveCharacters(c => !Char.IsDigit(c));
+        }
+
+        private void listBoxPhasors_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            PhasorDefinition selectedPhasor = this.SelectedPhasor;
+
+            if (selectedPhasor != null)
+            {
+                textBoxPhasorLabel.Text = selectedPhasor.Label;
+                textBoxPhasorScale.Text = selectedPhasor.ScalingValue.ToString();
+                textBoxPhasorOffset.Text = selectedPhasor.Offset.ToString();
+
+                if (selectedPhasor.PhasorType == PhasorType.Current)
+                    radioButtonPhasorTypeCurrent.IsChecked = true;
+                else
+                    radioButtonPhasorTypeVoltage.IsChecked = true;
+            }
+        }
+
+        private void buttonPhasorAdd_Click(object sender, RoutedEventArgs e)
+        {
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+            {
+                PhasorDefinition phasor = new PhasorDefinition(selectedDevice, "Phasor " + (selectedDevice.PhasorDefinitions.Count + 1), 1, PhasorType.Current, null);
+                selectedDevice.PhasorDefinitions.Add(phasor);
+                listBoxPhasors.SelectedIndex = (selectedDevice.PhasorDefinitions.Count - 1);
+            }
+        }
+
+        private void buttonPhasorCopy_Click(object sender, RoutedEventArgs e)
+        {
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+            {
+                if (listBoxPhasors.SelectedItems.Count > 0)
+                {
+                    IPhasorDefinition[] selectedPhasors = listBoxPhasors.SelectedItems.Cast<IPhasorDefinition>().ToArray();
+
+                    foreach (IPhasorDefinition selectedPhasor in selectedPhasors)
+                    {
+                        if (selectedPhasor != null)
+                            selectedDevice.PhasorDefinitions.Add(new PhasorDefinition(selectedDevice, "Phasor " + (selectedDevice.PhasorDefinitions.Count + 1), selectedPhasor.ScalingValue, selectedPhasor.PhasorType, null));
+                    }
+                }
+                else
+                    MessageBox.Show("No items were selected to copy.");
+            }
+        }
+
+        private void buttonPhasorDelete_Click(object sender, RoutedEventArgs e)
+        {
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+            {
+                selectedDevice.PhasorDefinitions.Remove(listBoxPhasors.SelectedItem as IPhasorDefinition);
+
+                if (selectedDevice.PhasorDefinitions.Count > 0)
+                    listBoxPhasors.SelectedIndex = 0;
+            }
+        }
+
+        private void buttonPhasorMoveUp_Click(object sender, RoutedEventArgs e)
+        {
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+            {
+                int selectedIndex = listBoxPhasors.SelectedIndex;
+
+                if (selectedIndex > 0 && selectedIndex < selectedDevice.PhasorDefinitions.Count)
+                {
+                    IPhasorDefinition selectedPhasor = selectedDevice.PhasorDefinitions[selectedIndex];
+                    selectedDevice.PhasorDefinitions.RemoveAt(selectedIndex);
+                    selectedDevice.PhasorDefinitions.Insert(selectedIndex - 1, selectedPhasor);
+                    listBoxPhasors.SelectedIndex = selectedIndex - 1;
+                }
+            }
+        }
+
+        private void buttonPhasorMoveDown_Click(object sender, RoutedEventArgs e)
+        {
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+            {
+                int selectedIndex = listBoxPhasors.SelectedIndex;
+
+                if (selectedIndex >= 0 && selectedIndex < selectedDevice.PhasorDefinitions.Count - 1)
+                {
+                    IPhasorDefinition selectedPhasor = selectedDevice.PhasorDefinitions[selectedIndex];
+                    selectedDevice.PhasorDefinitions.RemoveAt(selectedIndex);
+                    selectedDevice.PhasorDefinitions.Insert(selectedIndex + 1, selectedPhasor);
+                    listBoxPhasors.SelectedIndex = selectedIndex + 1;
+                }
+            }
+        }
+
+        private void textBoxPhasorLabel_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+            IPhasorDefinition selectedPhasor = this.SelectedPhasor;
+
+            if (selectedDevice != null && selectedPhasor != null)
+            {
+                selectedPhasor.Label = textBoxPhasorLabel.Text;
+                selectedDevice.PhasorDefinitions.RefreshBinding();
+            }
+        }
+
+        private void textBoxPhasorScale_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            textBoxPhasorScale.Text = textBoxPhasorScale.Text.RemoveCharacters(c => !Char.IsDigit(c));
+
+            IPhasorDefinition selectedPhasor = this.SelectedPhasor;
+
+            if (selectedPhasor != null)
+            {
+                ushort scale;
+
+                if (ushort.TryParse(textBoxPhasorScale.Text, out scale))
+                {
+                    if (scale > selectedPhasor.MaximumScalingValue)
+                        selectedPhasor.ScalingValue = selectedPhasor.MaximumScalingValue;
+                    else
+                        selectedPhasor.ScalingValue = scale;
+                }
+                else
+                    textBoxPhasorScale.Text = "1";
+            }
+        }
+
+        private void textBoxPhasorOffset_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            textBoxPhasorOffset.Text = textBoxPhasorOffset.Text.RemoveCharacters(c => !Char.IsNumber(c) && c != '.' && c != '+' && c != '-');
+
+            IPhasorDefinition selectedPhasor = this.SelectedPhasor;
+
+            if (selectedPhasor != null)
+            {
+                double offset;
+
+                if (double.TryParse(textBoxPhasorOffset.Text, out offset))
+                    selectedPhasor.Offset = offset;
+                else
+                    textBoxPhasorOffset.Text = "0";
+            }
+        }
+
+        private void textBoxPhasorScale_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            textBoxPhasorScale.Text = textBoxPhasorScale.Text.RemoveCharacters(c => !Char.IsDigit(c));
+        }
+
+        private void textBoxPhasorOffset_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            textBoxPhasorOffset.Text = textBoxPhasorOffset.Text.RemoveCharacters(c => !Char.IsNumber(c) && c != '.' && c != '+' && c != '-');
+        }
+
+        private void radioButtonPhasorTypeCurrent_Checked(object sender, RoutedEventArgs e)
+        {
+            IPhasorDefinition selectedPhasor = this.SelectedPhasor;
+
+            if (selectedPhasor != null)
+                selectedPhasor.PhasorType = PhasorType.Current;
+
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+                selectedDevice.PhasorDefinitions.RefreshBinding();
+        }
+
+        private void radioButtonPhasorTypeVoltage_Checked(object sender, RoutedEventArgs e)
+        {
+            IPhasorDefinition selectedPhasor = this.SelectedPhasor;
+
+            if (selectedPhasor != null)
+                selectedPhasor.PhasorType = PhasorType.Voltage;
+
+            ConfigurationCell selectedDevice = this.SelectedDevice;
+
+            if (selectedDevice != null)
+                selectedDevice.PhasorDefinitions.RefreshBinding();
+        }
+
+        #endregion
     }
 }

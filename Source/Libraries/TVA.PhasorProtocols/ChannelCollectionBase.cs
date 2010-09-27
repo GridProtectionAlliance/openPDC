@@ -451,6 +451,15 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Manually sends a <see cref="NotifyCollectionChangedAction.Reset"/> to the collection changed event.
+        /// </summary>
+        public virtual void RefreshBinding()
+        {
+            if (CollectionChanged != null)
+                CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        /// <summary>
         /// Inserts an element into the <see cref="ChannelCollectionBase{T}"/> at the specified index.
         /// </summary>
         /// <param name="index">The zero-based index at which item should be inserted.</param>
