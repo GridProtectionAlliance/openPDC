@@ -19,13 +19,18 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="# Of Messages On Monitor" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="# Of Messages On Console" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
                     <TextBox x:Name="TextBoxNumberOfMessagesOnMonitor" Grid.Row="0" Grid.Column="1" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <CheckBox x:Name="CheckboxForceIPv4" Content="Force IPv4" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
 
-                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Text="Last Cached Settings For Input Status &amp; Monitoring" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                    <TextBox x:Name="TextBoxLastSettings" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap" />
+                                        
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                         <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Restore Default Settings" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
                             <Button.RenderTransform>
                                 <ScaleTransform x:Name="ButtonClearTransform" ScaleX="1" ScaleY="1" />

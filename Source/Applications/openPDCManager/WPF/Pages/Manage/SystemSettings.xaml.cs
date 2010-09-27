@@ -27,6 +27,7 @@ using System.Windows.Controls;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using System.Windows.Media.Imaging;
+using System.Collections.Generic;
 
 namespace openPDCManager.Pages.Manage
 {
@@ -61,6 +62,8 @@ namespace openPDCManager.Pages.Manage
 
             //Load Default Settings.
             IsolatedStorageManager.SetDefuaultStorage(true);
+            //Clear values for Input Status & Monitoring Screen.
+            IsolatedStorageManager.SaveIntoIsolatedStorage("InputMonitoringPoints", string.Empty);
 
             LoadSettingsFromIsolatedStorage();
 
@@ -86,6 +89,8 @@ namespace openPDCManager.Pages.Manage
                 if (!string.IsNullOrEmpty(TextBoxNumberOfMessagesOnMonitor.Text))
                     IsolatedStorageManager.SaveIntoIsolatedStorage("NumberOfMessages", Convert.ToInt32(TextBoxNumberOfMessagesOnMonitor.Text));
 
+                IsolatedStorageManager.SaveIntoIsolatedStorage("InputMonitoringPoints", TextBoxLastSettings.Text);
+                    
                 LoadSettingsFromIsolatedStorage();
 
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Successfully Saved System Settings", SystemMessage = string.Empty, UserMessageType = MessageType.Success },
@@ -113,6 +118,7 @@ namespace openPDCManager.Pages.Manage
         {
             TextBoxNumberOfMessagesOnMonitor.Text = IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfMessages") == null ? "50" : IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfMessages").ToString();            
             CheckboxForceIPv4.IsChecked = IsolatedStorageManager.ReadFromIsolatedStorage("ForceIPv4") == null ? true : Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("ForceIPv4"));
+            TextBoxLastSettings.Text = IsolatedStorageManager.ReadFromIsolatedStorage("InputMonitoringPoints").ToString();
         }
 
         bool IsValid()

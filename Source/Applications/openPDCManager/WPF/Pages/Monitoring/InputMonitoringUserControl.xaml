@@ -88,7 +88,7 @@
                     <TextBlock x:Name="TextBlockRefreshInterval" Text="Refresh Interval: 10 sec" Grid.Row="0" Grid.Column="0"  HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="{StaticResource SmallTextSize}" Padding="5"/>
                     <TextBlock x:Name="TextBlockLastRefresh" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="{StaticResource SmallTextSize}" Padding="5"/>
 
-                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">                        
                         <Button x:Name="ButtonSave" Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Save Display Settings" ToolTip="Click Here to Save Current Display Settings" VerticalAlignment="Center" Click="ButtonSave_Click"/>
                         <TextBlock Text="|" Margin="5,0,5,0" VerticalAlignment="Center" />
                         <Button x:Name="ButtonLoad" Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Load Display Settings" ToolTip="Click Here to Load Previous Display Settings" VerticalAlignment="Center" Margin="0,0,5,0" Click="ButtonLoad_Click"/>
