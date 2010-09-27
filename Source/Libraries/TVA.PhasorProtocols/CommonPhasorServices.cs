@@ -1536,18 +1536,18 @@ namespace TVA.PhasorProtocols
                     Directory.CreateDirectory(statisticsPath);
 
                 // Make sure needed statistic historian configuration settings are properly defined
-                settings = configFile.Settings["statMetadataFile"];                
+                settings = configFile.Settings["statMetadataFile"];
                 settings.Add("FileName", "Statistics\\stat_dbase.dat", "Name of the statistics meta-data file including its path.");
                 settings.Add("LoadOnOpen", true, "True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the statistics meta-data file.");
                 settings.Add("ReloadOnModify", true, "True if file records loaded in memory are to be re-loaded when file is modified on disk; otherwise False - this defaults to True for the statistics meta-data file.");
 
-                settings = configFile.Settings["statStateFile"];                
+                settings = configFile.Settings["statStateFile"];
                 settings.Add("FileName", "Statistics\\stat_startup.dat", "Name of the statistics state file including its path.");
                 settings.Add("AutoSaveInterval", 10000, "Interval in milliseconds at which the file records loaded in memory are to be saved automatically to disk. Use -1 to disable automatic saving - this defaults to 10,000 for the statistics state file.");
                 settings.Add("LoadOnOpen", true, "True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the statistics state file.");
                 settings.Add("SaveOnClose", true, "True if file records loaded in memory are to be saved to disk when file is closed; otherwise False - this defaults to True for the statistics state file.");
 
-                settings = configFile.Settings["statIntercomFile"];                
+                settings = configFile.Settings["statIntercomFile"];
                 settings.Add("FileName", "Statistics\\scratch.dat", "Name of the statistics intercom file including its path.");
                 settings.Add("AutoSaveInterval", 10000, "Interval in milliseconds at which the file records loaded in memory are to be saved automatically to disk. Use -1 to disable automatic saving - this defaults to 10,000 for the statistics intercom file.");
                 settings.Add("LoadOnOpen", true, "True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the statistics intercom file.");
@@ -1565,7 +1565,7 @@ namespace TVA.PhasorProtocols
                 settings = configFile.Settings["statTimeSeriesDataService"];
                 settings.Add("Enabled", true, "True if this web service is enabled; otherwise False - this defaults to True for the statistics time-series data service.");
                 settings.Add("ServiceUri", "http://localhost:6052/historian", "URI where this web service is to be hosted - this defaults to http://localhost:6052/historian for the statistics time-series data service.");
-                
+
                 configFile.Save();
 
                 // Get the needed statistic related IDs
@@ -1581,8 +1581,12 @@ namespace TVA.PhasorProtocols
                 IEnumerable<DataRow> inputStreamStatistics = statistics.Where(row => string.Compare(row.Field<string>("Source"), "InputStream", true) == 0);
                 IEnumerable<DataRow> outputStreamStatistics = statistics.Where(row => string.Compare(row.Field<string>("Source"), "OutputStream", true) == 0);
 
+                IEnumerable<DataRow> outputStreamDevices;
+                FundamentalSignalType[] validOutputStreamTypes = { FundamentalSignalType.Angle, FundamentalSignalType.Magnitude, FundamentalSignalType.Frequency, FundamentalSignalType.DfDt, FundamentalSignalType.Status, FundamentalSignalType.Analog, FundamentalSignalType.Digital };
+                List<int> measurementIDsToDelete = new List<int>();
+                SignalReference deviceSignalReference;
                 string acronym, signalReference, pointTag, company, vendorDevice, description;
-                int signalIndex;
+                int adapterID, signalIndex;
 
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Validating device statistic measurements..."));
 
@@ -1603,9 +1607,9 @@ namespace TVA.PhasorProtocols
                             description = string.Format("{0} {1} Statistic for {2}", device.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
                             using (IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, device.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
-                            {                                
-                                command.ExecuteNonQuery();  
-                            } 
+                            {
+                                command.ExecuteNonQuery();
+                            }
                         }
                     }
                 }
@@ -1636,14 +1640,16 @@ namespace TVA.PhasorProtocols
                     }
                 }
 
-                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating output stream statistic measurements..."));
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating output stream statistic and device measurements..."));
 
                 // Make sure needed output stream statistic measurements exist
                 foreach (DataRow outputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM OutputStream WHERE NodeID = {0};", nodeIDQueryString)).Rows)
                 {
+                    adapterID = outputStream.Field<int>("ID");
+                    acronym = outputStream.Field<string>("Acronym") + "!OS";
+
                     foreach (DataRow statistic in outputStreamStatistics)
                     {
-                        acronym = outputStream.Field<string>("Acronym") + "!OS";
                         signalIndex = statistic.Field<int>("SignalIndex");
                         signalReference = SignalReference.ToString(acronym, FundamentalSignalType.Statistic, signalIndex);
 
@@ -1662,6 +1668,42 @@ namespace TVA.PhasorProtocols
                                 command.ExecuteNonQuery();
                             }
                         }
+                    }
+
+                    // Load devices associated with this output stream
+                    outputStreamDevices = connection.RetrieveData(adapterType, string.Format("SELECT * FROM OutputStreamDevice WHERE AdapterID = {0} AND NodeID = {1};", adapterID, nodeIDQueryString)).AsEnumerable();
+
+                    // Validate measurements associated with this output stream
+                    foreach (DataRow outputStreamMeasurement in connection.RetrieveData(adapterType, string.Format("SELECT * FROM OutputStreamMeasurement WHERE AdapterID = {0} AND NodeID = {1};", adapterID, nodeIDQueryString)).Rows)
+                    {
+                        // Parse output stream measurement signal reference
+                        deviceSignalReference = new SignalReference(outputStreamMeasurement.Field<string>("SignalReference"));
+
+                        // Validate that the signal reference is associated with one of the output stream's devices
+                        if (!outputStreamDevices.Any(row => string.Compare(row.Field<string>("Acronym"), deviceSignalReference.Acronym, true) == 0))
+                        {
+                            // This measurement has a signal reference for a device that is not part of the associated output stream, so we mark it for deletion
+                            measurementIDsToDelete.Add(outputStreamMeasurement.Field<int>("ID"));
+                        }
+                        else
+                        {
+                            // Validate that the signal reference type is valid for an output stream
+                            if (!validOutputStreamTypes.Any(type => type == deviceSignalReference.Type))
+                            {
+                                // This measurement has a signal reference type that is invalid for an output stream, so we mark it for deletion
+                                measurementIDsToDelete.Add(outputStreamMeasurement.Field<int>("ID"));
+                            }
+                        }
+                    }
+                }
+
+                if (measurementIDsToDelete.Count > 0)
+                {
+                    statusMessage("CommonPhasorServices", new EventArgs<string>(string.Format("Removing {0} unused output stream device measurements...", measurementIDsToDelete.Count)));
+
+                    foreach (int measurementID in measurementIDsToDelete)
+                    {
+                        connection.ExecuteNonQuery(string.Format("DELETE FROM OutputStreamMeasurement WHERE ID = {0} AND NodeID = {1};", measurementID, nodeIDQueryString));
                     }
                 }
             }
@@ -1701,7 +1743,7 @@ namespace TVA.PhasorProtocols
             command.CommandText = sql;
             return command;
         }
-        
+
         /// <summary>
         /// Creates the default node for the Node table.
         /// </summary>
