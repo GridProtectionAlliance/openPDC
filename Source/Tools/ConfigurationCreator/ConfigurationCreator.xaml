@@ -13,41 +13,41 @@
         <Label Content="ID Code:" Height="28" HorizontalAlignment="Left" Margin="241,46,0,0" Name="labelIDCode" VerticalAlignment="Top" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" />
         <GroupBox Header="Device Details" Height="435" HorizontalAlignment="Left" Margin="7,88,0,0" Name="groupBoxDeviceDetails" VerticalAlignment="Top" Width="931">
             <Grid>
-                <TextBox Height="23" HorizontalAlignment="Left" Margin="321,44,0,0" Name="textBoxDeviceIDCode" VerticalAlignment="Top" Width="62" />
-                <Label Content="Device ID Code:" Height="28" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="221,39,0,0" Name="label1" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-                <TextBox Height="23" HorizontalAlignment="Left" Margin="321,11,0,0" Name="textBoxName" VerticalAlignment="Top" Width="142" />
-                <Label Content="Name:" Height="28" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="271,6,0,0" Name="label2" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-                <GroupBox Header="Phasor Coordinate Format" Height="88" HorizontalAlignment="Left" Margin="226,82,0,0" Name="groupBoxPhasorCoordinateFormat" VerticalAlignment="Top" Width="167">
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="327,44,0,0" Name="textBoxDeviceIDCode" VerticalAlignment="Top" Width="62" TextChanged="textBoxDeviceIDCode_TextChanged" PreviewKeyUp="textBoxDeviceIDCode_PreviewKeyUp" />
+                <Label Content="Device ID Code:" Height="28" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="227,39,0,0" Name="label1" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="327,11,0,0" Name="textBoxName" VerticalAlignment="Top" Width="142" TextChanged="textBoxName_TextChanged" />
+                <Label Content="Name:" Height="28" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="277,6,0,0" Name="label2" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                <GroupBox Header="Phasor Coordinate Format" Height="88" HorizontalAlignment="Left" Margin="232,82,0,0" Name="groupBoxPhasorCoordinateFormat" VerticalAlignment="Top" Width="167">
                     <Grid Height="56" Width="148">
                         <RadioButton Content="Polar" GroupName="PhasorCoordinateFormat" Height="16" HorizontalAlignment="Left" Margin="14,7,0,0" Name="radioButtonPhasorPolar" VerticalAlignment="Top" IsChecked="True" />
                         <RadioButton Content="Retangular" GroupName="PhasorCoordinateFormat" Height="16" HorizontalAlignment="Left" Margin="14,29,0,0" Name="radioButtonPhasorRectangular" VerticalAlignment="Top" />
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Phasor Data Format" Height="88" HorizontalAlignment="Left" Margin="226,176,0,0" Name="groupBoxPhasorDataFormat" VerticalAlignment="Top" Width="167">
+                <GroupBox Header="Phasor Data Format" Height="88" HorizontalAlignment="Left" Margin="232,176,0,0" Name="groupBoxPhasorDataFormat" VerticalAlignment="Top" Width="167">
                     <Grid Height="56" Width="148">
                         <RadioButton Content="Floating Point" GroupName="PhasorDataFormat" Height="16" HorizontalAlignment="Left" Margin="10,7,0,0" Name="radioButtonPhasorFloatingPoint" VerticalAlignment="Top" IsChecked="True" />
                         <RadioButton Content="Scaled Integer" GroupName="PhasorDataFormat" Height="16" HorizontalAlignment="Left" Margin="10,29,0,0" Name="radioButtonPhasorScaledInteger" VerticalAlignment="Top" />
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Frequency Data Format" Height="88" HorizontalAlignment="Left" Margin="394,82,0,0" Name="groupBoxFrequencyDataFormat" VerticalAlignment="Top" Width="167">
+                <GroupBox Header="Frequency Data Format" Height="88" HorizontalAlignment="Left" Margin="400,82,0,0" Name="groupBoxFrequencyDataFormat" VerticalAlignment="Top" Width="167">
                     <Grid Height="56" Width="148">
                         <RadioButton Content="Floating Point" GroupName="FrequencyDataFormat" Height="16" HorizontalAlignment="Left" Margin="10,7,0,0" Name="radioButtonFrequencyFloatingPoint" VerticalAlignment="Top" IsChecked="True" />
                         <RadioButton Content="Scaled Integer" GroupName="FrequencyDataFormat" Height="16" HorizontalAlignment="Left" Margin="10,29,0,0" Name="radioButtonFrequencyScaledInteger" VerticalAlignment="Top" />
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Analog Data Format" Height="88" HorizontalAlignment="Left" Margin="394,176,0,0" Name="groupBoxAnalogDataFormat" VerticalAlignment="Top" Width="167">
+                <GroupBox Header="Analog Data Format" Height="88" HorizontalAlignment="Left" Margin="400,176,0,0" Name="groupBoxAnalogDataFormat" VerticalAlignment="Top" Width="167">
                     <Grid Height="56" Width="148">
                         <RadioButton Content="Floating Point" GroupName="AnalogDataFormat" Height="16" HorizontalAlignment="Left" Margin="10,7,0,0" Name="radioButtonAnalogFloatingPoint" VerticalAlignment="Top" IsChecked="True" />
                         <RadioButton Content="Scaled Integer" GroupName="AnalogDataFormat" Height="16" HorizontalAlignment="Left" Margin="10,29,0,0" Name="radioButtonAnalogScaledInteger" VerticalAlignment="Top" />
                     </Grid>
                 </GroupBox>
-                <ListBox Height="255" HorizontalAlignment="Left" Margin="12,11,0,0" Name="listBoxDevices" SelectedValuePath="@IDCode" VerticalAlignment="Top" Width="134" />
-                <Button Content="Add" Height="23" HorizontalAlignment="Left" Margin="146,11,0,0" Name="buttonDeviceAdd" VerticalAlignment="Top" Width="75" Click="buttonDeviceAdd_Click" />
-                <Button Content="Copy" Height="23" HorizontalAlignment="Left" Margin="146,40,0,0" Name="buttonDeviceCopy" VerticalAlignment="Top" Width="75" />
-                <Button Content="Delete" Height="23" HorizontalAlignment="Left" Margin="146,69,0,0" Name="buttonDeviceDelete" VerticalAlignment="Top" Width="75" Click="buttonDeviceDelete_Click" />
-                <Button Content="Move Up" Height="23" HorizontalAlignment="Left" Margin="146,98,0,0" Name="buttonDeviceMoveUp" VerticalAlignment="Top" Width="75" />
-                <Button Content="Move Down" Height="23" HorizontalAlignment="Left" Margin="146,127,0,0" Name="buttonDeviceMoveDown" VerticalAlignment="Top" Width="75" />
-                <GroupBox Header="Phasor Details" Height="269" HorizontalAlignment="Left" Margin="638,11,0,0" Name="groupBoxPhasorDetails" VerticalAlignment="Top" Width="255">
+                <ListBox Height="255" HorizontalAlignment="Left" Margin="12,11,0,0" Name="listBoxDevices" SelectedValuePath="@IDCode" VerticalAlignment="Top" Width="134" SelectionMode="Extended" SelectionChanged="listBoxDevices_SelectionChanged" />
+                <Button Content="Add" Height="23" HorizontalAlignment="Left" Margin="152,11,0,0" Name="buttonDeviceAdd" VerticalAlignment="Top" Width="75" Click="buttonDeviceAdd_Click" />
+                <Button Content="Copy" Height="23" HorizontalAlignment="Left" Margin="152,40,0,0" Name="buttonDeviceCopy" VerticalAlignment="Top" Width="75" Click="buttonDeviceCopy_Click" />
+                <Button Content="Delete" Height="23" HorizontalAlignment="Left" Margin="152,69,0,0" Name="buttonDeviceDelete" VerticalAlignment="Top" Width="75" Click="buttonDeviceDelete_Click" />
+                <Button Content="Move Up" Height="23" HorizontalAlignment="Left" Margin="152,98,0,0" Name="buttonDeviceMoveUp" VerticalAlignment="Top" Width="75" Click="buttonDeviceMoveUp_Click" />
+                <Button Content="Move Down" Height="23" HorizontalAlignment="Left" Margin="152,127,0,0" Name="buttonDeviceMoveDown" VerticalAlignment="Top" Width="75" Click="buttonDeviceMoveDown_Click" />
+                <GroupBox Header="Phasor Details" Height="269" HorizontalAlignment="Left" Margin="573,6,0,0" Name="groupBoxPhasorDetails" VerticalAlignment="Top" Width="255">
                     <Grid>
                         <ListBox Height="139" HorizontalAlignment="Left" Margin="6,6,0,0" Name="listBox2" VerticalAlignment="Top" Width="141" />
                         <Button Content="Add" Height="23" HorizontalAlignment="Left" Margin="157,6,0,0" Name="button6" VerticalAlignment="Top" Width="75" />
@@ -69,10 +69,10 @@
                         </GroupBox>
                     </Grid>
                 </GroupBox>
-                <TextBox Height="23" HorizontalAlignment="Left" Margin="289,273,0,0" Name="textBox4" VerticalAlignment="Top" Width="26" Text="0" />
-                <Label Content="Analogs:" Height="28" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="228,270,0,0" Name="label6" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-                <TextBox Height="23" HorizontalAlignment="Left" Margin="378,273,0,0" Name="textBox5" VerticalAlignment="Top" Width="26" Text="0" />
-                <Label Content="Digitals:" Height="28" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="320,270,0,0" Name="label7" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="295,273,0,0" Name="textBox4" VerticalAlignment="Top" Width="26" Text="0" />
+                <Label Content="Analogs:" Height="28" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="234,270,0,0" Name="label6" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="384,273,0,0" Name="textBox5" VerticalAlignment="Top" Width="26" Text="0" />
+                <Label Content="Digitals:" Height="28" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="326,270,0,0" Name="label7" VerticalAlignment="Top" VerticalContentAlignment="Center" />
             </Grid>
         </GroupBox>
     </Grid>
