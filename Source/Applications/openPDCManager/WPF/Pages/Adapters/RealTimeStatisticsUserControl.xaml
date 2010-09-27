@@ -79,7 +79,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Run-Time Status &amp; Statistics" Grid.Column="0"  Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                    <TextBlock Text="Runtime Status &amp; Statistics" Grid.Column="0"  Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
                     <TextBlock x:Name="TextBlockRefreshInterval" Text="Refresh Interval: 10 sec" Grid.Column="1"  Foreground="#FFFFFFFF" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="{StaticResource SmallTextSize}"/>
                     <TextBlock x:Name="TextBlockLastRefresh" Grid.Column="2" Foreground="#FFFFFFFF" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="{StaticResource SmallTextSize}" />
                 </Grid>

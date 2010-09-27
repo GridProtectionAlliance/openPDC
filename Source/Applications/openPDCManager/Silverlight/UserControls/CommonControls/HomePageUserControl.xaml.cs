@@ -34,6 +34,12 @@ using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using openPDCManager.Data.BusinessObjects;
 using System.Windows.Media.Imaging;
+using openPDCManager.Pages.Monitoring;
+using openPDCManager.Pages.Adapters;
+using openPDCManager.Pages.Devices;
+using openPDCManager.UserControls.OutputStreamControls;
+using System.Linq;
+using System.Text;
 #endif
 
 
@@ -59,12 +65,18 @@ namespace openPDCManager.UserControls.CommonControls
             this.Loaded += new RoutedEventHandler(HomePage_Loaded);            
 #if SILVERLIGHT
             (Application.Current.RootVisual as MasterLayoutControl).UserControlSelectNode.ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);            
-            ChartDeviceDistribution.Style = (Style)Application.Current.Resources["PieChartStyle"];            
+            ChartDeviceDistribution.Style = (Style)Application.Current.Resources["PieChartStyle"];
+            ButtonInputStatus.Visibility = Visibility.Collapsed;
+            ButtonRestartOpenPDC.Visibility = Visibility.Collapsed;
+            ScrollViewerStatus.Height = 570;
 #else
+            ButtonRestartOpenPDC.Visibility = Visibility.Collapsed;
+            ScrollViewerStatus.Height = 533;    //497
             ButtonGetData.Content = new BitmapImage(new Uri(@"images/RequestData.png", UriKind.Relative));
-#endif            
+#endif
             ButtonGetData.Click += new RoutedEventHandler(ButtonGetData_Click);
             ComboBoxDevice.SelectionChanged += new SelectionChangedEventHandler(ComboBoxDevice_SelectionChanged);
+            
         }
 
         #endregion
@@ -98,6 +110,75 @@ namespace openPDCManager.UserControls.CommonControls
         {
             //ReconnectToService();
             GetDevices();
+        }
+
+        private void ButtonInputStatus_Click(object sender, RoutedEventArgs e)
+        {
+#if SILVERLIGHT
+            
+#else
+            InputMonitoringUserControl inputMonitor = new InputMonitoringUserControl();
+            ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(inputMonitor);
+#endif
+        }
+
+        private void ButtonRuntimeStatistics_Click(object sender, RoutedEventArgs e)
+        {
+#if SILVERLIGHT
+            System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("/Default.aspx#/Pages/Adapters/RealTimeStatistics.xaml", UriKind.Relative));
+#else
+            RealTimeStatisticsUserControl realtimeStatistics = new RealTimeStatisticsUserControl();            
+            ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(realtimeStatistics);
+#endif
+        }
+
+        private void ButtonAddDevice_Click(object sender, RoutedEventArgs e)
+        {
+#if SILVERLIGHT
+            System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("/Default.aspx#/Pages/Devices/AddNew.xaml", UriKind.Relative));
+#else
+            ManageDevicesUserControl manageDevices = new ManageDevicesUserControl();
+            ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(manageDevices);
+#endif
+        }
+
+        private void ButtonDevices_Click(object sender, RoutedEventArgs e)
+        {
+#if SILVERLIGHT
+            System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("/Default.aspx#/Pages/Devices/Browse.xaml", UriKind.Relative));
+#else
+            BrowseDevicesUserControl browseDevices = new BrowseDevicesUserControl();
+            ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(browseDevices);
+#endif
+        }
+
+        private void ButtonOutputStreams_Click(object sender, RoutedEventArgs e)
+        {
+#if SILVERLIGHT
+            System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("/Default.aspx#/Pages/Adapters/OutputStreams.xaml", UriKind.Relative));
+#else
+            OutputStreamsUserControl outputStreams = new OutputStreamsUserControl();
+            ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(outputStreams);
+#endif
+        }
+
+        private void ButtonSystemConsole_Click(object sender, RoutedEventArgs e)
+        {
+#if SILVERLIGHT
+            System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("/Default.aspx#/Pages/Monitor.xaml", UriKind.Relative));
+#else
+            MonitorUserControl monitor = new MonitorUserControl();
+            ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(monitor);
+#endif
+        }
+
+        private void ButtonRestartOpenPDC_Click(object sender, RoutedEventArgs e)
+        {
+#if SILVERLIGHT
+
+#else
+            
+#endif
         }
 
         #endregion
@@ -145,5 +226,7 @@ namespace openPDCManager.UserControls.CommonControls
         }               
 
         #endregion
+
+        
     }
 }
