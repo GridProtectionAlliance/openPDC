@@ -45,6 +45,13 @@ namespace openPDCManager.Pages.Devices
             {
                 UserControlManageDevices.hasQueryString = true;
                 UserControlManageDevices.m_deviceID = Convert.ToInt32(this.NavigationContext.QueryString["did"]);
+                UserControlManageDevices.m_copyDevice = false;
+            }
+            else if (this.NavigationContext.QueryString.ContainsKey("copydid"))
+            {
+                UserControlManageDevices.hasQueryString = true;
+                UserControlManageDevices.m_deviceID = Convert.ToInt32(this.NavigationContext.QueryString["copydid"]);
+                UserControlManageDevices.m_copyDevice = true;
             }
             UserControlManageDevices.GetDevices(DeviceType.Concentrator, ((App)Application.Current).NodeValue, true);
             UserControlManageDevices.GetCompanies();

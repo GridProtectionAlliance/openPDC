@@ -82,68 +82,7 @@ namespace openPDCManager.UserControls.CommonControls
             {
                 m_deviceToEdit = new Device();
                 m_deviceToEdit = CommonFunctions.GetDeviceByDeviceID(null, deviceID);
-                GridDeviceDetail.DataContext = m_deviceToEdit;
-
-                if (ComboboxNode.Items.Count > 0)
-                    ComboboxNode.SelectedItem = new KeyValuePair<string, string>(m_deviceToEdit.NodeID, m_deviceToEdit.NodeName);
-
-                if (m_deviceToEdit.CompanyID.HasValue)
-                    ComboboxCompany.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.CompanyID, m_deviceToEdit.CompanyName);
-                else if (ComboboxCompany.Items.Count > 0)
-                    ComboboxCompany.SelectedIndex = 0;
-
-                if (m_deviceToEdit.HistorianID.HasValue)
-                    ComboboxHistorian.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.HistorianID, m_deviceToEdit.HistorianAcronym);
-                else if (ComboboxHistorian.Items.Count > 0)
-                    ComboboxHistorian.SelectedIndex = 0;
-
-                if (m_deviceToEdit.InterconnectionID.HasValue)
-                    ComboboxInterconnection.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.InterconnectionID, m_deviceToEdit.InterconnectionName);
-                else if (ComboboxInterconnection.Items.Count > 0)
-                    ComboboxInterconnection.SelectedIndex = 0;
-
-                if (m_deviceToEdit.ParentID.HasValue)
-                    ComboboxParent.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.ParentID, m_deviceToEdit.ParentAcronym);
-                else if (ComboboxParent.Items.Count > 0)
-                    ComboboxParent.SelectedIndex = 0;
-
-                if (m_deviceToEdit.ProtocolID.HasValue)
-                    ComboboxProtocol.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.ProtocolID, m_deviceToEdit.ProtocolName);
-                else if (ComboboxProtocol.Items.Count > 0)
-                    ComboboxProtocol.SelectedIndex = 0;
-
-                if (string.IsNullOrEmpty(m_deviceToEdit.TimeZone) && ComboboxTimeZone.Items.Count > 0)
-                    ComboboxTimeZone.SelectedIndex = 0;
-                else
-                {
-                    foreach (KeyValuePair<string, string> item in ComboboxTimeZone.Items)
-                    {
-                        if (item.Key == m_deviceToEdit.TimeZone)
-                        {
-                            ComboboxTimeZone.SelectedItem = item;
-                            break;
-                        }
-                    }
-                }
-                if (m_deviceToEdit.VendorDeviceID.HasValue)
-                    ComboboxVendorDevice.SelectedItem = new KeyValuePair<int, string>((int)m_deviceToEdit.VendorDeviceID, m_deviceToEdit.VendorDeviceName);
-                else if (ComboboxVendorDevice.Items.Count > 0)
-                    ComboboxVendorDevice.SelectedIndex = 0;
-
-                if (m_deviceToEdit.IsConcentrator)	//then display list of devices.
-                {
-                    GetDeviceListByParentID(m_deviceToEdit.ID);
-                    StackPanelDeviceList.Visibility = Visibility.Visible;
-                    StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
-                    TextBlockTitle.Text = "Devices For Concentrator: " + m_deviceToEdit.Acronym;
-                }
-                else
-                {
-                    StackPanelPhasorsMeassurements.Visibility = Visibility.Visible;
-                    StackPanelDeviceList.Visibility = Visibility.Collapsed;
-                }
-
-                TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID(null, "Device", deviceID);
+                PopulateFormFields(m_deviceToEdit);
             }
             catch (Exception ex)
             {
@@ -156,6 +95,75 @@ namespace openPDCManager.UserControls.CommonControls
             }
             if (m_activityWindow != null)
                 m_activityWindow.Close();
+        }
+
+        void PopulateFormFields(Device device)
+        {
+            GridDeviceDetail.DataContext = device;
+
+            if (ComboboxNode.Items.Count > 0)
+                ComboboxNode.SelectedItem = new KeyValuePair<string, string>(device.NodeID, device.NodeName);
+
+            if (device.CompanyID.HasValue)
+                ComboboxCompany.SelectedItem = new KeyValuePair<int, string>((int)device.CompanyID, device.CompanyName);
+            else if (ComboboxCompany.Items.Count > 0)
+                ComboboxCompany.SelectedIndex = 0;
+
+            if (device.HistorianID.HasValue)
+                ComboboxHistorian.SelectedItem = new KeyValuePair<int, string>((int)device.HistorianID, device.HistorianAcronym);
+            else if (ComboboxHistorian.Items.Count > 0)
+                ComboboxHistorian.SelectedIndex = 0;
+
+            if (device.InterconnectionID.HasValue)
+                ComboboxInterconnection.SelectedItem = new KeyValuePair<int, string>((int)device.InterconnectionID, device.InterconnectionName);
+            else if (ComboboxInterconnection.Items.Count > 0)
+                ComboboxInterconnection.SelectedIndex = 0;
+
+            if (device.ParentID.HasValue)
+                ComboboxParent.SelectedItem = new KeyValuePair<int, string>((int)device.ParentID, device.ParentAcronym);
+            else if (ComboboxParent.Items.Count > 0)
+                ComboboxParent.SelectedIndex = 0;
+
+            if (device.ProtocolID.HasValue)
+                ComboboxProtocol.SelectedItem = new KeyValuePair<int, string>((int)device.ProtocolID, device.ProtocolName);
+            else if (ComboboxProtocol.Items.Count > 0)
+                ComboboxProtocol.SelectedIndex = 0;
+
+            if (string.IsNullOrEmpty(device.TimeZone) && ComboboxTimeZone.Items.Count > 0)
+                ComboboxTimeZone.SelectedIndex = 0;
+            else
+            {
+                foreach (KeyValuePair<string, string> item in ComboboxTimeZone.Items)
+                {
+                    if (item.Key == device.TimeZone)
+                    {
+                        ComboboxTimeZone.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
+            if (device.VendorDeviceID.HasValue)
+                ComboboxVendorDevice.SelectedItem = new KeyValuePair<int, string>((int)device.VendorDeviceID, device.VendorDeviceName);
+            else if (ComboboxVendorDevice.Items.Count > 0)
+                ComboboxVendorDevice.SelectedIndex = 0;
+
+            if (device.IsConcentrator)	//then display list of devices.
+            {
+                GetDeviceListByParentID(device.ID);
+                StackPanelDeviceList.Visibility = Visibility.Visible;
+                StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
+                TextBlockTitle.Text = "Devices For Concentrator: " + device.Acronym;
+            }
+            else
+            {
+                StackPanelPhasorsMeassurements.Visibility = Visibility.Visible;
+                StackPanelDeviceList.Visibility = Visibility.Collapsed;
+            }
+
+            TextBlockRuntimeID.Text = CommonFunctions.GetRuntimeID(null, "Device", device.ID);
+
+            TextBoxAcronym.SelectAll();
+            TextBoxAcronym.Focus();
         }
 
         public void GetConcentratorDevice(int deviceID)

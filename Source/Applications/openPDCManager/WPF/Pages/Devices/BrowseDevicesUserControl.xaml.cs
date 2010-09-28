@@ -249,6 +249,50 @@ namespace openPDCManager.Pages.Devices
             sm.ShowPopup();
         }
 
+        void ButtonCopy_Click(object sender, RoutedEventArgs e)
+        {
+            SystemMessages sm;
+            try
+            {
+                Device device = new Device();
+                device = ((Button)sender).DataContext as Device;
+                sm = new SystemMessages(new Message() { UserMessage = "Do you want to make a copy of " + device.Acronym + " device?", SystemMessage = "This will copy device configuration and generate new measurements.", UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)sm.DialogResult)
+                    {
+                        string originalAcronym = device.Acronym;
+                        int i = 1;
+                        do
+                        {
+                            if (originalAcronym.Length > 15 && i < 10)
+                                device.Acronym = originalAcronym.Substring(0, 14) + i.ToString();
+                            else if (originalAcronym.Length > 15 && i >= 10)
+                                device.Acronym = originalAcronym.Substring(0, 13) + i.ToString();
+                            else
+                                device.Acronym = originalAcronym + i.ToString();
+
+                            i++;
+                        } while (CommonFunctions.GetDeviceByAcronym(null, device.Acronym) != null);
+
+                        device.Name = "Copy of " + device.Name;
+                        device.Enabled = false;
+                        ManageDevicesUserControl manageDevice = new ManageDevicesUserControl(device);
+                        ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(manageDevice);                                           
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException(null, "WPF.CopyDevice", ex);
+                sm = new SystemMessages(new Message() { UserMessage = "Failed to Create Copy of Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+            }
+            sm.Owner = Window.GetWindow(this);
+            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            sm.ShowPopup();
+        }
+
         #endregion
 
         #region [ Page Event Handlers ]

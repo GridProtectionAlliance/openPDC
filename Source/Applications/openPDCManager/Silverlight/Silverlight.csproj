@@ -860,6 +860,7 @@
     <Resource Include="Images\Chart.png" />
     <Resource Include="Images\Console.png" />
     <Resource Include="Images\Log.png" />
+    <Resource Include="Images\Copy.png" />
     <Content Include="ServiceReferences.ClientConfig" />
   </ItemGroup>
   <ItemGroup>

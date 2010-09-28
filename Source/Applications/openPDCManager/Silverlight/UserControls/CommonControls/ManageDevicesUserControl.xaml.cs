@@ -46,6 +46,7 @@ namespace openPDCManager.UserControls.CommonControls
         public int m_deviceID;
         Device m_deviceToEdit;
         public bool hasQueryString;
+        Device m_deviceToCopy;
 
         #endregion
 
@@ -67,7 +68,12 @@ namespace openPDCManager.UserControls.CommonControls
             ButtonView.Click += new RoutedEventHandler(ButtonView_Click);
             ComboboxParent.SelectionChanged += new SelectionChangedEventHandler(ComboboxParent_SelectionChanged);
             ButtonBuildConnectionString.Click += new RoutedEventHandler(ButtonBuildConnectionString_Click);
-        }        
+        }  
+      
+        public ManageDevicesUserControl(Device device) : this()
+        {
+            m_deviceToCopy = device;
+        }
 
         #region [ Control Event Handlers ]
 
@@ -419,10 +425,17 @@ namespace openPDCManager.UserControls.CommonControls
                 ButtonInitialize.Visibility = System.Windows.Visibility.Visible;
 #endif
                 m_inEditMode = true;
-                GetDeviceByDeviceID(m_deviceID);               
+                GetDeviceByDeviceID(m_deviceID);
             }
-            else
+            else if (m_deviceToCopy == null)
                 ClearForm();
+            else
+            {
+                PopulateFormFields(m_deviceToCopy);
+                //TextBoxAcronym.Focus();
+                TextBoxAcronym.SelectAll();
+            }
+
             StackPanelDeviceList.Visibility = Visibility.Collapsed;
             StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
         }

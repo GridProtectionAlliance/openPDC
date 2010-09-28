@@ -50,7 +50,7 @@
                         <TextBlock Text="Acronym" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
-                    <TextBox x:Name="TextBoxAcronym" Grid.Row="2" Grid.Column="1" Text="{Binding Path=Acronym}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="16"/>
+                    <TextBox x:Name="TextBoxAcronym" Grid.Row="2" Grid.Column="1" Text="{Binding Path=Acronym}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="16"/>
                     <TextBlock Grid.Row="2" Grid.Column="2" Text="Name" Style="{StaticResource GenericLabelStyle}"/>
                     <TextBox x:Name="TextBoxName" Grid.Row="2" Grid.Column="3" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="100"/>
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Company" Style="{StaticResource GenericLabelStyle}"/>

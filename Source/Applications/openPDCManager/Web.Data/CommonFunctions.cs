@@ -1258,6 +1258,26 @@ namespace openPDCManager.Data
              }
         }
 
+        public static OutputStream GetOutputStreamByAcronym(DataConnection connection, string acronym, string nodeID)
+        {
+            try
+            {
+                List<OutputStream> outputStreamList = new List<OutputStream>();
+                outputStreamList = (from item in GetOutputStreamList(connection, false, nodeID)
+                              where item.Acronym.ToUpper() == acronym.ToUpper()
+                              select item).ToList();
+                if (outputStreamList.Count > 0)
+                    return outputStreamList[0];
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                LogException(connection, "GetDeviceByAcronym", ex);
+                return null;
+            }
+        }        
+
         #endregion
 
         #region " Manage Output Stream Measurements Code"
@@ -2619,11 +2639,11 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@acronym", device.Acronym));
                 command.Parameters.Add(AddWithValue(command, "@name", device.Name));
                 command.Parameters.Add(AddWithValue(command, "@isConcentrator", device.IsConcentrator));
-                command.Parameters.Add(AddWithValue(command, "@companyID", device.CompanyID));
+                command.Parameters.Add(AddWithValue(command, "@companyID", device.CompanyID ?? (object)DBNull.Value));
                 command.Parameters.Add(AddWithValue(command, "@historianID", device.HistorianID ?? (object)DBNull.Value));
                 command.Parameters.Add(AddWithValue(command, "@accessID", device.AccessID));
                 command.Parameters.Add(AddWithValue(command, "@vendorDeviceID", device.VendorDeviceID == null ? (object)DBNull.Value : device.VendorDeviceID == 0 ? (object)DBNull.Value : device.VendorDeviceID));
-                command.Parameters.Add(AddWithValue(command, "@protocolID", device.ProtocolID));
+                command.Parameters.Add(AddWithValue(command, "@protocolID", device.ProtocolID ?? (object)DBNull.Value));
                 command.Parameters.Add(AddWithValue(command, "@longitude", device.Longitude ?? (object)DBNull.Value));
                 command.Parameters.Add(AddWithValue(command, "@latitude", device.Latitude ?? (object)DBNull.Value));
                 command.Parameters.Add(AddWithValue(command, "@interconnectionID", device.InterconnectionID ?? (object)DBNull.Value));

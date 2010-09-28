@@ -135,6 +135,19 @@ namespace openPDCManager.Pages.Devices
             sm.ShowPopup();
         }
 
+        void ButtonCopy_Click(object sender, RoutedEventArgs e)
+        {
+            Device device = new Device();
+            device = ((Button)sender).DataContext as Device;
+            SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to make a copy of " + device.Acronym + " device?", SystemMessage = "This will copy device configuration and generate new measurements.", UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+            sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+            {
+                if ((bool)sm.DialogResult)
+                    NavigationService.Navigate(new Uri("/Pages/Devices/AddNew.xaml?copydid=" + device.ID, UriKind.Relative));
+            });
+            sm.ShowPopup();
+        }
+
         void sm_Closed(object sender, EventArgs e)
         {
             throw new NotImplementedException();

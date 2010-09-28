@@ -80,8 +80,6 @@
                     </StackPanel>
                     <TextBox x:Name="TextBoxLeadTime" Grid.Row="5" Grid.Column="3" Text="{Binding Path=LeadTime}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
 
-
-
                     <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="0">
                         <TextBlock Text="Time Resolution" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
@@ -123,11 +121,8 @@
                     </StackPanel>
                     <TextBox x:Name="TextBoxDigitalMaskValue" Grid.Row="9" Grid.Column="3" Text="{Binding Path=DigitalMaskValue}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
 
-
-
                     <CheckBox x:Name="CheckBoxAutoStartDataChannel" Grid.Row="10" Grid.Column="1" Content="Auto Start Data Channel" IsChecked="{Binding Path=AutoStartDataChannel}" FontWeight="Bold" VerticalAlignment="Center"/>
                     <CheckBox x:Name="CheckBoxAutoPublishConfigFrame" Grid.Row="10" Grid.Column="3" Content="Auto Publish Config Frame" IsChecked="{Binding Path=AutoPublishConfigFrame}" FontWeight="Bold" VerticalAlignment="Center"/>
-
 
                     <CheckBox x:Name="CheckBoxAllowSortsByArrival" Grid.Row="11" Grid.Column="1" Content="Allow Sorts By Arrival" IsChecked="{Binding Path=AllowSortsByArrival}" FontWeight="Bold" VerticalAlignment="Center"/>
                     <CheckBox x:Name="CheckBoxUseLocalClockAsRealTime" Grid.Row="11" Grid.Column="3" Content="Use Local Clock As Real Time" IsChecked="{Binding Path=UseLocalClockAsRealTime}" FontWeight="Bold" VerticalAlignment="Center"/>
@@ -168,10 +163,10 @@
                         <TextBlock Text="Acronym" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </Border>
                     <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                        <TextBlock Text="Name" Width="{StaticResource LargerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        <TextBlock Text="Name" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </Border>
                     <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                        <TextBlock Text="Type" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        <TextBlock Text="Type" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </Border>
                     <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                         <TextBlock Text="Enabled" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
@@ -188,7 +183,10 @@
                     <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                         <TextBlock Text="" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </Border>
-                    <TextBlock Text="" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <TextBlock Text="" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </Border>
+                    <TextBlock Text="" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                 </StackPanel>
             </Border>
             <Border Background="{StaticResource PortletBackgroundBrush}">
@@ -202,29 +200,32 @@
                                             <TextBlock Text="{Binding Path=Acronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
                                         </Border>
                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                            <TextBlock Text="{Binding Path=Name}" Width="{StaticResource LargerItemSize}" TextAlignment="Left" Padding="1"/>
+                                            <TextBlock Text="{Binding Path=Name}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
                                         </Border>
                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                            <TextBlock Text="{Binding Path=TypeName}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="1"/>
+                                            <TextBlock Text="{Binding Path=TypeName}" Width="{StaticResource SmallerItemSize}" TextAlignment="Left" Padding="1"/>
                                         </Border>
                                         <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
                                             <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Enabled}" IsEnabled="False" />
                                         </Border>
-                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
                                             <!--<HyperlinkButton Content="Devices" HorizontalContentAlignment="Center" Name="{Binding Path=Acronym}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" Click="HyperlinkButtonDevices_Click"/>-->
-                                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Devices" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" HorizontalContentAlignment="Center" Click="ButtonDevices_Click"></Button>
+                                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Devices" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" HorizontalAlignment="Center" Click="ButtonDevices_Click"></Button>
                                         </Border>
-                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                            <Button Content="Measurements" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalContentAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" Click="ButtonMeasurements_Click"/>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallItemSize}">
+                                            <Button Content="Measurements" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="ButtonMeasurements_Click"/>
                                         </Border>
-                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                            <Button Content="Launch Device Wizard" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalContentAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource LargeItemSize}" Click="ButtonWizard_Click" />
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource LargeItemSize}">
+                                            <Button Content="Launch Device Wizard" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="ButtonWizard_Click" />
                                         </Border>
-                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                            <Button Content="Delete" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalContentAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" Click="ButtonDelete_Click" />
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
+                                            <Button Content="Delete" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="ButtonDelete_Click" />
                                         </Border>
-                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                            <Button Content="Update Configuration" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalContentAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" Click="ButtonUpdateConfig_Click" />
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallItemSize}">
+                                            <Button Content="Update Configuration" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="ButtonUpdateConfig_Click" />
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallerItemSize}">
+                                            <Button Content="Make Copy" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="ButtonMakeCopy_Click" />
                                         </Border>
                                     </StackPanel>
                                 </DataTemplate>

@@ -40,9 +40,9 @@
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Company" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
-                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <!--<Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Vendor Device" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
-                        </Border>
+                        </Border>-->
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Phasors" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
@@ -53,9 +53,9 @@
                             <TextBlock Text="Enabled" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Created On" Width="{StaticResource LargeItemSize}" HorizontalContentAlignment="Center" Foreground="#FF000000" Click="HyperlinkButtonCreatedOn_Click" />
+                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Created On" Width="{StaticResource SmallItemSize}" HorizontalContentAlignment="Center" Foreground="#FF000000" Click="HyperlinkButtonCreatedOn_Click" />
                         </Border>
-                        <TextBlock Text="" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        <TextBlock Text="" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
@@ -77,17 +77,17 @@
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <TextBlock Text="{Binding Path=ProtocolName}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
-                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=CompanyAcronym}" ToolTipService.ToolTip="{Binding Path=CompanyName}" Width="{StaticResource XSmallItemSize}" TextAlignment="Left" Padding="0"/>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
+                                                <TextBlock Text="{Binding Path=CompanyAcronym}" ToolTipService.ToolTip="{Binding Path=CompanyName}" TextAlignment="Center" Padding="0"/>
                                             </Border>
-                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <!--<Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <TextBlock Text="{Binding Path=VendorDeviceName}" Width="{StaticResource SmallerItemSize}" TextAlignment="Left" Padding="0"/>
+                                            </Border>-->
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
+                                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Phasors" HorizontalAlignment="Center" HorizontalContentAlignment="Center" ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="HyperlinkButtonPhasors_Click"/>
                                             </Border>
-                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Phasors" HorizontalContentAlignment="Center" ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" Click="HyperlinkButtonPhasors_Click"/>
-                                            </Border>
-                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Measurements" HorizontalContentAlignment="Center" ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" Click="HyperlinkButtonMeasurements_Click"/>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallItemSize}">
+                                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Measurements" HorizontalAlignment="Center" HorizontalContentAlignment="Center" ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="HyperlinkButtonMeasurements_Click"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
                                                 <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Enabled, Mode=TwoWay}" IsEnabled="True" />
@@ -95,13 +95,16 @@
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <TextBlock Text="{Binding Path=CreatedOn}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
-                                            <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Button x:Name="ButtonSave" Click="ButtonSave_Click" ToolTipService.ToolTip="Click Here to Save Changes" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="0, 0, 3, 0">
-                                                        <Image Source="/openPDCManager;component/images/Save.png"/>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallItemSize}">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <Button x:Name="ButtonCopy" Click="ButtonCopy_Click" ToolTipService.ToolTip="Click Here to Make a Copy of this Device" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="0, 0, 10, 0">
+                                                        <Image Source="/openPDCManager;component/images/Copy.png" Height="16" Width="16"/>
                                                     </Button>
-                                                    <Button x:Name="ButtonDelete" Click="ButtonDelete_Click" ToolTipService.ToolTip="Click Here to Delete Device" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="0, 0, 3, 0">
-                                                        <Image Source="/openPDCManager;component/images/Cancel.png"/>
+                                                    <Button x:Name="ButtonSave" Click="ButtonSave_Click" ToolTipService.ToolTip="Click Here to Save Changes" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="0, 0, 10, 0">
+                                                        <Image Source="/openPDCManager;component/images/Save.png" Height="16" Width="16"/>
+                                                    </Button>
+                                                    <Button x:Name="ButtonDelete" Click="ButtonDelete_Click" ToolTipService.ToolTip="Click Here to Delete Device" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="0">
+                                                        <Image Source="/openPDCManager;component/images/Cancel.png" Height="16" Width="16"/>
                                                     </Button>
                                                 </StackPanel>
                                             </Border>

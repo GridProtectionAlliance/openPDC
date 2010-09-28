@@ -34,6 +34,7 @@ using openPDCManager.PhasorDataServiceProxy;
 #else
 using openPDCManager.Data.Entities;
 using System.Windows.Media.Imaging;
+using openPDCManager.Data;
 #endif
 
 namespace openPDCManager.UserControls.OutputStreamControls
@@ -100,27 +101,35 @@ namespace openPDCManager.UserControls.OutputStreamControls
             if (ListBoxOutputStreamList.SelectedIndex >= 0)
             {
                 OutputStream selectedOutputStream = ListBoxOutputStreamList.SelectedItem as OutputStream;
-                GridOutputStreamDetail.DataContext = selectedOutputStream;
-                ComboBoxNode.SelectedItem = new KeyValuePair<string, string>(selectedOutputStream.NodeID, selectedOutputStream.NodeName);
-                if (selectedOutputStream.Type == 0)
-                    ComboBoxType.SelectedItem = new KeyValuePair<int, string>(0, "IEEE C37.118");
-                else
-                    ComboBoxType.SelectedItem = new KeyValuePair<int, string>(1, "BPA");
-                ComboboxCoordinateFormat.SelectedItem = selectedOutputStream.CoordinateFormat;
-                ComboboxDownsamplingMethod.SelectedItem = selectedOutputStream.DownsamplingMethod;
-                ComboboxDataFormat.SelectedItem = selectedOutputStream.DataFormat;
-                CheckBoxAllowSortsByArrival.IsChecked = selectedOutputStream.AllowSortsByArrival;
-                CheckBoxAutoPublishConfigFrame.IsChecked = selectedOutputStream.AutoPublishConfigFrame;
-                CheckBoxAutoStartDataChannel.IsChecked = selectedOutputStream.AutoStartDataChannel;
-                CheckBoxEnabled.IsChecked = selectedOutputStream.Enabled;
-                CheckBoxUseLocalClockAsRealTime.IsChecked = selectedOutputStream.UseLocalClockAsRealTime;
+                PopulateFormFields(selectedOutputStream);
                 m_outputStreamID = selectedOutputStream.ID;
                 m_inEditMode = true;
                 DisplayRuntimeID();
-#if !SILVERLIGHT
-                ButtonInitialize.Visibility = System.Windows.Visibility.Visible;
-#endif
             }
+        }
+
+        void PopulateFormFields(OutputStream selectedOutputStream)
+        {
+            GridOutputStreamDetail.DataContext = selectedOutputStream;
+            ComboBoxNode.SelectedItem = new KeyValuePair<string, string>(selectedOutputStream.NodeID, selectedOutputStream.NodeName);
+            if (selectedOutputStream.Type == 0)
+                ComboBoxType.SelectedItem = new KeyValuePair<int, string>(0, "IEEE C37.118");
+            else
+                ComboBoxType.SelectedItem = new KeyValuePair<int, string>(1, "BPA");
+            ComboboxCoordinateFormat.SelectedItem = selectedOutputStream.CoordinateFormat;
+            ComboboxDownsamplingMethod.SelectedItem = selectedOutputStream.DownsamplingMethod;
+            ComboboxDataFormat.SelectedItem = selectedOutputStream.DataFormat;
+            CheckBoxAllowSortsByArrival.IsChecked = selectedOutputStream.AllowSortsByArrival;
+            CheckBoxAutoPublishConfigFrame.IsChecked = selectedOutputStream.AutoPublishConfigFrame;
+            CheckBoxAutoStartDataChannel.IsChecked = selectedOutputStream.AutoStartDataChannel;
+            CheckBoxEnabled.IsChecked = selectedOutputStream.Enabled;
+            CheckBoxUseLocalClockAsRealTime.IsChecked = selectedOutputStream.UseLocalClockAsRealTime;
+            
+#if !SILVERLIGHT
+            ButtonInitialize.Visibility = System.Windows.Visibility.Visible;
+#endif
+            TextBoxAcronym.SelectAll();
+            TextBoxAcronym.Focus();
         }
 
         void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -354,6 +363,54 @@ namespace openPDCManager.UserControls.OutputStreamControls
             catch (Exception ex)
             {
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to send Update Configuration command.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+        }
+
+        void ButtonMakeCopy_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                OutputStream outputStreamToCopy = (OutputStream)((Button)sender).DataContext;
+                
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to make a copy of " + outputStreamToCopy.Acronym + " output stream?", SystemMessage = "This will only copy the output stream configuration, not associated devices.", UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)sm.DialogResult)
+                    {
+                        outputStreamToCopy.Name = "Copy of " + outputStreamToCopy.Name;
+                        outputStreamToCopy.Enabled = false;
+#if SILVERLIGHT
+                        outputStreamToCopy.Acronym = outputStreamToCopy.Acronym + "1";                        
+                        PopulateFormFields(outputStreamToCopy);
+#else
+                        string originalAcronym = outputStreamToCopy.Acronym;
+                        string nodeID = ((App)Application.Current).NodeValue;
+                        int i = 1;
+                        do
+                        {
+                            outputStreamToCopy.Acronym = originalAcronym + i.ToString();
+                            i++;
+                        } while (CommonFunctions.GetOutputStreamByAcronym(null, outputStreamToCopy.Acronym, nodeID) != null);
+                                                                        
+                        PopulateFormFields(outputStreamToCopy);
+#endif
+                    }
+                });
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+            catch (Exception ex)
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to delete output stream.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
 #if !SILVERLIGHT
                 sm.Owner = Window.GetWindow(this);

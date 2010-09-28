@@ -44,9 +44,9 @@
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Company" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
-                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <!--<Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Vendor Device" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
-                        </Border>
+                        </Border>-->
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Phasors" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
@@ -84,9 +84,9 @@
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <TextBlock Text="{Binding Path=CompanyAcronym}" ToolTipService.ToolTip="{Binding Path=CompanyName}" Width="{StaticResource XSmallItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
-                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <!--<Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <TextBlock Text="{Binding Path=VendorDeviceName}" Width="{StaticResource SmallerItemSize}" TextAlignment="Left" Padding="0"/>
-                                            </Border>
+                                            </Border>-->
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <HyperlinkButton Content="Phasors" HorizontalContentAlignment="Center" Name="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" Click="HyperlinkButtonPhasors_Click"/>
                                             </Border>
@@ -101,7 +101,8 @@
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XXSmallItemSize}">
                                                 <StackPanel Orientation="Horizontal">
-                                                    <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="" ToolTipService.ToolTip="Click Here to Save Changes" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="0, 0, 3, 0" Click="ButtonSave_Click" />
+                                                    <Button x:Name="ButtonCopy" Content="../../Images/Copy.png" Tag="" ToolTipService.ToolTip="Click Here to Make a Copy of Device" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="0, 0, 3, 0" Click="ButtonCopy_Click" />
+                                                    <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="" ToolTipService.ToolTip="Click Here to Save Changes" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="3, 0, 3, 0" Click="ButtonSave_Click" />
                                                     <Button x:Name="ButtonDelete" Content="../../Images/Cancel.png" Tag="" ToolTipService.ToolTip="Click Here to Delete Device" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="3, 0, 0, 0" Click="ButtonDelete_Click" />
                                                 </StackPanel>
                                             </Border>
@@ -112,7 +113,7 @@
                         </ScrollViewer.Content>
                     </ScrollViewer>
                 </Border>
-                <data:DataPager x:Name="DataPagerDevices" PageSize="30" AutoEllipsis="True" NumericButtonCount="3" DisplayMode="FirstLastPreviousNext"/>
+                <data:DataPager x:Name="DataPagerDevices" PageSize="25" AutoEllipsis="True" NumericButtonCount="3" DisplayMode="FirstLastPreviousNext"/>
             </StackPanel>
         </Border>
     </Grid>
