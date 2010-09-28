@@ -93,6 +93,8 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 ListBoxAdapterList.ItemsSource = CommonFunctions.GetAdapterList(null, false, m_adapterType, m_nodeID);
+                if (ListBoxAdapterList.Items.Count > 0)
+                    ListBoxAdapterList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -110,12 +112,12 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 string result = CommonFunctions.SaveAdapter(null, adapter, isNew);
-                GetAdapterList();
-                ClearForm();
+                GetAdapterList();                
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                        ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.ShowPopup();
+                ClearForm();
             }
             catch (Exception ex)
             {

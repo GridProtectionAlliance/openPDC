@@ -85,6 +85,7 @@ namespace openPDCManager.UserControls.CommonControls
 #if !SILVERLIGHT
                 ButtonInitialize.Visibility = System.Windows.Visibility.Visible;
 #endif
+                ButtonSave.Tag = "Update";
             }
         }
 
@@ -172,9 +173,9 @@ namespace openPDCManager.UserControls.CommonControls
         {
             ClearForm();
             App app = (App)Application.Current;
-            m_nodeID = app.NodeValue;
-            GetHistorians();
+            m_nodeID = app.NodeValue;            
             GetNodes();
+            GetHistorians();
         }
 
         #endregion
@@ -192,6 +193,7 @@ namespace openPDCManager.UserControls.CommonControls
             m_historianID = 0;
             TextBlockRuntimeID.Text = string.Empty;
             ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
+            ButtonSave.Tag = "Add";
         }
 
         bool IsValid()

@@ -130,7 +130,7 @@
                                             <ScaleTransform x:Name="ButtonRequestConfigurationTransform" ScaleX="1" ScaleY="1" />
                                         </Button.RenderTransform>
                                     </Button>
-                                    <TextBlock Text="This request could take up to 60 seconds to complete." FontSize="{StaticResource SmallerTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+                                    <TextBlock Text="This request could take up to 60 seconds to complete." FontSize="{StaticResource SmallerTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2"/>                                                                   
                                 </StackPanel>
 
                                 <TextBlock Text="OR" Grid.Row="1" Grid.Column="1" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0, 5, 0, 5" />
@@ -317,4 +317,5 @@
             </Border>
         </StackPanel>
     </Border>
+    
 </UserControl>

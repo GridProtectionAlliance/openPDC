@@ -34,6 +34,7 @@ namespace openPDCManager.UserControls.CommonControls
         #region [ Members ]
 
         PhasorDataServiceClient m_client;
+        bool m_selectFirst = true;
 
         #endregion
 
@@ -83,6 +84,7 @@ namespace openPDCManager.UserControls.CommonControls
             if (e.Error == null)
             {
                 ClearForm();
+                GetCalculatedMeasurements();
                 sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
             }
@@ -98,8 +100,7 @@ namespace openPDCManager.UserControls.CommonControls
                     sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Calculated Measurement Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
-            sm.ShowPopup();
-            GetCalculatedMeasurements();
+            sm.ShowPopup();            
         }
 
         void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
@@ -128,7 +129,14 @@ namespace openPDCManager.UserControls.CommonControls
         void client_GetCalculatedMeasurementListCompleted(object sender, GetCalculatedMeasurementListCompletedEventArgs e)
         {
             if (e.Error == null)
+            {
                 ListBoxCalculatedMeasurementList.ItemsSource = e.Result;
+                if (ListBoxCalculatedMeasurementList.Items.Count > 0 && m_selectFirst)
+                {
+                    ListBoxCalculatedMeasurementList.SelectedIndex = 0;
+                    m_selectFirst = false;
+                }
+            }
             else
             {
                 SystemMessages sm;

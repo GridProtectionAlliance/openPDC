@@ -48,6 +48,8 @@ namespace openPDCManager.UserControls.CommonControls
                 m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 m_activityWindow.Show();
                 ListBoxNodeList.ItemsSource = CommonFunctions.GetNodeList(null, false);
+                if (ListBoxNodeList.Items.Count > 0)
+                    ListBoxNodeList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {

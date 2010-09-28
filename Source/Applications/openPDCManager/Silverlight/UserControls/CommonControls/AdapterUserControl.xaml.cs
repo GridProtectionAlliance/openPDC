@@ -103,6 +103,7 @@ namespace openPDCManager.UserControls.CommonControls
                 m_adapterID = selectedAdapter.ID;
                 DisplayRuntimeID();
                 ButtonInitialize.Visibility = System.Windows.Visibility.Visible;
+                ButtonSave.Tag = "Update";
             }
         }
 
@@ -160,8 +161,8 @@ namespace openPDCManager.UserControls.CommonControls
             App app = (App)Application.Current;
             m_nodeID = app.NodeValue;
             GetNodes();
-            GetAdapterList();
             ClearForm();
+            GetAdapterList();            
         }
 
         void ButtonInitialize_Click(object sender, RoutedEventArgs e)
@@ -207,6 +208,7 @@ namespace openPDCManager.UserControls.CommonControls
             ListBoxAdapterList.SelectedIndex = -1;
             TextBlockRuntimeID.Text = string.Empty;
             ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
+            ButtonSave.Tag = "Add";
         }
 
         public void SetAdapterType(AdapterType adpType)

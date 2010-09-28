@@ -43,6 +43,8 @@ namespace openPDCManager.UserControls.PopupControls
             try
             {
                 ListBoxOutputStreamDevicePhasorList.ItemsSource = CommonFunctions.GetOutputStreamDevicePhasorList(null, m_sourceOutputStreamDeviceID);
+                if (ListBoxOutputStreamDevicePhasorList.Items.Count > 0)
+                    ListBoxOutputStreamDevicePhasorList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -60,11 +62,11 @@ namespace openPDCManager.UserControls.PopupControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveOutputStreamDevicePhasor(null, outputStreamDevicePhasor, isNew);
-                ClearForm();
+                string result = CommonFunctions.SaveOutputStreamDevicePhasor(null, outputStreamDevicePhasor, isNew);                
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 GetOutputStreamDevicePhasorList();
+                ClearForm();
             }
             catch (Exception ex)
             {

@@ -86,6 +86,7 @@ namespace openPDCManager.UserControls.CommonControls
 
 				m_inEditMode = true;
 				m_phasorID = selectedPhasor.ID;
+                ButtonSave.Tag = "Update";
 			}
 		}
 
@@ -135,8 +136,7 @@ namespace openPDCManager.UserControls.CommonControls
         #region [ Page Event Handlers ]
 
 		void Phasors_Loaded(object sender, RoutedEventArgs e)
-		{
-			GetPhasorList();
+		{			
 			GetPhasors();
 			ComboboxPhase.Items.Add(new KeyValuePair<string, string>("+", "Positive"));
 			ComboboxPhase.Items.Add(new KeyValuePair<string, string>("-", "Negative"));
@@ -150,6 +150,7 @@ namespace openPDCManager.UserControls.CommonControls
 			ComboboxType.SelectedIndex = 0;
 
             ClearForm();
+            GetPhasorList();
 		}
 
 		#endregion
@@ -207,6 +208,7 @@ namespace openPDCManager.UserControls.CommonControls
 			ListBoxPhasorList.SelectedIndex = -1;
 			m_inEditMode = false;
 			m_phasorID = 0;
+            ButtonSave.Tag = "Add";
 		}
 
 		#endregion

@@ -35,6 +35,7 @@ namespace openPDCManager.UserControls.PopupControls
         #region [ Members ]
 
         PhasorDataServiceClient m_client;
+        bool m_selectFirst = true;
 
         #endregion
 
@@ -72,6 +73,7 @@ namespace openPDCManager.UserControls.PopupControls
             SystemMessages sm;
             if (e.Error == null)
             {
+                GetOutputStreamDeviceList();
                 sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
             }
@@ -87,8 +89,7 @@ namespace openPDCManager.UserControls.PopupControls
                     sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Output Stream Device", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
-            sm.ShowPopup();
-            GetOutputStreamDeviceList();
+            sm.ShowPopup();            
         }
 
         void client_SaveOutputStreamDeviceCompleted(object sender, SaveOutputStreamDeviceCompletedEventArgs e)
@@ -96,6 +97,7 @@ namespace openPDCManager.UserControls.PopupControls
             SystemMessages sm;
             if (e.Error == null)
             {
+                GetOutputStreamDeviceList();
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
@@ -112,14 +114,20 @@ namespace openPDCManager.UserControls.PopupControls
                     sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
-            sm.ShowPopup();
-            GetOutputStreamDeviceList();
+            sm.ShowPopup();            
         }
 
         void client_GetOutputStreamDeviceListCompleted(object sender, GetOutputStreamDeviceListCompletedEventArgs e)
         {
             if (e.Error == null)
+            {
                 ListBoxOutputStreamDeviceList.ItemsSource = e.Result;
+                if (ListBoxOutputStreamDeviceList.Items.Count > 0 && m_selectFirst)
+                {
+                    ListBoxOutputStreamDeviceList.SelectedIndex = 0;
+                    m_selectFirst = false;
+                }
+            }
             else
             {
                 SystemMessages sm;

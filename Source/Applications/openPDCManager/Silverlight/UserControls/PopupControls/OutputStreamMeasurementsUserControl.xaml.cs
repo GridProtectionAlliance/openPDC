@@ -94,6 +94,7 @@ namespace openPDCManager.UserControls.PopupControls
                 GridOutputStreamMeasurementDetail.DataContext = m_selectedOutputStreamMeasurement;
                 m_inEditMode = true;
                 m_outputStreamMeasurementID = m_selectedOutputStreamMeasurement.ID;
+                ButtonSave.Tag = "Update";
             }
         }
 
@@ -198,6 +199,7 @@ namespace openPDCManager.UserControls.PopupControls
             m_inEditMode = false;
             m_outputStreamMeasurementID = 0;
             ListBoxOutputStreamMeasurementList.SelectedIndex = -1;
+            ButtonSave.Tag = "Add";
         }
 
         #endregion

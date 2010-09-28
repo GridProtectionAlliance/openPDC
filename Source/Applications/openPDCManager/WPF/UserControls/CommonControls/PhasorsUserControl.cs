@@ -44,10 +44,10 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SavePhasor(null, phasor, isNew);
-                ClearForm();
+                string result = CommonFunctions.SavePhasor(null, phasor, isNew);                
                 GetPhasorList();
                 GetPhasors();
+                ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -131,6 +131,8 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 ListBoxPhasorList.ItemsSource = CommonFunctions.GetPhasorList(null, m_sourceDeviceID);
+                if (ListBoxPhasorList.Items.Count > 0)
+                    ListBoxPhasorList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {

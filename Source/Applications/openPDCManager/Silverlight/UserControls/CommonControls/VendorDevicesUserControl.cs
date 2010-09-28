@@ -34,7 +34,8 @@ namespace openPDCManager.UserControls.CommonControls
         #region [ Members ]
 
         PhasorDataServiceClient m_client;
-        
+        bool m_selectFirst = true;
+
         #endregion
 
         #region [ Methods ]
@@ -71,6 +72,7 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             if (e.Error == null)
             {
+                m_client.GetVendorDeviceListAsync(); //Refresh data to reflect changes on the current screen.
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
@@ -87,9 +89,7 @@ namespace openPDCManager.UserControls.CommonControls
                     sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Vendor Device Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
-            sm.ShowPopup();
-
-            m_client.GetVendorDeviceListAsync(); //Refresh data to reflect changes on the current screen.
+            sm.ShowPopup();           
         }
 
         void client_GetVendorsCompleted(object sender, GetVendorsCompletedEventArgs e)
@@ -118,7 +118,14 @@ namespace openPDCManager.UserControls.CommonControls
         void client_GetVendorDeviceListCompleted(object sender, GetVendorDeviceListCompletedEventArgs e)
         {
             if (e.Error == null)
+            {
                 ListBoxVendorDeviceList.ItemsSource = e.Result;
+                if (ListBoxVendorDeviceList.Items.Count > 0 && m_selectFirst)
+                {
+                    ListBoxVendorDeviceList.SelectedIndex = 0;
+                    m_selectFirst = false;
+                }
+            }
             else
             {
                 SystemMessages sm;

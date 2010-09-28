@@ -149,6 +149,8 @@ namespace openPDCManager.UserControls.PopupControls
                     ComboboxPhasorDataFormat.SelectedItem = m_selectedOutputStreamDevice.PhasorDataFormat;
                 m_inEditMode = true;
                 m_outputStreamDeviceID = m_selectedOutputStreamDevice.ID;
+
+                ButtonSave.Tag = "Update";
             }
         }
 
@@ -300,6 +302,7 @@ namespace openPDCManager.UserControls.PopupControls
             m_inEditMode = false;
             m_outputStreamDeviceID = 0;
             ListBoxOutputStreamDeviceList.SelectedIndex = -1;
+            ButtonSave.Tag = "Add";
         }
 
         void addDevices_Closed(object sender, EventArgs e)

@@ -78,6 +78,7 @@ namespace openPDCManager.UserControls.PopupControls
                 ComboboxType.SelectedItem = new KeyValuePair<string, string>(selectedOutputStreamDevicePhasor.Type, selectedOutputStreamDevicePhasor.PhasorType);
                 m_inEditMode = true;
                 m_outputStreamDevicePhasorID = selectedOutputStreamDevicePhasor.ID;
+                ButtonSave.Tag = "Update";
             }
         }
 
@@ -221,6 +222,7 @@ namespace openPDCManager.UserControls.PopupControls
             m_inEditMode = false;
             m_outputStreamDevicePhasorID = 0;
             ListBoxOutputStreamDevicePhasorList.SelectedIndex = -1;
+            ButtonSave.Tag = "Add";
         }
 
         #endregion

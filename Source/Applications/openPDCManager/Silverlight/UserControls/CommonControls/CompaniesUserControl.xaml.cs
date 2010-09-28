@@ -74,6 +74,7 @@ namespace openPDCManager.UserControls.CommonControls
             m_inEditMode = false;
             m_companyID = 0;
             ListBoxCompanyList.SelectedIndex = -1;
+            ButtonSave.Tag = "Add";
         }
 
         bool IsValid()
@@ -153,9 +154,9 @@ namespace openPDCManager.UserControls.CommonControls
         #region [ Page Event Handlers ]
 
         void Companies_Loaded(object sender, RoutedEventArgs e)
-        {
-            GetCompanies();
+        {            
             ClearForm();
+            GetCompanies();
         }
 
         #endregion
@@ -170,6 +171,7 @@ namespace openPDCManager.UserControls.CommonControls
                 GridCompanyDetail.DataContext = selectedCompany;
                 m_inEditMode = true;
                 m_companyID = selectedCompany.ID;
+                ButtonSave.Tag = "Update";
             }
         }
 

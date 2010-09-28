@@ -88,8 +88,8 @@ namespace openPDCManager.UserControls.OutputStreamControls
             ComboboxCoordinateFormat.Items.Add("Polar");
             ComboboxCoordinateFormat.Items.Add("Rectangular");
             ComboboxCoordinateFormat.SelectedIndex = 0;
-            GetOutputStreamList();
             ClearForm();
+            GetOutputStreamList();            
         }
 
         #endregion
@@ -105,6 +105,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 m_outputStreamID = selectedOutputStream.ID;
                 m_inEditMode = true;
                 DisplayRuntimeID();
+                ButtonSave.Tag = "Update";
             }
         }
 
@@ -627,6 +628,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             ListBoxOutputStreamList.SelectedIndex = -1;
             TextBlockRuntimeID.Text = string.Empty;
             ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
+            ButtonSave.Tag = "Add";
         }
 
         #endregion

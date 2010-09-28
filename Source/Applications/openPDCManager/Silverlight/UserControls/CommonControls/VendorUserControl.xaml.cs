@@ -70,6 +70,7 @@ namespace openPDCManager.UserControls.CommonControls
 
         void VendorUserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            ClearForm();
             GetVendors();
         }
 
@@ -85,6 +86,7 @@ namespace openPDCManager.UserControls.CommonControls
                 GridVendorDetail.DataContext = selectedVendor;
                 m_inEditMode = true;
                 m_vendorID = selectedVendor.ID;
+                ButtonSave.Tag = "Update";
             }
         }
 
@@ -174,6 +176,7 @@ namespace openPDCManager.UserControls.CommonControls
             m_inEditMode = false;
             m_vendorID = 0;
             ListBoxVendorList.SelectedIndex = -1;
+            ButtonSave.Tag = "Add";
         }
 
         #endregion

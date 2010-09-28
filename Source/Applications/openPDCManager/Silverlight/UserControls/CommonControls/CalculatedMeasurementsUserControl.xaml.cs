@@ -91,6 +91,7 @@ namespace openPDCManager.UserControls.CommonControls
             ListBoxCalculatedMeasurementList.SelectedIndex = -1;
             TextBlockRuntimeID.Text = string.Empty;
             ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
+            ButtonSave.Tag = "Add";
         }
 
         bool IsValid()
@@ -254,13 +255,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             ClearForm();
             App app = (App)Application.Current;
-            m_nodeID = app.NodeValue;
-            GetCalculatedMeasurements();
+            m_nodeID = app.NodeValue;            
             GetNodes();
             ComboboxDownsamplingMethod.Items.Add("LastReceived");
             ComboboxDownsamplingMethod.Items.Add("Closest");
             ComboboxDownsamplingMethod.Items.Add("Filtered");
             ComboboxDownsamplingMethod.SelectedIndex = 0;
+            GetCalculatedMeasurements();
         }
 
         void ListBoxCalculatedMeasurementList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -275,6 +276,7 @@ namespace openPDCManager.UserControls.CommonControls
                 m_inEditMode = true;
                 DisplayRuntimeID();
                 ButtonInitialize.Visibility = System.Windows.Visibility.Visible;
+                ButtonSave.Tag = "Update";
             }
         }
 

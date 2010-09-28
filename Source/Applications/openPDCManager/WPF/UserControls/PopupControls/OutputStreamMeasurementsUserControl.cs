@@ -51,6 +51,8 @@ namespace openPDCManager.UserControls.PopupControls
             try
             {
                 ListBoxOutputStreamMeasurementList.ItemsSource = CommonFunctions.GetOutputStreamMeasurementList(null, m_sourceOutputStreamID);
+                if (ListBoxOutputStreamMeasurementList.Items.Count > 0)
+                    ListBoxOutputStreamMeasurementList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -71,6 +73,7 @@ namespace openPDCManager.UserControls.PopupControls
             try
             {
                 string result = CommonFunctions.SaveOutputStreamMeasurement(null, m_selectedOutputStreamMeasurement, false);
+                GetOutputStreamMeasurementList();
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
@@ -83,8 +86,7 @@ namespace openPDCManager.UserControls.PopupControls
             }
             sm.Owner = Window.GetWindow(this);
             sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            sm.ShowPopup();
-            GetOutputStreamMeasurementList();
+            sm.ShowPopup();            
         }
 
         void DeleteOutputStreamMeasurement(int outputStreamMeasurementId)
@@ -93,6 +95,7 @@ namespace openPDCManager.UserControls.PopupControls
             try
             {
                 string result = CommonFunctions.DeleteOutputStreamMeasurement(null, outputStreamMeasurementId);
+                GetOutputStreamMeasurementList();
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
@@ -105,8 +108,7 @@ namespace openPDCManager.UserControls.PopupControls
             }
             sm.Owner = Window.GetWindow(this);
             sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            sm.ShowPopup();
-            GetOutputStreamMeasurementList();
+            sm.ShowPopup();            
         }
 
         #endregion

@@ -77,6 +77,7 @@ namespace openPDCManager.UserControls.PopupControls
                 GridOutputStreamDeviceDigitalDetail.DataContext = selectedOutputStreamDeviceDigital;
                 m_inEditMode = true;
                 m_outputStreamDeviceDigitalID = selectedOutputStreamDeviceDigital.ID;
+                ButtonSave.Tag = "Update";
             }
         }
 
@@ -128,8 +129,8 @@ namespace openPDCManager.UserControls.PopupControls
 
         void OutputStreamDeviceDigitals_Loaded(object sender, RoutedEventArgs e)
         {
-            GetOutputStreamDeviceDigitalList();
             ClearForm();
+            GetOutputStreamDeviceDigitalList();            
         }
 
         #endregion
@@ -202,6 +203,7 @@ namespace openPDCManager.UserControls.PopupControls
             m_inEditMode = false;
             m_outputStreamDeviceDigitalID = 0;
             ListBoxOutputStreamDeviceDigitalList.SelectedIndex = -1;
+            ButtonSave.Tag = "Add";
         }
 
         #endregion

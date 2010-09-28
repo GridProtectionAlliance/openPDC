@@ -34,7 +34,8 @@ namespace openPDCManager.UserControls.CommonControls
     {
         #region [ Members ]
 
-        PhasorDataServiceClient m_client;        
+        PhasorDataServiceClient m_client;
+        bool m_selectFirst = true;
 
         #endregion
 
@@ -74,6 +75,7 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             if (e.Error == null)
             {
+                GetNodes();
                 ClearForm();
                 (Application.Current.RootVisual as MasterLayoutControl).UserControlSelectNode.RaiseNotification();
                 sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
@@ -92,7 +94,6 @@ namespace openPDCManager.UserControls.CommonControls
                         ButtonType.OkOnly);
             }
             sm.ShowPopup();
-            GetNodes();
         }
 
         void client_GetCompaniesCompleted(object sender, GetCompaniesCompletedEventArgs e)
@@ -121,7 +122,14 @@ namespace openPDCManager.UserControls.CommonControls
         void client_GetNodeListCompleted(object sender, GetNodeListCompletedEventArgs e)
         {
             if (e.Error == null)
+            {
                 ListBoxNodeList.ItemsSource = e.Result;
+                if (ListBoxNodeList.Items.Count > 0 && m_selectFirst)
+                {
+                    ListBoxNodeList.SelectedIndex = 0;
+                    m_selectFirst = false;
+                }
+            }
             else
             {
                 SystemMessages sm;

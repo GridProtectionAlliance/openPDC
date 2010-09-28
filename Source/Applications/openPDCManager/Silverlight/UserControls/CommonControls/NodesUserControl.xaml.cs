@@ -81,6 +81,8 @@ namespace openPDCManager.UserControls.CommonControls
                     ComboBoxCompany.SelectedIndex = 0;
                 m_inEditMode = true;
                 m_nodeID = selectedNode.ID;
+
+                ButtonSave.Tag = "Update";
             }
         }
 
@@ -136,10 +138,10 @@ namespace openPDCManager.UserControls.CommonControls
         #region [ Page Event Handlers ]
 
         void Nodes_Loaded(object sender, RoutedEventArgs e)
-        {
-            GetNodes();
+        {            
             GetCompanies();
-            ClearForm();            
+            ClearForm();
+            GetNodes();
         }               
 
         #endregion
@@ -154,6 +156,7 @@ namespace openPDCManager.UserControls.CommonControls
             m_inEditMode = false;
             m_nodeID = string.Empty;
             ListBoxNodeList.SelectedIndex = -1;
+            ButtonSave.Tag = "Add";
         }
 
         bool IsValid()

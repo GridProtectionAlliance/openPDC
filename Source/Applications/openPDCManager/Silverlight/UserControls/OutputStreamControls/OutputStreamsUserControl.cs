@@ -34,6 +34,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
         #region [ Members ]
 
         PhasorDataServiceClient m_client;
+        bool m_selectFirst = true;
 
         #endregion
 
@@ -92,7 +93,8 @@ namespace openPDCManager.UserControls.OutputStreamControls
         {
             SystemMessages sm;
             if (e.Error == null)
-            {
+            {                
+                GetOutputStreamList();
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
@@ -110,13 +112,19 @@ namespace openPDCManager.UserControls.OutputStreamControls
                         ButtonType.OkOnly);
             }
             sm.ShowPopup();
-            GetOutputStreamList();
         }
 
         void client_GetOutputStreamListCompleted(object sender, GetOutputStreamListCompletedEventArgs e)
         {
             if (e.Error == null)
+            {
                 ListBoxOutputStreamList.ItemsSource = e.Result;
+                if (ListBoxOutputStreamList.Items.Count > 0 && m_selectFirst)
+                {
+                    ListBoxOutputStreamList.SelectedIndex = 0;
+                    m_selectFirst = false;
+                }
+            }
             else
             {
                 SystemMessages sm;

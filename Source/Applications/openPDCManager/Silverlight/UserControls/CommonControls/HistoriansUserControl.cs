@@ -34,6 +34,7 @@ namespace openPDCManager.UserControls.CommonControls
         #region [ Members ]
 
         PhasorDataServiceClient m_client;
+        bool m_selectFirst = true;
 
         #endregion
 
@@ -89,6 +90,7 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             if (e.Error == null)
             {
+                GetHistorians();
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
@@ -106,7 +108,6 @@ namespace openPDCManager.UserControls.CommonControls
                         ButtonType.OkOnly);
             }
             sm.ShowPopup();
-            GetHistorians();
         }
 
         void client_GetNodesCompleted(object sender, GetNodesCompletedEventArgs e)
@@ -135,7 +136,14 @@ namespace openPDCManager.UserControls.CommonControls
         void client_GetHistorianListCompleted(object sender, GetHistorianListCompletedEventArgs e)
         {
             if (e.Error == null)
+            {
                 ListBoxHistorianList.ItemsSource = e.Result;
+                if (ListBoxHistorianList.Items.Count > 0 && m_selectFirst)
+                {
+                    ListBoxHistorianList.SelectedIndex = 0;
+                    m_selectFirst = false;
+                }
+            }
             else
             {
                 SystemMessages sm;

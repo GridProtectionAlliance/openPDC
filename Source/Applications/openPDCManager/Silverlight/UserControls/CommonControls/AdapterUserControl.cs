@@ -34,6 +34,7 @@ namespace openPDCManager.UserControls.CommonControls
         #region [ Members ]
 
         PhasorDataServiceClient m_client;
+        bool m_selectFirst = true;
 
         #endregion
 
@@ -109,9 +110,10 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             if (e.Error == null)
             {
-                ClearForm();
+                GetAdapterList();                
                 sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
+                ClearForm();
             }
             else
             {
@@ -125,14 +127,20 @@ namespace openPDCManager.UserControls.CommonControls
                     sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Adapter Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
-            sm.ShowPopup();
-            GetAdapterList();
+            sm.ShowPopup();            
         }
 
         void client_GetAdapterListCompleted(object sender, GetAdapterListCompletedEventArgs e)
         {
             if (e.Error == null)
+            {
                 ListBoxAdapterList.ItemsSource = e.Result;
+                if (ListBoxAdapterList.Items.Count > 0 && m_selectFirst)
+                {
+                    ListBoxAdapterList.SelectedIndex = 0;
+                    m_selectFirst = false;
+                }
+            }
             else
             {
                 SystemMessages sm;

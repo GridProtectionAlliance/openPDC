@@ -34,6 +34,7 @@ namespace openPDCManager.UserControls.PopupControls
         #region [ Members ]
 
         PhasorDataServiceClient m_client;
+        bool m_selectFirst = true;
 
         #endregion
 
@@ -65,6 +66,7 @@ namespace openPDCManager.UserControls.PopupControls
             SystemMessages sm;
             if (e.Error == null)
             {
+                GetOutputStreamDeviceAnalogList();
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
@@ -81,14 +83,20 @@ namespace openPDCManager.UserControls.PopupControls
                     sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Analog Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
-            sm.ShowPopup();
-            GetOutputStreamDeviceAnalogList();
+            sm.ShowPopup();            
         }
 
         void client_GetOutputStreamDeviceAnalogListCompleted(object sender, GetOutputStreamDeviceAnalogListCompletedEventArgs e)
         {
             if (e.Error == null)
+            {
                 ListBoxOutputStreamDeviceAnalogList.ItemsSource = e.Result;
+                if (ListBoxOutputStreamDeviceAnalogList.Items.Count > 0 && m_selectFirst)
+                {
+                    ListBoxOutputStreamDeviceAnalogList.SelectedIndex = 0;
+                    m_selectFirst = false;
+                }
+            }
             else
             {
                 SystemMessages sm;

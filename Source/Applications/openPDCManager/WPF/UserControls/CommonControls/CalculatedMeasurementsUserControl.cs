@@ -75,6 +75,8 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 ListBoxCalculatedMeasurementList.ItemsSource = CommonFunctions.GetCalculatedMeasurementList(null, m_nodeID);
+                if (ListBoxCalculatedMeasurementList.Items.Count > 0)
+                    ListBoxCalculatedMeasurementList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -115,6 +117,7 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.Owner = Window.GetWindow(this);                
                 sm.ShowPopup();
                 GetCalculatedMeasurements();
+                ClearForm();
             }
             catch (Exception ex)
             {

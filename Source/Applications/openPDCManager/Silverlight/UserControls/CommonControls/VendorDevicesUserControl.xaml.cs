@@ -78,6 +78,7 @@ namespace openPDCManager.UserControls.CommonControls
                 ComboBoxVendor.SelectedItem = new KeyValuePair<int, string>(selectedVendorDevice.VendorID, selectedVendorDevice.VendorName);
                 m_vendorDeviceID = selectedVendorDevice.ID;
                 m_inEditMode = true;
+                ButtonSave.Tag = "Update";
             }
         }
 
@@ -179,6 +180,7 @@ namespace openPDCManager.UserControls.CommonControls
             m_inEditMode = false;
             m_vendorDeviceID = 0;
             ListBoxVendorDeviceList.SelectedIndex = -1;
+            ButtonSave.Tag = "Add";
         }
 
         #endregion

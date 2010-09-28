@@ -76,6 +76,8 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 ListBoxHistorianList.ItemsSource = CommonFunctions.GetHistorianList(null, m_nodeID);
+                if (ListBoxHistorianList.Items.Count > 0)
+                    ListBoxHistorianList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {

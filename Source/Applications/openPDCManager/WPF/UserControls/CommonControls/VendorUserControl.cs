@@ -42,7 +42,9 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ListBoxVendorList.ItemsSource = CommonFunctions.GetVendorList(null);        
+                ListBoxVendorList.ItemsSource = CommonFunctions.GetVendorList(null);
+                if (ListBoxVendorList.Items.Count > 0)
+                    ListBoxVendorList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {

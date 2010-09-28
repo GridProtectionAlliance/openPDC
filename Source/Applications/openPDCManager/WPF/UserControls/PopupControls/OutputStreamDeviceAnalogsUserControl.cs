@@ -46,6 +46,8 @@ namespace openPDCManager.UserControls.PopupControls
             try
             {
                 ListBoxOutputStreamDeviceAnalogList.ItemsSource = CommonFunctions.GetOutputStreamDeviceAnalogList(null, m_sourceOutputStreamDeviceID);
+                if (ListBoxOutputStreamDeviceAnalogList.Items.Count > 0)
+                    ListBoxOutputStreamDeviceAnalogList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -56,7 +58,6 @@ namespace openPDCManager.UserControls.PopupControls
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
             }
-            //m_client.GetOutputStreamDeviceAnalogListAsync(m_sourceOutputStreamDeviceID);
         }
 
         void SaveOutputStreamDeviceAnalog(OutputStreamDeviceAnalog outputStreamDeviceAnalog, bool isNew)
@@ -66,9 +67,9 @@ namespace openPDCManager.UserControls.PopupControls
             {
                 string result = CommonFunctions.SaveOutputStreamDeviceAnalog(null, outputStreamDeviceAnalog, isNew);                
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-                        ButtonType.OkOnly);
-                ClearForm();
+                        ButtonType.OkOnly);                
                 GetOutputStreamDeviceAnalogList();
+                ClearForm();
             }
             catch (Exception ex)
             {

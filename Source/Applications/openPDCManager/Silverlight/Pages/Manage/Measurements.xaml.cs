@@ -47,6 +47,7 @@ namespace openPDCManager.Pages.Manage
 		int m_deviceID = 0;
 		ActivityWindow m_activityWindow;
 		ObservableCollection<Measurement> m_measurementList;
+        bool m_selectFirst = true;
 
 		#endregion
 
@@ -345,6 +346,8 @@ namespace openPDCManager.Pages.Manage
 
 				m_inEditMode = true;
 				m_signalID = selectedMeasurement.SignalID;
+
+                ButtonSave.Tag = "Update";
 			}
 		}
 		
@@ -531,6 +534,7 @@ namespace openPDCManager.Pages.Manage
 			m_inEditMode = false;
 			m_signalID = string.Empty;
 			ListBoxMeasurementList.SelectedIndex = -1;
+            ButtonSave.Tag = "Add";
 		}
 
 		void BindData(IEnumerable<Measurement> measurementList)
@@ -539,7 +543,12 @@ namespace openPDCManager.Pages.Manage
 			ListBoxMeasurementList.ItemsSource = pagedList;
 			DataPagerMeasurements.Source = pagedList;
 			ListBoxMeasurementList.SelectedIndex = -1;
-			ClearForm();
+            if (ListBoxMeasurementList.Items.Count > 0 && m_selectFirst)
+            {
+                ListBoxMeasurementList.SelectedIndex = 0;
+                m_selectFirst = false;
+            }
+			//ClearForm();
 		}
 
 		#endregion

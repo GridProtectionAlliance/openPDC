@@ -126,6 +126,8 @@ namespace openPDCManager.UserControls.OutputStreamControls
             try
             {
                 ListBoxOutputStreamList.ItemsSource = CommonFunctions.GetOutputStreamList(null, false, m_nodeValue);
+                if (ListBoxOutputStreamList.Items.Count > 0)
+                    ListBoxOutputStreamList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -144,12 +146,15 @@ namespace openPDCManager.UserControls.OutputStreamControls
             try
             {
                 string result = CommonFunctions.SaveOutputStream(null, outputStream, isNew);
-                ClearForm();
+                
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
+
+                GetOutputStreamList();
+                ClearForm();
 
                 //Update Metadata in the openPDC Service.
                 try
@@ -182,8 +187,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
-            }            
-            GetOutputStreamList();
+            }                        
         }
 
         void DeleteOutputStream(int outputStreamID)

@@ -45,6 +45,8 @@ namespace openPDCManager.UserControls.PopupControls
             try
             {
                 ListBoxOutputStreamDeviceList.ItemsSource = CommonFunctions.GetOutputStreamDeviceList(null, m_sourceOutputStreamID, false);
+                if (ListBoxOutputStreamDeviceList.Items.Count > 0)
+                    ListBoxOutputStreamDeviceList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -64,9 +66,9 @@ namespace openPDCManager.UserControls.PopupControls
             {
                 string result = CommonFunctions.SaveOutputStreamDevice(null, outputStreamDevice, isNew, originalAcronym);
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-                        ButtonType.OkOnly);
-                ClearForm();
+                        ButtonType.OkOnly);                
                 GetOutputStreamDeviceList();
+                ClearForm();
             }
             catch (Exception ex)
             {

@@ -77,6 +77,7 @@ namespace openPDCManager.UserControls.PopupControls
                 ComboBoxType.SelectedItem = new KeyValuePair<int, string>(selectedOutputStreamDeviceAnalog.Type, selectedOutputStreamDeviceAnalog.TypeName);
                 m_inEditMode = true;
                 m_outputStreamDeviceAnalogID = selectedOutputStreamDeviceAnalog.ID;
+                ButtonSave.Tag = "Update";
             }
         }
 
@@ -129,13 +130,13 @@ namespace openPDCManager.UserControls.PopupControls
         #region [ Page Event Handlers ]
 
         void OutputStreamDeviceAnalogs_Loaded(object sender, RoutedEventArgs e)
-        {
-            GetOutputStreamDeviceAnalogList();
+        {            
             ComboBoxType.Items.Add(new KeyValuePair<int, string>(0, "Single point-on-wave"));
             ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "RMS of analog input"));
             ComboBoxType.Items.Add(new KeyValuePair<int, string>(1, "Peak of analog input"));
             ComboBoxType.SelectedIndex = 0;
             ClearForm();
+            GetOutputStreamDeviceAnalogList();
         }
 
         #endregion
@@ -210,6 +211,7 @@ namespace openPDCManager.UserControls.PopupControls
             m_inEditMode = false;
             m_outputStreamDeviceAnalogID = 0;
             ListBoxOutputStreamDeviceAnalogList.SelectedIndex = -1;
+            ButtonSave.Tag = "Add";
         }
 
         #endregion

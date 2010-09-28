@@ -119,6 +119,8 @@ namespace openPDCManager.Pages.Manage
 
                 m_inEditMode = true;
                 m_signalID = selectedMeasurement.SignalID;
+
+                ButtonSave.Tag = "Update";
             }
         }
 
@@ -319,6 +321,7 @@ namespace openPDCManager.Pages.Manage
                 
                 if (!m_bindingData && m_activityWindow != null)
                     m_activityWindow.Close();
+
             }
             catch (Exception ex)
             {
@@ -513,12 +516,15 @@ namespace openPDCManager.Pages.Manage
             m_inEditMode = false;
             m_signalID = string.Empty;
             ListBoxMeasurementList.SelectedIndex = -1;
+            ButtonSave.Tag = "Add";
         }
 
         void BindData(List<Measurement> measurementList)
         {
-            ListBoxMeasurementList.ItemsSource = measurementList;    
-            ClearForm();
+            ListBoxMeasurementList.ItemsSource = measurementList;
+            if (ListBoxMeasurementList.Items.Count > 0)
+                ListBoxMeasurementList.SelectedIndex = 0;
+            //ClearForm();
         }
 
         #endregion

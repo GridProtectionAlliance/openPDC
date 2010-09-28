@@ -43,6 +43,8 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 ListBoxCompanyList.ItemsSource = CommonFunctions.GetCompanyList(null);
+                if (ListBoxCompanyList.Items.Count > 0)
+                    ListBoxCompanyList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {

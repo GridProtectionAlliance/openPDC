@@ -34,6 +34,7 @@ namespace openPDCManager.UserControls.CommonControls
         #region [ Members ]
 
         PhasorDataServiceClient m_client;
+        bool m_selectFirst = true;            
         
         #endregion
 
@@ -65,6 +66,7 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             if (e.Error == null)
             {
+                GetVendors();
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
@@ -82,13 +84,19 @@ namespace openPDCManager.UserControls.CommonControls
                         ButtonType.OkOnly);
             }
             sm.ShowPopup();
-            GetVendors();	//Refresh data to reflect changes on the current screen.
         }
 
         void client_GetVendorListCompleted(object sender, GetVendorListCompletedEventArgs e)
         {
             if (e.Error == null)
+            {
                 ListBoxVendorList.ItemsSource = e.Result;
+                if (ListBoxVendorList.Items.Count > 0 && m_selectFirst)
+                {
+                    ListBoxVendorList.SelectedIndex = 0;
+                    m_selectFirst = false;
+                }
+            }
             else
             {
                 SystemMessages sm;

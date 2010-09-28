@@ -88,6 +88,8 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 ListBoxVendorDeviceList.ItemsSource = CommonFunctions.GetVendorDeviceList(null);
+                if (ListBoxVendorDeviceList.Items.Count > 0)
+                    ListBoxVendorDeviceList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {

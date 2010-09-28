@@ -34,6 +34,7 @@ namespace openPDCManager.UserControls.PopupControls
         #region [ Members ]
 
         PhasorDataServiceClient m_client;
+        bool m_selectFirst = true;
 
         #endregion
 
@@ -65,6 +66,7 @@ namespace openPDCManager.UserControls.PopupControls
             SystemMessages sm;
             if (e.Error == null)
             {
+                GetOutputStreamDeviceDigitalList();
                 ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = e.Result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
@@ -81,14 +83,20 @@ namespace openPDCManager.UserControls.PopupControls
                     sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Digital Information", SystemMessage = e.Error.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
             }
-            sm.ShowPopup();
-            GetOutputStreamDeviceDigitalList();
+            sm.ShowPopup();            
         }
 
         void client_GetOutputStreamDeviceDigitalListCompleted(object sender, GetOutputStreamDeviceDigitalListCompletedEventArgs e)
         {
             if (e.Error == null)
+            {
                 ListBoxOutputStreamDeviceDigitalList.ItemsSource = e.Result;
+                if (ListBoxOutputStreamDeviceDigitalList.Items.Count > 0 && m_selectFirst)
+                {
+                    ListBoxOutputStreamDeviceDigitalList.SelectedIndex = 0;
+                    m_selectFirst = false;
+                }
+            }
             else
             {
                 SystemMessages sm;
