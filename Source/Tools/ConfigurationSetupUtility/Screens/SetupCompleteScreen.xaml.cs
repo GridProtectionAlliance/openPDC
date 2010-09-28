@@ -158,7 +158,7 @@ namespace ConfigurationSetupUtility
         private void InitializeOpenPdcServiceController()
         {
             ServiceController[] services = ServiceController.GetServices();
-            m_openPdcServiceController = services.SingleOrDefault(svc => svc.ServiceName == "openPDC");
+            m_openPdcServiceController = services.SingleOrDefault(svc => string.Compare(svc.ServiceName, "openPDC", true) == 0);
         }
 
         // Initializes the state of the openPDC service checkbox.

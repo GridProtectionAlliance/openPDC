@@ -567,7 +567,7 @@ namespace ConfigurationSetupUtility
             }
 
             // Attempt to access service controller for the openPDC
-            ServiceController openPdcServiceController = ServiceController.GetServices().SingleOrDefault(svc => svc.ServiceName == "openPDC");
+            ServiceController openPdcServiceController = ServiceController.GetServices().SingleOrDefault(svc => string.Compare(svc.ServiceName, "openPDC", true) == 0);
 
             if (openPdcServiceController != null)
             {
@@ -579,16 +579,16 @@ namespace ConfigurationSetupUtility
 
                         openPdcServiceController.Stop();
 
-                        // Can't wait forever for service to stop, so we time-out after 60 seconds
-                        openPdcServiceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromMinutes(1.0D));
+                        // Can't wait forever for service to stop, so we time-out after 20 seconds
+                        openPdcServiceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(20.0D));
 
                         if (openPdcServiceController.Status == ServiceControllerStatus.Stopped)
                         {
                             m_state["restarting"] = true;
-                            AppendStatusMessage("Successfully stopped openPDC Windows service.");
+                            AppendStatusMessage("Successfully stopped the openPDC Windows service.");
                         }
                         else
-                            AppendStatusMessage("Failed to stop openPDC Windows service after trying for 60 seconds.\r\nModifications continuing anyway...");
+                            AppendStatusMessage("Failed to stop the openPDC Windows service after trying for 20 seconds.\r\nModifications continuing anyway...");
 
                         // Add an extra line for visual separation of service termination status
                         AppendStatusMessage("");
