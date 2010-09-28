@@ -1488,6 +1488,7 @@ namespace TVA.PhasorProtocols
         private static double s_totalDataFrames;    // Cached total data frames
         private static double s_totalConfigFrames;  // Cached total configuration frames
         private static double s_totalHeaderFrames;  // Cached total header frames
+        private static double s_publishedFrames;    // Cached total published frames
 
         // Static Methods
 
@@ -1588,7 +1589,7 @@ namespace TVA.PhasorProtocols
                 string acronym, signalReference, pointTag, company, vendorDevice, description;
                 int adapterID, signalIndex;
 
-                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating device statistic measurements..."));
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating device measurements..."));
 
                 // Make sure needed device statistic measurements exist
                 foreach (DataRow device in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE IsConcentrator = 0 AND NodeID = {0};", nodeIDQueryString)).Rows)
@@ -1614,7 +1615,7 @@ namespace TVA.PhasorProtocols
                     }
                 }
 
-                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating input stream statistic measurements..."));
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating input stream measurements..."));
 
                 // Make sure needed input stream statistic measurements exist
                 foreach (DataRow inputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE ((IsConcentrator <> 0) OR (IsConcentrator = 0 AND ParentID IS NULL)) AND (NodeID = {0});", nodeIDQueryString)).Rows)
@@ -1640,7 +1641,7 @@ namespace TVA.PhasorProtocols
                     }
                 }
 
-                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating output stream statistic and device measurements..."));
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating output stream measurements..."));
 
                 // Make sure needed output stream statistic measurements exist
                 foreach (DataRow outputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM OutputStream WHERE NodeID = {0};", nodeIDQueryString)).Rows)
@@ -2310,6 +2311,9 @@ namespace TVA.PhasorProtocols
         /// </summary>
         /// <param name="source">Source OutputStream.</param>
         /// <param name="arguments">Any needed arguments for statistic calculation.</param>
+        /// <remarks>
+        /// This statistic also calculates the total published frame count statistic so its load order must occur first.
+        /// </remarks>
         /// <returns>Expected Measurements Statistic.</returns>
         private static double GetOutputStreamStatistic_ExpectedMeasurements(object source, string arguments)
         {
@@ -2317,7 +2321,10 @@ namespace TVA.PhasorProtocols
             PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
 
             if (outputStream != null)
-                statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.ExpectedMeasurements, "ExpectedMeasurements");
+            {
+                s_publishedFrames = s_statisticValueCache.GetDifference(outputStream, outputStream.PublishedFrames, "PublishedFrames");
+                statistic = outputStream.ExpectedMeasurements * s_publishedFrames;
+            }
 
             return statistic;
         }
@@ -2432,13 +2439,7 @@ namespace TVA.PhasorProtocols
         /// <returns>Published Frames Statistic.</returns>
         private static double GetOutputStreamStatistic_PublishedFrames(object source, string arguments)
         {
-            double statistic = 0.0D;
-            PhasorDataConcentratorBase outputStream = source as PhasorDataConcentratorBase;
-
-            if (outputStream != null)
-                statistic = s_statisticValueCache.GetDifference(outputStream, outputStream.PublishedFrames, "PublishedFrames");
-
-            return statistic;
+            return s_publishedFrames;
         }
 
         /// <summary>

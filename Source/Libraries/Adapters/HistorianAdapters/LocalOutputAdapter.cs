@@ -791,7 +791,8 @@ namespace HistorianAdapters
                 {
                     shell.StartInfo = psi;
                     shell.Start();
-                    shell.WaitForExit(5000);
+                    if (!shell.WaitForExit(5000))
+                        shell.Kill();
                 }
             }
         }
