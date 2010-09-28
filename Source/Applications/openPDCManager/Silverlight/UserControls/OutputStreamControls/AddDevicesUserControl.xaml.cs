@@ -63,7 +63,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             ButtonAdd.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));
             UpdateLayout();
 #endif
-            Loaded += new RoutedEventHandler(AddDevices_Loaded);
+            Loaded += new RoutedEventHandler(AddDevices_Loaded);            
             ButtonAdd.Click += new RoutedEventHandler(ButtonAdd_Click);
             ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
             ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);            

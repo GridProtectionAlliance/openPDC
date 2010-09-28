@@ -26,6 +26,7 @@ using System.ServiceModel;
 using openPDCManager.ModalDialogs;
 using openPDCManager.PhasorDataServiceProxy;
 using openPDCManager.Utilities;
+using System.Windows.Controls;
 
 namespace openPDCManager.UserControls.OutputStreamControls
 {
@@ -43,7 +44,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
         {
             m_client = ProxyClient.GetPhasorDataServiceProxyClient();
             m_client.GetDevicesForOutputStreamCompleted += new EventHandler<GetDevicesForOutputStreamCompletedEventArgs>(client_GetDevicesForOutputStreamCompleted);
-            m_client.AddDevicesCompleted += new EventHandler<AddDevicesCompletedEventArgs>(client_AddDevicesCompleted);
+            m_client.AddDevicesCompleted += new EventHandler<AddDevicesCompletedEventArgs>(client_AddDevicesCompleted);            
         }
 
         void GetDevicesForOutputStream()
@@ -81,7 +82,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
                         ButtonType.OkOnly);
             }
             sm.ShowPopup();
-            m_client.GetDevicesForOutputStreamAsync(m_sourceOutputStreamID, m_nodeValue);
+            m_client.GetDevicesForOutputStreamAsync(m_sourceOutputStreamID, m_nodeValue);            
         }
 
         void client_GetDevicesForOutputStreamCompleted(object sender, GetDevicesForOutputStreamCompletedEventArgs e)
@@ -92,6 +93,14 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 ListBoxDeviceList.ItemsSource = m_deviceList;
                 if (ListBoxDeviceList.Items.Count > 0)
                     ListBoxDeviceList.SelectedIndex = 0;
+                else
+                {
+                    SystemMessages sm = new SystemMessages(new Message() { UserMessage = "There are no more devices to add to the Output Stream", SystemMessage = "Click OK to return back to Current Devices For Output Stream list.", UserMessageType = MessageType.Information },
+                        ButtonType.OkOnly);                    
+                    sm.ShowPopup();
+                    ((openPDCManager.ModalDialogs.OutputStreamWizard.AddDevices)((Grid)this.Parent).Parent).Close();
+                }
+                
             }
             else
             {

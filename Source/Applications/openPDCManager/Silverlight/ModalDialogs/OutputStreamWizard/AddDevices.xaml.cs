@@ -34,7 +34,7 @@ namespace openPDCManager.ModalDialogs.OutputStreamWizard
 			InitializeComponent();
             UserControlAddDevices.m_sourceOutputStreamID = outputStreamID;
             UserControlAddDevices.m_sourceOutputStreamAcronym = outputStreamAcronym;
-            this.Title = "Add New Devices For Output Stream: " + outputStreamAcronym;
+            this.Title = "Add New Devices For Output Stream: " + outputStreamAcronym;            
 		}
 
 		#endregion

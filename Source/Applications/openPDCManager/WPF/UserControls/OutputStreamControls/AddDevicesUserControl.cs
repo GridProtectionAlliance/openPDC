@@ -49,6 +49,16 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 ListBoxDeviceList.ItemsSource = m_deviceList;
                 if (ListBoxDeviceList.Items.Count > 0)
                     ListBoxDeviceList.SelectedIndex = 0;
+                else
+                {
+                    SystemMessages sm = new SystemMessages(new Message() { UserMessage = "There are no more devices to add to the Output Stream", SystemMessage = "Click OK to return back to Current Devices For Output Stream list.", UserMessageType = MessageType.Information },
+                        ButtonType.OkOnly);
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm.ShowPopup();
+
+                    (Window.GetWindow(this)).Close();
+                }
             }
             catch (Exception ex)
             {
@@ -69,21 +79,24 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 string result = CommonFunctions.AddDevices(null, m_sourceOutputStreamID, m_devicesToBeAdded, (bool)CheckAddDigitals.IsChecked, (bool)CheckAddAnalog.IsChecked);
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
-                GetDevicesForOutputStream();
-                
-                //Window.GetWindow(this).Close();
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+
+                GetDevicesForOutputStream();                
             }
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.AddDevices", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Add Output Stream Device(s)", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                            ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
             }
-            sm.Owner = Window.GetWindow(this);
-            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            sm.ShowPopup();
+            
         }
-
+                
         #endregion
     }
 }
