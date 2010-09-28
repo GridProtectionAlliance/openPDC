@@ -1722,7 +1722,7 @@ namespace TVA.PhasorProtocols
         [SuppressMessage("Microsoft.Security", "CA2100")]
         private static IDbCommand CreateParameterizedCommand(IDbConnection connection, string sql, params object[] args)
         {
-            // TODO: Move function to TVA.Data.DataExtensions as an extension...
+            // TODO: Migrate to function in TVA.Data.DataExtensions once new version is rolled down...
             string[] tokens = sql.Split(' ', '(', ')', ',');
             IDbCommand command = connection.CreateCommand();
             int i = 0;
