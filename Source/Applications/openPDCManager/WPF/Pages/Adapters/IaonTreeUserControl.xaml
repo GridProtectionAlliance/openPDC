@@ -8,7 +8,10 @@
                 <StackPanel.Resources>
                     
                     <HierarchicalDataTemplate x:Key="ChildNodeTemplate">
-                        <StackPanel Orientation="Horizontal" ToolTipService.ToolTip="{Binding Path=ConnectionString}">
+                        <StackPanel Orientation="Horizontal">
+                            <ToolTipService.ToolTip>
+                                <TextBlock Text="{Binding Path=ConnectionString}" Width="500" TextWrapping="Wrap"/>                                
+                            </ToolTipService.ToolTip>
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                 <TextBlock Text="{Binding Path=AdapterName}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
                             </Border>
