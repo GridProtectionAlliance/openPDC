@@ -28,6 +28,7 @@ using openPDCManager.Utilities;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using openPDCManager.Data.ServiceCommunication;
+using System.Collections.Generic;
 
 namespace openPDCManager.UserControls.OutputStreamControls
 {
@@ -154,8 +155,11 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 sm.ShowPopup();
 
                 GetOutputStreamList();
-                ClearForm();
+                //ClearForm();
 
+                //make this newly added or updated item as default selected. So user can click initialize right away.
+                ListBoxOutputStreamList.SelectedItem = ((List<OutputStream>)ListBoxOutputStreamList.ItemsSource).Find(c => c.Acronym == outputStream.Acronym);
+                
                 //Update Metadata in the openPDC Service.
                 try
                 {

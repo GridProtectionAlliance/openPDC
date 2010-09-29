@@ -236,11 +236,18 @@ namespace openPDCManager.Pages.Manage
                 string result = CommonFunctions.SaveMeasurement(null, measurement, isNew);
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+
                 if (m_deviceID > 0)
                     GetMeasurementsByDevice();
                 else
                     GetMeasurementList();
 
+                //make this newly added or updated item as default selected. So user can click initialize right away.
+                ListBoxMeasurementList.SelectedItem = ((List<Measurement>)ListBoxMeasurementList.ItemsSource).Find(c => c.SignalReference == measurement.SignalReference);
+                
                 //Update Metadata in the openPDC Service.
                 try
                 {
@@ -257,17 +264,18 @@ namespace openPDCManager.Pages.Manage
                     CommonFunctions.LogException(null, "SaveMeasurement.RefreshMetadata", ex);
                 }
 
-                ClearForm();
+                //ClearForm();
             }
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.SaveMeasurement", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Measurement Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
             }
-            sm.Owner = Window.GetWindow(this);
-            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            sm.ShowPopup();
+            
         }
 
         void GetPhasors(int deviceID, bool isOptional)

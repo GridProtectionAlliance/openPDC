@@ -28,6 +28,7 @@ using openPDCManager.Data;
 using System.Windows;
 using openPDCManager.Data.Entities;
 using openPDCManager.Data.ServiceCommunication;
+using System.Collections.Generic;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -45,16 +46,20 @@ namespace openPDCManager.UserControls.CommonControls
             DataConnection connection = new DataConnection();;
             try
             {                
-                string result = CommonFunctions.SavePhasor(connection, phasor, isNew);
-                GetPhasorList();
-                GetPhasors();
-                ClearForm();
+                string result = CommonFunctions.SavePhasor(connection, phasor, isNew);                
+                //ClearForm();
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
 
+                GetPhasors();
+                GetPhasorList();
+
+                //make this newly added or updated item as default selected. So user can click initialize right away.
+                ListBoxPhasorList.SelectedItem = ((List<Phasor>)ListBoxPhasorList.ItemsSource).Find(c => c.Label == phasor.Label);
+                
                 //Update Metadata in the openPDC Service.
                 try
                 {

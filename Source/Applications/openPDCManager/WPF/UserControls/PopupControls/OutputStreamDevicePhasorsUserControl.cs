@@ -27,6 +27,7 @@ using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
+using System.Collections.Generic;
 
 namespace openPDCManager.UserControls.PopupControls
 {
@@ -66,7 +67,11 @@ namespace openPDCManager.UserControls.PopupControls
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 GetOutputStreamDevicePhasorList();
-                ClearForm();
+                //ClearForm();
+
+                //make this newly added or updated item as default selected. So user can click initialize right away.
+                ListBoxOutputStreamDevicePhasorList.SelectedItem = ((List<OutputStreamDevicePhasor>)ListBoxOutputStreamDevicePhasorList.ItemsSource).Find(c => c.Label == outputStreamDevicePhasor.Label);
+                
             }
             catch (Exception ex)
             {

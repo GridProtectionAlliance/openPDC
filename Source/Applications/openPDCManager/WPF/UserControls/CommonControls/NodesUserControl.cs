@@ -94,7 +94,7 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.Owner = Window.GetWindow(this);
                 sm.ShowPopup();
                 GetNodes();
-                ClearForm();
+                //ClearForm();
                 ((MasterLayoutWindow)Window.GetWindow(this)).UserControlSelectNode.RaiseNotification();
             }
             catch (Exception ex)

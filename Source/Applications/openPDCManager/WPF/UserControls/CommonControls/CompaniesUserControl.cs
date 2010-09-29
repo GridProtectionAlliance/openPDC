@@ -27,6 +27,7 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
+using System.Collections.Generic;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -68,7 +69,10 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.Owner = Window.GetWindow(this);
                 sm.ShowPopup();
                 GetCompanies();
-                ClearForm();                
+                //ClearForm();          
+
+                //make this newly added or updated item as default selected. So user can click initialize right away.
+                ListBoxCompanyList.SelectedItem = ((List<Company>)ListBoxCompanyList.ItemsSource).Find(c => c.Acronym == company.Acronym);                
             }
             catch (Exception ex)
             {

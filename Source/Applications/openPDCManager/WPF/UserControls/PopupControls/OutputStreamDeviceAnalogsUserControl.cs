@@ -69,7 +69,10 @@ namespace openPDCManager.UserControls.PopupControls
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);                
                 GetOutputStreamDeviceAnalogList();
-                ClearForm();
+                //ClearForm();
+                //make this newly added or updated item as default selected. So user can click initialize right away.
+                ListBoxOutputStreamDeviceAnalogList.SelectedItem = ((List<OutputStreamDeviceAnalog>)ListBoxOutputStreamDeviceAnalogList.ItemsSource).Find(c => c.Label == outputStreamDeviceAnalog.Label);
+                
             }
             catch (Exception ex)
             {

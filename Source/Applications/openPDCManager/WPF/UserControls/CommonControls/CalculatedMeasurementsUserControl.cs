@@ -28,6 +28,7 @@ using openPDCManager.Utilities;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using openPDCManager.Data.ServiceCommunication;
+using System.Collections.Generic;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -117,7 +118,11 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.Owner = Window.GetWindow(this);                
                 sm.ShowPopup();
                 GetCalculatedMeasurements();
-                ClearForm();
+                //ClearForm();
+
+                //make this newly added or updated item as default selected. So user can click initialize right away.                
+                ListBoxCalculatedMeasurementList.SelectedItem = ((List<CalculatedMeasurement>)ListBoxCalculatedMeasurementList.ItemsSource).Find(c => c.Acronym == calculatedMeasurement.Acronym);
+                
             }
             catch (Exception ex)
             {

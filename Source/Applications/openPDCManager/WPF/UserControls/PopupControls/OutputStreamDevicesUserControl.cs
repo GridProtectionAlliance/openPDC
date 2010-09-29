@@ -66,19 +66,27 @@ namespace openPDCManager.UserControls.PopupControls
             {
                 string result = CommonFunctions.SaveOutputStreamDevice(null, outputStreamDevice, isNew, originalAcronym);
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-                        ButtonType.OkOnly);                
+                        ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
                 GetOutputStreamDeviceList();
-                ClearForm();
+                //ClearForm();
+
+                //make this newly added or updated item as default selected. So user can click initialize right away.
+                ListBoxOutputStreamDeviceList.SelectedItem = ((List<OutputStreamDevice>)ListBoxOutputStreamDeviceList.ItemsSource).Find(c => c.Acronym == outputStreamDevice.Acronym);
+                
             }
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.SaveOutputStreamDevice", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
             }
-            sm.Owner = Window.GetWindow(this);
-            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            sm.ShowPopup();
+            
         }
 
         void DeleteOutputStreamDevice(int outputStreamID, ObservableCollection<string> devicesToBeDeleted)

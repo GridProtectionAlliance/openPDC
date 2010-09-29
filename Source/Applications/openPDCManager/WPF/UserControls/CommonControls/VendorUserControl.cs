@@ -27,6 +27,7 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
+using System.Collections.Generic;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -61,13 +62,17 @@ namespace openPDCManager.UserControls.CommonControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveVendor(null, vendor, isNew);
-                GetVendors();
-                ClearForm();
+                string result = CommonFunctions.SaveVendor(null, vendor, isNew);                
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.ShowPopup();
+                GetVendors();
+                //ClearForm();
+
+                //make this newly added or updated item as default selected. So user can click initialize right away.
+                ListBoxVendorList.SelectedItem = ((List<Vendor>)ListBoxVendorList.ItemsSource).Find(c => c.Acronym == vendor.Acronym);
+                
             }
             catch (Exception ex)
             {

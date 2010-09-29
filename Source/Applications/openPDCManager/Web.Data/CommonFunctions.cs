@@ -218,7 +218,7 @@ namespace openPDCManager.Data
                                                 PhasorList = new ObservableCollection<PhasorInfo>( (from phasor in cell.PhasorDefinitions
                                                               select new PhasorInfo()
                                                               {
-                                                                  Label = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(phasor.Label.Replace("?", " ").Trim().ToLower()),
+                                                                  Label = phasor.Label,  //CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(phasor.Label.Replace("?", " ").Trim().ToLower()),
                                                                   Type = phasor.PhasorType == PhasorType.Current ? "I" : "V",
                                                                   Phase = "+",
                                                                   DestinationLabel = "",

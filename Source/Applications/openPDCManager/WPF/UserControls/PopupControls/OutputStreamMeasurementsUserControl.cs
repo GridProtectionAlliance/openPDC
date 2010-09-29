@@ -72,21 +72,27 @@ namespace openPDCManager.UserControls.PopupControls
             SystemMessages sm;
             try
             {
-                string result = CommonFunctions.SaveOutputStreamMeasurement(null, m_selectedOutputStreamMeasurement, false);
-                GetOutputStreamMeasurementList();
-                ClearForm();
+                string result = CommonFunctions.SaveOutputStreamMeasurement(null, m_selectedOutputStreamMeasurement, false);                
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();            
+
+                GetOutputStreamMeasurementList();
+                //ClearForm();
+
+                ListBoxOutputStreamMeasurementList.SelectedItem = m_selectedOutputStreamMeasurement;
             }
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.SaveOutputStreamMeasurement", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Output Stream Measurement Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
-            }
-            sm.Owner = Window.GetWindow(this);
-            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            sm.ShowPopup();            
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();            
+            }            
         }
 
         void DeleteOutputStreamMeasurement(int outputStreamMeasurementId)

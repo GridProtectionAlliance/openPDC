@@ -28,6 +28,7 @@ using openPDCManager.Utilities;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using openPDCManager.Data.ServiceCommunication;
+using System.Collections.Generic;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -76,7 +77,7 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 ListBoxHistorianList.ItemsSource = CommonFunctions.GetHistorianList(null, m_nodeID);
-                if (ListBoxHistorianList.Items.Count > 0)
+                if (ListBoxHistorianList.Items.Count > 0 && ListBoxHistorianList.SelectedIndex < 0)
                     ListBoxHistorianList.SelectedIndex = 0;
             }
             catch (Exception ex)
@@ -118,7 +119,10 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.Owner = Window.GetWindow(this);
                 sm.ShowPopup();
                 GetHistorians();
-                ClearForm();                
+                //ClearForm();                
+
+                //make this newly added or updated item as default selected. So user can click initialize right away.
+                ListBoxHistorianList.SelectedItem = ((List<Historian>)ListBoxHistorianList.ItemsSource).Find(c => c.Acronym == historian.Acronym);                
             }
             catch (Exception ex)
             {

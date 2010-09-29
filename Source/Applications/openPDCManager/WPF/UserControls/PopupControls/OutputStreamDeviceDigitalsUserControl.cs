@@ -69,7 +69,9 @@ namespace openPDCManager.UserControls.PopupControls
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);                
                 GetOutputStreamDeviceDigitalList();
-                ClearForm();
+                //ClearForm();
+                ListBoxOutputStreamDeviceDigitalList.SelectedItem = ((List<OutputStreamDeviceDigital>)ListBoxOutputStreamDeviceDigitalList.ItemsSource).Find(c => c.Label == outputStreamDeviceDigital.Label);
+                
             }
             catch (Exception ex)
             {
