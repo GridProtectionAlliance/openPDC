@@ -208,21 +208,7 @@ namespace openPDCManager.UserControls.CommonControls
                 {
                     WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;                
                     if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                    {
-                        if (historianID != null)
-                        {
-                            string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)historianID);                            
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");                            
-                        }
-
-                        //now also update Stat historian metadata.
-                        Historian statHistorian = CommonFunctions.GetHistorianByAcronym(null, "STAT");
-                        if (statHistorian != null)
-                        {
-                            string statRuntimeID = CommonFunctions.GetRuntimeID(null, "Historian", statHistorian.ID);                            
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshmetadata");                            
-                        }
-
+                    {                        
                         //Send Initialize command to openPDC windows service.
                         if (parentID != null)   // devices are being added to PDC then initialize PDC only and not individual devices.
                         {
@@ -244,6 +230,21 @@ namespace openPDCManager.UserControls.CommonControls
                                 }
                             }                            
                         }
+
+                        if (historianID != null)
+                        {
+                            string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)historianID);
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
+                        }
+
+                        //now also update Stat historian metadata.
+                        Historian statHistorian = CommonFunctions.GetHistorianByAcronym(null, "STAT");
+                        if (statHistorian != null)
+                        {
+                            string statRuntimeID = CommonFunctions.GetRuntimeID(null, "Historian", statHistorian.ID);
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshmetadata");
+                        }
+
                         //Issue reload statistics command for CommonPhasorServices to pick up change in statistics measurement if any.
                         CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");
                     }

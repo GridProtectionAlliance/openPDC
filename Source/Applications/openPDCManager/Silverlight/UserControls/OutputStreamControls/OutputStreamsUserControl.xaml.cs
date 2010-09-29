@@ -89,7 +89,9 @@ namespace openPDCManager.UserControls.OutputStreamControls
             ComboboxCoordinateFormat.Items.Add("Rectangular");
             ComboboxCoordinateFormat.SelectedIndex = 0;
             ClearForm();
-            GetOutputStreamList();            
+            GetOutputStreamList();
+            ChangeAdvancedOptionsVisibility(Visibility.Collapsed);
+              
         }
 
         #endregion
@@ -100,10 +102,10 @@ namespace openPDCManager.UserControls.OutputStreamControls
         {
             if (ListBoxOutputStreamList.SelectedIndex >= 0)
             {
-                OutputStream selectedOutputStream = ListBoxOutputStreamList.SelectedItem as OutputStream;
-                PopulateFormFields(selectedOutputStream);
+                OutputStream selectedOutputStream = ListBoxOutputStreamList.SelectedItem as OutputStream;                
                 m_outputStreamID = selectedOutputStream.ID;
                 m_inEditMode = true;
+                PopulateFormFields(selectedOutputStream);
                 DisplayRuntimeID();
                 ButtonSave.Tag = "Update";
             }
@@ -423,6 +425,20 @@ namespace openPDCManager.UserControls.OutputStreamControls
             }
         }
 
+        private void ButtonAdvancedOptions_Click(object sender, RoutedEventArgs e)
+        {
+            if (StackPanelTimeResolution.Visibility == System.Windows.Visibility.Visible)
+            {
+                ChangeAdvancedOptionsVisibility(Visibility.Collapsed);
+                ScrollViewerList.Height = 450;
+            }
+            else
+            {
+                ChangeAdvancedOptionsVisibility(Visibility.Visible);
+                ScrollViewerList.Height = 265;
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
@@ -631,6 +647,32 @@ namespace openPDCManager.UserControls.OutputStreamControls
             TextBlockRuntimeID.Text = string.Empty;
             ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
             ButtonSave.Tag = "Add";
+        }
+
+        void ChangeAdvancedOptionsVisibility(Visibility visibility)
+        {            
+            StackPanelTimeResolution.Visibility = visibility;
+            TextBoxTimeResolution.Visibility = visibility;
+            StackPanelDownsamplingMethod.Visibility = visibility;
+            ComboboxDownsamplingMethod.Visibility = visibility;
+            StackPanelDataFormat.Visibility = visibility;
+            ComboboxDataFormat.Visibility = visibility;
+            StackPanelCoordinateFormat.Visibility = visibility;
+            ComboboxCoordinateFormat.Visibility = visibility;
+            StackPanelCurrentScalingValue.Visibility = visibility;
+            TextBoxCurrentScalingValue.Visibility = visibility;
+            StackPanelVoltageScalingValue.Visibility = visibility;
+            TextBoxVoltageScalingValue.Visibility = visibility;
+            StackPanelAnalogScalingValue.Visibility = visibility;
+            TextBoxAnalogScalingValue.Visibility = visibility;
+            StackPanelDigitalMaskValue.Visibility = visibility;
+            TextBoxDigitalMaskValue.Visibility = visibility;
+            CheckBoxAutoStartDataChannel.Visibility = visibility;
+            CheckBoxAutoPublishConfigFrame.Visibility = visibility;
+            CheckBoxAllowSortsByArrival.Visibility = visibility;
+            CheckBoxUseLocalClockAsRealTime.Visibility = visibility;
+            CheckBoxAllowPreemptivePublishing.Visibility = visibility;
+            CheckBoxIgnoreBadTimeStamps.Visibility = visibility;
         }
 
         #endregion
