@@ -355,10 +355,28 @@ namespace openPDCManager.UserControls.CommonControls
         public void SaveDevice(Device device, bool isNew, int digitalCount, int analogCount)
         {
             SystemMessages sm;
+            DataConnection connection = new DataConnection();
             try
             {
-                string result = CommonFunctions.SaveDevice(null, device, isNew, digitalCount, analogCount);
-                
+                string result = CommonFunctions.SaveDevice(connection, device, isNew, digitalCount, analogCount);
+
+                //get the ID of the new device added to the system so we can associate that ID to the phasors of the original device.
+                int deviceID;
+                if (isNew)
+                    deviceID = CommonFunctions.GetDeviceByAcronym(connection, device.Acronym).ID;
+                else
+                    deviceID = device.ID;
+
+                if (m_deviceToCopy != null && isNew) //if we are copying device then make sure we copy phasors also.
+                {
+                    List<Phasor> phasorList = CommonFunctions.GetPhasorList(connection, m_deviceToCopy.ID);
+                    foreach (Phasor phasor in phasorList)
+                    {
+                        phasor.DeviceID = deviceID;
+                        CommonFunctions.SavePhasor(connection, phasor, true);
+                    }
+                }
+
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -367,26 +385,26 @@ namespace openPDCManager.UserControls.CommonControls
 
                 //Update Metadata in the openPDC Service.                
                 try
-                {                    
+                {
                     if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                     {
                         if (device.HistorianID != null) //Update historian metadata
                         {
-                            string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)device.HistorianID);
+                            string runtimeID = CommonFunctions.GetRuntimeID(connection, "Historian", (int)device.HistorianID);
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
                         }
 
                         //now also update Stat historian metadata.
-                        Historian statHistorian = CommonFunctions.GetHistorianByAcronym(null, "STAT");
+                        Historian statHistorian = CommonFunctions.GetHistorianByAcronym(connection, "STAT");
                         if (statHistorian != null)
                         {
-                            string statRuntimeID = CommonFunctions.GetRuntimeID(null, "Historian", statHistorian.ID);
+                            string statRuntimeID = CommonFunctions.GetRuntimeID(connection, "Historian", statHistorian.ID);
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshmetadata");
                         }
 
                         if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + Convert.ToInt32(TextBlockRuntimeID.Text));
-                        else 
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(connection, "Device", deviceID)); // Convert.ToInt32(TextBlockRuntimeID.Text));
+                        else
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
 
                         CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");
@@ -398,14 +416,14 @@ namespace openPDCManager.UserControls.CommonControls
                         sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                         sm.ShowPopup();
                     }
-                }                
+                }
                 catch (Exception ex)
                 {
                     sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
                     sm.Owner = Window.GetWindow(this);
                     sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                     sm.ShowPopup();
-                    CommonFunctions.LogException(null, "SaveDevice.RefreshMetadata", ex);
+                    CommonFunctions.LogException(connection, "SaveDevice.RefreshMetadata", ex);
                 }
 
                 ClearForm();
@@ -415,12 +433,17 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException(null, "WPF.SaveDevice", ex);
+                CommonFunctions.LogException(connection, "WPF.SaveDevice", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                        ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Dispose();
             }
         }
 

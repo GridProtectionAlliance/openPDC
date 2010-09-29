@@ -42,9 +42,10 @@ namespace openPDCManager.UserControls.CommonControls
         void SavePhasor(Phasor phasor, bool isNew)
         {
             SystemMessages sm;
+            DataConnection connection = new DataConnection();;
             try
-            {
-                string result = CommonFunctions.SavePhasor(null, phasor, isNew);                
+            {                
+                string result = CommonFunctions.SavePhasor(connection, phasor, isNew);
                 GetPhasorList();
                 GetPhasors();
                 ClearForm();
@@ -57,27 +58,27 @@ namespace openPDCManager.UserControls.CommonControls
                 //Update Metadata in the openPDC Service.
                 try
                 {
-                    Device device = CommonFunctions.GetDeviceByDeviceID(null, phasor.DeviceID);
+                    Device device = CommonFunctions.GetDeviceByDeviceID(connection, phasor.DeviceID);
                     WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
 
                     if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                     {
                         if (device.HistorianID != null)
                         {
-                            string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)device.HistorianID);
+                            string runtimeID = CommonFunctions.GetRuntimeID(connection, "Historian", (int)device.HistorianID);
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
                         }
 
                         if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.
                         {
                             if (device.ParentID == null)
-                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", device.ID));
+                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(connection, "Device", device.ID));
                             else
-                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", (int)device.ParentID));
+                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(connection, "Device", (int)device.ParentID));
                         }
                         else
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
-                                                
+
                     }
                     else
                     {
@@ -98,13 +99,18 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException(null, "WPF.SavePhasor", ex);
+                CommonFunctions.LogException(connection, "WPF.SavePhasor", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Phasor Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
-            }           
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Dispose();
+            }
         }
 
         void GetPhasors()
