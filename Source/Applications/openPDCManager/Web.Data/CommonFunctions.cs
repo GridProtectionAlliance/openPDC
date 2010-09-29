@@ -4643,7 +4643,7 @@ namespace openPDCManager.Data
                                             Name = outputDevice.Field<string>("Name"),
                                             StatusColor = "Gray",
                                             StatisticList = new ObservableCollection<DetailStatisticInfo>((from statistic in statisticInfoList
-                                                             where statistic.SignalReference.StartsWith(outputDevice.Field<string>("Acronym"))
+                                                             where statistic.SignalReference.StartsWith(outputDevice.Field<string>("Acronym") + "!")
                                                              select statistic).ToList().OrderBy(o => o.Statistics.Source).ThenBy(o => o.Statistics.LoadOrder).ToList()),
                                             DeviceStatisticList = new ObservableCollection<DeviceStatistic>()
                                         }).ToList());

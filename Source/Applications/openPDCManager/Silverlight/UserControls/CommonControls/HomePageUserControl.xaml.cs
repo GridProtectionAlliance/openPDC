@@ -40,6 +40,8 @@ using openPDCManager.Pages.Devices;
 using openPDCManager.UserControls.OutputStreamControls;
 using System.Linq;
 using System.Text;
+using openPDCManager.Data.ServiceCommunication;
+using openPDCManager.Utilities;
 #endif
 
 
@@ -69,9 +71,8 @@ namespace openPDCManager.UserControls.CommonControls
             ButtonInputStatus.Visibility = Visibility.Collapsed;
             ButtonRestartOpenPDC.Visibility = Visibility.Collapsed;
             ScrollViewerStatus.Height = 570;
-#else
-            ButtonRestartOpenPDC.Visibility = Visibility.Collapsed;
-            ScrollViewerStatus.Height = 533;    //497
+#else            
+            ScrollViewerStatus.Height = 497;
             ButtonGetData.Content = new BitmapImage(new Uri(@"images/RequestData.png", UriKind.Relative));
 #endif
             ButtonGetData.Click += new RoutedEventHandler(ButtonGetData_Click);
@@ -137,8 +138,8 @@ namespace openPDCManager.UserControls.CommonControls
 #if SILVERLIGHT
             System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("/Default.aspx#/Pages/Devices/AddNew.xaml", UriKind.Relative));
 #else
-            ManageDevicesUserControl manageDevices = new ManageDevicesUserControl();
-            ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(manageDevices);
+            InputWizardUserControl inputWizard = new InputWizardUserControl();
+            ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(inputWizard);
 #endif
         }
 
@@ -177,7 +178,22 @@ namespace openPDCManager.UserControls.CommonControls
 #if SILVERLIGHT
 
 #else
-            
+            WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
+            if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+            {
+                CommonFunctions.SendCommandToWindowsService(serviceClient, "Restart");
+                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Successfully sent RESTART command to openPDC", SystemMessage = "", UserMessageType = openPDCManager.Utilities.MessageType.Success }, ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+            }
+            else
+            {
+                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to send RESTART command to openPDC", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Error }, ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+            }
 #endif
         }
 

@@ -42,7 +42,7 @@ namespace openPDCManager.Utilities
                 foreach (string value in pointList)
                     sb.Append(value + ";");
 
-                writer.Write(sb.ToString() + "TEST_SIGNALREFERENCE;");            
+                writer.Write(sb.ToString());            
             }         
         }
 
