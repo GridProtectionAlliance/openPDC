@@ -178,22 +178,32 @@ namespace openPDCManager.UserControls.CommonControls
 #if SILVERLIGHT
 
 #else
-            WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
-            if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+            SystemMessages sm1 = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Do you want to restart openPDC service?", SystemMessage = "", UserMessageType = openPDCManager.Utilities.MessageType.Confirmation }, ButtonType.YesNo);
+            sm1.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
             {
-                CommonFunctions.SendCommandToWindowsService(serviceClient, "Restart");
-                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Successfully sent RESTART command to openPDC", SystemMessage = "", UserMessageType = openPDCManager.Utilities.MessageType.Success }, ButtonType.OkOnly);
-                sm.Owner = Window.GetWindow(this);
-                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                sm.ShowPopup();
-            }
-            else
-            {
-                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to send RESTART command to openPDC", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Error }, ButtonType.OkOnly);
-                sm.Owner = Window.GetWindow(this);
-                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                sm.ShowPopup();
-            }
+                if ((bool)sm1.DialogResult)
+                {
+                    WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
+                    if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                    {
+                        CommonFunctions.SendCommandToWindowsService(serviceClient, "Restart");
+                        SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Successfully sent RESTART command to openPDC", SystemMessage = "", UserMessageType = openPDCManager.Utilities.MessageType.Success }, ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        sm.ShowPopup();
+                    }
+                    else
+                    {
+                        SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to send RESTART command to openPDC", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Error }, ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        sm.ShowPopup();
+                    }
+                }
+            });
+            sm1.Owner = Window.GetWindow(this);
+            sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            sm1.ShowPopup();
 #endif
         }
 

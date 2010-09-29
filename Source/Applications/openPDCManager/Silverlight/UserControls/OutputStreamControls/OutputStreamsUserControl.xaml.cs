@@ -127,7 +127,8 @@ namespace openPDCManager.UserControls.OutputStreamControls
             CheckBoxUseLocalClockAsRealTime.IsChecked = selectedOutputStream.UseLocalClockAsRealTime;
             
 #if !SILVERLIGHT
-            ButtonInitialize.Visibility = System.Windows.Visibility.Visible;
+            if (m_inEditMode)
+                ButtonInitialize.Visibility = System.Windows.Visibility.Visible;
 #endif
             TextBoxAcronym.SelectAll();
             TextBoxAcronym.Focus();
@@ -377,6 +378,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
         {
             try
             {
+                ClearForm();
                 OutputStream outputStreamToCopy = (OutputStream)((Button)sender).DataContext;
                 
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to make a copy of " + outputStreamToCopy.Acronym + " output stream?", SystemMessage = "This will only copy the output stream configuration, not associated devices.", UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
