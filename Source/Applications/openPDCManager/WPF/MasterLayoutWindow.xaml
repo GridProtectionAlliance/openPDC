@@ -46,6 +46,9 @@
                                 <Button x:Name="ButtonMaximize" Visibility="Collapsed" FontWeight="Bold" Width="30" Margin="0,5,0,10" ToolTip="Maximize" Click="ButtonMaximize_Click">[]</Button>
                                 <Button x:Name="ButtonClose" Visibility="Collapsed" FontWeight="Bold" Width="30" Margin="2,5,10,10" ToolTip="Close" Click="ButtonClose_Click">X</Button>
                             </StackPanel>
+                            <!--<StackPanel Orientation="Horizontal" Margin="0,0,5,0">
+                                <Image Source="/openPDCManager;component/images/GPALock.png"/>
+                            </StackPanel>-->
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                                 <Menu x:Name="MenuMain" Style="{StaticResource MainMenuStyle}" VerticalAlignment="Bottom" Margin="0,0,0,10">
                                     <MenuItem Header="Home" Style="{StaticResource MainMenuItemStyle}" x:Name="Home" Click="MenuItem_Click"/>

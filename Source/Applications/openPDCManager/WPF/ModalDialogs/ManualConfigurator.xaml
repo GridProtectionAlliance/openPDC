@@ -2,14 +2,16 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:uc="clr-namespace:openPDCManager.UserControls.Configurator"
-        Title="openPDC Manager: Configuration Creater" Height="360" Width="860" ResizeMode="NoResize">
-    
-    <StackPanel Orientation="Vertical">
-        <uc:ConfigurationCreator x:Name="UserControlConfiguratorCreator" HorizontalAlignment="Center" />
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="ButtonClear" Content="/openPDCManager;component/images/Cancel.png" Tag="Cancel" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand" />
-            <TextBlock Text="     "/>
-            <Button x:Name="ButtonSave" Content="/openPDCManager;component/images/Save.png" Tag="Save" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand" />
+        Title="openPDC Manager: Configuration Editor" Height="360" Width="860" ResizeMode="NoResize">
+
+    <Border Background="{StaticResource PortletBackgroundBrush}">
+        <StackPanel Orientation="Vertical">
+            <uc:ConfigurationCreator x:Name="UserControlConfiguratorCreator" HorizontalAlignment="Center" Background="Transparent"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="ButtonClear" Content="/openPDCManager;component/images/Cancel.png" Tag="Cancel" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand" />
+                <TextBlock Text="     "/>
+                <Button x:Name="ButtonSave" Content="/openPDCManager;component/images/Save.png" Tag="Save" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand" />
+            </StackPanel>
         </StackPanel>
-    </StackPanel>
+    </Border>
 </Window>

@@ -861,6 +861,7 @@
     <Resource Include="Images\Console.png" />
     <Resource Include="Images\Log.png" />
     <Resource Include="Images\Copy.png" />
+    <Resource Include="Images\GPALock.png" />
     <Content Include="ServiceReferences.ClientConfig" />
   </ItemGroup>
   <ItemGroup>

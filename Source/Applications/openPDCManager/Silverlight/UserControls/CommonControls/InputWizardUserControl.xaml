@@ -15,7 +15,7 @@
                 <layoutToolkit:Accordion x:Name="AccordianWizard" HorizontalAlignment="Center" SelectionMode="One" Style="{StaticResource AccordionStyle}" ItemContainerStyle="{StaticResource AccordionItemStyle}" AccordionButtonStyle="{StaticResource AccordionButtonStyle}">
                     <layoutToolkit:AccordionItem x:Name="AccordianWizardStep1" Header="Step 1: Configure Connection Settings" IsTabStop="False" FontWeight="Bold" FontSize="12">                        
                         <layoutToolkit:AccordionItem.Content>
-                            <Grid HorizontalAlignment="Center" Width="{StaticResource ApplicationStartupHeight}" Height="{StaticResource XXXLargeItemSize}" Margin="0">
+                            <Grid HorizontalAlignment="Center" Width="{StaticResource ApplicationStartupHeight}" Height="500" Margin="0">
                                 <Grid.Background>
                                     <RadialGradientBrush>
                                         <GradientStop Color="#FFFFFFFF" Offset="0"/>
@@ -52,7 +52,7 @@
                                     </Button>
                                 </StackPanel>
 
-                                <TextBlock Text="OR" Grid.Row="2" Grid.Column="1" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0, 5, 0, 5" />
+                                <TextBlock Text="OR" Grid.Row="2" Grid.Column="1" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" TextAlignment="Center" Width="{StaticResource XXXLargeItemSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0, 10, 0, 10" />
 
                                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Connection String" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
                                 <StackPanel Orientation="Vertical" Grid.Row="3" Grid.Column="1">
@@ -81,7 +81,7 @@
                                     </StackPanel>
                                 </StackPanel>
                                 
-                                <Border Grid.Row="5" Grid.Column="1" BorderThickness="1" Margin="2,10,2,10" BorderBrush="#FF333333" />
+                                <Border Grid.Row="5" Grid.Column="1" BorderThickness="1" Margin="2,20,2,20" BorderBrush="#FF333333" />
                                 
                                 <TextBlock Grid.Row="6" Grid.Column="0" Text="Device Protocol" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
                                 <ComboBox x:Name="ComboboxProtocol" Grid.Row="6" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" IsTabStop="True" TabIndex="6"/>
@@ -108,7 +108,7 @@
                     </layoutToolkit:AccordionItem>
                     <layoutToolkit:AccordionItem x:Name="AccordianWizardStep2" FontWeight="Bold" FontSize="12" Header="Step 2: Select Device Configuration Settings" IsTabStop="False">
                         <layoutToolkit:AccordionItem.Content>
-                            <Grid Width="{StaticResource ApplicationStartupHeight}" Height="{StaticResource XXXLargeItemSize}" Margin="0" HorizontalAlignment="Center">
+                            <Grid Width="{StaticResource ApplicationStartupHeight}" Height="500" Margin="0" HorizontalAlignment="Center">
                                 <Grid.Background>
                                     <RadialGradientBrush>
                                         <GradientStop Color="#FFFFFFFF" Offset="0"/>
@@ -138,7 +138,7 @@
                                     <TextBlock Text="This request could take up to 60 seconds to complete." FontSize="{StaticResource SmallerTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2"/>                                                                   
                                 </StackPanel>
 
-                                <TextBlock Text="OR" Grid.Row="1" Grid.Column="1" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0, 5, 0, 5" />
+                                <TextBlock Text="OR" Grid.Row="1" Grid.Column="1" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" TextAlignment="Center" Width="{StaticResource XLargeItemSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,10,0,10"/>
 
                                 <TextBlock Grid.Row="2" Grid.Column="1" Text="Select XML Configuration File (from PMU Connection Tester)" HorizontalAlignment="Left" Margin="2"/>
                                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Configuration File" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
@@ -151,7 +151,7 @@
                                     </Button>
                                 </StackPanel>
 
-                                <TextBlock Text="OR" Grid.Row="4" Grid.Column="1" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0, 5, 0, 5" />
+                                <TextBlock Text="OR" Grid.Row="4" Grid.Column="1" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" TextAlignment="Center" Width="{StaticResource XLargeItemSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,10,0,10"/>
 
                                 <StackPanel Grid.Column="1" Grid.Row="5" Orientation="Vertical">
                                     <Button x:Name="ButtonManualConfiguration" Content="Create Configuration" HorizontalAlignment="Left" Width="{StaticResource XLargeItemSize}" Margin="2" Cursor="Hand" Click="ButtonManualConfiguration_Click"/>                                    
@@ -162,7 +162,7 @@
                                     <Button x:Name="ButtonSaveConfiguration" Content="Save Configuration" Width="{StaticResource LargeItemSize}" Margin="2" Click="ButtonSaveConfiguration_Click" Cursor="Hand"/>
                                 </StackPanel>
 
-                                <Border Grid.Row="7" Grid.Column="1" BorderThickness="1" Margin="2,10,2,10" BorderBrush="#FF333333" />
+                                <Border Grid.Row="7" Grid.Column="1" BorderThickness="1" Margin="2,15,2,15" BorderBrush="#FF333333" />
 
                                 <TextBlock Grid.Row="8" Grid.Column="0" Text="Company" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
                                 <ComboBox x:Name="ComboboxCompany" Grid.Row="8" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
