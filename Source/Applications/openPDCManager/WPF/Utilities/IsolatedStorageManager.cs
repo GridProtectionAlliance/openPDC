@@ -98,6 +98,9 @@ namespace openPDCManager.Utilities
                     SaveIntoIsolatedStorage("ForceIPv4", "true");
             }
 
+            if (!storage.FileExists("RelativeTimeOffset") || overWrite)
+                SaveIntoIsolatedStorage("RelativeTimeOffset", "0");
+
         }
     }
 }

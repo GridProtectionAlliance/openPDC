@@ -89,6 +89,9 @@ namespace openPDCManager.Pages.Manage
                 if (!string.IsNullOrEmpty(TextBoxNumberOfMessagesOnMonitor.Text))
                     IsolatedStorageManager.SaveIntoIsolatedStorage("NumberOfMessages", Convert.ToInt32(TextBoxNumberOfMessagesOnMonitor.Text));
 
+                if (!string.IsNullOrEmpty(TextBoxRelativeTimeOffset.Text))
+                    IsolatedStorageManager.SaveIntoIsolatedStorage("RelativeTimeOffset", Convert.ToInt32(TextBoxRelativeTimeOffset.Text));
+
                 IsolatedStorageManager.SaveIntoIsolatedStorage("InputMonitoringPoints", TextBoxLastSettings.Text);
                     
                 LoadSettingsFromIsolatedStorage();
@@ -119,6 +122,7 @@ namespace openPDCManager.Pages.Manage
             TextBoxNumberOfMessagesOnMonitor.Text = IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfMessages") == null ? "50" : IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfMessages").ToString();            
             CheckboxForceIPv4.IsChecked = IsolatedStorageManager.ReadFromIsolatedStorage("ForceIPv4") == null ? true : Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("ForceIPv4"));
             TextBoxLastSettings.Text = IsolatedStorageManager.ReadFromIsolatedStorage("InputMonitoringPoints").ToString();
+            TextBoxRelativeTimeOffset.Text = IsolatedStorageManager.ReadFromIsolatedStorage("RelativeTimeOffset").ToString();
         }
 
         bool IsValid()
@@ -134,6 +138,22 @@ namespace openPDCManager.Pages.Manage
                 {
                     TextBoxNumberOfMessagesOnMonitor.Text = "50";
                     TextBoxNumberOfMessagesOnMonitor.Focus();
+                });
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+                return isValid;
+            }
+
+            if (!TextBoxRelativeTimeOffset.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Relative Time Offset", SystemMessage = "Please provide valid integer value for Relative Time Offset.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxRelativeTimeOffset.Text = "0";
+                    TextBoxRelativeTimeOffset.Focus();
                 });
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;

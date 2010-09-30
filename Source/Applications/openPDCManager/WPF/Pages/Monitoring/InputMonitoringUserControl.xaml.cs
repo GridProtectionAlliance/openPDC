@@ -62,6 +62,7 @@ namespace openPDCManager.Pages.Monitoring
         Dictionary<int, int> m_deviceIDsWithStatusPointIDs;
         string m_urlForTree, m_timeSeriesDataServiceUrl, m_urlForStatistics, m_realTimeStatisticsServiceUrl;
         bool m_retrievingData, m_refreshingChart, addingOrRemovingChart;
+        int m_relativeTimeOffset;
 
         //Chart related fields        
         EnumerableDataSource<int> m_xAxisSource;
@@ -93,6 +94,10 @@ namespace openPDCManager.Pages.Monitoring
             m_lineGraphCollection = new Dictionary<int, LineGraph>();
             m_pointsToPlot = new Dictionary<int, MeasurementInfo>();
             m_currentValuesList = new Dictionary<int, InputMonitorData>();
+
+            m_relativeTimeOffset = Convert.ToInt32(IsolatedStorageManager.ReadFromIsolatedStorage("RelativeTimeOffset"));
+            if (m_relativeTimeOffset < 0)
+                m_relativeTimeOffset = 0;
         }
 
         #endregion
@@ -528,8 +533,14 @@ namespace openPDCManager.Pages.Monitoring
                         continueProcess = true;
 
                 if (continueProcess)
-                {
-                    measurements = CommonFunctions.GetTimeSeriesDataDetail(m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-10S/*/XML");
+                {       
+                    string url = m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-10S/*/XML";
+                    if (m_relativeTimeOffset > 0)
+                    {
+                        url = m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-" + (m_relativeTimeOffset - 10) + "/*-" + m_relativeTimeOffset + "/XML";
+                    }
+
+                    measurements = CommonFunctions.GetTimeSeriesDataDetail(url);
 
                     List<double> values = new List<double>();
                     InputMonitorData inputMonitorData = new InputMonitorData();
@@ -654,7 +665,13 @@ namespace openPDCManager.Pages.Monitoring
 
                     if (continueProcessing)
                     {
-                        measurements = CommonFunctions.GetTimeSeriesDataDetail(m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-1S/*/XML");
+                        string url = m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-1S/*/XML";
+                        if (m_relativeTimeOffset > 0)
+                        {
+                            url = m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-" + (m_relativeTimeOffset - 1) + "/*-" + m_relativeTimeOffset + "/XML";
+                        }
+
+                        measurements = CommonFunctions.GetTimeSeriesDataDetail(url);
 
                         //System.Diagnostics.Debug.WriteLine("1 seconds measurements are = " + measurements.Count.ToString());
 
