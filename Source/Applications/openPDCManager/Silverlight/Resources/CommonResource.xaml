@@ -199,6 +199,13 @@
         </StackPanel>
     </ControlTemplate>
 
+    <ControlTemplate x:Key="LargeImageButtonTemplate" TargetType="Button">
+        <StackPanel Orientation="Horizontal">
+            <Image Source="{TemplateBinding Content}" Width="32" Height="32" Margin="2" VerticalAlignment="Center"/>
+            <TextBlock Text="{TemplateBinding Tag}" FontWeight="Bold" FontSize="{StaticResource LargeTextSize}" VerticalAlignment="Center"/>
+        </StackPanel>
+    </ControlTemplate>
+
     <ControlTemplate x:Key="GrayPushPinButtonTemplate" TargetType="Button">
         <Grid>
             <Ellipse Width="20" Height="20" Fill="{StaticResource GrayRadialGradientBrush}"/>

@@ -60,6 +60,7 @@ namespace openPDCManager
         {
             InitializeComponent();
             ButtonErrorLog.Content = new BitmapImage(new Uri(@"images/Log.png", UriKind.Relative));
+            ButtonLogo.Content = new BitmapImage(new Uri(@"images/GPALock.png", UriKind.Relative));
             UserControlSelectNode.NodeCollectionChanged += new openPDCManager.UserControls.CommonControls.SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);
             UserControlSelectNode.ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
             MainWindow.SizeChanged += new SizeChangedEventHandler(MainWindow_SizeChanged);
@@ -421,6 +422,11 @@ namespace openPDCManager
         }
 
         #endregion
+
+        private void ButtonLogo_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("http://www.gridprotectionalliance.org/");
+        }
 
         #endregion
 
