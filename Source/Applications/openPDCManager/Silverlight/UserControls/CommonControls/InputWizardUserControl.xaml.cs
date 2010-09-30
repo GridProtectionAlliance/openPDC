@@ -615,7 +615,10 @@ namespace openPDCManager.UserControls.CommonControls
             m_phasorTypes.Add("I", "Current");
 
             StackPanelSummary.Visibility = Visibility.Collapsed;
+#if !SILVERLIGHT
             CommonFunctions.s_configurationFrame = null;
+#endif
+            
         }
 
         #endregion

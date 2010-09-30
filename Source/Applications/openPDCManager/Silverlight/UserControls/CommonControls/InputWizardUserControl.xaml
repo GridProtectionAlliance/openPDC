@@ -134,7 +134,11 @@
                                 </Grid.RowDefinitions>
 
                                 <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical" Margin="0, 10, 0, 0">
-                                    <Button x:Name="ButtonRequestConfiguration" Content="Request Configuration From openPDC" HorizontalAlignment="Left" Width="{StaticResource XLargeItemSize}" Margin="2" Cursor="Hand"/>
+                                    <Button x:Name="ButtonRequestConfiguration" Content="Request Configuration From openPDC" HorizontalAlignment="Left" Width="{StaticResource XLargeItemSize}" Margin="2" Cursor="Hand">
+                                        <Button.RenderTransform>
+                                            <ScaleTransform x:Name="ButtonRequestConfigurationTransform" ScaleX="1" ScaleY="1" />
+                                        </Button.RenderTransform>
+                                    </Button>
                                     <TextBlock Text="This request could take up to 60 seconds to complete." FontSize="{StaticResource SmallerTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2"/>                                                                   
                                 </StackPanel>
 
