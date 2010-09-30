@@ -537,7 +537,7 @@ namespace openPDCManager.Pages.Monitoring
                     string url = m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-10S/*/XML";
                     if (m_relativeTimeOffset > 0)
                     {
-                        url = m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-" + (m_relativeTimeOffset + 10) + "/*-" + m_relativeTimeOffset + "/XML";
+                        url = m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-" + (m_relativeTimeOffset + 10) + "S/*-" + m_relativeTimeOffset + "S/XML";
                     }
 
                     measurements = CommonFunctions.GetTimeSeriesDataDetail(url);
@@ -668,7 +668,7 @@ namespace openPDCManager.Pages.Monitoring
                         string url = m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-1S/*/XML";
                         if (m_relativeTimeOffset > 0)
                         {
-                            url = m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-" + (m_relativeTimeOffset + 1) + "/*-" + m_relativeTimeOffset + "/XML";
+                            url = m_timeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + pointID.ToString() + "/*-" + (m_relativeTimeOffset + 1) + "S/*-" + m_relativeTimeOffset + "S/XML";
                         }
 
                         measurements = CommonFunctions.GetTimeSeriesDataDetail(url);
