@@ -202,24 +202,22 @@ namespace openPDCManager.Pages.Monitoring
 
             if (int.TryParse(checkBox.Tag.ToString(), out pointID))
             {
-                if (!m_pointsToPlot.ContainsKey(pointID))
+                lock (m_pointsToPlot)
                 {
-                    lock (m_pointsToPlot)
+                    if (!m_pointsToPlot.ContainsKey(pointID))
                     {
-                        if (!m_pointsToPlot.ContainsKey(pointID))
-                            m_pointsToPlot.Add(pointID, measurementInfo);
+                        m_pointsToPlot.Add(pointID, measurementInfo);
+                        StartChartRefreshTimer();
                     }
                 }                    
 
                 ThreadPool.QueueUserWorkItem(AddNewChartData, measurementInfo);
-            }
-
-            StartChartRefreshTimer();
+            }            
         }
 
         void StartChartRefreshTimer()
-        {
-            if (m_pointsToPlot.Count > 0 && m_chartRefreshTimer == null)
+        {            
+            if (m_chartRefreshTimer == null)
             {
                 m_chartRefreshTimer = new DispatcherTimer();
                 m_chartRefreshTimer.Interval = TimeSpan.FromMilliseconds(1000);
@@ -454,14 +452,17 @@ namespace openPDCManager.Pages.Monitoring
                                     measurementInfo.IsSelected = true;
                                     deviceInfo.IsExpanded = true;
                                     deviceMeasurementData.IsExpanded = true;
-                                                                       
+
                                     lock (m_pointsToPlot)
-                                        if (!m_pointsToPlot.ContainsKey(measurementInfo.PointID))                                    
+                                    {
+                                        if (!m_pointsToPlot.ContainsKey(measurementInfo.PointID))
+                                        {
                                             m_pointsToPlot.Add(measurementInfo.PointID, measurementInfo);
-                                        
+                                            StartChartRefreshTimer();
+                                        }
+                                    }
                                         //start chart
-                                    ThreadPool.QueueUserWorkItem(AddNewChartData, measurementInfo);
-                                    StartChartRefreshTimer();                                                                         
+                                    ThreadPool.QueueUserWorkItem(AddNewChartData, measurementInfo);                                                                                                             
                                 }
                             }
                         }
@@ -827,16 +828,15 @@ namespace openPDCManager.Pages.Monitoring
                                     deviceInfo.IsExpanded = true;
                                     deviceMeasurementData.IsExpanded = true;
 
-                                    // Add measurement info to m_pointsToPlot collection.
-                                    if (!m_pointsToPlot.ContainsKey(measurementInfo.PointID))
+                                    // Add measurement info to m_pointsToPlot collection.                                    
+                                    lock (m_pointsToPlot)
                                     {
-                                        lock (m_pointsToPlot)
+                                        if (!m_pointsToPlot.ContainsKey(measurementInfo.PointID))
                                         {
-                                            if (!m_pointsToPlot.ContainsKey(measurementInfo.PointID))
-                                                m_pointsToPlot.Add(measurementInfo.PointID, measurementInfo);
+                                            m_pointsToPlot.Add(measurementInfo.PointID, measurementInfo);
+                                            StartChartRefreshTimer();
                                         }
-                                        StartChartRefreshTimer();
-                                    }
+                                    }                                        
                                 }
                                 else
                                 {
