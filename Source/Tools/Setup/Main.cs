@@ -55,6 +55,17 @@ namespace Setup
             {
                 labelVersion.Visible = false;
             }
+
+            if (File.Exists("Help\\InstallationVideo.wmv"))
+            {
+                axVideoPlayer.settings.autoStart = false;
+                axVideoPlayer.settings.playCount = 1;
+                axVideoPlayer.settings.volume = 10;
+                axVideoPlayer.stretchToFit = true;
+                axVideoPlayer.URL = "Help\\InstallationVideo.wmv";
+            }
+            else
+                tabControlMain.TabPages.RemoveAt(1);
         }
 
         private void buttonInstall_Click(object sender, EventArgs e)
@@ -171,6 +182,28 @@ namespace Setup
             }
             else
                 this.WindowState = FormWindowState.Normal;
+        }
+
+        private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Load release notes
+            if (tabControlMain.SelectedTab == tabPageHelpVideo)
+            {                
+                if (axVideoPlayer.openState != WMPLib.WMPOpenState.wmposMediaOpen)
+                    axVideoPlayer.Ctlcontrols.play();
+            }
+            else if (tabControlMain.SelectedTab == tabPageReleaseNotes && richTextBoxReleaseNotes.TextLength == 0)
+            {
+                if (File.Exists("Help\\ReleaseNotes.rtf"))
+                    richTextBoxReleaseNotes.LoadFile("Help\\ReleaseNotes.rtf");
+                else
+                    richTextBoxReleaseNotes.Text = "ERROR: Release notes file not found.";
+            }
+        }
+
+        private void richTextBoxReleaseNotes_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            Process.Start("Explorer.exe", e.LinkText);
         }
     }
 }
