@@ -40,6 +40,9 @@ using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using Microsoft.Win32;
 using System.Windows.Media.Imaging;
+using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization.Formatters.Soap;
+using System.Xml.Serialization;
 #endif
 
 namespace openPDCManager.UserControls.CommonControls
@@ -78,7 +81,7 @@ namespace openPDCManager.UserControls.CommonControls
             ButtonBrowseIniFile.Content = new BitmapImage(new Uri(@"images/Browse.png", UriKind.Relative));
             ButtonNext.Content = new BitmapImage(new Uri(@"images/Next.png", UriKind.Relative));
             ButtonPrevious.Content = new BitmapImage(new Uri(@"images/Previous.png", UriKind.Relative));
-            ButtonRequestConfiguration.Content = new BitmapImage(new Uri(@"images/RequestData.png", UriKind.Relative));
+            //ButtonRequestConfiguration.Content = new BitmapImage(new Uri(@"images/RequestData.png", UriKind.Relative));
             ButtonBuildConnectionString.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));
             ButtonBuildCommandChannel.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));            
 #endif
@@ -512,6 +515,109 @@ namespace openPDCManager.UserControls.CommonControls
 #endif
         }
 
+        private void ButtonSaveConfiguration_Click(object sender, RoutedEventArgs e)
+        {
+#if !SILVERLIGHT
+            if (m_wizardDeviceInfoList != null && CommonFunctions.s_configurationFrame != null)
+            {
+                SaveFileDialog saveDialog = new SaveFileDialog();
+                saveDialog.Title = "Save Current Configuration";
+                saveDialog.Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*";
+                saveDialog.FileName = "";
+                bool? result = saveDialog.ShowDialog(Window.GetWindow(this));
+                if (result != null && (bool)result == true)
+                {
+                    using (FileStream stream = File.Create(saveDialog.FileName))
+                    {
+                        SoapFormatter sf = new SoapFormatter();
+                        sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
+                        sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
+
+                        try
+                        {
+                            sf.Serialize(stream, CommonFunctions.s_configurationFrame);
+                            SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Configuration File Saved Successfully", SystemMessage = saveDialog.FileName, UserMessageType = openPDCManager.Utilities.MessageType.Success },
+                                ButtonType.OkOnly);
+                            sm.Owner = Window.GetWindow(this);
+                            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            sm.ShowPopup();
+                        }
+                        catch (Exception ex)
+                        {
+                            SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Save Configuration File", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
+                                ButtonType.OkOnly);
+                            sm.Owner = Window.GetWindow(this);
+                            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            sm.ShowPopup();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "No Configuration File Loaded", SystemMessage = "Please select configuration file or request configuration from openPDC or create one manually.", UserMessageType = openPDCManager.Utilities.MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+            }
+#endif
+        }
+
+        private void ButtonManualConfiguration_Click(object sender, RoutedEventArgs e)
+        {
+#if !SILVERLIGHT
+            ManualConfigurator configurator = new ManualConfigurator(CommonFunctions.s_configurationFrame);
+
+            configurator.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)configurator.DialogResult)
+                    {
+                        m_wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>(CommonFunctions.ParseConfigurationFrame(configurator.UserControlConfiguratorCreator.ConfigurationFrame));
+                        ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
+                        ChangeSummaryVisibility(Visibility.Visible);
+                    }
+                });
+
+            configurator.Owner = Window.GetWindow(this);
+            configurator.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            configurator.ShowDialog();
+#endif
+        }
+
+        #endregion
+
+        #region [ Page Event Handlers ]
+        
+        void InputWizard_Loaded(object sender, RoutedEventArgs e)
+        {
+            m_wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>();
+            m_vendorDeviceList = new Dictionary<int, string>();
+            GetProtocols();
+            GetVendorDevices();
+            PdcInfoVisualization(Visibility.Collapsed);
+            if (AccordianWizard.SelectedIndex == 0)
+                ButtonPrevious.Visibility = Visibility.Collapsed;
+            GetCompanies();
+            GetHistorians();
+            GetInterconnections();
+            GetExecutingAssemblyPath();
+
+            m_phaseTypes = new Dictionary<string, string>();
+            m_phaseTypes.Add("+", "Positive");
+            m_phaseTypes.Add("-", "Negative");
+            m_phaseTypes.Add("A", "Phase A");
+            m_phaseTypes.Add("B", "Phase B");
+            m_phaseTypes.Add("C", "Phase C");
+
+            m_phasorTypes = new Dictionary<string, string>();
+            m_phasorTypes.Add("V", "Voltage");
+            m_phasorTypes.Add("I", "Current");
+
+            StackPanelSummary.Visibility = Visibility.Collapsed;
+            CommonFunctions.s_configurationFrame = null;
+        }
+
         #endregion
 
         #region [ Methods ]
@@ -545,33 +651,7 @@ namespace openPDCManager.UserControls.CommonControls
         //        output.Write(buffer, 0, bytesRead);
         //    }
         //}
-
-        void InputWizard_Loaded(object sender, RoutedEventArgs e)
-        {
-            m_wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>();
-            m_vendorDeviceList = new Dictionary<int, string>();
-            GetProtocols();
-            GetVendorDevices();
-            PdcInfoVisualization(Visibility.Collapsed);
-            if (AccordianWizard.SelectedIndex == 0)
-                ButtonPrevious.Visibility = Visibility.Collapsed;
-            GetCompanies();
-            GetHistorians();
-            GetInterconnections();
-            GetExecutingAssemblyPath();
-
-            m_phaseTypes = new Dictionary<string, string>();
-            m_phaseTypes.Add("+", "Positive");
-            m_phaseTypes.Add("-", "Negative");
-            m_phaseTypes.Add("A", "Phase A");
-            m_phaseTypes.Add("B", "Phase B");
-            m_phaseTypes.Add("C", "Phase C");
-            
-            m_phasorTypes = new Dictionary<string, string>();
-            m_phasorTypes.Add("V", "Voltage");
-            m_phasorTypes.Add("I", "Current");
-        }
-
+              
         void PdcInfoVisualization(Visibility visibility)
         {
             TextBlockPDCName.Visibility = visibility;
@@ -639,7 +719,6 @@ namespace openPDCManager.UserControls.CommonControls
         }
         
         #endregion
-              
-    
+        
     }
 }

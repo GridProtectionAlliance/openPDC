@@ -823,7 +823,12 @@ namespace TVA.PhasorProtocols
         /// <returns>String respresentation of this <see cref="ConfigurationCellBase"/>.</returns>
         public override string ToString()
         {
-            return IDLabel;
+            string stationName = StationName;
+
+            if (!string.IsNullOrWhiteSpace(stationName))
+                return stationName;
+
+            return base.ToString();
         }
 
         /// <summary>

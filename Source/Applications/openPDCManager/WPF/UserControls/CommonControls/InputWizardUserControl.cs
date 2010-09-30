@@ -58,6 +58,25 @@ namespace openPDCManager.UserControls.CommonControls
                 m_activityWindow.Close();
         }
 
+        void ChangeSummaryVisibility(Visibility visibility)
+        {
+            StackPanelSummary.Visibility = visibility;
+
+            if (visibility == Visibility.Visible && m_wizardDeviceInfoList != null)
+            {
+                TextBlockSummary.Text = "Current Configuration Summary: " + m_wizardDeviceInfoList.Count.ToString();
+                if (m_wizardDeviceInfoList.Count > 1)
+                    TextBlockSummary.Text += " Devices";
+                else
+                    TextBlockSummary.Text += " Device";
+            }
+
+            if (m_wizardDeviceInfoList != null)
+                ButtonManualConfiguration.Content = "Modify Configuration";
+            else
+                ButtonManualConfiguration.Content = "Create Configuration";
+        }
+
         void RetrieveConfigurationFrame()
         {
             SystemMessages sm;
@@ -70,6 +89,9 @@ namespace openPDCManager.UserControls.CommonControls
                     m_bindingDevices = false;
 
                 ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
+
+                ChangeSummaryVisibility(Visibility.Visible);
+
                 sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Retrieved Configuration Successfully!", SystemMessage = "", UserMessageType = openPDCManager.Utilities.MessageType.Success }, ButtonType.OkOnly);
             }
             catch (Exception ex)
@@ -294,7 +316,9 @@ namespace openPDCManager.UserControls.CommonControls
                 else
                     m_bindingDevices = false;
 
-                ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;                
+                ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
+
+                ChangeSummaryVisibility(Visibility.Visible);
             }
             catch (Exception ex)
             {

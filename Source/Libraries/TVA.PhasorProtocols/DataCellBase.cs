@@ -510,7 +510,7 @@ namespace TVA.PhasorProtocols
                 DataIsValid = (value & (uint)PhasorProtocols.CommonStatusFlags.DataIsValid) == 0;
                 SynchronizationIsValid = (value & (uint)PhasorProtocols.CommonStatusFlags.SynchronizationIsValid) == 0;
                 DataSortingType = ((value & (uint)PhasorProtocols.CommonStatusFlags.DataSortingType) == 0) ? PhasorProtocols.DataSortingType.ByTimestamp : PhasorProtocols.DataSortingType.ByArrival;
-                DeviceError = ((value & (uint)PhasorProtocols.CommonStatusFlags.DeviceError) > 0 );
+                DeviceError = ((value & (uint)PhasorProtocols.CommonStatusFlags.DeviceError) > 0);
                 m_isDiscarded = ((value & (uint)PhasorProtocols.CommonStatusFlags.DataDiscarded) > 0);
             }
         }
@@ -745,12 +745,29 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Returns a string representation of the status flags.
+        /// Gets the string respresentation of this <see cref="DataCellBase"/>.
         /// </summary>
-        /// <returns>A string representation of the status flags <see cref="IMeasurement"/>.</returns>
+        /// <returns>String respresentation of this <see cref="DataCellBase"/>.</returns>
         public override string ToString()
         {
-            return Measurement.ToString(this);
+            string stationName = StationName;
+            string measurementID = null;
+
+            if (m_id != uint.MaxValue && m_source != "__")
+                measurementID = Measurement.ToString(this);
+
+            if (!string.IsNullOrWhiteSpace(stationName))
+            {
+                if (measurementID != null)
+                    stationName += " [" + measurementID + "]";
+
+                return stationName;
+            }
+
+            if (measurementID != null)
+                return measurementID;
+
+            return base.ToString();
         }
 
         /// <summary>

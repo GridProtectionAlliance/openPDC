@@ -106,6 +106,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
     <Reference Include="System.Windows.Controls.DataVisualization.Toolkit">
       <HintPath>..\..\..\Dependencies\Microsoft\WPF\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
     </Reference>
@@ -162,6 +163,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ModalDialogs\ManualConfigurator.xaml.cs">
+      <DependentUpon>ManualConfigurator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Manage\SystemSettings.xaml.cs">
       <DependentUpon>SystemSettings.xaml</DependentUpon>
     </Compile>
@@ -170,6 +174,9 @@
     </Compile>
     <Compile Include="ApplicationInstall.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UserControls\Configurator\ConfigurationCreator.xaml.cs">
+      <DependentUpon>ConfigurationCreator.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\IsolatedStorageManager.cs" />
     <Page Include="..\Silverlight\Resources\CommonResource.xaml">
@@ -366,6 +373,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="ModalDialogs\ManualConfigurator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ModalDialogs\OutputStreamDeviceAnalogs.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -490,6 +501,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UserControls\Configurator\ConfigurationCreator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Silverlight\Converters\BooleanToColorConverter.cs">
@@ -877,6 +892,7 @@
       <Link>Images\Copy.png</Link>
     </Resource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

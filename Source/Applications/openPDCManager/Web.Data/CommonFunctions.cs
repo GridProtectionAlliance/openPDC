@@ -182,12 +182,13 @@ namespace openPDCManager.Data
             return connectionSettings;			
         }
 
+        public static IConfigurationFrame s_configurationFrame;
         public static List<WizardDeviceInfo> GetWizardConfigurationInfo(Stream inputStream)
         {				
             SoapFormatter sf = new SoapFormatter();
             sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
             sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
-            IConfigurationFrame configurationFrame = sf.Deserialize(inputStream) as IConfigurationFrame;								
+            IConfigurationFrame configurationFrame = sf.Deserialize(inputStream) as IConfigurationFrame;            
             return ParseConfigurationFrame(configurationFrame);
         }
 
@@ -195,6 +196,8 @@ namespace openPDCManager.Data
         {
             //try
             //{
+            s_configurationFrame = configurationFrame;
+
                 List<WizardDeviceInfo> wizardDeviceInfoList = new List<WizardDeviceInfo>();
                 if (configurationFrame != null)
                 {
