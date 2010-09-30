@@ -137,6 +137,11 @@ namespace openPDCManager.UserControls.Configurator
                     
                     // Update working configuration frame and refresh the screen binding
                     m_configurationFrame = derivedFrame;
+                    
+                    // Update binding
+                    listBoxDevices.ItemsSource = m_configurationFrame.Cells;
+                    listBoxDevices.SelectedValuePath = "@IDCode";
+
                     m_configurationFrame.Cells.RefreshBinding();
                     
                     if (m_configurationFrame.Cells.Count > 0)
