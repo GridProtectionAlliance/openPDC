@@ -56,13 +56,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             this.Unloaded += new RoutedEventHandler(HomePageUserControl_Unloaded);
             ComboBoxMeasurements.SelectionChanged += new SelectionChangedEventHandler(ComboBoxMeasurements_SelectionChanged);
-            Setter setter = new Setter();
-            setter.Property = PieDataPoint.TemplateProperty;
-            setter.Value = Application.Current.Resources["PieDataPointTemplate"] as ControlTemplate;
+            //Setter setter = new Setter();
+            //setter.Property = PieDataPoint.TemplateProperty;
+            //setter.Value = Application.Current.Resources["PieDataPointTemplate"] as ControlTemplate;
 
-            Style pieDataPointStyle = new Style(typeof(PieDataPoint));
-            pieDataPointStyle.Setters.Add(setter);
-            ((PieSeries)ChartDeviceDistribution.Series[0]).DataPointStyle = pieDataPointStyle;
+            //Style pieDataPointStyle = new Style(typeof(PieDataPoint));
+            //pieDataPointStyle.Setters.Add(setter);
+            //((PieSeries)ChartDeviceDistribution.Series[0]).DataPointStyle = pieDataPointStyle;
         }
 
         void StartThirtySecondsTimer()

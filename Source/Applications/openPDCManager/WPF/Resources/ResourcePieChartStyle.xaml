@@ -67,10 +67,11 @@
         </Grid>
     </ControlTemplate>
 
-    <Style x:Key="PieChartStyle" TargetType="chartingToolkit:Chart">
+    <Style x:Key="PieChartStyle" TargetType="{x:Type chartingToolkit:Chart}">
         <Setter Property="BorderBrush" Value="#FFFFFFFF"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Background">
             <Setter.Value>
                 <RadialGradientBrush>
@@ -80,20 +81,17 @@
             </Setter.Value>
         </Setter>
         <Setter Property="Palette">
-            <Setter.Value>                       
+            <Setter.Value>
                 <visualizationToolkit:ResourceDictionaryCollection>
                     <ResourceDictionary>
-                        <Style TargetType="Control">
-                            <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="#FFB9D6F7"/>
+                            <GradientStop Color="#FF284B70" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
                             <Setter Property="Background">
                                 <Setter.Value>
-                                    <RadialGradientBrush>
-                                        <RadialGradientBrush.RelativeTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                                <TranslateTransform X="-0.425" Y="-0.486"/>
-                                            </TransformGroup>
-                                        </RadialGradientBrush.RelativeTransform>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
                                         <GradientStop Color="#FFB9D6F7"/>
                                         <GradientStop Color="#FF284B70" Offset="1"/>
                                     </RadialGradientBrush>
@@ -102,112 +100,94 @@
                         </Style>
                     </ResourceDictionary>
                     <ResourceDictionary>
-                    <Style TargetType="Control">
-                        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <RadialGradientBrush>
-                                    <RadialGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                            <TranslateTransform X="-0.425" Y="-0.486"/>
-                                        </TransformGroup>
-                                    </RadialGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#FFFBB7B5"/>
-                                    <GradientStop Color="#FF702828" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    </ResourceDictionary>
-                    <ResourceDictionary>
-                        <Style TargetType="Control">
-                        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <RadialGradientBrush>
-                                    <RadialGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                            <TranslateTransform X="-0.425" Y="-0.486"/>
-                                        </TransformGroup>
-                                    </RadialGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#FFB8C0AC"/>
-                                    <GradientStop Color="#FF5F7143" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    </ResourceDictionary>
-                    <ResourceDictionary>
-                        <Style TargetType="Control">
-                        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <RadialGradientBrush>
-                                    <RadialGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                            <TranslateTransform X="-0.425" Y="-0.486"/>
-                                        </TransformGroup>
-                                    </RadialGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#FFFDE79C"/>
-                                    <GradientStop Color="#FFF6BC0C" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    </ResourceDictionary>
-                    <ResourceDictionary>
-                    <Style TargetType="Control">
-                        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <RadialGradientBrush>
-                                    <RadialGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                            <TranslateTransform X="-0.425" Y="-0.486"/>
-                                        </TransformGroup>
-                                    </RadialGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#FFA9A3BD"/>
-                                    <GradientStop Color="#FF382C6C" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    </ResourceDictionary>
-                    <ResourceDictionary>
-                    <Style TargetType="Control">
-                        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <RadialGradientBrush>
-                                    <RadialGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                            <TranslateTransform X="-0.425" Y="-0.486"/>
-                                        </TransformGroup>
-                                    </RadialGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#FFB1A1B1"/>
-                                    <GradientStop Color="#FF50224F" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    </ResourceDictionary>
-                    <ResourceDictionary>
-                        <Style TargetType="Control">
-                            <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="#FFFBB7B5"/>
+                            <GradientStop Color="#FF702828" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
                             <Setter Property="Background">
                                 <Setter.Value>
-                                    <RadialGradientBrush>
-                                        <RadialGradientBrush.RelativeTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                                <TranslateTransform X="-0.425" Y="-0.486"/>
-                                            </TransformGroup>
-                                        </RadialGradientBrush.RelativeTransform>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                                        <GradientStop Color="#FFFBB7B5"/>
+                                        <GradientStop Color="#FF702828" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ResourceDictionary>
+                    <ResourceDictionary>
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="#FFB8C0AC"/>
+                            <GradientStop Color="#FF5F7143" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                                        <GradientStop Color="#FFB8C0AC"/>
+                                        <GradientStop Color="#FF5F7143" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ResourceDictionary>
+                    <ResourceDictionary>
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="#FFFDE79C"/>
+                            <GradientStop Color="#FFF6BC0C" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                                        <GradientStop Color="#FFFDE79C"/>
+                                        <GradientStop Color="#FFF6BC0C" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ResourceDictionary>
+                    <ResourceDictionary>
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="#FFA9A3BD"/>
+                            <GradientStop Color="#FF382C6C" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                                        <GradientStop Color="#FFA9A3BD"/>
+                                        <GradientStop Color="#FF382C6C" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ResourceDictionary>
+                    <ResourceDictionary>
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="#FFB1A1B1"/>
+                            <GradientStop Color="#FF50224F" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                                        <GradientStop Color="#FFB1A1B1"/>
+                                        <GradientStop Color="#FF50224F" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ResourceDictionary>
+                    <ResourceDictionary>
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="#FF9DC2B3"/>
+                            <GradientStop Color="#FF1D7554" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
                                         <GradientStop Color="#FF9DC2B3"/>
                                         <GradientStop Color="#FF1D7554" Offset="1"/>
                                     </RadialGradientBrush>
@@ -216,163 +196,139 @@
                         </Style>
                     </ResourceDictionary>
                     <ResourceDictionary>
-                    <Style TargetType="Control">
-                        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <RadialGradientBrush>
-                                    <RadialGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                            <TranslateTransform X="-0.425" Y="-0.486"/>
-                                        </TransformGroup>
-                                    </RadialGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#FFB5B5B5"/>
-                                    <GradientStop Color="#FF4C4C4C" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                        </ResourceDictionary>
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="#FFB5B5B5"/>
+                            <GradientStop Color="#FF4C4C4C" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                                        <GradientStop Color="#FFB5B5B5"/>
+                                        <GradientStop Color="#FF4C4C4C" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ResourceDictionary>
                     <ResourceDictionary>
-                    <Style TargetType="Control">
-                        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <RadialGradientBrush>
-                                    <RadialGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                            <TranslateTransform X="-0.425" Y="-0.486"/>
-                                        </TransformGroup>
-                                    </RadialGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#FF98C1DC"/>
-                                    <GradientStop Color="#FF0271AE" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                        </ResourceDictionary>
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="#FF98C1DC"/>
+                            <GradientStop Color="#FF0271AE" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                                        <GradientStop Color="#FF98C1DC"/>
+                                        <GradientStop Color="#FF0271AE" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ResourceDictionary>
                     <ResourceDictionary>
-                    <Style TargetType="Control">
-                        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <RadialGradientBrush>
-                                    <RadialGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                            <TranslateTransform X="-0.425" Y="-0.486"/>
-                                        </TransformGroup>
-                                    </RadialGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#FFC1C0AE"/>
-                                    <GradientStop Color="#FF706E41" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                        </ResourceDictionary>
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="#FFC1C0AE"/>
+                            <GradientStop Color="#FF706E41" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                                        <GradientStop Color="#FFC1C0AE"/>
+                                        <GradientStop Color="#FF706E41" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ResourceDictionary>
                     <ResourceDictionary>
-                    <Style TargetType="Control">
-                        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <RadialGradientBrush>
-                                    <RadialGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                            <TranslateTransform X="-0.425" Y="-0.486"/>
-                                        </TransformGroup>
-                                    </RadialGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#FFADBDC0"/>
-                                    <GradientStop Color="#FF446A73" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                        </ResourceDictionary>
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="#FFADBDC0"/>
+                            <GradientStop Color="#FF446A73" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                                        <GradientStop Color="#FFADBDC0"/>
+                                        <GradientStop Color="#FF446A73" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ResourceDictionary>
                     <ResourceDictionary>
-                    <Style TargetType="Control">
-                        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <RadialGradientBrush>
-                                    <RadialGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                            <TranslateTransform X="-0.425" Y="-0.486"/>
-                                        </TransformGroup>
-                                    </RadialGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#FF2F8CE2"/>
-                                    <GradientStop Color="#FF0C3E69" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                        </ResourceDictionary>
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="#FF2F8CE2"/>
+                            <GradientStop Color="#FF0C3E69" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                                        <GradientStop Color="#FF2F8CE2"/>
+                                        <GradientStop Color="#FF0C3E69" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ResourceDictionary>
                     <ResourceDictionary>
-                    <Style TargetType="Control">
-                        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <RadialGradientBrush>
-                                    <RadialGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                            <TranslateTransform X="-0.425" Y="-0.486"/>
-                                        </TransformGroup>
-                                    </RadialGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#FFDCDCDC"/>
-                                    <GradientStop Color="#FF757575" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                        </ResourceDictionary>
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="Gainsboro"/>
+                            <GradientStop Color="#FF757575" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                                        <GradientStop Color="Gainsboro"/>
+                                        <GradientStop Color="#FF757575" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ResourceDictionary>
                     <ResourceDictionary>
-                    <Style TargetType="Control">
-                        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <RadialGradientBrush>
-                                    <RadialGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                            <TranslateTransform X="-0.425" Y="-0.486"/>
-                                        </TransformGroup>
-                                    </RadialGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#FFF4F4F4"/>
-                                    <GradientStop Color="#FFB7B7B7" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                        </ResourceDictionary>
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="#FFF4F4F4"/>
+                            <GradientStop Color="#FFB7B7B7" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                                        <GradientStop Color="#FFF4F4F4"/>
+                                        <GradientStop Color="#FFB7B7B7" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ResourceDictionary>
                     <ResourceDictionary>
-                    <Style TargetType="Control">
-                        <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <RadialGradientBrush>
-                                    <RadialGradientBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2.09" ScaleY="1.819"/>
-                                            <TranslateTransform X="-0.425" Y="-0.486"/>
-                                        </TransformGroup>
-                                    </RadialGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#FFF4F4F4"/>
-                                    <GradientStop Color="#FFA3A3A3" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                        </ResourceDictionary>
+                        <RadialGradientBrush x:Key="Background" Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                            <GradientStop Color="#FFF4F4F4"/>
+                            <GradientStop Color="#FFA3A3A3" Offset="1"/>
+                        </RadialGradientBrush>
+                        <Style x:Key="DataPointStyle" TargetType="{x:Type Control}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <RadialGradientBrush Center="0.075,0.015" GradientOrigin="-0.1,-0.1" RadiusX="1.05" RadiusY="0.9">
+                                        <GradientStop Color="#FFF4F4F4"/>
+                                        <GradientStop Color="#FFA3A3A3" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ResourceDictionary>
                 </visualizationToolkit:ResourceDictionaryCollection>
             </Setter.Value>
         </Setter>
         <Setter Property="TitleStyle">
             <Setter.Value>
-                <Style TargetType="visualizationToolkit:Title">
+                <Style TargetType="{x:Type visualizationToolkit:Title}">
                     <Setter Property="FontSize" Value="15"/>
                     <Setter Property="HorizontalAlignment" Value="Center"/>
                     <Setter Property="Margin" Value="0,5,0,5"/>
@@ -382,7 +338,7 @@
         </Setter>
         <Setter Property="LegendStyle">
             <Setter.Value>
-                <Style TargetType="visualizationToolkit:Legend">
+                <Style TargetType="{x:Type visualizationToolkit:Legend}">
                     <Setter Property="FontSize" Value="10"/>
                     <Setter Property="Margin" Value="0,0,0,0"/>
                     <Setter Property="VerticalAlignment" Value="Center"/>
@@ -393,7 +349,7 @@
         </Setter>
         <Setter Property="ChartAreaStyle">
             <Setter.Value>
-                <Style TargetType="Panel">
+                <Style TargetType="{x:Type Panel}">
                     <Setter Property="MinWidth" Value="100"/>
                     <Setter Property="MinHeight" Value="75"/>
                 </Style>
@@ -401,14 +357,14 @@
         </Setter>
         <Setter Property="PlotAreaStyle">
             <Setter.Value>
-                <Style TargetType="Grid">
+                <Style TargetType="{x:Type Grid}">
                     <Setter Property="Background" Value="Transparent"/>
                 </Style>
             </Setter.Value>
         </Setter>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="chartingToolkit:Chart">
+                <ControlTemplate TargetType="{x:Type chartingToolkit:Chart}">
                     <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -434,8 +390,6 @@
         </Setter>
     </Style>
 
-
-
     <Style x:Key="PieDataPointStyle" TargetType="chartingToolkit:PieDataPoint">
 		<Setter Property="Background" Value="Orange"/>
 		<Setter Property="BorderBrush" Value="White"/>
@@ -444,5 +398,17 @@
 		<Setter Property="RatioStringFormat" Value="{}{0:p2}"/>
         <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
     </Style>
+
+    <!--<Style x:Key="PieSeriesStyle1" TargetType="{x:Type chartingToolkit:PieSeries}">
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Margin" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type chartingToolkit:PieSeries}">
+                    <Canvas x:Name="PlotArea"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>-->
 
 </ResourceDictionary>
