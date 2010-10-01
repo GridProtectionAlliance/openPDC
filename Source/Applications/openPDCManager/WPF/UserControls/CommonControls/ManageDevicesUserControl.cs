@@ -388,6 +388,11 @@ namespace openPDCManager.UserControls.CommonControls
                 {
                     if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                     {
+                        if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(connection, "Device", deviceID)); // Convert.ToInt32(TextBlockRuntimeID.Text));
+                        else
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
+
                         if (device.HistorianID != null) //Update historian metadata
                         {
                             string runtimeID = CommonFunctions.GetRuntimeID(connection, "Historian", (int)device.HistorianID);
@@ -401,11 +406,6 @@ namespace openPDCManager.UserControls.CommonControls
                             string statRuntimeID = CommonFunctions.GetRuntimeID(connection, "Historian", statHistorian.ID);
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshmetadata");
                         }
-
-                        if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(connection, "Device", deviceID)); // Convert.ToInt32(TextBlockRuntimeID.Text));
-                        else
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
 
                         CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");
                     }

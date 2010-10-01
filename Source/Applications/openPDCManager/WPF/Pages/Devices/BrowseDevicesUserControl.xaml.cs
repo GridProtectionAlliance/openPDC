@@ -140,6 +140,16 @@ namespace openPDCManager.Pages.Devices
                     WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
                     if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                     {
+                        if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.
+                        {
+                            if (device.ParentID == null)
+                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", device.ID));
+                            else
+                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", (int)device.ParentID));
+                        }
+                        else
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
+
                         if (device.HistorianID != null)
                         {
                             string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)device.HistorianID);
@@ -154,16 +164,6 @@ namespace openPDCManager.Pages.Devices
                             if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                                 CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshmetadata");
                         }
-
-                        if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.
-                        {
-                            if (device.ParentID == null)
-                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", device.ID));
-                            else
-                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", (int)device.ParentID));
-                        }
-                        else
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
 
                         CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");
                     }

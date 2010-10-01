@@ -1509,17 +1509,29 @@ namespace openPDCManager.Data
                     command.Parameters.Add(AddWithValue(command, "@id", outputStreamDevice.ID));
 
                     //if output stream device is updated then modify signal references in the measurement table
-                    //to reflect changes in the acronym of the device.
-                    if (!string.IsNullOrEmpty(originalAcronym))
+                    //to reflect changes in the acronym of the device. Do this only if new and original acronyms are different.
+                    if (!string.IsNullOrEmpty(originalAcronym) && originalAcronym != outputStreamDevice.Acronym)
                     {
-                        IDbCommand command1 = connection.Connection.CreateCommand();
-                        command1.CommandType = CommandType.Text;
-                        command1.CommandText = "Update OutputStreamMeasurement Set SignalReference = Replace(SignalReference, @originalAcronym, @newAcronym) Where AdapterID = @adapterID";	// and SignalReference LIKE @signalReference";
-                        command1.Parameters.Add(AddWithValue(command1, "@originalAcronym", originalAcronym));
-                        command1.Parameters.Add(AddWithValue(command1, "@newAcronym", outputStreamDevice.Acronym));
-                        command1.Parameters.Add(AddWithValue(command1, "@adapterID", outputStreamDevice.AdapterID));
-                        //command.Parameters.Add(AddWithValue(command1, "@signalReference", "%" + originalAcronym + "-%"));
-                        command1.ExecuteNonQuery();
+                        //Microsoft Access does not support REPLACE function in SQL statement.
+                        if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                        {
+                            List<OutputStreamMeasurement> outputStreamMeasurements = GetOutputStreamMeasurementList(connection, outputStreamDevice.AdapterID);
+                            foreach (OutputStreamMeasurement osm in outputStreamMeasurements)
+                            {
+                                osm.SignalReference = osm.SignalReference.Replace(originalAcronym, outputStreamDevice.Acronym);
+                                SaveOutputStreamMeasurement(connection, osm, false);
+                            }
+                        }
+                        else
+                        {
+                            IDbCommand command1 = connection.Connection.CreateCommand();
+                            command1.CommandType = CommandType.Text;
+                            command1.CommandText = "Update OutputStreamMeasurement Set SignalReference = Replace(SignalReference, @originalAcronym, @newAcronym) Where AdapterID = @adapterID";	// and SignalReference LIKE @signalReference";
+                            command1.Parameters.Add(AddWithValue(command1, "@originalAcronym", originalAcronym));
+                            command1.Parameters.Add(AddWithValue(command1, "@newAcronym", outputStreamDevice.Acronym));
+                            command1.Parameters.Add(AddWithValue(command1, "@adapterID", outputStreamDevice.AdapterID));                            
+                            command1.ExecuteNonQuery();
+                        }
                     }
                 }
 
