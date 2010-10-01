@@ -124,6 +124,9 @@ namespace openPDCManager.UserControls.OutputStreamControls
                     ListBoxOutputStreamList.SelectedIndex = 0;
                     m_selectFirst = false;
                 }
+
+                if (ListBoxOutputStreamList.Items.Count == 0)
+                    ClearForm();
             }
             else
             {

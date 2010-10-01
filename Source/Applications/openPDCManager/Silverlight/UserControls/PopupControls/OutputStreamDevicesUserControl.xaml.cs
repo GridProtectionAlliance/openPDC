@@ -49,6 +49,7 @@ namespace openPDCManager.UserControls.PopupControls
         bool m_inEditMode = false;
         int m_outputStreamDeviceID = 0;
         OutputStreamDevice m_selectedOutputStreamDevice;
+        string m_originalAcronym;
         
         #endregion
 
@@ -101,7 +102,7 @@ namespace openPDCManager.UserControls.PopupControls
                 if (m_inEditMode == true && m_outputStreamDeviceID > 0)
                 {
                     outputStreamDevice.ID = m_outputStreamDeviceID;
-                    SaveOutputStreamDevice(outputStreamDevice, false, m_selectedOutputStreamDevice.Acronym);
+                    SaveOutputStreamDevice(outputStreamDevice, false, m_originalAcronym);
                 }
                 else
                     SaveOutputStreamDevice(outputStreamDevice, true, string.Empty);
@@ -125,6 +126,7 @@ namespace openPDCManager.UserControls.PopupControls
             if (ListBoxOutputStreamDeviceList.SelectedIndex >= 0)
             {
                 m_selectedOutputStreamDevice = ListBoxOutputStreamDeviceList.SelectedItem as OutputStreamDevice;
+                m_originalAcronym = m_selectedOutputStreamDevice.Acronym;
                 GridOutputStreamDeviceDetail.DataContext = m_selectedOutputStreamDevice;
                 CheckBoxEnabled.IsChecked = m_selectedOutputStreamDevice.Enabled;
 

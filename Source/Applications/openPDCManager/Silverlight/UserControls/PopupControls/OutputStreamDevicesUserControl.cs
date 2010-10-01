@@ -127,6 +127,9 @@ namespace openPDCManager.UserControls.PopupControls
                     ListBoxOutputStreamDeviceList.SelectedIndex = 0;
                     m_selectFirst = false;
                 }
+
+                if (ListBoxOutputStreamDeviceList.Items.Count == 0)
+                    ClearForm();
             }
             else
             {

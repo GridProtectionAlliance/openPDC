@@ -47,6 +47,8 @@ namespace openPDCManager.UserControls.PopupControls
                 ListBoxOutputStreamDeviceList.ItemsSource = CommonFunctions.GetOutputStreamDeviceList(null, m_sourceOutputStreamID, false);
                 if (ListBoxOutputStreamDeviceList.Items.Count > 0)
                     ListBoxOutputStreamDeviceList.SelectedIndex = 0;
+                else
+                    ClearForm();
             }
             catch (Exception ex)
             {

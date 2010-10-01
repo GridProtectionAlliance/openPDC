@@ -129,6 +129,8 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 ListBoxOutputStreamList.ItemsSource = CommonFunctions.GetOutputStreamList(null, false, m_nodeValue);
                 if (ListBoxOutputStreamList.Items.Count > 0)
                     ListBoxOutputStreamList.SelectedIndex = 0;
+                else
+                    ClearForm();
             }
             catch (Exception ex)
             {

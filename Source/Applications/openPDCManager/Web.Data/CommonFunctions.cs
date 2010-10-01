@@ -1518,8 +1518,11 @@ namespace openPDCManager.Data
                             List<OutputStreamMeasurement> outputStreamMeasurements = GetOutputStreamMeasurementList(connection, outputStreamDevice.AdapterID);
                             foreach (OutputStreamMeasurement osm in outputStreamMeasurements)
                             {
-                                osm.SignalReference = osm.SignalReference.Replace(originalAcronym, outputStreamDevice.Acronym);
-                                SaveOutputStreamMeasurement(connection, osm, false);
+                                if (osm.SignalReference.StartsWith(originalAcronym + "-"))
+                                {
+                                    osm.SignalReference = osm.SignalReference.Replace(originalAcronym, outputStreamDevice.Acronym);
+                                    SaveOutputStreamMeasurement(connection, osm, false);
+                                }
                             }
                         }
                         else

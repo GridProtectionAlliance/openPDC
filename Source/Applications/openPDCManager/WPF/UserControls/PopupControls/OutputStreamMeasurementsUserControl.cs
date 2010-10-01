@@ -53,6 +53,8 @@ namespace openPDCManager.UserControls.PopupControls
                 ListBoxOutputStreamMeasurementList.ItemsSource = CommonFunctions.GetOutputStreamMeasurementList(null, m_sourceOutputStreamID);
                 if (ListBoxOutputStreamMeasurementList.Items.Count > 0)
                     ListBoxOutputStreamMeasurementList.SelectedIndex = 0;
+                else
+                    ClearForm();
             }
             catch (Exception ex)
             {
