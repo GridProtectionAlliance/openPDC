@@ -1,8 +1,0 @@
-﻿<Window x:Class="ConfigurationCreationWizard.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="567" Width="975" xmlns:my="clr-namespace:ConfigurationCreationWizard">
-    <Grid>
-        <my:ConfigurationCreator HorizontalAlignment="Left" x:Name="configurationCreator1" VerticalAlignment="Top" />
-    </Grid>
-</Window>
