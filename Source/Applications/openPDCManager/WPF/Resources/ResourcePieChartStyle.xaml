@@ -8,7 +8,7 @@
     xmlns:vsm="clr-namespace:System.Windows;assembly=WPFToolkit" 
     >
 
-    <ControlTemplate x:Key="PieDataPointTemplate" TargetType="chartingToolkit:PieDataPoint">
+    <!--<ControlTemplate x:Key="PieDataPointTemplate" TargetType="chartingToolkit:PieDataPoint">
         <Grid x:Name="Root" Opacity="0">
             <vsm:VisualStateManager.VisualStateGroups>
                 <vsm:VisualStateGroup x:Name="CommonStates">
@@ -55,7 +55,7 @@
                     <StackPanel Orientation="Horizontal">
                         <ContentControl Content="{TemplateBinding IndependentValue}"/>
                         <TextBlock Text=" ["/>
-                        <ContentControl Content="{TemplateBinding FormattedDependentValue}"/>
+                        <ContentControl Content="{TemplateBinding DependentValue}"/>
                         <TextBlock Text=", "/>
                         <ContentControl Content="{TemplateBinding FormattedRatio}"/>
                         <TextBlock Text="]"/>
@@ -65,7 +65,7 @@
             <Path x:Name="SelectionHighlight" Fill="Red" StrokeMiterLimit="1" IsHitTestVisible="False" Opacity="0" Data="{TemplateBinding GeometrySelection}"/>
             <Path x:Name="MouseOverHighlight" Fill="White" StrokeMiterLimit="1" IsHitTestVisible="False" Opacity="0" Data="{TemplateBinding GeometryHighlight}"/>
         </Grid>
-    </ControlTemplate>
+    </ControlTemplate>-->
 
     <Style x:Key="PieChartStyle" TargetType="{x:Type chartingToolkit:Chart}">
         <Setter Property="BorderBrush" Value="#FFFFFFFF"/>
@@ -390,25 +390,47 @@
         </Setter>
     </Style>
 
-    <Style x:Key="PieDataPointStyle" TargetType="chartingToolkit:PieDataPoint">
+    <!--<Style x:Key="PieDataPointStyle" TargetType="chartingToolkit:PieDataPoint">
 		<Setter Property="Background" Value="Orange"/>
 		<Setter Property="BorderBrush" Value="White"/>
 		<Setter Property="BorderThickness" Value="1"/>
 		<Setter Property="IsTabStop" Value="False"/>
 		<Setter Property="RatioStringFormat" Value="{}{0:p2}"/>
         <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}" />
-    </Style>
+    </Style>-->
 
-    <!--<Style x:Key="PieSeriesStyle1" TargetType="{x:Type chartingToolkit:PieSeries}">
+    <Style x:Key="PieDataPointStyle" TargetType="{x:Type chartingToolkit:PieDataPoint}">
+        <Setter Property="Background" Value="Orange"/>
+        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="IsTabStop" Value="False"/>
-        <Setter Property="Margin" Value="10"/>
+        <Setter Property="RatioStringFormat" Value="{}{0:p2}"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type chartingToolkit:PieSeries}">
-                    <Canvas x:Name="PlotArea"/>
+                <ControlTemplate TargetType="{x:Type chartingToolkit:PieDataPoint}">
+                    <Grid x:Name="Root" Opacity="0">
+                        <Path x:Name="Slice" Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}" StrokeMiterLimit="1" Data="{TemplateBinding Geometry}">
+                            <Path.ToolTip>
+                                <StackPanel>
+                                    <ContentControl Content="{TemplateBinding FormattedDependentValue}"/>
+                                    <ContentControl Content="{TemplateBinding FormattedRatio}"/>
+                                </StackPanel>
+                                <!--<StackPanel Orientation="Horizontal">
+                                    <ContentControl Content="{TemplateBinding IndependentValue}"/>
+                                    <TextBlock Text=" ["/>
+                                    <ContentControl Content="{TemplateBinding DependentValue}"/>
+                                    <TextBlock Text=", "/>
+                                    <ContentControl Content="{TemplateBinding FormattedRatio}"/>
+                                    <TextBlock Text="]"/>
+                                </StackPanel>-->
+                            </Path.ToolTip>
+                        </Path>
+                        <Path x:Name="SelectionHighlight" Fill="Red" StrokeMiterLimit="1" IsHitTestVisible="False" Opacity="0" Data="{TemplateBinding GeometrySelection}"/>
+                        <Path x:Name="MouseOverHighlight" Fill="White" StrokeMiterLimit="1" IsHitTestVisible="False" Opacity="0" Data="{TemplateBinding GeometryHighlight}"/>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>-->
+    </Style>
 
 </ResourceDictionary>
