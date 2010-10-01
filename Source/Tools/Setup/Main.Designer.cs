@@ -45,7 +45,6 @@
             this.richTextBoxReleaseNotes = new System.Windows.Forms.RichTextBox();
             this.labelVersion = new System.Windows.Forms.Label();
             this.pictureBoxLogo = new System.Windows.Forms.PictureBox();
-            this.labelWelcome = new System.Windows.Forms.Label();
             this.tabControlMain.SuspendLayout();
             this.tabPageInstallOptions.SuspendLayout();
             this.groupBoxInstallationOptions.SuspendLayout();
@@ -246,17 +245,6 @@
             this.pictureBoxLogo.TabIndex = 1;
             this.pictureBoxLogo.TabStop = false;
             // 
-            // labelWelcome
-            // 
-            this.labelWelcome.BackColor = System.Drawing.Color.White;
-            this.labelWelcome.Font = new System.Drawing.Font("Verdana", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelWelcome.Location = new System.Drawing.Point(2, 2);
-            this.labelWelcome.Name = "labelWelcome";
-            this.labelWelcome.Size = new System.Drawing.Size(417, 66);
-            this.labelWelcome.TabIndex = 0;
-            this.labelWelcome.Text = "Welcome to the openPDC\r\nSetup Application";
-            this.labelWelcome.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -265,7 +253,6 @@
             this.ClientSize = new System.Drawing.Size(501, 380);
             this.Controls.Add(this.labelVersion);
             this.Controls.Add(this.tabControlMain);
-            this.Controls.Add(this.labelWelcome);
             this.Controls.Add(this.pictureBoxLogo);
             this.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -307,7 +294,6 @@
         private AxWMPLib.AxWindowsMediaPlayer axVideoPlayer;
         private System.Windows.Forms.TabPage tabPageReleaseNotes;
         private System.Windows.Forms.RichTextBox richTextBoxReleaseNotes;
-        private System.Windows.Forms.Label labelWelcome;
     }
 }
 

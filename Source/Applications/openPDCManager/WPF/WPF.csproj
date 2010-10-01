@@ -61,7 +61,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>openPDC.ico</ApplicationIcon>
+    <ApplicationIcon>openPDCManager.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -885,7 +885,7 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="openPDC.ico" />
+    <Resource Include="openPDCManager.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="..\Silverlight\Images\Copy.png">

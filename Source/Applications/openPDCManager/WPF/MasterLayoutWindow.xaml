@@ -7,7 +7,7 @@
     Width="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationWidth, Mode=TwoWay}" 
     Left="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationLeft, Mode=TwoWay}"
     Top="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationTop, Mode=TwoWay}"
-    ResizeMode="CanResize"  MinHeight="600" MinWidth="800" Icon="openPDC.ico"
+    ResizeMode="CanResize"  MinHeight="600" MinWidth="800" Icon="openPDCManager.ico"
     xmlns:uc="clr-namespace:openPDCManager.UserControls.CommonControls" WindowStyle="SingleBorderWindow"  Background="Transparent" MouseDown="MainWindow_MouseDown"
     >
 
