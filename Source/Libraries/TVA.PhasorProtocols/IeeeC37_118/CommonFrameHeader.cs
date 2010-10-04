@@ -304,18 +304,14 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             uint fractionOfSecond = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 10);
 
             // Without timebase, the best timestamp you can get is down to the whole second
-            if (configurationFrame == null)
-            {
-                // The best timestamp you can get is down to the whole second without config frame
-                m_timestamp = (new UnixTimeTag((double)secondOfCentury)).ToDateTime().Ticks;
-            }
-            else
+            m_timestamp = (new UnixTimeTag((double)secondOfCentury)).ToDateTime().Ticks;
+
+            if (configurationFrame != null)
             {
                 // If config frame is available, frames have enough information for subsecond time resolution
-                decimal timestampSeconds;
                 m_timebase = configurationFrame.Timebase;
-                timestampSeconds = secondOfCentury + ((fractionOfSecond & ~Common.TimeQualityFlagsMask) / (decimal)m_timebase);
-                m_timestamp = (long)(timestampSeconds * Ticks.PerSecond);
+                decimal fractionalSeconds = (fractionOfSecond & ~Common.TimeQualityFlagsMask) / (decimal)m_timebase;
+                m_timestamp += (long)(fractionalSeconds * (decimal)Ticks.PerSecond);
             }
 
             m_timeQualityFlags = fractionOfSecond & Common.TimeQualityFlagsMask;
@@ -475,7 +471,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         {
             get
             {
-                return (UInt24)(m_timestamp.DistanceBeyondSecond().ToSeconds() * m_timebase);
+                return (UInt24)((decimal)m_timestamp.DistanceBeyondSecond() / (decimal)Ticks.PerSecond * (decimal)m_timebase);
             }
         }
 
