@@ -312,8 +312,10 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             else
             {
                 // If config frame is available, frames have enough information for subsecond time resolution
+                decimal timestampSeconds;
                 m_timebase = configurationFrame.Timebase;
-                m_timestamp = (new UnixTimeTag((double)secondOfCentury + ((fractionOfSecond & ~Common.TimeQualityFlagsMask) / (double)m_timebase))).ToDateTime().Ticks;
+                timestampSeconds = secondOfCentury + ((fractionOfSecond & ~Common.TimeQualityFlagsMask) / (decimal)m_timebase);
+                m_timestamp = (long)(timestampSeconds * Ticks.PerSecond);
             }
 
             m_timeQualityFlags = fractionOfSecond & Common.TimeQualityFlagsMask;
