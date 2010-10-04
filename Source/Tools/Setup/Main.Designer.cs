@@ -39,8 +39,6 @@
             this.radioButton64bit = new System.Windows.Forms.RadioButton();
             this.radioButton32bit = new System.Windows.Forms.RadioButton();
             this.labelNotes = new System.Windows.Forms.Label();
-            this.tabPageHelpVideo = new System.Windows.Forms.TabPage();
-            this.axVideoPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             this.tabPageReleaseNotes = new System.Windows.Forms.TabPage();
             this.richTextBoxReleaseNotes = new System.Windows.Forms.RichTextBox();
             this.labelVersion = new System.Windows.Forms.Label();
@@ -48,8 +46,6 @@
             this.tabControlMain.SuspendLayout();
             this.tabPageInstallOptions.SuspendLayout();
             this.groupBoxInstallationOptions.SuspendLayout();
-            this.tabPageHelpVideo.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.axVideoPlayer)).BeginInit();
             this.tabPageReleaseNotes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
             this.SuspendLayout();
@@ -57,7 +53,6 @@
             // tabControlMain
             // 
             this.tabControlMain.Controls.Add(this.tabPageInstallOptions);
-            this.tabControlMain.Controls.Add(this.tabPageHelpVideo);
             this.tabControlMain.Controls.Add(this.tabPageReleaseNotes);
             this.tabControlMain.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.tabControlMain.Location = new System.Drawing.Point(0, 71);
@@ -138,7 +133,7 @@
             this.checkBoxConnectionTester.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxConnectionTester.Location = new System.Drawing.Point(16, 78);
             this.checkBoxConnectionTester.Name = "checkBoxConnectionTester";
-            this.checkBoxConnectionTester.Size = new System.Drawing.Size(140, 17);
+            this.checkBoxConnectionTester.Size = new System.Drawing.Size(160, 20);
             this.checkBoxConnectionTester.TabIndex = 2;
             this.checkBoxConnectionTester.Text = "PMU Connection Tester";
             this.checkBoxConnectionTester.UseVisualStyleBackColor = true;
@@ -148,7 +143,7 @@
             this.radioButton64bit.AutoSize = true;
             this.radioButton64bit.Location = new System.Drawing.Point(16, 51);
             this.radioButton64bit.Name = "radioButton64bit";
-            this.radioButton64bit.Size = new System.Drawing.Size(167, 17);
+            this.radioButton64bit.Size = new System.Drawing.Size(196, 20);
             this.radioButton64bit.TabIndex = 1;
             this.radioButton64bit.TabStop = true;
             this.radioButton64bit.Text = "64-bit version of the openPDC";
@@ -160,7 +155,7 @@
             this.radioButton32bit.Checked = true;
             this.radioButton32bit.Location = new System.Drawing.Point(16, 24);
             this.radioButton32bit.Name = "radioButton32bit";
-            this.radioButton32bit.Size = new System.Drawing.Size(167, 17);
+            this.radioButton32bit.Size = new System.Drawing.Size(196, 20);
             this.radioButton32bit.TabIndex = 0;
             this.radioButton32bit.TabStop = true;
             this.radioButton32bit.Text = "32-bit version of the openPDC";
@@ -177,28 +172,6 @@
             this.labelNotes.TabIndex = 3;
             this.labelNotes.Text = resources.GetString("labelNotes.Text");
             this.labelNotes.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tabPageHelpVideo
-            // 
-            this.tabPageHelpVideo.Controls.Add(this.axVideoPlayer);
-            this.tabPageHelpVideo.Location = new System.Drawing.Point(4, 25);
-            this.tabPageHelpVideo.Name = "tabPageHelpVideo";
-            this.tabPageHelpVideo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageHelpVideo.Size = new System.Drawing.Size(493, 280);
-            this.tabPageHelpVideo.TabIndex = 1;
-            this.tabPageHelpVideo.Text = "Help Video";
-            this.tabPageHelpVideo.ToolTipText = "Click here to see a short help video to assist you with your installation.";
-            this.tabPageHelpVideo.UseVisualStyleBackColor = true;
-            // 
-            // axVideoPlayer
-            // 
-            this.axVideoPlayer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.axVideoPlayer.Enabled = true;
-            this.axVideoPlayer.Location = new System.Drawing.Point(3, 3);
-            this.axVideoPlayer.Name = "axVideoPlayer";
-            this.axVideoPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axVideoPlayer.OcxState")));
-            this.axVideoPlayer.Size = new System.Drawing.Size(487, 274);
-            this.axVideoPlayer.TabIndex = 0;
             // 
             // tabPageReleaseNotes
             // 
@@ -267,8 +240,6 @@
             this.tabPageInstallOptions.ResumeLayout(false);
             this.groupBoxInstallationOptions.ResumeLayout(false);
             this.groupBoxInstallationOptions.PerformLayout();
-            this.tabPageHelpVideo.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.axVideoPlayer)).EndInit();
             this.tabPageReleaseNotes.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).EndInit();
             this.ResumeLayout(false);
@@ -289,9 +260,7 @@
         private System.Windows.Forms.RadioButton radioButton64bit;
         private System.Windows.Forms.RadioButton radioButton32bit;
         private System.Windows.Forms.Label labelNotes;
-        private System.Windows.Forms.TabPage tabPageHelpVideo;
         private System.Windows.Forms.Label labelVersion;
-        private AxWMPLib.AxWindowsMediaPlayer axVideoPlayer;
         private System.Windows.Forms.TabPage tabPageReleaseNotes;
         private System.Windows.Forms.RichTextBox richTextBoxReleaseNotes;
     }

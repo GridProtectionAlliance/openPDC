@@ -56,16 +56,16 @@ namespace Setup
                 labelVersion.Visible = false;
             }
 
-            if (File.Exists("Help\\InstallationVideo.wmv"))
-            {
-                axVideoPlayer.settings.autoStart = false;
-                axVideoPlayer.settings.playCount = 1;
-                axVideoPlayer.settings.volume = 10;
-                axVideoPlayer.stretchToFit = true;
-                axVideoPlayer.URL = "Help\\InstallationVideo.wmv";
-            }
-            else
-                tabControlMain.TabPages.RemoveAt(1);
+            //if (File.Exists("Help\\InstallationVideo.wmv"))
+            //{
+            //    axVideoPlayer.settings.autoStart = false;
+            //    axVideoPlayer.settings.playCount = 1;
+            //    axVideoPlayer.settings.volume = 10;
+            //    axVideoPlayer.stretchToFit = true;
+            //    axVideoPlayer.URL = "Help\\InstallationVideo.wmv";
+            //}
+            //else
+            //    tabControlMain.TabPages.RemoveAt(1);
         }
 
         private void buttonInstall_Click(object sender, EventArgs e)
@@ -187,12 +187,13 @@ namespace Setup
         private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Load release notes
-            if (tabControlMain.SelectedTab == tabPageHelpVideo)
-            {                
-                if (axVideoPlayer.openState != WMPLib.WMPOpenState.wmposMediaOpen)
-                    axVideoPlayer.Ctlcontrols.play();
-            }
-            else if (tabControlMain.SelectedTab == tabPageReleaseNotes && richTextBoxReleaseNotes.TextLength == 0)
+            //if (tabControlMain.SelectedTab == tabPageHelpVideo)
+            //{                
+            //    if (axVideoPlayer.openState != WMPLib.WMPOpenState.wmposMediaOpen)
+            //        axVideoPlayer.Ctlcontrols.play();
+            //}
+            //else 
+            if (tabControlMain.SelectedTab == tabPageReleaseNotes && richTextBoxReleaseNotes.TextLength == 0)
             {
                 if (File.Exists("Help\\ReleaseNotes.rtf"))
                     richTextBoxReleaseNotes.LoadFile("Help\\ReleaseNotes.rtf");
@@ -205,5 +206,7 @@ namespace Setup
         {
             Process.Start("Explorer.exe", e.LinkText);
         }
+
+       
     }
 }
