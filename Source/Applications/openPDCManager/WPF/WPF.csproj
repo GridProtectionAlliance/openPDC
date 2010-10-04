@@ -163,6 +163,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="..\Silverlight\Converters\BooleanToVisibilityConverter.cs">
+      <Link>Converters\BooleanToVisibilityConverter.cs</Link>
+    </Compile>
     <Compile Include="ModalDialogs\ManualConfigurator.xaml.cs">
       <DependentUpon>ManualConfigurator.xaml</DependentUpon>
     </Compile>

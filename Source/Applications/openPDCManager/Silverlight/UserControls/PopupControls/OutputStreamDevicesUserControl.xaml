@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="openPDCManager.UserControls.PopupControls.OutputStreamDevicesUserControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:converter="clr-namespace:openPDCManager.Converters"
     >
     <Border Style="{StaticResource PortletBorderStyle}">
         <StackPanel Orientation="Vertical">
@@ -70,8 +71,8 @@
 
             <Border Style="{StaticResource HeaderRowBorderStyle}">
                 <StackPanel Orientation="Horizontal" Margin="2">
-                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                        <TextBlock Text="Acronym" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">                        
+                            <TextBlock Text="Acronym" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>                                                    
                     </Border>
                     <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                         <TextBlock Text="Name" Width="{StaticResource XLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
@@ -99,8 +100,14 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
+                                        <StackPanel.Resources>
+                                            <converter:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+                                        </StackPanel.Resources>
                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                            <TextBlock Text="{Binding Path=Acronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
+                                            <StackPanel Orientation="Horizontal" Width="{StaticResource LargeItemSize}">
+                                                <TextBlock Text="{Binding Path=Acronym}" TextAlignment="Left" Padding="1"/>
+                                                <TextBlock Text="*" Visibility="{Binding Path=Virtual, Converter={StaticResource booleanToVisibilityConverter}}" />
+                                            </StackPanel>
                                         </Border>
                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                             <TextBlock Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Padding="1"/>
@@ -128,6 +135,9 @@
                 </ScrollViewer>
             </Border>
 
+            <Border Background="{StaticResource PortletBackgroundBrush}">
+                <TextBlock Text="* - Virtual Device (i.e. Device does not exist as an input device)." Padding="2" HorizontalAlignment="Center"/>
+            </Border>
         </StackPanel>
     </Border>
 </UserControl>
