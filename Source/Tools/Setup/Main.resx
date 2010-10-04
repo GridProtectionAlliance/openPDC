@@ -134,7 +134,7 @@
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAnFyzIgAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAABl0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuNUmK/OAAAGQySURBVHhe7b2J
+        vQAADr0BR/uQrQAAABl0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuNUmK/OAAAGQySURBVHhe7b2J
         dhw30qDLv21L4lLFYu1VXERtlmestjzumW7bfd//uW4E1gAQAALITLEkEed0myKRSCQ+xILAdvbfIenv
         v/8e8njp2WmLFlUbqsClqb54snKTjzgb8iosbcjzJwA9Azb/66m+d8py46/5tqE3I60+UGNzmmIQfdY3
         Db2KsDVDDfl//3ua0LFaJJ21fvf3nL/O/FShq97o0vcI/a8///zre+67fw+D/tdfX2Pr/ec///nzGXpv
@@ -567,6 +567,17 @@
   </data>
   <data name="labelNotes.Text" xml:space="preserve">
     <value>During the installation process you will be asked to choose a configuration type. A database is recommended for typical deployments of the openPDC. The openPDC Manager application requires a database to function. The web service and XML configurations available to the openPDC are typically used in combination with a master database configuration that is maintained using the openPDC Manager. For simple installations you can choose an Access database for your configuration. However, Access is not recommended for a production installation and is also not available if you choose a 64-bit installation. Both SQL Server and MySQL are available with versions that may be installed for free.</value>
+  </data>
+  <data name="axVideoPlayer.OcxState" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
+        LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACFTeXN0
+        ZW0uV2luZG93cy5Gb3Jtcy5BeEhvc3QrU3RhdGUBAAAABERhdGEHAgIAAAAJAwAAAA8DAAAAtwAAAAIB
+        AAAAAQAAAAAAAAAAAAAAAKIAAAAAAwAACAAAAAAABQAAAAAAAADwPwMAAAAAAAUAAAAAAAAAAAAIAAIA
+        AAAAAAMAAQAAAAsA//8DAAAAAAALAP//CAACAAAAAAADADIAAAALAAAACAAKAAAAZgB1AGwAbAAAAAsA
+        AAALAAAACwD//wsA//8LAAAACAACAAAAAAAIAAIAAAAAAAgAAgAAAAAACAACAAAAAAALAAAAwAcAAGEC
+        AAAL
+</value>
   </data>
   <data name="pictureBoxLogo.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
