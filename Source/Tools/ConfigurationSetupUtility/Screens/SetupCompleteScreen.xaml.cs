@@ -32,6 +32,7 @@ using System.ServiceProcess;
 using System.Windows.Controls;
 using TVA.Configuration;
 using TVA.IO;
+using System.Windows;
 
 namespace ConfigurationSetupUtility
 {
@@ -239,8 +240,14 @@ namespace ConfigurationSetupUtility
                     // If the user requested it, start or restart the openPDC service.
                     if (m_serviceStartCheckBox.IsChecked.Value)
                     {
-                        if (m_openPdcServiceController.Status == ServiceControllerStatus.Stopped)
+                        try
+                        {
                             m_openPdcServiceController.Start();
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Setup utility was unable to start openPDC service, you will need to manually start the service.", "Cannot Start Windows Service", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
                     }
 
                     // If the user requested it, start the openPDC Manager.
