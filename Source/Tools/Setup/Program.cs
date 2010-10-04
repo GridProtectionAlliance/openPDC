@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
+using Microsoft.Win32;
 
 namespace Setup
 {
     static class Program
     {
-        public static bool MediaPlayerAvailable;
+        public static bool MediaPlayerAvailable = false;
 
         /// <summary>
         /// The main entry point for the application.
@@ -22,7 +23,8 @@ namespace Setup
             {
                 using (AxWMPLib.AxWindowsMediaPlayer mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer())
                 {
-                    MediaPlayerAvailable = File.Exists("Help\\InstallationVideo.wmv");
+                    if (Registry.ClassesRoot.OpenSubKey("WMPlayer.OCX") != null)
+                        MediaPlayerAvailable = File.Exists("Help\\InstallationVideo.wmv");
                 }
             }
             catch
