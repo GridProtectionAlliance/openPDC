@@ -156,6 +156,23 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
 
+                //if acronym is updated then update related statistics measurements too.
+                if (!isNew)
+                {
+                    try
+                    {
+                        CommonFunctions.UpdateOutputStreamStatistics(null, ((App)Application.Current).NodeValue, m_oldAcronym, outputStream.Acronym, m_oldName, outputStream.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Update Output Stream Statistics", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        sm.ShowPopup();
+                        CommonFunctions.LogException(null, "UpdateOutputStreamStatistics", ex);
+                    }
+                }
+
                 GetOutputStreamList();
                 //ClearForm();
 

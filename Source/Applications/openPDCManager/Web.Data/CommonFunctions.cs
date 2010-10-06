@@ -1281,6 +1281,39 @@ namespace openPDCManager.Data
             }
         }        
 
+        public static string UpdateOutputStreamStatistics(DataConnection connection, string nodeID, string oldAcronym, string newAcronym, string oldName, string newName)
+        {
+            bool createdConnection = false;
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
+                ////If device is updated then make sure all the statistical measurements get updated too to reflect any change in acronym.
+                if (!string.IsNullOrEmpty(oldAcronym) && oldAcronym != newAcronym)
+                {
+                    List<Measurement> measurementList = GetOutputStreamStatistics(connection, nodeID, oldAcronym);
+                    foreach (Measurement measurement in measurementList)
+                    {                       
+                        measurement.SignalReference = measurement.SignalReference.Replace(oldAcronym, newAcronym);
+                        measurement.PointTag = measurement.PointTag.Replace(oldAcronym, newAcronym);
+                        measurement.Description = System.Text.RegularExpressions.Regex.Replace(measurement.Description, oldName, newName, System.Text.RegularExpressions.RegexOptions.IgnoreCase);      //measurement.Description.Replace(oldAcronym, newAcronym);
+                        SaveMeasurement(connection, measurement, false);                     
+                    }
+                }
+
+                return "";
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
         #endregion
 
         #region " Manage Output Stream Measurements Code"
@@ -3616,6 +3649,24 @@ namespace openPDCManager.Data
                 if (createdConnection && connection != null)
                     connection.Dispose();
             }			
+        }
+
+        public static List<Measurement> GetOutputStreamStatistics(DataConnection connection, string nodeID, string outputStreamAcronym)
+        {
+            try
+            {
+                List<Measurement> measurementList = new List<Measurement>();
+                measurementList = (from item in GetMeasurementList(connection, nodeID)
+                                   where item.SignalReference.StartsWith(outputStreamAcronym + "!OS")
+                                   select item).ToList();
+                
+               return measurementList;                
+            }
+            catch (Exception ex)
+            {
+                LogException(connection, "GetOutputStreamStatistics", ex);
+                return null;
+            }
         }
 
         #endregion

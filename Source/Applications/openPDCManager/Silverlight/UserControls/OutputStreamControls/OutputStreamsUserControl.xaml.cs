@@ -46,6 +46,8 @@ namespace openPDCManager.UserControls.OutputStreamControls
         bool m_inEditMode = false;
         int m_outputStreamID = 0;
         string m_nodeValue;
+        string m_oldAcronym;
+        string m_oldName;
 
         #endregion
 
@@ -127,6 +129,9 @@ namespace openPDCManager.UserControls.OutputStreamControls
             CheckBoxAutoStartDataChannel.IsChecked = selectedOutputStream.AutoStartDataChannel;
             CheckBoxEnabled.IsChecked = selectedOutputStream.Enabled;
             CheckBoxUseLocalClockAsRealTime.IsChecked = selectedOutputStream.UseLocalClockAsRealTime;
+
+            m_oldAcronym = selectedOutputStream.Acronym;
+            m_oldName = selectedOutputStream.Name;
             
 #if !SILVERLIGHT
             if (m_inEditMode)
