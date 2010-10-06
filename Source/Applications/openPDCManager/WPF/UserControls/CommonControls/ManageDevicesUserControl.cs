@@ -41,6 +41,7 @@ namespace openPDCManager.UserControls.CommonControls
         #region [ Members ]
 
         WindowsServiceClient serviceClient;
+        string m_oldDeviceName;
 
         #endregion
 
@@ -82,6 +83,8 @@ namespace openPDCManager.UserControls.CommonControls
             {
                 m_deviceToEdit = new Device();
                 m_deviceToEdit = CommonFunctions.GetDeviceByDeviceID(null, deviceID);
+                m_oldDeviceName = m_deviceToEdit.Name;
+                m_oldAcronym = m_oldAcronym;
                 PopulateFormFields(m_deviceToEdit);
             }
             catch (Exception ex)
@@ -382,6 +385,23 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
+
+                //update statistic measurement for a device if device is being updated and acronym has changed.
+                try
+                {
+                    if (!isNew && !string.IsNullOrEmpty(m_oldAcronym) && m_oldAcronym != device.Acronym)
+                        CommonFunctions.UpdateDeviceStatistics(connection, deviceID, m_oldAcronym, device.Acronym, m_oldDeviceName, device.Name);
+                }
+                catch (Exception ex)
+                {
+                    CommonFunctions.LogException(connection, "WPF.UpdateDeviceStatistics", ex);
+                    sm = new SystemMessages(new Message() { UserMessage = "Failed to Update Device Statistics", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                           ButtonType.OkOnly);
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm.ShowPopup();
+                }
+
 
                 //Update Metadata in the openPDC Service.                
                 try

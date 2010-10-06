@@ -3033,6 +3033,45 @@ namespace openPDCManager.Data
             }
         }
 
+        public static string UpdateDeviceStatistics(DataConnection connection, int deviceID, string oldAcronym, string newAcronym, string oldDeviceName, string newDeviceName)
+        {
+            bool createdConnection = false;
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
+                ////If device is updated then make sure all the statistical measurements get updated too to reflect any change in acronym.
+                if (!string.IsNullOrEmpty(oldAcronym) && oldAcronym != newAcronym)
+                {
+                    List<Measurement> measurementList = GetMeasurementsByDevice(connection, deviceID);
+                    foreach (Measurement measurement in measurementList)
+                    {
+                        //if (measurement.SignalAcronym == "STAT")
+                        //{
+                            if (measurement.SignalReference.StartsWith(oldAcronym + "!") || measurement.SignalReference.StartsWith(oldAcronym + "-"))
+                            {                                
+                                measurement.SignalReference = measurement.SignalReference.Replace(oldAcronym, newAcronym);
+                                measurement.PointTag = measurement.PointTag.Replace(oldAcronym, newAcronym);
+                                measurement.Description = System.Text.RegularExpressions.Regex.Replace(measurement.Description, oldDeviceName, newDeviceName, System.Text.RegularExpressions.RegexOptions.IgnoreCase);      //measurement.Description.Replace(oldAcronym, newAcronym);
+                                SaveMeasurement(connection, measurement, false);
+                            }
+                        //}
+                    }
+                }
+
+                return "";
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
         #endregion
 
         #region " Manage Phasor Code"
@@ -3405,7 +3444,7 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@historianID", measurement.HistorianID ?? (object)DBNull.Value));
                 command.Parameters.Add(AddWithValue(command, "@deviceID", measurement.DeviceID ?? (object)DBNull.Value));
                 command.Parameters.Add(AddWithValue(command, "@pointTag", measurement.PointTag));
-                command.Parameters.Add(AddWithValue(command, "@alternateTag", measurement.AlternateTag));
+                command.Parameters.Add(AddWithValue(command, "@alternateTag", measurement.AlternateTag ?? (object)DBNull.Value));
                 command.Parameters.Add(AddWithValue(command, "@signalTypeID", measurement.SignalTypeID));
                 command.Parameters.Add(AddWithValue(command, "@phasorSourceIndex", measurement.PhasorSourceIndex ?? (object)DBNull.Value));
                 command.Parameters.Add(AddWithValue(command, "@signalReference", measurement.SignalReference));

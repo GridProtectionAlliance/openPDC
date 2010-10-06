@@ -45,6 +45,7 @@ namespace openPDCManager.UserControls.CommonControls
         bool m_inEditMode = false;
         public int m_deviceID;
         Device m_deviceToEdit;
+        public string m_oldAcronym;
         public bool hasQueryString;
         Device m_deviceToCopy;
 

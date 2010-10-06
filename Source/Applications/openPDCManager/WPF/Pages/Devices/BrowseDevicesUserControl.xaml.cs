@@ -100,9 +100,11 @@ namespace openPDCManager.Pages.Devices
 
         void HyperlinkButton_Click(object sender, RoutedEventArgs e)
         {
-            string deviceId = ((Button)sender).Tag.ToString();
+            Device device = ((Button)sender).DataContext as Device;
+            
             ManageDevicesUserControl manageDevicesUserControl = new ManageDevicesUserControl();
-            manageDevicesUserControl.m_deviceID = Convert.ToInt32(deviceId);
+            manageDevicesUserControl.m_deviceID = device.ID;
+            manageDevicesUserControl.m_oldAcronym = device.Acronym;
             ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(manageDevicesUserControl);            
         }
 
