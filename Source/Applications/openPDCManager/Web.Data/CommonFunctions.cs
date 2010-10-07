@@ -4510,7 +4510,11 @@ namespace openPDCManager.Data
                 row["VendorDeviceName"] = string.Empty;
                 row["ParentAcronym"] = string.Empty;
                 row["Enabled"] = false;
-                resultTable.Rows.Add(row);
+                //We are going to skip adding this row here.
+                //First we will see if there is any measurement exists where DeviceID is NULL and is not a statistical measurement.
+                //If it does then only we will add this dummy device to the devices table.
+                //This new check has been added few line down.
+                //resultTable.Rows.Add(row);
 
                 //Get Measurements
                 IDbCommand commandMeasurements = connection.Connection.CreateCommand();
@@ -4524,11 +4528,17 @@ namespace openPDCManager.Data
                 resultTable = new DataTable();
                 resultSet.Tables.Add(resultTable);
                 resultTable.Load(commandMeasurements.ExecuteReader());
-                                
+
                 resultSet.Tables[0].TableName = "PdcTable";
                 resultSet.Tables[1].TableName = "DeviceTable";
                 resultSet.Tables[2].TableName = "MeasurementTable";
 
+                //Instead of adding row few lines above, we will perform this check and then add it.
+                if (resultTable.Select("DeviceID IS NULL").Count() > 0)
+                { 
+                    resultSet.Tables["DeviceTable"].Rows.Add(row); 
+                }
+                
                 deviceMeasurementDataList = (from pdc in resultSet.Tables["PdcTable"].AsEnumerable()
                                              select new DeviceMeasurementData()
                                              {
