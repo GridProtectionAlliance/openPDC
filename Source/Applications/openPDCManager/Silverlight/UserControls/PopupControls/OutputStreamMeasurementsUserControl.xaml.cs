@@ -74,10 +74,14 @@ namespace openPDCManager.UserControls.PopupControls
 
         void ButtonSourceMeasurement_Click(object sender, RoutedEventArgs e)
         {
-            #if SILVERLIGHT
             SelectMeasurement selectMeasurement = new SelectMeasurement(m_sourceOutputStreamID, m_sourceOutputStreamAcronym);
             selectMeasurement.Closed += new EventHandler(selectMeasurement_Closed);
+            #if SILVERLIGHT            
             selectMeasurement.Show();
+#else
+            selectMeasurement.Owner = Window.GetWindow(this);
+            selectMeasurement.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            selectMeasurement.ShowDialog();
 #endif
         }
 

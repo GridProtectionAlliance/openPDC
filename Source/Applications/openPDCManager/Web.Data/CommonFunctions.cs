@@ -3531,6 +3531,7 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@outputStreamID", outputStreamID));
 
                 measurementList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
+                                   where item.Field<string>("SignalAcronym") != "STAT"
                                    select new Measurement()
                                    {
                                        SignalID = item.Field<object>("SignalID").ToString(),
