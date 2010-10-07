@@ -33,6 +33,7 @@ using System.Windows.Media.Animation;
 #else
 using openPDCManager.Data.Entities;
 using System.Windows.Media.Imaging;
+using openPDCManager.Pages.Manage;
 #endif
 
 namespace openPDCManager.UserControls.CommonControls
@@ -344,9 +345,9 @@ namespace openPDCManager.UserControls.CommonControls
             string deviceId = ((Button)sender).Tag.ToString();
 #if SILVERLIGHT
             System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("/Default.aspx#/Pages/Manage/Measurements.xaml?did=" + deviceId, UriKind.Relative));
-#else
-            //ManageOtherDevicesUserControl manageOtherDevicesUserControl = new ManageOtherDevicesUserControl(Convert.ToInt32(deviceId));
-            //((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(manageOtherDevicesUserControl);
+#else            
+            Measurements measurements = new Measurements(Convert.ToInt32(deviceId));
+            ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(measurements);
 #endif      
         }
 
@@ -403,7 +404,7 @@ namespace openPDCManager.UserControls.CommonControls
         #region [ Page Event Handlers ]
 
         void AddNew_Loaded(object sender, RoutedEventArgs e)
-        {
+        {            
 #if !SILVERLIGHT
             GetDevices(DeviceType.Concentrator, ((App)Application.Current).NodeValue, true);
             GetCompanies();
@@ -435,10 +436,7 @@ namespace openPDCManager.UserControls.CommonControls
                 PopulateFormFields(m_deviceToCopy);
                 //TextBoxAcronym.Focus();
                 TextBoxAcronym.SelectAll();
-            }
-
-            StackPanelDeviceList.Visibility = Visibility.Collapsed;
-            StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
+            }            
         }
 
         #endregion
@@ -491,6 +489,9 @@ namespace openPDCManager.UserControls.CommonControls
 
             m_inEditMode = false;
             m_deviceID = 0;
+
+            StackPanelDeviceList.Visibility = Visibility.Collapsed;
+            StackPanelPhasorsMeassurements.Visibility = Visibility.Collapsed;
         }
 
         #endregion

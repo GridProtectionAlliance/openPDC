@@ -84,7 +84,7 @@ namespace openPDCManager.UserControls.CommonControls
                 m_deviceToEdit = new Device();
                 m_deviceToEdit = CommonFunctions.GetDeviceByDeviceID(null, deviceID);
                 m_oldDeviceName = m_deviceToEdit.Name;
-                m_oldAcronym = m_oldAcronym;
+                m_oldAcronym = m_deviceToEdit.Acronym;
                 PopulateFormFields(m_deviceToEdit);
             }
             catch (Exception ex)
@@ -390,7 +390,11 @@ namespace openPDCManager.UserControls.CommonControls
                 try
                 {
                     if (!isNew && !string.IsNullOrEmpty(m_oldAcronym) && m_oldAcronym != device.Acronym)
+                    {
                         CommonFunctions.UpdateDeviceStatistics(connection, deviceID, m_oldAcronym, device.Acronym, m_oldDeviceName, device.Name);
+
+                        //also if acronym has changed then make those changes
+                    }
                 }
                 catch (Exception ex)
                 {
