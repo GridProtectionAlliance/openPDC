@@ -240,6 +240,9 @@ namespace openPDCManager.UserControls.CommonControls
             GetInterconnectionStatus();
             GetDeviceDistributionList();
             //GetTimeSeriesData(((App)Application.Current).TimeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + ((Measurement)ComboBoxMeasurements.SelectedItem).PointID.ToString() + "/*-30S/*/XML");            
+            WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
+            if (serviceClient == null || serviceClient.Helper.RemotingClient.CurrentState != TVA.Communication.ClientState.Connected)
+                ButtonRestartOpenPDC.IsEnabled = false;
 #endif
             //if (!string.IsNullOrEmpty(((App)Application.Current).NodeValue))
             //m_client.GetDevicesAsync(DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, false);
@@ -253,6 +256,5 @@ namespace openPDCManager.UserControls.CommonControls
 
         #endregion
 
-        
     }
 }

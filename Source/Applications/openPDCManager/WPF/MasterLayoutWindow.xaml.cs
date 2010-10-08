@@ -185,6 +185,11 @@ namespace openPDCManager
                     adapterUserControl.ButtonInitialize.IsEnabled = false;
                     adapterUserControl.ButtonInitialize.Foreground = new SolidColorBrush(Color.FromArgb(255, 100, 100, 100));
                 }
+                else if (ContentFrame.Content.GetType() == typeof(HomePageUserControl))
+                {
+                    HomePageUserControl homePageUserControl = (HomePageUserControl)ContentFrame.Content;
+                    homePageUserControl.ButtonRestartOpenPDC.IsEnabled = false;
+                }
             });
         }
 
@@ -229,6 +234,11 @@ namespace openPDCManager
                 {
                     MonitorUserControl monitorUserControl = (MonitorUserControl)ContentFrame.Content;
                     monitorUserControl.ReconnectToService();
+                }
+                else if (ContentFrame.Content.GetType() == typeof(HomePageUserControl))
+                {
+                    HomePageUserControl homePageUserControl = (HomePageUserControl)ContentFrame.Content;
+                    homePageUserControl.ButtonRestartOpenPDC.IsEnabled = true;
                 }
 
             });            
