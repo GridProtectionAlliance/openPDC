@@ -87,7 +87,8 @@ namespace openPDCManager.ModalDialogs
 
         void ButtonShowAll_Click(object sender, RoutedEventArgs e)
         {
-            ListBoxMeasurementList.ItemsSource = m_measurementList;
+            //ListBoxMeasurementList.ItemsSource = m_measurementList;
+            DataPagerMeasurements.ItemsSource = new ObservableCollection<object>(m_measurementList);
         }
 
         void ButtonSearch_Click(object sender, RoutedEventArgs e)
@@ -98,7 +99,7 @@ namespace openPDCManager.ModalDialogs
             searchResult = (from item in m_measurementList
                             where item.PointTag.ToUpper().Contains(searchText) || item.SignalReference.ToUpper().Contains(searchText)
                             select item).ToList();
-            ListBoxMeasurementList.ItemsSource = m_measurementList;
+            ListBoxMeasurementList.ItemsSource = DataPagerMeasurements.ItemsSource = new ObservableCollection<object>(searchResult);   // m_measurementList;
         }
 
         void ButtonAdd_Click(object sender, RoutedEventArgs e)
@@ -174,7 +175,8 @@ namespace openPDCManager.ModalDialogs
             try
             {
                 m_measurementList = new ObservableCollection<Measurement>(CommonFunctions.GetMeasurementsForOutputStream(null, nodeID, outputStreamID));
-                ListBoxMeasurementList.ItemsSource = m_measurementList;
+                //ListBoxMeasurementList.ItemsSource = m_measurementList;
+                DataPagerMeasurements.ItemsSource = new ObservableCollection<object>(m_measurementList);
             }
             catch (Exception ex)
             {

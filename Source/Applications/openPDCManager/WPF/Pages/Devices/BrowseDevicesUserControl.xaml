@@ -1,7 +1,8 @@
 ﻿<UserControl x:Class="openPDCManager.Pages.Devices.BrowseDevicesUserControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:DefaultButton="clr-namespace:openPDCManager.Utilities"       
+    xmlns:DefaultButton="clr-namespace:openPDCManager.Utilities"     
+    xmlns:cc="clr-namespace:openPDCManager.UserControls.CustomControls"
     >
    <Grid x:Name="GridBrowseDevices">        
         <Border Style="{StaticResource PortletBorderStyle}">
@@ -59,9 +60,9 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0" Height="730">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0" Height="700">
                         <ScrollViewer.Content>
-                            <ListBox x:Name="ListBoxDeviceList" Margin="0" Padding="0">
+                            <ListBox x:Name="ListBoxDeviceList" Margin="0" Padding="0" ItemsSource="{Binding ElementName=DataPagerDevices, Path=CurrentPage}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -115,7 +116,9 @@
                         </ScrollViewer.Content>
                     </ScrollViewer>
                 </Border>
-                
+                <Border Background="{StaticResource PortletBackgroundBrush}">
+                    <cc:DataPager x:Name="DataPagerDevices" ItemsPerPage="30" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </Border>
             </StackPanel>
         </Border>
     </Grid>

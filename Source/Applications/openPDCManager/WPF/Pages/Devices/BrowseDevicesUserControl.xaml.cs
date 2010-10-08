@@ -34,6 +34,7 @@ using openPDCManager.Pages.Manage;
 using openPDCManager.UserControls.CommonControls;
 using openPDCManager.Utilities;
 using openPDCManager.Data.ServiceCommunication;
+using System.Collections.ObjectModel;
 
 namespace openPDCManager.Pages.Devices
 {
@@ -336,7 +337,8 @@ namespace openPDCManager.Pages.Devices
 
         void BindData(List<Device> deviceList)
         {            
-            ListBoxDeviceList.ItemsSource = deviceList;            
+            //ListBoxDeviceList.ItemsSource = deviceList;            
+            DataPagerDevices.ItemsSource = new ObservableCollection<Object>(deviceList);
         }
 
         #endregion

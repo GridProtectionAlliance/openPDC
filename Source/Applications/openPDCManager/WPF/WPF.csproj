@@ -184,6 +184,9 @@
     <Compile Include="UserControls\Configurator\ConfigurationCreator.xaml.cs">
       <DependentUpon>ConfigurationCreator.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\CustomControls\DataPager.xaml.cs">
+      <DependentUpon>DataPager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\IsolatedStorageManager.cs" />
     <Page Include="..\Silverlight\Resources\CommonResource.xaml">
       <Link>Resources\CommonResource.xaml</Link>
@@ -514,6 +517,10 @@
     <Page Include="UserControls\Configurator\ConfigurationCreator.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CustomControls\DataPager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

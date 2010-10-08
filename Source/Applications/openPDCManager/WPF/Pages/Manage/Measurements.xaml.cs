@@ -33,6 +33,7 @@ using openPDCManager.Data.Entities;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using openPDCManager.Data.ServiceCommunication;
+using System.Collections.ObjectModel;
 
 namespace openPDCManager.Pages.Manage
 {
@@ -48,8 +49,7 @@ namespace openPDCManager.Pages.Manage
         int m_deviceID = 0;
         ActivityWindow m_activityWindow;
         List<Measurement> m_measurementList;
-        bool m_bindingData;
-
+        
         #endregion
 
         #region [ Constructor ]
@@ -319,15 +319,12 @@ namespace openPDCManager.Pages.Manage
         void GetMeasurementsByDevice()
         {
             try
-            {
-                m_bindingData = false;
+            {                
                 m_measurementList = CommonFunctions.GetMeasurementsByDevice(null, m_deviceID);
-                if (m_measurementList.Count > 30)
-                    m_bindingData = true;
-
+             
                 BindData(m_measurementList);
                 
-                if (!m_bindingData && m_activityWindow != null)
+                if (m_activityWindow != null)
                     m_activityWindow.Close();
 
             }
@@ -363,16 +360,12 @@ namespace openPDCManager.Pages.Manage
         void GetMeasurementList()
         {
             try
-            {
-                m_bindingData = false;
+            {                
                 m_measurementList = CommonFunctions.GetMeasurementList(null, ((App)Application.Current).NodeValue);
-
-                if (m_measurementList.Count > 30)
-                    m_bindingData = true;
              
                 BindData(m_measurementList);
 
-                if (!m_bindingData && m_activityWindow != null)
+                if (m_activityWindow != null)
                     m_activityWindow.Close();
             }
             catch (Exception ex)
@@ -529,10 +522,10 @@ namespace openPDCManager.Pages.Manage
 
         void BindData(List<Measurement> measurementList)
         {
-            ListBoxMeasurementList.ItemsSource = measurementList;
+            //ListBoxMeasurementList.ItemsSource = measurementList;
+            DataPagerMeasurements.ItemsSource = new ObservableCollection<Object>(measurementList);
             if (ListBoxMeasurementList.Items.Count > 0)
-                ListBoxMeasurementList.SelectedIndex = 0;
-            //ClearForm();
+                ListBoxMeasurementList.SelectedIndex = 0;            
         }
 
         #endregion
