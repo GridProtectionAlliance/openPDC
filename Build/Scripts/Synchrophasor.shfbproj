@@ -22,9 +22,10 @@
     <MissingTags>Summary, Parameter, Returns, AutoDocumentCtors, Namespace, TypeParameter</MissingTags>
     <DocumentationSources>
       <DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\HistorianAdapters.dll" />
-<DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\HistorianAdapters.xml" />
-<DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\TVA.PhasorProtocols.dll" />
-<DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\TVA.PhasorProtocols.xml" /></DocumentationSources>
+      <DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\HistorianAdapters.xml" />
+      <DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\TVA.PhasorProtocols.dll" />
+      <DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\TVA.PhasorProtocols.xml" />
+    </DocumentationSources>
     <HelpFileFormat>Help1xAndHelp2x</HelpFileFormat>
     <CopyrightHref>http://openpdc.codeplex.com/license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2010, Grid Protection Alliance.  All Rights Reserved.</CopyrightText>

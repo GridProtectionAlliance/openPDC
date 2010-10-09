@@ -12,11 +12,11 @@
 ::       Generated original version of source code.
 ::  10/20/2009 - Pinal C. Patel
 ::       Modified to force a build and suppress archives from being published to public locations.
-::  09/21/2010 - Mihir Brahmbhatt
-::		 Change Framework path from v3.5 to v4.0
+::  10/03/2010 - Pinal C. Patel
+::       Updated to use MSBuild 4.0.
 ::
 ::*******************************************************************************************************
 
 @ECHO OFF
-C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\msbuild.exe Synchrophasor.buildproj /p:ForceBuild=true;SkipPublicArchive=true;SkipHelpFiles=true;SkipSigning=true /l:FileLogger,Microsoft.Build.Engine;logfile=Synchrophasor.output
+C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\msbuild.exe Synchrophasor.buildproj /p:ForceBuild=true /l:FileLogger,Microsoft.Build.Engine;logfile=Synchrophasor.output
 PAUSE

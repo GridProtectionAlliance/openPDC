@@ -32,19 +32,15 @@
 **       Modified the build to output a set of signed class libraries by leveraging the newly added
 **       ProjectsToBuild.Properties property.
 **       Made building of strong-named class libraries optional using SkipSigning property.
-** 09/15/2010 - Mihir Brahmbhatt
-**       Modified the build script for Framework v4.0 and change BuildDeployFolder and 
-**       ArchiveDestinations path to gpaweb shared folder.
-** 09/21/2010 - Mihir Brahmbhatt
-**       Update to include openPDCManager projects to versioning 
+**  10/09/2010 - Pinal C. Patel
+**       Modified BeforeBuildProjects target to compile 32-bit install package of openPDC.
 **
 *******************************************************************************************************
 -->
-<!--
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
--->
+
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\..\Contributor Resources\Tools\Build Tools\Master Build\Master.buildproj"/>
+
+  <Import Project="..\..\..\..\Contributor Resources\Tools\Build Tools\Master Build\MasterBuild.buildproj"/>
 
   <Target Name="BeforePrepareSettings">
     <PropertyGroup>
@@ -57,18 +53,18 @@
     <PropertyGroup>
       <!-- Project specific settings. -->
       <ProjectSolution>$(LocalFolder)\Source\$(ProjectName).sln</ProjectSolution>
-      <!--<BuildDeployFolder Condition="'$(BuildDeployFolder)' == ''">\\rgocopgfs1\Applications\openPDC\$(ProjectName)\Beta</BuildDeployFolder>-->
-      <BuildDeployFolder Condition="'$(BuildDeployFolder)' == ''">\\gpaweb\NightlyBuilds\openPDC\$(ProjectName)\Beta</BuildDeployFolder>
-      <Buildx86DeployFolder Condition="'$(Buildx86DeployFolder)' == ''">\\gpaweb\NightlyBuilds\openPDC\x86Version\$(ProjectName)\Beta</Buildx86DeployFolder>
+      <BuildDeployFolder Condition="'$(BuildDeployFolder)' == ''">\\GPAWEB\NightlyBuilds\openPDC\Beta\</BuildDeployFolder>
     </PropertyGroup>
   </Target>
 
   <Target Name="BeforeVersionSource">
     <ItemGroup>
-      <!-- List of files to be versioned. except OpenPDC Manage Data project -->
-      <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*" Exclude="$(LocalFolder)\Source\Applications\openPDCManager\Data\**\AssemblyInfo.*">
-      <!--<FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*"> -->
+      <!-- List of files to be versioned. -->
+      <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*">
         <VersionRegex>(?'BeforeVersion'AssemblyVersion\(%22)(?'CoreVersion'(\*|\d+)\.)+(\*|\d+)(?'AfterVersion'%22\))</VersionRegex>
+      </FilesToVersion>
+      <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*">
+        <VersionRegex>(?'BeforeVersion'AssemblyFileVersion\(%22)(?'CoreVersion'(\*|\d+)\.)+(\*|\d+)(?'AfterVersion'%22\))</VersionRegex>
       </FilesToVersion>
       <!--
       <FilesToVersion Include="$(LocalFolder)\Source\**\*.vdproj">
@@ -78,59 +74,22 @@
       -->
     </ItemGroup>
   </Target>
-  <!-- x86 32-bit Build-->
-  <Target Name="Beforex86BuildProjects">
-    <ItemGroup>
-      <!-- List of projects to build. -->
-      <ProjectsToBuild Include="$(ProjectSolution)"/>
-      <ProjectsToBuild Include="$(LocalFolder)\Source\Libraries\**\*.csproj" Exclude="$(LocalFolder)\Source\Libraries\**\*.Test.csproj" Condition="'$(SkipSigning)' == ''">
-        <Properties>SignAssembly=true;AssemblyOriginatorKeyFile=$(LocalFolder)\Source\openPDC.snk;OutputPath=$(BuildOutputFolder)\Libraries\Signed</Properties>
-      </ProjectsToBuild>
-      <ProjectsToBuild Include="$(LocalFolder)\Build\Scripts\$(ProjectName).shfbproj" Condition="'$(SkipHelpFiles)' == ''"/>
-      <!-- List of installs to build. -->
-      <InstallsToBuild Include="$(LocalFolder)\Source\**\*.vdproj"/>
-    </ItemGroup>
-  </Target>
 
-  <Target Name="Beforex86ExecuteUnitTests">
-    <ItemGroup>
-      <!-- List of unit test assemblies. -->
-      <UnitTestAssemblies Include="$(BuildOutputFolder)\**\*.Test.dll"/>
-    </ItemGroup>
-  </Target>
-
-  <Target Name="Afterx86ExecuteUnitTests">
-    <!-- Clean-up after all unit tests have been executed and passed. -->
-    <RemoveDir Directories="%(UnitTestAssemblies.RootDir)%(UnitTestAssemblies.Directory)" Condition="Exists('%(UnitTestAssemblies.RootDir)%(UnitTestAssemblies.Directory)')"/>
-  </Target>
-
-  <Target Name="Beforex86DeployBuild">
-    <ItemGroup>
-      <!-- List of binaries to archive. -->
-      <Binariesx86ToArchive Include="$(BuildOutputFolder)\**\*.*"/>
-      <!-- List of installs to archive. -->
-      <Installsx86ToArchive Include="$(BuildOutputFolder)\**\*.msi"/>
-      <!-- Destinations of archive files (*.zip). -->
-      <Archivex86Destinations Include="$(Buildx86DeployFolder)"/>
-      <!--<ArchiveDestinations Include="\\socppmuweb\naspi\openPDC;\\rocppmuweb\naspi\openPDC" Condition="'$(SkipPublicArchive)' != 'true'"/> -->
-      <!--<ArchiveDestinations Include="\\gpaweb\NightlyBuilds\openPDCArchive;" Condition="'$(SkipPublicArchive)' != 'true'"/> -->
-    </ItemGroup>
-  </Target>
-  <!-- x86 32-bit Build End-->
-  
   <Target Name="BeforeBuildProjects">
     <ItemGroup>
       <!-- List of projects to build. -->
       <ProjectsToBuild Include="$(ProjectSolution)"/>
-      <ProjectsToBuild Include="$(LocalFolder)\Source\Libraries\**\*.csproj" Exclude="$(LocalFolder)\Source\Libraries\**\*.Test.csproj" Condition="'$(SkipSigning)' == ''">
-        <Properties>SignAssembly=true;AssemblyOriginatorKeyFile=$(LocalFolder)\Source\openPDC.snk;OutputPath=$(BuildOutputFolder)\Libraries\Signed</Properties>
-      </ProjectsToBuild>
       <ProjectsToBuild Include="$(LocalFolder)\Build\Scripts\$(ProjectName).shfbproj" Condition="'$(SkipHelpFiles)' == ''"/>
       <!-- List of installs to build. -->
-      <InstallsToBuild Include="$(LocalFolder)\Source\**\*.vdproj"/>
+      <InstallsToBuild Include="$(LocalFolder)\Source\**\*.vdproj" Exclude="$(LocalFolder)\Source\**\openPDCSetup.vdproj"/>
+      <x86InstallsToBuild Include="$(LocalFolder)\Source\**\openPDCSetup.vdproj"/>
     </ItemGroup>
+    <!-- Build 32-installs first and cleanup. -->
+    <Message Text="Compiling installs (32-bit)..."/>
+    <Exec Command="%22$(VisualStudio)%22 %22$(ProjectSolution)%22 /Project %22%(x86InstallsToBuild.FullPath)%22 /Build %22$(BuildFlavor)|x86%22"/>
+    <Exec Command="%22$(VisualStudio)%22 %22$(ProjectSolution)%22 /Clean %22$(BuildFlavor)|x86%22"/>
   </Target>
-  
+
   <Target Name="BeforeExecuteUnitTests">
     <ItemGroup>
       <!-- List of unit test assemblies. -->
@@ -143,50 +102,15 @@
     <RemoveDir Directories="%(UnitTestAssemblies.RootDir)%(UnitTestAssemblies.Directory)" Condition="Exists('%(UnitTestAssemblies.RootDir)%(UnitTestAssemblies.Directory)')"/>
   </Target>
 
-  <Target Name="BeforeCleanBuild">
-    <!-- Before clean all files it copy setup to temp -->
-    <Copy SourceFiles="$(BuildOutputFolder)\Setup\setup.exe" DestinationFiles="$(BuildOutputFolder)\Setup\temp.exe" ContinueOnError="true"/>
-  </Target>
-
-  <Target Name="AfterCleanBuild">
-    <!-- After clean all files it copy temp to setup and then remove temp.exe-->
-    <Copy SourceFiles="$(BuildOutputFolder)\Setup\temp.exe" DestinationFiles="$(BuildOutputFolder)\Setup\setup.exe" ContinueOnError="true"/>
-    <Delete Files="$(BuildOutputFolder)\Setup\temp.exe" ContinueOnError="true"/>
-  </Target>
-  
   <Target Name="BeforeDeployBuild">
-    
-    <!-- Copy x86 (32-bit) version setup file to current output folder-->
-    <Message Text="Copy 32bit setup version to BuildOutput folder..."/>
-    <Copy SourceFiles="$(Buildx86DeployFolder)\Setup\Installers\openPDCSetup.msi" DestinationFolder="$(BuildOutputFolder)\Setup\Installers\" ContinueOnError="true"/>
-    <Message Text="Remove 32bit version..."/>
-    <Folder TaskAction="RemoveContent" Path="$(Buildx86DeployFolder)"/>
-    <!--Copy Complete-->    
-  </Target>
-
-  <Target Name="BeforeArchiveBuild">
-    <Message Text="Copy msi files to installer folder..."/>
-    <ItemGroup>
-      <!-- List of installs to archive. -->
-      <FilesToArchive Include="$(BuildDeployFolder)\Applications\openPDCManager\*.msi"/>
-    </ItemGroup>
-    <!--Copy OpenPDCManage msi to Setup folder and then delete files from application folders -->
-    <Copy SourceFiles="@(FilesToArchive)" DestinationFolder="$(BuildDeployFolder)\Setup\Installers" ContinueOnError="true"/>
-    <Message Text="Remove empty files $(BuildDeployFolder)\Applications\openPDCManager\*.msi..."/>
-    <Delete Files="@(FilesToArchive)" ContinueOnError="true"/>
-    
     <ItemGroup>
       <!-- List of binaries to archive. -->
-      <BinariesToArchive Include="$(BuildDeployFolder)\**\*.*"/>
+      <BinariesToArchive Include="$(BuildOutputFolder)\**\*.*"/>
       <!-- List of installs to archive. -->
-      <InstallsToArchive Include="$(BuildDeployFolder)\**\*.msi"/>
-      <InstallsToArchive Include="$(BuildDeployFolder)\**\setup.exe"/>
-      <InstallsToArchive Include="$(BuildDeployFolder)\**\Setup\*.txt"/>
-      <InstallsToArchive Include="$(BuildDeployFolder)\**\Setup\*.inf"/>
-      <InstallsToArchive Include="$(BuildDeployFolder)\**\System\*.ico"/>
+      <InstallsToArchive Include="$(BuildOutputFolder)\Setup\**\*.*"/>
       <!-- Destinations of archive files (*.zip). -->
       <ArchiveDestinations Include="$(BuildDeployFolder)"/>
     </ItemGroup>
   </Target>
-  
+
 </Project>
