@@ -36,6 +36,7 @@
 **       Modified BeforeBuildProjects target to compile 32-bit install package of openPDC.
 **       Overwrote BeforeCleanBuild target to exclude main setup application from the list of build
 **       output files to be deleted.
+**       Enabled versioning of setup projects.
 **
 *******************************************************************************************************
 -->
@@ -64,16 +65,16 @@
       <!-- List of files to be versioned. -->
       <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*">
         <VersionRegex>(?'BeforeVersion'AssemblyVersion\(%22)(?'CoreVersion'(\*|\d+)\.)+(\*|\d+)(?'AfterVersion'%22\))</VersionRegex>
+        <VersionPrecision>4</VersionPrecision>
       </FilesToVersion>
       <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*">
         <VersionRegex>(?'BeforeVersion'AssemblyFileVersion\(%22)(?'CoreVersion'(\*|\d+)\.)+(\*|\d+)(?'AfterVersion'%22\))</VersionRegex>
+        <VersionPrecision>4</VersionPrecision>
       </FilesToVersion>
-      <!--
       <FilesToVersion Include="$(LocalFolder)\Source\**\*.vdproj">
         <VersionRegex>(?'BeforeVersion'%22ProductVersion%22\s=\s%228:)(?'CoreVersion'(\d+)\.)+(\d+)(?'AfterVersion'%22)</VersionRegex>
         <VersionPrecision>3</VersionPrecision>
       </FilesToVersion>
-      -->
     </ItemGroup>
   </Target>
 
