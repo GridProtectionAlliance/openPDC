@@ -833,7 +833,7 @@ namespace TVA.PhasorProtocols
                     cell.PhasorCoordinateFormat = (CoordinateFormat)Enum.Parse(typeof(CoordinateFormat), string.IsNullOrEmpty(formatString) ? m_coordinateFormat.ToString() : formatString);
 
                     // Assign device identification labels
-                    cell.IDLabel = deviceRow["Name"].ToString().Trim();
+                    cell.IDLabel = deviceRow["Name"].ToString().TruncateRight(cell.IDLabelLength).Trim();
                     cell.StationName = deviceRow["Acronym"].ToString().TruncateRight(cell.MaximumStationNameLength).Trim();
 
                     // Define all the phasors configured for this device
@@ -950,7 +950,7 @@ namespace TVA.PhasorProtocols
                         // Define measurement key
                         measurementKey = new MeasurementKey(uint.Parse(measurementRow["PointID"].ToString()), measurementRow["Historian"].ToString());
 
-                        // It is possible, but not as common, that a measurement will have multiple destinations
+                        // It is possible, but not as common, that a single measurement will have multiple destinations
                         // within an outgoing data stream frame, hence the following
                         if (m_signalReferences.TryGetValue(measurementKey, out signals))
                         {

@@ -639,7 +639,7 @@ namespace TVA.PhasorProtocols
         private int m_frameRateTotal;
         private int m_byteRateTotal;
         private long m_totalBytesReceived;
-        private long m_configuredFrameRate;
+        private int m_configuredFrameRate;
         private double m_calculatedFrameRate;
         private double m_calculatedByteRate;
         private string m_sourceName;
@@ -1271,7 +1271,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets the configured frame rate as reported by the connected device.
         /// </summary>
-        public long ConfiguredFrameRate
+        public int ConfiguredFrameRate
         {
             get
             {

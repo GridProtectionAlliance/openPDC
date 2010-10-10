@@ -373,7 +373,7 @@ namespace TVA.PhasorProtocols
             get
             {
                 if (m_frameParser != null)
-                    return (int)m_frameParser.ConfiguredFrameRate;
+                    return m_frameParser.ConfiguredFrameRate;
 
                 return 0;
             }
@@ -483,15 +483,15 @@ namespace TVA.PhasorProtocols
                     if (m_frameParser != null && m_frameParser.ConfigurationFrame != null)
                     {
                         // Attempt to lookup by label (if defined), then by ID code
-                        if ((m_labelDefinedDevices != null && m_labelDefinedDevices.ContainsKey(definedDevice.StationName.ToNonNullString()) && 
-                            m_frameParser.ConfigurationFrame.Cells.TryGetByIDLabel(definedDevice.StationName.ToNonNullString("undefined"), out parsedDevice)) ||
+                        if ((m_labelDefinedDevices != null && definedDevice.StationName != null && 
+                            m_frameParser.ConfigurationFrame.Cells.TryGetByStationName(definedDevice.StationName, out parsedDevice)) ||
                             m_frameParser.ConfigurationFrame.Cells.TryGetByIDCode(definedDevice.IDCode, out parsedDevice))
                                 stationName = parsedDevice.StationName;
                     }
 
                     // We will default to defined name if parsed name is unavailable
-                    if (string.IsNullOrEmpty(stationName))
-                        stationName = "[" + definedDevice.IDLabel + "]";
+                    if (string.IsNullOrWhiteSpace(stationName))
+                        stationName = "[" + definedDevice.StationName.NotEmpty(definedDevice.IDLabel.NotEmpty("UNDEF") + ":" + definedDevice.IDCode) + "]";
 
                     status.Append(stationName.TruncateRight(22).PadRight(22));
                     status.Append(' ');
@@ -748,6 +748,7 @@ namespace TVA.PhasorProtocols
         private void LoadInputDevices()
         {
             ConfigurationCell definedDevice;
+            string deviceName;
 
             m_definedDevices = new Dictionary<ushort, ConfigurationCell>();
 
@@ -768,7 +769,9 @@ namespace TVA.PhasorProtocols
                 {
                     // Create new configuration cell parsing needed ID code and label from input stream configuration
                     definedDevice = new ConfigurationCell(ushort.Parse(row["AccessID"].ToString()));
-                    definedDevice.StationName = row["Acronym"].ToNonNullString("[undefined]").Trim();
+                    deviceName = row["Acronym"].ToNonNullString("[undefined]").Trim();
+                    definedDevice.StationName = deviceName.TruncateRight(definedDevice.MaximumStationNameLength);
+                    definedDevice.IDLabel = deviceName.TruncateRight(definedDevice.IDLabelLength);
                     definedDevice.Tag = uint.Parse(row["ID"].ToString());
                     definedDevice.Source = this;
                     devicedAdded = false;
@@ -803,7 +806,7 @@ namespace TVA.PhasorProtocols
                         deviceStatus.Append("   Device ");
                         deviceStatus.Append((index++).ToString("00"));
                         deviceStatus.Append(": ");
-                        deviceStatus.Append(definedDevice.IDLabel);
+                        deviceStatus.Append(definedDevice.StationName);
                         deviceStatus.Append(" (");
                         deviceStatus.Append(definedDevice.IDCode);
                         deviceStatus.Append(')');
@@ -820,7 +823,9 @@ namespace TVA.PhasorProtocols
             {
                 // Making a connection to a single device
                 definedDevice = new ConfigurationCell(m_accessID);
-                definedDevice.IDLabel = Name;
+                deviceName = Name.ToNonNullString("[undefined]").Trim();
+                definedDevice.StationName = deviceName.TruncateRight(definedDevice.MaximumStationNameLength);
+                definedDevice.IDLabel = deviceName.TruncateRight(definedDevice.IDLabelLength);
                 definedDevice.Tag = ID;
                 definedDevice.Source = this;
                 m_definedDevices.Add(definedDevice.IDCode, definedDevice);
@@ -915,7 +920,7 @@ namespace TVA.PhasorProtocols
         /// Resets the statistics of the specified device associated with this connection.
         /// </summary>
         /// <param name="idCode">Integer ID code of device on which to reset statistics.</param>
-        [AdapterCommand("Resets the statistics of the device with the specified idCode.")]
+        [AdapterCommand("Resets the statistics of the device with the specified ID code.")]
         public void ResetDeviceStatistics(ushort idCode)
         {
             if (m_definedDevices != null)
