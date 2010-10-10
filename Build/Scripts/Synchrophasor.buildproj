@@ -34,6 +34,8 @@
 **       Made building of strong-named class libraries optional using SkipSigning property.
 **  10/09/2010 - Pinal C. Patel
 **       Modified BeforeBuildProjects target to compile 32-bit install package of openPDC.
+**       Overwrote BeforeCleanBuild target to exclude main setup application from the list of build
+**       output files to be deleted.
 **
 *******************************************************************************************************
 -->
@@ -102,6 +104,13 @@
     <RemoveDir Directories="%(UnitTestAssemblies.RootDir)%(UnitTestAssemblies.Directory)" Condition="Exists('%(UnitTestAssemblies.RootDir)%(UnitTestAssemblies.Directory)')"/>
   </Target>
 
+  <Target Name="BeforeCleanBuild">
+    <ItemGroup>
+      <!-- Exclude the main setup application from the list of build output files to be deleted. -->
+      <FilesToDelete Remove="$(BuildOutputFolder)\Setup\Setup.exe"/>
+    </ItemGroup>
+  </Target>
+  
   <Target Name="BeforeDeployBuild">
     <ItemGroup>
       <!-- List of binaries to archive. -->
