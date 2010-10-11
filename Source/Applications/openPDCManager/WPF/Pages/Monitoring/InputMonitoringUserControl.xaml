@@ -20,11 +20,11 @@
                                 <converter:StringToBooleanConverter x:Key="stringToBooleanConverter" />                                
                             </StackPanel.Resources>                            
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                <CheckBox HorizontalAlignment="Left" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}" Content="{Binding Path=SignalReference}" ToolTip="{Binding Path=Description}" Tag="{Binding Path=PointID}" IsEnabled="{Binding Path=SignalAcronym, Converter={StaticResource stringToBooleanConverter}}" Width="{StaticResource LargeItemSize}" 
-                                               Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"/>                                
+                                <CheckBox HorizontalAlignment="Left" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}" Content="{Binding Path=SignalReference}" ToolTip="{Binding Path=Description}" Tag="{Binding Path=PointID}" IsEnabled="{Binding Path=SignalAcronym, Converter={StaticResource stringToBooleanConverter}}" Width="175" 
+                                               Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked" ToolTipService.ShowOnDisabled="True"/>                                
                             </Border>                                                        
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                <TextBlock Text="{Binding Path=CurrentValue}" Width="{StaticResource SmallItemSize}" Foreground="{Binding CurrentQuality, Converter={StaticResource stringToColorConverter}}" ToolTipService.ToolTip="{Binding Path=CurrentTimeTag}" TextAlignment="Center" Padding="1"/>
+                                <TextBlock Text="{Binding Path=CurrentValue}" Width="{StaticResource SmallerItemSize}" Foreground="{Binding CurrentQuality, Converter={StaticResource stringToColorConverter}}" ToolTipService.ToolTip="{Binding Path=CurrentTimeTag}" TextAlignment="Center" Padding="1"/>
                             </Border>
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                 <TextBlock Text="{Binding Path=EngineeringUnits}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Left" Padding="1"/>
