@@ -132,8 +132,9 @@ namespace openPDCManager.UserControls.PopupControls
 
         void OutputStreamDevicePhasors_Loaded(object sender, RoutedEventArgs e)
         {   
-            ComboboxPhase.Items.Add(new KeyValuePair<string, string>("+", "Positive"));
-            ComboboxPhase.Items.Add(new KeyValuePair<string, string>("-", "Negative"));
+            ComboboxPhase.Items.Add(new KeyValuePair<string, string>("+", "Positive Sequence"));
+            ComboboxPhase.Items.Add(new KeyValuePair<string, string>("-", "Negative Sequence"));
+            ComboboxPhase.Items.Add(new KeyValuePair<string, string>("0", "Zero Sequence"));
             ComboboxPhase.Items.Add(new KeyValuePair<string, string>("A", "Phase A"));
             ComboboxPhase.Items.Add(new KeyValuePair<string, string>("B", "Phase B"));
             ComboboxPhase.Items.Add(new KeyValuePair<string, string>("C", "Phase C"));

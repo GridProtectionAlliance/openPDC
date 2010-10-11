@@ -51,9 +51,11 @@ namespace openPDCManager.Converters
                 return "";
 
             if (value.ToString() == "+")
-                return "Positive";
+                return "Positive Sequence";
             else if (value.ToString() == "-")
-                return "Negative";
+                return "Negative Sequence";
+            else if (value.ToString() == "0")
+                return "Zero Sequence";
             else if (value.ToString() == "A")
                 return "Phase A";
             else if (value.ToString() == "B")

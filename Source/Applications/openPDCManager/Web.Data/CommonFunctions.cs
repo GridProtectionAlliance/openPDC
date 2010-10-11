@@ -1768,8 +1768,9 @@ namespace openPDCManager.Data
                                                     LoadOrder = item.Field<int>("LoadOrder"),
                                                     ScalingValue = Convert.ToInt32(item.Field<object>("ScalingValue")),
                                                     PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
-                                                    PhaseType = item.Field<string>("Phase") == "+" ? "Positive" : item.Field<string>("Phase") == "-" ? "Negative" :
-                                                                item.Field<string>("Phase") == "A" ? "Phase A" : item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
+                                                    PhaseType = item.Field<string>("Phase") == "+" ? "Positive Sequence" : item.Field<string>("Phase") == "-" ? "Negative Sequence" :
+                                                                item.Field<string>("Phase") == "0" ? "Zero Sequence" : item.Field<string>("Phase") == "A" ? "Phase A" : 
+                                                                item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
                                                 }).ToList();
                 return outputStreamDevicePhasorList;
             }			
@@ -2750,7 +2751,7 @@ namespace openPDCManager.Data
                     measurement.SignalReference = addedDevice.Acronym + "-" + row["Suffix"].ToString();
                     measurement.Adder = 0.0d;
                     measurement.Multiplier = 1.0d;
-                    measurement.Description = addedDevice.Name + " " + addedDevice.VendorDeviceName + " " + row["Name"].ToString();
+                    measurement.Description = addedDevice.Name + " " + addedDevice.VendorDeviceName + " " + row["Name"].ToString();                    
                     measurement.Enabled = true;
                     if (isNew)	//if it is a new device then measurements are new too. So don't worry about updating them.
                         SaveMeasurement(connection, measurement, true);
@@ -3138,8 +3139,8 @@ namespace openPDCManager.Data
                                   DestinationPhasorLabel = item.Field<string>("DestinationPhasorLabel"),
                                   DeviceAcronym = item.Field<string>("DeviceAcronym"),
                                   PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
-                                  PhaseType = item.Field<string>("Phase") == "+" ? "Positive" : item.Field<string>("Phase") == "-" ? "Negative" :
-                                              item.Field<string>("Phase") == "A" ? "Phase A" : item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
+                                  PhaseType = item.Field<string>("Phase") == "+" ? "Positive Sequence" : item.Field<string>("Phase") == "-" ? "Negative Sequence" :
+                                    item.Field<string>("Phase") == "0" ? "Zero Sequence" : item.Field<string>("Phase") == "A" ? "Phase A" : item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
                               }).ToList();
                 return phasorList;
             }			
@@ -3483,7 +3484,7 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@signalReference", measurement.SignalReference));
                 command.Parameters.Add(AddWithValue(command, "@adder", measurement.Adder));
                 command.Parameters.Add(AddWithValue(command, "@multiplier", measurement.Multiplier));
-                command.Parameters.Add(AddWithValue(command, "@description", measurement.Description));
+                command.Parameters.Add(AddWithValue(command, "@description", measurement.Description.RemoveDuplicateWhiteSpace()));
                 command.Parameters.Add(AddWithValue(command, "@enabled", measurement.Enabled));							
 
                 if (!isNew)
