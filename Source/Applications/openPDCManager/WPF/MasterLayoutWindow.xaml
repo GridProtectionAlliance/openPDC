@@ -110,7 +110,7 @@
                                         </MenuItem>
                                         -->
                                         <Separator />
-                                        <MenuItem Header="Other Devices" Style="{StaticResource MainSubMenuItemStyle}" x:Name="OtherDevices" Click="MenuItem_Click">
+                                        <MenuItem Header="Planned Devices" Style="{StaticResource MainSubMenuItemStyle}" x:Name="OtherDevices" Click="MenuItem_Click">
                                             <MenuItem.Icon>
                                                 <Image Source="images/List.png" Height="16" Width="16" />
                                             </MenuItem.Icon>

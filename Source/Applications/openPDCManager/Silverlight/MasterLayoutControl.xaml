@@ -88,7 +88,7 @@
                                         </igMenu:XamWebMenuItem.Icon>
                                     </igMenu:XamWebMenuItem>
                                     <igMenu:XamWebSeparator />
-                                    <igMenu:XamWebMenuItem Header="Other Devices" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Devices/OtherDevices.xaml">
+                                    <igMenu:XamWebMenuItem Header="Planned Devices" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Devices/OtherDevices.xaml">
                                         <igMenu:XamWebMenuItem.Icon>
                                             <Image Source="Images/List.png" />
                                         </igMenu:XamWebMenuItem.Icon>

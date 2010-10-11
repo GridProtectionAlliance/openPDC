@@ -4,7 +4,7 @@
     >
     <Border Style="{StaticResource PortletBorderStyle}">
         <StackPanel Orientation="Vertical">
-            <TextBlock Text="Manage Other Devices" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+            <TextBlock Text="Manage Planned Devices" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
             <Border Background="{StaticResource PortletBackgroundBrush}">
                 <Grid x:Name="GridOtherDeviceDetail" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5">
                     <Grid.RowDefinitions>
