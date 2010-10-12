@@ -477,7 +477,7 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.ShowPopup();
             }            
         }
-
+        
 #endregion
     }
 }

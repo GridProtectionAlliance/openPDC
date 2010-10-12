@@ -230,7 +230,7 @@
                                                             <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Include, Mode=TwoWay }" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" />
                                                         </Border>
                                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                            <TextBox Text="{Binding Path=Acronym, Mode=TwoWay}" Width="{StaticResource SmallerItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
+                                                            <TextBox Text="{Binding Path=Acronym, Mode=TwoWay}" Width="{StaticResource SmallerItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center" TextChanged="TextBox_TextChanged"/>
                                                         </Border>
                                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                             <TextBox Text="{Binding Path=Name, Mode=TwoWay}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center" />

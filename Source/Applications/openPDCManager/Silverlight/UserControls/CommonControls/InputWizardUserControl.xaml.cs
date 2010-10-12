@@ -43,6 +43,7 @@ using System.Windows.Media.Imaging;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Xml.Serialization;
+using System.Windows.Media;
 #endif
 
 namespace openPDCManager.UserControls.CommonControls
@@ -722,6 +723,23 @@ namespace openPDCManager.UserControls.CommonControls
         }
         
         #endregion
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+#if !SILVERLIGHT
+
+            try
+            {
+                TextBox textBoxAcronym = (TextBox)sender;
+
+                if (CommonFunctions.GetDeviceByAcronym(null, textBoxAcronym.Text) == null)
+                    ((textBoxAcronym.Parent as Border).Parent as StackPanel).Background = new SolidColorBrush(Color.FromArgb(00, 255, 255, 255));
+                else
+                    ((textBoxAcronym.Parent as Border).Parent as StackPanel).Background = new SolidColorBrush(Color.FromArgb(155, 10, 255, 25));
+            }
+            catch { }
+#endif
+        }
         
     }
 }
