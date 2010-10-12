@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace ConfigurationSetupUtility
+namespace ConfigurationSetupUtility.Screens
 {
     /// <summary>
     /// Interaction logic for WebServiceSetupScreen.xaml
@@ -55,14 +55,14 @@ namespace ConfigurationSetupUtility
         {
             get
             {
-                IScreen readyScreen;
+                IScreen applyChangesScreen;
 
-                if (!State.ContainsKey("readyScreen"))
-                    State.Add("readyScreen", new SetupReadyScreen());
+                if (!State.ContainsKey("applyChangesScreen"))
+                    State.Add("applyChangesScreen", new ApplyConfigurationChangesScreen());
 
-                readyScreen = State["readyScreen"] as IScreen;
+                applyChangesScreen = State["applyChangesScreen"] as IScreen;
 
-                return readyScreen;
+                return applyChangesScreen;
             }
         }
 

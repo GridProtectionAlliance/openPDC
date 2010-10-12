@@ -1,5 +1,5 @@
 ﻿//******************************************************************************************************
-//  WelcomePage.xaml.cs - Gbtc
+//  ApplyConfigurationChangesScreen.xaml.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -16,31 +16,30 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  09/07/2010 - Stephen C. Wills
+//  10/12/2010 - Stephen C. Wills
 //       Generated original version of source code.
-//  09/19/2010 - J. Ritchie Carroll
-//       Added code to cache 64-bit installation state when passed as a command line argument
 //
 //******************************************************************************************************
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Win32;
 
 namespace ConfigurationSetupUtility.Screens
 {
     /// <summary>
-    /// Interaction logic for WelcomePage.xaml
+    /// Interaction logic for ApplyConfigurationChangesScreen.xaml
     /// </summary>
-    public partial class WelcomeScreen : UserControl, IScreen
+    public partial class ApplyConfigurationChangesScreen : UserControl, IScreen
     {
 
         #region [ Members ]
 
         // Fields
 
-        private IScreen m_nextPage;
+        private IScreen m_nextScreen;
         private Dictionary<string, object> m_state;
 
         #endregion
@@ -48,12 +47,12 @@ namespace ConfigurationSetupUtility.Screens
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new instance of the <see cref="WelcomeScreen"/> class.
+        /// Creates a new instance of the <see cref="ApplyConfigurationChangesScreen"/> class.
         /// </summary>
-        public WelcomeScreen()
+        public ApplyConfigurationChangesScreen()
         {
             InitializeComponent();
-            m_nextPage = new ExistingConfigurationScreen();
+            m_nextScreen = new SetupReadyScreen();
         }
 
         #endregion
@@ -67,7 +66,7 @@ namespace ConfigurationSetupUtility.Screens
         {
             get
             {
-                return m_nextPage;
+                return m_nextScreen;
             }
         }
 
@@ -91,7 +90,7 @@ namespace ConfigurationSetupUtility.Screens
         {
             get
             {
-                return false;
+                return true;
             }
         }
 
@@ -130,7 +129,7 @@ namespace ConfigurationSetupUtility.Screens
             set
             {
                 m_state = value;
-                InitializeWelcomeMessage();
+                InitializeState();
             }
         }
 
@@ -144,25 +143,72 @@ namespace ConfigurationSetupUtility.Screens
 
         #region [ Methods ]
 
-        // Initializes the welcome message based on the existence of the -install flag.
-        private void InitializeWelcomeMessage()
+        // Initializes the state keys to their default values.
+        private void InitializeState()
         {
-            string[] args = Environment.GetCommandLineArgs();
-            bool installFlag = args.Contains("-install", StringComparer.CurrentCultureIgnoreCase);
+            object webManagerDir = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\openPDCManagerServices", "Installation Path", null) ?? Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\openPDCManagerServices", "Installation Path", null);
+            bool managerOptionsEnabled = m_state["configurationType"].ToString() == "database";
+            bool webManagerOptionEnabled = managerOptionsEnabled && (webManagerDir != null);
 
+            // Enable or disable the options based on whether those options are available for the current configuration.
+            m_openPdcManagerLocalCheckBox.IsEnabled = managerOptionsEnabled;
+            m_openPdcManagerWebCheckBox.IsEnabled = webManagerOptionEnabled;
+
+            // If the options are disabled, they must also be unchecked.
+            if (!managerOptionsEnabled)
+                m_openPdcManagerLocalCheckBox.IsChecked = false;
+
+            if (!webManagerOptionEnabled)
+                m_openPdcManagerWebCheckBox.IsChecked = false;
+
+            // Set up the state object with the proper initial values.
+            m_state["applyChangesToService"] = m_openPdcServiceCheckBox.IsChecked.Value;
+            m_state["applyChangesToLocalManager"] = m_openPdcManagerLocalCheckBox.IsChecked.Value;
+            m_state["applyChangesToWebManager"] = m_openPdcManagerWebCheckBox.IsChecked.Value;
+        }
+
+        // Occurs when the user chooses to apply changes to the openPDC service.
+        private void OpenPdcServiceCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
             if (m_state != null)
-                m_state["64bit"] = args.Contains("-64bit", StringComparer.CurrentCultureIgnoreCase);
-    
-            if (installFlag)
-                m_welcomeMessageTextBlock.Text = "You now need to set up the openPDC configuration.\r\n";
-            else
-                m_welcomeMessageTextBlock.Text = "";
+                m_state["applyChangesToService"] = true;
+        }
 
-            
-            m_welcomeMessageTextBlock.Text += "\r\nThis wizard will walk you through the needed steps so you can easily set up your system configuration.";
+        // Occurs when the user chooses to not apply changes to the openPDC service.
+        private void OpenPdcServiceCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (m_state != null)
+                m_state["applyChangesToService"] = false;
+        }
+
+        // Occurs when the user chooses to changes to the local openPDC Manager application.
+        private void OpenPdcManagerLocalCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (m_state != null)
+                m_state["applyChangesToLocalManager"] = true;
+        }
+
+        // Occurs when the user chooses to not apply changes to the local openPDC Manager application.
+        private void OpenPdcManagerLocalCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (m_state != null)
+                m_state["applyChangesToLocalManager"] = false;
+        }
+
+        // Occurs when the user chooses to apply changes to the openPDC Manager web application.
+        private void OpenPdcManagerWebCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (m_state != null)
+                m_state["applyChangesToWebManager"] = true;
+        }
+
+        // Occurs when the user chooses to not apply changes to the openPDC Manager web application.
+        private void OpenPdcManagerWebCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (m_state != null)
+                m_state["applyChangesToWebManager"] = false;
         }
 
         #endregion
-
     }
 }

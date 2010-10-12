@@ -25,7 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 
-namespace ConfigurationSetupUtility
+namespace ConfigurationSetupUtility.Screens
 {
     /// <summary>
     /// Interaction logic for SetupReadyScreen.xaml

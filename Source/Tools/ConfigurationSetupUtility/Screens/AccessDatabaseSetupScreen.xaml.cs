@@ -26,12 +26,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
-using System.IO;
 
-namespace ConfigurationSetupUtility
+namespace ConfigurationSetupUtility.Screens
 {
     /// <summary>
     /// Interaction logic for AccessDatabaseSetupScreen.xaml
@@ -84,14 +84,14 @@ namespace ConfigurationSetupUtility
         {
             get
             {
-                IScreen readyScreen;
+                IScreen applyChangesScreen;
 
-                if (!State.ContainsKey("readyScreen"))
-                    State.Add("readyScreen", new SetupReadyScreen());
+                if (!State.ContainsKey("applyChangesScreen"))
+                    State.Add("applyChangesScreen", new ApplyConfigurationChangesScreen());
 
-                readyScreen = State["readyScreen"] as IScreen;
+                applyChangesScreen = State["applyChangesScreen"] as IScreen;
 
-                return readyScreen;
+                return applyChangesScreen;
             }
         }
 

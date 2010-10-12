@@ -28,6 +28,9 @@ using System;
 
 namespace ConfigurationSetupUtility
 {
+    /// <summary>
+    /// Manages the screens displayed to the user in the Configuration Setup Utility.
+    /// </summary>
     public class ScreenManager
     {
 

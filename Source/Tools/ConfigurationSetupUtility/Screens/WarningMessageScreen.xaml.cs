@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Diagnostics;
 
-namespace ConfigurationSetupUtility
+namespace ConfigurationSetupUtility.Screens
 {
     /// <summary>
     /// Interaction logic for WarningMessageScreen.xaml

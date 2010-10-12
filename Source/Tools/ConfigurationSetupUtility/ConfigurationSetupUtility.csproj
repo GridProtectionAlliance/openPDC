@@ -107,6 +107,9 @@
     <Compile Include="AdvancedSettingsWindow.xaml.cs">
       <DependentUpon>AdvancedSettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Screens\ApplyConfigurationChangesScreen.xaml.cs">
+      <DependentUpon>ApplyConfigurationChangesScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Screens\ConfigurationTypeScreen.xaml.cs">
       <DependentUpon>ConfigurationTypeScreen.xaml</DependentUpon>
     </Compile>
@@ -158,6 +161,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AdvancedSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\ApplyConfigurationChangesScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

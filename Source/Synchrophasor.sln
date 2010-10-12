@@ -117,6 +117,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		openPDC.snk = openPDC.snk
 		Synchrophasor.testrunconfig = Synchrophasor.testrunconfig
 		Synchrophasor.vsmdi = Synchrophasor.vsmdi
+		Synchrophasor2.vsmdi = Synchrophasor2.vsmdi
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConfigurationSetupUtility", "ConfigurationSetupUtility", "{F7821DF0-BD48-481E-9DF9-D64AEFD24F57}"
@@ -324,6 +325,9 @@ Global
 		SccProjectTopLevelParentUniqueName25 = Synchrophasor.sln
 		SccProjectName25 = Tools/Setup
 		SccLocalPath25 = Tools\\Setup
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Synchrophasor2.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

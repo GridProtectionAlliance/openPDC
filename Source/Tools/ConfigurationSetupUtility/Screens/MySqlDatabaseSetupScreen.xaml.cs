@@ -37,7 +37,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using TVA;
 
-namespace ConfigurationSetupUtility
+namespace ConfigurationSetupUtility.Screens
 {
     /// <summary>
     /// Interaction logic for MySqlDatabaseSetupScreen.xaml
@@ -108,14 +108,14 @@ namespace ConfigurationSetupUtility
         {
             get
             {
-                IScreen readyScreen;
+                IScreen applyChangesScreen;
 
-                if (!m_state.ContainsKey("readyScreen"))
-                    m_state.Add("readyScreen", new SetupReadyScreen());
+                if (!State.ContainsKey("applyChangesScreen"))
+                    State.Add("applyChangesScreen", new ApplyConfigurationChangesScreen());
 
-                readyScreen = m_state["readyScreen"] as IScreen;
+                applyChangesScreen = State["applyChangesScreen"] as IScreen;
 
-                return readyScreen;
+                return applyChangesScreen;
             }
         }
 

@@ -27,7 +27,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace ConfigurationSetupUtility
+namespace ConfigurationSetupUtility.Screens
 {
     /// <summary>
     /// Interaction logic for ConfigurationTypeScreen.xaml

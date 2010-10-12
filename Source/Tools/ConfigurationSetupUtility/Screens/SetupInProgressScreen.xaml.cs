@@ -37,7 +37,7 @@ using System.Xml;
 using Microsoft.Win32;
 using TVA.Security.Cryptography;
 
-namespace ConfigurationSetupUtility
+namespace ConfigurationSetupUtility.Screens
 {
     /// <summary>
     /// Interaction logic for SetupInProgressScreen.xaml
@@ -494,14 +494,8 @@ namespace ConfigurationSetupUtility
         {
             try
             {
-                // Before modification of configuration files we try to stop key process
-                AttemptToStopKeyProcesses();
-
                 // Modify the openPDC configuration file.
-                AppendStatusMessage("Attempting to modify openPDC.exe.config...");
-                ModifyConfigFile(Directory.GetCurrentDirectory() + "\\openPDC.exe.config", m_state["xmlFilePath"].ToString(), string.Empty, false);
-                AppendStatusMessage("Modification of configuration files was successful.");
-
+                ModifyConfigFiles(m_state["xmlFilePath"].ToString(), string.Empty, false);
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -516,14 +510,8 @@ namespace ConfigurationSetupUtility
         {
             try
             {
-                // Before modification of configuration files we try to stop key process
-                AttemptToStopKeyProcesses();
-
                 // Modify the openPDC configuration file.
-                AppendStatusMessage("Attempting to modify openPDC.exe.config...");
-                ModifyConfigFile(Directory.GetCurrentDirectory() + "\\openPDC.exe.config", m_state["webServiceUrl"].ToString(), string.Empty, false);
-                AppendStatusMessage("Modification of configuration files was successful.");
-
+                ModifyConfigFiles(m_state["webServiceUrl"].ToString(), string.Empty, false);
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -637,25 +625,28 @@ namespace ConfigurationSetupUtility
             AttemptToStopKeyProcesses();
 
             object webManagerDir = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\openPDCManagerServices", "Installation Path", null) ?? Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\openPDCManagerServices", "Installation Path", null);
+            bool applyChangesToService = Convert.ToBoolean(m_state["applyChangesToService"]);
+            bool applyChangesToLocalManager = Convert.ToBoolean(m_state["applyChangesToLocalManager"]);
+            bool applyChangesToWebManager = Convert.ToBoolean(m_state["applyChangesToWebManager"]);
             string configFile;
 
             AppendStatusMessage("Attempting to modify configuration files...");
 
             configFile = Directory.GetCurrentDirectory() + "\\openPDC.exe.config";
 
-            if (File.Exists(configFile))
+            if (applyChangesToService && File.Exists(configFile))
                 ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted);
 
             configFile = Directory.GetCurrentDirectory() + "\\openPDCManager.exe.config";
 
-            if (File.Exists(configFile)) 
+            if (applyChangesToLocalManager && File.Exists(configFile)) 
                 ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted);
 
             if (webManagerDir != null)
             {
                 configFile = webManagerDir.ToString();
                 
-                if (File.Exists(configFile))
+                if (applyChangesToWebManager && File.Exists(configFile))
                     ModifyConfigFile(webManagerDir.ToString() + "\\Web.config", connectionString, dataProviderString, encrypted);
             }
 
@@ -753,25 +744,28 @@ namespace ConfigurationSetupUtility
         // Saves the old connection string as an OleDB connection string.
         private void SaveOldConnectionString()
         {
-            // Determine the type of connection string and convert it to OleDB.
-            if (m_oldDataProviderString.Contains("MySqlConnection"))
+            if (m_oldDataProviderString != null)
             {
-                // Assume it's a MySQL ODBC connection string.
-                MySqlSetup oldConnectionStringSetup = new MySqlSetup();
-                oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
-                m_state["oldOleDbConnectionString"] = oldConnectionStringSetup.OleDbConnectionString;
-            }
-            else if (m_oldDataProviderString.Contains("OleDbConnection"))
-            {
-                // Assume it's already an OleDB connection string.
-                m_state["oldOleDbConnectionString"] = m_oldConnectionString;
-            }
-            else
-            {
-                // Assume it's a SQL Server connection string.
-                SqlServerSetup oldConnectionStringSetup = new SqlServerSetup();
-                oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
-                m_state["oldOleDbConnectionString"] = oldConnectionStringSetup.OleDbConnectionString;
+                // Determine the type of connection string and convert it to OleDB.
+                if (m_oldDataProviderString.Contains("MySqlConnection"))
+                {
+                    // Assume it's a MySQL ODBC connection string.
+                    MySqlSetup oldConnectionStringSetup = new MySqlSetup();
+                    oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
+                    m_state["oldOleDbConnectionString"] = oldConnectionStringSetup.OleDbConnectionString;
+                }
+                else if (m_oldDataProviderString.Contains("OleDbConnection"))
+                {
+                    // Assume it's already an OleDB connection string.
+                    m_state["oldOleDbConnectionString"] = m_oldConnectionString;
+                }
+                else
+                {
+                    // Assume it's a SQL Server ODBC connection string.
+                    SqlServerSetup oldConnectionStringSetup = new SqlServerSetup();
+                    oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
+                    m_state["oldOleDbConnectionString"] = oldConnectionStringSetup.OleDbConnectionString;
+                }
             }
         }
 

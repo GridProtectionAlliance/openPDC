@@ -34,7 +34,7 @@ using TVA.Configuration;
 using TVA.IO;
 using System.Windows;
 
-namespace ConfigurationSetupUtility
+namespace ConfigurationSetupUtility.Screens
 {
     /// <summary>
     /// Interaction logic for SetupCompleteScreen.xaml
@@ -195,7 +195,6 @@ namespace ConfigurationSetupUtility
                     {
                         string dataFolder = FilePath.GetApplicationDataFolder();
                         string migrationDataFolder = dataFolder + "\\..\\DataMigrationUtility";
-                        string oldOleDbConnectionString = m_state["oldOleDbConnectionString"].ToString();
                         string newOleDbConnectionString = m_state["newOleDbConnectionString"].ToString();
                         string databaseType = m_state["databaseType"].ToString().Replace(" ", "");
                         ConfigurationFile configFile = null;
@@ -213,10 +212,16 @@ namespace ConfigurationSetupUtility
                         // Modify OleDB configuration file settings for the DataMigrationUtility.
                         configFile = ConfigurationFile.Open("DataMigrationUtility.exe.config");
                         applicationSettings = configFile.Settings["applicationSettings"];
-                        applicationSettings["FromConnectionString", true].Value = oldOleDbConnectionString;
                         applicationSettings["FromDataType", true].Value = "Unspecified";
                         applicationSettings["ToConnectionString", true].Value = newOleDbConnectionString;
                         applicationSettings["ToDataType", true].Value = databaseType;
+
+                        if (m_state.ContainsKey("oldOleDbConnectionString"))
+                        {
+                            string oldOleDbConnectionString = m_state["oldOleDbConnectionString"].ToString();
+                            applicationSettings["FromConnectionString", true].Value = oldOleDbConnectionString;
+                        }
+
                         configFile.Save();
 
                         // Copy user-level ConfigurationSetupUtility config file to DataMigrationUtility application folder.
