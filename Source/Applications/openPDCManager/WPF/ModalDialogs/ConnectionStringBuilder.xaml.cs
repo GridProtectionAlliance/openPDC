@@ -284,7 +284,7 @@ namespace openPDCManager.ModalDialogs
             {
                 TabItemTCP.Visibility = Visibility.Visible;
                 TabItemUDP.Visibility = Visibility.Collapsed;
-                TabItemSerial.Visibility = Visibility.Collapsed;
+                TabItemSerial.Visibility = Visibility.Visible;
                 TabItemFile.Visibility = Visibility.Collapsed;
                 TabItemUdpServer.Visibility = Visibility.Collapsed;
                 TextBoxHostIP.IsEnabled = false;
