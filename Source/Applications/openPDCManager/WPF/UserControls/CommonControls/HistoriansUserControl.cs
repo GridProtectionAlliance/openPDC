@@ -109,25 +109,41 @@ namespace openPDCManager.UserControls.CommonControls
         }
 
         void SaveHistorian(Historian historian, bool isNew)
-        {
-            SystemMessages sm;
+        {            
             try
             {
-                string result = CommonFunctions.SaveHistorian(null, historian, isNew);
-                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-                        ButtonType.OkOnly);
-                sm.Owner = Window.GetWindow(this);
-                sm.ShowPopup();
-                GetHistorians();
-                //ClearForm();                
+                bool continueSave = true;
 
-                //make this newly added or updated item as default selected. So user can click initialize right away.
-                ListBoxHistorianList.SelectedItem = ((List<Historian>)ListBoxHistorianList.ItemsSource).Find(c => c.Acronym == historian.Acronym);                
+                if (!isNew && (historian.TypeName != "HistorianAdapters.LocalOutputAdapter" || !historian.IsLocal))
+                {
+                    SystemMessages sm = new SystemMessages(new Message() { UserMessage = "You are changing your historian type.", SystemMessage = "You are changing your historian type from an in-process local historian to another historian provider. Please note that once the changes are applied, any customizations you may have made to the in-process local historian in the openPDC configuration file will be lost." + Environment.NewLine + "Do you want to continue?", UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                    sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                    {
+                        if ((bool)sm.DialogResult)
+                            continueSave = true;
+                        else
+                            continueSave = false;
+                    });  
+                    sm.Owner = Window.GetWindow(this);
+                    sm.ShowPopup();
+                }
+
+                if (continueSave)
+                {
+                    string result = CommonFunctions.SaveHistorian(null, historian, isNew);
+                    SystemMessages sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                            ButtonType.OkOnly);
+                    sm.Owner = Window.GetWindow(this);
+                    sm.ShowPopup();
+                    GetHistorians();                 
+                    //make this newly added or updated item as default selected. So user can click initialize right away.
+                    ListBoxHistorianList.SelectedItem = ((List<Historian>)ListBoxHistorianList.ItemsSource).Find(c => c.Acronym == historian.Acronym);
+                }
             }
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.SaveHistorian", ex);
-                sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Historian Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Historian Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.ShowPopup();

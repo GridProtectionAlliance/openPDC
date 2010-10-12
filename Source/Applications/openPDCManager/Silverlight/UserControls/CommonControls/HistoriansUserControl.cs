@@ -66,7 +66,23 @@ namespace openPDCManager.UserControls.CommonControls
 
         void SaveHistorian(Historian historian, bool isNew)
         {
-            m_client.SaveHistorianAsync(historian, isNew);
+            bool continueSave = true;
+
+            if (!isNew && (historian.TypeName != "HistorianAdapters.LocalOutputAdapter" || !historian.IsLocal))
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "You are changing your historian type.", SystemMessage = "You are changing your historian type from an in-process local historian to another historian provider. Please note that once the changes are applied, any customizations you may have made to the in-process local historian in the openPDC configuration file will be lost." + Environment.NewLine + "Do you want to continue?", UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)sm.DialogResult)
+                        continueSave = true;
+                    else
+                        continueSave = false;
+                });            
+                sm.ShowPopup();
+            }
+
+            if (continueSave)
+                m_client.SaveHistorianAsync(historian, isNew);
         }
 
         void DisplayRuntimeID()
