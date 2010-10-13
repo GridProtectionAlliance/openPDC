@@ -1583,7 +1583,7 @@ namespace TVA.PhasorProtocols
                 IEnumerable<DataRow> outputStreamStatistics = statistics.Where(row => string.Compare(row.Field<string>("Source"), "OutputStream", true) == 0);
 
                 IEnumerable<DataRow> outputStreamDevices;
-                SignalKind[] validOutputSignalKinds = { SignalKind.Angle, SignalKind.Magnitude, SignalKind.Frequency, SignalKind.DfDt, SignalKind.Status, SignalKind.Analog, SignalKind.Digital };
+                SignalKind[] validOutputSignalKinds = { SignalKind.Angle, SignalKind.Magnitude, SignalKind.Frequency, SignalKind.DfDt, SignalKind.Status, SignalKind.Analog, SignalKind.Digital, SignalKind.Calculation };
                 List<int> measurementIDsToDelete = new List<int>();
                 SignalReference deviceSignalReference;
                 string acronym, signalReference, pointTag, company, vendorDevice, description;
