@@ -32,7 +32,8 @@ namespace openPDCManager.Pages
 
 		public HomePage()
         {
-			InitializeComponent();			
+			InitializeComponent();
+            UserControlHomePage.ParentPage = this;
 		}
 
 		#endregion		

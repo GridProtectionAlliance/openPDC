@@ -31,6 +31,7 @@ using openPDCManager.LivePhasorDataServiceProxy;
 using openPDCManager.ModalDialogs;
 using openPDCManager.PhasorDataServiceProxy;
 using openPDCManager.Utilities;
+using System.Windows.Controls;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -43,6 +44,7 @@ namespace openPDCManager.UserControls.CommonControls
         bool m_connected = false;
         ObservableCollection<InterconnectionStatus> interconnectionStatusList = new ObservableCollection<InterconnectionStatus>();
         ObservableCollection<TimeSeriesDataPoint> timeSeriesDataList = new ObservableCollection<TimeSeriesDataPoint>();
+        public Page ParentPage;
 
         #endregion
 

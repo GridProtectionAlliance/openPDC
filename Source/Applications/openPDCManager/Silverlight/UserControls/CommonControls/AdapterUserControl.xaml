@@ -42,13 +42,13 @@
                     <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                 </StackPanel>
                 <TextBox x:Name="TextBoxTypeName" Grid.Row="1" Grid.Column="3" Text="{Binding Path=TypeName}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Connection String" Style="{StaticResource GenericLabelStyle}"/>
-                <TextBox x:Name="TextBoxConnectionString" Grid.Row="2" Grid.Column="1" Text="{Binding Path=ConnectionString}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2">
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Connection String" Style="{StaticResource GenericLabelStyle}" VerticalAlignment="Top"/>
+                <TextBox x:Name="TextBoxConnectionString" Grid.Row="2" Grid.Column="1" Text="{Binding Path=ConnectionString}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top">
                     <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>
                     <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                 </StackPanel>
-                <TextBox x:Name="TextBoxLoadOrder" Grid.Row="2" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                <TextBox x:Name="TextBoxLoadOrder" Grid.Row="2" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Top" Margin="5" />
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Runtime ID" Style="{StaticResource GenericLabelStyle}"/>
                 <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
                     <TextBlock x:Name="TextBlockRuntimeID" VerticalAlignment="Center"/>
@@ -89,7 +89,7 @@
             </StackPanel>
         </Border>
         <Border Background="{StaticResource PortletBackgroundBrush}">
-            <ScrollViewer BorderThickness="0" Padding="0" Height="578">
+            <ScrollViewer BorderThickness="0" Padding="0" Height="527">
                 <ScrollViewer.Content>
                     <ListBox x:Name="ListBoxAdapterList" Margin="0" Padding="0">
                         <ListBox.ItemTemplate>

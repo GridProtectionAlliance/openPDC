@@ -126,7 +126,7 @@ namespace openPDCManager.UserControls.CommonControls
         private void ButtonRuntimeStatistics_Click(object sender, RoutedEventArgs e)
         {
 #if SILVERLIGHT
-            System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("/Default.aspx#/Pages/Adapters/RealTimeStatistics.xaml", UriKind.Relative));
+            this.ParentPage.NavigationService.Navigate(new Uri("/Pages/Adapters/RealTimeStatistics.xaml", UriKind.Relative));
 #else
             RealTimeStatisticsUserControl realtimeStatistics = new RealTimeStatisticsUserControl();            
             ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(realtimeStatistics);
@@ -136,7 +136,7 @@ namespace openPDCManager.UserControls.CommonControls
         private void ButtonAddDevice_Click(object sender, RoutedEventArgs e)
         {
 #if SILVERLIGHT
-            System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("/Default.aspx#/Pages/Devices/AddNew.xaml", UriKind.Relative));
+            this.ParentPage.NavigationService.Navigate(new Uri("/Pages/Devices/InputWizard.xaml", UriKind.Relative));
 #else
             InputWizardUserControl inputWizard = new InputWizardUserControl();
             ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(inputWizard);
@@ -146,7 +146,8 @@ namespace openPDCManager.UserControls.CommonControls
         private void ButtonDevices_Click(object sender, RoutedEventArgs e)
         {
 #if SILVERLIGHT
-            System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("/Default.aspx#/Pages/Devices/Browse.xaml", UriKind.Relative));
+            this.ParentPage.NavigationService.Navigate(new Uri("/Pages/Devices/Browse.xaml", UriKind.Relative));
+            //System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("/Pages/Devices/Browse.xaml", UriKind.Relative));
 #else
             BrowseDevicesUserControl browseDevices = new BrowseDevicesUserControl();
             ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(browseDevices);
@@ -156,7 +157,7 @@ namespace openPDCManager.UserControls.CommonControls
         private void ButtonOutputStreams_Click(object sender, RoutedEventArgs e)
         {
 #if SILVERLIGHT
-            System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("/Default.aspx#/Pages/Adapters/OutputStreams.xaml", UriKind.Relative));
+            this.ParentPage.NavigationService.Navigate(new Uri("/Pages/Adapters/OutputStreams.xaml", UriKind.Relative));
 #else
             OutputStreamsUserControl outputStreams = new OutputStreamsUserControl();
             ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(outputStreams);
@@ -166,7 +167,7 @@ namespace openPDCManager.UserControls.CommonControls
         private void ButtonSystemConsole_Click(object sender, RoutedEventArgs e)
         {
 #if SILVERLIGHT
-            System.Windows.Browser.HtmlPage.Window.Navigate(new Uri("/Default.aspx#/Pages/Monitor.xaml", UriKind.Relative));
+            this.ParentPage.NavigationService.Navigate(new Uri("/Pages/Monitor.xaml", UriKind.Relative));
 #else
             MonitorUserControl monitor = new MonitorUserControl();
             ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(monitor);

@@ -35,10 +35,10 @@
                     <TextBox x:Name="TextBoxTypeName" Grid.Row="2" Grid.Column="1" Text="{Binding Path=TypeName}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <TextBlock Grid.Row="2" Grid.Column="2" Text="Assembly Name" Style="{StaticResource GenericLabelStyle}"/>
                     <TextBox x:Name="TextBoxAssemblyName" Grid.Row="2" Grid.Column="3" Text="{Binding Path=AssemblyName}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="ConnectionString" Style="{StaticResource GenericLabelStyle}"/>
-                    <TextBox x:Name="TextBoxConnectionString" Grid.Row="3" Grid.Column="1" Text="{Binding Path=ConnectionString}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                    <TextBlock Grid.Row="3" Grid.Column="2" Text="Description" Style="{StaticResource GenericLabelStyle}"/>
-                    <TextBox x:Name="TextBoxDescription" Grid.Row="3" Grid.Column="3" Text="{Binding Path=Description}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="ConnectionString" Style="{StaticResource GenericLabelStyle}" VerticalAlignment="Top"/>
+                    <TextBox x:Name="TextBoxConnectionString" Grid.Row="3" Grid.Column="1" Text="{Binding Path=ConnectionString}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap"/>
+                    <TextBlock Grid.Row="3" Grid.Column="2" Text="Description" Style="{StaticResource GenericLabelStyle}" VerticalAlignment="Top"/>
+                    <TextBox x:Name="TextBoxDescription" Grid.Row="3" Grid.Column="3" Text="{Binding Path=Description}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0">
                         <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
@@ -91,7 +91,7 @@
                 </StackPanel>
             </Border>
             <Border Background="{StaticResource PortletBackgroundBrush}">
-                <ScrollViewer BorderThickness="0" Padding="0" Height="515">
+                <ScrollViewer BorderThickness="0" Padding="0" Height="465">
                     <ScrollViewer.Content>
                         <ListBox x:Name="ListBoxHistorianList" Margin="0" Padding="0">
                             <ListBox.ItemTemplate>

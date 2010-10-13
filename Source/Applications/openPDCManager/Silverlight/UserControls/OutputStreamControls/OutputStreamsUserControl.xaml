@@ -50,14 +50,14 @@
                     <TextBox x:Name="TextBoxIDCode" Grid.Row="2" Grid.Column="1" Text="{Binding Path=IDCode}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <TextBlock Grid.Row="2" Grid.Column="2" Text="Connection String" Style="{StaticResource GenericLabelStyle}"/>
                     <TextBox x:Name="TextBoxConnectionString" Grid.Row="2" Grid.Column="3" Text="{Binding Path=ConnectionString}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="TCP Channel" Style="{StaticResource GenericLabelStyle}"/>
-                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
-                        <TextBox x:Name="TextBoxCommandChannel" Text="{Binding Path=CommandChannel}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="TCP Channel" Style="{StaticResource GenericLabelStyle}" VerticalAlignment="Top"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" VerticalAlignment="Top">
+                        <TextBox x:Name="TextBoxCommandChannel" Text="{Binding Path=CommandChannel}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap"/>
                         <Button x:Name="ButtonBuildCommandChannel" Content="../../Images/Add.png" Tag="..." ToolTipService.ToolTip="Build Command Channel String" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>
                     </StackPanel>
-                    <TextBlock Grid.Row="3" Grid.Column="2" Text="UDP Channel" Style="{StaticResource GenericLabelStyle}"/>
-                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="3">
-                        <TextBox x:Name="TextBoxDataChannel" Text="{Binding Path=DataChannel}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <TextBlock Grid.Row="3" Grid.Column="2" Text="UDP Channel" Style="{StaticResource GenericLabelStyle}" VerticalAlignment="Top"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="3" VerticalAlignment="Top">
+                        <TextBox x:Name="TextBoxDataChannel" Text="{Binding Path=DataChannel}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap"/>
                         <Button x:Name="ButtonBuildDataChannel" Content="../../Images/Add.png" Tag="..." ToolTipService.ToolTip="Build Data Channel String" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0">
@@ -193,7 +193,7 @@
                 </StackPanel>
             </Border>
             <Border Background="{StaticResource PortletBackgroundBrush}">
-                <ScrollViewer x:Name="ScrollViewerList" BorderThickness="0" Padding="0" Height="450">
+                <ScrollViewer x:Name="ScrollViewerList" BorderThickness="0" Padding="0" Height="400">
                     <ScrollViewer.Content>
                         <ListBox x:Name="ListBoxOutputStreamList" Margin="0" Padding="0">
                             <ListBox.ItemTemplate>
