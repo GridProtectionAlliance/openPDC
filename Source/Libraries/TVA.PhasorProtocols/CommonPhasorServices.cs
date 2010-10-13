@@ -1315,7 +1315,7 @@ namespace TVA.PhasorProtocols
                                 measurement.Value = statistic.Method(inputStream, statistic.Arguments);
 
                                 // Map attributes to new statistic measurement
-                                MapMeasurementAttributes(mappedMeasurements, inputStream.GetSignalReference(FundamentalSignalType.Statistic, statistic.Index - 1, m_inputStreamStatisticsMaxIndex), measurement);
+                                MapMeasurementAttributes(mappedMeasurements, inputStream.GetSignalReference(SignalKind.Statistic, statistic.Index - 1, m_inputStreamStatisticsMaxIndex), measurement);
                             }
                             catch (Exception ex)
                             {
@@ -1342,7 +1342,7 @@ namespace TVA.PhasorProtocols
                                 measurement.Value = statistic.Method(device, statistic.Arguments);
 
                                 // Map attributes to new statistic measurement
-                                MapMeasurementAttributes(mappedMeasurements, device.GetSignalReference(FundamentalSignalType.Statistic, statistic.Index - 1, m_deviceStatisticsMaxIndex), measurement);
+                                MapMeasurementAttributes(mappedMeasurements, device.GetSignalReference(SignalKind.Statistic, statistic.Index - 1, m_deviceStatisticsMaxIndex), measurement);
                             }
                             catch (Exception ex)
                             {
@@ -1369,7 +1369,7 @@ namespace TVA.PhasorProtocols
                                 measurement.Value = statistic.Method(outputStream, statistic.Arguments);
 
                                 // Map attributes to new statistic measurement
-                                MapMeasurementAttributes(mappedMeasurements, outputStream.GetSignalReference(FundamentalSignalType.Statistic, statistic.Index - 1, m_outputStreamStatisticsMaxIndex), measurement);
+                                MapMeasurementAttributes(mappedMeasurements, outputStream.GetSignalReference(SignalKind.Statistic, statistic.Index - 1, m_outputStreamStatisticsMaxIndex), measurement);
                             }
                             catch (Exception ex)
                             {
@@ -1583,7 +1583,7 @@ namespace TVA.PhasorProtocols
                 IEnumerable<DataRow> outputStreamStatistics = statistics.Where(row => string.Compare(row.Field<string>("Source"), "OutputStream", true) == 0);
 
                 IEnumerable<DataRow> outputStreamDevices;
-                FundamentalSignalType[] validOutputStreamTypes = { FundamentalSignalType.Angle, FundamentalSignalType.Magnitude, FundamentalSignalType.Frequency, FundamentalSignalType.DfDt, FundamentalSignalType.Status, FundamentalSignalType.Analog, FundamentalSignalType.Digital };
+                SignalKind[] validOutputSignalKinds = { SignalKind.Angle, SignalKind.Magnitude, SignalKind.Frequency, SignalKind.DfDt, SignalKind.Status, SignalKind.Analog, SignalKind.Digital };
                 List<int> measurementIDsToDelete = new List<int>();
                 SignalReference deviceSignalReference;
                 string acronym, signalReference, pointTag, company, vendorDevice, description;
@@ -1598,7 +1598,7 @@ namespace TVA.PhasorProtocols
                     {
                         acronym = device.Field<string>("Acronym");
                         signalIndex = statistic.Field<int>("SignalIndex");
-                        signalReference = SignalReference.ToString(acronym, FundamentalSignalType.Statistic, signalIndex);
+                        signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
 
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
                         {
@@ -1624,7 +1624,7 @@ namespace TVA.PhasorProtocols
                     {
                         acronym = inputStream.Field<string>("Acronym") + "!IS";
                         signalIndex = statistic.Field<int>("SignalIndex");
-                        signalReference = SignalReference.ToString(acronym, FundamentalSignalType.Statistic, signalIndex);
+                        signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
 
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
                         {
@@ -1652,7 +1652,7 @@ namespace TVA.PhasorProtocols
                     foreach (DataRow statistic in outputStreamStatistics)
                     {
                         signalIndex = statistic.Field<int>("SignalIndex");
-                        signalReference = SignalReference.ToString(acronym, FundamentalSignalType.Statistic, signalIndex);
+                        signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
 
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
                         {
@@ -1689,7 +1689,7 @@ namespace TVA.PhasorProtocols
                         else
                         {
                             // Validate that the signal reference type is valid for an output stream
-                            if (!validOutputStreamTypes.Any(type => type == deviceSignalReference.Type))
+                            if (!validOutputSignalKinds.Any(type => type == deviceSignalReference.Kind))
                             {
                                 // This measurement has a signal reference type that is invalid for an output stream, so we mark it for deletion
                                 measurementIDsToDelete.Add(outputStreamMeasurement.Field<int>("ID"));

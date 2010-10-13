@@ -241,12 +241,18 @@ namespace TVA.PhasorProtocols
     /// Fundamental signal types enumeration.
     /// </summary>
     /// <remarks>
-    /// The signal type represents the basic type of a signal used to suffix a formatted signal reference. When
+    /// <para>
+    /// This signal type represents the basic type of a signal used to suffix a formatted signal reference. When
     /// used in context along with an optional index the fundamental signal type will identify a signal's location
     /// within a frame of data (see <see cref="SignalReference"/>).
+    /// </para>
+    /// <para>
+    /// Contrast the <see cref="SignalKind"/> enumeration with the <see cref="SignalType"/>
+    /// enumeration which defines an explicit type for a signal (e.g., a voltage or current phasor).
+    /// </para>
     /// </remarks>
     [Serializable()]
-    public enum FundamentalSignalType
+    public enum SignalKind
     {
         /// <summary>
         /// Phase angle.
@@ -312,9 +318,9 @@ namespace TVA.PhasorProtocols
         public int Index;
         
         /// <summary>
-        /// Gets or sets the <see cref="FundamentalSignalType"/> of this <see cref="SignalReference"/>.
+        /// Gets or sets the <see cref="SignalKind"/> of this <see cref="SignalReference"/>.
         /// </summary>
-        public FundamentalSignalType Type;
+        public SignalKind Kind;
 
         /// <summary>
         /// Gets or sets the cell index of this <see cref="SignalReference"/>.
@@ -347,19 +353,19 @@ namespace TVA.PhasorProtocols
                 // is an indexed signal type (e.g., CORDOVA-PA2)
                 if (signalType.Length > 2)
                 {
-                    Type = SignalReference.GetTypeFromAcronym(signalType.Substring(0, 2));
+                    Kind = SignalReference.ParseSignalKind(signalType.Substring(0, 2));
                     
-                    if (Type != FundamentalSignalType.Unknown)
+                    if (Kind != SignalKind.Unknown)
                         Index = int.Parse(signalType.Substring(2));
                 }
                 else
-                    Type = SignalReference.GetTypeFromAcronym(signalType);
+                    Kind = SignalReference.ParseSignalKind(signalType);
             }
             else
             {
                 // This represents an error - best we can do is assume entire string is the acronym
                 Acronym = signal.Trim().ToUpper();
-                Type = FundamentalSignalType.Unknown;
+                Kind = SignalKind.Unknown;
             }
         }
 
@@ -373,7 +379,7 @@ namespace TVA.PhasorProtocols
         /// <returns>A <see cref="string"/> that represents the current <see cref="SignalReference"/>.</returns>
         public override string ToString()
         {
-            return SignalReference.ToString(Acronym, Type, Index);
+            return SignalReference.ToString(Acronym, Kind, Index);
         }
 
         /// <summary>
@@ -382,7 +388,7 @@ namespace TVA.PhasorProtocols
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
         {
-            return SignalReference.ToString(Acronym, Type, Index).GetHashCode();
+            return SignalReference.ToString(Acronym, Kind, Index).GetHashCode();
         }
 
         /// <summary>
@@ -406,7 +412,7 @@ namespace TVA.PhasorProtocols
         /// <returns><c>true</c> if the current object is equal to the other parameter; otherwise, <c>false</c>.</returns>
         public bool Equals(SignalReference other)
         {
-            return (string.Compare(Acronym, other.Acronym, true) == 0 && Type == other.Type && Index == other.Index);
+            return (string.Compare(Acronym, other.Acronym, true) == 0 && Kind == other.Kind && Index == other.Index);
         }
 
         /// <summary>
@@ -420,7 +426,7 @@ namespace TVA.PhasorProtocols
 
             if (acronymCompare == 0)
             {
-                int signalTypeCompare = Type < other.Type ? -1 : (Type > other.Type ? 1 : 0);
+                int signalTypeCompare = Kind < other.Kind ? -1 : (Kind > other.Kind ? 1 : 0);
 
                 if (signalTypeCompare == 0)
                     return Index.CompareTo(other.Index);
@@ -522,63 +528,63 @@ namespace TVA.PhasorProtocols
         // Static Methods
 
         /// <summary>
-        /// Gets the <see cref="FundamentalSignalType"/> for the specified <paramref name="acronym"/>.
+        /// Gets the <see cref="SignalKind"/> for the specified <paramref name="acronym"/>.
         /// </summary>
-        /// <param name="acronym">Acronym of the desired <see cref="FundamentalSignalType"/>.</param>
-        /// <returns>The <see cref="FundamentalSignalType"/> for the specified <paramref name="acronym"/>.</returns>
-        public static FundamentalSignalType GetTypeFromAcronym(string acronym)
+        /// <param name="acronym">Acronym of the desired <see cref="SignalKind"/>.</param>
+        /// <returns>The <see cref="SignalKind"/> for the specified <paramref name="acronym"/>.</returns>
+        public static SignalKind ParseSignalKind(string acronym)
         {
             switch (acronym)
             {
                 case "PA": // Phase Angle
-                    return FundamentalSignalType.Angle;
+                    return SignalKind.Angle;
                 case "PM": // Phase Magnitude
-                    return FundamentalSignalType.Magnitude;
+                    return SignalKind.Magnitude;
                 case "FQ": // Frequency
-                    return FundamentalSignalType.Frequency;
+                    return SignalKind.Frequency;
                 case "DF": // dF/dt
-                    return FundamentalSignalType.DfDt;
+                    return SignalKind.DfDt;
                 case "SF": // Status Flags
-                    return FundamentalSignalType.Status;
+                    return SignalKind.Status;
                 case "DV": // Digital Value
-                    return FundamentalSignalType.Digital;
+                    return SignalKind.Digital;
                 case "AV": // Analog Value
-                    return FundamentalSignalType.Analog;
+                    return SignalKind.Analog;
                 case "CV": // Calculated Value
-                    return FundamentalSignalType.Calculation;
+                    return SignalKind.Calculation;
                 case "ST": // Statistical Value
-                    return FundamentalSignalType.Statistic;
+                    return SignalKind.Statistic;
                 default:
-                    return FundamentalSignalType.Unknown;
+                    return SignalKind.Unknown;
             }
         }
 
         /// <summary>
-        /// Gets the acronym for the specified <see cref="FundamentalSignalType"/>.
+        /// Gets the acronym for the specified <see cref="SignalKind"/>.
         /// </summary>
-        /// <param name="signal"><see cref="FundamentalSignalType"/> to convert to an acronym.</param>
-        /// <returns>The acronym for the specified <see cref="FundamentalSignalType"/>.</returns>
-        public static string GetAcronymFromType(FundamentalSignalType signal)
+        /// <param name="signal"><see cref="SignalKind"/> to convert to an acronym.</param>
+        /// <returns>The acronym for the specified <see cref="SignalKind"/>.</returns>
+        public static string GetSignalKindAcronym(SignalKind signal)
         {
             switch (signal)
             {
-                case FundamentalSignalType.Angle:
+                case SignalKind.Angle:
                     return "PA"; // Phase Angle
-                case FundamentalSignalType.Magnitude:
+                case SignalKind.Magnitude:
                     return "PM"; // Phase Magnitude
-                case FundamentalSignalType.Frequency:
+                case SignalKind.Frequency:
                     return "FQ"; // Frequency
-                case FundamentalSignalType.DfDt:
+                case SignalKind.DfDt:
                     return "DF"; // dF/dt
-                case FundamentalSignalType.Status:
+                case SignalKind.Status:
                     return "SF"; // Status Flags
-                case FundamentalSignalType.Digital:
+                case SignalKind.Digital:
                     return "DV"; // Digital Value
-                case FundamentalSignalType.Analog:
+                case SignalKind.Analog:
                     return "AV"; // Analog Value
-                case FundamentalSignalType.Calculation:
+                case SignalKind.Calculation:
                     return "CV"; // Calculated Value
-                case FundamentalSignalType.Statistic:
+                case SignalKind.Statistic:
                     return "ST"; // Statistical Value
                 default:
                     return "??";
@@ -586,29 +592,29 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Returns a <see cref="string"/> that represents the specified <paramref name="acronym"/> and <see cref="FundamentalSignalType"/>.
+        /// Returns a <see cref="string"/> that represents the specified <paramref name="acronym"/> and <see cref="SignalKind"/>.
         /// </summary>
         /// <param name="acronym">Acronym portion of the desired <see cref="string"/> representation.</param>
-        /// <param name="type"><see cref="FundamentalSignalType"/> portion of the desired <see cref="string"/> representation.</param>
-        /// <returns>A <see cref="string"/> that represents the specified <paramref name="acronym"/> and <see cref="FundamentalSignalType"/>.</returns>
-        public static string ToString(string acronym, FundamentalSignalType type)
+        /// <param name="type"><see cref="SignalKind"/> portion of the desired <see cref="string"/> representation.</param>
+        /// <returns>A <see cref="string"/> that represents the specified <paramref name="acronym"/> and <see cref="SignalKind"/>.</returns>
+        public static string ToString(string acronym, SignalKind type)
         {
             return ToString(acronym, type, 0);
         }
 
         /// <summary>
-        /// Returns a <see cref="string"/> that represents the specified <paramref name="acronym"/>, <see cref="FundamentalSignalType"/> and <paramref name="index"/>.
+        /// Returns a <see cref="string"/> that represents the specified <paramref name="acronym"/>, <see cref="SignalKind"/> and <paramref name="index"/>.
         /// </summary>
         /// <param name="acronym">Acronym portion of the desired <see cref="string"/> representation.</param>
-        /// <param name="type"><see cref="FundamentalSignalType"/> portion of the desired <see cref="string"/> representation.</param>
-        /// <param name="index">Index of <see cref="FundamentalSignalType"/> portion of the desired <see cref="string"/> representation.</param>
-        /// <returns>A <see cref="string"/> that represents the specified <paramref name="acronym"/>, <see cref="FundamentalSignalType"/> and <paramref name="index"/>.</returns>
-        public static string ToString(string acronym, FundamentalSignalType type, int index)
+        /// <param name="type"><see cref="SignalKind"/> portion of the desired <see cref="string"/> representation.</param>
+        /// <param name="index">Index of <see cref="SignalKind"/> portion of the desired <see cref="string"/> representation.</param>
+        /// <returns>A <see cref="string"/> that represents the specified <paramref name="acronym"/>, <see cref="SignalKind"/> and <paramref name="index"/>.</returns>
+        public static string ToString(string acronym, SignalKind type, int index)
         {
             if (index > 0)
-                return string.Format("{0}-{1}{2}", acronym, GetAcronymFromType(type), index);
+                return string.Format("{0}-{1}{2}", acronym, GetSignalKindAcronym(type), index);
             else
-                return string.Format("{0}-{1}", acronym, GetAcronymFromType(type));
+                return string.Format("{0}-{1}", acronym, GetSignalKindAcronym(type));
         }
 
         #endregion

@@ -120,7 +120,7 @@ namespace TVA.PhasorProtocols
         // Suggested table definitions for the phasor data concentrator base class:
 
         //    - OutputStreamDevice          Stream ID, Name, ID, Analog Count, Digital Count, etc.
-        //    - OutputStreamPhasor          Device ID, Type (I or V), Name, Order, etc.
+        //    - OutputStreamPhasor          Device ID, Kind (I or V), Name, Order, etc.
         //    - OutputStreamMeasurement     Device ID, MeasurementKey, Destination SignalReference
 
         // Proposed internal data structures used to collate information:
@@ -140,7 +140,7 @@ namespace TVA.PhasorProtocols
         private IConfigurationFrame m_configurationFrame;
         private ConfigurationFrame m_baseConfigurationFrame;
         private Dictionary<MeasurementKey, SignalReference[]> m_signalReferences;
-        private Dictionary<FundamentalSignalType, string[]> m_generatedSignalReferenceCache;
+        private Dictionary<SignalKind, string[]> m_generatedSignalReferenceCache;
         private Dictionary<Guid, string> m_connectionIDCache;
         private long m_connectionAttempts;
         private LineFrequency m_nominalFrequency;
@@ -170,7 +170,7 @@ namespace TVA.PhasorProtocols
             m_signalReferences = new Dictionary<MeasurementKey, SignalReference[]>();
 
             // Create a cached signal reference dictionary for generated signal referencs
-            m_generatedSignalReferenceCache = new Dictionary<FundamentalSignalType, string[]>();
+            m_generatedSignalReferenceCache = new Dictionary<SignalKind, string[]>();
 
             // Create a new connection ID cache
             m_connectionIDCache = new Dictionary<Guid, string>();
@@ -1055,29 +1055,29 @@ namespace TVA.PhasorProtocols
                         int signalIndex = signal.Index;
 
                         // Assign measurement to its destination field in the data cell based on signal type
-                        switch (signal.Type)
+                        switch (signal.Kind)
                         {
-                            case FundamentalSignalType.Angle:
+                            case SignalKind.Angle:
                                 // Assign "phase angle" measurement to data cell
                                 phasorValues = dataCell.PhasorValues;
                                 if (phasorValues.Count >= signalIndex)
                                     phasorValues[signalIndex - 1].Angle = Angle.FromDegrees(signalMeasurement.AdjustedValue);
                                 break;
-                            case FundamentalSignalType.Magnitude:
+                            case SignalKind.Magnitude:
                                 // Assign "phase magnitude" measurement to data cell
                                 phasorValues = dataCell.PhasorValues;
                                 if (phasorValues.Count >= signalIndex)
                                     phasorValues[signalIndex - 1].Magnitude = signalMeasurement.AdjustedValue;
                                 break;
-                            case FundamentalSignalType.Frequency:
+                            case SignalKind.Frequency:
                                 // Assign "frequency" measurement to data cell
                                 dataCell.FrequencyValue.Frequency = signalMeasurement.AdjustedValue;
                                 break;
-                            case FundamentalSignalType.DfDt:
+                            case SignalKind.DfDt:
                                 // Assign "dF/dt" measurement to data cell
                                 dataCell.FrequencyValue.DfDt = signalMeasurement.AdjustedValue;
                                 break;
-                            case FundamentalSignalType.Status:
+                            case SignalKind.Status:
                                 // Assign "common status flags" measurement to data cell
                                 dataCell.CommonStatusFlags = unchecked((uint)signalMeasurement.AdjustedValue);
 
@@ -1085,13 +1085,13 @@ namespace TVA.PhasorProtocols
                                 if (!dataCell.SynchronizationIsValid && AllowSortsByArrival && !IgnoreBadTimestamps)
                                     dataCell.DataSortingType = DataSortingType.ByArrival;
                                 break;
-                            case FundamentalSignalType.Digital:
+                            case SignalKind.Digital:
                                 // Assign "digital" measurement to data cell
                                 DigitalValueCollection digitalValues = dataCell.DigitalValues;
                                 if (digitalValues.Count >= signalIndex)
                                     digitalValues[signalIndex - 1].Value = unchecked((ushort)signalMeasurement.AdjustedValue);
                                 break;
-                            case FundamentalSignalType.Analog:
+                            case SignalKind.Analog:
                                 // Assign "analog" measurement to data cell
                                 AnalogValueCollection analogValues = dataCell.AnalogValues;
                                 if (analogValues.Count >= signalIndex)
@@ -1262,11 +1262,11 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Get signal reference for specified <see cref="FundamentalSignalType"/>.
+        /// Get signal reference for specified <see cref="SignalKind"/>.
         /// </summary>
-        /// <param name="type"><see cref="FundamentalSignalType"/> to request signal reference for.</param>
-        /// <returns>Signal reference of given <see cref="FundamentalSignalType"/>.</returns>
-        public string GetSignalReference(FundamentalSignalType type)
+        /// <param name="type"><see cref="SignalKind"/> to request signal reference for.</param>
+        /// <returns>Signal reference of given <see cref="SignalKind"/>.</returns>
+        public string GetSignalReference(SignalKind type)
         {
             // We cache non-indexed signal reference strings so they don't need to be generated at each mapping call.
             string[] references;
@@ -1288,13 +1288,13 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Get signal reference for specified <see cref="FundamentalSignalType"/> and <paramref name="index"/>.
+        /// Get signal reference for specified <see cref="SignalKind"/> and <paramref name="index"/>.
         /// </summary>
-        /// <param name="type"><see cref="FundamentalSignalType"/> to request signal reference for.</param>
-        /// <param name="index">Index <see cref="FundamentalSignalType"/> to request signal reference for.</param>
-        /// <param name="count">Number of signals defined for this <see cref="FundamentalSignalType"/>.</param>
-        /// <returns>Signal reference of given <see cref="FundamentalSignalType"/> and <paramref name="index"/>.</returns>
-        public string GetSignalReference(FundamentalSignalType type, int index, int count)
+        /// <param name="type"><see cref="SignalKind"/> to request signal reference for.</param>
+        /// <param name="index">Index <see cref="SignalKind"/> to request signal reference for.</param>
+        /// <param name="count">Number of signals defined for this <see cref="SignalKind"/>.</param>
+        /// <returns>Signal reference of given <see cref="SignalKind"/> and <paramref name="index"/>.</returns>
+        public string GetSignalReference(SignalKind type, int index, int count)
         {
             // We cache indexed signal reference strings so they don't need to be generated at each mapping call.
             // For speed purposes we intentionally do not validate that signalIndex falls within signalCount, be

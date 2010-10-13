@@ -52,7 +52,7 @@ namespace TVA.PhasorProtocols
         private Dictionary<ushort, ConfigurationCell> m_definedDevices;
         private Dictionary<string, ConfigurationCell> m_labelDefinedDevices;
         private Dictionary<string, long> m_undefinedDevices;
-        private Dictionary<FundamentalSignalType, string[]> m_generatedSignalReferenceCache;
+        private Dictionary<SignalKind, string[]> m_generatedSignalReferenceCache;
         private System.Timers.Timer m_dataStreamMonitor;
         private bool m_allowUseOfCachedConfiguration;
         private bool m_cachedConfigLoadAttempted;
@@ -86,7 +86,7 @@ namespace TVA.PhasorProtocols
         public PhasorMeasurementMapper()
         {
             // Create a cached signal reference dictionary for generated signal references
-            m_generatedSignalReferenceCache = new Dictionary<FundamentalSignalType, string[]>();
+            m_generatedSignalReferenceCache = new Dictionary<SignalKind, string[]>();
 
             // Create data stream monitoring timer
             m_dataStreamMonitor = new System.Timers.Timer();
@@ -1225,7 +1225,7 @@ namespace TVA.PhasorProtocols
 
                         // Map status flags (SF) from device data cell itself (IDataCell implements IMeasurement
                         // and exposes the status flags as its value)
-                        MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(FundamentalSignalType.Status), parsedDevice);
+                        MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(SignalKind.Status), parsedDevice);
 
                         // Map phase angles (PAn) and magnitudes (PMn)
                         phasors = parsedDevice.PhasorValues;
@@ -1237,20 +1237,20 @@ namespace TVA.PhasorProtocols
                             measurements = phasors[x].Measurements;
 
                             // Map angle
-                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(FundamentalSignalType.Angle, x, count), measurements[AngleIndex]);
+                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(SignalKind.Angle, x, count), measurements[AngleIndex]);
 
                             // Map magnitude
-                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(FundamentalSignalType.Magnitude, x, count), measurements[MagnitudeIndex]);
+                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(SignalKind.Magnitude, x, count), measurements[MagnitudeIndex]);
                         }
 
                         // Map frequency (FQ) and dF/dt (DF)
                         measurements = parsedDevice.FrequencyValue.Measurements;
 
                         // Map frequency
-                        MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(FundamentalSignalType.Frequency), measurements[FrequencyIndex]);
+                        MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(SignalKind.Frequency), measurements[FrequencyIndex]);
 
                         // Map dF/dt
-                        MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(FundamentalSignalType.DfDt), measurements[DfDtIndex]);
+                        MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(SignalKind.DfDt), measurements[DfDtIndex]);
 
                         // Map analog values (AVn)
                         analogs = parsedDevice.AnalogValues;
@@ -1259,7 +1259,7 @@ namespace TVA.PhasorProtocols
                         for (x = 0; x < count; x++)
                         {
                             // Map analog value
-                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(FundamentalSignalType.Analog, x, count), analogs[x].Measurements[0]);
+                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(SignalKind.Analog, x, count), analogs[x].Measurements[0]);
                         }
 
                         // Map digital values (DVn)
@@ -1269,7 +1269,7 @@ namespace TVA.PhasorProtocols
                         for (x = 0; x < count; x++)
                         {
                             // Map digital value
-                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(FundamentalSignalType.Digital, x, count), digitals[x].Measurements[0]);
+                            MapMeasurementAttributes(mappedMeasurements, definedDevice.GetSignalReference(SignalKind.Digital, x, count), digitals[x].Measurements[0]);
                         }
                     }
                     else
@@ -1303,11 +1303,11 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Get signal reference for specified <see cref="FundamentalSignalType"/>.
+        /// Get signal reference for specified <see cref="SignalKind"/>.
         /// </summary>
-        /// <param name="type"><see cref="FundamentalSignalType"/> to request signal reference for.</param>
-        /// <returns>Signal reference of given <see cref="FundamentalSignalType"/>.</returns>
-        public string GetSignalReference(FundamentalSignalType type)
+        /// <param name="type"><see cref="SignalKind"/> to request signal reference for.</param>
+        /// <returns>Signal reference of given <see cref="SignalKind"/>.</returns>
+        public string GetSignalReference(SignalKind type)
         {
             // We cache non-indexed signal reference strings so they don't need to be generated at each mapping call.
             string[] references;
@@ -1329,13 +1329,13 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Get signal reference for specified <see cref="FundamentalSignalType"/> and <paramref name="index"/>.
+        /// Get signal reference for specified <see cref="SignalKind"/> and <paramref name="index"/>.
         /// </summary>
-        /// <param name="type"><see cref="FundamentalSignalType"/> to request signal reference for.</param>
-        /// <param name="index">Index <see cref="FundamentalSignalType"/> to request signal reference for.</param>
-        /// <param name="count">Number of signals defined for this <see cref="FundamentalSignalType"/>.</param>
-        /// <returns>Signal reference of given <see cref="FundamentalSignalType"/> and <paramref name="index"/>.</returns>
-        public string GetSignalReference(FundamentalSignalType type, int index, int count)
+        /// <param name="type"><see cref="SignalKind"/> to request signal reference for.</param>
+        /// <param name="index">Index <see cref="SignalKind"/> to request signal reference for.</param>
+        /// <param name="count">Number of signals defined for this <see cref="SignalKind"/>.</param>
+        /// <returns>Signal reference of given <see cref="SignalKind"/> and <paramref name="index"/>.</returns>
+        public string GetSignalReference(SignalKind type, int index, int count)
         {
             // We cache indexed signal reference strings so they don't need to be generated at each mapping call.
             // For speed purposes we intentionally do not validate that signalIndex falls within signalCount, be

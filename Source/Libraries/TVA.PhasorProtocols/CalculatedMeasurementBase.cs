@@ -246,7 +246,13 @@ namespace TVA.PhasorProtocols
     /// Signal type enumeration.
     /// </summary>
     /// <remarks>
-    /// The signal type represents the explicit fundamental type of a signal that a value represents.
+    /// <para>
+    /// The signal type represents the explicit type of a signal that a value represents.
+    /// </para>
+    /// <para>
+    /// Contrast the <see cref="SignalType"/> enumeration with the <see cref="SignalKind"/>
+    /// enumeration which defines an abstract type for a signal (e.g., simply phase or angle).
+    /// </para>
     /// </remarks>
     [Serializable()]
     public enum SignalType
