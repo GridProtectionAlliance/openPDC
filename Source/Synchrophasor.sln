@@ -219,9 +219,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Setup", "Tools\Setup\Setup.
 		{C0CAE6E7-454E-44C2-B2CF-BAF002E25D87} = {C0CAE6E7-454E-44C2-B2CF-BAF002E25D87}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataMigrationUtility", "DataMigrationUtility", "{FA2FA252-1D16-4911-BF7E-36C6E1C338E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataMigrationUtility", "Tools\DataMigrationUtility\DataMigrationUtility.csproj", "{933BE44C-B124-4ACC-8BE8-A6A22AAC4413}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 26
+		SccNumberOfProjects = 27
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
 		SccLocalPath0 = .
@@ -325,6 +329,10 @@ Global
 		SccProjectTopLevelParentUniqueName25 = Synchrophasor.sln
 		SccProjectName25 = Tools/Setup
 		SccLocalPath25 = Tools\\Setup
+		SccProjectUniqueName26 = Tools\\DataMigrationUtility\\DataMigrationUtility.csproj
+		SccProjectTopLevelParentUniqueName26 = Synchrophasor.sln
+		SccProjectName26 = Tools/DataMigrationUtility
+		SccLocalPath26 = Tools\\DataMigrationUtility
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor2.vsmdi
@@ -635,6 +643,16 @@ Global
 		{A4C500AC-70AC-4869-8A08-E10CCD45F64F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A4C500AC-70AC-4869-8A08-E10CCD45F64F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A4C500AC-70AC-4869-8A08-E10CCD45F64F}.Release|x86.ActiveCfg = Release|x86
+		{933BE44C-B124-4ACC-8BE8-A6A22AAC4413}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{933BE44C-B124-4ACC-8BE8-A6A22AAC4413}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{933BE44C-B124-4ACC-8BE8-A6A22AAC4413}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{933BE44C-B124-4ACC-8BE8-A6A22AAC4413}.Debug|x86.ActiveCfg = Debug|x86
+		{933BE44C-B124-4ACC-8BE8-A6A22AAC4413}.Debug|x86.Build.0 = Debug|x86
+		{933BE44C-B124-4ACC-8BE8-A6A22AAC4413}.Release|Any CPU.ActiveCfg = Release|x86
+		{933BE44C-B124-4ACC-8BE8-A6A22AAC4413}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{933BE44C-B124-4ACC-8BE8-A6A22AAC4413}.Release|Mixed Platforms.Build.0 = Release|x86
+		{933BE44C-B124-4ACC-8BE8-A6A22AAC4413}.Release|x86.ActiveCfg = Release|x86
+		{933BE44C-B124-4ACC-8BE8-A6A22AAC4413}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -655,6 +673,7 @@ Global
 		{F7821DF0-BD48-481E-9DF9-D64AEFD24F57} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{A2151D77-6595-41C0-BDB2-7689110EF7C6} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{D71CBFB5-291F-484E-9DAE-7442F4CA746A} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
+		{FA2FA252-1D16-4911-BF7E-36C6E1C338E4} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{20A58D77-CB7C-444E-A084-C61B40639B60} = {3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}
 		{8A1BCFAA-19E8-408A-8C72-170B1211DC27} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{1338A569-A156-4122-8B65-8D4C147AA348} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
@@ -686,5 +705,6 @@ Global
 		{2A74EACF-8291-47C7-A2ED-0D58771F24E2} = {F7821DF0-BD48-481E-9DF9-D64AEFD24F57}
 		{334BA160-26D6-4A3B-92E2-42DEB4381176} = {A2151D77-6595-41C0-BDB2-7689110EF7C6}
 		{A4C500AC-70AC-4869-8A08-E10CCD45F64F} = {D71CBFB5-291F-484E-9DAE-7442F4CA746A}
+		{933BE44C-B124-4ACC-8BE8-A6A22AAC4413} = {FA2FA252-1D16-4911-BF7E-36C6E1C338E4}
 	EndGlobalSection
 EndGlobal
