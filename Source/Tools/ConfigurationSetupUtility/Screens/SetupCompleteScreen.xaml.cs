@@ -41,7 +41,6 @@ namespace ConfigurationSetupUtility.Screens
     /// </summary>
     public partial class SetupCompleteScreen : UserControl, IScreen
     {
-
         #region [ Members ]
 
         // Fields
@@ -183,9 +182,6 @@ namespace ConfigurationSetupUtility.Screens
         {
             if (m_state != null)
             {
-                Process migrationProcess = null;
-                Process managerProcess = null;
-
                 try
                 {
                     bool existing = Convert.ToBoolean(m_state["existing"]);
@@ -234,12 +230,12 @@ namespace ConfigurationSetupUtility.Screens
                         }
 
                         // Run the DataMigrationUtility.
-                        migrationProcess = new Process();
-                        migrationProcess.StartInfo.FileName = "DataMigrationUtility.exe";
-                        migrationProcess.StartInfo.UseShellExecute = false;
-                        migrationProcess.StartInfo.CreateNoWindow = true;
-                        migrationProcess.Start();
-                        migrationProcess.WaitForExit();
+                        using (Process migrationProcess = new Process())
+                        {
+                            migrationProcess.StartInfo.FileName = "DataMigrationUtility.exe";
+                            migrationProcess.Start();
+                            migrationProcess.WaitForExit();
+                        }
                     }
 
                     // If the user requested it, start or restart the openPDC service.
@@ -247,34 +243,26 @@ namespace ConfigurationSetupUtility.Screens
                     {
                         try
                         {
+                        #if DEBUG
+                            Process.Start("openPDC.exe");
+                        #else
                             m_openPdcServiceController.Start();
+                        #endif                            
                         }
                         catch
                         {
-                            MessageBox.Show("Setup utility was unable to start openPDC service, you will need to manually start the service.", "Cannot Start Windows Service", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show("The configuration utility was unable to start openPDC service, you will need to manually start the service.", "Cannot Start Windows Service", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                     }
 
                     // If the user requested it, start the openPDC Manager.
                     if (m_managerStartCheckBox.IsChecked.Value)
-                    {
-                        managerProcess = new Process();
-                        managerProcess.StartInfo.FileName = "openPDCManager.exe";
-                        managerProcess.StartInfo.UseShellExecute = false;
-                        managerProcess.StartInfo.CreateNoWindow = true;
-                        managerProcess.Start();
-                    }
+                        Process.Start("openPDCManager.exe");
                 }
                 finally
                 {
                     if (m_openPdcServiceController != null)
                         m_openPdcServiceController.Close();
-
-                    if (migrationProcess != null)
-                        migrationProcess.Close();
-
-                    if (managerProcess != null)
-                        managerProcess.Close();
                 }
             }
         }
