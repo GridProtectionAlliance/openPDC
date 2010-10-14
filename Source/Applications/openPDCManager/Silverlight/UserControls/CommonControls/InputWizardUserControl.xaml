@@ -82,11 +82,14 @@
                                 </StackPanel>
                                 
                                 <Border Grid.Row="5" Grid.Column="1" BorderThickness="1" Margin="2,20,2,20" BorderBrush="#FF333333" />
-                                
-                                <TextBlock Grid.Row="6" Grid.Column="0" Text="Device Protocol" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                <ComboBox x:Name="ComboboxProtocol" Grid.Row="6" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" IsTabStop="True" TabIndex="6"/>
-                                <TextBlock Grid.Row="7" Grid.Column="0" x:Name="TextBlockIniFile" Text="Select INI File" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                <StackPanel x:Name="StackPanelIniFile" Orientation="Horizontal" Grid.Row="7" Grid.Column="1">
+
+                                <TextBlock Grid.Row="6" Grid.Column="0" Text="Device ID Code" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
+                                <TextBox x:Name="TextBoxAccessID" Text="0" Grid.Row="6" Grid.Column="1" Width="{StaticResource SmallerItemSize}" HorizontalAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
+
+                                <TextBlock Grid.Row="7" Grid.Column="0" Text="Device Protocol" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
+                                <ComboBox x:Name="ComboboxProtocol" Grid.Row="7" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" IsTabStop="True" TabIndex="6"/>
+                                <TextBlock Grid.Row="8" Grid.Column="0" x:Name="TextBlockIniFile" Text="Select INI File" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
+                                <StackPanel x:Name="StackPanelIniFile" Orientation="Horizontal" Grid.Row="8" Grid.Column="1">
                                     <TextBox x:Name="TextBoxIniFile" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" IsTabStop="True" TabIndex="7"/>
                                     <Button x:Name="ButtonBrowseIniFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand" IsTabStop="True" TabIndex="8">
                                         <Button.RenderTransform>
@@ -94,15 +97,6 @@
                                         </Button.RenderTransform>
                                     </Button>
                                 </StackPanel>
-
-                                <CheckBox x:Name="CheckboxConnectToPDC" Content="Connection is to Concentrator" FontSize="{StaticResource XLargeTextSize}" FontWeight="Bold" Grid.Row="8" Grid.Column="1" VerticalAlignment="Bottom" Margin="5" IsTabStop="True" TabIndex="9"/>
-                                <TextBlock Grid.Row="9" Grid.Column="0" x:Name="TextBlockPDCName" Text="PDC Name" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                <TextBox x:Name="TextBoxPDCName" Grid.Row="9" Grid.Column="1" Width="{StaticResource LargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" IsTabStop="True"  TabIndex="10"/>
-                                <TextBlock Grid.Row="10" Grid.Column="0" x:Name="TextBlockAcronym" Text="PDC Acronym" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                <TextBox x:Name="TextBoxPDCAcronym" Grid.Row="10" Grid.Column="1" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" IsTabStop="True" TabIndex="11"/>
-                                <TextBlock Grid.Row="11" Grid.Column="0" x:Name="TextBlockPDCDeviceVendor" Text="PDC Device Vendor" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                <ComboBox x:Name="ComboboxPDCVendor" Grid.Row="11" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" IsTabStop="True" TabIndex="12"/>
-
                             </Grid>
                         </layoutToolkit:AccordionItem.Content>
                     </layoutToolkit:AccordionItem>
@@ -120,6 +114,11 @@
                                     <ColumnDefinition Width="4*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
@@ -166,14 +165,27 @@
                                     <Button x:Name="ButtonSaveConfiguration" Content="Save Configuration" Width="{StaticResource LargeItemSize}" Margin="2" Click="ButtonSaveConfiguration_Click" Cursor="Hand"/>
                                 </StackPanel>
 
-                                <Border Grid.Row="7" Grid.Column="1" BorderThickness="1" Margin="2,15,2,15" BorderBrush="#FF333333" />
+                                <Border Grid.Row="7" Grid.Column="1" BorderThickness="1" Margin="2,5,2,5" BorderBrush="#FF333333" />
 
-                                <TextBlock Grid.Row="8" Grid.Column="0" Text="Company" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
-                                <ComboBox x:Name="ComboboxCompany" Grid.Row="8" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
-                                <TextBlock Grid.Row="9" Grid.Column="0" Text="Historian" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
-                                <ComboBox x:Name="ComboboxHistorian" Grid.Row="9" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
-                                <TextBlock Grid.Row="10" Grid.Column="0" Text="Interconnection" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
-                                <ComboBox x:Name="ComboboxInterconnection" Grid.Row="10" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
+                                <CheckBox x:Name="CheckboxConnectToPDC" Content="Connection is to Concentrator" FontSize="{StaticResource XLargeTextSize}" FontWeight="Bold" Grid.Row="8" Grid.Column="1" VerticalAlignment="Bottom" Margin="5" IsTabStop="True" TabIndex="9"/>
+                                <TextBlock Grid.Row="9" Grid.Column="0" x:Name="TextBlockAcronym" Text="PDC Acronym" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
+                                <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2">
+                                    <TextBox x:Name="TextBoxPDCAcronym" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Margin="2" IsTabStop="True" TabIndex="11" TextChanged="TextBoxPDCAcronym_TextChanged" LostFocus="TextBoxPDCAcronym_LostFocus"/>
+                                    <TextBlock x:Name="TextBlockPDCMessage" Margin="2" FontWeight="Normal"/>
+                                </StackPanel>
+                                <TextBlock Grid.Row="10" Grid.Column="0" x:Name="TextBlockPDCName" Text="PDC Name" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
+                                <TextBox x:Name="TextBoxPDCName" Grid.Row="10" Grid.Column="1" Width="{StaticResource LargerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" IsTabStop="True"  TabIndex="10"/>                                
+                                <TextBlock Grid.Row="11" Grid.Column="0" x:Name="TextBlockPDCDeviceVendor" Text="PDC Device Vendor" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
+                                <ComboBox x:Name="ComboboxPDCVendor" Grid.Row="11" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" IsTabStop="True" TabIndex="12"/>
+
+                                <Border Grid.Row="12" Grid.Column="1" BorderThickness="1" Margin="2,5,2,5" BorderBrush="#FF333333" />
+                                
+                                <TextBlock Grid.Row="13" Grid.Column="0" Text="Company" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
+                                <ComboBox x:Name="ComboboxCompany" Grid.Row="13" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
+                                <TextBlock Grid.Row="14" Grid.Column="0" Text="Historian" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
+                                <ComboBox x:Name="ComboboxHistorian" Grid.Row="14" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
+                                <TextBlock Grid.Row="15" Grid.Column="0" Text="Interconnection" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
+                                <ComboBox x:Name="ComboboxInterconnection" Grid.Row="15" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
 
                             </Grid>
                         </layoutToolkit:AccordionItem.Content>

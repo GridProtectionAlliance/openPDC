@@ -63,7 +63,8 @@ namespace openPDCManager.UserControls.CommonControls
         string m_iniFileName = string.Empty;
         string m_iniFilePath = string.Empty;
         bool nextButtonClicked = false;
-        bool m_skipDisableRealTimeData = false;
+        bool m_skipDisableRealTimeData = false;        
+        bool m_goToPreviousAccordianItem = false;
 
         #endregion
 
@@ -85,6 +86,8 @@ namespace openPDCManager.UserControls.CommonControls
             //ButtonRequestConfiguration.Content = new BitmapImage(new Uri(@"images/RequestData.png", UriKind.Relative));
             ButtonBuildConnectionString.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));
             ButtonBuildCommandChannel.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));            
+#else
+            ButtonManualConfiguration.Visibility = Visibility.Collapsed;
 #endif
             ButtonBrowseConfigurationFile.Click += new RoutedEventHandler(ButtonBrowseConfigurationFile_Click);
             ButtonBrowseConnectionFile.Click += new RoutedEventHandler(ButtonBrowseConnectionFile_Click);
@@ -94,7 +97,7 @@ namespace openPDCManager.UserControls.CommonControls
             ButtonRequestConfiguration.Click += new RoutedEventHandler(ButtonRequestConfiguration_Click);
             ButtonBuildConnectionString.Click += new RoutedEventHandler(ButtonBuildConnectionString_Click);
             ButtonBuildCommandChannel.Click += new RoutedEventHandler(ButtonBuildCommandChannel_Click);
-            AccordianWizard.SelectionChanged += new SelectionChangedEventHandler(AccordianWizard_SelectionChanged);
+            AccordianWizard.SelectionChanged += new SelectionChangedEventHandler(AccordianWizard_SelectionChanged);            
             CheckboxConnectToPDC.Checked += new RoutedEventHandler(CheckboxConnectToPDC_Checked);
             CheckboxConnectToPDC.Unchecked += new RoutedEventHandler(CheckboxConnectToPDC_Unchecked);
             ComboboxProtocol.SelectionChanged += new SelectionChangedEventHandler(ComboboxProtocol_SelectionChanged);
@@ -131,8 +134,25 @@ namespace openPDCManager.UserControls.CommonControls
 
             if (AccordianWizard.SelectedIndex == 2)
             {
-                if ((bool)CheckboxConnectToPDC.IsChecked)
-                    GetDeviceByAcronym(TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
+                if ((bool)CheckboxConnectToPDC.IsChecked || m_wizardDeviceInfoList.Count > 1)
+                {                   
+                    CheckboxConnectToPDC.IsChecked = true;
+                    if (!string.IsNullOrEmpty(TextBoxPDCAcronym.Text.Replace(" ", "")))
+                        GetDeviceByAcronym(TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
+                    else
+                    {                        
+                        SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Error },
+                                 ButtonType.OkOnly);
+#if !SILVERLIGHT
+                        sm.Owner = Window.GetWindow(this);
+                        sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                        sm.ShowPopup();
+                        m_goToPreviousAccordianItem = true;
+                        TextBoxPDCAcronym.Focus();
+                        ChangeAccordianSelection(AccordianWizard.SelectedIndex - 1);                        
+                    }
+                }
             }
 
             if (AccordianWizard.SelectedIndex == 0)
@@ -278,10 +298,9 @@ namespace openPDCManager.UserControls.CommonControls
             sb.Begin();
 #endif            
             if (AccordianWizard.SelectedIndex > 0)
-            {
-                AccordionItem item = AccordianWizard.Items[AccordianWizard.SelectedIndex - 1] as AccordionItem;
-                item.IsSelected = true;
-            }
+                ChangeAccordianSelection(AccordianWizard.SelectedIndex - 1);
+
+            m_goToPreviousAccordianItem = false;
         }
 
         void ButtonNext_Click(object sender, RoutedEventArgs e)
@@ -323,8 +342,9 @@ namespace openPDCManager.UserControls.CommonControls
 
             if (AccordianWizard.SelectedIndex < AccordianWizard.Items.Count - 1)
             {
-                AccordionItem item = AccordianWizard.Items[AccordianWizard.SelectedIndex + 1] as AccordionItem;
-                item.IsSelected = true;
+                ChangeAccordianSelection(AccordianWizard.SelectedIndex + 1);
+                //AccordionItem item = AccordianWizard.Items[AccordianWizard.SelectedIndex + 1] as AccordionItem;
+                //item.IsSelected = true;
             }
 
             ButtonNext.IsEnabled = true;
@@ -499,7 +519,7 @@ namespace openPDCManager.UserControls.CommonControls
 
         void ButtonBuildCommandChannel_Click(object sender, RoutedEventArgs e)
         {
-            ConnectionStringBuilder csb = new ConnectionStringBuilder(ConnectionStringBuilder.ConnectionType.CommandChannel);
+            ConnectionStringBuilder csb = new ConnectionStringBuilder(ConnectionStringBuilder.ConnectionType.AlternateCommandChannel);
             if (!string.IsNullOrEmpty(TextBoxAlternateCommandChannel.Text))
                 csb.ConnectionString = TextBoxAlternateCommandChannel.Text;
             csb.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
@@ -576,6 +596,19 @@ namespace openPDCManager.UserControls.CommonControls
                     {
                         m_wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>(CommonFunctions.ParseConfigurationFrame(configurator.UserControlConfiguratorCreator.ConfigurationFrame));
                         ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
+                        if (m_wizardDeviceInfoList.Count > 1)
+                        {                    
+                            CheckboxConnectToPDC.IsChecked = true;
+                            SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Information },
+                                ButtonType.OkOnly);
+                            sm.Owner = Window.GetWindow(this);
+                            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            sm.ShowPopup();
+                            TextBoxPDCAcronym.Focus();                            
+                        }
+                        else
+                            CheckboxConnectToPDC.IsChecked = false;
+
                         ChangeSummaryVisibility(Visibility.Visible);
                     }
                 });
@@ -584,6 +617,71 @@ namespace openPDCManager.UserControls.CommonControls
             configurator.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             configurator.ShowDialog();
 #endif
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+#if !SILVERLIGHT
+            try
+            {
+                TextBox textBoxAcronym = (TextBox)sender;
+
+                if (CommonFunctions.GetDeviceByAcronym(null, textBoxAcronym.Text) == null)
+                    ((textBoxAcronym.Parent as Border).Parent as StackPanel).Background = new SolidColorBrush(Color.FromArgb(00, 255, 255, 255));
+                else
+                    ((textBoxAcronym.Parent as Border).Parent as StackPanel).Background = new SolidColorBrush(Color.FromArgb(155, 10, 255, 25));
+            }
+            catch { }
+#endif
+        }
+
+        private void TextBoxPDCAcronym_TextChanged(object sender, TextChangedEventArgs e)      
+        {
+            //bool letContinue = true;
+#if !SILVERLIGHT
+
+            Device device = CommonFunctions.GetDeviceByAcronym(null, TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
+            if (device == null)
+            {
+              //  letContinue = true;
+                TextBlockPDCMessage.Text = "";
+                TextBlockPDCMessage.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
+                TextBlockPDCMessage.FontWeight = FontWeights.Normal;
+                TextBoxPDCAcronym.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                if (m_goToPreviousAccordianItem) m_goToPreviousAccordianItem = false;
+            }
+            else if (device.IsConcentrator)
+            {
+              //  letContinue = true;
+                TextBlockPDCMessage.Text = "PDC device with the same acronym already exists. All " + m_wizardDeviceInfoList.Count.ToString() + " devices will be added to this existing PDC.";
+                TextBlockPDCMessage.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
+                TextBlockPDCMessage.FontWeight = FontWeights.Normal;
+                TextBoxPDCAcronym.Background = new SolidColorBrush(Color.FromArgb(155, 10, 255, 25));
+                if (m_goToPreviousAccordianItem) m_goToPreviousAccordianItem = false;
+            }
+            else
+            {
+              //  letContinue = false;
+                TextBlockPDCMessage.Text = "A non-PDC device with the same acronym already exists. Please change acronym to continue.";
+                TextBlockPDCMessage.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 25, 25));
+                TextBlockPDCMessage.FontWeight = FontWeights.Bold;
+                TextBoxPDCAcronym.Background = new SolidColorBrush(Color.FromArgb(155, 255, 25, 25));
+            }
+#endif
+            //if (letContinue)
+            //{
+            //    if (!(bool)CheckboxConnectToPDC.IsChecked || TextBoxPDCAcronym.Text.Length > 0)
+            //        ButtonNext.Visibility = Visibility.Visible;   //.IsEnabled = true;
+            //    else
+            //        ButtonNext.Visibility = Visibility.Collapsed;
+            //}
+            //else
+            //    ButtonNext.Visibility = Visibility.Collapsed;
+        }
+
+        private void TextBoxPDCAcronym_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBoxPDCAcronym.Text = TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper();
         }
 
         #endregion
@@ -664,6 +762,7 @@ namespace openPDCManager.UserControls.CommonControls
             TextBoxPDCAcronym.Visibility = visibility;
             TextBlockPDCDeviceVendor.Visibility = visibility;
             ComboboxPDCVendor.Visibility = visibility;
+            TextBlockPDCMessage.Visibility = visibility;
         }
 
         void IniFileUploadVisualization(Visibility visibility)
@@ -712,6 +811,15 @@ namespace openPDCManager.UserControls.CommonControls
         string ConnectionString()
         {
             string connectionString = TextBoxConnectionString.Text;
+
+            if (string.IsNullOrEmpty(TextBoxAccessID.Text))
+                TextBoxAccessID.Text = "0";
+            
+            if (!connectionString.EndsWith(";"))
+                connectionString += ";";
+            
+            connectionString += "AccessID=" + TextBoxAccessID.Text;
+                        
             if (!string.IsNullOrEmpty(TextBoxAlternateCommandChannel.Text))
             {
                 if (!connectionString.EndsWith(";"))
@@ -719,27 +827,23 @@ namespace openPDCManager.UserControls.CommonControls
 
                 connectionString += "commandchannel={" + TextBoxAlternateCommandChannel.Text + "}";
             }
+
+
             return connectionString;
         }
         
-        #endregion
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        void ChangeAccordianSelection(int index)
         {
-#if !SILVERLIGHT
+            (AccordianWizard.Items[index] as AccordionItem).IsSelected = true;
 
-            try
+            if (m_goToPreviousAccordianItem && AccordianWizard.SelectedIndex > 0)
             {
-                TextBox textBoxAcronym = (TextBox)sender;
-
-                if (CommonFunctions.GetDeviceByAcronym(null, textBoxAcronym.Text) == null)
-                    ((textBoxAcronym.Parent as Border).Parent as StackPanel).Background = new SolidColorBrush(Color.FromArgb(00, 255, 255, 255));
-                else
-                    ((textBoxAcronym.Parent as Border).Parent as StackPanel).Background = new SolidColorBrush(Color.FromArgb(155, 10, 255, 25));
+                (AccordianWizard.Items[AccordianWizard.SelectedIndex - 1] as AccordionItem).IsSelected = true;
+                //m_goToPreviousAccordianItem = false;
             }
-            catch { }
-#endif
         }
+
+        #endregion
         
     }
 }

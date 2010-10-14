@@ -54,7 +54,7 @@
                                             <Image Source="Images/Chart.png" />
                                         </igMenu:XamWebMenuItem.Icon>
                                     </igMenu:XamWebMenuItem>
-                                    <igMenu:XamWebMenuItem Header="Remote Console" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Monitor.xaml">
+                                    <igMenu:XamWebMenuItem Header="System Console" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Monitor.xaml">
                                         <igMenu:XamWebMenuItem.Icon>
                                             <Image Source="Images/Chart.png" />
                                         </igMenu:XamWebMenuItem.Icon>
@@ -66,12 +66,12 @@
                                             <Image Source="Images/List.png" />
                                         </igMenu:XamWebMenuItem.Icon>
                                     </igMenu:XamWebMenuItem>
-                                    <igMenu:XamWebMenuItem Header="Add New" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Devices/AddNew.xaml">
+                                    <igMenu:XamWebMenuItem Header="Add New (Manual)" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Devices/AddNew.xaml">
                                         <igMenu:XamWebMenuItem.Icon>
                                             <Image Source="Images/Pmu.png" />
                                         </igMenu:XamWebMenuItem.Icon>
                                     </igMenu:XamWebMenuItem>
-                                    <igMenu:XamWebMenuItem Header="Configuration Wizard" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Devices/InputWizard.xaml">
+                                    <igMenu:XamWebMenuItem Header="Add New (Wizard)" Style="{StaticResource XamWebMenuItemStyleMainMenu}" NavigationOnClick="True" NavigationUri="/Pages/Devices/InputWizard.xaml">
                                         <igMenu:XamWebMenuItem.Icon>
                                             <Image Source="Images/Configuration.png" />
                                         </igMenu:XamWebMenuItem.Icon>

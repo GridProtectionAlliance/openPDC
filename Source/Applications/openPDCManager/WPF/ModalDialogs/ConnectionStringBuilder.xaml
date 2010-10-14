@@ -23,7 +23,7 @@
                                         <ColumnDefinition Width="3*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Host IP" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <TextBlock x:Name="TextBlockHostIP" Grid.Row="0" Grid.Column="0" Text="Host IP" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
                                     <TextBox x:Name="TextBoxHostIP" Grid.Row="0" Grid.Column="1" Text="127.0.0.1" Width="{StaticResource LargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
                                     <CheckBox x:Name="CheckboxEstablishServer" Content="Establish TCP Server" FontWeight="Bold" Grid.Row="0" Grid.Column="2" VerticalAlignment="Bottom" Margin="5"/>
                                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Port" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />

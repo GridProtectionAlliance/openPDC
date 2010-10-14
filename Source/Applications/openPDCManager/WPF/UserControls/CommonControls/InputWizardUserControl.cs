@@ -89,7 +89,19 @@ namespace openPDCManager.UserControls.CommonControls
                     m_bindingDevices = false;
 
                 ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
-
+                if (m_wizardDeviceInfoList.Count > 1)
+                {
+                    CheckboxConnectToPDC.IsChecked = true;
+                    SystemMessages sm1 = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Information },
+                                ButtonType.OkOnly);
+                    sm1.Owner = Window.GetWindow(this);
+                    sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm1.ShowPopup();
+                    TextBoxPDCAcronym.Focus();                    
+                }
+                else
+                    CheckboxConnectToPDC.IsChecked = false;
+                
                 ChangeSummaryVisibility(Visibility.Visible);
 
                 sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Retrieved Configuration Successfully!", SystemMessage = "", UserMessageType = openPDCManager.Utilities.MessageType.Success }, ButtonType.OkOnly);
@@ -163,8 +175,21 @@ namespace openPDCManager.UserControls.CommonControls
             {
                 Device device = new Device();
                 device = CommonFunctions.GetDeviceByAcronym(null, acronym);
-                if (device != null && device.IsConcentrator)
-                    m_parentID = device.ID;
+                if (device != null)
+                {
+                    if (device.IsConcentrator)
+                        m_parentID = device.ID;
+                    else
+                    {
+                        SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Invalid PDC Acronym", SystemMessage = "A non-PDC device with the same acronym already exists. Please change PDC acronym to continue.", UserMessageType = openPDCManager.Utilities.MessageType.Error },
+                        ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        sm.ShowPopup();
+                        TextBoxPDCAcronym.Focus();
+                        m_goToPreviousAccordianItem = true;
+                    }
+                }
                 else
                 {
                     App app = (App)Application.Current;
@@ -317,7 +342,19 @@ namespace openPDCManager.UserControls.CommonControls
                     m_bindingDevices = false;
 
                 ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
-
+                if (m_wizardDeviceInfoList.Count > 1)
+                {                    
+                    CheckboxConnectToPDC.IsChecked = true;
+                    SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Information },
+                                ButtonType.OkOnly);
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm.ShowPopup();
+                    TextBoxPDCAcronym.Focus();                    
+                }
+                else
+                    CheckboxConnectToPDC.IsChecked = false;
+                
                 ChangeSummaryVisibility(Visibility.Visible);
             }
             catch (Exception ex)
@@ -362,6 +399,8 @@ namespace openPDCManager.UserControls.CommonControls
                         TextBoxConnectionString.Text += ";iniFileName=" + m_connectionSettings.configurationFileName + ";refreshConfigFileOnChange=" + m_connectionSettings.refreshConfigurationFileOnChange.ToString() +
                                     ";parseWordCountFromByte=" + m_connectionSettings.parseWordCountFromByte;
                     }
+                                        
+                    TextBoxAccessID.Text = m_connectionSettings.PmuID.ToString();
 
                     //Select Phasor Protocol type in the combobox based on the protocol in the connection file.
                     GetProtocolIDByAcronym();

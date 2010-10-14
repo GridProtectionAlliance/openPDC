@@ -65,7 +65,8 @@ namespace openPDCManager.ModalDialogs
         {
             DeviceConnection,
             DataChannel,
-            CommandChannel
+            CommandChannel,
+            AlternateCommandChannel
         }
 
         #endregion
@@ -287,8 +288,17 @@ namespace openPDCManager.ModalDialogs
                 TabItemSerial.Visibility = Visibility.Visible;
                 TabItemFile.Visibility = Visibility.Collapsed;
                 TabItemUdpServer.Visibility = Visibility.Collapsed;
-                TextBoxHostIP.IsEnabled = false;
-                CheckboxEstablishServer.IsEnabled = false;
+                TextBlockHostIP.Visibility = Visibility.Collapsed;
+                TextBoxHostIP.Visibility = Visibility.Collapsed;
+                CheckboxEstablishServer.Visibility = Visibility.Collapsed;
+            }
+            else if (m_connectionType == ConnectionType.AlternateCommandChannel)
+            {
+                TabItemTCP.Visibility = Visibility.Visible;
+                TabItemUDP.Visibility = Visibility.Collapsed;
+                TabItemSerial.Visibility = Visibility.Visible;
+                TabItemFile.Visibility = Visibility.Collapsed;
+                TabItemUdpServer.Visibility = Visibility.Collapsed;                
             }
             else if (m_connectionType == ConnectionType.DataChannel)
             {

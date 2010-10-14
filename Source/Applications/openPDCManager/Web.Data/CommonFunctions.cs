@@ -1054,8 +1054,8 @@ namespace openPDCManager.Data
                 else
                     command.CommandText = "UPDATE Company SET Acronym = @acronym, MapAcronym = @mapAcronym, Name = @name, URL = @url, LoadOrder = @loadOrder WHERE ID = @id";
 
-                command.Parameters.Add(AddWithValue(command, "@acronym", company.Acronym));
-                command.Parameters.Add(AddWithValue(command, "@mapAcronym", company.MapAcronym));
+                command.Parameters.Add(AddWithValue(command, "@acronym", company.Acronym.Replace(" ", "").ToUpper()));
+                command.Parameters.Add(AddWithValue(command, "@mapAcronym", company.MapAcronym.Replace(" ", "").ToUpper()));
                 command.Parameters.Add(AddWithValue(command, "@name", company.Name));
                 command.Parameters.Add(AddWithValue(command, "@url", company.URL));
                 command.Parameters.Add(AddWithValue(command, "@loadOrder", company.LoadOrder));
@@ -1180,7 +1180,7 @@ namespace openPDCManager.Data
                                         "AnalogScalingValue = @analogScalingValue, DigitalMaskValue = @digitalMaskValue WHERE ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", outputStream.NodeID));
-                command.Parameters.Add(AddWithValue(command, "@acronym", outputStream.Acronym));
+                command.Parameters.Add(AddWithValue(command, "@acronym", outputStream.Acronym.Replace(" ", "").ToUpper()));
                 command.Parameters.Add(AddWithValue(command, "@name", outputStream.Name));
                 command.Parameters.Add(AddWithValue(command, "@type", outputStream.Type));
                 command.Parameters.Add(AddWithValue(command, "@connectionString", outputStream.ConnectionString));
@@ -1527,8 +1527,8 @@ namespace openPDCManager.Data
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDevice.NodeID));
                 command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamDevice.AdapterID));
-                command.Parameters.Add(AddWithValue(command, "@acronym", outputStreamDevice.Acronym));
-                command.Parameters.Add(AddWithValue(command, "@bpaAcronym", outputStreamDevice.BpaAcronym));
+                command.Parameters.Add(AddWithValue(command, "@acronym", outputStreamDevice.Acronym.Replace(" ", "").ToUpper()));
+                command.Parameters.Add(AddWithValue(command, "@bpaAcronym", outputStreamDevice.BpaAcronym.Replace(" ", "").ToUpper()));
                 command.Parameters.Add(AddWithValue(command, "@name", outputStreamDevice.Name));
                 command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDevice.LoadOrder));
                 command.Parameters.Add(AddWithValue(command, "@enabled", outputStreamDevice.Enabled));
@@ -2121,7 +2121,7 @@ namespace openPDCManager.Data
                         "ConnectionString = @connectionString, IsLocal = @isLocal, MeasurementReportingInterval = @measurementReportingInterval, Description = @description, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", historian.NodeID));
-                command.Parameters.Add(AddWithValue(command, "@acronym", historian.Acronym));
+                command.Parameters.Add(AddWithValue(command, "@acronym", historian.Acronym.Replace(" ", "").ToUpper()));
                 command.Parameters.Add(AddWithValue(command, "@name", historian.Name));
                 command.Parameters.Add(AddWithValue(command, "@assemblyName", historian.AssemblyName));
                 command.Parameters.Add(AddWithValue(command, "@typeName", historian.TypeName));
@@ -2428,7 +2428,7 @@ namespace openPDCManager.Data
                 else
                     command.CommandText = "Update Vendor Set Acronym = @acronym, Name = @name, PhoneNumber = @phoneNumber, ContactEmail = @contactEmail, URL = @url Where ID = @id";
 
-                command.Parameters.Add(AddWithValue(command, "@acronym", vendor.Acronym));
+                command.Parameters.Add(AddWithValue(command, "@acronym", vendor.Acronym.Replace(" ", "").ToUpper()));
                 command.Parameters.Add(AddWithValue(command, "@name", vendor.Name));
                 command.Parameters.Add(AddWithValue(command, "@phoneNumber", vendor.PhoneNumber));
                 command.Parameters.Add(AddWithValue(command, "@contactEmail", vendor.ContactEmail));
@@ -2688,7 +2688,7 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
                 command.Parameters.Add(AddWithValue(command, "@nodeID", device.NodeID));
                 command.Parameters.Add(AddWithValue(command, "@parentID", device.ParentID ?? (object)DBNull.Value));
-                command.Parameters.Add(AddWithValue(command, "@acronym", device.Acronym));
+                command.Parameters.Add(AddWithValue(command, "@acronym", device.Acronym.Replace(" ", "").ToUpper()));
                 command.Parameters.Add(AddWithValue(command, "@name", device.Name));
                 command.Parameters.Add(AddWithValue(command, "@isConcentrator", device.IsConcentrator));
                 command.Parameters.Add(AddWithValue(command, "@companyID", device.CompanyID ?? (object)DBNull.Value));
@@ -3739,7 +3739,7 @@ namespace openPDCManager.Data
                     command.CommandText = "Update OtherDevice Set Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, CompanyID = @companyID, VendorDeviceID = @vendorDeviceID, Longitude = @longitude, " +
                         "Latitude = @latitude, InterconnectionID = @interconnectionID, Planned = @planned, Desired = @desired, InProgress = @inProgress Where ID = @id";
 
-                command.Parameters.Add(AddWithValue(command, "@acronym", otherDevice.Acronym));
+                command.Parameters.Add(AddWithValue(command, "@acronym", otherDevice.Acronym.Replace(" ", "").ToUpper()));
                 command.Parameters.Add(AddWithValue(command, "@name", otherDevice.Name));
                 command.Parameters.Add(AddWithValue(command, "@isConcentrator", otherDevice.IsConcentrator));
                 command.Parameters.Add(AddWithValue(command, "@companyID", otherDevice.CompanyID ?? (object)DBNull.Value));
@@ -4149,7 +4149,7 @@ namespace openPDCManager.Data
                         "IgnoreBadTimeStamps = @ignoreBadTimeStamps, TimeResolution = @timeResolution, AllowPreemptivePublishing = @allowPreemptivePublishing, DownsamplingMethod = @downsamplingMethod Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", calculatedMeasurement.NodeId));
-                command.Parameters.Add(AddWithValue(command, "@acronym", calculatedMeasurement.Acronym));
+                command.Parameters.Add(AddWithValue(command, "@acronym", calculatedMeasurement.Acronym.Replace(" ", "").ToUpper()));
                 command.Parameters.Add(AddWithValue(command, "@name", calculatedMeasurement.Name));
                 command.Parameters.Add(AddWithValue(command, "@assemblyName", calculatedMeasurement.AssemblyName));
                 command.Parameters.Add(AddWithValue(command, "@typeName", calculatedMeasurement.TypeName));
