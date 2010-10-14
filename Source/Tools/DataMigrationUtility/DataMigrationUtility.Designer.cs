@@ -65,6 +65,8 @@
             // 
             // GroupBox
             // 
+            this.GroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.GroupBox.Controls.Add(this.ExampleConnectionStringLinkLabel);
             this.GroupBox.Controls.Add(this.ToConnectString);
             this.GroupBox.Controls.Add(this.ToDataType);
@@ -85,7 +87,7 @@
             this.GroupBox.Controls.Add(this.FromConnectStringLabel);
             this.GroupBox.Location = new System.Drawing.Point(12, 12);
             this.GroupBox.Name = "GroupBox";
-            this.GroupBox.Size = new System.Drawing.Size(601, 202);
+            this.GroupBox.Size = new System.Drawing.Size(621, 202);
             this.GroupBox.TabIndex = 2;
             this.GroupBox.TabStop = false;
             // 
@@ -102,19 +104,23 @@
             // 
             // ToConnectString
             // 
+            this.ToConnectString.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.ToConnectString.Location = new System.Drawing.Point(16, 122);
             this.ToConnectString.Multiline = true;
             this.ToConnectString.Name = "ToConnectString";
             this.ToConnectString.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.ToConnectString.Size = new System.Drawing.Size(450, 56);
+            this.ToConnectString.Size = new System.Drawing.Size(470, 56);
             this.ToConnectString.TabIndex = 10;
             // 
             // ToDataType
             // 
+            this.ToDataType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.ToDataType.FormattingEnabled = true;
             this.ToDataType.Location = new System.Drawing.Point(314, 96);
             this.ToDataType.Name = "ToDataType";
-            this.ToDataType.Size = new System.Drawing.Size(124, 21);
+            this.ToDataType.Size = new System.Drawing.Size(144, 21);
             this.ToDataType.TabIndex = 29;
             this.ToDataType.SelectedIndexChanged += new System.EventHandler(this.DataType_SelectedIndexChanged);
             // 
@@ -134,19 +140,23 @@
             // 
             // FromConnectString
             // 
+            this.FromConnectString.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.FromConnectString.Location = new System.Drawing.Point(16, 37);
             this.FromConnectString.Multiline = true;
             this.FromConnectString.Name = "FromConnectString";
             this.FromConnectString.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.FromConnectString.Size = new System.Drawing.Size(450, 56);
+            this.FromConnectString.Size = new System.Drawing.Size(470, 56);
             this.FromConnectString.TabIndex = 3;
             // 
             // FromDataType
             // 
+            this.FromDataType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.FromDataType.FormattingEnabled = true;
             this.FromDataType.Location = new System.Drawing.Point(314, 11);
             this.FromDataType.Name = "FromDataType";
-            this.FromDataType.Size = new System.Drawing.Size(124, 21);
+            this.FromDataType.Size = new System.Drawing.Size(144, 21);
             this.FromDataType.TabIndex = 27;
             this.FromDataType.SelectedIndexChanged += new System.EventHandler(this.DataType_SelectedIndexChanged);
             // 
@@ -166,7 +176,8 @@
             // 
             // LinkToTest
             // 
-            this.LinkToTest.Location = new System.Drawing.Point(441, 99);
+            this.LinkToTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.LinkToTest.Location = new System.Drawing.Point(461, 99);
             this.LinkToTest.Name = "LinkToTest";
             this.LinkToTest.Size = new System.Drawing.Size(32, 16);
             this.LinkToTest.TabIndex = 9;
@@ -176,7 +187,8 @@
             // 
             // LinkFromTest
             // 
-            this.LinkFromTest.Location = new System.Drawing.Point(441, 14);
+            this.LinkFromTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.LinkFromTest.Location = new System.Drawing.Point(461, 14);
             this.LinkFromTest.Name = "LinkFromTest";
             this.LinkFromTest.Size = new System.Drawing.Size(32, 16);
             this.LinkFromTest.TabIndex = 5;
@@ -186,10 +198,11 @@
             // 
             // WarningLabelBold
             // 
+            this.WarningLabelBold.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.WarningLabelBold.AutoSize = true;
             this.WarningLabelBold.Font = new System.Drawing.Font("Arial", 7.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.WarningLabelBold.ForeColor = System.Drawing.Color.DarkRed;
-            this.WarningLabelBold.Location = new System.Drawing.Point(477, 104);
+            this.WarningLabelBold.Location = new System.Drawing.Point(497, 104);
             this.WarningLabelBold.Name = "WarningLabelBold";
             this.WarningLabelBold.Size = new System.Drawing.Size(55, 12);
             this.WarningLabelBold.TabIndex = 16;
@@ -197,8 +210,9 @@
             // 
             // WarningLabel
             // 
+            this.WarningLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.WarningLabel.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.WarningLabel.Location = new System.Drawing.Point(477, 104);
+            this.WarningLabel.Location = new System.Drawing.Point(497, 104);
             this.WarningLabel.Name = "WarningLabel";
             this.WarningLabel.Size = new System.Drawing.Size(120, 74);
             this.WarningLabel.TabIndex = 17;
@@ -226,12 +240,13 @@
             // 
             // Cancel
             // 
+            this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.BackColor = System.Drawing.SystemColors.Control;
             this.Cancel.Cursor = System.Windows.Forms.Cursors.Default;
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.Cancel.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Cancel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Cancel.Location = new System.Drawing.Point(480, 48);
+            this.Cancel.Location = new System.Drawing.Point(500, 48);
             this.Cancel.Name = "Cancel";
             this.Cancel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Cancel.Size = new System.Drawing.Size(105, 25);
@@ -242,11 +257,12 @@
             // 
             // Import
             // 
+            this.Import.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Import.BackColor = System.Drawing.SystemColors.Control;
             this.Import.Cursor = System.Windows.Forms.Cursors.Default;
             this.Import.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Import.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Import.Location = new System.Drawing.Point(481, 17);
+            this.Import.Location = new System.Drawing.Point(501, 17);
             this.Import.Name = "Import";
             this.Import.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Import.Size = new System.Drawing.Size(105, 25);
@@ -257,11 +273,12 @@
             // 
             // Version
             // 
+            this.Version.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Version.BackColor = System.Drawing.SystemColors.Control;
             this.Version.Cursor = System.Windows.Forms.Cursors.Default;
             this.Version.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Version.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Version.Location = new System.Drawing.Point(472, 78);
+            this.Version.Location = new System.Drawing.Point(492, 78);
             this.Version.Name = "Version";
             this.Version.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Version.Size = new System.Drawing.Size(123, 13);
@@ -299,9 +316,11 @@
             // 
             // ExcludedTablesTextBox
             // 
+            this.ExcludedTablesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.ExcludedTablesTextBox.Location = new System.Drawing.Point(95, 220);
             this.ExcludedTablesTextBox.Name = "ExcludedTablesTextBox";
-            this.ExcludedTablesTextBox.Size = new System.Drawing.Size(515, 20);
+            this.ExcludedTablesTextBox.Size = new System.Drawing.Size(535, 20);
             this.ExcludedTablesTextBox.TabIndex = 35;
             this.ExcludedTablesTextBox.Text = "Runtime,ErrorLog";
             // 
@@ -333,30 +352,39 @@
             // 
             // Messages
             // 
+            this.Messages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.Messages.Location = new System.Drawing.Point(9, 368);
             this.Messages.Multiline = true;
             this.Messages.Name = "Messages";
             this.Messages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.Messages.Size = new System.Drawing.Size(601, 120);
+            this.Messages.Size = new System.Drawing.Size(621, 133);
             this.Messages.TabIndex = 34;
             this.Messages.Text = "Messages:";
             // 
             // OverallProgress
             // 
+            this.OverallProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.OverallProgress.Location = new System.Drawing.Point(9, 336);
             this.OverallProgress.Name = "OverallProgress";
-            this.OverallProgress.Size = new System.Drawing.Size(601, 24);
+            this.OverallProgress.Size = new System.Drawing.Size(621, 24);
             this.OverallProgress.TabIndex = 33;
             // 
             // ProgressBar
             // 
+            this.ProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.ProgressBar.Location = new System.Drawing.Point(9, 304);
             this.ProgressBar.Name = "ProgressBar";
-            this.ProgressBar.Size = new System.Drawing.Size(601, 24);
+            this.ProgressBar.Size = new System.Drawing.Size(621, 24);
             this.ProgressBar.TabIndex = 32;
             // 
             // ProgressLabel
             // 
+            this.ProgressLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.ProgressLabel.BackColor = System.Drawing.SystemColors.Control;
             this.ProgressLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.ProgressLabel.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -364,7 +392,7 @@
             this.ProgressLabel.Location = new System.Drawing.Point(9, 285);
             this.ProgressLabel.Name = "ProgressLabel";
             this.ProgressLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.ProgressLabel.Size = new System.Drawing.Size(601, 15);
+            this.ProgressLabel.Size = new System.Drawing.Size(621, 15);
             this.ProgressLabel.TabIndex = 31;
             this.ProgressLabel.Text = "Progress:";
             // 
@@ -420,7 +448,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(619, 494);
+            this.ClientSize = new System.Drawing.Size(639, 507);
             this.Controls.Add(this.chkPreservePrimaryKey);
             this.Controls.Add(this.ExcludedTablesTextBox);
             this.Controls.Add(this.CommaSeparateValuesLabel);
@@ -432,6 +460,7 @@
             this.Controls.Add(this.GroupBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(655, 545);
             this.Name = "DataMigrationUtility";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Data Migration Utility";
