@@ -39,7 +39,8 @@ namespace ConfigurationSetupUtility.Screens
 
         // Fields
 
-        private IScreen m_nextScreen;
+        private NodeSelectionScreen m_nodeSelectionScreen;
+        private SetupReadyScreen m_setupReadyScreen;
         private Dictionary<string, object> m_state;
 
         #endregion
@@ -52,7 +53,9 @@ namespace ConfigurationSetupUtility.Screens
         public ApplyConfigurationChangesScreen()
         {
             InitializeComponent();
-            m_nextScreen = new SetupReadyScreen();
+            m_nodeSelectionScreen = new NodeSelectionScreen();
+            m_setupReadyScreen = new SetupReadyScreen();
+            m_nodeSelectionScreen.NextScreen = m_setupReadyScreen;
         }
 
         #endregion
@@ -66,7 +69,13 @@ namespace ConfigurationSetupUtility.Screens
         {
             get
             {
-                return m_nextScreen;
+                bool applyChangesToService = Convert.ToBoolean(m_state["applyChangesToService"]);
+                bool existing = Convert.ToBoolean(m_state["existing"]);
+
+                if (applyChangesToService && existing)
+                    return m_nodeSelectionScreen;
+                else
+                    return m_setupReadyScreen;
             }
         }
 

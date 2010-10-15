@@ -692,6 +692,16 @@ namespace ConfigurationSetupUtility.Screens
                         child.Attributes["value"].Value = connectionString;
                         child.Attributes["encrypted"].Value = encrypted.ToString();
                     }
+                    else if (child.Attributes["name"].Value == "NodeID")
+                    {
+                        if (m_state.ContainsKey("selectedNodeId"))
+                        {
+                            // Change the node ID in the configuration file to
+                            // the ID that the user selected in the previous step.
+                            string selectedNodeId = m_state["selectedNodeId"].ToString();
+                            child.Attributes["value"].Value = selectedNodeId;
+                        }
+                    }
                 }
             }
 

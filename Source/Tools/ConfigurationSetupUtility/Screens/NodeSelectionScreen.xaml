@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="ConfigurationSetupUtility.Screens.NodeSelectionScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=FrameworkElement, AncestorLevel=1}, Path=ActualWidth}">
+    <DockPanel>
+        <Label Content="Node selection" DockPanel.Dock="Top" HorizontalContentAlignment="Center" Margin="10" FontSize="16" FontWeight="Bold" />
+        <DockPanel DockPanel.Dock="Top">
+            <TextBlock Text="Please wait while we retrieve node information from your database..." TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top" Margin="10,0" Name="m_infoTextBlock" />
+            <DataGrid Name="m_dataGrid" SelectionMode="Single" DockPanel.Dock="Bottom" Margin="10" SelectionChanged="DataGrid_SelectionChanged" IsReadOnly="True" />
+        </DockPanel>
+    </DockPanel>
+</UserControl>
