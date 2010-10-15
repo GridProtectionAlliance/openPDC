@@ -314,14 +314,10 @@ namespace ConfigurationSetupUtility.Screens
                         string pass = m_state["newMySqlUserPassword"].ToString();
                         AppendStatusMessage(string.Format("Attempting to create new user {0}...", user));
 
-                        if (!mySqlSetup.ExecuteStatement(string.Format("CREATE USER {0} IDENTIFIED BY '{1}'", user, pass)))
+                        if (!mySqlSetup.ExecuteStatement(string.Format("GRANT SELECT, UPDATE, INSERT ON {0}.* TO {1} IDENTIFIED BY '{2}'", mySqlSetup.DatabaseName, user, pass)))
                         {
-                            OnSetupFailed();
-                            return;
-                        }
-
-                        if (!mySqlSetup.ExecuteStatement(string.Format("GRANT SELECT, UPDATE, INSERT ON {0}.* TO {1}", mySqlSetup.DatabaseName, user)))
-                        {
+                            // If we couldn't grant the necessary permissions to
+                            // the database user, then the setup should fail.
                             OnSetupFailed();
                             return;
                         }
