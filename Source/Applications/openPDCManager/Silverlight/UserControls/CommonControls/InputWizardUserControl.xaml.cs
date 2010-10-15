@@ -812,13 +812,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             string connectionString = TextBoxConnectionString.Text;
 
-            if (string.IsNullOrEmpty(TextBoxAccessID.Text))
-                TextBoxAccessID.Text = "0";
+            //if (string.IsNullOrEmpty(TextBoxAccessID.Text))
+            //    TextBoxAccessID.Text = "0";
             
-            if (!connectionString.EndsWith(";"))
-                connectionString += ";";
+            //if (!connectionString.EndsWith(";"))
+            //    connectionString += ";";
             
-            connectionString += "AccessID=" + TextBoxAccessID.Text;
+            //connectionString += "AccessID=" + TextBoxAccessID.Text;
                         
             if (!string.IsNullOrEmpty(TextBoxAlternateCommandChannel.Text))
             {

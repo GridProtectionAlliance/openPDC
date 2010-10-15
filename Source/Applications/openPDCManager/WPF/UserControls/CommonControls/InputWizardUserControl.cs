@@ -198,7 +198,8 @@ namespace openPDCManager.UserControls.CommonControls
                     device.Acronym = TextBoxPDCAcronym.Text;
                     device.IsConcentrator = true;
                     device.VendorDeviceID = ((KeyValuePair<int, string>)ComboboxPDCVendor.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxPDCVendor.SelectedItem).Key;
-                    device.AccessID = m_wizardDeviceInfoList.Count > 0 ? m_wizardDeviceInfoList[0].ParentAccessID : 0;
+                    int accessID;
+                    device.AccessID = int.TryParse(TextBoxAccessID.Text,out accessID) ? accessID : m_wizardDeviceInfoList.Count > 0 ? m_wizardDeviceInfoList[0].ParentAccessID : 0;
                     device.NodeID = app.NodeValue;
                     device.ParentID = null;
                     device.Longitude = -98.6m;
