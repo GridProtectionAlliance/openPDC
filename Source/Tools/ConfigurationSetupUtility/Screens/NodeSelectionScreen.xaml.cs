@@ -333,6 +333,11 @@ namespace ConfigurationSetupUtility.Screens
                         }
                     }
                 }
+                catch
+                {
+                    // Ignore exceptions since failure to retrieve
+                    // the node list should not interrupt the setup.
+                }
                 finally
                 {
                     connection.Close();
