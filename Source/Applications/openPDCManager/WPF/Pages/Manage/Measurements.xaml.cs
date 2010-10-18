@@ -246,7 +246,7 @@ namespace openPDCManager.Pages.Manage
                     GetMeasurementList();
 
                 //make this newly added or updated item as default selected. So user can click initialize right away.
-                ListBoxMeasurementList.SelectedItem = ((List<Measurement>)ListBoxMeasurementList.ItemsSource).Find(c => c.SignalReference == measurement.SignalReference);
+                ListBoxMeasurementList.SelectedItem = (m_measurementList).Find(c => c.SignalReference == measurement.SignalReference);
                 
                 //Update Metadata in the openPDC Service.
                 try
