@@ -23,6 +23,7 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
                         <RowDefinition Height="2*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -74,65 +75,70 @@
                     <TextBox x:Name="TextBoxLatitude" Grid.Row="6" Grid.Column="3" Text="{Binding Path=Latitude}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <TextBlock Grid.Row="7" Grid.Column="0" Text="Connection String" Style="{StaticResource GenericLabelStyle}" VerticalAlignment="Top"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="1" VerticalAlignment="Top">
-                        <TextBox x:Name="TextBoxConnectionString" Text="{Binding Path=ConnectionString}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap"/>
+                        <TextBox x:Name="TextBoxConnectionString" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap"/>
                         <Button x:Name="ButtonBuildConnectionString" Content="../../Images/Add.png" Tag="..." ToolTipService.ToolTip="Build Connection String" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>
                     </StackPanel>
-                    <TextBlock Grid.Row="7" Grid.Column="2" Text="Time Zone" Style="{StaticResource GenericLabelStyle}" VerticalAlignment="Top"/>
-                    <ComboBox x:Name="ComboboxTimeZone" Grid.Row="7" Grid.Column="3" DisplayMemberPath="Value" Margin="5" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <TextBlock Grid.Row="7" Grid.Column="2" Text="Alternate Command Channel" Style="{StaticResource GenericLabelStyle}" VerticalAlignment="Top"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="3" VerticalAlignment="Top">
+                        <TextBox x:Name="TextBoxAlternateCommandChannel" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap"/>
+                        <Button x:Name="ButtonBuildAlternateCommandChannel" Content="../../Images/Add.png" Tag="..." ToolTipService.ToolTip="Build Alternate Command Channel" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>
+                    </StackPanel>
+                    <TextBlock Grid.Row="8" Grid.Column="2" Text="Time Zone" Style="{StaticResource GenericLabelStyle}" VerticalAlignment="Top"/>
+                    <ComboBox x:Name="ComboboxTimeZone" Grid.Row="8" Grid.Column="3" DisplayMemberPath="Value" Margin="5" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
                     <TextBlock Grid.Row="8" Grid.Column="0" Text="FramesPerSecond" Style="{StaticResource GenericLabelStyle}"/>
                     <TextBox x:Name="TextBoxFramesPerSecond" Grid.Row="8" Grid.Column="1" Text="{Binding Path=FramesPerSecond}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                    <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="2">
+                    <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="2">
                         <TextBlock Text="Time Adjustment Ticks" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
-                    <TextBox x:Name="TextBoxTimeAdjustmentTicks" Grid.Row="8" Grid.Column="3" Text="{Binding Path=TimeAdjustmentTicks}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <TextBox x:Name="TextBoxTimeAdjustmentTicks" Grid.Row="9" Grid.Column="3" Text="{Binding Path=TimeAdjustmentTicks}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="0">
                         <TextBlock Text="Data Loss Interval" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
                     <TextBox x:Name="TextBoxDataLossInterval" Grid.Row="9" Grid.Column="1" Text="{Binding Path=DataLossInterval}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                    <TextBlock Grid.Row="9" Grid.Column="2" Text="Measured Lines" Style="{StaticResource GenericLabelStyle}"/>
-                    <TextBox x:Name="TextBoxMeasuredLines" Grid.Row="9" Grid.Column="3" Text="{Binding Path=MeasuredLines}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <TextBlock Grid.Row="10" Grid.Column="2" Text="Measured Lines" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBox x:Name="TextBoxMeasuredLines" Grid.Row="10" Grid.Column="3" Text="{Binding Path=MeasuredLines}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
 
                     <StackPanel Orientation="Horizontal" Grid.Row="10" Grid.Column="0">
                         <TextBlock Text="Allowed Parsing Exceptions" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
                     <TextBox x:Name="TextBoxAllowedParsingExceptions" Grid.Row="10" Grid.Column="1" Text="{Binding Path=AllowedParsingExceptions}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                    <StackPanel Orientation="Horizontal" Grid.Row="10" Grid.Column="2">
+                    <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="2">
                         <TextBlock Text="Parsing Exception Window" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
-                    <TextBox x:Name="TextBoxParsingExceptionWindow" Grid.Row="10" Grid.Column="3" Text="{Binding Path=ParsingExceptionWindow}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <TextBox x:Name="TextBoxParsingExceptionWindow" Grid.Row="11" Grid.Column="3" Text="{Binding Path=ParsingExceptionWindow}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="0">
                         <TextBlock Text="Delayed Connection Interval" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
                     <TextBox x:Name="TextBoxDelayedConnectionInterval" Grid.Row="11" Grid.Column="1" Text="{Binding Path=DelayedConnectionInterval}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                    <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="2">
+                    <StackPanel Orientation="Horizontal" Grid.Row="12" Grid.Column="2">
                         <TextBlock Text="Measurement Reporting Interval" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
-                    <TextBox x:Name="TextBoxMeasurementReportingInterval" Grid.Row="11" Grid.Column="3" Text="{Binding Path=MeasurementReportingInterval}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                    <CheckBox x:Name="CheckboxAllowUseOfCachedConfiguration" Grid.Row="12" Grid.Column="1" IsChecked="{Binding Path=AllowUseOfCachedConfiguration}" Content="Allow Use Of Cached Configuration" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
-                    <CheckBox x:Name="CheckboxAutoStartDataParsingSequence" Grid.Row="12" Grid.Column="2" IsChecked="{Binding Path=AutoStartDataParsingSequence}" Content="Auto Start Data Parsing Sequence" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
-                    <CheckBox x:Name="CheckboxSkipDisableRealTimeData" Grid.Row="12" Grid.Column="3" IsChecked="{Binding Path=SkipDisableRealTimeData}" Content="Skip Disable Real-Time Data" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
-                    <StackPanel Orientation="Horizontal" Grid.Row="13" Grid.Column="0">
+                    <TextBox x:Name="TextBoxMeasurementReportingInterval" Grid.Row="12" Grid.Column="3" Text="{Binding Path=MeasurementReportingInterval}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <CheckBox x:Name="CheckboxAllowUseOfCachedConfiguration" Grid.Row="13" Grid.Column="1" IsChecked="{Binding Path=AllowUseOfCachedConfiguration}" Content="Allow Use Of Cached Configuration" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                    <CheckBox x:Name="CheckboxAutoStartDataParsingSequence" Grid.Row="13" Grid.Column="2" Grid.ColumnSpan="2" IsChecked="{Binding Path=AutoStartDataParsingSequence}" Content="Auto Start Data Parsing Sequence" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                    <CheckBox x:Name="CheckboxSkipDisableRealTimeData" Grid.Row="13" Grid.Column="0" IsChecked="{Binding Path=SkipDisableRealTimeData}" Content="Skip Disable Real-Time Data" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="12" Grid.Column="0">
                         <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
-                    <TextBox x:Name="TextBoxLoadOrder" Grid.Row="13" Grid.Column="1" Text="{Binding Path=LoadOrder}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                    <TextBlock Grid.Row="13" Grid.Column="2" Text="Contact List" Style="{StaticResource GenericLabelStyle}"/>
-                    <TextBox x:Name="TextBoxContactList" Grid.Row="13" Grid.Column="3" Text="{Binding Path=ContactList}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                    <TextBlock Grid.Row="14" Grid.Column="0" Text="Runtime ID" Style="{StaticResource GenericLabelStyle}"/>
-                    <StackPanel Orientation="Horizontal" Grid.Row="14" Grid.Column="1">
+                    <TextBox x:Name="TextBoxLoadOrder" Grid.Row="12" Grid.Column="1" Text="{Binding Path=LoadOrder}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <TextBlock Grid.Row="14" Grid.Column="2" Text="Contact List" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBox x:Name="TextBoxContactList" Grid.Row="14" Grid.Column="3" Text="{Binding Path=ContactList}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <TextBlock Grid.Row="15" Grid.Column="0" Text="Runtime ID" Style="{StaticResource GenericLabelStyle}"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="15" Grid.Column="1">
                         <TextBlock x:Name="TextBlockRuntimeID" VerticalAlignment="Center"/>
                         <TextBlock Text="" Width="{StaticResource BlankItemSize}" />
                         <Button Content="Initialize" x:Name="ButtonInitialize" Tag="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" VerticalAlignment="Center" Click="ButtonInitialize_Click" />
                     </StackPanel>
-                    <CheckBox x:Name="CheckboxConcentrator" Grid.Row="14" Grid.Column="2" IsChecked="{Binding Path=IsConcentrator}" Content="Concentrator" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
-                    <CheckBox x:Name="CheckboxEnabled" Grid.Row="14" Grid.Column="3" IsChecked="{Binding Path=Enabled}" Content="Enabled" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                    <CheckBox x:Name="CheckboxConcentrator" Grid.Row="14" Grid.Column="0" IsChecked="{Binding Path=IsConcentrator}" Content="Concentrator" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                    <CheckBox x:Name="CheckboxEnabled" Grid.Row="14" Grid.Column="1" IsChecked="{Binding Path=Enabled}" Content="Enabled" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="15" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                         <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand" >
                             <Button.RenderTransform>

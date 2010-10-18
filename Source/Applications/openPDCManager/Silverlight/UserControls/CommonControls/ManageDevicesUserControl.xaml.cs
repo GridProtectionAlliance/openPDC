@@ -60,6 +60,7 @@ namespace openPDCManager.UserControls.CommonControls
             ButtonClear.Content = new BitmapImage(new Uri(@"images/cancel.png", UriKind.Relative));
             ButtonView.Content = new BitmapImage(new Uri(@"images/search.png", UriKind.Relative));
             ButtonBuildConnectionString.Content = new BitmapImage(new Uri(@"images/add.png", UriKind.Relative));
+            ButtonBuildAlternateCommandChannel.Content = new BitmapImage(new Uri(@"images/add.png", UriKind.Relative));
             UpdateLayout();
 #endif
             Loaded += new RoutedEventHandler(AddNew_Loaded);
@@ -70,8 +71,9 @@ namespace openPDCManager.UserControls.CommonControls
             ButtonView.Click += new RoutedEventHandler(ButtonView_Click);
             ComboboxParent.SelectionChanged += new SelectionChangedEventHandler(ComboboxParent_SelectionChanged);
             ButtonBuildConnectionString.Click += new RoutedEventHandler(ButtonBuildConnectionString_Click);
-        }  
-      
+            ButtonBuildAlternateCommandChannel.Click += new RoutedEventHandler(ButtonBuildAlternateCommandChannel_Click);
+        }
+
         public ManageDevicesUserControl(Device device) : this()
         {
             m_deviceToCopy = device;
@@ -137,6 +139,15 @@ namespace openPDCManager.UserControls.CommonControls
                 device.Latitude = TextBoxLatitude.Text.ToNullableDecimal(); //string.IsNullOrEmpty(TextBoxLatitude.Text) ? (decimal?)null : Convert.ToDecimal(TextBoxLatitude.Text);
                 device.InterconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
                 device.ConnectionString = TextBoxConnectionString.Text.CleanText();
+
+                if (!string.IsNullOrEmpty(TextBoxAlternateCommandChannel.Text))
+                {
+                    if (!device.ConnectionString.EndsWith(";"))
+                        device.ConnectionString += ";";
+
+                    device.ConnectionString += "commandchannel={" + TextBoxAlternateCommandChannel.Text.CleanText() + "}";
+                }
+
                 device.TimeZone = ((KeyValuePair<string, string>)ComboboxTimeZone.SelectedItem).Key;
                 device.FramesPerSecond = string.IsNullOrEmpty(TextBoxFramesPerSecond.Text.CleanText()) ? 30 : TextBoxFramesPerSecond.Text.ToInteger();
                 device.TimeAdjustmentTicks = TextBoxTimeAdjustmentTicks.Text.ToLong();
@@ -360,6 +371,25 @@ namespace openPDCManager.UserControls.CommonControls
             {
                 if ((bool)csb.DialogResult)
                     TextBoxConnectionString.Text = csb.ConnectionString;
+            });
+#if SILVERLIGHT
+            csb.Show();
+#else
+            csb.Owner = Window.GetWindow(this);
+            csb.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            csb.ShowDialog();
+#endif
+        }
+
+        void ButtonBuildAlternateCommandChannel_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectionStringBuilder csb = new ConnectionStringBuilder(ConnectionStringBuilder.ConnectionType.AlternateCommandChannel);
+            if (!string.IsNullOrEmpty(TextBoxAlternateCommandChannel.Text))
+                csb.ConnectionString = TextBoxAlternateCommandChannel.Text;
+            csb.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+            {
+                if ((bool)csb.DialogResult)
+                    TextBoxAlternateCommandChannel.Text = csb.ConnectionString;
             });
 #if SILVERLIGHT
             csb.Show();

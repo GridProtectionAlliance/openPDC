@@ -189,6 +189,16 @@ namespace openPDCManager.UserControls.CommonControls
                 StackPanelDeviceList.Visibility = Visibility.Collapsed;
             }
 
+            //Get rid of alternate command channel from connection string to display it in it's own textbox.
+
+            int indexOfCommandChannel = device.ConnectionString.ToLower().IndexOf("commandchannel");
+
+            if (indexOfCommandChannel > 0)
+            {
+                TextBoxConnectionString.Text = device.ConnectionString.Substring(0, indexOfCommandChannel);
+                TextBoxAlternateCommandChannel.Text = device.ConnectionString.Substring(indexOfCommandChannel + 15).Replace("{", "").Replace("}", "");
+            }
+            
             m_client.GetRuntimeIDAsync("Device", device.ID);
 
             TextBoxAcronym.SelectAll();
