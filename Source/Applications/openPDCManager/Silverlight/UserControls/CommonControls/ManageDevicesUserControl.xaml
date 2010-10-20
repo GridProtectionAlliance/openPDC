@@ -177,7 +177,7 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource PortletBackgroundBrush}">
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0" Height="200">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0" Height="195">
                         <ScrollViewer.Content>
                             <ListBox x:Name="ListBoxDeviceList" Margin="0" Padding="0">
                                 <ListBox.ItemTemplate>

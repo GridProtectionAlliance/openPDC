@@ -198,7 +198,9 @@ namespace openPDCManager.UserControls.CommonControls
                 TextBoxConnectionString.Text = device.ConnectionString.Substring(0, indexOfCommandChannel);
                 TextBoxAlternateCommandChannel.Text = device.ConnectionString.Substring(indexOfCommandChannel + 15).Replace("{", "").Replace("}", "");
             }
-            
+            else
+                TextBoxConnectionString.Text = device.ConnectionString;
+
             m_client.GetRuntimeIDAsync("Device", device.ID);
 
             TextBoxAcronym.SelectAll();
