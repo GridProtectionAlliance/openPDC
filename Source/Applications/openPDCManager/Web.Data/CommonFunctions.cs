@@ -4470,13 +4470,14 @@ namespace openPDCManager.Data
                 IDbCommand commandPdc = connection.Connection.CreateCommand();
                 commandPdc.CommandType = CommandType.Text;				
                 //Get PDCs list
-                commandPdc.CommandText = "Select ID, Acronym, Name, CompanyName, Enabled From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator Order By Acronym";
+                commandPdc.CommandText = "Select ID, Acronym, Name, CompanyName, Enabled From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator AND Enabled = @enabled Order By Acronym";
                 if (commandPdc.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                     commandPdc.Parameters.Add(AddWithValue(commandPdc, "@nodeID", "{" + nodeID + "}"));
                 else
                     commandPdc.Parameters.Add(AddWithValue(commandPdc, "@nodeID", nodeID));
 
                 commandPdc.Parameters.Add(AddWithValue(commandPdc, "@isConcentrator", true));
+                commandPdc.Parameters.Add(AddWithValue(commandPdc, "@enabled", true));
 
                 resultTable = new DataTable();
                 resultSet.Tables.Add(resultTable);
@@ -4492,13 +4493,14 @@ namespace openPDCManager.Data
                 //Get Non PDC Devices
                 IDbCommand commandDevices = connection.Connection.CreateCommand();
                 commandDevices.CommandType = CommandType.Text;
-                commandDevices.CommandText = "Select ID, Acronym, Name,CompanyName, ProtocolName, VendorDeviceName, ParentAcronym, Enabled From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator Order By Acronym";
+                commandDevices.CommandText = "Select ID, Acronym, Name,CompanyName, ProtocolName, VendorDeviceName, ParentAcronym, Enabled From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator AND Enabled = @enabled Order By Acronym";
                 if (commandDevices.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                     commandDevices.Parameters.Add(AddWithValue(commandDevices, "@nodeID", "{" + nodeID + "}"));
                 else
                     commandDevices.Parameters.Add(AddWithValue(commandDevices, "@nodeID", nodeID));
 
                 commandDevices.Parameters.Add(AddWithValue(commandDevices, "@isConcentrator", false));
+                commandDevices.Parameters.Add(AddWithValue(commandDevices, "@enabled", true));
 
                 resultTable = new DataTable();
                 resultSet.Tables.Add(resultTable);
