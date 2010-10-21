@@ -79,44 +79,48 @@ namespace openPDCManager.UserControls.CommonControls
 
         void RetrieveConfigurationFrame()
         {
-            SystemMessages sm;
-            try
+            //this was done because activity window wasn't showing any message on the screen. So this function is called on a seperate thread and then brough back to UI thread.
+            this.Dispatcher.BeginInvoke((Action)delegate()
             {
-                m_wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>(CommonFunctions.RetrieveConfigurationFrame(((App)Application.Current).RemoteStatusServiceUrl, this.ConnectionString(), ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key));
-                if (m_wizardDeviceInfoList.Count > 10)
-                    m_bindingDevices = true;
-                else
-                    m_bindingDevices = false;
-
-                ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
-                if (m_wizardDeviceInfoList.Count > 1)
+                SystemMessages sm;
+                try
                 {
-                    CheckboxConnectToPDC.IsChecked = true;
-                    SystemMessages sm1 = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Information },
-                                ButtonType.OkOnly);
-                    sm1.Owner = Window.GetWindow(this);
-                    sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                    sm1.ShowPopup();
-                    TextBoxPDCAcronym.Focus();                    
-                }
-                else
-                    CheckboxConnectToPDC.IsChecked = false;
-                
-                ChangeSummaryVisibility(Visibility.Visible);
+                    m_wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>(CommonFunctions.RetrieveConfigurationFrame(((App)Application.Current).RemoteStatusServiceUrl, this.ConnectionString(), ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key));
+                    if (m_wizardDeviceInfoList.Count > 10)
+                        m_bindingDevices = true;
+                    else
+                        m_bindingDevices = false;
 
-                sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Retrieved Configuration Successfully!", SystemMessage = "", UserMessageType = openPDCManager.Utilities.MessageType.Success }, ButtonType.OkOnly);
-            }
-            catch (Exception ex)
-            {
-                CommonFunctions.LogException(null, "WPF.RetrieveConfigurationFrame", ex);
-                sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Configuration", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
-                        ButtonType.OkOnly);
-            }
-            sm.Owner = Window.GetWindow(this);
-            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            sm.ShowPopup();
-            if (m_activityWindow != null && !m_bindingDevices)
-                m_activityWindow.Close();
+                    ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
+                    if (m_wizardDeviceInfoList.Count > 1)
+                    {
+                        CheckboxConnectToPDC.IsChecked = true;
+                        SystemMessages sm1 = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Information },
+                                    ButtonType.OkOnly);
+                        sm1.Owner = Window.GetWindow(this);
+                        sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        sm1.ShowPopup();
+                        TextBoxPDCAcronym.Focus();
+                    }
+                    else
+                        CheckboxConnectToPDC.IsChecked = false;
+
+                    ChangeSummaryVisibility(Visibility.Visible);
+
+                    sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Retrieved Configuration Successfully!", SystemMessage = "", UserMessageType = openPDCManager.Utilities.MessageType.Success }, ButtonType.OkOnly);
+                }
+                catch (Exception ex)
+                {
+                    CommonFunctions.LogException(null, "WPF.RetrieveConfigurationFrame", ex);
+                    sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Configuration", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
+                            ButtonType.OkOnly);
+                }
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+                if (m_activityWindow != null && !m_bindingDevices)
+                    m_activityWindow.Close();
+            });
         }
 
         void GetProtocolIDByAcronym()

@@ -33,7 +33,7 @@ namespace openPDCManager.UserControls.PopupControls
         {
             InitializeComponent();
 #if !SILVERLIGHT
-            ImageInformation.Source = new BitmapImage(new Uri("Information.png", UriKind.Relative));
+            ImageInformation.Source = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
 #endif
         }
     }

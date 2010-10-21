@@ -30,28 +30,33 @@
                             <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Acronym" Width="{StaticResource SmallItemSize}" Foreground="#FF000000" HorizontalContentAlignment="Center" Click="HyperlinkButtonAcronym_Click"></Button>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Name" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Name" Width="{StaticResource LargeItemSize}" Foreground="#FF000000" HorizontalContentAlignment="Center" Click="HyperlinkButtonName_Click"></Button>
+                            <!--<TextBlock Text="Name" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>-->
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Concentrator" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Concentrator" Width="{StaticResource SmallerItemSize}" Foreground="#FF000000" HorizontalContentAlignment="Center" Click="HyperlinkButtonConcentrator_Click"></Button>
+                            <!--<TextBlock Text="Concentrator" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>-->
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Protocol" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Protocol" Width="{StaticResource SmallItemSize}" Foreground="#FF000000" HorizontalContentAlignment="Center" Click="HyperlinkButtonProtocol_Click"></Button>
+                            <!--<TextBlock Text="Protocol" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>-->
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Company" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Company" Width="{StaticResource XSmallItemSize}" Foreground="#FF000000" HorizontalContentAlignment="Center" Click="HyperlinkButtonCompany_Click"></Button>
+                            <!--<TextBlock Text="Company" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>-->
                         </Border>
                         <!--<Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Vendor Device" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>-->
-                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">                            
                             <TextBlock Text="Phasors" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Measurements" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Enabled" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Enabled" Width="{StaticResource XSmallItemSize}" Foreground="#FF000000" HorizontalContentAlignment="Center" Click="HyperlinkButtonEnabled_Click"></Button>
+                            <!--<TextBlock Text="Enabled" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>-->
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Created On" Width="{StaticResource SmallItemSize}" HorizontalContentAlignment="Center" Foreground="#FF000000" Click="HyperlinkButtonCreatedOn_Click" />

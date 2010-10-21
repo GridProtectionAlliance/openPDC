@@ -296,6 +296,64 @@ namespace openPDCManager.Pages.Devices
             sm.ShowPopup();
         }
 
+        private void HyperlinkButtonCreatedOn_Click(object sender, RoutedEventArgs e)
+        {
+            //SortData("CreatedOn");
+            List<Device> sortedList = new List<Device>();
+            sortedList = (from device in m_deviceList
+                          select device).ToList().OrderBy(d => d.CreatedOn).ToList();
+            ListBoxDeviceList.ItemsSource = sortedList;
+        }
+
+        private void HyperlinkButtonAcronym_Click(object sender, RoutedEventArgs e)
+        {
+            //SortData("Acronym");
+            List<Device> sortedList = new List<Device>();
+            sortedList = (from device in m_deviceList
+                          select device).ToList().OrderBy(d => d.Acronym).ToList();
+            ListBoxDeviceList.ItemsSource = sortedList;
+        }
+
+        private void HyperlinkButtonName_Click(object sender, RoutedEventArgs e)
+        {
+            List<Device> sortedList = new List<Device>();
+            sortedList = (from device in m_deviceList
+                          select device).ToList().OrderBy(d => d.Name).ToList();
+            ListBoxDeviceList.ItemsSource = sortedList;
+        }
+
+        private void HyperlinkButtonConcentrator_Click(object sender, RoutedEventArgs e)
+        {
+            List<Device> sortedList = new List<Device>();
+            sortedList = (from device in m_deviceList
+                          select device).ToList().OrderBy(d => d.IsConcentrator).ToList();
+            ListBoxDeviceList.ItemsSource = sortedList;
+        }
+
+        private void HyperlinkButtonProtocol_Click(object sender, RoutedEventArgs e)
+        {
+            List<Device> sortedList = new List<Device>();
+            sortedList = (from device in m_deviceList
+                          select device).ToList().OrderBy(d => d.ProtocolName).ToList();
+            ListBoxDeviceList.ItemsSource = sortedList;
+        }
+
+        private void HyperlinkButtonCompany_Click(object sender, RoutedEventArgs e)
+        {
+            List<Device> sortedList = new List<Device>();
+            sortedList = (from device in m_deviceList
+                          select device).ToList().OrderBy(d => d.CompanyAcronym).ToList();
+            ListBoxDeviceList.ItemsSource = sortedList;
+        }
+
+        private void HyperlinkButtonEnabled_Click(object sender, RoutedEventArgs e)
+        {
+            List<Device> sortedList = new List<Device>();
+            sortedList = (from device in m_deviceList
+                          select device).ToList().OrderBy(d => d.Enabled).ToList();
+            ListBoxDeviceList.ItemsSource = sortedList;
+        }
+        
         #endregion
 
         #region [ Page Event Handlers ]
@@ -341,47 +399,6 @@ namespace openPDCManager.Pages.Devices
             DataPagerDevices.ItemsSource = new ObservableCollection<Object>(deviceList);
         }
 
-        #endregion
-
-        private void HyperlinkButtonCreatedOn_Click(object sender, RoutedEventArgs e)
-        {
-            //SortData("CreatedOn");
-            List<Device> sortedList = new List<Device>();
-            sortedList = (from device in m_deviceList
-                          select device).ToList().OrderBy(d => d.CreatedOn).ToList();
-            ListBoxDeviceList.ItemsSource = sortedList;
-        }
-
-        private void HyperlinkButtonAcronym_Click(object sender, RoutedEventArgs e)
-        {
-            //SortData("Acronym");
-            List<Device> sortedList = new List<Device>();
-            sortedList = (from device in m_deviceList
-                          select device).ToList().OrderBy(d => d.Acronym).ToList();
-            ListBoxDeviceList.ItemsSource = sortedList;
-        }
-
-        void SortData(string sortFieldName)
-        {
-            
-
-            //if (m_pagedList.SortDescriptions.Contains(new SortDescription(sortFieldName, ListSortDirection.Ascending)))
-            //{
-            //    //m_pagedList.SortDescriptions.Remove(new SortDescription(sortFieldName, ListSortDirection.Ascending));
-            //    m_pagedList.SortDescriptions.Clear();
-            //    m_pagedList.SortDescriptions.Add(new SortDescription(sortFieldName, ListSortDirection.Descending));
-            //}
-            //else if (m_pagedList.SortDescriptions.Contains(new SortDescription(sortFieldName, ListSortDirection.Descending)))
-            //{
-            //    m_pagedList.SortDescriptions.Clear();
-            //    m_pagedList.SortDescriptions.Add(new SortDescription(sortFieldName, ListSortDirection.Ascending));
-            //}
-            //else
-            //    m_pagedList.SortDescriptions.Add(new SortDescription(sortFieldName, ListSortDirection.Ascending));
-
-            //ListBoxDeviceList.ItemsSource = m_pagedList;
-            //DataPagerDevices.Source = m_pagedList;
-            //ListBoxDeviceList.SelectedIndex = -1;
-        }
+        #endregion       
     }
 }

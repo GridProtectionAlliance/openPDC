@@ -482,7 +482,7 @@ namespace openPDCManager.UserControls.CommonControls
             m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 #endif
             m_activityWindow.Show();
-
+            
 #if SILVERLIGHT
             Storyboard sb = new Storyboard();
             sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
@@ -491,10 +491,20 @@ namespace openPDCManager.UserControls.CommonControls
             sb.Begin();
 #endif           
             if (!string.IsNullOrEmpty(((App)Application.Current).RemoteStatusServiceUrl))
+            {
+#if SILVERLIGHT
                 RetrieveConfigurationFrame();
+#else
+                System.Threading.ThreadPool.QueueUserWorkItem(delegate { RetrieveConfigurationFrame(); });
+#endif
+            }
             else
             {
+                if (m_activityWindow != null)
+                    m_activityWindow.Close();
             }
+
+            //this.Dispatcher.BeginInvoke((Action)delegate() { RetrieveConfigurationFrame(); });
         }
 
         void ButtonBuildConnectionString_Click(object sender, RoutedEventArgs e)
@@ -514,7 +524,6 @@ namespace openPDCManager.UserControls.CommonControls
             csb.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             csb.ShowDialog();
 #endif
-
         }
 
         void ButtonBuildCommandChannel_Click(object sender, RoutedEventArgs e)
