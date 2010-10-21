@@ -146,6 +146,10 @@ namespace openPDCManager
                     m_serviceClient.Helper.Disconnect();
             }
             catch { }
+            finally
+            {
+               m_serviceClient.Dispose();                
+            }
         }
                 
         void RemotingClient_ConnectionTerminated(object sender, EventArgs e)

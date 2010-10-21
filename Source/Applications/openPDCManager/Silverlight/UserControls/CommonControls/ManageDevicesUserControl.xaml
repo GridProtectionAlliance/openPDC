@@ -35,10 +35,12 @@
 
                     <StackPanel x:Name="StackPanelPhasorsMeassurements" Orientation="Horizontal" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Right">
                         <!--<HyperlinkButton Content="Manage Phasors" Tag="{Binding Path=ID}" ToolTipService.ToolTip="{Binding Path=Acronym}" Foreground="#FF095188" FontWeight="Bold" Click="HyperlinkButtonPhasors_Click" />-->
-                        <Button BorderThickness="0" Content="Manage Phasors" Tag="{Binding Path=ID}" ToolTipService.ToolTip="{Binding Path=Acronym}" Background="Transparent" Foreground="#FF095188" Click="HyperlinkButtonPhasors_Click"></Button>
+                        <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" x:Name="ButtonDevicesList" Content="Go Back To Devices List" ToolTipService.ToolTip="Click Here to Go Back to Devices List" Background="Transparent" Foreground="#FF095188" Click="HyperlinkBrowseDevices_Click"></Button>
+                        <TextBlock Text="|" HorizontalAlignment="Center" Margin="10,0,10,0" />
+                        <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Manage Phasors" Tag="{Binding Path=ID}" ToolTipService.ToolTip="{Binding Path=Acronym}" Background="Transparent" Foreground="#FF095188" Click="HyperlinkButtonPhasors_Click"></Button>
                         <TextBlock Text="|" HorizontalAlignment="Center" Margin="10,0,10,0" />
                         <!--<HyperlinkButton Content="Manage Meassurements" Tag="{Binding Path=ID}" ToolTipService.ToolTip="{Binding Path=Acronym}" Foreground="#FF095188" FontWeight="Bold" Click="HyperlinkButtonMeasurements_Click"/>-->
-                        <Button BorderThickness="0" Content="Manage Measurements" Tag="{Binding Path=ID}" ToolTipService.ToolTip="{Binding Path=Acronym}" Background="Transparent" Foreground="#FF095188" Click="HyperlinkButtonMeasurements_Click"></Button>
+                        <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Manage Measurements" Tag="{Binding Path=ID}" ToolTipService.ToolTip="{Binding Path=Acronym}" Background="Transparent" Foreground="#FF095188" Click="HyperlinkButtonMeasurements_Click"></Button>
                     </StackPanel>
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Node" Style="{StaticResource GenericLabelStyle}"/>
                     <ComboBox x:Name="ComboboxNode" Grid.Row="1" Grid.Column="1" Margin="5" DisplayMemberPath="Value" Width="{StaticResource XLargeItemSize}" HorizontalAlignment="Left"/>

@@ -34,6 +34,7 @@ using System.Windows.Media.Animation;
 using openPDCManager.Data.Entities;
 using System.Windows.Media.Imaging;
 using openPDCManager.Pages.Manage;
+using openPDCManager.Pages.Devices;
 #endif
 
 namespace openPDCManager.UserControls.CommonControls
@@ -62,6 +63,8 @@ namespace openPDCManager.UserControls.CommonControls
             ButtonBuildConnectionString.Content = new BitmapImage(new Uri(@"images/add.png", UriKind.Relative));
             ButtonBuildAlternateCommandChannel.Content = new BitmapImage(new Uri(@"images/add.png", UriKind.Relative));
             UpdateLayout();
+#else
+            ButtonDevicesList.Visibility = Visibility.Collapsed;
 #endif
             Loaded += new RoutedEventHandler(AddNew_Loaded);
             Initialize();
@@ -427,6 +430,14 @@ namespace openPDCManager.UserControls.CommonControls
 #endif
                 sm.ShowPopup();
             }
+        }
+
+        void HyperlinkBrowseDevices_Click(object sender, RoutedEventArgs e)
+        {
+#if !SILVERLIGHT
+            BrowseDevicesUserControl devices = new BrowseDevicesUserControl();
+            ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(devices);
+#endif
         }
 
         #endregion
