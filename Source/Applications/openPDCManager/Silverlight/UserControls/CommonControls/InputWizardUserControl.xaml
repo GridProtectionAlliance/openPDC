@@ -84,14 +84,14 @@
                                 <Border Grid.Row="5" Grid.Column="1" BorderThickness="1" Margin="2,20,2,20" BorderBrush="#FF333333" />
 
                                 <TextBlock Grid.Row="6" Grid.Column="0" Text="Device ID Code" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                <TextBox x:Name="TextBoxAccessID" Text="0" Grid.Row="6" Grid.Column="1" Width="{StaticResource SmallerItemSize}" HorizontalAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TextBoxAccessID" Text="0" Grid.Row="6" Grid.Column="1" Width="{StaticResource SmallerItemSize}" HorizontalAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center" TabIndex="6"/>
 
                                 <TextBlock Grid.Row="7" Grid.Column="0" Text="Device Protocol" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                <ComboBox x:Name="ComboboxProtocol" Grid.Row="7" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" IsTabStop="True" TabIndex="6"/>
+                                <ComboBox x:Name="ComboboxProtocol" Grid.Row="7" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" IsTabStop="True" TabIndex="7"/>
                                 <TextBlock Grid.Row="8" Grid.Column="0" x:Name="TextBlockIniFile" Text="Select INI File" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
                                 <StackPanel x:Name="StackPanelIniFile" Orientation="Horizontal" Grid.Row="8" Grid.Column="1">
-                                    <TextBox x:Name="TextBoxIniFile" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" IsTabStop="True" TabIndex="7"/>
-                                    <Button x:Name="ButtonBrowseIniFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand" IsTabStop="True" TabIndex="8">
+                                    <TextBox x:Name="TextBoxIniFile" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" IsTabStop="True" TabIndex="8"/>
+                                    <Button x:Name="ButtonBrowseIniFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand" IsTabStop="True" TabIndex="9">
                                         <Button.RenderTransform>
                                             <ScaleTransform x:Name="ButtonBrowseIniFileTransform" ScaleX="1" ScaleY="1" />
                                         </Button.RenderTransform>
@@ -133,7 +133,7 @@
                                 </Grid.RowDefinitions>
 
                                 <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical" Margin="0, 10, 0, 0">
-                                    <Button x:Name="ButtonRequestConfiguration" Content="Request Configuration From openPDC" HorizontalAlignment="Left" Width="{StaticResource XLargeItemSize}" Margin="2" Cursor="Hand">
+                                    <Button x:Name="ButtonRequestConfiguration" Content="Request Configuration From openPDC" HorizontalAlignment="Left" Width="{StaticResource XLargeItemSize}" Margin="2" Cursor="Hand" TabIndex="10">
                                         <Button.RenderTransform>
                                             <ScaleTransform x:Name="ButtonRequestConfigurationTransform" ScaleX="1" ScaleY="1" />
                                         </Button.RenderTransform>
@@ -146,8 +146,8 @@
                                 <TextBlock Grid.Row="2" Grid.Column="1" Text="Select XML Configuration File (from PMU Connection Tester)" HorizontalAlignment="Left" Margin="2"/>
                                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Configuration File" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
                                 <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
-                                    <TextBox x:Name="TextBoxConfigurationFile" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
-                                    <Button x:Name="ButtonBrowseConfigurationFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
+                                    <TextBox x:Name="TextBoxConfigurationFile" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" TabIndex="11"/>
+                                    <Button x:Name="ButtonBrowseConfigurationFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand" TabIndex="12">
                                         <Button.RenderTransform>
                                             <ScaleTransform x:Name="ButtonBrowseConfigurationFileTransform" ScaleX="1" ScaleY="1" />
                                         </Button.RenderTransform>
@@ -157,35 +157,35 @@
                                 <TextBlock Text="OR" Grid.Row="4" Grid.Column="1" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" TextAlignment="Center" Width="{StaticResource XLargeItemSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,10,0,10"/>
 
                                 <StackPanel Grid.Column="1" Grid.Row="5" Orientation="Vertical">
-                                    <Button x:Name="ButtonManualConfiguration" Content="Create Configuration" HorizontalAlignment="Left" Width="{StaticResource XLargeItemSize}" Margin="2" Cursor="Hand" Click="ButtonManualConfiguration_Click"/>                                    
+                                    <Button x:Name="ButtonManualConfiguration" Content="Create Configuration" HorizontalAlignment="Left" Width="{StaticResource XLargeItemSize}" Margin="2" Cursor="Hand" Click="ButtonManualConfiguration_Click" TabIndex="13" />                                    
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" x:Name="StackPanelSummary" Grid.Row="6" Grid.Column="1">
                                     <TextBlock x:Name="TextBlockSummary" Foreground="#FF095188" Margin="2, 2, 10, 2" VerticalAlignment="Center" Width="{StaticResource XLargeItemSize}"/>
-                                    <Button x:Name="ButtonSaveConfiguration" Content="Save Configuration" Width="{StaticResource LargeItemSize}" Margin="2" Click="ButtonSaveConfiguration_Click" Cursor="Hand"/>
+                                    <Button x:Name="ButtonSaveConfiguration" Content="Save Configuration" Width="{StaticResource LargeItemSize}" Margin="2" Click="ButtonSaveConfiguration_Click" Cursor="Hand" TabIndex="14" />
                                 </StackPanel>
 
                                 <Border Grid.Row="7" Grid.Column="1" BorderThickness="1" Margin="2,5,2,5" BorderBrush="#FF333333" />
 
-                                <CheckBox x:Name="CheckboxConnectToPDC" Content="Connection is to Concentrator" FontSize="{StaticResource XLargeTextSize}" FontWeight="Bold" Grid.Row="8" Grid.Column="1" VerticalAlignment="Bottom" Margin="5" IsTabStop="True" TabIndex="9"/>
+                                <CheckBox x:Name="CheckboxConnectToPDC" Content="Connection is to Concentrator" FontSize="{StaticResource XLargeTextSize}" FontWeight="Bold" Grid.Row="8" Grid.Column="1" VerticalAlignment="Bottom" Margin="5" IsTabStop="True" TabIndex="15"/>
                                 <TextBlock Grid.Row="9" Grid.Column="0" x:Name="TextBlockAcronym" Text="PDC Acronym" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
                                 <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2">
-                                    <TextBox x:Name="TextBoxPDCAcronym" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Margin="2" IsTabStop="True" TabIndex="11" TextChanged="TextBoxPDCAcronym_TextChanged" LostFocus="TextBoxPDCAcronym_LostFocus"/>
+                                    <TextBox x:Name="TextBoxPDCAcronym" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Margin="2" IsTabStop="True" TabIndex="16" TextChanged="TextBoxPDCAcronym_TextChanged" LostFocus="TextBoxPDCAcronym_LostFocus"/>
                                     <TextBlock x:Name="TextBlockPDCMessage" Margin="2" FontWeight="Normal"/>
                                 </StackPanel>
                                 <TextBlock Grid.Row="10" Grid.Column="0" x:Name="TextBlockPDCName" Text="PDC Name" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                <TextBox x:Name="TextBoxPDCName" Grid.Row="10" Grid.Column="1" Width="{StaticResource LargerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" IsTabStop="True"  TabIndex="10"/>                                
+                                <TextBox x:Name="TextBoxPDCName" Grid.Row="10" Grid.Column="1" Width="{StaticResource LargerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" IsTabStop="True"  TabIndex="17"/>                                
                                 <TextBlock Grid.Row="11" Grid.Column="0" x:Name="TextBlockPDCDeviceVendor" Text="PDC Device Vendor" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                <ComboBox x:Name="ComboboxPDCVendor" Grid.Row="11" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" IsTabStop="True" TabIndex="12"/>
+                                <ComboBox x:Name="ComboboxPDCVendor" Grid.Row="11" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" IsTabStop="True" TabIndex="18"/>
 
                                 <Border Grid.Row="12" Grid.Column="1" BorderThickness="1" Margin="2,5,2,5" BorderBrush="#FF333333" />
                                 
                                 <TextBlock Grid.Row="13" Grid.Column="0" Text="Company" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
-                                <ComboBox x:Name="ComboboxCompany" Grid.Row="13" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
+                                <ComboBox x:Name="ComboboxCompany" Grid.Row="13" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" TabIndex="19"/>
                                 <TextBlock Grid.Row="14" Grid.Column="0" Text="Historian" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
-                                <ComboBox x:Name="ComboboxHistorian" Grid.Row="14" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
+                                <ComboBox x:Name="ComboboxHistorian" Grid.Row="14" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" TabIndex="20"/>
                                 <TextBlock Grid.Row="15" Grid.Column="0" Text="Interconnection" HorizontalAlignment="Left" FontWeight="Bold" Margin="2"/>
-                                <ComboBox x:Name="ComboboxInterconnection" Grid.Row="15" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2"/>
+                                <ComboBox x:Name="ComboboxInterconnection" Grid.Row="15" Grid.Column="1" Width="{StaticResource XLargeItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" TabIndex="21"/>
 
                             </Grid>
                         </layoutToolkit:AccordionItem.Content>
