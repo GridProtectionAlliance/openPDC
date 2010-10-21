@@ -332,7 +332,7 @@ namespace openPDCManager.UserControls.CommonControls
                     SaveCalculatedMeasurement(calculatedMeasurement, false);                    
                 }
                 else
-                    SaveCalculatedMeasurement(calculatedMeasurement, false);
+                    SaveCalculatedMeasurement(calculatedMeasurement, true);
             }
         }
 
