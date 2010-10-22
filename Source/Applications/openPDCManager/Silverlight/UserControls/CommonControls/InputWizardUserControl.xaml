@@ -170,11 +170,11 @@
                                 <CheckBox x:Name="CheckboxConnectToPDC" Content="Connection is to Concentrator" FontSize="{StaticResource XLargeTextSize}" FontWeight="Bold" Grid.Row="8" Grid.Column="1" VerticalAlignment="Bottom" Margin="5" IsTabStop="True" TabIndex="15"/>
                                 <TextBlock Grid.Row="9" Grid.Column="0" x:Name="TextBlockAcronym" Text="PDC Acronym" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
                                 <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2">
-                                    <TextBox x:Name="TextBoxPDCAcronym" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Margin="2" IsTabStop="True" TabIndex="16" TextChanged="TextBoxPDCAcronym_TextChanged" LostFocus="TextBoxPDCAcronym_LostFocus"/>
+                                    <TextBox x:Name="TextBoxPDCAcronym" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Margin="2" IsTabStop="True" TabIndex="16" TextChanged="TextBoxPDCAcronym_TextChanged" LostFocus="TextBoxPDCAcronym_LostFocus" MaxLength="16"/>
                                     <TextBlock x:Name="TextBlockPDCMessage" Margin="2" FontWeight="Normal"/>
                                 </StackPanel>
                                 <TextBlock Grid.Row="10" Grid.Column="0" x:Name="TextBlockPDCName" Text="PDC Name" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
-                                <TextBox x:Name="TextBoxPDCName" Grid.Row="10" Grid.Column="1" Width="{StaticResource LargerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" IsTabStop="True"  TabIndex="17"/>                                
+                                <TextBox x:Name="TextBoxPDCName" Grid.Row="10" Grid.Column="1" Width="{StaticResource LargerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" IsTabStop="True"  TabIndex="17" MaxLength="100"/>                                
                                 <TextBlock Grid.Row="11" Grid.Column="0" x:Name="TextBlockPDCDeviceVendor" Text="PDC Device Vendor" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
                                 <ComboBox x:Name="ComboboxPDCVendor" Grid.Row="11" Grid.Column="1" Width="{StaticResource LargerItemSize}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="2" IsTabStop="True" TabIndex="18"/>
 
@@ -242,10 +242,10 @@
                                                             <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Include, Mode=TwoWay }" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" />
                                                         </Border>
                                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                            <TextBox Text="{Binding Path=Acronym, Mode=TwoWay}" Width="{StaticResource SmallerItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                                                            <TextBox Text="{Binding Path=Acronym, Mode=TwoWay}" Width="{StaticResource SmallerItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center" TextChanged="TextBox_TextChanged" MaxLength="16"/>
                                                         </Border>
                                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                            <TextBox Text="{Binding Path=Name, Mode=TwoWay}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center" />
+                                                            <TextBox Text="{Binding Path=Name, Mode=TwoWay}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center" MaxLength="100"/>
                                                         </Border>
                                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                             <ComboBox x:Name="ComboboxVendor" DisplayMemberPath="Value" SelectedItem="{Binding Path=VendorDeviceID, Mode=TwoWay, Converter={StaticResource stringToDictionaryConverter}}" Width="{StaticResource LargeItemSize}" Loaded="ComboboxVendor_Loaded" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
@@ -304,7 +304,7 @@
                                                                         <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Include, Mode=TwoWay }" />
                                                                     </Border>
                                                                     <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                                        <TextBox Text="{Binding Path=Label, Mode=TwoWay}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
+                                                                        <TextBox Text="{Binding Path=Label, Mode=TwoWay}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center" MaxLength="256"/>
                                                                     </Border>
                                                                     <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                                         <!--<ComboBox x:Name="ComboboxType" DisplayMemberPath="Value" SelectedItem="{Binding Path=Type, Mode=TwoWay, Converter={StaticResource stringToPhasorTypeConverter}}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Loaded="ComboboxType_Loaded" VerticalAlignment="Center"/>-->
