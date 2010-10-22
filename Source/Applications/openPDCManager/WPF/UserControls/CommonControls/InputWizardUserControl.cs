@@ -91,7 +91,16 @@ namespace openPDCManager.UserControls.CommonControls
                     else
                         m_bindingDevices = false;
 
+                    if (m_activityWindow != null && !m_bindingDevices)
+                        m_activityWindow.Close();
+
+                    sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Retrieved Configuration Successfully!", SystemMessage = "", UserMessageType = openPDCManager.Utilities.MessageType.Success }, ButtonType.OkOnly);
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm.ShowPopup();
+
                     ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
+                                        
                     if (m_wizardDeviceInfoList.Count > 1)
                     {
                         CheckboxConnectToPDC.IsChecked = true;
@@ -106,20 +115,20 @@ namespace openPDCManager.UserControls.CommonControls
                         CheckboxConnectToPDC.IsChecked = false;
 
                     ChangeSummaryVisibility(Visibility.Visible);
-
-                    sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Retrieved Configuration Successfully!", SystemMessage = "", UserMessageType = openPDCManager.Utilities.MessageType.Success }, ButtonType.OkOnly);
+                                        
                 }
                 catch (Exception ex)
                 {
+                    if (m_activityWindow != null)
+                        m_activityWindow.Close();
+
                     CommonFunctions.LogException(null, "WPF.RetrieveConfigurationFrame", ex);
                     sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Configuration", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                             ButtonType.OkOnly);
-                }
-                sm.Owner = Window.GetWindow(this);
-                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                sm.ShowPopup();
-                if (m_activityWindow != null && !m_bindingDevices)
-                    m_activityWindow.Close();
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm.ShowPopup();
+                }                
             });
         }
 
@@ -249,6 +258,10 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 string result = CommonFunctions.SaveWizardConfigurationInfo(null, nodeID, new List<WizardDeviceInfo>(wizardDeviceInfoList), connectionString, protocolID, companyID, historianID, interconnectionID, parentID, skipDisableRealTimeData);
+
+                if (m_activityWindow != null)
+                    m_activityWindow.Close();
+                
                 sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Success },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -307,19 +320,22 @@ namespace openPDCManager.UserControls.CommonControls
                         sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                         sm.ShowPopup();
                     }
+
+                    //navigate to browse devices screen.
+                    BrowseDevicesUserControl browseDevices = new BrowseDevicesUserControl();
+                    ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(browseDevices);
                 }
                 catch (Exception ex)
                 {
+                    if (m_activityWindow != null)
+                        m_activityWindow.Close();
+
                     sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
                     sm.Owner = Window.GetWindow(this);
                     sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                     sm.ShowPopup();
                     CommonFunctions.LogException(null, "SaveWizardConfigurationInfo.RefreshMetadata", ex);
-                } 
-                
-                //navigate to browse devices screen.
-                BrowseDevicesUserControl browseDevices = new BrowseDevicesUserControl();
-                ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(browseDevices);
+                }                
             }
             catch (Exception ex)
             {
@@ -347,6 +363,10 @@ namespace openPDCManager.UserControls.CommonControls
                     m_bindingDevices = false;
 
                 ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
+
+                if (m_activityWindow != null && !m_bindingDevices)
+                    m_activityWindow.Close();
+
                 if (m_wizardDeviceInfoList.Count > 1)
                 {                    
                     CheckboxConnectToPDC.IsChecked = true;
@@ -364,6 +384,9 @@ namespace openPDCManager.UserControls.CommonControls
             }
             catch (Exception ex)
             {
+                if (m_activityWindow != null && !m_bindingDevices)
+                    m_activityWindow.Close();
+
                 CommonFunctions.LogException(null, "WPF.GetWizardConfigurationInfo", ex);
                 SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Parse Configuration File", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
                         ButtonType.OkOnly);
@@ -371,8 +394,7 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
             }
-            if (m_activityWindow != null && !m_bindingDevices)
-                m_activityWindow.Close();
+            
         }
 
         void GetConnectionSettings()
