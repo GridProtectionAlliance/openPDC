@@ -51,6 +51,7 @@ namespace openPDCManager
         const double layoutRootHeight = 900;
         const double layoutRootWidth = 1200;
         WindowsServiceClient m_serviceClient;
+        bool m_applicationClosing = false;
 
         #endregion
 
@@ -85,8 +86,10 @@ namespace openPDCManager
 
         void MasterLayoutWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            m_applicationClosing = true;
             Properties.Settings.Default.Save();
-            DisconnectFromService();
+            DisconnectFromService();                        
+            Application.Current.Shutdown();
         }
 
         void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -111,6 +114,7 @@ namespace openPDCManager
                     m_serviceClient.Helper.RemotingClient.ConnectionEstablished += new EventHandler(RemotingClient_ConnectionEstablished);
                     m_serviceClient.Helper.RemotingClient.ConnectionTerminated += new EventHandler(RemotingClient_ConnectionTerminated);                    
                     m_serviceClient.Helper.RemotingClient.MaxConnectionAttempts = -1;
+                    m_serviceClient.Helper.RemotingClient.ConnectionAttempt += new EventHandler(RemotingClient_ConnectionAttempt);
                     System.Threading.ThreadPool.QueueUserWorkItem(ConnectAsync, null);
                     
                     if (m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
@@ -133,27 +137,40 @@ namespace openPDCManager
             }
         }
 
+        void RemotingClient_ConnectionAttempt(object sender, EventArgs e)
+        {
+            
+        }
+
         void ConnectAsync(object state)
         {
-            m_serviceClient.Helper.Connect();
+            try
+            {
+                if (!m_applicationClosing && m_serviceClient != null)
+                    m_serviceClient.Helper.Connect();
+            }
+            catch { }
         }
 
         void DisconnectFromService()
         {
             try
             {
-                if (m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                    m_serviceClient.Helper.Disconnect();
+                //if (m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                //{
+                    m_serviceClient.Helper.RemotingClient.ConnectionEstablished -= new EventHandler(RemotingClient_ConnectionEstablished);
+                    m_serviceClient.Helper.RemotingClient.ConnectionTerminated -= new EventHandler(RemotingClient_ConnectionTerminated);
+                    m_serviceClient.Helper.RemotingClient.MaxConnectionAttempts = 1;
+                    m_serviceClient.Helper.RemotingClient.Disconnect();
+                    m_serviceClient.Helper.Disconnect();                    
+                //}
+                //m_serviceClient.Dispose();
             }
-            catch { }
-            finally
-            {
-               m_serviceClient.Dispose();                
-            }
+            catch { }        
         }
                 
         void RemotingClient_ConnectionTerminated(object sender, EventArgs e)
-        {
+        {   
             EllipseConnectionState.Dispatcher.BeginInvoke((Action)delegate()
             {
                 EllipseConnectionState.Fill = Application.Current.Resources["RedRadialGradientBrush"] as RadialGradientBrush;
