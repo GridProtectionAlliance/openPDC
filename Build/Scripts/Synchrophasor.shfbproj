@@ -7,7 +7,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4f0a74cb-23c4-4c88-a7e3-e3f22eedf61b}</ProjectGuid>
-    <SHFBSchemaVersion>1.8.0.0</SHFBSchemaVersion>
+    <SHFBSchemaVersion>1.9.0.0</SHFBSchemaVersion>
     <!-- AssemblyName, Name, and RootNamespace are not used by SHFB but Visual
          Studio adds them anyway -->
     <AssemblyName>Documentation</AssemblyName>
@@ -26,7 +26,7 @@
       <DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\TVA.PhasorProtocols.dll" />
       <DocumentationSource sourceFile="..\Output\$(Configuration)\Libraries\TVA.PhasorProtocols.xml" />
     </DocumentationSources>
-    <HelpFileFormat>Help1xAndHelp2x</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1, MSHelp2, Website</HelpFileFormat>
     <CopyrightHref>http://openpdc.codeplex.com/license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2010, Grid Protection Alliance.  All Rights Reserved.</CopyrightText>
     <FeedbackEMailAddress>rcarroll%40gridprotectionalliance.org</FeedbackEMailAddress>
