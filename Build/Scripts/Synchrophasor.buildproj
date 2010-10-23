@@ -37,6 +37,8 @@
 **       Overwrote BeforeCleanBuild target to exclude main setup application from the list of build
 **       output files to be deleted.
 **       Enabled versioning of setup projects.
+**  10/23/2010 - Pinal C. Patel
+**       Excluded openPDCManager Data project from versioning.
 **
 *******************************************************************************************************
 -->
@@ -63,11 +65,11 @@
   <Target Name="BeforeVersionSource">
     <ItemGroup>
       <!-- List of files to be versioned. -->
-      <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*">
+      <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*" Exclude="$(LocalFolder)\Source\Applications\openPDCManager\Web.Data\Properties\AssemblyInfo.*">
         <VersionRegex>(?'BeforeVersion'AssemblyVersion\(%22)(?'CoreVersion'(\*|\d+)\.)+(\*|\d+)(?'AfterVersion'%22\))</VersionRegex>
         <VersionPrecision>4</VersionPrecision>
       </FilesToVersion>
-      <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*">
+      <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*" Exclude="$(LocalFolder)\Source\Applications\openPDCManager\Web.Data\Properties\AssemblyInfo.*">
         <VersionRegex>(?'BeforeVersion'AssemblyFileVersion\(%22)(?'CoreVersion'(\*|\d+)\.)+(\*|\d+)(?'AfterVersion'%22\))</VersionRegex>
         <VersionPrecision>4</VersionPrecision>
       </FilesToVersion>
