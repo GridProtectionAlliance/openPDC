@@ -54,8 +54,6 @@ namespace ConfigurationSetupUtility.Screens
         }
 
         // Fields
-
-        private ICollection<NodeInfo> m_nodes;
         private Dictionary<string, object> m_state;
 
         #endregion
