@@ -75,7 +75,10 @@ namespace ConfigurationSetupUtility.Screens
                 if (applyChangesToService && existing)
                     return m_nodeSelectionScreen;
                 else
+                {
+                    m_state.Remove("selectedNodeId");
                     return m_setupReadyScreen;
+                }
             }
         }
 

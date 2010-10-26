@@ -21,10 +21,10 @@
 //
 //******************************************************************************************************
 
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System;
 
 namespace ConfigurationSetupUtility
 {
@@ -57,6 +57,7 @@ namespace ConfigurationSetupUtility
             m_history = new Stack<IScreen>();
             m_state = new Dictionary<string, object>();
 
+            m_state.Add("screenManager", this);
             m_currentScreen.UpdateNavigation = UpdateNavigation;
             m_currentScreen.State = m_state;
 
@@ -84,13 +85,24 @@ namespace ConfigurationSetupUtility
         #region [ Methods ]
 
         /// <summary>
-        /// Advances the setup window to the next screen.
+        /// Advances the setup window to the next screen, storing the current screen in the history.
         /// </summary>
         public void GoToNextScreen()
         {
+            GoToNextScreen(true);
+        }
+
+        /// <summary>
+        /// Advances the setup window to the next screen.
+        /// </summary>
+        /// <param name="storeHistory">Determines whether the <see cref="ScreenManager"/> should store the current screen in history.</param>
+        public void GoToNextScreen(bool storeHistory)
+        {
             if (m_currentScreen.NextScreen != null && m_currentScreen.CanGoForward && m_currentScreen.UserInputIsValid)
             {
-                m_history.Push(m_currentScreen);
+                if (storeHistory)
+                    m_history.Push(m_currentScreen);
+
                 m_currentScreen = m_currentScreen.NextScreen;
                 m_currentScreen.UpdateNavigation = UpdateNavigation;
                 m_currentScreen.State = m_state;
@@ -156,24 +168,6 @@ namespace ConfigurationSetupUtility
                     cancelButton.IsEnabled = m_currentScreen.CanCancel;
             }
         }
-
-        #endregion
-
-        #region [ Static ]
-
-        // Static Constructor
-
-        static ScreenManager()
-        {
-            ScreenFlags = new HashSet<string>();
-        }
-
-        // Static Properties
-
-        /// <summary>
-        /// Gets a set of flags shared among the screens.
-        /// </summary>
-        public static HashSet<string> ScreenFlags { get; private set; }
 
         #endregion
         

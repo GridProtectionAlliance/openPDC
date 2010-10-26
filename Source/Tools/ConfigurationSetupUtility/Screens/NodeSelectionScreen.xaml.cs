@@ -47,17 +47,11 @@ namespace ConfigurationSetupUtility.Screens
 
         private class NodeInfo
         {
-            public Guid Id { get; set; }
             public string Name { get; set; }
             public string Company { get; set; }
             public string Description { get; set; }
+            public Guid Id { get; set; }
         }
-
-        // Constants
-
-        // Delegates
-
-        // Events
 
         // Fields
 
@@ -183,10 +177,20 @@ namespace ConfigurationSetupUtility.Screens
             {
                 nodes.Add(new NodeInfo()
                 {
-                    Id = nodeId,
                     Name = "ConfigFile",
-                    Description = "This node was found in the configuration file."
+                    Description = "This node was found in the configuration file.",
+                    Id = nodeId
                 });
+            }
+            else if(nodes.Count == 1)
+            {
+                ScreenManager manager = m_state["screenManager"] as ScreenManager;
+
+                if (manager != null)
+                {
+                    manager.GoToNextScreen(false);
+                    return;
+                }
             }
 
             m_dataGrid.ItemsSource = nodes;
@@ -314,7 +318,7 @@ namespace ConfigurationSetupUtility.Screens
 
                     connection.Open();
                     command = connection.CreateCommand();
-                    command.CommandText = "SELECT Node.ID AS ID, Node.Name AS Name, Company.Name AS Company, Description FROM Node LEFT OUTER JOIN Company ON Node.CompanyID = Company.ID";
+                    command.CommandText = "SELECT Node.ID AS ID, Node.Name AS Name, Company.Name AS Company, Description FROM Node LEFT OUTER JOIN Company ON Node.CompanyID = Company.ID WHERE Enabled <> 0";
                     reader = command.ExecuteReader();
 
                     while (reader.Read())
@@ -325,10 +329,10 @@ namespace ConfigurationSetupUtility.Screens
                         {
                             nodes.Add(new NodeInfo()
                             {
-                                Id = nodeId,
                                 Name = reader["Name"].ToNonNullString(),
                                 Company = reader["Company"].ToNonNullString(),
-                                Description = reader["Description"].ToNonNullString()
+                                Description = reader["Description"].ToNonNullString(),
+                                Id = nodeId
                             });
                         }
                     }
