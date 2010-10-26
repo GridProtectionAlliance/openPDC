@@ -832,6 +832,7 @@ namespace ConfigurationSetupUtility.Screens
         // Allows the user to proceed to the next screen if the setup succeeded.
         private void OnSetupSucceeded()
         {
+            AppendStatusMessage("Operation succeeded. Click next to continue.");
             UpdateProgressBar(100);
             CanGoForward = true;
         }
@@ -839,6 +840,7 @@ namespace ConfigurationSetupUtility.Screens
         // Allows the user to go back to previous screens or cancel the setup if it failed.
         private void OnSetupFailed()
         {
+            AppendStatusMessage("Operation failed. Click the back button to try again.");
             UpdateProgressBar(0);
             m_canGoBack = true;
             CanCancel = true;
