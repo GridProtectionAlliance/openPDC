@@ -212,7 +212,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:openPDC Manager"
         "ProductCode" = "8:{9A71C1D0-920D-4332-8F83-AE162FA11039}"
-        "PackageCode" = "8:{2B038547-E4D1-478E-924D-52D3069711C5}"
+        "PackageCode" = "8:{F1578F57-7137-40A5-B29A-8D9BC60AEF07}"
         "UpgradeCode" = "8:{91EBCCD7-3161-4214-B76F-3993F481597D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -235,7 +235,7 @@
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:0"
         "PreBuildEvent" = "8:"
-        "PostBuildEvent" = "8:"
+        "PostBuildEvent" = "8:MOVE /Y \"$(BuiltOuputPath)\\..\\setup.exe\" \"$(BuiltOuputPath)\\..\\openPDCManagerWebSetup.exe\""
         "RunPostBuildEvent" = "3:0"
         }
         "Registry"
@@ -692,7 +692,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CFA632EEEF42498DA35EFF4C389D274D"
             {
-            "SourcePath" = "8:..\\Web\\obj\\Debug\\openPDCManager.Web.dll"
+            "SourcePath" = "8:..\\Web\\obj\\Release\\openPDCManager.Web.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_5CEB7ECEC1A5438EA37E99598A96A67C"
