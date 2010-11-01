@@ -94,14 +94,14 @@ namespace openPDCManager.UserControls.CommonControls
 
                     ChartRealTimeData.Dispatcher.BeginInvoke((Action)delegate()
                     {
-                        if (temp.Count > framesPerSecond)
+                        if (temp.Count > m_framesPerSecond)
                         {
-                            for (int i = 0; i < (int)(temp.Count / framesPerSecond); i++)
+                            for (int i = 0; i < (int)(temp.Count / m_framesPerSecond); i++)
                             {
                                 if (timeSeriesDataList.Count == 0)
-                                    timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = temp[(i * framesPerSecond)].Value });
+                                    timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = temp[(i * m_framesPerSecond)].Value });
                                 else
-                                    timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = temp[(i * framesPerSecond)].Value });
+                                    timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = temp[(i * m_framesPerSecond)].Value });
                             }
                         }
                         else if (temp.Count > 0)
@@ -142,7 +142,17 @@ namespace openPDCManager.UserControls.CommonControls
         {
             try
             {
-                ChartDeviceDistribution.DataContext = CommonFunctions.GetVendorDeviceDistribution(null, ((App)Application.Current).NodeValue);
+                Dictionary<string, int> temp = CommonFunctions.GetVendorDeviceDistribution(null, ((App)Application.Current).NodeValue);
+                foreach (KeyValuePair<string, int> pair in temp)
+                {
+                    if (m_deviceDistributionList.ContainsKey(pair.Key))
+                        m_deviceDistributionList[pair.Key] = pair.Value;
+                    else
+                        m_deviceDistributionList.Add(pair.Key, pair.Value);
+                }
+                
+                ChartDeviceDistribution.DataContext = m_deviceDistributionList;               //CommonFunctions.GetVendorDeviceDistribution(null, ((App)Application.Current).NodeValue);
+                ChartDeviceDistribution.UpdateLayout();
                 if (m_thirtySecondsTimer == null)
                     StartThirtySecondsTimer();
             }
@@ -229,7 +239,7 @@ namespace openPDCManager.UserControls.CommonControls
 #endif
                 
                 m_url = ((App)Application.Current).TimeSeriesDataServiceUrl + "/timeseriesdata/read/current/" + ((Measurement)ComboBoxMeasurements.SelectedItem).PointID.ToString() + "/XML";
-                framesPerSecond = (int)((Measurement)ComboBoxMeasurements.SelectedItem).FramesPerSecond;
+                m_framesPerSecond = (int)((Measurement)ComboBoxMeasurements.SelectedItem).FramesPerSecond;
                 LinearAxis yAxis = (LinearAxis)ChartRealTimeData.Axes[1];
                 if (((Measurement)ComboBoxMeasurements.SelectedItem).SignalSuffix == "PA")
                 {

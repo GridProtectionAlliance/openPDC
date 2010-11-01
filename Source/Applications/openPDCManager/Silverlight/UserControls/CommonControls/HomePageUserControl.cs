@@ -84,7 +84,7 @@ namespace openPDCManager.UserControls.CommonControls
             if (ComboBoxMeasurements.Items.Count > 0)
             {
                 msg.DataPointID = ((Measurement)ComboBoxMeasurements.SelectedItem).PointID;
-                framesPerSecond = (int)((Measurement)ComboBoxMeasurements.SelectedItem).FramesPerSecond;
+                m_framesPerSecond = (int)((Measurement)ComboBoxMeasurements.SelectedItem).FramesPerSecond;
                 LinearAxis yAxis = (LinearAxis)ChartRealTimeData.Axes[1];
                 if (((Measurement)ComboBoxMeasurements.SelectedItem).SignalSuffix == "PA")
                 {
@@ -183,22 +183,31 @@ namespace openPDCManager.UserControls.CommonControls
 
                 //pmuDistributionList = livePhasorData.PmuDistributionList;		        				
                 interconnectionStatusList = livePhasorData.InterconnectionStatusList;
-                deviceDistributionList = livePhasorData.DeviceDistributionList;
+
+                Dictionary<string, int> temp = livePhasorData.DeviceDistributionList;
+                foreach (KeyValuePair<string, int> pair in temp)
+                {
+                    if (m_deviceDistributionList.ContainsKey(pair.Key))
+                        m_deviceDistributionList[pair.Key] = pair.Value;
+                    else
+                        m_deviceDistributionList.Add(pair.Key, pair.Value);
+                }
 
                 //ItemsControlPmuDistribution.ItemsSource = pmuDistributionList;
-                ChartDeviceDistribution.DataContext = deviceDistributionList;
+                ChartDeviceDistribution.DataContext = m_deviceDistributionList;
+                ChartDeviceDistribution.UpdateLayout();
                 ItemControlInterconnectionStatus.ItemsSource = interconnectionStatusList;
             }
             else if (e.msg is TimeSeriesDataMessage)
             {
-                if (((TimeSeriesDataMessage)e.msg).TimeSeriesData.Count > framesPerSecond)
+                if (((TimeSeriesDataMessage)e.msg).TimeSeriesData.Count > m_framesPerSecond)
                 {
-                    for (int i = 0; i < (int)((TimeSeriesDataMessage)e.msg).TimeSeriesData.Count / framesPerSecond; i++)
+                    for (int i = 0; i < (int)((TimeSeriesDataMessage)e.msg).TimeSeriesData.Count / m_framesPerSecond; i++)
                     {
                         if (timeSeriesDataList.Count == 0)
-                            timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = ((TimeSeriesDataMessage)e.msg).TimeSeriesData[(i * framesPerSecond)].Value });
+                            timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = ((TimeSeriesDataMessage)e.msg).TimeSeriesData[(i * m_framesPerSecond)].Value });
                         else
-                            timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = ((TimeSeriesDataMessage)e.msg).TimeSeriesData[(i * framesPerSecond)].Value });
+                            timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = ((TimeSeriesDataMessage)e.msg).TimeSeriesData[(i * m_framesPerSecond)].Value });
                     }
                 }
                 else if (((TimeSeriesDataMessage)e.msg).TimeSeriesData.Count > 0)

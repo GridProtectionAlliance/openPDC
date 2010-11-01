@@ -53,8 +53,8 @@ namespace openPDCManager.UserControls.CommonControls
                 
         ActivityWindow m_activityWindow;
         //ObservableCollection<PmuDistribution> pmuDistributionList = new ObservableCollection<PmuDistribution>();        
-        Dictionary<string, int> deviceDistributionList = new Dictionary<string, int>();        
-        int framesPerSecond = 30;
+        Dictionary<string, int> m_deviceDistributionList = new Dictionary<string, int>();        
+        int m_framesPerSecond = 30;
 
         #endregion
 

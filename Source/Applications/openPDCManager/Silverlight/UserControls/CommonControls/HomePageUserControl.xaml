@@ -163,7 +163,7 @@
                     <TextBlock Text="Vendor Device Distribution" Style="{StaticResource LargeWhiteTextStyle}" HorizontalAlignment="Center" Padding="5" />
                     <chartingToolkit:Chart x:Name="ChartDeviceDistribution" Style="{StaticResource PieChartStyle}" Foreground="Black" Background="{StaticResource PortletBackgroundBrush}" VerticalAlignment="Top" Height="{StaticResource XLargeItemSize}">
                         <chartingToolkit:Chart.Series>
-                            <chartingToolkit:PieSeries ItemsSource="{Binding}" DependentValuePath="Value" IndependentValuePath="Key" Title="Device Distribution" 
+                            <chartingToolkit:PieSeries ItemsSource="{Binding}" DependentValueBinding="{Binding Value}" IndependentValueBinding="{Binding Key}" Title="Device Distribution" 
                             IsSelectionEnabled="False">
                                 <!--<chartingToolkit:PieSeries.DataPointStyle>
                                 <Style TargetType="chartingToolkit:PieDataPoint">
