@@ -130,7 +130,7 @@
                     <CheckBox x:Name="CheckBoxAllowSortsByArrival" Grid.Row="12" Grid.Column="1" Content="Allow Sorts By Arrival" IsChecked="{Binding Path=AllowSortsByArrival}" FontWeight="Bold" VerticalAlignment="Center"/>
                     <CheckBox x:Name="CheckBoxUseLocalClockAsRealTime" Grid.Row="12" Grid.Column="3" Content="Use Local Clock As Real-time" IsChecked="{Binding Path=UseLocalClockAsRealTime}" FontWeight="Bold" VerticalAlignment="Center"/>
                     <CheckBox x:Name="CheckBoxAllowPreemptivePublishing" Grid.Row="13" Grid.Column="1" Content="Allow Preemptive Publishing" IsChecked="{Binding Path=AllowPreemptivePublishing}" FontWeight="Bold" VerticalAlignment="Center"/>
-                    <CheckBox x:Name="CheckBoxIgnoreBadTimeStamps" Grid.Row="13" Grid.Column="3" Content="Ignore Bad Time Stamps" IsChecked="{Binding Path=IgnoreBadTimeStamps}" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="CheckBoxIgnoreBadTimeStamps" Grid.Row="13" Grid.Column="3" Content="Ignore Bad Timestamps" IsChecked="{Binding Path=IgnoreBadTimeStamps}" FontWeight="Bold" VerticalAlignment="Center"/>
 
                     <StackPanel Orientation="Horizontal" Grid.Row="14" Grid.Column="0">
                         <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>

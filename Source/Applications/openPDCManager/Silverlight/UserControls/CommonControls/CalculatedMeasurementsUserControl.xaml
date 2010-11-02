@@ -95,7 +95,7 @@
                     <TextBox x:Name="TextBoxLoadOrder" Grid.Row="7" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <CheckBox x:Name="CheckBoxUseLocalClock" Grid.Row="8" Grid.Column="1" Content="Use Local Clock As Real-Time" IsChecked="{Binding Path=UseLocalClockAsRealTime}" FontWeight="Bold" VerticalAlignment="Center"/>
                     <CheckBox x:Name="CheckBoxAllowSorts" Grid.Row="8" Grid.Column="3" Content="Allow Sorts By Arrival" IsChecked="{Binding Path=AllowSortsByArrival}" FontWeight="Bold" VerticalAlignment="Center"/>
-                    <CheckBox x:Name="CheckBoxIgnoreBadTimeStamps" Grid.Row="9" Grid.Column="1" Content="Ignore Bad Time Stamps" IsChecked="{Binding Path=IgnoreBadTimeStamps}" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="CheckBoxIgnoreBadTimeStamps" Grid.Row="9" Grid.Column="1" Content="Ignore Bad Timestamps" IsChecked="{Binding Path=IgnoreBadTimeStamps}" FontWeight="Bold" VerticalAlignment="Center"/>
                     <CheckBox x:Name="CheckBoxAllowPreemptivePublishing" Grid.Row="9" Grid.Column="3" Content="Allow Preemptive Publishing" IsChecked="{Binding Path=AllowPreemptivePublishing}" FontWeight="Bold" VerticalAlignment="Center"/>
                     <TextBlock Grid.Row="10" Grid.Column="0" Text="Runtime ID" Style="{StaticResource GenericLabelStyle}"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="10" Grid.Column="1">
