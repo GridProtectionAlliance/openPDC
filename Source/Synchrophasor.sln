@@ -221,8 +221,18 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataMigrationUtility", "Tools\DataMigrationUtility\DataMigrationUtility.csproj", "{933BE44C-B124-4ACC-8BE8-A6A22AAC4413}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesInstaller", "Applications\openPDCManager\ServicesInstaller\ServicesInstaller.csproj", "{87D72A03-AAE0-4946-B2CA-958A354A31C7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D96C8A3A-7E03-43C6-B401-41778D81FF70} = {D96C8A3A-7E03-43C6-B401-41778D81FF70}
+		{30297342-C66C-4715-A495-B6DFCF8E3A78} = {30297342-C66C-4715-A495-B6DFCF8E3A78}
+		{5314055B-EA03-4E15-8653-83F011D7A00E} = {5314055B-EA03-4E15-8653-83F011D7A00E}
+		{3D0DC382-3C00-48A7-B9FF-D3154F8BEDF1} = {3D0DC382-3C00-48A7-B9FF-D3154F8BEDF1}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebInstaller", "Applications\openPDCManager\WebInstaller\WebInstaller.csproj", "{2A6F75B7-D72D-4D5A-8394-88A5FC98D482}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0B8D74B6-5556-4118-8A97-2F182F32DE50} = {0B8D74B6-5556-4118-8A97-2F182F32DE50}
+		{955C76BA-E809-4732-A15C-CD3607F66EC8} = {955C76BA-E809-4732-A15C-CD3607F66EC8}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
