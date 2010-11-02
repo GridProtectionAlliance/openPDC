@@ -637,8 +637,6 @@ namespace HistorianAdapters
 
         #region [ Static ]
 
-        private static Action<object, EventArgs<string>> m_statusMessage;
-
         // Static Methods
 
         // Apply historian configuration optimizations at start-up
