@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -50,8 +51,14 @@ namespace ConfigurationSetupUtility.Screens
         /// </summary>
         public UpdateConfigurationScreen()
         {
+            string[] args = Environment.GetCommandLineArgs();
+            bool installFlag = args.Contains("-install", StringComparer.CurrentCultureIgnoreCase);
+
             InitializeComponent();
             m_dataMigrationScreen = new DataMigrationScreen();
+
+            if (!installFlag)
+                m_useExistingConfigurationRadioButton.IsChecked = true;
         }
 
         #endregion
@@ -133,7 +140,7 @@ namespace ConfigurationSetupUtility.Screens
                 m_state = value;
 
                 if (!m_state.ContainsKey("updateConfiguration"))
-                    m_state.Add("updateConfiguration", true);
+                    m_state.Add("updateConfiguration", m_updateConfigurationRadioButton.IsChecked.Value);
             }
         }
 

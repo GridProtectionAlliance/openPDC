@@ -13,8 +13,8 @@
                 database to the latest schema?
             </TextBlock>
             <StackPanel HorizontalAlignment="Center">
-                <RadioButton Content="I want to upgrade to the latest schema." Height="18" IsChecked="True" Checked="UpdateConfigurationRadioButton_Checked" />
-                <RadioButton Content="I want to use an existing database as-is." Height="18" Checked="UseExistingConfigurationRadioButton_Checked" />
+                <RadioButton Content="I want to upgrade to the latest schema." Height="18" IsChecked="True" Checked="UpdateConfigurationRadioButton_Checked" Name="m_updateConfigurationRadioButton" />
+                <RadioButton Content="I want to use an existing database as-is." Height="18" Checked="UseExistingConfigurationRadioButton_Checked" Name="m_useExistingConfigurationRadioButton" />
             </StackPanel>
         </StackPanel>
     </DockPanel>
