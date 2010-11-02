@@ -8,26 +8,13 @@
              xmlns:uc="clr-namespace:openPDCManager.Pages.Monitoring"
              mc:Ignorable="d">
     <Grid>
-        
-                        <d3:ChartPlotter Name="ChartPlotterDynamic" VerticalAlignment="Top" Margin="5" Background="Transparent" Height="375"
-                                         MainHorizontalAxisVisibility="Hidden" MainVerticalAxisVisibility="Collapsed">
 
-                            <d3:InjectedPlotter Name="FrequencyPlotter" SetViewportBinding="False">
-                                <d3:VerticalAxis Placement="Left" Visibility="Collapsed"/>
-                            </d3:InjectedPlotter>
+        <d3:ChartPlotter Name="ChartPlotterDynamic" >
 
-                            <d3:InjectedPlotter Name="PhaseAnglePlotter" Background="Aqua" SetViewportBinding="False">
-                                <d3:VerticalAxis Placement="Right" Visibility="Collapsed"/>
-                            </d3:InjectedPlotter>
+            <!--<d3:ChartPlotter.MainHorizontalAxis>                
+                <d3:HorizontalDateTimeAxis Name="XAxisDateTime" />                
+            </d3:ChartPlotter.MainHorizontalAxis>-->         
 
-                            <d3:InjectedPlotter Name="VoltageMagnitudePlotter" SetViewportBinding="False">
-                                <d3:VerticalAxis Placement="Left" Visibility="Collapsed"/>
-                            </d3:InjectedPlotter>
-
-                            <d3:InjectedPlotter Name="CurrentMagnitudePlotter" SetViewportBinding="False">
-                                <d3:VerticalAxis Placement="Right" Visibility="Collapsed"/>
-                            </d3:InjectedPlotter>
-
-                        </d3:ChartPlotter>
+        </d3:ChartPlotter>
     </Grid>
 </UserControl>

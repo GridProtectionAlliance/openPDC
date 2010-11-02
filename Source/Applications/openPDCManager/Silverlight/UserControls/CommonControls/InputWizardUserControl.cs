@@ -343,7 +343,7 @@ namespace openPDCManager.UserControls.CommonControls
                                     ";parseWordCountFromByte=" + m_connectionSettings.parseWordCountFromByte;
                     }
 
-                    if (m_connectionSettings.PmuID != null)
+                    //if (m_connectionSettings.PmuID != null)
                         TextBoxAccessID.Text = m_connectionSettings.PmuID.ToString();
 
                     //Select Phasor Protocol type in the combobox based on the protocol in the connection file.

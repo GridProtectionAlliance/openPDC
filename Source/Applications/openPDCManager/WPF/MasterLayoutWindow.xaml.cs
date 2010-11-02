@@ -80,7 +80,7 @@ namespace openPDCManager
         void MasterLayoutWindow_Loaded(object sender, RoutedEventArgs e)
         {            
             IsolatedStorageManager.SetDefuaultStorage(false);            
-            HomePageUserControl home = new HomePageUserControl();
+            HomePageUserControl home = new HomePageUserControl();            
             ContentFrame.Navigate(home);            
         }
 

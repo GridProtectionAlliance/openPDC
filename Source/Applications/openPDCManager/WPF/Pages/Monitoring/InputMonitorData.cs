@@ -22,6 +22,7 @@
 //******************************************************************************************************
 
 using System.Windows.Media;
+using System;
 
 namespace openPDCManager.Pages.Monitoring
 {
@@ -35,5 +36,11 @@ namespace openPDCManager.Pages.Monitoring
         public string EngineeringUnit { get; set; }
         public string Quality { get; set; }
         public SolidColorBrush Background { get; set; }
+    }
+
+    public class SubscriptionData
+    {
+        public DateTime TimeStamp { get; set; }
+        public double Value { get; set; }
     }
 }

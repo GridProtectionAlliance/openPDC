@@ -67,7 +67,7 @@ namespace openPDCManager
                 if (m_refreshTimer == null)
                     StartTimer();
             }
-            catch (Exception ex)
+            catch 
             {
                 if (m_refreshTimer != null)
                 {

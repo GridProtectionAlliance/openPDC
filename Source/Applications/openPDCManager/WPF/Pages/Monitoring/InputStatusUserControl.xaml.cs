@@ -33,21 +33,22 @@ namespace openPDCManager.Pages.Monitoring
     /// </summary>
     public partial class InputStatusUserControl : UserControl
     {
-        #region [ Members ]
-                
+        #region [ Members ]               
 
         #region [ Members for Dynamic Data Display ]
         
-        EnumerableDataSource<int> m_xAxisSource;
-        Dictionary<string, EnumerableDataSource<Double>> m_yAxisSourceCollection; //this will contain PointID and corresponding data plotted on Y-axis
-        Dictionary<string, List<double>> m_yAxisDataCollection;    //this will contain PointID and corresponding List<double> from the openPDC
-        
+        EnumerableDataSource<int> m_xAxisBindingCollection;                     //this will contain DateTime values plotted on X-Axis
+        List<int> m_xAxisDataCollection;                                        //this will contain DateTime values from the subscription API
+        Dictionary<string, List<double>> m_yAxisDataCollection;                      //this will contain SignalID and corresponding List<double> from the subsription API
+        Dictionary<string, EnumerableDataSource<Double>> m_yAxisBindingCollection;   //this will contain SignalID and corresponding data plotted on Y-axis        
+        DispatcherTimer m_chartRefreshTimer;
+
         #endregion
 
         #region [ Static Members ]
 
-        static DataSubscriber subscriber = new DataSubscriber();
-        static long dataCount = 0;
+        DataSubscriber s_subscriber = new DataSubscriber();
+        //long s_dataCount = 0;
 
         #endregion
 
@@ -61,9 +62,10 @@ namespace openPDCManager.Pages.Monitoring
             this.Loaded += new RoutedEventHandler(InputStatusUserControl_Loaded);
             this.Unloaded += new RoutedEventHandler(InputStatusUserControl_Unloaded);
 
+            m_xAxisDataCollection = new List<int>();
             m_yAxisDataCollection = new Dictionary<string, List<double>>();
-            m_yAxisSourceCollection = new Dictionary<string, EnumerableDataSource<double>>();            
-        }
+            m_yAxisBindingCollection = new Dictionary<string, EnumerableDataSource<double>>();                      
+        }        
 
         #endregion
 
@@ -71,12 +73,11 @@ namespace openPDCManager.Pages.Monitoring
 
         void InputStatusUserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            subscriber.Unsubscribe();
-
-            subscriber.StatusMessage -= subscriber_StatusMessage;
-            subscriber.ProcessException -= subscriber_ProcessException;
-            subscriber.ConnectionEstablished -= subscriber_ConnectionEstablished;
-            subscriber.NewMeasurements -= subscriber_NewMeasurements;
+            s_subscriber.Unsubscribe();
+            s_subscriber.StatusMessage -= subscriber_StatusMessage;
+            s_subscriber.ProcessException -= subscriber_ProcessException;
+            s_subscriber.ConnectionEstablished -= subscriber_ConnectionEstablished;
+            s_subscriber.NewMeasurements -= subscriber_NewMeasurements;
         }
 
         void InputStatusUserControl_Loaded(object sender, RoutedEventArgs e)
@@ -85,56 +86,157 @@ namespace openPDCManager.Pages.Monitoring
             Panel legendParent = (Panel)ChartPlotterDynamic.Legend.ContentGrid.Parent;
             legendParent.Children.Remove(ChartPlotterDynamic.Legend.ContentGrid);
 
-            List<int> tempXValues = new List<int>();
-            for (int i = 0; i < 300; i++)
-                tempXValues.Add(i);
+            //Assign x-axis binding collection to x-axis.
+            for (int i = 0; i < 150; i++)
+                m_xAxisDataCollection.Add(i);
+            m_xAxisBindingCollection = new EnumerableDataSource<int>(m_xAxisDataCollection);
+            m_xAxisBindingCollection.SetXMapping(x => x);
+            
+            List<double> temp = new List<double>();            
+            for (int i = 0; i < 150; i++)
+                temp.Add(60.0);
 
-            m_xAxisSource = new EnumerableDataSource<int>(tempXValues);
-            m_xAxisSource.SetXMapping(x => x);
+            m_yAxisDataCollection.Add("Test", temp);
+            m_yAxisBindingCollection.Add("Test", new EnumerableDataSource<double>(m_yAxisDataCollection["Test"]));
+            m_yAxisBindingCollection["Test"].SetYMapping(y => y);
 
-            subscriber.StatusMessage += subscriber_StatusMessage;
-            subscriber.ProcessException += subscriber_ProcessException;
-            subscriber.ConnectionEstablished += subscriber_ConnectionEstablished;
-            subscriber.NewMeasurements += subscriber_NewMeasurements;
+            ChartPlotterDynamic.AddLineGraph(new CompositeDataSource(m_xAxisBindingCollection, m_yAxisBindingCollection["Test"]));
+
+            s_subscriber.StatusMessage += subscriber_StatusMessage;
+            s_subscriber.ProcessException += subscriber_ProcessException;
+            s_subscriber.ConnectionEstablished += subscriber_ConnectionEstablished;
+            s_subscriber.NewMeasurements += subscriber_NewMeasurements;
 
             // Initialize subscriber
-            subscriber.ConnectionString = "server=localhost:6165";
-            subscriber.Initialize();
+            s_subscriber.ConnectionString = "server=localhost:6165";
+            s_subscriber.Initialize();
 
             // Start subscriber connection cycle
-            subscriber.Start();
+            s_subscriber.Start();
+
+            StartChartRefreshTimer();
         }
 
         #endregion
 
         #region [ Subscription API Code ]
 
-        static void subscriber_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
+        void subscriber_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
         {
-            foreach (IMeasurement measurement in e.Argument)
+            double temp = e.Argument.First().Value;
+            lock (m_yAxisDataCollection)
             {
-                System.Diagnostics.Debug.WriteLine(measurement.SignalID.ToString() + " | " + measurement.Value);
+                lock (m_yAxisDataCollection["Test"])
+                {
+                    List<double> tempCollection = m_yAxisDataCollection["Test"];
+                    tempCollection.RemoveAt(0);
+                    tempCollection.Add(temp);
+
+                    //ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
+                    //    {
+                    //        lock (m_yAxisBindingCollection)
+                    //        {
+                    //            lock (m_yAxisBindingCollection["Test"])
+                    //                m_yAxisBindingCollection["Test"].RaiseDataChanged();                                                                
+                    //        }
+                    //    });
+                }
+            }
+            //foreach (IMeasurement measurement in e.Argument)
+            //{
+            //    //DateTime measurementDateTime = new DateTime(measurement.Timestamp);
+            //    string measurementSignalID = measurement.SignalID.ToString();
+            //    double measurementValue = measurement.Value;
+
+            //    //lock (m_xAxisDataCollection)
+            //    //{                    
+            //    //    if (!m_xAxisDataCollection.Contains(measurementDateTime))
+            //    //    {
+            //    //        if (m_xAxisDataCollection.Count > 300)
+            //    //            m_xAxisDataCollection.RemoveAt(0);
+
+            //    //        m_xAxisDataCollection.Add(measurementDateTime);
+            //    //        //m_xAxisBindingCollection.SetXMapping(x => XAxisDateTime.ConvertToDouble(x.Date));
+            //    //    }
+            //    //    //m_xAxisBindingCollection.RaiseDataChanged();
+            //    //}
+
+            //    lock (m_yAxisDataCollection)
+            //    {
+            //        if (!m_yAxisDataCollection.ContainsKey(measurementSignalID))
+            //        {
+            //            m_yAxisDataCollection.Add(measurementSignalID, new List<double>());
+            //            lock (m_yAxisBindingCollection)
+            //            {
+            //                m_yAxisBindingCollection.Add(measurementSignalID, new EnumerableDataSource<double>(m_yAxisDataCollection[measurementSignalID]));
+            //                m_yAxisBindingCollection[measurementSignalID].SetYMapping(y => y);
+                            
+            //                ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
+            //                {
+            //                    ChartPlotterDynamic.AddLineGraph(new CompositeDataSource(m_xAxisBindingCollection, m_yAxisBindingCollection[measurementSignalID]));
+            //                });
+            //            }
+            //        }
+
+            //        List<double> tempCollection = m_yAxisDataCollection[measurementSignalID];
+            //        if (tempCollection.Count > 300)
+            //            tempCollection.RemoveAt(0);
+
+            //        tempCollection.Add(measurementValue);
+            //        m_yAxisDataCollection[measurementSignalID] = tempCollection;
+
+            //        ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
+            //        {
+            //            lock(m_yAxisBindingCollection)
+            //                m_yAxisBindingCollection[measurementSignalID].RaiseDataChanged();
+            //        });
+            //    }
+            //}            
+        }
+
+        void subscriber_ConnectionEstablished(object sender, EventArgs e)
+        {
+            s_subscriber.SynchronizedSubscribe(true, 30, 0.5D, 1.0D, "DEVARCHIVE:2");
+        }
+
+        void subscriber_ProcessException(object sender, TVA.EventArgs<Exception> e)
+        {
+            System.Diagnostics.Debug.WriteLine("EXCEPTION: " + e.Argument.Message);            
+        }
+
+        void subscriber_StatusMessage(object sender, TVA.EventArgs<string> e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.Argument);
+        }
+
+        #endregion                
+    
+        #region [ Methods ]
+
+        void StartChartRefreshTimer()
+        {
+            if (m_chartRefreshTimer == null)
+            {
+                m_chartRefreshTimer = new DispatcherTimer();
+                m_chartRefreshTimer.Interval = TimeSpan.FromMilliseconds(1000);
+                m_chartRefreshTimer.Tick += new EventHandler(m_chartRefreshTimer_Tick);
+                m_chartRefreshTimer.Start();
             }
         }
 
-        static void subscriber_ConnectionEstablished(object sender, EventArgs e)
-        {
-            subscriber.SynchronizedSubscribe(true, 1, 0.5D, 1.0D, "DEVARCHIVE:2");
-        }
-
-        static void subscriber_ProcessException(object sender, TVA.EventArgs<Exception> e)
-        {
-            //Console.ForegroundColor = ConsoleColor.Red;
-            //Console.WriteLine("EXCEPTION: " + e.Argument.Message);
-            //Console.ResetColor();
-        }
-
-        static void subscriber_StatusMessage(object sender, TVA.EventArgs<string> e)
-        {
-            //Console.WriteLine(e.Argument);
+        void m_chartRefreshTimer_Tick(object sender, EventArgs e)
+        {         
+            //RefreshChart(null);
+            ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
+                {
+                    lock (m_yAxisBindingCollection)
+                    {
+                        lock (m_yAxisBindingCollection["Test"])
+                            m_yAxisBindingCollection["Test"].RaiseDataChanged();
+                    }
+                });
         }
 
         #endregion
-                
     }
 }

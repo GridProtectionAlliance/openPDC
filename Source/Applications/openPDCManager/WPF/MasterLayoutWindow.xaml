@@ -31,6 +31,7 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Background="{StaticResource HeaderBackgroundBrush}">
+                        <!--<Image x:Name="ImageNodeLogo" VerticalAlignment="Center" Margin="5" />-->
                         <StackPanel Orientation="Vertical"  HorizontalAlignment="Stretch">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock x:Name="TextBlockNode" Text="" Style="{StaticResource LargeWhiteTextWithEffectStyle}" />
