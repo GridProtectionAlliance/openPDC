@@ -303,6 +303,7 @@ CREATE TABLE OutputStreamDevice(
 	NodeID NCHAR(36) NOT NULL,
 	AdapterID INT NOT NULL,
 	ID INT AUTO_INCREMENT NOT NULL,
+	IDCode INT NULL,
 	Acronym NVARCHAR(16) NOT NULL,
 	BpaAcronym NVARCHAR(4) NULL,
 	Name NVARCHAR(100) NOT NULL,
@@ -346,6 +347,7 @@ CREATE TABLE CalculatedMeasurement(
 	IgnoreBadTimeStamps TINYINT NOT NULL DEFAULT 0,
 	TimeResolution INT NOT NULL DEFAULT 10000,
 	AllowPreemptivePublishing TINYINT NOT NULL DEFAULT 1,
+	PerformTimestampReasonabilityCheck TINYINT NOT NULL DEFAULT 1,
 	DownsamplingMethod NVARCHAR(15) NOT NULL DEFAULT N'LastReceived',
 	LoadOrder INT NOT NULL DEFAULT 0,
 	Enabled TINYINT NOT NULL DEFAULT 0,
@@ -413,6 +415,7 @@ CREATE TABLE OutputStream(
 	IgnoreBadTimeStamps TINYINT NOT NULL DEFAULT 0,
 	TimeResolution INT NOT NULL DEFAULT 10000,
 	AllowPreemptivePublishing TINYINT NOT NULL DEFAULT 1,
+	PerformTimestampReasonabilityCheck TINYINT NOT NULL DEFAULT 1,
 	DownsamplingMethod NVARCHAR(15) NOT NULL DEFAULT N'LastReceived',
 	DataFormat NVARCHAR(15) NOT NULL DEFAULT N'FloatingPoint',
 	CoordinateFormat NVARCHAR(15) NOT NULL DEFAULT N'Polar',
@@ -566,7 +569,7 @@ ORDER BY CustomOutputAdapter.LoadOrder;
 
 CREATE VIEW RuntimeInputStreamDevice
 AS
-SELECT Device.NodeID, Runtime_P.ID AS ParentID, Runtime.ID, Device.Acronym, Device.AccessID
+SELECT Device.NodeID, Runtime_P.ID AS ParentID, Runtime.ID, Device.Acronym, Device.Name, Device.AccessID
 FROM Device LEFT OUTER JOIN
  Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device' LEFT OUTER JOIN
  Runtime AS Runtime_P ON Device.ParentID = Runtime_P.SourceID AND Runtime_P.SourceTable = N'Device'
@@ -584,7 +587,7 @@ ORDER BY CustomInputAdapter.LoadOrder;
 
 CREATE VIEW RuntimeOutputStreamDevice
 AS
-SELECT OutputStreamDevice.NodeID, Runtime.ID AS ParentID, OutputStreamDevice.ID, OutputStreamDevice.Acronym, 
+SELECT OutputStreamDevice.NodeID, Runtime.ID AS ParentID, OutputStreamDevice.ID, OutputStreamDevice.IDCode, OutputStreamDevice.Acronym, 
  OutputStreamDevice.BpaAcronym, OutputStreamDevice.Name, NULLIF(OutputStreamDevice.PhasorDataFormat, '') AS PhasorDataFormat, NULLIF(OutputStreamDevice.FrequencyDataFormat, '') AS FrequencyDataFormat,
  NULLIF(OutputStreamDevice.AnalogDataFormat, '') AS AnalogDataFormat, NULLIF(OutputStreamDevice.CoordinateFormat, '') AS CoordinateFormat, OutputStreamDevice.LoadOrder
 FROM OutputStreamDevice LEFT OUTER JOIN
@@ -618,6 +621,7 @@ SELECT OutputStream.NodeID, Runtime.ID, OutputStream.Acronym AS AdapterName,
  CONCAT(N'currentScalingValue=', CAST(OutputStream.CurrentScalingValue AS CHAR)),
  CONCAT(N'voltageScalingValue=', CAST(OutputStream.VoltageScalingValue AS CHAR)),
  CONCAT(N'analogScalingValue=', CAST(OutputStream.AnalogScalingValue AS CHAR)),
+ CONCAT(N'performTimestampReasonabilityCheck=', CAST(OutputStream.PerformTimestampReasonabilityCheck AS CHAR)),
  CONCAT(N'digitalMaskValue=', CAST(OutputStream.DigitalMaskValue AS CHAR))) AS ConnectionString
 FROM OutputStream LEFT OUTER JOIN
  Runtime ON OutputStream.ID = Runtime.SourceID AND Runtime.SourceTable = N'OutputStream'
@@ -647,6 +651,7 @@ SELECT CalculatedMeasurement.NodeID, Runtime.ID, CalculatedMeasurement.Acronym A
  CONCAT(N'ignoreBadTimestamps=', CAST(CalculatedMeasurement.IgnoreBadTimeStamps AS CHAR)),
  CONCAT(N'timeResolution=', CAST(CalculatedMeasurement.TimeResolution AS CHAR)),
  CONCAT(N'allowPreemptivePublishing=', CAST(CalculatedMeasurement.AllowPreemptivePublishing AS CHAR)),
+ CONCAT(N'performTimestampReasonabilityCheck=', CAST(CalculatedMeasurement.PerformTimestampReasonabilityCheck AS CHAR)),
  CONCAT(N'downsamplingMethod=', CalculatedMeasurement.DownsamplingMethod)) AS ConnectionString
 FROM CalculatedMeasurement LEFT OUTER JOIN
  Runtime ON CalculatedMeasurement.ID = Runtime.SourceID AND Runtime.SourceTable = N'CalculatedMeasurement'
