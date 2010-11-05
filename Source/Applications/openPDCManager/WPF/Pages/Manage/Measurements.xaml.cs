@@ -192,7 +192,7 @@ namespace openPDCManager.Pages.Manage
             List<Measurement> searchResult = new List<Measurement>();
             searchResult = (from item in m_measurementList
                             where item.PointTag.Contains(searchText) || item.SignalReference.Contains(searchText) || item.SignalSuffix.Contains(searchText) || item.Description.ToUpper().Contains(searchText)
-                                  || item.DeviceAcronym.Contains(searchText) || item.SignalName.ToUpper().Contains(searchText) || item.SignalAcronym.Contains(searchText)
+                                  || item.DeviceAcronym.ToUpper().Contains(searchText) || item.SignalName.ToUpper().Contains(searchText) || item.SignalAcronym.Contains(searchText)
                             select item).ToList();
             BindData(searchResult);
         }
@@ -523,9 +523,16 @@ namespace openPDCManager.Pages.Manage
         void BindData(List<Measurement> measurementList)
         {
             //ListBoxMeasurementList.ItemsSource = measurementList;
-            DataPagerMeasurements.ItemsSource = new ObservableCollection<Object>(measurementList);
+            if (measurementList.Count > 0)
+                DataPagerMeasurements.ItemsSource = new ObservableCollection<Object>(measurementList);
+            else
+            {
+                DataPagerMeasurements.ItemsSource = null;
+                ListBoxMeasurementList.Items.Refresh();
+            }            
+            
             if (ListBoxMeasurementList.Items.Count > 0)
-                ListBoxMeasurementList.SelectedIndex = 0;            
+                ListBoxMeasurementList.SelectedIndex = 0;
         }
 
         #endregion

@@ -208,12 +208,26 @@ namespace openPDCManager.Pages.Devices
                 string result;
                 Device device = new Device();
                 device = ((Button)sender).DataContext as Device;
-                sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete device?", SystemMessage = "Device Acronym: " + device.Acronym, UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+
+                if (device.IsConcentrator)
+                    sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete concentrator device?", SystemMessage = "Device Acronym: " + device.Acronym + Environment.NewLine + "Deleting concentrator will also delete " + CommonFunctions.GetDeviceListByParentID(null, device.ID).Count() + " associated device(s).", UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                else
+                    sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete device?", SystemMessage = "Device Acronym: " + device.Acronym, UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                
                 sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
                 {
                     if ((bool)sm.DialogResult)
                     {
-                        result = CommonFunctions.DeleteDevice(null, device.ID);                    
+                        if (device.IsConcentrator)
+                        {
+                            List<Device> deviceList = CommonFunctions.GetDeviceListByParentID(null, device.ID);
+                            foreach (Device d in deviceList)
+                                CommonFunctions.DeleteDevice(null, d.ID);
+                            result = CommonFunctions.DeleteDevice(null, device.ID);
+                        }
+                        else
+                            result = CommonFunctions.DeleteDevice(null, device.ID);                    
+                        
                         SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                             ButtonType.OkOnly);
                         sm1.Owner = Window.GetWindow(this);
@@ -395,8 +409,14 @@ namespace openPDCManager.Pages.Devices
 
         void BindData(List<Device> deviceList)
         {            
-            //ListBoxDeviceList.ItemsSource = deviceList;            
-            DataPagerDevices.ItemsSource = new ObservableCollection<Object>(deviceList);
+            //ListBoxDeviceList.ItemsSource = deviceList;                 
+            if (deviceList.Count > 0)
+                DataPagerDevices.ItemsSource = new ObservableCollection<Object>(deviceList);
+            else
+            {
+                DataPagerDevices.ItemsSource = null;
+                ListBoxDeviceList.Items.Refresh();
+            }
         }
 
         #endregion       

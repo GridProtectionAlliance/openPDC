@@ -331,6 +331,11 @@ namespace openPDCManager.UserControls.CommonControls
                     int? companyID = ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxCompany.SelectedItem).Key;
                     int? historianID = ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxHistorian.SelectedItem).Key;
                     int? interconnectionID = ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxInterconnection.SelectedItem).Key;
+
+                    int accessID;
+                    if (m_wizardDeviceInfoList.Count == 1)
+                        m_wizardDeviceInfoList[0].AccessID = int.TryParse(TextBoxAccessID.Text, out accessID) ? accessID : m_wizardDeviceInfoList[0].ParentAccessID;
+                    
                     SaveWizardConfigurationInfo(app.NodeValue, m_wizardDeviceInfoList, this.ConnectionString(), protocolID, companyID, historianID, interconnectionID, m_parentID, m_skipDisableRealTimeData);
                 }
                 else

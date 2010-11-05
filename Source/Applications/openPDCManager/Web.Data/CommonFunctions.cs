@@ -230,7 +230,7 @@ namespace openPDCManager.Data
                                                               }).ToList())
                                             }).ToList();
 
-                }
+                }                        
 
                 List<string> nondistinctAcronymList = new List<string>();
                 nondistinctAcronymList = (from item in wizardDeviceInfoList                                          
@@ -3372,8 +3372,6 @@ namespace openPDCManager.Data
                         command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
                     else
                         command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
-
-
                 }
                 
                 measurementList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
@@ -3393,7 +3391,7 @@ namespace openPDCManager.Data
                                        Description = item.Field<string>("Description"),
                                        Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                        HistorianAcronym = item.Field<string>("HistorianAcronym"),
-                                       DeviceAcronym = item.Field<string>("DeviceAcronym"),
+                                       DeviceAcronym = item.Field<object>("DeviceAcronym")==null ? string.Empty : item.Field<string>("DeviceAcronym"),
                                        SignalName = item.Field<string>("SignalName"),
                                        SignalAcronym = item.Field<string>("SignalAcronym"),
                                        SignalSuffix = item.Field<string>("SignalTypeSuffix"),
@@ -3441,7 +3439,7 @@ namespace openPDCManager.Data
                                        Description = item.Field<string>("Description"),
                                        Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                        HistorianAcronym = item.Field<string>("HistorianAcronym"),
-                                       DeviceAcronym = item.Field<string>("DeviceAcronym"),
+                                       DeviceAcronym = item.Field<object>("DeviceAcronym") == null ? string.Empty : item.Field<string>("DeviceAcronym"),
                                        SignalName = item.Field<string>("SignalName"),
                                        SignalAcronym = item.Field<string>("SignalAcronym"),
                                        SignalSuffix = item.Field<string>("SignalTypeSuffix"),

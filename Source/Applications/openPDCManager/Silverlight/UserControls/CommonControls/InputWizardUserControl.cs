@@ -64,7 +64,11 @@ namespace openPDCManager.UserControls.CommonControls
 
         void RetrieveConfigurationFrame()
         {
-            m_client.RetrieveConfigurationFrameAsync(((App)Application.Current).RemoteStatusServiceUrl, this.ConnectionString(), ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key);
+            string connectionString = this.ConnectionString();
+            if (!connectionString.EndsWith(";"))
+                connectionString += ";";
+            connectionString += "AccessID=" + TextBoxAccessID.Text;
+            m_client.RetrieveConfigurationFrameAsync(((App)Application.Current).RemoteStatusServiceUrl, connectionString, ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key);
         }
 
         void GetProtocolIDByAcronym()

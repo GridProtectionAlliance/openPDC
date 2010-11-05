@@ -125,6 +125,14 @@ namespace openPDCManager.UserControls.CustomControls
                 CurrentPageNumber = 1;
                 TextBlockTotalPages.Text = "of " + m_pageCount.ToString();
             }
+            else
+            {
+                m_pageCount = 0;
+                //m_pages = new ObservableCollection<ObservableCollection<object>>();
+                CurrentPage = new ObservableCollection<object>();
+                CurrentPageNumber = 0;
+                TextBlockTotalPages.Text = "of " + m_pageCount.ToString();
+            }
         }
 
         #endregion

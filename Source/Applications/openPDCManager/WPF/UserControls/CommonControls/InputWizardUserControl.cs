@@ -85,7 +85,12 @@ namespace openPDCManager.UserControls.CommonControls
                 SystemMessages sm;
                 try
                 {
-                    m_wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>(CommonFunctions.RetrieveConfigurationFrame(((App)Application.Current).RemoteStatusServiceUrl, this.ConnectionString(), ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key));
+                    string connectionString = this.ConnectionString();
+                    if (!connectionString.EndsWith(";"))
+                        connectionString += ";";
+                    connectionString += "AccessID=" + TextBoxAccessID.Text;
+
+                    m_wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>(CommonFunctions.RetrieveConfigurationFrame(((App)Application.Current).RemoteStatusServiceUrl, connectionString, ((KeyValuePair<int, string>)ComboboxProtocol.SelectedItem).Key));
                     if (m_wizardDeviceInfoList.Count > 10)
                         m_bindingDevices = true;
                     else

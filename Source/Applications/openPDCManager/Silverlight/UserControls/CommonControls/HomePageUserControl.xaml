@@ -136,7 +136,7 @@
                                     </Style>
                                 </chartingToolkit:LinearAxis.AxisLabelStyle>
                             </chartingToolkit:LinearAxis>
-                            <chartingToolkit:LinearAxis Orientation="Y" ShowGridLines="True"/>
+                            <chartingToolkit:LinearAxis Orientation="Y" ShowGridLines="True"/>                            
                         </chartingToolkit:Chart.Axes>
                         <chartingToolkit:Chart.Series>
                             <chartingToolkit:LineSeries Title="Real-Time Data" ItemsSource="{Binding}" IndependentValuePath="Index" DependentValuePath="Value" IsSelectionEnabled="False" AnimationSequence="FirstToLast">

@@ -63,6 +63,18 @@ namespace openPDCManager.UserControls.CommonControls
             //Style pieDataPointStyle = new Style(typeof(PieDataPoint));
             //pieDataPointStyle.Setters.Add(setter);
             //((PieSeries)ChartDeviceDistribution.Series[0]).DataPointStyle = pieDataPointStyle;
+
+            //DataPointSeries series = new ColumnSeries();
+           
+            //series.Title = "Quantity";
+            //series.
+            //series.DependentValueBinding = new Binding("Value");
+            //series.IndependentValueBinding = new Binding("Label");
+            //series.ItemsSource = list; 
+            //series.SelectionChanged += new SelectionChangedEventHandler(series_SelectionChanged);
+            //this.chartingToolkitControl.Series.Add(series); 
+
+
         }
 
         void StartThirtySecondsTimer()
