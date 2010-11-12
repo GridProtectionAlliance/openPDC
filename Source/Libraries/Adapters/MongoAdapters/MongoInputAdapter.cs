@@ -28,6 +28,7 @@ using System.Timers;
 using MongoDB;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
+using TVA;
 
 namespace MongoAdapters
 {
@@ -207,7 +208,7 @@ namespace MongoAdapters
         /// </summary>
         protected override void AttemptConnection()
         {
-            string connectionString = string.Format("server={0}; port={1}", m_server, m_port);
+            string connectionString = string.Format("server={0}:{1}", m_server, m_port);
 
             // Connect to the MongoDB daemon.
             m_mongo = new Mongo(connectionString);
@@ -250,20 +251,17 @@ namespace MongoAdapters
                 long nowTicks = DateTime.UtcNow.Ticks;
                 ICursor<MeasurementWrapper> wrappers;
                 List<IMeasurement> measurements;
-                long minTimestamp;
+                MeasurementWrapper foundWrapper;
 
-                // Find all measurements whose timestamp is larger than the last-used timestamp.
-                wrappers = m_measurementCollection.Find(new { Timestamp = Op.GreaterThan(m_lastTimestamp) });
+                // Find the first measurements whose timestamp is larger than the last-used timestamp.
+                foundWrapper = m_measurementCollection.FindOne(new { Timestamp = Op.GreaterThan(m_lastTimestamp) });
 
-                // If no measurements could be found, use all the measurements.
-                if (wrappers.Documents.Count() < 1)
-                    wrappers = m_measurementCollection.FindAll();
+                // If no measurement was found, find the first measurement.
+                if (foundWrapper == null)
+                    foundWrapper = m_measurementCollection.FindOne(new Document());
 
-                // Find the smallest timestamp that is also larger than the last-used timestamp.
-                minTimestamp = wrappers.Documents.Select(wrapper => wrapper.Timestamp).Min();
-
-                // Find all measurements with the timestamp that was found.
-                wrappers = m_measurementCollection.Find(new { Timestamp = minTimestamp });
+                // Find all measurements with the timestamp of hte measurement that was found.
+                wrappers = m_measurementCollection.Find(new { Timestamp = foundWrapper.Timestamp });
                 measurements = wrappers.Documents.Select(wrapper => wrapper.GetMeasurement()).ToList();
 
                 // Simulate real-time.
@@ -271,7 +269,7 @@ namespace MongoAdapters
                     measurements.ForEach(measurement => measurement.Timestamp = nowTicks);
 
                 // Set the last-used timestamp to the new value and publish the measurements.
-                m_lastTimestamp = minTimestamp;
+                m_lastTimestamp = foundWrapper.Timestamp;
                 OnNewMeasurements(measurements);
             }
             catch

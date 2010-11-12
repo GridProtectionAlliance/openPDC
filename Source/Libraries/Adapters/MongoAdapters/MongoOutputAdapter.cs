@@ -201,7 +201,7 @@ namespace MongoAdapters
         /// </summary>
         protected override void AttemptConnection()
         {
-            string connectionString = string.Format("server={0}; port={1}", m_server, m_port);
+            string connectionString = string.Format("server={0}:{1}", m_server, m_port);
             m_mongo = new Mongo(connectionString);
             m_mongo.Connect();
 
