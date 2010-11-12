@@ -23,33 +23,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openPDCManager", "openPDCMa
 		Applications\openPDCManager\Readme.txt = Applications\openPDCManager\Readme.txt
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Silverlight", "Silverlight", "{20A58D77-CB7C-444E-A084-C61B40639B60}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.v9.1.dll = Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.v9.1.dll
-		Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.XamWebMenu.v9.1.dll = Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.XamWebMenu.v9.1.dll
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microsoft", "Microsoft", "{89F8C302-E1C2-4C61-9CFB-CB4879B04B38}"
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\Microsoft\System.ServiceModel.PollingDuplex.dll = Dependencies\Microsoft\System.ServiceModel.PollingDuplex.dll
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Silverlight", "Silverlight", "{2C391997-493B-4A29-9441-67A521602CFB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Silverlight", "Silverlight", "{20A58D77-CB7C-444E-A084-C61B40639B60}"
 	ProjectSection(SolutionItems) = preProject
-		Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.Common.dll = Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.Common.dll
-		Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.dll = Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.dll
-		Dependencies\Microsoft\Silverlight\Microsoft.VirtualEarth.MapControl.dll = Dependencies\Microsoft\Silverlight\Microsoft.VirtualEarth.MapControl.dll
-		Dependencies\Microsoft\Silverlight\System.Windows.Controls.DataVisualization.Toolkit.dll = Dependencies\Microsoft\Silverlight\System.Windows.Controls.DataVisualization.Toolkit.dll
-		Dependencies\Microsoft\Silverlight\System.Windows.Controls.Layout.Toolkit.dll = Dependencies\Microsoft\Silverlight\System.Windows.Controls.Layout.Toolkit.dll
-		Dependencies\Microsoft\Silverlight\System.Windows.Controls.Toolkit.dll = Dependencies\Microsoft\Silverlight\System.Windows.Controls.Toolkit.dll
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{F92C9476-E7E7-458C-B6C4-2E4707052345}"
-	ProjectSection(SolutionItems) = preProject
-		Documentation\Images\Data Structure Relationship Diagram.png = Documentation\Images\Data Structure Relationship Diagram.png
-		Documentation\Images\IaonAdapters.png = Documentation\Images\IaonAdapters.png
-		Documentation\Images\openPDCLogo_basefigure.png = Documentation\Images\openPDCLogo_basefigure.png
-		Documentation\Images\TVA Phasor Data Concentrator.png = Documentation\Images\TVA Phasor Data Concentrator.png
+		Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.v9.1.dll = Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.v9.1.dll
+		Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.XamWebMenu.v9.1.dll = Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.XamWebMenu.v9.1.dll
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}"
@@ -68,21 +50,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Access", "Access", "{F0072C
 		Data\Access\openPDC.mdb = Data\Access\openPDC.mdb
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySQL", "MySQL", "{41F2680B-D656-47F5-9A0D-3605BF886774}"
-	ProjectSection(SolutionItems) = preProject
-		Data\MySQL\InitialDataSet.sql = Data\MySQL\InitialDataSet.sql
-		Data\MySQL\openPDC.sql = Data\MySQL\openPDC.sql
-		Data\MySQL\SampleDataSet.sql = Data\MySQL\SampleDataSet.sql
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebDataAccess", "WebDataAccess", "{DDCC02C0-E3BE-4989-996E-DFB0402F47A5}"
-	ProjectSection(SolutionItems) = preProject
-		Tools\WebDataAccess\jquery-1.3.2.min.js = Tools\WebDataAccess\jquery-1.3.2.min.js
-		Tools\WebDataAccess\jquery.gchart.js = Tools\WebDataAccess\jquery.gchart.js
-		Tools\WebDataAccess\openPDC_200.png = Tools\WebDataAccess\openPDC_200.png
-		Tools\WebDataAccess\WebDataAccess.html = Tools\WebDataAccess\WebDataAccess.html
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openPDC", "openPDC", "{CE260396-797B-45DF-AC53-E4FC553B57C0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVA", "TVA", "{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B}"
@@ -95,6 +62,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVA", "TVA", "{4CA4A21E-97E
 		Dependencies\TVA\TVA.Core.XML = Dependencies\TVA\TVA.Core.XML
 		Dependencies\TVA\TVA.Historian.dll = Dependencies\TVA\TVA.Historian.dll
 		Dependencies\TVA\TVA.Historian.XML = Dependencies\TVA\TVA.Historian.XML
+		Dependencies\TVA\TVA.Security.dll = Dependencies\TVA\TVA.Security.dll
+		Dependencies\TVA\TVA.Security.XML = Dependencies\TVA\TVA.Security.XML
 		Dependencies\TVA\TVA.Services.dll = Dependencies\TVA\TVA.Services.dll
 		Dependencies\TVA\TVA.Services.XML = Dependencies\TVA\TVA.Services.XML
 		Dependencies\TVA\TVA.Web.dll = Dependencies\TVA\TVA.Web.dll
@@ -108,8 +77,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{392338BF
 		Dependencies\MySQL\MySql.Data.dll = Dependencies\MySQL\MySql.Data.dll
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{532E7465-B8A6-41BA-B4BF-D23504645007}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B697ECD-E3BE-485B-BE90-BAAA12F3A68D}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE.txt = LICENSE.txt
@@ -121,8 +88,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConfigurationSetupUtility", "ConfigurationSetupUtility", "{F7821DF0-BD48-481E-9DF9-D64AEFD24F57}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MacrodyneController", "MacrodyneController", "{A2151D77-6595-41C0-BDB2-7689110EF7C6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC", "Applications\openPDC\openPDC\openPDC.csproj", "{0BF2447E-252D-4712-B154-E350AF463081}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -190,11 +155,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COMTRADE", "Libraries\Adapt
 		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {54CA98CC-2F0A-41F2-879D-0E42B17E8544}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "D3", "D3", "{DD8772FF-592C-4139-ADA1-0D0D47508F39}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\Microsoft\D3\DynamicDataDisplay.dll = Dependencies\Microsoft\D3\DynamicDataDisplay.dll
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{29821B31-3A0D-469E-B8BA-AD006159BC3D}"
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\Microsoft\WPF\System.Windows.Controls.DataVisualization.Toolkit.dll = Dependencies\Microsoft\WPF\System.Windows.Controls.DataVisualization.Toolkit.dll
@@ -238,6 +198,29 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebInstaller", "Application
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoAdapters", "Libraries\Adapters\MongoAdapters\MongoAdapters.csproj", "{314CEC9E-F5F7-4CE6-95C9-E20871B50CBF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MongoDB", "MongoDB", "{376AB9CA-D87C-4411-A51E-CA86CFA046FC}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\MongoDB\MongoDB.dll = Dependencies\MongoDB\MongoDB.dll
+		Dependencies\MongoDB\MongoDB.GridFS.dll = Dependencies\MongoDB\MongoDB.GridFS.dll
+		Dependencies\MongoDB\MongoDB.GridFS.xml = Dependencies\MongoDB\MongoDB.GridFS.xml
+		Dependencies\MongoDB\MongoDB.xml = Dependencies\MongoDB\MongoDB.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "D3", "D3", "{83A90AB9-3DC7-4FB6-9AF3-79AB2F6EB0C6}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\Microsoft\D3\DynamicDataDisplay.dll = Dependencies\Microsoft\D3\DynamicDataDisplay.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Silverlight", "Silverlight", "{9597F7EC-CCCD-4CC5-A5B4-440C4204752B}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.Common.dll = Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.Common.dll
+		Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.dll = Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.dll
+		Dependencies\Microsoft\Silverlight\Microsoft.VirtualEarth.MapControl.dll = Dependencies\Microsoft\Silverlight\Microsoft.VirtualEarth.MapControl.dll
+		Dependencies\Microsoft\Silverlight\System.Windows.Controls.DataVisualization.Toolkit.dll = Dependencies\Microsoft\Silverlight\System.Windows.Controls.DataVisualization.Toolkit.dll
+		Dependencies\Microsoft\Silverlight\System.Windows.Controls.Layout.Toolkit.dll = Dependencies\Microsoft\Silverlight\System.Windows.Controls.Layout.Toolkit.dll
+		Dependencies\Microsoft\Silverlight\System.Windows.Controls.Toolkit.dll = Dependencies\Microsoft\Silverlight\System.Windows.Controls.Toolkit.dll
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
@@ -314,7 +297,6 @@ Global
 		SccProjectName17 = Libraries/Adapters/PowerCalculations
 		SccLocalPath17 = Libraries\\Adapters\\PowerCalculations
 		SccProjectUniqueName18 = Libraries\\Test\\TVA.PhasorProtocols.Test\\TVA.PhasorProtocols.Test.csproj
-		SccProjectTopLevelParentUniqueName18 = Synchrophasor.sln
 		SccProjectName18 = Libraries/Test/TVA.PhasorProtocols.Test
 		SccLocalPath18 = Libraries\\Test\\TVA.PhasorProtocols.Test
 		SccProjectUniqueName19 = Applications\\openPDC\\openPDCSetup\\openPDCSetup64.vdproj
@@ -326,7 +308,6 @@ Global
 		SccProjectName20 = Applications/openPDCManager/WPF
 		SccLocalPath20 = Applications\\openPDCManager\\WPF
 		SccProjectUniqueName21 = Tools\\MacrodyneController\\MacrodyneController.csproj
-		SccProjectTopLevelParentUniqueName21 = Synchrophasor.sln
 		SccProjectName21 = Tools/MacrodyneController
 		SccLocalPath21 = Tools\\MacrodyneController
 		SccProjectUniqueName22 = Libraries\\Adapters\\COMTRADE\\COMTRADE.csproj
@@ -708,13 +689,10 @@ Global
 		{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{392338BF-FBE0-4672-880B-AB9145DEC7AC} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{05851E03-6FBC-4774-BCC0-CCD006FE05B1} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
-		{F92C9476-E7E7-458C-B6C4-2E4707052345} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
+		{376AB9CA-D87C-4411-A51E-CA86CFA046FC} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
-		{532E7465-B8A6-41BA-B4BF-D23504645007} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
-		{DDCC02C0-E3BE-4989-996E-DFB0402F47A5} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{F7821DF0-BD48-481E-9DF9-D64AEFD24F57} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
-		{A2151D77-6595-41C0-BDB2-7689110EF7C6} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{D71CBFB5-291F-484E-9DAE-7442F4CA746A} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{FA2FA252-1D16-4911-BF7E-36C6E1C338E4} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{20A58D77-CB7C-444E-A084-C61B40639B60} = {3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}
@@ -736,20 +714,17 @@ Global
 		{66DE6E45-E538-480D-8928-9C86390E60FE} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{87D72A03-AAE0-4946-B2CA-958A354A31C7} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{2A6F75B7-D72D-4D5A-8394-88A5FC98D482} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
-		{2C391997-493B-4A29-9441-67A521602CFB} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
-		{DD8772FF-592C-4139-ADA1-0D0D47508F39} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
 		{29821B31-3A0D-469E-B8BA-AD006159BC3D} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
+		{83A90AB9-3DC7-4FB6-9AF3-79AB2F6EB0C6} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
+		{9597F7EC-CCCD-4CC5-A5B4-440C4204752B} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
 		{9A59B9E0-A36F-4C52-8568-CB004B20885B} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{F0072CE5-12A6-4713-BBD0-B57966ED2339} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
-		{41F2680B-D656-47F5-9A0D-3605BF886774} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{0BF2447E-252D-4712-B154-E350AF463081} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{27A26713-8779-41AB-AFF1-BAB6BB0228E8} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{C0CAE6E7-454E-44C2-B2CF-BAF002E25D87} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
-		{36D4CA56-E2DA-4435-B370-4867A83B6379} = {532E7465-B8A6-41BA-B4BF-D23504645007}
 		{2A74EACF-8291-47C7-A2ED-0D58771F24E2} = {F7821DF0-BD48-481E-9DF9-D64AEFD24F57}
-		{334BA160-26D6-4A3B-92E2-42DEB4381176} = {A2151D77-6595-41C0-BDB2-7689110EF7C6}
 		{A4C500AC-70AC-4869-8A08-E10CCD45F64F} = {D71CBFB5-291F-484E-9DAE-7442F4CA746A}
 		{933BE44C-B124-4ACC-8BE8-A6A22AAC4413} = {FA2FA252-1D16-4911-BF7E-36C6E1C338E4}
 	EndGlobalSection
