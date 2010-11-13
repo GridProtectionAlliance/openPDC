@@ -1560,12 +1560,10 @@ namespace TVA.PhasorProtocols
                 settings.Add("ConserveMemory", false, "True if attempts are to be made to conserve memory; otherwise False - this defaults to False for the statistics working archive file.");
 
                 settings = configFile.Settings["statMetadataService"];
-                settings.Add("Enabled", true, "True if this web service is enabled; otherwise False - this defaults to True for the statistics meta-data service.");
-                settings.Add("ServiceUri", "http://localhost:6051/historian", "URI where this web service is to be hosted - this defaults to http://localhost:6051/historian for the statistics meta-data service.");
+                settings.Add("Endpoints", "http.rest://localhost:6051/historian", "Endpoint URIs where this web service is to be hosted - this defaults to http.rest://localhost:6051/historian for the statistics meta-data service.");
 
                 settings = configFile.Settings["statTimeSeriesDataService"];
-                settings.Add("Enabled", true, "True if this web service is enabled; otherwise False - this defaults to True for the statistics time-series data service.");
-                settings.Add("ServiceUri", "http://localhost:6052/historian", "URI where this web service is to be hosted - this defaults to http://localhost:6052/historian for the statistics time-series data service.");
+                settings.Add("Endpoints", "http.rest://localhost:6052/historian", "Endpoint URIs where this web service is to be hosted - this defaults to http.rest://localhost:6052/historian for the statistics time-series data service.");
 
                 configFile.Save();
 

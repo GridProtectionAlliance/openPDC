@@ -10,6 +10,8 @@
 //  -----------------------------------------------------------------------------------------------------
 //  12/21/2009 - Stephen C. Wills
 //       Generated original version of source code.
+//  11/07/2010 - Pinal C. Patel
+//       Modified to fix breaking changes made to SelfHostingService.
 //
 //*******************************************************************************************************
 
@@ -244,7 +246,6 @@ namespace DataQualityMonitoring.Services
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class TimestampService : SelfHostingService, ITimestampService
     {
-
         #region [ Members ]
 
         // Fields
@@ -259,9 +260,12 @@ namespace DataQualityMonitoring.Services
         /// </summary>
         /// <param name="test">The test to be used by this <see cref="TimestampService"/>.</param>
         public TimestampService(TimestampTest test)
+            :base()
         {
             m_test = test;
-            ServiceUri = "http://localhost:6102/timestamptest";
+            PublishMetadata = true;
+            PersistSettings = true;
+            Endpoints = "http.rest://localhost:6102/timestamptest";
         }
 
         #endregion
@@ -379,6 +383,5 @@ namespace DataQualityMonitoring.Services
         }
 
         #endregion
-
     }
 }

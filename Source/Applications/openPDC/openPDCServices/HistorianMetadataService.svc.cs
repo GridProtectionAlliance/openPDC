@@ -10,6 +10,8 @@
 //       Generated original version of source code.
 //  12/04/2009 - Pinal C. Patel
 //       Updated the SQL for retrieving metadata from database.
+//  11/07/2010 - Pinal C. Patel
+//       Modified to fix breaking changes made to SelfHostingService.
 //
 //*******************************************************************************************************
 
@@ -33,6 +35,19 @@ namespace openPDCServices
 
         // Fields
         private string m_connectionString;
+
+        #endregion
+
+        #region [ Constructors ]
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HistorianMetadataService"/> class.
+        /// </summary>
+        public HistorianMetadataService()
+            : base()
+        {
+            PersistSettings = true;
+        }
 
         #endregion
 
@@ -110,10 +125,6 @@ namespace openPDCServices
 
             if (string.IsNullOrEmpty(m_connectionString))
                 throw new ArgumentNullException("ConnectionString");
-
-            // Ensure that reading data is allowed.
-            if (!CanRead)
-                throw new InvalidOperationException("Read operation is prohibited");
 
             SqlConnection database = null;
             DataSet metadata  = null;

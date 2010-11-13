@@ -14,6 +14,8 @@
 //       Added error checking to TryGetMeasurementInfo().
 //  12/16/2009 - Stephen C. Wills
 //       Replaced TryGetMeasurementInfo() with SerializableMeasurement.SetDeviceAndSignalType().
+//  11/07/2010 - Pinal C. Patel
+//       Modified to fix breaking changes made to SelfHostingService.
 //
 //*******************************************************************************************************
 
@@ -265,7 +267,9 @@ namespace DataQualityMonitoring.Services
             : base()
         {
             m_test = test;
-            ServiceUri = "http://localhost:6100/flatlinetest";
+            PublishMetadata = true;
+            PersistSettings = true;
+            Endpoints = "http.rest://localhost:6100/flatlinetest";
         }
 
         #endregion

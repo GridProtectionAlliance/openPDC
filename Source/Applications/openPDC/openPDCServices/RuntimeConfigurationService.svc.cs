@@ -8,6 +8,8 @@
 //  -----------------------------------------------------------------------------------------------------
 //  11/25/2009 - Pinal C. Patel
 //       Generated original version of source code.
+//  11/07/2010 - Pinal C. Patel
+//       Modified to fix breaking changes made to SelfHostingService.
 //
 //*******************************************************************************************************
 
@@ -30,6 +32,19 @@ namespace openPDCServices
 
         // Fields
         private string m_connectionString;
+
+        #endregion
+
+        #region [ Constructors ]
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RuntimeConfigurationService"/> class.
+        /// </summary>
+        public RuntimeConfigurationService()
+            : base()
+        {
+            PersistSettings = true;
+        }
 
         #endregion
 
@@ -107,10 +122,6 @@ namespace openPDCServices
 
             if (string.IsNullOrEmpty(m_connectionString))
                 throw new ArgumentNullException("ConnectionString");
-
-            // Ensure that reading data is allowed.
-            if (!CanRead)
-                throw new InvalidOperationException("Read operation is prohibited");
 
             SqlConnection database = null;
             DataSet configuration = new DataSet("Iaon"); ;

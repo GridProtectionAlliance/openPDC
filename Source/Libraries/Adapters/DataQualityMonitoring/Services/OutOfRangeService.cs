@@ -10,6 +10,8 @@
 //  -----------------------------------------------------------------------------------------------------
 //  12/16/2009 - Stephen C. Wills
 //       Generated original version of source code.
+//  11/07/2010 - Pinal C. Patel
+//       Modified to fix breaking changes made to SelfHostingService.
 //
 //*******************************************************************************************************
 
@@ -243,7 +245,6 @@ namespace DataQualityMonitoring.Services
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class OutOfRangeService : SelfHostingService, IOutOfRangeService
     {
-        
         #region [ Members ]
 
         // Fields
@@ -257,9 +258,12 @@ namespace DataQualityMonitoring.Services
         /// Initializes a new instance of the <see cref="OutOfRangeService"/> class.
         /// </summary>
         public OutOfRangeService()
+            :base()
         {
             m_tests = new Dictionary<string, RangeTest>();
-            ServiceUri = "http://localhost:6101/rangetest";
+            PublishMetadata = true;
+            PersistSettings = true;
+            Endpoints = "http.rest://localhost:6101/rangetest";
         }
 
         #endregion
@@ -502,6 +506,5 @@ namespace DataQualityMonitoring.Services
         }
 
         #endregion
-
     }
 }
