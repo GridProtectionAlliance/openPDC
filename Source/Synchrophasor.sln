@@ -226,6 +226,36 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MacrodyneController", "Macr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{AECB8505-AB0A-4D4C-86A3-4C43F4656FB1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{B1E85C83-F93D-4C3C-BB90-905B93D7C8AD}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation\Images\Data Structure Relationship Diagram.png = Documentation\Images\Data Structure Relationship Diagram.png
+		Documentation\Images\IaonAdapters.png = Documentation\Images\IaonAdapters.png
+		Documentation\Images\openPDC Icon Baseline.pdn = Documentation\Images\openPDC Icon Baseline.pdn
+		Documentation\Images\openPDCLogo_basefigure.png = Documentation\Images\openPDCLogo_basefigure.png
+		Documentation\Images\TVA Phasor Data Concentrator.png = Documentation\Images\TVA Phasor Data Concentrator.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Help Me Choose Diagrams", "Help Me Choose Diagrams", "{060A349D-E92D-4F13-A857-01609631D3BE}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation\Help Me Choose Diagrams\HMC - Allow Preemptive Publishing.vsd = Documentation\Help Me Choose Diagrams\HMC - Allow Preemptive Publishing.vsd
+		Documentation\Help Me Choose Diagrams\HMC - Allow Sorts By Arrival.vsd = Documentation\Help Me Choose Diagrams\HMC - Allow Sorts By Arrival.vsd
+		Documentation\Help Me Choose Diagrams\HMC - Auto Publish Config Frame.vsd = Documentation\Help Me Choose Diagrams\HMC - Auto Publish Config Frame.vsd
+		Documentation\Help Me Choose Diagrams\HMC - Auto Start Data Channel.vsd = Documentation\Help Me Choose Diagrams\HMC - Auto Start Data Channel.vsd
+		Documentation\Help Me Choose Diagrams\HMC - Downsampling Method.vsd = Documentation\Help Me Choose Diagrams\HMC - Downsampling Method.vsd
+		Documentation\Help Me Choose Diagrams\HMC - Ignore Bad Timestamps.vsd = Documentation\Help Me Choose Diagrams\HMC - Ignore Bad Timestamps.vsd
+		Documentation\Help Me Choose Diagrams\HMC - Lag Time.vsd = Documentation\Help Me Choose Diagrams\HMC - Lag Time.vsd
+		Documentation\Help Me Choose Diagrams\HMC - Lead Time.vsd = Documentation\Help Me Choose Diagrams\HMC - Lead Time.vsd
+		Documentation\Help Me Choose Diagrams\HMC - Time Resolution.vsd = Documentation\Help Me Choose Diagrams\HMC - Time Resolution.vsd
+		Documentation\Help Me Choose Diagrams\HMC - Use Local Clock as RealTime.vsd = Documentation\Help Me Choose Diagrams\HMC - Use Local Clock as RealTime.vsd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{B1AC9848-2909-4A7B-9541-8EA4E89E72F1}"
+	ProjectSection(SolutionItems) = preProject
+		Data\MySQL\InitialDataSet.sql = Data\MySQL\InitialDataSet.sql
+		Data\MySQL\openPDC.sql = Data\MySQL\openPDC.sql
+		Data\MySQL\SampleDataSet.sql = Data\MySQL\SampleDataSet.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 30
@@ -696,13 +726,15 @@ Global
 		{392338BF-FBE0-4672-880B-AB9145DEC7AC} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{05851E03-6FBC-4774-BCC0-CCD006FE05B1} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{376AB9CA-D87C-4411-A51E-CA86CFA046FC} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
+		{B1E85C83-F93D-4C3C-BB90-905B93D7C8AD} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
+		{060A349D-E92D-4F13-A857-01609631D3BE} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{AECB8505-AB0A-4D4C-86A3-4C43F4656FB1} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{F7821DF0-BD48-481E-9DF9-D64AEFD24F57} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
+		{C4B7F8ED-DC60-46EC-B78B-D541C1FA864C} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{D71CBFB5-291F-484E-9DAE-7442F4CA746A} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{FA2FA252-1D16-4911-BF7E-36C6E1C338E4} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
-		{C4B7F8ED-DC60-46EC-B78B-D541C1FA864C} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{20A58D77-CB7C-444E-A084-C61B40639B60} = {3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}
 		{8A1BCFAA-19E8-408A-8C72-170B1211DC27} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{1338A569-A156-4122-8B65-8D4C147AA348} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
@@ -727,15 +759,16 @@ Global
 		{9597F7EC-CCCD-4CC5-A5B4-440C4204752B} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
 		{9A59B9E0-A36F-4C52-8568-CB004B20885B} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{F0072CE5-12A6-4713-BBD0-B57966ED2339} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
+		{B1AC9848-2909-4A7B-9541-8EA4E89E72F1} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{0BF2447E-252D-4712-B154-E350AF463081} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{27A26713-8779-41AB-AFF1-BAB6BB0228E8} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{C0CAE6E7-454E-44C2-B2CF-BAF002E25D87} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{2A74EACF-8291-47C7-A2ED-0D58771F24E2} = {F7821DF0-BD48-481E-9DF9-D64AEFD24F57}
+		{36D4CA56-E2DA-4435-B370-4867A83B6379} = {AECB8505-AB0A-4D4C-86A3-4C43F4656FB1}
+		{334BA160-26D6-4A3B-92E2-42DEB4381176} = {C4B7F8ED-DC60-46EC-B78B-D541C1FA864C}
 		{A4C500AC-70AC-4869-8A08-E10CCD45F64F} = {D71CBFB5-291F-484E-9DAE-7442F4CA746A}
 		{933BE44C-B124-4ACC-8BE8-A6A22AAC4413} = {FA2FA252-1D16-4911-BF7E-36C6E1C338E4}
-		{334BA160-26D6-4A3B-92E2-42DEB4381176} = {C4B7F8ED-DC60-46EC-B78B-D541C1FA864C}
-		{36D4CA56-E2DA-4435-B370-4867A83B6379} = {AECB8505-AB0A-4D4C-86A3-4C43F4656FB1}
 	EndGlobalSection
 EndGlobal
