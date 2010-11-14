@@ -39,6 +39,9 @@
 **       Enabled versioning of setup projects.
 **  10/23/2010 - Pinal C. Patel
 **       Excluded openPDCManager Data project from versioning.
+**  11/14/2010 - Pinal C. Patel
+**       Added openPDCManager installer projects to the list of installs to build and added the output
+**       of openPDCManager setup projects to the list of files to be deleted prior to deployment.
 **
 *******************************************************************************************************
 -->
@@ -87,6 +90,8 @@
       <ProjectsToBuild Include="$(LocalFolder)\Build\Scripts\$(ProjectName).shfbproj" Condition="'$(SkipHelpFiles)' == ''"/>
       <!-- List of installs to build. -->
       <InstallsToBuild Include="$(LocalFolder)\Source\**\*.vdproj" Exclude="$(LocalFolder)\Source\**\openPDCSetup.vdproj"/>
+      <InstallsToBuild Include="$(LocalFolder)\Source\Applications\openPDCManager\WebInstaller\WebInstaller.csproj"/>
+      <InstallsToBuild Include="$(LocalFolder)\Source\Applications\openPDCManager\ServicesInstaller\ServicesInstaller.csproj"/>
       <x86InstallsToBuild Include="$(LocalFolder)\Source\**\openPDCSetup.vdproj"/>
     </ItemGroup>
     <!-- Build 32-installs first and cleanup. -->
@@ -111,6 +116,8 @@
     <ItemGroup>
       <!-- Exclude the main setup application from the list of build output files to be deleted. -->
       <FilesToDelete Remove="$(BuildOutputFolder)\Setup\Setup.exe"/>
+      <FilesToDelete Include="$(BuildOutputFolder)\Setup\Installers\openPDCManagerWebSetup.*"/>
+      <FilesToDelete Include="$(BuildOutputFolder)\Setup\Installers\openPDCManagerServicesSetup.*"/>
     </ItemGroup>
   </Target>
   
