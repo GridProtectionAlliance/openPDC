@@ -50,6 +50,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Access", "Access", "{F0072C
 		Data\Access\openPDC.mdb = Data\Access\openPDC.mdb
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{B1AC9848-2909-4A7B-9541-8EA4E89E72F1}"
+	ProjectSection(SolutionItems) = preProject
+		Data\MySQL\InitialDataSet.sql = Data\MySQL\InitialDataSet.sql
+		Data\MySQL\openPDC.sql = Data\MySQL\openPDC.sql
+		Data\MySQL\SampleDataSet.sql = Data\MySQL\SampleDataSet.sql
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openPDC", "openPDC", "{CE260396-797B-45DF-AC53-E4FC553B57C0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVA", "TVA", "{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B}"
@@ -229,6 +236,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{B1E85C83-F93D-4C3C-BB90-905B93D7C8AD}"
 	ProjectSection(SolutionItems) = preProject
 		Documentation\Images\Data Structure Relationship Diagram.png = Documentation\Images\Data Structure Relationship Diagram.png
+		Documentation\Images\HMC - Allow Preemptive Publishing.png = Documentation\Images\HMC - Allow Preemptive Publishing.png
+		Documentation\Images\HMC - Allow Sorts By Arrival.png = Documentation\Images\HMC - Allow Sorts By Arrival.png
+		Documentation\Images\HMC - Auto Publish Config Frame.png = Documentation\Images\HMC - Auto Publish Config Frame.png
+		Documentation\Images\HMC - Auto Start Data Channel.png = Documentation\Images\HMC - Auto Start Data Channel.png
+		Documentation\Images\HMC - Downsampling Method.png = Documentation\Images\HMC - Downsampling Method.png
+		Documentation\Images\HMC - Ignore Bad Timestamps.png = Documentation\Images\HMC - Ignore Bad Timestamps.png
+		Documentation\Images\HMC - Lag Time.png = Documentation\Images\HMC - Lag Time.png
+		Documentation\Images\HMC - Lead Time.png = Documentation\Images\HMC - Lead Time.png
+		Documentation\Images\HMC - Time Resolution.png = Documentation\Images\HMC - Time Resolution.png
+		Documentation\Images\HMC - Use Local Clock as RealTime.png = Documentation\Images\HMC - Use Local Clock as RealTime.png
 		Documentation\Images\IaonAdapters.png = Documentation\Images\IaonAdapters.png
 		Documentation\Images\openPDC Icon Baseline.pdn = Documentation\Images\openPDC Icon Baseline.pdn
 		Documentation\Images\openPDCLogo_basefigure.png = Documentation\Images\openPDCLogo_basefigure.png
@@ -247,13 +264,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Help Me Choose Diagrams", "
 		Documentation\Help Me Choose Diagrams\HMC - Lead Time.vsd = Documentation\Help Me Choose Diagrams\HMC - Lead Time.vsd
 		Documentation\Help Me Choose Diagrams\HMC - Time Resolution.vsd = Documentation\Help Me Choose Diagrams\HMC - Time Resolution.vsd
 		Documentation\Help Me Choose Diagrams\HMC - Use Local Clock as RealTime.vsd = Documentation\Help Me Choose Diagrams\HMC - Use Local Clock as RealTime.vsd
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{B1AC9848-2909-4A7B-9541-8EA4E89E72F1}"
-	ProjectSection(SolutionItems) = preProject
-		Data\MySQL\InitialDataSet.sql = Data\MySQL\InitialDataSet.sql
-		Data\MySQL\openPDC.sql = Data\MySQL\openPDC.sql
-		Data\MySQL\SampleDataSet.sql = Data\MySQL\SampleDataSet.sql
 	EndProjectSection
 EndProject
 Global
@@ -726,8 +736,8 @@ Global
 		{392338BF-FBE0-4672-880B-AB9145DEC7AC} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{05851E03-6FBC-4774-BCC0-CCD006FE05B1} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{376AB9CA-D87C-4411-A51E-CA86CFA046FC} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
-		{B1E85C83-F93D-4C3C-BB90-905B93D7C8AD} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{060A349D-E92D-4F13-A857-01609631D3BE} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
+		{B1E85C83-F93D-4C3C-BB90-905B93D7C8AD} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{AECB8505-AB0A-4D4C-86A3-4C43F4656FB1} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
