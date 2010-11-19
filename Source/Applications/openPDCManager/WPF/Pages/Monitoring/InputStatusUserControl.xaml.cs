@@ -16,38 +16,37 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  11/02/2010 - mthakkar
+//  11/02/2010 - Mehulbhai P Thakkar
 //       Generated original version of source code.
 //
 //******************************************************************************************************
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Research.DynamicDataDisplay;
+using Microsoft.Research.DynamicDataDisplay.Charts;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
-using Microsoft.Win32;
-using openPDCManager.Data;
-using openPDCManager.Data.BusinessObjects;
-using openPDCManager.Data.Entities;
 using openPDCManager.ModalDialogs;
-using openPDCManager.Pages.Adapters;
-using openPDCManager.UserControls.CommonControls;
-using openPDCManager.Utilities;
-using TVA.Configuration;
+using TimeSeriesFramework;
 using TimeSeriesFramework.Transport;
 using TVA;
-using TimeSeriesFramework;
-using TVA.Collections;
+using openPDCManager.Data.BusinessObjects;
+using System.Collections.ObjectModel;
+using openPDCManager.Data;
+using openPDCManager.Utilities;
+using openPDCManager.Pages.Adapters;
+using System.Text;
+using openPDCManager.UserControls.CommonControls;
+using openPDCManager.Data.Entities;
+using Microsoft.Win32;
+using System.IO;
+using System.Linq;
 
 namespace openPDCManager.Pages.Monitoring
 {
@@ -56,26 +55,35 @@ namespace openPDCManager.Pages.Monitoring
     /// </summary>
     public partial class InputStatusUserControl : UserControl
     {
-        #region [ Members ]               
+        #region [ Members ]
 
         #region [ Members for Dynamic Data Display ]
         
-        EnumerableDataSource<int> m_xAxisBindingCollection;                     //this will contain DateTime values plotted on X-Axis
-        List<int> m_xAxisDataCollection;                                        //this will contain DateTime values from the subscription API
-        Dictionary<string, List<double>> m_yAxisDataCollection;                      //this will contain SignalID and corresponding List<double> from the subsription API
-        Dictionary<string, EnumerableDataSource<Double>> m_yAxisBindingCollection;   //this will contain SignalID and corresponding data plotted on Y-axis        
-        DispatcherTimer m_chartRefreshTimer;
+        int[] m_xAxisDataCollection;                                                   //contains source data for the binding collection.
+        EnumerableDataSource<int> m_xAxisBindingCollection;                                     //contains values plotted on X-Axis.
+        ConcurrentDictionary<string, ConcurrentQueue<double>> m_yAxisDataCollection;            //contains source data for the binding collection. Format is <signalID, collection of values from subscription API>.
+        ConcurrentDictionary<string, EnumerableDataSource<double>> m_yAxisBindingCollection;    //contains values plotted on Y-Axis.
+        ConcurrentDictionary<string, LineGraph> m_lineGraphCollection;                          //contains list of graphs plotted on the chart.
+        DispatcherTimer m_chartRefreshTimer;                                                    //timer to refresh chart on an interval.        
+        int m_numberOfDataPointsToPlot = 150;                                                   //number of data points to plot on the chart.
+        int m_framesPerSecond = 30;                                                             //sample rate of the data from subscription API.
+        int m_refreshInterval = 250;                                                            //miliseconds interval to refresh chart.
+        List<Color> m_lineColors;                                                               //stores list of colors to draw line chart.
         int m_processingNewMeasurements = 0;
+        bool m_displayFrequencyAxis, m_displayPhaseAngleAxis, m_displayVoltageAxis, m_displayCurrentAxis, m_displayXAxis;
+        ConcurrentQueue<string> m_timeStampList;
 
         #endregion
-
-        #region [ Static Members ]
-
-        DataSubscriber s_subscriber = new DataSubscriber();
-        //long s_dataCount = 0;
-
-        #endregion
-
+                
+        DataSubscriber m_subscriber;
+        ActivityWindow m_activityWindow;
+        ObservableCollection<DeviceMeasurementData> m_deviceMeasurementDataList;
+        DeviceMeasurementDataForBinding m_dataForBinding;
+        ConcurrentDictionary<string, MeasurementInfo> m_selectedMeasurements;                   //this will contain a list of SignalIDs and MeasurementInfo.
+        bool m_subscribed;                                                                      //indicates if connection to subscription API is set or not.
+        Dictionary<string, InputMonitorData> m_currentValuesList;
+        int m_measurementsDataRefreshInterval = 30;
+                
         #endregion
 
         #region [ Constructor ]
@@ -84,11 +92,15 @@ namespace openPDCManager.Pages.Monitoring
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(InputStatusUserControl_Loaded);
-            this.Unloaded += new RoutedEventHandler(InputStatusUserControl_Unloaded);
-
-            m_xAxisDataCollection = new List<int>();
-            m_yAxisDataCollection = new Dictionary<string, List<double>>();
-            m_yAxisBindingCollection = new Dictionary<string, EnumerableDataSource<double>>();                      
+            this.Unloaded += new RoutedEventHandler(InputStatusUserControl_Unloaded);            
+            m_yAxisDataCollection = new ConcurrentDictionary<string, ConcurrentQueue<double>>();
+            m_yAxisBindingCollection = new ConcurrentDictionary<string, EnumerableDataSource<double>>();
+            m_dataForBinding = new DeviceMeasurementDataForBinding();
+            m_deviceMeasurementDataList = new ObservableCollection<DeviceMeasurementData>();
+            m_selectedMeasurements = new ConcurrentDictionary<string, MeasurementInfo>();
+            m_lineGraphCollection = new ConcurrentDictionary<string, LineGraph>();
+            m_currentValuesList = new Dictionary<string, InputMonitorData>();
+            m_timeStampList = new ConcurrentQueue<string>();
         }        
 
         #endregion
@@ -96,46 +108,27 @@ namespace openPDCManager.Pages.Monitoring
         #region [ Page Event Handlers ]
 
         void InputStatusUserControl_Unloaded(object sender, RoutedEventArgs e)
-        {
-            s_subscriber.Unsubscribe();
-            s_subscriber.StatusMessage -= subscriber_StatusMessage;
-            s_subscriber.ProcessException -= subscriber_ProcessException;
-            s_subscriber.ConnectionEstablished -= subscriber_ConnectionEstablished;
-            s_subscriber.NewMeasurements -= subscriber_NewMeasurements;
+        {            
+            UnsubscribeData();      
+      
+            //Save selected points to Isolated Storage before exiting this page.
+            List<string> pointList = new List<string>();
+            foreach (KeyValuePair<string, MeasurementInfo> selectedMeasurement in m_selectedMeasurements)
+                pointList.Add(selectedMeasurement.Value.SignalReference);
+
+            IsolatedStorageManager.SaveInputMonitoringPoints(pointList);
         }
 
         void InputStatusUserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            //Remove legend on the right.
-            Panel legendParent = (Panel)ChartPlotterDynamic.Legend.ContentGrid.Parent;
-            legendParent.Children.Remove(ChartPlotterDynamic.Legend.ContentGrid);
+            m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
+            m_activityWindow.Owner = Window.GetWindow(this);
+            m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            m_activityWindow.Show();      
 
-            //Assign x-axis binding collection to x-axis.
-            for (int i = 0; i < 30; i++)
-                m_xAxisDataCollection.Add(i);
-            m_xAxisBindingCollection = new EnumerableDataSource<int>(m_xAxisDataCollection);
-            m_xAxisBindingCollection.SetXMapping(x => x);
-            
-            //List<double> temp = new List<double>();            
-            //for (int i = 0; i < 150; i++)
-            //    temp.Add(60.0);
-
-            //m_yAxisDataCollection.Add("Test", temp);
-            //m_yAxisBindingCollection.Add("Test", new EnumerableDataSource<double>(m_yAxisDataCollection["Test"]));
-            //m_yAxisBindingCollection["Test"].SetYMapping(y => y);
-
-            //ChartPlotterDynamic.AddLineGraph(new CompositeDataSource(m_xAxisBindingCollection, m_yAxisBindingCollection["Test"]));
-
-            s_subscriber.StatusMessage += subscriber_StatusMessage;
-            s_subscriber.ProcessException += subscriber_ProcessException;
-            s_subscriber.ConnectionEstablished += subscriber_ConnectionEstablished;
-            s_subscriber.NewMeasurements += subscriber_NewMeasurements;
-            // Initialize subscriber
-            s_subscriber.ConnectionString = "server=localhost:6165";
-            s_subscriber.Initialize();
-            // Start subscriber connection cycle
-            s_subscriber.Start();
-            //StartChartRefreshTimer();
+            InitializeColors();            
+            GetDeviceMeasurementData();            
+            InitializeChart();            
         }
 
         #endregion
@@ -148,41 +141,91 @@ namespace openPDCManager.Pages.Monitoring
             {                    
                 try
                 {
+                    bool timestampProcessed = false;
                     foreach (IMeasurement measurement in e.Argument)
-                    {                        
-                        double tempValue = measurement.Value;
-                        string tempSignalID = measurement.SignalID.ToString();
-
-                        lock (m_yAxisDataCollection)
+                    {                  
+                        if (!timestampProcessed)
                         {
-                            List<double> tempCollection;
+                            timestampProcessed = true;
+                            m_timeStampList.Enqueue(measurement.Timestamp.ToString("hh:mm:ss.fff"));                            
+                            if (m_timeStampList.Count > m_numberOfDataPointsToPlot)
+                            {
+                                string oldValue;
+                                m_timeStampList.TryDequeue(out oldValue);
+                            }
+                        }
+                        double tempValue = measurement.Value;
+                        string tempSignalID = measurement.SignalID.ToString().ToUpper();
+                        if (tempValue != double.NaN)
+                        {                            
+                            ConcurrentQueue<double> tempCollection;
                             if (m_yAxisDataCollection.TryGetValue(tempSignalID, out tempCollection))
                             {
-                                lock (tempCollection)
+                                double oldValue;
+                                if (tempCollection.TryDequeue(out oldValue))
+                                    tempCollection.Enqueue(tempValue);
+
+                                //Update Current Values List
+                                InputMonitorData inputMonitorData;
+                                lock (m_currentValuesList)
                                 {
-                                    tempCollection.RemoveAt(0);
-                                    tempCollection.Add(tempValue);
-                                }                                
+                                    if (m_currentValuesList.TryGetValue(tempSignalID, out inputMonitorData))
+                                    {
+                                        inputMonitorData.Value = tempValue.ToString("0.###");
+                                        inputMonitorData.TimeStamp = measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff");
+                                        inputMonitorData.Quality = measurement.ValueQualityIsGood ? "GOOD" : "UNKNOWN";
+                                    }
+                                }
                             }
                             else
                             {
-                                List<double> anotherTempCollection = new List<double>();                                
-                                for (int i = 0; i < 30; i++)
-                                    anotherTempCollection.Add(tempValue);
-                                m_yAxisDataCollection.Add(tempSignalID, anotherTempCollection);
-                                
-                                EnumerableDataSource<double> tempDataSource = new EnumerableDataSource<double>(m_yAxisDataCollection[tempSignalID]);
-                                CompositeDataSource compositeDataSource = new CompositeDataSource(m_xAxisBindingCollection, tempDataSource);
-                                lock (m_yAxisBindingCollection)
+                                MeasurementInfo measurementInfo;
+                                if (m_selectedMeasurements.TryGetValue(tempSignalID, out measurementInfo)) // We check this because user may have unchecked a checkbox but processing may not have completed so we may still continue to receive data.
                                 {
-                                    m_yAxisBindingCollection.Add(tempSignalID, tempDataSource);
-                                    m_yAxisBindingCollection[tempSignalID].SetYMapping(y => y);
+                                    System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Adding a new chart.");
+                                    tempCollection = new ConcurrentQueue<double>();
+                                    for (int i = 0; i < m_numberOfDataPointsToPlot; i++)
+                                        tempCollection.Enqueue(tempValue);
+
+                                    m_yAxisDataCollection.TryAdd(tempSignalID, tempCollection);
+                                    EnumerableDataSource<double> tempDataSource = new EnumerableDataSource<double>(tempCollection);
+                                    m_yAxisBindingCollection.TryAdd(tempSignalID, tempDataSource);
+                                    tempDataSource.SetYMapping(y => y);
+
+                                    ChartPlotterDynamic.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate()
+                                    {
+                                        int colorIndex;
+                                        Math.DivRem(m_yAxisBindingCollection.Count, 10, out colorIndex);                                        
+                                        LineGraph lineGraph = null;
+
+                                        if (measurementInfo.SignalAcronym == "FREQ")
+                                            lineGraph = ChartPlotterDynamic.AddLineGraph(new CompositeDataSource(m_xAxisBindingCollection, tempDataSource), m_lineColors[colorIndex], 1, measurementInfo.SignalReference);
+                                        else if (measurementInfo.SignalAcronym == "IPHA" || measurementInfo.SignalAcronym == "VPHA")
+                                            lineGraph = PhaseAnglePlotter.AddLineGraph(new CompositeDataSource(m_xAxisBindingCollection, tempDataSource), m_lineColors[colorIndex], 1, measurementInfo.SignalReference);
+                                        else if (measurementInfo.SignalAcronym == "VPHM")
+                                            lineGraph = VoltagePlotter.AddLineGraph(new CompositeDataSource(m_xAxisBindingCollection, tempDataSource), m_lineColors[colorIndex], 1, measurementInfo.SignalReference);
+                                        else if (measurementInfo.SignalAcronym == "IPHM")
+                                            lineGraph = CurrentPlotter.AddLineGraph(new CompositeDataSource(m_xAxisBindingCollection, tempDataSource), m_lineColors[colorIndex], 1, measurementInfo.SignalReference);
+
+                                        if (lineGraph != null)
+                                            m_lineGraphCollection.TryAdd(tempSignalID, lineGraph);
+
+                                        //Update Current Values List
+                                        InputMonitorData inputMonitorData;
+                                        lock (m_currentValuesList)
+                                        {
+                                            if (m_currentValuesList.TryGetValue(tempSignalID, out inputMonitorData))
+                                            {
+                                                inputMonitorData.Value = tempValue.ToString("0.###");
+                                                inputMonitorData.TimeStamp = measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff");
+                                                inputMonitorData.Quality = measurement.ValueQualityIsGood ? "GOOD" : "UNKNOWN";
+                                                inputMonitorData.Background = (SolidColorBrush)lineGraph.LinePen.Brush;
+                                            }
+                                        }
+
+                                        System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Added a new chart for: " + measurementInfo.SignalAcronym);
+                                    });
                                 }
-                                                                
-                                ChartPlotterDynamic.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate()
-                                {                                    
-                                    ChartPlotterDynamic.AddLineGraph(compositeDataSource, 2, tempSignalID);                                    
-                                });
                             }
                         }
                     }
@@ -197,66 +240,442 @@ namespace openPDCManager.Pages.Monitoring
 
         void subscriber_ConnectionEstablished(object sender, EventArgs e)
         {
-            s_subscriber.SynchronizedSubscribe(true, 30, 0.5D, 1.0D, "DEVARCHIVE:2");
+            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Subscription Connection Established.");
+            m_subscribed = true;
+            SubscribeData();                      
+        }
+
+        void subscriber_ConnectionTerminated(object sender, EventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Subscription Connection Terminated.");
+            m_subscribed = false;
         }
 
         void subscriber_ProcessException(object sender, TVA.EventArgs<Exception> e)
         {
-            System.Diagnostics.Debug.WriteLine("EXCEPTION: " + e.Argument.Message);            
+            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: EXCEPTION: " + e.Argument.Message);            
         }
 
         void subscriber_StatusMessage(object sender, TVA.EventArgs<string> e)
         {
-            System.Diagnostics.Debug.WriteLine(e.Argument);
+            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: " + e.Argument);
         }
 
         #endregion                
     
         #region [ Methods ]
 
+        void GetSettingsFromIsolatedStorage()
+        {
+            m_displayFrequencyAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayFrequencyYAxis"));
+            m_displayPhaseAngleAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayPhaseAngleYAxis"));            
+            m_displayVoltageAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayVoltageYAxis"));
+            m_displayCurrentAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayCurrentYAxis"));
+            m_displayXAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayXAxis"));            
+            int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("DataResolution").ToString(), out m_framesPerSecond);
+            int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfDataPointsToPlot").ToString(), out m_numberOfDataPointsToPlot);
+            int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("ChartRefreshInterval").ToString(), out m_refreshInterval);
+            int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("MeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
+
+            m_xAxisDataCollection = new int[m_numberOfDataPointsToPlot];
+
+            //Get last selected measurements to plot on the chart during first load of the page.
+            List<string> pointList = IsolatedStorageManager.ReadInputMonitoringPoints();
+            if (pointList.Count > 0)
+            {
+                foreach (DeviceMeasurementData deviceMeasurementData in m_deviceMeasurementDataList)
+                {
+                    foreach (DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
+                    {
+                        foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
+                        {
+                            if (pointList.Contains(measurementInfo.SignalReference))
+                            {
+                                measurementInfo.IsSelected = true;
+                                deviceInfo.IsExpanded = true;
+                                deviceMeasurementData.IsExpanded = true;
+                                m_selectedMeasurements.TryAdd(measurementInfo.SignalID.ToUpper(), measurementInfo);
+                                AddToCurrentValuesList(measurementInfo);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            m_dataForBinding.DeviceMeasurementDataList = m_deviceMeasurementDataList;
+            m_dataForBinding.IsExpanded = false;
+            TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
+            if (m_selectedMeasurements.Count > 0)
+                SubscribeData();                
+            
+        }
+
         void StartChartRefreshTimer()
         {
             if (m_chartRefreshTimer == null)
             {
                 m_chartRefreshTimer = new DispatcherTimer();
-                m_chartRefreshTimer.Interval = TimeSpan.FromMilliseconds(1000);
-                m_chartRefreshTimer.Tick += new EventHandler(m_chartRefreshTimer_Tick);
+                m_chartRefreshTimer.Interval = TimeSpan.FromMilliseconds(m_refreshInterval);
+                m_chartRefreshTimer.Tick += m_chartRefreshTimer_Tick;
                 m_chartRefreshTimer.Start();
             }
         }
 
         void m_chartRefreshTimer_Tick(object sender, EventArgs e)
         {
-            //ThreadPool.QueueUserWorkItem(RefreshChart, null);
-            RefreshChart(null);
+            foreach (KeyValuePair<string, EnumerableDataSource<double>> keyValuePair in m_yAxisBindingCollection)
+                keyValuePair.Value.RaiseDataChanged();
+
+            if (m_timeStampList.Count > 0)
+            {
+                TextBlockLeft.Text = m_timeStampList.First();
+                TextBlockRight.Text = m_timeStampList.Last();
+            }
+
+            ListBoxCurrentValues.Items.Refresh();
+            lock(m_currentValuesList)
+                ListBoxCurrentValues.ItemsSource = m_currentValuesList;
         }
 
-        void RefreshChart(object state)
+        void StopChartRefreshTimer()
         {
-            if (0 == Interlocked.Exchange(ref m_processingNewMeasurements, 1))
+            try
             {
-                try
+                if (m_chartRefreshTimer != null)
                 {
-                    ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
+                    m_chartRefreshTimer.Stop();
+                    m_chartRefreshTimer.Tick -= m_chartRefreshTimer_Tick;
+                }
+                m_chartRefreshTimer = null;
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException(null, "StopChartRefreshTimer", ex);
+                m_chartRefreshTimer = null;
+            }
+        }
+                
+        void InitializeColors()
+        {
+            m_lineColors = new List<Color>();
+            m_lineColors.Add(Colors.DarkGoldenrod);
+            m_lineColors.Add(Colors.Blue);
+            m_lineColors.Add(Colors.Green);
+            m_lineColors.Add(Colors.Red);
+            m_lineColors.Add(Colors.Purple);
+            m_lineColors.Add(Colors.Brown);            
+            m_lineColors.Add(Colors.Magenta); 
+            m_lineColors.Add(Colors.Black);
+            m_lineColors.Add(Colors.DarkCyan);
+            m_lineColors.Add(Colors.Coral);        
+        }
+       
+        void InitializeChart()
+        {
+            //Remove labels on X-Axis.
+            ((HorizontalAxis)ChartPlotterDynamic.MainHorizontalAxis).LabelProvider.LabelStringFormat = "";
+
+            //Remove legend on the right.
+            Panel legendParent = (Panel)ChartPlotterDynamic.Legend.ContentGrid.Parent;
+            legendParent.Children.Remove(ChartPlotterDynamic.Legend.ContentGrid);
+
+            //Set Y-Axis and X-Axis Visibility.
+            ChartPlotterDynamic.MainVerticalAxisVisibility = FrequencyAxisTitle.Visibility = m_displayFrequencyAxis ? Visibility.Visible : Visibility.Collapsed;            
+            ChartPlotterDynamic.MainHorizontalAxisVisibility = m_displayXAxis ? Visibility.Visible : Visibility.Collapsed;
+            TextBlockLeft.Visibility = TextBlockRight.Visibility = ChartPlotterDynamic.MainHorizontalAxisVisibility;
+            PhaseAngleYAxis.Visibility = PhaseAngleAxisTitle.Visibility = m_displayPhaseAngleAxis ? Visibility.Visible : Visibility.Collapsed;            
+            VoltageYAxis.Visibility = VoltageAxisTitle.Visibility = m_displayVoltageAxis ? Visibility.Visible : Visibility.Collapsed;
+            CurrentYAxis.Visibility = CurrentAxisTitle.Visibility = m_displayCurrentAxis ? Visibility.Visible : Visibility.Collapsed;
+
+            //Set viewport rectangle for Frequency and PhaseAngle axis.
+            ChartPlotterDynamic.Visible = DataRect.Create(0, 59.9, m_numberOfDataPointsToPlot, 60.1);
+            PhaseAnglePlotter.Visible = DataRect.Create(0, -180, m_numberOfDataPointsToPlot, 180);            
+
+            //Assign x-axis binding collection to x-axis.            
+            for (int i = 0; i < m_numberOfDataPointsToPlot; i++)
+                m_xAxisDataCollection[i] = i;
+            m_xAxisBindingCollection = new EnumerableDataSource<int>(m_xAxisDataCollection);
+            m_xAxisBindingCollection.SetXMapping(x => x);
+        }
+
+        void StartSubscription()
+        {
+            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Starting Subscription.");
+            m_subscriber = new DataSubscriber();
+            m_subscriber.StatusMessage += subscriber_StatusMessage;
+            m_subscriber.ProcessException += subscriber_ProcessException;
+            m_subscriber.ConnectionEstablished += subscriber_ConnectionEstablished;            
+            m_subscriber.NewMeasurements += subscriber_NewMeasurements;
+            m_subscriber.ConnectionTerminated += subscriber_ConnectionTerminated;
+            m_subscriber.ConnectionString = "server=localhost:6165";            
+            m_subscriber.Initialize();
+            m_subscriber.Start();
+        }
+
+        void SubscribeData()
+        {
+            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Subscribing Data.");
+
+            if (m_selectedMeasurements.Count == 0)
+                UnsubscribeData();
+            else
+            {                
+                if (m_subscriber == null)
+                    StartSubscription();
+
+                if (m_subscribed)
+                {
+                    //StopChartRefreshTimer();
+                    StringBuilder sb = new StringBuilder();
+                    foreach (KeyValuePair<string, MeasurementInfo> keyValuePair in m_selectedMeasurements)
+                        sb.Append(keyValuePair.Value.HistorianAcronym + ":" + keyValuePair.Value.PointID + ";");
+
+                    string subscriptionPoints = sb.ToString();
+                    if (subscriptionPoints.Length > 0)
+                        subscriptionPoints = subscriptionPoints.Substring(0, subscriptionPoints.Length - 1);
+
+                    m_subscriber.SynchronizedSubscribe(true, m_framesPerSecond, 0.5D, 1.0D, subscriptionPoints);
+                    ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate() { StartChartRefreshTimer(); });
+                }
+            }
+        }
+
+        void UnsubscribeData()
+        {
+            if (m_subscriber != null)
+            {
+                System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Un-Subscribing Data.");
+                m_subscriber.Unsubscribe();
+                StopSubscription();              
+            }
+            StopChartRefreshTimer();
+        }
+
+        void StopSubscription()
+        {
+            if (m_subscriber != null)
+            {
+                m_subscriber.StatusMessage -= subscriber_StatusMessage;
+                m_subscriber.ProcessException -= subscriber_ProcessException;
+                m_subscriber.ConnectionEstablished -= subscriber_ConnectionEstablished;
+                m_subscriber.NewMeasurements -= subscriber_NewMeasurements;  
+                m_subscriber.Stop();
+                m_subscriber.Dispose();
+                m_subscriber = null;
+            }
+        }
+
+        void GetDeviceMeasurementData()
+        {
+            try
+            {
+                m_deviceMeasurementDataList = CommonFunctions.GetDeviceMeasurementData(null, ((App)Application.Current).NodeValue);
+                GetSettingsFromIsolatedStorage();
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException(null, "WPF.GetDeviceMeasurementsData", ex);
+                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Current Device Measurements Tree Data", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+            }
+            if (m_activityWindow != null)
+                m_activityWindow.Close();
+        }
+
+        void RemoveLineGraph(MeasurementInfo measurementInfo)
+        {
+            MeasurementInfo measurementToBeRemoved;
+            LineGraph lineGraphToBeRemoved;
+            EnumerableDataSource<double> bindingCollectionToBeRemoved;
+            ConcurrentQueue<double> dataCollectionToBeRemoved;
+            
+            m_selectedMeasurements.TryRemove(measurementInfo.SignalID.ToUpper(), out measurementToBeRemoved);
+            SubscribeData();
+            m_yAxisBindingCollection.TryRemove(measurementInfo.SignalID.ToUpper(), out bindingCollectionToBeRemoved);
+            m_yAxisDataCollection.TryRemove(measurementInfo.SignalID.ToUpper(), out dataCollectionToBeRemoved);
+            
+            m_lineGraphCollection.TryRemove(measurementInfo.SignalID.ToUpper(), out lineGraphToBeRemoved);
+            if (measurementInfo.SignalAcronym == "FREQ")
+                ChartPlotterDynamic.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
+            else if (measurementInfo.SignalAcronym == "IPHA" || measurementInfo.SignalAcronym == "VPHA")
+                PhaseAnglePlotter.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
+            else if (measurementInfo.SignalAcronym == "VPHM")
+                VoltagePlotter.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
+            else if (measurementInfo.SignalAcronym == "IPHM")
+                CurrentPlotter.Children.Remove((IPlotterElement)lineGraphToBeRemoved);                        
+        }
+
+        void AddToCurrentValuesList(object state)
+        {
+            MeasurementInfo measurementInfo = (MeasurementInfo)state;
+            InputMonitorData inputMonitorData = new InputMonitorData();
+            inputMonitorData.PointID = measurementInfo.PointID;
+            inputMonitorData.SignalID = measurementInfo.SignalID.ToUpper();
+            inputMonitorData.SignalReference = measurementInfo.SignalReference;
+            inputMonitorData.EngineeringUnit = measurementInfo.EngineeringUnits;
+            inputMonitorData.Description = measurementInfo.Description;
+            inputMonitorData.TimeStamp = measurementInfo.CurrentTimeTag;
+            inputMonitorData.Background = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
+            //ListBoxCurrentValues.Dispatcher.Invoke((Action)delegate()
+            //{
+                lock (m_currentValuesList)
+                {
+                    if (m_currentValuesList.ContainsKey(measurementInfo.SignalID.ToUpper()))
+                        m_currentValuesList[measurementInfo.SignalID.ToUpper()] = inputMonitorData;
+                    else
+                        m_currentValuesList.Add(measurementInfo.SignalID.ToUpper(), inputMonitorData);
+                    ListBoxCurrentValues.Items.Refresh();
+                    ListBoxCurrentValues.ItemsSource = m_currentValuesList;
+                }
+            //});            
+        }
+
+        void RemoveFromCurrentValuesList(object state)
+        {
+            MeasurementInfo measurementInfo = (MeasurementInfo)state;                         
+            ListBoxCurrentValues.Dispatcher.Invoke((Action)delegate()
+            {
+                lock (m_currentValuesList)
+                {
+                    if (m_currentValuesList.ContainsKey(measurementInfo.SignalID.ToUpper()))
                     {
-                        lock (m_yAxisDataCollection)
+                        m_currentValuesList.Remove(measurementInfo.SignalID.ToUpper());
+                        ListBoxCurrentValues.Items.Refresh();
+                        ListBoxCurrentValues.ItemsSource = m_currentValuesList;
+                    }
+                }
+            });            
+        }
+
+        #endregion
+
+        #region [ Controls Event Handlers ]
+
+        private void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Title = "Save Current Display Settings";
+            saveDialog.Filter = "Input Status Monitoring Display Settings (*.ismsettings)|*.ismsettings|All Files (*.*)|*.*";
+            bool? result = saveDialog.ShowDialog(Window.GetWindow(this));
+            if (result != null && (bool)result == true)
+            {
+                using (StreamWriter writer = new StreamWriter(saveDialog.FileName))
+                {
+                    StringBuilder sb = new StringBuilder();
+                    foreach (KeyValuePair<string, MeasurementInfo> selectedMeasurement in m_selectedMeasurements)
+                    {
+                        sb.Append(selectedMeasurement.Value.SignalReference + ";");
+                    }
+                    writer.Write(sb.ToString());
+                }
+            }
+        }
+
+        private void ButtonLoad_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openDialog = new OpenFileDialog();
+            openDialog.Multiselect = false;
+            openDialog.Filter = "Input Status Monitoring Display Settings (*.ismsettings)|*.ismsettings|All Files (*.*)|*.*";
+            bool? result = openDialog.ShowDialog(Window.GetWindow(this));
+            if (result != null && (bool)result == true)
+            {
+                using (StreamReader reader = new StreamReader(openDialog.OpenFile()))
+                {
+                    string selection = reader.ReadLine();
+                    string[] signalReferences = selection.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (DeviceMeasurementData deviceMeasurementData in m_dataForBinding.DeviceMeasurementDataList)
+                    {
+                        deviceMeasurementData.IsExpanded = false;
+                        foreach (DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
                         {
-                            lock (m_yAxisBindingCollection)
+                            deviceInfo.IsExpanded = false;
+                            foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
                             {
-                                foreach (KeyValuePair<string, EnumerableDataSource<double>> keyValuePair in m_yAxisBindingCollection)
+                                if (signalReferences.Contains(measurementInfo.SignalReference))
                                 {
-                                    lock (keyValuePair.Value)
-                                        keyValuePair.Value.RaiseDataChanged();
+                                    measurementInfo.IsSelected = true;
+                                    deviceInfo.IsExpanded = true;
+                                    deviceMeasurementData.IsExpanded = true;
+                                    m_selectedMeasurements.TryAdd(measurementInfo.SignalID.ToUpper(), measurementInfo);
+                                    AddToCurrentValuesList(measurementInfo);
+                                }
+                                else
+                                {
+                                    measurementInfo.IsSelected = false;                                    
+                                    if (m_selectedMeasurements.ContainsKey(measurementInfo.SignalID.ToUpper()))                                        
+                                        RemoveLineGraph(measurementInfo);
+                                    RemoveFromCurrentValuesList(measurementInfo);
                                 }
                             }
                         }
-                    });
+                    }
+                    m_dataForBinding.IsExpanded = false;
+                    TreeViewDeviceMeasurements.Items.Refresh();
+                    TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
                 }
-                catch { System.Diagnostics.Debug.WriteLine("Exception Occured"); }
-                finally
+
+                if (m_selectedMeasurements.Count > 0)
+                    SubscribeData();
+            }
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = ((CheckBox)sender);            
+            RemoveLineGraph((MeasurementInfo)checkBox.DataContext);
+            //ThreadPool.QueueUserWorkItem(RemoveFromCurrentValuesList, (MeasurementInfo)checkBox.DataContext);
+            RemoveFromCurrentValuesList((MeasurementInfo)checkBox.DataContext);
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            MeasurementInfo measurementInfo = (MeasurementInfo)((CheckBox)sender).DataContext;
+            //ThreadPool.QueueUserWorkItem(AddToCurrentValuesList, measurementInfo);
+            AddToCurrentValuesList(measurementInfo);
+            if (!m_selectedMeasurements.ContainsKey(measurementInfo.SignalID.ToUpper()))
+                m_selectedMeasurements.TryAdd(measurementInfo.SignalID.ToUpper(), measurementInfo);
+            SubscribeData();
+        }
+
+        private void ButtonGetStatistics_Click(object sender, RoutedEventArgs e)
+        {
+            string deviceAcronym = ((Button)sender).Content.ToString();
+            Device deviceInfo = CommonFunctions.GetDeviceByAcronym(null, deviceAcronym);
+            UserControlDeviceDetailInfo.Initialize(deviceInfo);
+            UserControlDeviceDetailInfo.Visibility = Visibility.Visible;
+        }
+
+        private void ButtonEdit_Click(object sender, RoutedEventArgs e)
+        {
+            if (((Button)sender).Tag != null)
+            {
+                int deviceId = Convert.ToInt32(((Button)sender).Tag);
+                if (deviceId > 0)
                 {
-                    Interlocked.Exchange(ref m_processingNewMeasurements, 0);
+                    ManageDevicesUserControl manageDevicesUserControl = new ManageDevicesUserControl();
+                    manageDevicesUserControl.m_deviceID = deviceId;
+                    ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(manageDevicesUserControl);
                 }
+                else
+                {
+                    SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Invalid or Dummy Device Selected", SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Information },
+                        ButtonType.OkOnly);
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm.ShowPopup();
+                }
+            }
+            else
+            {
+                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Invalid or Dummy Device Selected", SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Information },
+                        ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
             }
         }
 

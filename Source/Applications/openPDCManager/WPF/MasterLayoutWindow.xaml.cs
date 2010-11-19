@@ -38,6 +38,7 @@ using openPDCManager.UserControls.CommonControls;
 using openPDCManager.UserControls.OutputStreamControls;
 using openPDCManager.Utilities;
 using TVA.Reflection;
+using openPDCManager.ModalDialogs;
 
 namespace openPDCManager
 {
@@ -106,26 +107,26 @@ namespace openPDCManager
 
         void ConnectToService()
         {
-            if (((App)Application.Current).RemoteStatusServiceUrl != null)
+            if (!string.IsNullOrEmpty(((App)Application.Current).RemoteStatusServiceUrl))
             {
                 m_serviceClient = new WindowsServiceClient(((App)Application.Current).RemoteStatusServiceUrl);
                 try
                 {
                     m_serviceClient.Helper.RemotingClient.ConnectionEstablished += new EventHandler(RemotingClient_ConnectionEstablished);
-                    m_serviceClient.Helper.RemotingClient.ConnectionTerminated += new EventHandler(RemotingClient_ConnectionTerminated);                    
+                    m_serviceClient.Helper.RemotingClient.ConnectionTerminated += new EventHandler(RemotingClient_ConnectionTerminated);
                     m_serviceClient.Helper.RemotingClient.MaxConnectionAttempts = -1;
                     m_serviceClient.Helper.RemotingClient.ConnectionAttempt += new EventHandler(RemotingClient_ConnectionAttempt);
                     System.Threading.ThreadPool.QueueUserWorkItem(ConnectAsync, null);
-                    
+
                     if (m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                     {
-                            EllipseConnectionState.Fill = Application.Current.Resources["GreenRadialGradientBrush"] as RadialGradientBrush;
-                            ToolTipService.SetToolTip(EllipseConnectionState, "Connected to openPDC Service");                     
+                        EllipseConnectionState.Fill = Application.Current.Resources["GreenRadialGradientBrush"] as RadialGradientBrush;
+                        ToolTipService.SetToolTip(EllipseConnectionState, "Connected to openPDC Service");
                     }
                     else
                     {
-                            EllipseConnectionState.Fill = Application.Current.Resources["RedRadialGradientBrush"] as RadialGradientBrush;
-                            ToolTipService.SetToolTip(EllipseConnectionState, "Disconnected from openPDC Service");                        
+                        EllipseConnectionState.Fill = Application.Current.Resources["RedRadialGradientBrush"] as RadialGradientBrush;
+                        ToolTipService.SetToolTip(EllipseConnectionState, "Disconnected from openPDC Service");
                     }
                 }
                 catch (Exception ex)
@@ -134,6 +135,13 @@ namespace openPDCManager
                 }
 
                 ((App)Application.Current).ServiceClient = m_serviceClient;
+            }
+            else
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please provide Remote Status Service Url value for node.", SystemMessage = "Remote Status Service Url value is not set for " + ((App)Application.Current).NodeName + " node." + Environment.NewLine + "Please go to Manage => Nodes screen to configure node settings." + Environment.NewLine + "For example: Server=localhost:8500", UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.ShowPopup();
             }
         }
 
@@ -434,7 +442,9 @@ namespace openPDCManager
             }
             else if (item.Name == "InputMonitor")
             {
+                //SubscriptionTest inputMonitor = new SubscriptionTest();
                 //InputStatusUserControl inputMonitor = new InputStatusUserControl();
+                                
                 InputMonitoringUserControl inputMonitor = new InputMonitoringUserControl();
                 ContentFrame.Navigate(inputMonitor);
             }

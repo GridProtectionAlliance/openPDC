@@ -31,6 +31,7 @@ using openPDCManager.Data;
 using openPDCManager.Data.BusinessObjects;
 using openPDCManager.Data.Entities;
 using TVA.Configuration;
+using openPDCManager.Utilities;
 
 namespace openPDCManager.Pages.Monitoring
 {
@@ -67,17 +68,10 @@ namespace openPDCManager.Pages.Monitoring
                     }
 
                     if (m_refreshTimer == null)
-                    {
-                        ConfigurationFile config = ConfigurationFile.Current;
-                        CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
-                        string timerInterval = configSettings["RunTimeStatisticsRefreshInterval"].Value;
+                    {                        
                         int interval = 10;
-
-                        if (!string.IsNullOrEmpty(timerInterval))
-                        {
-                            if (!int.TryParse(timerInterval, out interval))
-                                interval = 10;
-                        }
+                        int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out interval);
+                        
                         m_refreshTimer = new DispatcherTimer();
                         m_refreshTimer.Interval = TimeSpan.FromSeconds(interval);
                         m_refreshTimer.Tick += new EventHandler(m_refreshTimer_Tick);

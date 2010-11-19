@@ -61,17 +61,9 @@ namespace openPDCManager.Pages.Adapters
             m_statisticMeasurementDataList = new ObservableCollection<StatisticMeasurementData>();
             m_minMaxPointIDs = new KeyValuePair<int, int>();
             m_nodeID = ((App)Application.Current).NodeValue;
-            ConfigurationFile config = ConfigurationFile.Current; 
-            CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
 
-            string timerInterval = configSettings["RunTimeStatisticsRefreshInterval"].Value;
             int interval = 10;
-
-            if (!string.IsNullOrEmpty(timerInterval))
-            {
-                if (!int.TryParse(timerInterval, out interval))
-                    interval = 10;
-            }
+            int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out interval);
 
             m_thirtySecondsTimer = new DispatcherTimer();
             m_thirtySecondsTimer.Interval = TimeSpan.FromSeconds(interval);

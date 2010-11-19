@@ -60,8 +60,28 @@ namespace openPDCManager.UserControls.OutputStreamControls
             ButtonSave.Content = new BitmapImage(new Uri(@"images/Save.png", UriKind.Relative));
             ButtonClear.Content = new BitmapImage(new Uri(@"images/Cancel.png", UriKind.Relative));
             ButtonBuildCommandChannel.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));
-            ButtonBuildDataChannel.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));            
+            ButtonBuildDataChannel.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));
+
+            ButtonAllowPreemptivePublishingHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
+            ButtonAllowSortsByArrivalHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
+            ButtonAutoPublishConfigFrameHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
+            ButtonDownsamplingMethodHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
+            ButtonIgnoreBadTimeStampsHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
+            ButtonStartDataChannelHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
+            ButtonTimeResolutionHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
+            ButtonUseLocalClockAsRealTimeHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
+            ButtonLagTimeHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
+            ButtonLeadTimeHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
             UpdateLayout();
+#else
+            ButtonAllowPreemptivePublishingHelp.Visibility = Visibility.Collapsed;
+            ButtonAllowSortsByArrivalHelp.Visibility = Visibility.Collapsed;
+            ButtonAutoPublishConfigFrameHelp.Visibility = Visibility.Collapsed;
+            ButtonDownsamplingMethodHelp.Visibility = Visibility.Collapsed;
+            ButtonIgnoreBadTimeStampsHelp.Visibility = Visibility.Collapsed;
+            ButtonStartDataChannelHelp.Visibility = Visibility.Collapsed;
+            ButtonTimeResolutionHelp.Visibility = Visibility.Collapsed;
+            ButtonUseLocalClockAsRealTimeHelp.Visibility = Visibility.Collapsed;
 #endif
             ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
             ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
@@ -284,6 +304,16 @@ namespace openPDCManager.UserControls.OutputStreamControls
             csb.ShowDialog();
 #else
             csb.Show();
+#endif
+        }
+
+        void ButtonHelp_Click(object sender, RoutedEventArgs e)
+        {
+            HelpMeChoose hmc = new HelpMeChoose(((Button)sender).Tag.ToString());
+#if !SILVERLIGHT
+            hmc.Owner = Window.GetWindow(this);
+            hmc.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            hmc.ShowDialog();
 #endif
         }
 
@@ -678,9 +708,23 @@ namespace openPDCManager.UserControls.OutputStreamControls
             CheckBoxUseLocalClockAsRealTime.Visibility = visibility;
             CheckBoxAllowPreemptivePublishing.Visibility = visibility;
             CheckBoxIgnoreBadTimeStamps.Visibility = visibility;
+
+#if !SILVERLIGHT
+            ButtonAllowPreemptivePublishingHelp.Visibility = visibility;
+            ButtonAllowSortsByArrivalHelp.Visibility = visibility;
+            ButtonAutoPublishConfigFrameHelp.Visibility = visibility;
+            ButtonDownsamplingMethodHelp.Visibility = visibility;
+            ButtonIgnoreBadTimeStampsHelp.Visibility = visibility;
+            ButtonStartDataChannelHelp.Visibility = visibility;
+            ButtonTimeResolutionHelp.Visibility = visibility;
+            ButtonUseLocalClockAsRealTimeHelp.Visibility = visibility;
+#endif
+            
         }
 
         #endregion
+
+        
 
     }
 }

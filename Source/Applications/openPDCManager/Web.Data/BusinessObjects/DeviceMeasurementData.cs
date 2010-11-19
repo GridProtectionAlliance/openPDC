@@ -63,6 +63,7 @@ namespace openPDCManager.Data.BusinessObjects
         public string Description { get; set; }
         public string SignalName { get; set; }
         public string EngineeringUnits { get; set; }
+        public string HistorianAcronym { get; set; }
 		public string CurrentTimeTag { get; set; }
 		public string CurrentValue { get; set; }
 		public string CurrentQuality { get; set; }

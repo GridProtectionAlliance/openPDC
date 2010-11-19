@@ -494,18 +494,9 @@ namespace openPDCManager.Pages.Monitoring
         }
 
         void StartTimer()
-        {
-            ConfigurationFile config = ConfigurationFile.Current;
-            CategorizedSettingsElementCollection configSettings = config.Settings["systemSettings"];
-
-            string timerInterval = configSettings["RealTimeMeasurementRefreshInterval"].Value;
+        {            
             int interval = 10;
-
-            if (!string.IsNullOrEmpty(timerInterval))
-            {
-                if (!int.TryParse(timerInterval, out interval))
-                    interval = 10;
-            }
+            int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("MeasurementsDataRefreshInterval").ToString(), out interval);        
 
             m_thirtySecondsTimer = new DispatcherTimer();
             m_thirtySecondsTimer.Interval = TimeSpan.FromSeconds(interval);
@@ -562,7 +553,7 @@ namespace openPDCManager.Pages.Monitoring
                             inputMonitorData.EngineeringUnit = measurementInfo.EngineeringUnits;
                             inputMonitorData.Description = measurementInfo.Description;
                             inputMonitorData.TimeStamp = point.TimeStamp;
-                            inputMonitorData.Value = point.Value;
+                            inputMonitorData.Value = point.Value.ToString();
                             inputMonitorData.Quality = point.Quality;
                             break;
                         }
@@ -688,7 +679,7 @@ namespace openPDCManager.Pages.Monitoring
                                     if (yData.Count >= 300)
                                         yData.RemoveAt(0);
                                     yData.Insert(yData.Count - 1, point.Value);
-                                    inputMonitorData.Value = point.Value;
+                                    inputMonitorData.Value = point.Value.ToString();
                                     inputMonitorData.TimeStamp = point.TimeStamp;
                                     inputMonitorData.Quality = point.Quality;
                                 }

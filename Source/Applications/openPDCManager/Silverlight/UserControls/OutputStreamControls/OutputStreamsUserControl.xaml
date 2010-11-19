@@ -72,11 +72,13 @@
                     <TextBox x:Name="TextBoxFramesPerSecond" Grid.Row="4" Grid.Column="3" Text="{Binding Path=FramesPerSecond}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0">
                         <TextBlock Text="Lag Time" Style="{StaticResource GenericLabelStyle}"/>
+                        <Button x:Name="ButtonLagTimeHelp" Content="../../Images/Information.png" Tag="HMC - Lag Time.png" ToolTipService.ToolTip="Click here for help on Lag Time" Template="{StaticResource SmallImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" Cursor="Hand" Click="ButtonHelp_Click"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
                     <TextBox x:Name="TextBoxLagTime" Grid.Row="5" Grid.Column="1" Text="{Binding Path=LagTime}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="2">
                         <TextBlock Text="Lead Time" Style="{StaticResource GenericLabelStyle}"/>
+                        <Button x:Name="ButtonLeadTimeHelp" Content="../../Images/Information.png" Tag="HMC - Lead Time.png" ToolTipService.ToolTip="Click here for help on Lead Time" Template="{StaticResource SmallImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" Cursor="Hand" Click="ButtonHelp_Click"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
                     <TextBox x:Name="TextBoxLeadTime" Grid.Row="5" Grid.Column="3" Text="{Binding Path=LeadTime}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
@@ -85,11 +87,13 @@
                     
                     <StackPanel x:Name="StackPanelTimeResolution" Orientation="Horizontal" Grid.Row="7" Grid.Column="0">
                         <TextBlock x:Name="TextBloclTimeResolution" Text="Time Resolution" Style="{StaticResource GenericLabelStyle}"/>
+                        <Button x:Name="ButtonTimeResolutionHelp" Content="../../Images/Information.png" Tag="HMC - Time Resolution.png" ToolTipService.ToolTip="Click here for help on Time Resolution" Template="{StaticResource SmallImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" Cursor="Hand" Click="ButtonHelp_Click"/>
                         <TextBlock x:Name="TextBloclTimeResolutionR" Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
                     <TextBox x:Name="TextBoxTimeResolution" Grid.Row="7" Grid.Column="1" Text="{Binding Path=TimeResolution}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <StackPanel x:Name="StackPanelDownsamplingMethod" Orientation="Horizontal" Grid.Row="7" Grid.Column="2">
                         <TextBlock x:Name="TextBlockDownsamplingMethod" Text="Downsampling Method" Style="{StaticResource GenericLabelStyle}"/>
+                        <Button x:Name="ButtonDownsamplingMethodHelp" Content="../../Images/Information.png" Tag="HMC - Downsampling Method.png" ToolTipService.ToolTip="Click here for help on Downsampling Method" Template="{StaticResource SmallImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" Cursor="Hand" Click="ButtonHelp_Click"/>
                         <TextBlock x:Name="TextBlockDownsamplingMethodR" Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
                     <ComboBox x:Name="ComboboxDownsamplingMethod" Grid.Row="7" Grid.Column="3" Margin="5"/>
@@ -124,14 +128,31 @@
                     </StackPanel>
                     <TextBox x:Name="TextBoxDigitalMaskValue" Grid.Row="10" Grid.Column="3" Text="{Binding Path=DigitalMaskValue}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
 
-                    <CheckBox x:Name="CheckBoxAutoStartDataChannel" Grid.Row="11" Grid.Column="1" Content="Auto Start Data Channel" IsChecked="{Binding Path=AutoStartDataChannel}" FontWeight="Bold" VerticalAlignment="Center"/>
-                    <CheckBox x:Name="CheckBoxAutoPublishConfigFrame" Grid.Row="11" Grid.Column="3" Content="Auto Publish Config Frame" IsChecked="{Binding Path=AutoPublishConfigFrame}" FontWeight="Bold" VerticalAlignment="Center"/>
-
-                    <CheckBox x:Name="CheckBoxAllowSortsByArrival" Grid.Row="12" Grid.Column="1" Content="Allow Sorts By Arrival" IsChecked="{Binding Path=AllowSortsByArrival}" FontWeight="Bold" VerticalAlignment="Center"/>
-                    <CheckBox x:Name="CheckBoxUseLocalClockAsRealTime" Grid.Row="12" Grid.Column="3" Content="Use Local Clock As Real-time" IsChecked="{Binding Path=UseLocalClockAsRealTime}" FontWeight="Bold" VerticalAlignment="Center"/>
-                    <CheckBox x:Name="CheckBoxAllowPreemptivePublishing" Grid.Row="13" Grid.Column="1" Content="Allow Preemptive Publishing" IsChecked="{Binding Path=AllowPreemptivePublishing}" FontWeight="Bold" VerticalAlignment="Center"/>
-                    <CheckBox x:Name="CheckBoxIgnoreBadTimeStamps" Grid.Row="13" Grid.Column="3" Content="Ignore Bad Timestamps" IsChecked="{Binding Path=IgnoreBadTimeStamps}" FontWeight="Bold" VerticalAlignment="Center"/>
-
+                    <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="1">
+                        <CheckBox x:Name="CheckBoxAutoStartDataChannel"  Content="Auto Start Data Channel" IsChecked="{Binding Path=AutoStartDataChannel}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <Button x:Name="ButtonStartDataChannelHelp" Content="../../Images/Information.png" Tag="HMC - Auto Start Data Channel.png" ToolTipService.ToolTip="Click here for help" Template="{StaticResource SmallImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" Cursor="Hand" Click="ButtonHelp_Click"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="3">
+                        <CheckBox x:Name="CheckBoxAutoPublishConfigFrame" Content="Auto Publish Config Frame" IsChecked="{Binding Path=AutoPublishConfigFrame}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <Button x:Name="ButtonAutoPublishConfigFrameHelp" Content="../../Images/Information.png" Tag="HMC - Auto Publish Config Frame.png" ToolTipService.ToolTip="Click here for help" Template="{StaticResource SmallImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" Cursor="Hand" Click="ButtonHelp_Click"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="12" Grid.Column="1">
+                        <CheckBox x:Name="CheckBoxAllowSortsByArrival" Content="Allow Sorts By Arrival" IsChecked="{Binding Path=AllowSortsByArrival}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <Button x:Name="ButtonAllowSortsByArrivalHelp" Content="../../Images/Information.png" Tag="HMC - Allow Sorts By Arrival.png" ToolTipService.ToolTip="Click here for help" Template="{StaticResource SmallImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" Cursor="Hand" Click="ButtonHelp_Click"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="12" Grid.Column="3">
+                        <CheckBox x:Name="CheckBoxUseLocalClockAsRealTime" Content="Use Local Clock As Real-time" IsChecked="{Binding Path=UseLocalClockAsRealTime}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <Button x:Name="ButtonUseLocalClockAsRealTimeHelp" Content="../../Images/Information.png" Tag="HMC - Use Local Clock as RealTime.png" ToolTipService.ToolTip="Click here for help" Template="{StaticResource SmallImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" Cursor="Hand" Click="ButtonHelp_Click"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="13" Grid.Column="1">
+                        <CheckBox x:Name="CheckBoxAllowPreemptivePublishing" Content="Allow Preemptive Publishing" IsChecked="{Binding Path=AllowPreemptivePublishing}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <Button x:Name="ButtonAllowPreemptivePublishingHelp" Content="../../Images/Information.png" Tag="HMC - Allow Preemptive Publishing.png" ToolTipService.ToolTip="Click here for help" Template="{StaticResource SmallImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" Cursor="Hand" Click="ButtonHelp_Click"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="13" Grid.Column="3">
+                        <CheckBox x:Name="CheckBoxIgnoreBadTimeStamps" Content="Ignore Bad Timestamps" IsChecked="{Binding Path=IgnoreBadTimeStamps}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <Button x:Name="ButtonIgnoreBadTimeStampsHelp" Content="../../Images/Information.png" Tag="HMC - Ignore Bad Timestamps.png" ToolTipService.ToolTip="Click here for help" Template="{StaticResource SmallImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" Cursor="Hand" Click="ButtonHelp_Click"/>
+                    </StackPanel>
+                    
                     <StackPanel Orientation="Horizontal" Grid.Row="14" Grid.Column="0">
                         <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />

@@ -97,10 +97,39 @@ namespace openPDCManager.Utilities
                 else
                     SaveIntoIsolatedStorage("ForceIPv4", "true");
             }
+            
+            if (!storage.FileExists("InputMonitoringPoints") || overWrite)
+                SaveIntoIsolatedStorage("InputMonitoringPoints", string.Empty);
 
-            if (!storage.FileExists("RelativeTimeOffset") || overWrite)
-                SaveIntoIsolatedStorage("RelativeTimeOffset", "0");
+            if (!storage.FileExists("NumberOfDataPointsToPlot") || overWrite)
+                SaveIntoIsolatedStorage("NumberOfDataPointsToPlot", 150);
 
+            if (!storage.FileExists("DataResolution") || overWrite)
+                SaveIntoIsolatedStorage("DataResolution", 30);
+
+            if (!storage.FileExists("ChartRefreshInterval") || overWrite)
+                SaveIntoIsolatedStorage("ChartRefreshInterval", 250);
+
+            if (!storage.FileExists("StatisticsDataRefreshInterval") || overWrite)
+                SaveIntoIsolatedStorage("StatisticsDataRefreshInterval", 30);
+
+            if (!storage.FileExists("MeasurementsDataRefreshInterval") || overWrite)
+                SaveIntoIsolatedStorage("MeasurementsDataRefreshInterval", 30);
+
+            if (!storage.FileExists("DisplayXAxis") || overWrite)
+                SaveIntoIsolatedStorage("DisplayXAxis", "false");
+
+            if (!storage.FileExists("DisplayFrequencyYAxis") || overWrite)
+                SaveIntoIsolatedStorage("DisplayFrequencyYAxis", "false");
+
+            if (!storage.FileExists("DisplayPhaseAngleYAxis") || overWrite)
+                SaveIntoIsolatedStorage("DisplayPhaseAngleYAxis", "false");
+
+            if (!storage.FileExists("DisplayVoltageYAxis") || overWrite)
+                SaveIntoIsolatedStorage("DisplayVoltageYAxis", "false");
+
+            if (!storage.FileExists("DisplayCurrentYAxis") || overWrite)
+                SaveIntoIsolatedStorage("DisplayCurrentYAxis", "false");
         }
     }
 }

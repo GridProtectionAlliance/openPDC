@@ -3670,6 +3670,26 @@ namespace openPDCManager.Data
             }
         }
 
+        public static Measurement GetMeasurementBySignalID(DataConnection connection, string nodeID, string signalID)
+        {
+            try
+            {
+                List<Measurement> measurementList = new List<Measurement>();
+                measurementList = (from item in GetMeasurementList(connection, nodeID)
+                                   where item.SignalID == signalID
+                                   select item).ToList();
+                if (measurementList.Count > 0)
+                    return measurementList[0];
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                LogException(connection, "GetMeasurementBySignalID", ex);
+                return null;
+            }
+        }
+
         #endregion
 
         #region " Manage Other Devices"
@@ -4521,7 +4541,7 @@ namespace openPDCManager.Data
                 //Get Measurements
                 IDbCommand commandMeasurements = connection.Connection.CreateCommand();
                 commandMeasurements.CommandType = CommandType.Text;
-                commandMeasurements.CommandText = "Select DeviceID, SignalID, PointID, PointTag, SignalReference, SignalAcronym, Description, SignalName, EngineeringUnits From MeasurementDetail Where NodeID = @nodeID AND SignalAcronym <> 'STAT' Order By SignalReference";
+                commandMeasurements.CommandText = "Select DeviceID, SignalID, PointID, PointTag, SignalReference, SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym From MeasurementDetail Where NodeID = @nodeID AND SignalAcronym <> 'STAT' Order By SignalReference";
                 if (commandMeasurements.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                     commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", "{" + nodeID + "}"));
                 else
@@ -4578,6 +4598,7 @@ namespace openPDCManager.Data
                                                                                           Description = measurement.Field<string>("description"),
                                                                                           SignalName = measurement.Field<string>("SignalName"),
                                                                                           EngineeringUnits = measurement.Field<string>("EngineeringUnits"),
+                                                                                          HistorianAcronym = measurement.Field<string>("HistorianAcronym"),
                                                                                           IsExpanded = false,
                                                                                           CurrentTimeTag = "N/A",
                                                                                           CurrentValue = "NaN",

@@ -1,5 +1,5 @@
 ﻿//******************************************************************************************************
-//  InputMonitorData.cs - Gbtc
+//  HelpMeChoose.xaml.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -16,32 +16,27 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  08/31/2010 - Mehulbhai P Thakkar
+//  11/19/2010 - Mehulbhai P Thakkar
 //       Generated original version of source code.
 //
 //******************************************************************************************************
 
-using System.Windows.Media;
 using System;
+using System.Windows;
+using System.Windows.Media.Imaging;
 
-namespace openPDCManager.Pages.Monitoring
+namespace openPDCManager.ModalDialogs
 {
-    public class InputMonitorData
+    /// <summary>
+    /// Interaction logic for HelpMeChoose.xaml
+    /// </summary>
+    public partial class HelpMeChoose : Window
     {
-        public int PointID { get; set; }
-        public string SignalID { get; set; }
-        public string SignalReference { get; set; }
-        public string Description { get; set; }
-        public string TimeStamp { get; set; }
-        public string Value { get; set; }
-        public string EngineeringUnit { get; set; }
-        public string Quality { get; set; }
-        public SolidColorBrush Background { get; set; }
-    }
-
-    public class SubscriptionData
-    {
-        public DateTime TimeStamp { get; set; }
-        public double Value { get; set; }
+        public HelpMeChoose(string imageName)
+        {
+            InitializeComponent();
+            if (!string.IsNullOrEmpty(imageName))
+                ImageHelpMeChoose.Source = new BitmapImage(new Uri(@"/openPDCManager;component/Images/" + imageName, UriKind.Relative));
+        }
     }
 }

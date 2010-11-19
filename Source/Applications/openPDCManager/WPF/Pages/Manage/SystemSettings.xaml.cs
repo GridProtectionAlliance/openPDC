@@ -53,18 +53,10 @@ namespace openPDCManager.Pages.Manage
         #region [ Controls Event Handlers ]
 
         void ButtonClear_Click(object sender, RoutedEventArgs e)
-        {
-            //Storyboard sb = new Storyboard();
-            //sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-            //sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-            //Storyboard.SetTarget(sb, ButtonClearTransform);
-            //sb.Begin();
-
+        {            
             //Load Default Settings.
             IsolatedStorageManager.SetDefuaultStorage(true);
-            //Clear values for Input Status & Monitoring Screen.
-            IsolatedStorageManager.SaveIntoIsolatedStorage("InputMonitoringPoints", string.Empty);
-
+            
             LoadSettingsFromIsolatedStorage();
 
             SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Successfully Restored Default System Settings", SystemMessage = string.Empty, UserMessageType = MessageType.Success },
@@ -76,24 +68,22 @@ namespace openPDCManager.Pages.Manage
 
         void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            //Storyboard sb = new Storyboard();
-            //sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-            //sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-            //Storyboard.SetTarget(sb, ButtonSaveTransform);
-            //sb.Begin();
-
             if (IsValid())
             { 
                 IsolatedStorageManager.SaveIntoIsolatedStorage("ForceIPv4", (bool)CheckboxForceIPv4.IsChecked);
-
-                if (!string.IsNullOrEmpty(TextBoxNumberOfMessagesOnMonitor.Text))
-                    IsolatedStorageManager.SaveIntoIsolatedStorage("NumberOfMessages", Convert.ToInt32(TextBoxNumberOfMessagesOnMonitor.Text));
-
-                if (!string.IsNullOrEmpty(TextBoxRelativeTimeOffset.Text))
-                    IsolatedStorageManager.SaveIntoIsolatedStorage("RelativeTimeOffset", Convert.ToInt32(TextBoxRelativeTimeOffset.Text));
-
+                IsolatedStorageManager.SaveIntoIsolatedStorage("NumberOfMessages", TextBoxNumberOfMessagesOnMonitor.Text);
                 IsolatedStorageManager.SaveIntoIsolatedStorage("InputMonitoringPoints", TextBoxLastSettings.Text);
-                    
+                IsolatedStorageManager.SaveIntoIsolatedStorage("NumberOfDataPointsToPlot", TextBoxNumberOfDataPoints.Text);
+                IsolatedStorageManager.SaveIntoIsolatedStorage("DataResolution", TextBoxFramesPerSecond.Text);
+                IsolatedStorageManager.SaveIntoIsolatedStorage("ChartRefreshInterval", TextBoxChartRefreshInterval.Text);
+                IsolatedStorageManager.SaveIntoIsolatedStorage("StatisticsDataRefreshInterval", TextBoxStatisticsDataRefreshInterval.Text);
+                IsolatedStorageManager.SaveIntoIsolatedStorage("MeasurementsDataRefreshInterval", TextBoxMeasurementsDataRefreshInterval.Text);                
+                IsolatedStorageManager.SaveIntoIsolatedStorage("DisplayXAxis", (bool)CheckboxDisplayXAxis.IsChecked);                
+                IsolatedStorageManager.SaveIntoIsolatedStorage("DisplayFrequencyYAxis", (bool)CheckboxDisplayFrequencyAxis.IsChecked);                
+                IsolatedStorageManager.SaveIntoIsolatedStorage("DisplayPhaseAngleYAxis", (bool)CheckboxDisplayPhaseAngleAxis.IsChecked);                
+                IsolatedStorageManager.SaveIntoIsolatedStorage("DisplayVoltageYAxis", (bool)CheckboxDisplayVoltageAxis.IsChecked);                
+                IsolatedStorageManager.SaveIntoIsolatedStorage("DisplayCurrentYAxis", (bool)CheckboxDisplayCurrentAxis.IsChecked);                  
+
                 LoadSettingsFromIsolatedStorage();
 
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Successfully Saved System Settings", SystemMessage = string.Empty, UserMessageType = MessageType.Success },
@@ -119,10 +109,19 @@ namespace openPDCManager.Pages.Manage
 
         void LoadSettingsFromIsolatedStorage()
         {
-            TextBoxNumberOfMessagesOnMonitor.Text = IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfMessages") == null ? "50" : IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfMessages").ToString();            
-            CheckboxForceIPv4.IsChecked = IsolatedStorageManager.ReadFromIsolatedStorage("ForceIPv4") == null ? true : Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("ForceIPv4"));
+            TextBoxNumberOfMessagesOnMonitor.Text = IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfMessages").ToString();            
+            CheckboxForceIPv4.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("ForceIPv4"));
             TextBoxLastSettings.Text = IsolatedStorageManager.ReadFromIsolatedStorage("InputMonitoringPoints").ToString();
-            TextBoxRelativeTimeOffset.Text = IsolatedStorageManager.ReadFromIsolatedStorage("RelativeTimeOffset").ToString();
+            TextBoxNumberOfDataPoints.Text = IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfDataPointsToPlot").ToString();
+            TextBoxFramesPerSecond.Text = IsolatedStorageManager.ReadFromIsolatedStorage("DataResolution").ToString();
+            TextBoxChartRefreshInterval.Text = IsolatedStorageManager.ReadFromIsolatedStorage("ChartRefreshInterval").ToString();
+            TextBoxStatisticsDataRefreshInterval.Text = IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString();
+            TextBoxMeasurementsDataRefreshInterval.Text = IsolatedStorageManager.ReadFromIsolatedStorage("MeasurementsDataRefreshInterval").ToString();
+            CheckboxDisplayXAxis.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayXAxis"));
+            CheckboxDisplayFrequencyAxis.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayFrequencyYAxis"));
+            CheckboxDisplayPhaseAngleAxis.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayPhaseAngleYAxis"));
+            CheckboxDisplayVoltageAxis.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayVoltageYAxis"));
+            CheckboxDisplayCurrentAxis.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayCurrentYAxis"));
         }
 
         bool IsValid()
@@ -132,7 +131,7 @@ namespace openPDCManager.Pages.Manage
             if (!TextBoxNumberOfMessagesOnMonitor.Text.IsInteger())
             {
                 isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Load Order", SystemMessage = "Please provide valid integer value for Load Order.", UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Value for Number of Messages on Console", SystemMessage = "Please provide valid integer value for Number of Messages on Console.", UserMessageType = MessageType.Error },
                     ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                 {
@@ -145,15 +144,79 @@ namespace openPDCManager.Pages.Manage
                 return isValid;
             }
 
-            if (!TextBoxRelativeTimeOffset.Text.IsInteger())
+            if (!TextBoxNumberOfDataPoints.Text.IsInteger())
             {
                 isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Relative Time Offset", SystemMessage = "Please provide valid integer value for Relative Time Offset.", UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Value for Number of Data Points to Plot", SystemMessage = "Please provide valid integer value for Number of Data Points to Plot.", UserMessageType = MessageType.Error },
                     ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                 {
-                    TextBoxRelativeTimeOffset.Text = "0";
-                    TextBoxRelativeTimeOffset.Focus();
+                    TextBoxNumberOfDataPoints.Text = "150";
+                    TextBoxNumberOfDataPoints.Focus();
+                });
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+                return isValid;
+            }
+
+            if (!TextBoxFramesPerSecond.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Value for Data Resolution", SystemMessage = "Please provide valid integer value for Deta Resolution (Frames Per Second).", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxFramesPerSecond.Text = "30";
+                    TextBoxFramesPerSecond.Focus();
+                });
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+                return isValid;
+            }
+
+            if (!TextBoxChartRefreshInterval.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Value for Chart Refresh Interval", SystemMessage = "Please provide valid integer value for Chart Refresh Interval (in miliseconds).", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxChartRefreshInterval.Text = "250";
+                    TextBoxChartRefreshInterval.Focus();
+                });
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+                return isValid;
+            }
+
+            if (!TextBoxStatisticsDataRefreshInterval.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Value for Statistics Data Refresh Interval", SystemMessage = "Please provide valid integer value for Statistics Data Refresh Interval (in seconds).", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxStatisticsDataRefreshInterval.Text = "30";
+                    TextBoxStatisticsDataRefreshInterval.Focus();
+                });
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+                return isValid;
+            }
+
+            if (!TextBoxMeasurementsDataRefreshInterval.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Value for Measurements Data Refresh Interval", SystemMessage = "Please provide valid integer value for Measurements Data Refresh Interval (in seconds).", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxMeasurementsDataRefreshInterval.Text = "30";
+                    TextBoxMeasurementsDataRefreshInterval.Focus();
                 });
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;

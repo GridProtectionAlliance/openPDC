@@ -166,6 +166,9 @@
     <Compile Include="..\Silverlight\Converters\BooleanToVisibilityConverter.cs">
       <Link>Converters\BooleanToVisibilityConverter.cs</Link>
     </Compile>
+    <Compile Include="ModalDialogs\HelpMeChoose.xaml.cs">
+      <DependentUpon>HelpMeChoose.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ModalDialogs\ManualConfigurator.xaml.cs">
       <DependentUpon>ManualConfigurator.xaml</DependentUpon>
     </Compile>
@@ -181,6 +184,9 @@
     <Compile Include="ApplicationInstall.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Pages\Monitoring\SubscriptionTest.xaml.cs">
+      <DependentUpon>SubscriptionTest.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Configurator\ConfigurationCreator.xaml.cs">
       <DependentUpon>ConfigurationCreator.xaml</DependentUpon>
     </Compile>
@@ -188,6 +194,7 @@
       <DependentUpon>DataPager.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\IsolatedStorageManager.cs" />
+    <Compile Include="Utilities\PanAndZoomViewer.cs" />
     <Page Include="..\Silverlight\Resources\CommonResource.xaml">
       <Link>Resources\CommonResource.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -382,6 +389,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="ModalDialogs\HelpMeChoose.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ModalDialogs\ManualConfigurator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -481,6 +492,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Monitoring\InputStatusUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Monitoring\SubscriptionTest.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -916,6 +931,38 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="openPDC.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\..\..\Documentation\Images\HMC - Allow Preemptive Publishing.png">
+      <Link>Images\HMC - Allow Preemptive Publishing.png</Link>
+    </Resource>
+    <Resource Include="..\..\..\Documentation\Images\HMC - Allow Sorts By Arrival.png">
+      <Link>Images\HMC - Allow Sorts By Arrival.png</Link>
+    </Resource>
+    <Resource Include="..\..\..\Documentation\Images\HMC - Auto Publish Config Frame.png">
+      <Link>Images\HMC - Auto Publish Config Frame.png</Link>
+    </Resource>
+    <Resource Include="..\..\..\Documentation\Images\HMC - Auto Start Data Channel.png">
+      <Link>Images\HMC - Auto Start Data Channel.png</Link>
+    </Resource>
+    <Resource Include="..\..\..\Documentation\Images\HMC - Downsampling Method.png">
+      <Link>Images\HMC - Downsampling Method.png</Link>
+    </Resource>
+    <Resource Include="..\..\..\Documentation\Images\HMC - Ignore Bad Timestamps.png">
+      <Link>Images\HMC - Ignore Bad Timestamps.png</Link>
+    </Resource>
+    <Resource Include="..\..\..\Documentation\Images\HMC - Lag Time.png">
+      <Link>Images\HMC - Lag Time.png</Link>
+    </Resource>
+    <Resource Include="..\..\..\Documentation\Images\HMC - Lead Time.png">
+      <Link>Images\HMC - Lead Time.png</Link>
+    </Resource>
+    <Resource Include="..\..\..\Documentation\Images\HMC - Time Resolution.png">
+      <Link>Images\HMC - Time Resolution.png</Link>
+    </Resource>
+    <Resource Include="..\..\..\Documentation\Images\HMC - Use Local Clock as RealTime.png">
+      <Link>Images\HMC - Use Local Clock as RealTime.png</Link>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

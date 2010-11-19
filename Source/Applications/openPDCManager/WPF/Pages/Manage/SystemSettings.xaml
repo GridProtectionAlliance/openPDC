@@ -9,37 +9,98 @@
         <StackPanel Orientation="Vertical">
             <TextBlock Text="Manage System Settings" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
             <Border Background="{StaticResource PortletBackgroundBrush}">
-                <Grid x:Name="GridSystemSettingsDetail" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5">
+                <Grid x:Name="GridSystemSettingsDetail" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" Width="600">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />                                                
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />                        
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="2*" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />                        
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="# Of Messages On Console" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                    <TextBox x:Name="TextBoxNumberOfMessagesOnMonitor" Grid.Row="0" Grid.Column="1" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                    <CheckBox x:Name="CheckboxForceIPv4" Content="Force IPv4" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                    <Border Style="{StaticResource PortletBorderStyle}" Grid.Row="0" Grid.Column="0" Margin="5">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="General Application Settings" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                            <Border Background="{StaticResource PortletBackgroundBrush}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Text="Last Cached Settings For Input Status &amp; Monitoring" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                    <TextBox x:Name="TextBoxLastSettings" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap" />
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="# Of Messages On Console" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                                    <TextBox x:Name="TextBoxNumberOfMessagesOnMonitor" Grid.Row="0" Grid.Column="1" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
 
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Relative Time Offset (in seconds)" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                    <TextBox x:Name="TextBoxRelativeTimeOffset" Grid.Row="3" Grid.Column="1" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
 
-                    <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" TextWrapping="Wrap" Width="600" HorizontalAlignment="Left">
-                        Use this adjustment to force the Input Status &amp; Monitoring screen to read data at real-time minus the specified offset. For example, if you are receiving data from a concentrator with a 5 second delay, this value should be at least 5 so that data can be properly retrieved according to this time-shift.
-                    </TextBlock>
-                    
-                    <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Border Style="{StaticResource PortletBorderStyle}" Grid.Row="0" Grid.Column="1" Margin="5">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="System Console Settings" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                            <Border Background="{StaticResource PortletBackgroundBrush}">
+                                <CheckBox x:Name="CheckboxForceIPv4" Content="Force IPv4" VerticalAlignment="Center" FontWeight="Bold" Margin="5, 8, 5, 8"/>            
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource PortletBorderStyle}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="Input Status &amp; Monitoring Settings" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                            <Border Background="{StaticResource PortletBackgroundBrush}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Last Selected Measurements" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                                    <TextBox x:Name="TextBoxLastSettings" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Number of Data Points to Plot" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                                    <TextBox x:Name="TextBoxNumberOfDataPoints" Grid.Row="2" Grid.Column="1" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Data Resolution (Frames Per Second)" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                                    <TextBox x:Name="TextBoxFramesPerSecond" Grid.Row="3" Grid.Column="1" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Chart Refresh Interval (in miliseconds)" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                                    <TextBox x:Name="TextBoxChartRefreshInterval" Grid.Row="4" Grid.Column="1" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+
+                                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Statistics Data Refresh Interval (in seconds)" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                                    <TextBox x:Name="TextBoxStatisticsDataRefreshInterval" Grid.Row="5" Grid.Column="1" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+
+                                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Measurements Data Refresh Interval (in seconds)" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                                    <TextBox x:Name="TextBoxMeasurementsDataRefreshInterval" Grid.Row="6" Grid.Column="1" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+
+                                    <CheckBox x:Name="CheckboxDisplayFrequencyAxis" Content="Display Frequency Y-Axis" Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                                    <CheckBox x:Name="CheckboxDisplayPhaseAngleAxis" Content="Display Phase Angle Y-Axis" Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+
+                                    <CheckBox x:Name="CheckboxDisplayVoltageAxis" Content="Display Voltage Magnitude Y-Axis" Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                                    <CheckBox x:Name="CheckboxDisplayCurrentAxis" Content="Display Current Magnitude Y-Axis" Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+
+                                    <CheckBox x:Name="CheckboxDisplayXAxis" Content="Display X-Axis" Grid.Row="9" Grid.Column="0" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center">
                         <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Restore Default Settings" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
                             <Button.RenderTransform>
                                 <ScaleTransform x:Name="ButtonClearTransform" ScaleX="1" ScaleY="1" />
@@ -52,6 +113,18 @@
                             </Button.RenderTransform>
                         </Button>
                     </StackPanel>
+                    
+                    
+                    <!--
+                    
+
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Relative Time Offset (in seconds)" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                    <TextBox x:Name="TextBoxRelativeTimeOffset" Grid.Row="3" Grid.Column="1" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" TextWrapping="Wrap" Width="600" HorizontalAlignment="Left">
+                        Use this adjustment to force the Input Status &amp; Monitoring screen to read data at real-time minus the specified offset. For example, if you are receiving data from a concentrator with a 5 second delay, this value should be at least 5 so that data can be properly retrieved according to this time-shift.
+                    </TextBlock>
+                    -->
 
                 </Grid>
             </Border>
