@@ -32,11 +32,24 @@ namespace openPDCManager.ModalDialogs
     /// </summary>
     public partial class HelpMeChoose : Window
     {
+        string m_imageName;
+
         public HelpMeChoose(string imageName)
         {
             InitializeComponent();
-            if (!string.IsNullOrEmpty(imageName))
-                ImageHelpMeChoose.Source = new BitmapImage(new Uri(@"/openPDCManager;component/Images/" + imageName, UriKind.Relative));
+            m_imageName = imageName;
+            this.Loaded += new RoutedEventHandler(HelpMeChoose_Loaded);            
+        }
+
+        void HelpMeChoose_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.Height = 0.9 * this.Owner.Height;
+            this.Top = 0.05 * this.Owner.Height;
+            this.Width = 0.7 * this.Owner.Width;
+            this.Left = (0.15 * this.Owner.Width) + this.Owner.Left;
+            
+            if (!string.IsNullOrEmpty(m_imageName))
+                ImageHelpMeChoose.Source = new BitmapImage(new Uri(@"/openPDCManager;component/Images/" + m_imageName, UriKind.Relative));
         }
     }
 }

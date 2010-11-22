@@ -23,9 +23,9 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="2*" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="2*" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Node" Style="{StaticResource GenericLabelStyle}"/>
                     <ComboBox x:Name="ComboBoxNode" Grid.Row="0" Grid.Column="1" DisplayMemberPath="Value" Margin="5"/>
@@ -61,11 +61,13 @@
                     <TextBox x:Name="TextBoxOutputMeasurements" Grid.Row="4" Grid.Column="3" Text="{Binding Path=OutputMeasurements}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" />
                     <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0">
                         <TextBlock Text="Lag Time" Style="{StaticResource GenericLabelStyle}"/>
+                        <Button x:Name="ButtonLagTimeHelp" Content="!" Tag="HMC - Lag Time.png" ToolTipService.ToolTip="Click here for help on Lag Time" Template="{StaticResource RoundButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonHelp_Click" Width="12" Height="12" Background="{StaticResource BlueRadialGradientBrush}" FontSize="8" FontWeight="Bold" Foreground="White"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
                     <TextBox x:Name="TextBoxLagTime" Grid.Row="5" Grid.Column="1" Text="{Binding Path=LagTime}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="2">
                         <TextBlock Text="Lead Time" Style="{StaticResource GenericLabelStyle}"/>
+                        <Button x:Name="ButtonLeadTimeHelp" Content="!" Tag="HMC - Lead Time.png" ToolTipService.ToolTip="Click here for help on Lead Time" Template="{StaticResource RoundButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonHelp_Click" Width="12" Height="12" Background="{StaticResource BlueRadialGradientBrush}" FontSize="8" FontWeight="Bold" Foreground="White"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
                     <TextBox x:Name="TextBoxLeadTime" Grid.Row="5" Grid.Column="3" Text="{Binding Path=LeadTime}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
@@ -77,12 +79,14 @@
 
                     <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="2">
                         <TextBlock Text="Time Resolution" Style="{StaticResource GenericLabelStyle}"/>
+                        <Button x:Name="ButtonTimeResolutionHelp" Content="!" Tag="HMC - Time Resolution.png" ToolTipService.ToolTip="Click here for help on Time Resolution" Template="{StaticResource RoundButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonHelp_Click" Width="12" Height="12" Background="{StaticResource BlueRadialGradientBrush}" FontSize="8" FontWeight="Bold" Foreground="White"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
                     <TextBox x:Name="TextBoxTimeResolution" Grid.Row="6" Grid.Column="3" Text="{Binding Path=TimeResolution}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
 
                     <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="0">
                         <TextBlock Text="Downsampling Method" Style="{StaticResource GenericLabelStyle}"/>
+                        <Button x:Name="ButtonDownsamplingMethodHelp" Content="!" Tag="HMC - Downsampling Method.png" ToolTipService.ToolTip="Click here for help on Downsampling Method" Template="{StaticResource RoundButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonHelp_Click" Width="12" Height="12" Background="{StaticResource BlueRadialGradientBrush}" FontSize="8" FontWeight="Bold" Foreground="White"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
                     <ComboBox x:Name="ComboboxDownsamplingMethod" Grid.Row="7" Grid.Column="1" Margin="5"/>

@@ -61,17 +61,6 @@ namespace openPDCManager.UserControls.OutputStreamControls
             ButtonClear.Content = new BitmapImage(new Uri(@"images/Cancel.png", UriKind.Relative));
             ButtonBuildCommandChannel.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));
             ButtonBuildDataChannel.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));
-
-            ButtonAllowPreemptivePublishingHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
-            ButtonAllowSortsByArrivalHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
-            ButtonAutoPublishConfigFrameHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
-            ButtonDownsamplingMethodHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
-            ButtonIgnoreBadTimeStampsHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
-            ButtonStartDataChannelHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
-            ButtonTimeResolutionHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
-            ButtonUseLocalClockAsRealTimeHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
-            ButtonLagTimeHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
-            ButtonLeadTimeHelp.Content = new BitmapImage(new Uri(@"images/Information.png", UriKind.Relative));
             UpdateLayout();
 #else
             ButtonAllowPreemptivePublishingHelp.Visibility = Visibility.Collapsed;
@@ -82,6 +71,8 @@ namespace openPDCManager.UserControls.OutputStreamControls
             ButtonStartDataChannelHelp.Visibility = Visibility.Collapsed;
             ButtonTimeResolutionHelp.Visibility = Visibility.Collapsed;
             ButtonUseLocalClockAsRealTimeHelp.Visibility = Visibility.Collapsed;
+            ButtonLagTimeHelp.Visibility = Visibility.Collapsed;
+            ButtonLeadTimeHelp.Visibility = Visibility.Collapsed;
 #endif
             ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
             ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);

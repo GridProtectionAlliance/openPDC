@@ -56,8 +56,13 @@ namespace openPDCManager.UserControls.CommonControls
             Initialize();
 #if !SILVERLIGHT
             ButtonSave.Content = new BitmapImage(new Uri("images/Save.png", UriKind.Relative));
-            ButtonClear.Content = new BitmapImage(new Uri("images/Cancel.png", UriKind.Relative));
+            ButtonClear.Content = new BitmapImage(new Uri("images/Cancel.png", UriKind.Relative));            
             UpdateLayout();
+#else
+            ButtonDownsamplingMethodHelp.Visibility = Visibility.Collapsed;
+            ButtonLagTimeHelp.Visibility = Visibility.Collapsed;
+            ButtonLeadTimeHelp.Visibility = Visibility.Collapsed;
+            ButtonTimeResolutionHelp.Visibility = Visibility.Collapsed;
 #endif
             Loaded += new RoutedEventHandler(CalculatedMeasurementsUserControl_Loaded);
             ButtonInitialize.Visibility = System.Windows.Visibility.Collapsed;
@@ -363,6 +368,16 @@ namespace openPDCManager.UserControls.CommonControls
 #endif
                 sm.ShowPopup();
             }
+        }
+
+        void ButtonHelp_Click(object sender, RoutedEventArgs e)
+        {
+            HelpMeChoose hmc = new HelpMeChoose(((Button)sender).Tag.ToString());
+#if !SILVERLIGHT
+            hmc.Owner = Window.GetWindow(this);
+            hmc.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            hmc.ShowDialog();
+#endif
         }
 
         #endregion
