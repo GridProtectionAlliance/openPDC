@@ -1187,44 +1187,47 @@ namespace TVA.PhasorProtocols
         {
             string connectionID;
 
-            if (!m_connectionIDCache.TryGetValue(clientID, out connectionID))
+            lock (m_connectionIDCache)
             {
-                // Attempt to lookup remote connection identification for logging purposes
-                try
+                if (!m_connectionIDCache.TryGetValue(clientID, out connectionID))
                 {
-                    IPEndPoint remoteEndPoint = null;
-                    TcpServer commandChannel = server as TcpServer;
-
-                    if (commandChannel != null)
+                    // Attempt to lookup remote connection identification for logging purposes
+                    try
                     {
-                        remoteEndPoint = commandChannel.Client(clientID).Provider.RemoteEndPoint as IPEndPoint;
-                    }
-                    else
-                    {
-                        UdpServer dataChannel = server as UdpServer;
+                        IPEndPoint remoteEndPoint = null;
+                        TcpServer commandChannel = server as TcpServer;
 
-                        if (dataChannel != null)
-                            remoteEndPoint = dataChannel.Client(clientID).Provider.RemoteEndPoint as IPEndPoint;
-                    }
-
-                    if (remoteEndPoint != null)
-                    {
-                        if (remoteEndPoint.AddressFamily == AddressFamily.InterNetworkV6)
-                            connectionID = "[" + remoteEndPoint.Address + "]:" + remoteEndPoint.Port;
+                        if (commandChannel != null)
+                        {
+                            remoteEndPoint = commandChannel.Client(clientID).Provider.RemoteEndPoint as IPEndPoint;
+                        }
                         else
-                            connectionID = remoteEndPoint.Address + ":" + remoteEndPoint.Port;
+                        {
+                            UdpServer dataChannel = server as UdpServer;
+
+                            if (dataChannel != null)
+                                remoteEndPoint = dataChannel.Client(clientID).Provider.RemoteEndPoint as IPEndPoint;
+                        }
+
+                        if (remoteEndPoint != null)
+                        {
+                            if (remoteEndPoint.AddressFamily == AddressFamily.InterNetworkV6)
+                                connectionID = "[" + remoteEndPoint.Address + "]:" + remoteEndPoint.Port;
+                            else
+                                connectionID = remoteEndPoint.Address + ":" + remoteEndPoint.Port;
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    OnProcessException(new InvalidOperationException("Failed to lookup remote end-point connection information for client data transmission due to exception: " + ex.Message, ex));
-                }
+                    catch (Exception ex)
+                    {
+                        OnProcessException(new InvalidOperationException("Failed to lookup remote end-point connection information for client data transmission due to exception: " + ex.Message, ex));
+                    }
 
-                if (string.IsNullOrEmpty(connectionID))
-                    connectionID = "unavailable";
+                    if (string.IsNullOrEmpty(connectionID))
+                        connectionID = "unavailable";
 
-                // Cache value for future lookup
-                m_connectionIDCache.Add(clientID, connectionID);
+                    // Cache value for future lookup
+                    m_connectionIDCache.Add(clientID, connectionID);
+                }
             }
 
             return connectionID;
@@ -1358,9 +1361,12 @@ namespace TVA.PhasorProtocols
 
         private void m_dataChannel_ServerStopped(object sender, EventArgs e)
         {
-            foreach (Guid clientID in m_dataChannel.ClientIDs)
+            lock (m_connectionIDCache)
             {
-                m_connectionIDCache.Remove(clientID);
+                foreach (Guid clientID in m_dataChannel.ClientIDs)
+                {
+                    m_connectionIDCache.Remove(clientID);
+                }
             }
 
             OnStatusMessage("Data channel stopped.");
@@ -1380,7 +1386,11 @@ namespace TVA.PhasorProtocols
             Guid clientID = e.Argument;
 
             OnStatusMessage("Client \"{0}\" disconnected from command channel.", GetConnectionID(m_commandChannel, clientID));
-            m_connectionIDCache.Remove(clientID);
+
+            lock (m_connectionIDCache)
+            {
+                m_connectionIDCache.Remove(clientID);
+            }
         }
 
         private void m_commandChannel_ReceiveClientDataComplete(object sender, EventArgs<Guid, byte[], int> e)
