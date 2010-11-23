@@ -266,9 +266,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Help Me Choose Diagrams", "
 		Documentation\Help Me Choose Diagrams\HMC - Use Local Clock as RealTime.vsd = Documentation\Help Me Choose Diagrams\HMC - Use Local Clock as RealTime.vsd
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdoAdapters", "Libraries\Adapters\AdoAdapters\AdoAdapters.csproj", "{BD397B8E-B563-461D-A948-5653A4FBAC69}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 30
+		SccNumberOfProjects = 31
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
 		SccLocalPath0 = .
@@ -388,6 +390,10 @@ Global
 		SccProjectTopLevelParentUniqueName29 = Synchrophasor.sln
 		SccProjectName29 = Libraries/Adapters/MongoAdapters
 		SccLocalPath29 = Libraries\\Adapters\\MongoAdapters
+		SccProjectUniqueName30 = Libraries\\Adapters\\AdoAdapters\\AdoAdapters.csproj
+		SccProjectTopLevelParentUniqueName30 = Synchrophasor.sln
+		SccProjectName30 = Libraries/Adapters/AdoAdapters
+		SccLocalPath30 = Libraries\\Adapters\\AdoAdapters
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor2.vsmdi
@@ -723,6 +729,15 @@ Global
 		{314CEC9E-F5F7-4CE6-95C9-E20871B50CBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{314CEC9E-F5F7-4CE6-95C9-E20871B50CBF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{314CEC9E-F5F7-4CE6-95C9-E20871B50CBF}.Release|x86.ActiveCfg = Release|x86
+		{BD397B8E-B563-461D-A948-5653A4FBAC69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD397B8E-B563-461D-A948-5653A4FBAC69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD397B8E-B563-461D-A948-5653A4FBAC69}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BD397B8E-B563-461D-A948-5653A4FBAC69}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD397B8E-B563-461D-A948-5653A4FBAC69}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{BD397B8E-B563-461D-A948-5653A4FBAC69}.Deploy|x86.ActiveCfg = Debug|Any CPU
+		{BD397B8E-B563-461D-A948-5653A4FBAC69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD397B8E-B563-461D-A948-5653A4FBAC69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD397B8E-B563-461D-A948-5653A4FBAC69}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -736,8 +751,8 @@ Global
 		{392338BF-FBE0-4672-880B-AB9145DEC7AC} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{05851E03-6FBC-4774-BCC0-CCD006FE05B1} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{376AB9CA-D87C-4411-A51E-CA86CFA046FC} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
-		{060A349D-E92D-4F13-A857-01609631D3BE} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{B1E85C83-F93D-4C3C-BB90-905B93D7C8AD} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
+		{060A349D-E92D-4F13-A857-01609631D3BE} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{AECB8505-AB0A-4D4C-86A3-4C43F4656FB1} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
@@ -755,6 +770,7 @@ Global
 		{B74CF4DA-2972-489B-AF08-419560EE57EF} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{9B93C212-786C-45C9-9B90-8CEFD24EF19D} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{314CEC9E-F5F7-4CE6-95C9-E20871B50CBF} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
+		{BD397B8E-B563-461D-A948-5653A4FBAC69} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{5314055B-EA03-4E15-8653-83F011D7A00E} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{D96C8A3A-7E03-43C6-B401-41778D81FF70} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{3D0DC382-3C00-48A7-B9FF-D3154F8BEDF1} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
