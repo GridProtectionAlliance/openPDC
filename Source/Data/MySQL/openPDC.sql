@@ -18,7 +18,7 @@ USE openPDC;
 -- a user with access to the database.
 -- Be sure to change the username and password.
 -- CREATE USER NewUser IDENTIFIED BY 'MyPassword';
--- GRANT SELECT, UPDATE, INSERT ON openPDC.* TO NewUser;
+-- GRANT SELECT, UPDATE, INSERT, DELETE ON openPDC.* TO NewUser;
 
 CREATE TABLE ErrorLog(
 	ID INT AUTO_INCREMENT NOT NULL,

@@ -124,6 +124,7 @@ INSERT INTO Vendor(Acronym, Name, PhoneNumber, ContactEmail, URL) VALUES('OTR', 
 INSERT INTO Vendor(Acronym, Name, PhoneNumber, ContactEmail, URL) VALUES('SEL', 'Schweitzer', '', '', 'http://www.selinc.com/')
 INSERT INTO Vendor(Acronym, Name, PhoneNumber, ContactEmail, URL) VALUES('GPA', 'Grid Protection Alliance', '', '', 'http://www.gridprotectionalliance.org/')
 INSERT INTO Vendor(Acronym, Name, PhoneNumber, ContactEmail, URL) VALUES('VT', 'Virginia Tech', '', '', 'http://www.vt.edu/')
+INSERT INTO Vendor(Acronym, Name, PhoneNumber, ContactEmail, URL) VALUES('SIE', 'Siemens', '', '', 'http://www.siemens.com/')
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(2, 'Arbiter-1133A', 'Arbiter 1133A Power Sentinel', 'http://www.arbiter.com/catalog/power/1133a/1133a.php')
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(1, 'ABB-521', 'ABB RES521', 'http://library.abb.com/GLOBAL/SCOT/SCOT296.nsf/VerityDisplay/79B16E5CF206C79CC125712D0074AC6F/$File/1MRK511113-HEN_D_en_Phasor_Measurement_Terminal_RES_521.pdf')
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(8, 'Mehtatech', 'Metha Tech Transcan 2000 IED', 'http://www.mehtatech.com/pdf/IEDbrochMay02b.pdf')
@@ -141,3 +142,4 @@ INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(5, 'GE N60', '
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(12, 'openPDC', 'TVA Open Source Phasor Data Concentrator', 'http://www.openpdc.com/')
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(13, 'FNET', 'Virginia Tech FNET Device', '')
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(11, 'SEL-3373', 'SEL-3373 Synchrophasor Data Concentrator', 'http://www.selinc.com/SEL-3373/')
+INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(14, 'SIMEAS R-PMU', '7KE6100 Digital Fault Recorder & PMU', 'http://www.energy.siemens.com/mx/en/automation/power-transmission-distribution/power-quality/simeas-r-pmu.htm')
