@@ -274,6 +274,7 @@ namespace AdoAdapters
         public AdoInputAdapter()
         {
             m_fieldNames = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+            m_dbMeasurements = new List<IMeasurement>();
             m_timer = new Timer();
         }
 
@@ -321,6 +322,8 @@ namespace AdoAdapters
             // Get data provider string or default to a generic ODBC connection.
             if (!settings.TryGetValue("dataProviderString", out m_dataProviderString))
                 m_dataProviderString = "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.Odbc.OdbcConnection; AdapterType=System.Data.Odbc.OdbcDataAdapter";
+            else
+                m_dataProviderString = m_dataProviderString.Replace('<', '{').Replace('>', '}');
 
             // Get timestamp format or default to "dd-MMM-yyyy HH:mm:ss.fff".
             if (!settings.TryGetValue("timestampFormat", out m_timestampFormat))
@@ -471,19 +474,37 @@ namespace AdoAdapters
                         object value = dbReader[fieldName];
                         string propertyName = m_fieldNames[fieldName];
 
-                        if (propertyName != "Timestamp")
-                        {
-                            if (!(value is DBNull))
-                                typeof(IMeasurement).GetProperty(propertyName).SetValue(measurement, dbReader[fieldName], null);
-                        }
-                        else
+                        if (propertyName == "Timestamp")
                         {
                             // If the value is a timestamp, use the timestamp format
                             // specified by the user when reading the timestamp.
                             if (m_timestampFormat == null)
-                                measurement.Timestamp = long.Parse(dbReader[fieldName].ToNonNullString());
+                                measurement.Timestamp = long.Parse(value.ToNonNullString());
                             else
-                                measurement.Timestamp = DateTime.ParseExact(dbReader[fieldName].ToNonNullString(), m_timestampFormat, CultureInfo.CurrentCulture);
+                                measurement.Timestamp = DateTime.ParseExact(value.ToNonNullString(), m_timestampFormat, CultureInfo.CurrentCulture);
+                        }
+                        else
+                        {
+                            PropertyInfo property = typeof(IMeasurement).GetProperty(propertyName);
+                            Type propertyType = property.PropertyType;
+                            Type valueType = value.GetType();
+
+                            if (property.PropertyType.IsAssignableFrom(value.GetType()))
+                                property.SetValue(measurement, value, null);
+                            else if (property.PropertyType == typeof(string))
+                                property.SetValue(measurement, value.ToNonNullString(), null);
+                            else if (valueType == typeof(string))
+                            {
+                                MethodInfo parseMethod = valueType.GetMethod("Parse", new Type[] { typeof(string) });
+
+                                if (parseMethod != null && parseMethod.IsStatic)
+                                    property.SetValue(measurement, parseMethod.Invoke(null, new object[] { value }), null);
+                            }
+                            else
+                            {
+                                string exceptionMessage = string.Format("The type of field {0} could not be converted to the type of property {1}.", fieldName, propertyName);
+                                OnProcessException(new InvalidCastException(exceptionMessage));
+                            }
                         }
                     }
 

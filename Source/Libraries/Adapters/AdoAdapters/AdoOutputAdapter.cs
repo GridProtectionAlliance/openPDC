@@ -239,7 +239,7 @@ using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
 using TVA;
 
-namespace MySqlAdapters
+namespace AdoAdapters
 {
     /// <summary>
     /// Represents an output adapter that archives measurements to a database.
@@ -278,7 +278,7 @@ namespace MySqlAdapters
 
         /// <summary>
         /// Returns a flag that determines if measurements sent to this
-        /// <see cref="MySqlOutputAdapter"/> are destined for archival.
+        /// <see cref="AdoOutputAdapter"/> are destined for archival.
         /// </summary>
         public override bool OutputIsForArchive
         {
@@ -289,7 +289,7 @@ namespace MySqlAdapters
         }
 
         /// <summary>
-        /// Gets a flag that determines if this <see cref="MySqlOutputAdapter"/>
+        /// Gets a flag that determines if this <see cref="AdoOutputAdapter"/>
         /// uses an asynchronous connection.
         /// </summary>
         protected override bool UseAsyncConnect
@@ -352,6 +352,8 @@ namespace MySqlAdapters
             // Get data provider string or default to a generic ODBC connection.
             if (!settings.TryGetValue("dataProviderString", out m_dataProviderString))
                 m_dataProviderString = "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.Odbc.OdbcConnection; AdapterType=System.Data.Odbc.OdbcDataAdapter";
+            else
+                m_dataProviderString = m_dataProviderString.Replace('<', '{').Replace('>', '}');
 
             // Get timestamp format or default to "dd-MMM-yyyy HH:mm:ss.fff".
             if (!settings.TryGetValue("timestampFormat", out m_timestampFormat))
@@ -395,7 +397,7 @@ namespace MySqlAdapters
         /// <returns>Text of the status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return string.Format("Archived {0} measurements to MySQL database.", m_measurementCount).CenterText(maxLength);
+            return string.Format("Archived {0} measurements to database.", m_measurementCount).CenterText(maxLength);
         }
 
         /// <summary>
@@ -419,7 +421,6 @@ namespace MySqlAdapters
                     IDbDataParameter parameter = command.CreateParameter();
                     string propertyName = m_fieldNames[fieldName];
                     object value = measurementType.GetProperty(propertyName).GetValue(measurement, null);
-                    Ticks timestamp = (propertyName == "Timestamp") ? (Ticks)value : null;
 
                     fieldList.Append(fieldName);
                     fieldList.Append(',');
@@ -430,10 +431,12 @@ namespace MySqlAdapters
                     parameter.ParameterName = "@" + fieldName;
                     parameter.Direction = ParameterDirection.Input;
 
-                    if (timestamp == null)
+                    if (propertyName != "Timestamp")
                         parameter.Value = value;
                     else
                     {
+                        Ticks timestamp = (Ticks)value;
+
                         // If the value is a timestamp, use the timestamp format
                         // specified by the user when inserting the timestamp.
                         if (m_timestampFormat == null)
