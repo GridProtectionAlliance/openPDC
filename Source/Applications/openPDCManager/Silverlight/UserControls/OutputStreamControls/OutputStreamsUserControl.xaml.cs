@@ -299,9 +299,9 @@ namespace openPDCManager.UserControls.OutputStreamControls
         }
 
         void ButtonHelp_Click(object sender, RoutedEventArgs e)
-        {
-            HelpMeChoose hmc = new HelpMeChoose(((Button)sender).Tag.ToString());
+        {            
 #if !SILVERLIGHT
+            HelpMeChoose hmc = new HelpMeChoose(((Button)sender).Tag.ToString());
             hmc.Owner = Window.GetWindow(this);
             hmc.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             hmc.ShowDialog();
