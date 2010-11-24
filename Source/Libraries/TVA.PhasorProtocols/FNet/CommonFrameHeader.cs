@@ -269,24 +269,19 @@ namespace TVA.PhasorProtocols.FNet
             if (binaryImage[startIndex] != Common.StartByte)
                 throw new InvalidOperationException("Bad data stream, expected start byte 0x01 as first byte in F-NET frame, got 0x" + binaryImage[startIndex].ToString("X").PadLeft(2, '0'));
 
-            int endIndex = 0, stopIndex = 0;
+            int endIndex = -1, stopIndex = Array.IndexOf<byte>(binaryImage, Common.EndByte, startIndex, length);
 
-            for (int x = startIndex; x < length; x++)
+            if (stopIndex < 0)
+                throw new InvalidOperationException("Bad data stream, did not find stop byte 0x00 in F-NET frame");
+
+            for (int x = stopIndex; x < length; x++)
             {
+                // We continue to scan through duplicate end bytes (nulls)
                 if (binaryImage[x] == Common.EndByte)
-                {
-                    // We continue to scan through duplicate end bytes (nulls)
                     endIndex = x;
-                    
-                    if (stopIndex == 0)
-                        stopIndex = x;
-                }
-                else if (endIndex != 0)
+                else if (endIndex >= 0)
                     break;
             }
-
-            if (stopIndex == 0)
-                throw new InvalidOperationException("Bad data stream, did not find stop byte 0x00 in F-NET frame");
 
             // Parse F-NET data frame into individual fields separated by spaces
             m_data = Encoding.ASCII.GetString(binaryImage, startIndex + 1, stopIndex - startIndex - 1).RemoveDuplicateWhiteSpace().Trim().Split(' ');

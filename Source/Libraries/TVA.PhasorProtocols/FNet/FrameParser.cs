@@ -331,7 +331,7 @@ namespace TVA.PhasorProtocols.FNet
         /// </summary>
         public override bool ProtocolUsesSyncBytes
         {
-	        get
+            get
             {
                 return true;
             }
@@ -499,8 +499,16 @@ namespace TVA.PhasorProtocols.FNet
         /// </remarks>
         protected override ICommonHeader<int> ParseCommonHeader(byte[] buffer, int offset, int length)
         {
-            // See if there is enough data in the buffer to parse the common frame header.
-            if (length > 0)
+            int scanLength;
+
+            // Calculate a maximum reasonable scan size for the buffer
+            if (length > Common.MaximumPracticalFrameSize)
+                scanLength = Common.MaximumPracticalFrameSize;
+            else
+                scanLength = length;
+
+            // See if there is enough data in the buffer to parse the common frame header by scanning for the F-NET termination byte
+            if (scanLength > 0 && Array.IndexOf<byte>(buffer, Common.EndByte, offset, scanLength) >= 0)
             {
                 // Pre-parse F-NET data row...
                 CommonFrameHeader parsedFrameHeader = new CommonFrameHeader(buffer, offset, length);
@@ -530,7 +538,9 @@ namespace TVA.PhasorProtocols.FNet
                     return parsedFrameHeader;
                 }
             }
-            
+            else if (scanLength == Common.MaximumPracticalFrameSize)
+                throw new InvalidOperationException(string.Format("Possible bad F-NET data stream, scanned {0} bytes without finding an expected termination byte 0x0", Common.MaximumPracticalFrameSize));
+
             return null;
         }
 

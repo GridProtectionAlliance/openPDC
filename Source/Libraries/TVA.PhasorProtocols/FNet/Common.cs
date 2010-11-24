@@ -272,6 +272,11 @@ namespace TVA.PhasorProtocols.FNet
         public const byte EndByte = 0x0;
 
         /// <summary>
+        /// The maximum practical limit for an F-NET data frame.        
+        /// </summary>
+        public const int MaximumPracticalFrameSize = 4096;
+
+        /// <summary>
         /// Absolute maximum number of possible phasor values that could fit into a data frame.
         /// </summary>
         public const int MaximumPhasorValues = 1;

@@ -334,6 +334,8 @@ namespace TVA.PhasorProtocols
         {
             // We attach to base class DataParsed event to automatically redirect and cast channel frames to their specific output events
             base.DataParsed += base_DataParsed;
+            base.DuplicateTypeHandlerEncountered += base_DuplicateTypeHandlerEncountered;
+            base.OutputTypeNotFound += base_OutputTypeNotFound;
         }
 
         #endregion
@@ -489,6 +491,8 @@ namespace TVA.PhasorProtocols
 
                         // Detach from base class events
                         base.DataParsed -= base_DataParsed;
+                        base.DuplicateTypeHandlerEncountered -= base_DuplicateTypeHandlerEncountered;
+                        base.OutputTypeNotFound -= base_OutputTypeNotFound;
                     }
                 }
                 finally
@@ -732,6 +736,18 @@ namespace TVA.PhasorProtocols
         {
             // Call overridable channel frame function handler...
             OnReceivedChannelFrame(e.Argument as IChannelFrame);
+        }
+
+        // Handles output type not found error from base class event "OutputTypeNotFound"
+        private void base_OutputTypeNotFound(object sender, EventArgs<TFrameIdentifier> e)
+        {
+            OnParsingException(new InvalidOperationException(string.Format("Stream parsing error: encountered an undefined frame type identfier \"{0}\". Output was not parsed.", e.Argument)));
+        }
+
+        // Handles duplicate type handler encountered warning from base class event "DuplicateTypeHandlerEncountered"
+        private void base_DuplicateTypeHandlerEncountered(object sender, EventArgs<Type, TFrameIdentifier> e)
+        {
+            OnParsingException(new InvalidOperationException(string.Format("WARNING: Duplicate frame type identfier \"{0}\" encountered for parsing type {1} during initialization. Only the first defined type for this identifier will ever be parsed.", e.Argument2, e.Argument1.FullName)));
         }
 
         // Handles any exceptions encountered in the buffer queue
