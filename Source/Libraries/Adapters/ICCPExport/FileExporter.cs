@@ -321,7 +321,7 @@ namespace ICCPExport
 
         #endregion
 
-        #region [ Methods ]   
+        #region [ Methods ]
 
         private bool m_disposed;
 
@@ -473,6 +473,9 @@ namespace ICCPExport
         /// </remarks>
         public override void QueueMeasurementsForProcessing(IEnumerable<IMeasurement> measurements)
         {
+            // Don't process measurements unless adapter is enabled
+            if (!Enabled) return;
+
             List<IMeasurement> inputMeasurements = new List<IMeasurement>();
             Ticks timestamp;
             bool sortMeasurement;
