@@ -80,7 +80,7 @@ namespace openPDCManager.UserControls.CommonControls
             GridCalculatedMeasurementDetail.DataContext = new CalculatedMeasurement()
             {
                 AllowPreemptivePublishing = true,
-                TimeResolution = 10000,
+                TimeResolution = 330000,
                 AllowSortsByArrival = true,
                 LeadTime = 1.0,
                 LagTime = 3.0,
@@ -239,7 +239,7 @@ namespace openPDCManager.UserControls.CommonControls
                     ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                 {
-                    TextBoxTimeResolution.Text = "10000";
+                    TextBoxTimeResolution.Text = "330000";
                     TextBoxTimeResolution.Focus();
                 });
 #if !SILVERLIGHT

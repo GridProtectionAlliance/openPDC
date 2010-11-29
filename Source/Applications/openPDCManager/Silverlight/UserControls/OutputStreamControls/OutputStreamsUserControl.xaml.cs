@@ -645,7 +645,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 LagTime = 3,
                 LeadTime = 1,
                 AllowSortsByArrival = true,
-                TimeResolution = 10000,
+                TimeResolution = 330000,
                 AllowPreemptivePublishing = true,
                 CurrentScalingValue = 2423,
                 VoltageScalingValue = 2725785,
