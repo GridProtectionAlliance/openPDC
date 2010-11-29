@@ -103,14 +103,18 @@ namespace openPDCManager.Pages.Manage
                 else
                     ComboBoxDevice.SelectedIndex = 0;
 
-                if (ComboBoxPhasorSource.Items.Count > 0 && selectedMeasurement.PhasorSourceIndex.HasValue)
+                if (ComboBoxPhasorSource.Items.Count > 0 )
                 {
-                    foreach (KeyValuePair<int, string> item in ComboBoxPhasorSource.Items)
+                    ComboBoxPhasorSource.SelectedIndex = 0;
+                    if (selectedMeasurement.PhasorSourceIndex.HasValue)
                     {
-                        if (item.Value == selectedMeasurement.PhasorLabel)
+                        foreach (KeyValuePair<int, string> item in ComboBoxPhasorSource.Items)
                         {
-                            ComboBoxPhasorSource.SelectedItem = item;
-                            break;
+                            if (item.Value == selectedMeasurement.PhasorLabel)
+                            {
+                                ComboBoxPhasorSource.SelectedItem = item;
+                                break;
+                            }
                         }
                     }
                 }
