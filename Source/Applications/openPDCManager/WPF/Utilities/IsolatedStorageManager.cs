@@ -130,6 +130,12 @@ namespace openPDCManager.Utilities
 
             if (!storage.FileExists("DisplayCurrentYAxis") || overWrite)
                 SaveIntoIsolatedStorage("DisplayCurrentYAxis", "false");
+
+            if (!storage.FileExists("FrequencyRangeMin") || overWrite)
+                SaveIntoIsolatedStorage("FrequencyRangeMin", 59.95);
+
+            if (!storage.FileExists("FrequencyRangeMax") || overWrite)
+                SaveIntoIsolatedStorage("FrequencyRangeMax", 60.05);
         }
     }
 }

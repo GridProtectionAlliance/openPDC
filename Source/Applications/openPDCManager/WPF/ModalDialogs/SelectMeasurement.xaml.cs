@@ -176,7 +176,13 @@ namespace openPDCManager.ModalDialogs
             {
                 m_measurementList = new ObservableCollection<Measurement>(CommonFunctions.GetMeasurementsForOutputStream(null, nodeID, outputStreamID));
                 //ListBoxMeasurementList.ItemsSource = m_measurementList;
-                DataPagerMeasurements.ItemsSource = new ObservableCollection<object>(m_measurementList);
+                if (m_measurementList.Count > 0)
+                    DataPagerMeasurements.ItemsSource = new ObservableCollection<object>(m_measurementList);
+                else
+                {
+                    DataPagerMeasurements.ItemsSource = null;                   
+                    ListBoxMeasurementList.Items.Refresh();
+                }
             }
             catch (Exception ex)
             {

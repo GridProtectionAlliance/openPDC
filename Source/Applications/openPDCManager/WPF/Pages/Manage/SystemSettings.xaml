@@ -27,12 +27,19 @@
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />                                        
                                     </Grid.ColumnDefinitions>
-
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="# Of Messages On Console" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
-                                    <TextBox x:Name="TextBoxNumberOfMessagesOnMonitor" Grid.Row="0" Grid.Column="1" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Frequency Range Min" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>                                    
+                                    <TextBox x:Name="TextBoxFrequencyRangeMin" Text="59.95" Grid.Row="0" Grid.Column="1" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Frequency Range Max" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                                    <TextBox x:Name="TextBoxFrequencyRangeMax" Text="60.05" Grid.Row="1" Grid.Column="1" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                                    <CheckBox x:Name="CheckboxForceIPv4" Grid.Row="2" Grid.Column="1" Content="Force IPv4" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>                                    
                                 </Grid>
                             </Border>
                         </StackPanel>
@@ -40,9 +47,16 @@
 
                     <Border Style="{StaticResource PortletBorderStyle}" Grid.Row="0" Grid.Column="1" Margin="5">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock Text="System Console Settings" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                            <TextBlock Text="System Console Settings" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />                            
                             <Border Background="{StaticResource PortletBackgroundBrush}">
-                                <CheckBox x:Name="CheckboxForceIPv4" Content="Force IPv4" VerticalAlignment="Center" FontWeight="Bold" Margin="5, 8, 5, 8"/>            
+                                <Grid Height="90">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="# Of Messages On Console" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                                    <TextBox x:Name="TextBoxNumberOfMessagesOnMonitor" Grid.Row="0" Grid.Column="1" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                                </Grid>
                             </Border>
                         </StackPanel>
                     </Border>

@@ -82,7 +82,9 @@ namespace openPDCManager.Pages.Manage
                 IsolatedStorageManager.SaveIntoIsolatedStorage("DisplayFrequencyYAxis", (bool)CheckboxDisplayFrequencyAxis.IsChecked);                
                 IsolatedStorageManager.SaveIntoIsolatedStorage("DisplayPhaseAngleYAxis", (bool)CheckboxDisplayPhaseAngleAxis.IsChecked);                
                 IsolatedStorageManager.SaveIntoIsolatedStorage("DisplayVoltageYAxis", (bool)CheckboxDisplayVoltageAxis.IsChecked);                
-                IsolatedStorageManager.SaveIntoIsolatedStorage("DisplayCurrentYAxis", (bool)CheckboxDisplayCurrentAxis.IsChecked);                  
+                IsolatedStorageManager.SaveIntoIsolatedStorage("DisplayCurrentYAxis", (bool)CheckboxDisplayCurrentAxis.IsChecked);
+                IsolatedStorageManager.SaveIntoIsolatedStorage("FrequencyRangeMin", TextBoxFrequencyRangeMin.Text);
+                IsolatedStorageManager.SaveIntoIsolatedStorage("FrequencyRangeMax", TextBoxFrequencyRangeMax.Text);
 
                 LoadSettingsFromIsolatedStorage();
 
@@ -122,6 +124,8 @@ namespace openPDCManager.Pages.Manage
             CheckboxDisplayPhaseAngleAxis.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayPhaseAngleYAxis"));
             CheckboxDisplayVoltageAxis.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayVoltageYAxis"));
             CheckboxDisplayCurrentAxis.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayCurrentYAxis"));
+            TextBoxFrequencyRangeMin.Text = IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin").ToString();
+            TextBoxFrequencyRangeMax.Text = IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax").ToString();
         }
 
         bool IsValid()
@@ -217,6 +221,39 @@ namespace openPDCManager.Pages.Manage
                 {
                     TextBoxMeasurementsDataRefreshInterval.Text = "30";
                     TextBoxMeasurementsDataRefreshInterval.Focus();
+                });
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+                return isValid;
+            }
+
+
+            if (!TextBoxFrequencyRangeMin.Text.IsDouble())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Value for Frequency Range Min", SystemMessage = "Please provide valid numeric value for Frequency Range Min.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxFrequencyRangeMin.Text = "59.95";
+                    TextBoxFrequencyRangeMin.Focus();
+                });
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+                return isValid;
+            }
+
+            if (!TextBoxFrequencyRangeMax.Text.IsDouble())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Value for Frequency Range Max", SystemMessage = "Please provide valid numeric value for Frequency Range Max.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxFrequencyRangeMax.Text = "60.05";
+                    TextBoxFrequencyRangeMax.Focus();
                 });
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;

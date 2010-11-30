@@ -24,6 +24,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,21 +36,17 @@ using System.Windows.Threading;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.Charts;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
+using Microsoft.Win32;
+using openPDCManager.Data;
+using openPDCManager.Data.BusinessObjects;
+using openPDCManager.Data.Entities;
 using openPDCManager.ModalDialogs;
+using openPDCManager.Pages.Adapters;
+using openPDCManager.UserControls.CommonControls;
+using openPDCManager.Utilities;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Transport;
 using TVA;
-using openPDCManager.Data.BusinessObjects;
-using System.Collections.ObjectModel;
-using openPDCManager.Data;
-using openPDCManager.Utilities;
-using openPDCManager.Pages.Adapters;
-using System.Text;
-using openPDCManager.UserControls.CommonControls;
-using openPDCManager.Data.Entities;
-using Microsoft.Win32;
-using System.IO;
-using System.Linq;
 
 namespace openPDCManager.Pages.Monitoring
 {
@@ -92,7 +92,7 @@ namespace openPDCManager.Pages.Monitoring
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(InputStatusUserControl_Loaded);
-            this.Unloaded += new RoutedEventHandler(InputStatusUserControl_Unloaded);            
+            this.Unloaded += new RoutedEventHandler(InputStatusUserControl_Unloaded);                
             m_yAxisDataCollection = new ConcurrentDictionary<string, ConcurrentQueue<double>>();
             m_yAxisBindingCollection = new ConcurrentDictionary<string, EnumerableDataSource<double>>();
             m_dataForBinding = new DeviceMeasurementDataForBinding();
@@ -182,7 +182,7 @@ namespace openPDCManager.Pages.Monitoring
                                 MeasurementInfo measurementInfo;
                                 if (m_selectedMeasurements.TryGetValue(tempSignalID, out measurementInfo)) // We check this because user may have unchecked a checkbox but processing may not have completed so we may still continue to receive data.
                                 {
-                                    System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Adding a new chart.");
+                                    //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Adding a new chart.");
                                     tempCollection = new ConcurrentQueue<double>();
                                     for (int i = 0; i < m_numberOfDataPointsToPlot; i++)
                                         tempCollection.Enqueue(tempValue);
@@ -223,14 +223,15 @@ namespace openPDCManager.Pages.Monitoring
                                             }
                                         }
 
-                                        System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Added a new chart for: " + measurementInfo.SignalAcronym);
+                                        //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Added a new chart for: " + measurementInfo.SignalAcronym);
                                     });
                                 }
                             }
                         }
                     }
                 }
-                catch { System.Diagnostics.Debug.WriteLine("Exception Occured"); }
+                catch { //System.Diagnostics.Debug.WriteLine("Exception Occured"); 
+                }
                 finally
                 {
                     Interlocked.Exchange(ref m_processingNewMeasurements, 0);
@@ -240,25 +241,27 @@ namespace openPDCManager.Pages.Monitoring
 
         void subscriber_ConnectionEstablished(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Subscription Connection Established.");
+            //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Subscription Connection Established.");
             m_subscribed = true;
             SubscribeData();                      
         }
 
         void subscriber_ConnectionTerminated(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Subscription Connection Terminated.");
+            //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Subscription Connection Terminated.");
             m_subscribed = false;
+            UnsubscribeData();
+            StartSubscription();    //Restart connection cycle.
         }
 
         void subscriber_ProcessException(object sender, TVA.EventArgs<Exception> e)
         {
-            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: EXCEPTION: " + e.Argument.Message);            
+            //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: EXCEPTION: " + e.Argument.Message);            
         }
 
         void subscriber_StatusMessage(object sender, TVA.EventArgs<string> e)
         {
-            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: " + e.Argument);
+            //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: " + e.Argument);
         }
 
         #endregion                
@@ -324,7 +327,16 @@ namespace openPDCManager.Pages.Monitoring
         void m_chartRefreshTimer_Tick(object sender, EventArgs e)
         {
             foreach (KeyValuePair<string, EnumerableDataSource<double>> keyValuePair in m_yAxisBindingCollection)
-                keyValuePair.Value.RaiseDataChanged();
+            {
+                lock (keyValuePair.Value)
+                {
+                    try
+                    {
+                        keyValuePair.Value.RaiseDataChanged();
+                    }
+                    catch { }
+                }
+            }
 
             if (m_timeStampList.Count > 0)
             {
@@ -388,7 +400,7 @@ namespace openPDCManager.Pages.Monitoring
             CurrentYAxis.Visibility = CurrentAxisTitle.Visibility = m_displayCurrentAxis ? Visibility.Visible : Visibility.Collapsed;
 
             //Set viewport rectangle for Frequency and PhaseAngle axis.
-            ChartPlotterDynamic.Visible = DataRect.Create(0, 59.9, m_numberOfDataPointsToPlot, 60.1);
+            ChartPlotterDynamic.Visible = DataRect.Create(0, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin")), m_numberOfDataPointsToPlot, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax")));
             PhaseAnglePlotter.Visible = DataRect.Create(0, -180, m_numberOfDataPointsToPlot, 180);            
 
             //Assign x-axis binding collection to x-axis.            
@@ -400,7 +412,7 @@ namespace openPDCManager.Pages.Monitoring
 
         void StartSubscription()
         {
-            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Starting Subscription.");
+            //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Starting Subscription.");
             m_subscriber = new DataSubscriber();
             m_subscriber.StatusMessage += subscriber_StatusMessage;
             m_subscriber.ProcessException += subscriber_ProcessException;
@@ -414,7 +426,7 @@ namespace openPDCManager.Pages.Monitoring
 
         void SubscribeData()
         {
-            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Subscribing Data.");
+            //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Subscribing Data.");
 
             if (m_selectedMeasurements.Count == 0)
                 UnsubscribeData();
@@ -444,7 +456,7 @@ namespace openPDCManager.Pages.Monitoring
         {
             if (m_subscriber != null)
             {
-                System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Un-Subscribing Data.");
+                //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Un-Subscribing Data.");
                 m_subscriber.Unsubscribe();
                 StopSubscription();              
             }
