@@ -770,7 +770,7 @@ namespace TVA.PhasorProtocols
                     // Create new configuration cell parsing needed ID code and label from input stream configuration
                     definedDevice = new ConfigurationCell(ushort.Parse(row["AccessID"].ToString()));
                     deviceName = row["Acronym"].ToNonNullString("[undefined]").Trim();
-                    definedDevice.StationName = deviceName.TruncateRight(definedDevice.MaximumStationNameLength);
+                    definedDevice.StationName = row["Name"].ToNonNullString(deviceName).Trim().TruncateRight(definedDevice.MaximumStationNameLength);
                     definedDevice.IDLabel = deviceName.TruncateRight(definedDevice.IDLabelLength);
                     definedDevice.Tag = uint.Parse(row["ID"].ToString());
                     definedDevice.Source = this;

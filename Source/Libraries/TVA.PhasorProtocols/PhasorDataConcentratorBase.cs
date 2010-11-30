@@ -814,8 +814,16 @@ namespace TVA.PhasorProtocols
             {
                 try
                 {
+                    // Get device ID and ID code
+                    int deviceID = int.Parse(deviceRow["ID"].ToString());
+                    ushort idCode = ushort.Parse(deviceRow["IDCode"].ToString());
+
+                    // If number was never assigned or is invalid, we fall back on unique database record ID
+                    if (idCode == 0)
+                        idCode = unchecked((ushort)deviceID);
+
                     // Create a new configuration cell
-                    ConfigurationCell cell = new ConfigurationCell(m_baseConfigurationFrame, ushort.Parse(deviceRow["ID"].ToString()));
+                    ConfigurationCell cell = new ConfigurationCell(m_baseConfigurationFrame, idCode);
 
                     // Assign user selected data and coordinate formats, derived classes can change
                     string formatString;
@@ -837,7 +845,7 @@ namespace TVA.PhasorProtocols
                     cell.StationName = deviceRow["Acronym"].ToString().TruncateRight(cell.MaximumStationNameLength).Trim();
 
                     // Define all the phasors configured for this device
-                    foreach (DataRow phasorRow in DataSource.Tables["OutputStreamDevicePhasors"].Select(string.Format("OutputStreamDeviceID={0}", cell.IDCode), "LoadOrder"))
+                    foreach (DataRow phasorRow in DataSource.Tables["OutputStreamDevicePhasors"].Select(string.Format("OutputStreamDeviceID={0}", deviceID), "LoadOrder"))
                     {
                         order = int.Parse(phasorRow["LoadOrder"].ToNonNullString("0"));
                         label = phasorRow["Label"].ToNonNullString("Phasor " + order).Trim().RemoveDuplicateWhiteSpace().TruncateRight(labelLength);
@@ -869,7 +877,7 @@ namespace TVA.PhasorProtocols
                     // Optionally define all the analogs configured for this device
                     if (DataSource.Tables.Contains("OutputStreamDeviceAnalogs"))
                     {
-                        foreach (DataRow analogRow in DataSource.Tables["OutputStreamDeviceAnalogs"].Select(string.Format("OutputStreamDeviceID={0}", cell.IDCode), "LoadOrder"))
+                        foreach (DataRow analogRow in DataSource.Tables["OutputStreamDeviceAnalogs"].Select(string.Format("OutputStreamDeviceID={0}", deviceID), "LoadOrder"))
                         {
                             order = int.Parse(analogRow["LoadOrder"].ToNonNullString("0"));
                             label = analogRow["Label"].ToNonNullString("Analog " + order).Trim().RemoveDuplicateWhiteSpace().TruncateRight(labelLength);
@@ -892,7 +900,7 @@ namespace TVA.PhasorProtocols
                     // Optionally define all the digitals configured for this device
                     if (DataSource.Tables.Contains("OutputStreamDeviceDigitals"))
                     {
-                        foreach (DataRow digitalRow in DataSource.Tables["OutputStreamDeviceDigitals"].Select(string.Format("OutputStreamDeviceID={0}", cell.IDCode), "LoadOrder"))
+                        foreach (DataRow digitalRow in DataSource.Tables["OutputStreamDeviceDigitals"].Select(string.Format("OutputStreamDeviceID={0}", deviceID), "LoadOrder"))
                         {
                             order = int.Parse(digitalRow["LoadOrder"].ToNonNullString("0"));
                             scale = digitalRow["MaskValue"].ToNonNullString("0");

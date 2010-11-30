@@ -1524,6 +1524,11 @@ namespace TVA.PhasorProtocols
                 if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM SignalType WHERE Acronym='STAT';")) == 0)
                     connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Statistic', 'STAT', 'ST', 'P', 'Any', '');");
 
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating output stream device ID codes..."));
+
+                // Validate all ID codes for output stream devices are not set their default value
+                connection.ExecuteNonQuery("UPDATE OutputStreamDevice SET IDCode=ID WHERE IDCode=0;");
+
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Verifying statistics archive exists..."));
 
                 // Validate that the statistics historian exists
@@ -1636,6 +1641,20 @@ namespace TVA.PhasorProtocols
                                 command.ExecuteNonQuery();
                             }
                         }
+                    }
+                }
+                
+                // Make sure devices associated with a concentrator do not have any extraneous input stream statistic measurements - this can happen
+                // when a device was once a direct connect device but now is part of a concentrator...
+                foreach (DataRow inputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE (IsConcentrator = 0 AND ParentID IS NOT NULL) AND (NodeID = {0});", nodeIDQueryString)).Rows)
+                {
+                    foreach (DataRow statistic in inputStreamStatistics)
+                    {
+                        acronym = inputStream.Field<string>("Acronym") + "!IS";
+                        signalIndex = statistic.Field<int>("SignalIndex");
+                        signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
+
+                        connection.ExecuteNonQuery(string.Format("DELETE FROM Measurement WHERE SignalReference = '{0}';", signalReference));
                     }
                 }
 
