@@ -405,6 +405,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             if (m_activityWindow != null)
                 m_activityWindow.Close();
+            m_configFileData.Close();
         }
 
         void client_SaveWizardConfigurationInfoCompleted(object sender, SaveWizardConfigurationInfoCompletedEventArgs e)

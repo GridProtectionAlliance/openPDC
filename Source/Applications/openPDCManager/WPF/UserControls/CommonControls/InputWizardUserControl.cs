@@ -196,7 +196,9 @@ namespace openPDCManager.UserControls.CommonControls
                 if (device != null)
                 {
                     if (device.IsConcentrator)
+                    {
                         m_parentID = device.ID;
+                    }
                     else
                     {
                         SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Invalid PDC Acronym", SystemMessage = "A non-PDC device with the same acronym already exists. Please change PDC acronym to continue.", UserMessageType = openPDCManager.Utilities.MessageType.Error },

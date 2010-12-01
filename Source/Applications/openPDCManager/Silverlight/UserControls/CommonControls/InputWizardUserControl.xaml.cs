@@ -274,8 +274,7 @@ namespace openPDCManager.UserControls.CommonControls
                     GetWizardConfigurationInfo(ReadFileBytes(ms));
 #else
                     GetWizardConfigurationInfo(ms);
-#endif
-
+#endif                    
                 }
                 else
                 {
@@ -283,7 +282,8 @@ namespace openPDCManager.UserControls.CommonControls
                     GetWizardConfigurationInfo(ReadFileBytes(m_configFileData));
 #else
                     GetWizardConfigurationInfo(m_configFileData);
-#endif
+                    m_configFileData.Close();
+#endif                    
                 }
             }
         }
@@ -662,6 +662,10 @@ namespace openPDCManager.UserControls.CommonControls
                 TextBlockPDCMessage.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
                 TextBlockPDCMessage.FontWeight = FontWeights.Normal;
                 TextBoxPDCAcronym.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                TextBoxPDCName.Text = string.Empty;
+                TextBoxPDCName.IsEnabled = true;
+                ComboboxPDCVendor.SelectedIndex = 0;
+                ComboboxPDCVendor.IsEnabled = true;
                 if (m_goToPreviousAccordianItem) m_goToPreviousAccordianItem = false;
             }
             else if (device.IsConcentrator)
@@ -671,6 +675,19 @@ namespace openPDCManager.UserControls.CommonControls
                 TextBlockPDCMessage.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
                 TextBlockPDCMessage.FontWeight = FontWeights.Normal;
                 TextBoxPDCAcronym.Background = new SolidColorBrush(Color.FromArgb(155, 10, 255, 25));
+
+                TextBoxPDCName.Text = device.Name;
+                TextBoxPDCName.IsEnabled = false;
+                foreach (KeyValuePair<int, string> item in ComboboxPDCVendor.Items)
+                {
+                    if (item.Key == device.VendorDeviceID)
+                    {
+                        ComboboxPDCVendor.SelectedItem = item;
+                        break;
+                    }
+                }
+                ComboboxPDCVendor.IsEnabled = false;
+
                 if (m_goToPreviousAccordianItem) m_goToPreviousAccordianItem = false;
             }
             else
@@ -680,6 +697,10 @@ namespace openPDCManager.UserControls.CommonControls
                 TextBlockPDCMessage.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 25, 25));
                 TextBlockPDCMessage.FontWeight = FontWeights.Bold;
                 TextBoxPDCAcronym.Background = new SolidColorBrush(Color.FromArgb(155, 255, 25, 25));
+                TextBoxPDCName.Text = string.Empty;
+                TextBoxPDCName.IsEnabled = true;
+                ComboboxPDCVendor.SelectedIndex = 0;
+                ComboboxPDCVendor.IsEnabled = true;
             }
 #endif
             //if (letContinue)

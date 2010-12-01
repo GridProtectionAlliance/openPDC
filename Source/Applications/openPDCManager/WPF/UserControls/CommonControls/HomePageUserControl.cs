@@ -263,7 +263,7 @@ namespace openPDCManager.UserControls.CommonControls
                 {
                     yAxis.Minimum = Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin"));  // 59.95;
                     yAxis.Maximum = Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax"));  // 60.05;
-                    yAxis.Interval = 0.02;
+                    yAxis.Interval = (yAxis.Maximum - yAxis.Minimum) / 5.0; // 0.02;
                 }
             }
             else
