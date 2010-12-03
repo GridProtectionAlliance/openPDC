@@ -144,8 +144,6 @@ namespace AdoAdapters
             // Get data provider string or default to a generic ODBC connection.
             if (!settings.TryGetValue("dataProviderString", out m_dataProviderString))
                 m_dataProviderString = "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.Odbc.OdbcConnection; AdapterType=System.Data.Odbc.OdbcDataAdapter";
-            else
-                m_dataProviderString = m_dataProviderString.Replace('<', '{').Replace('>', '}');
 
             // Get timestamp format or default to "dd-MMM-yyyy HH:mm:ss.fff".
             if (!settings.TryGetValue("timestampFormat", out m_timestampFormat))
