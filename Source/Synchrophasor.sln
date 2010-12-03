@@ -173,7 +173,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimeSeriesFramework", "TimeSeriesFramework", "{05851E03-6FBC-4774-BCC0-CCD006FE05B1}"
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll = Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll
-		Dependencies\TimeSeriesFramework\TimeSeriesFramework.XML = Dependencies\TimeSeriesFramework\TimeSeriesFramework.XML
+		Dependencies\TimeSeriesFramework\TimeSeriesFramework.xml = Dependencies\TimeSeriesFramework\TimeSeriesFramework.xml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationSetupUtility", "Tools\ConfigurationSetupUtility\ConfigurationSetupUtility.csproj", "{2A74EACF-8291-47C7-A2ED-0D58771F24E2}"
