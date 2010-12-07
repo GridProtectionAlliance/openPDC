@@ -107,6 +107,18 @@ namespace openPDCManager.Utilities
             if (!storage.FileExists("DataResolution") || overWrite)
                 SaveIntoIsolatedStorage("DataResolution", 30);
 
+            if (!storage.FileExists("LagTime") || overWrite)
+                SaveIntoIsolatedStorage("LagTime", 3);
+
+            if (!storage.FileExists("LeadTime") || overWrite)
+                SaveIntoIsolatedStorage("LeadTime", 1);
+
+            if (!storage.FileExists("UseLocalClockAsRealtime") || overWrite)
+                SaveIntoIsolatedStorage("UseLocalClockAsRealtime", "false");
+
+            if (!storage.FileExists("IgnoreBadTimestamps") || overWrite)
+                SaveIntoIsolatedStorage("IgnoreBadTimestamps", "false");
+
             if (!storage.FileExists("ChartRefreshInterval") || overWrite)
                 SaveIntoIsolatedStorage("ChartRefreshInterval", 250);
 

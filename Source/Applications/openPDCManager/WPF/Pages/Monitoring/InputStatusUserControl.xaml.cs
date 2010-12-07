@@ -75,6 +75,10 @@ namespace openPDCManager.Pages.Monitoring
         DataSubscriber m_chartSubscriber;
         ConcurrentDictionary<string, MeasurementInfo> m_selectedMeasurements;                   //this will contain a list of SignalIDs and MeasurementInfo.
         bool m_subscribedForChart;                                                              //indicates if connection to subscription API is set or not.
+        bool m_useLocalClockAsRealtime;
+        bool m_ignoreBadTimestamps;
+        double m_leadTime = 1.0;
+        double m_lagTime = 3.0;
 
         #endregion                
         
@@ -345,11 +349,15 @@ namespace openPDCManager.Pages.Monitoring
             m_displayPhaseAngleAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayPhaseAngleYAxis"));            
             m_displayVoltageAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayVoltageYAxis"));
             m_displayCurrentAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayCurrentYAxis"));
-            m_displayXAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayXAxis"));            
+            m_displayXAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayXAxis"));
+            m_useLocalClockAsRealtime = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("UseLocalClockAsRealtime"));
+            m_ignoreBadTimestamps = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("IgnoreBadTimestamps"));            
             int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("DataResolution").ToString(), out m_framesPerSecond);
             int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfDataPointsToPlot").ToString(), out m_numberOfDataPointsToPlot);
             int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("ChartRefreshInterval").ToString(), out m_refreshInterval);
             int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("MeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
+            double.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("LagTime").ToString(), out m_lagTime);
+            double.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("LeadTime").ToString(), out m_leadTime);
 
             m_xAxisDataCollection = new int[m_numberOfDataPointsToPlot];
 
@@ -527,7 +535,7 @@ namespace openPDCManager.Pages.Monitoring
                     if (subscriptionPoints.Length > 0)
                         subscriptionPoints = subscriptionPoints.Substring(0, subscriptionPoints.Length - 1);
 
-                    m_chartSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, 0.5D, 1.0D, subscriptionPoints);
+                    m_chartSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, subscriptionPoints, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
                     ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate() { StartChartRefreshTimer(); });
                 }
             }

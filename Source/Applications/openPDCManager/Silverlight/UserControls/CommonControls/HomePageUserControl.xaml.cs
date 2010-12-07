@@ -118,7 +118,8 @@ namespace openPDCManager.UserControls.CommonControls
 #if SILVERLIGHT
             
 #else
-            InputMonitoringUserControl inputMonitor = new InputMonitoringUserControl();
+            //InputMonitoringUserControl inputMonitor = new InputMonitoringUserControl();
+            InputStatusUserControl inputMonitor = new InputStatusUserControl();
             ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(inputMonitor);
 #endif
         }

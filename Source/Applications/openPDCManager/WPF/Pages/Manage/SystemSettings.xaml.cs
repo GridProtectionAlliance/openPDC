@@ -75,6 +75,10 @@ namespace openPDCManager.Pages.Manage
                 IsolatedStorageManager.SaveIntoIsolatedStorage("InputMonitoringPoints", TextBoxLastSettings.Text);
                 IsolatedStorageManager.SaveIntoIsolatedStorage("NumberOfDataPointsToPlot", TextBoxNumberOfDataPoints.Text);
                 IsolatedStorageManager.SaveIntoIsolatedStorage("DataResolution", TextBoxFramesPerSecond.Text);
+                IsolatedStorageManager.SaveIntoIsolatedStorage("LagTime", TextBoxLagTime.Text);
+                IsolatedStorageManager.SaveIntoIsolatedStorage("LeadTime", TextBoxLeadTime.Text);
+                IsolatedStorageManager.SaveIntoIsolatedStorage("UseLocalClockAsRealtime", (bool)CheckboxUseLocalClockAsRealtime.IsChecked);
+                IsolatedStorageManager.SaveIntoIsolatedStorage("IgnoreBadTimestamps", (bool)CheckboxIngnoreBadTimestamps.IsChecked);
                 IsolatedStorageManager.SaveIntoIsolatedStorage("ChartRefreshInterval", TextBoxChartRefreshInterval.Text);
                 IsolatedStorageManager.SaveIntoIsolatedStorage("StatisticsDataRefreshInterval", TextBoxStatisticsDataRefreshInterval.Text);
                 IsolatedStorageManager.SaveIntoIsolatedStorage("MeasurementsDataRefreshInterval", TextBoxMeasurementsDataRefreshInterval.Text);                
@@ -94,6 +98,16 @@ namespace openPDCManager.Pages.Manage
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
             }
+        }
+
+        void ButtonHelp_Click(object sender, RoutedEventArgs e)
+        {
+#if !SILVERLIGHT
+            HelpMeChoose hmc = new HelpMeChoose(((Button)sender).Tag.ToString());
+            hmc.Owner = Window.GetWindow(this);
+            hmc.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            hmc.ShowDialog();
+#endif
         }
 
         #endregion
@@ -116,6 +130,10 @@ namespace openPDCManager.Pages.Manage
             TextBoxLastSettings.Text = IsolatedStorageManager.ReadFromIsolatedStorage("InputMonitoringPoints").ToString();
             TextBoxNumberOfDataPoints.Text = IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfDataPointsToPlot").ToString();
             TextBoxFramesPerSecond.Text = IsolatedStorageManager.ReadFromIsolatedStorage("DataResolution").ToString();
+            TextBoxLagTime.Text = IsolatedStorageManager.ReadFromIsolatedStorage("LagTime").ToString();
+            TextBoxLeadTime.Text = IsolatedStorageManager.ReadFromIsolatedStorage("LeadTime").ToString();
+            CheckboxUseLocalClockAsRealtime.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("UseLocalClockAsRealtime"));
+            CheckboxIngnoreBadTimestamps.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("IgnoreBadTimestamps"));
             TextBoxChartRefreshInterval.Text = IsolatedStorageManager.ReadFromIsolatedStorage("ChartRefreshInterval").ToString();
             TextBoxStatisticsDataRefreshInterval.Text = IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString();
             TextBoxMeasurementsDataRefreshInterval.Text = IsolatedStorageManager.ReadFromIsolatedStorage("MeasurementsDataRefreshInterval").ToString();
@@ -173,6 +191,38 @@ namespace openPDCManager.Pages.Manage
                 {
                     TextBoxFramesPerSecond.Text = "30";
                     TextBoxFramesPerSecond.Focus();
+                });
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+                return isValid;
+            }
+
+            if (!TextBoxLagTime.Text.IsDouble())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Value for Lag Time", SystemMessage = "Please provide valid numeric value for Lag Time.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxLagTime.Text = "3";
+                    TextBoxLagTime.Focus();
+                });
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+                return isValid;
+            }
+
+            if (!TextBoxLeadTime.Text.IsDouble())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Value for Lead Time", SystemMessage = "Please provide valid numeric value for Lead Time.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxLeadTime.Text = "1";
+                    TextBoxLeadTime.Focus();
                 });
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
