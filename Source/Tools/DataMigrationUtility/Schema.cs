@@ -22,7 +22,8 @@
 //       Converted to C# extensions.
 //  09/27/2010 - Mihir Brahmbhatt
 //       Edited code comments.
-//
+//  12/07/2010 - Mihir Brahmbhatt
+//       Changed SqlEncoded method to check proper numeric conversion value
 //******************************************************************************************************
 
 // James Ritchie Carroll - 2003
@@ -626,7 +627,7 @@ namespace Database
             get
             {
                 string strValue = "";
-                long tempValue;
+                //long tempValue;
                 if (!Convert.IsDBNull(m_value))
                 {
                     try
@@ -658,8 +659,8 @@ namespace Database
                                 }
                                 else
                                 {
-                                    tempValue = 0;
-                                    if (long.TryParse(m_value.ToString(), out tempValue)) //(Information.IsNumeric(Value))
+                                    Int64 tempValue = 0;
+                                    if (Int64.TryParse(m_value.ToString(), out tempValue)) //(Information.IsNumeric(Value))
                                     {
                                         strValue = Convert.ToInt64(Value).ToString().Trim();
                                     }
@@ -690,8 +691,8 @@ namespace Database
                                 }
                                 else
                                 {
-                                    tempValue = 0;
-                                    if (long.TryParse(m_value.ToString(), out tempValue)) //if (Information.IsNumeric(Value))
+                                    Single tempValue = 0;
+                                    if (Single.TryParse(m_value.ToString(), out tempValue)) //if (Information.IsNumeric(Value))
                                     {
                                         strValue = Convert.ToSingle(Value).ToString().Trim();
                                     }
@@ -722,8 +723,8 @@ namespace Database
                                 }
                                 else
                                 {
-                                    tempValue = 0;
-                                    if (long.TryParse(m_value.ToString(), out tempValue)) //if (Information.IsNumeric(Value))
+                                    Double tempValue = 0;
+                                    if (Double.TryParse(m_value.ToString(), out tempValue)) //if (Information.IsNumeric(Value))
                                     {
                                         strValue = Convert.ToDouble(Value).ToString().Trim();
                                     }
@@ -757,8 +758,8 @@ namespace Database
                                 }
                                 else
                                 {
-                                    tempValue = 0;
-                                    if (long.TryParse(m_value.ToString(), out tempValue)) //if (Information.IsNumeric(Value))
+                                    Decimal tempValue = 0;
+                                    if (Decimal.TryParse(m_value.ToString(), out tempValue)) //if (Information.IsNumeric(Value))
                                     {
                                         strValue = Convert.ToDecimal(Value).ToString().Trim();
                                     }
@@ -789,7 +790,7 @@ namespace Database
                                 }
                                 else
                                 {
-                                    tempValue = 0;
+                                    long tempValue = 0;
                                     if (long.TryParse(m_value.ToString(), out tempValue)) //if (Information.IsNumeric(strValue))
                                     {
                                         if (tempValue == 0)
