@@ -167,7 +167,7 @@ namespace openPDCManager.Pages.Monitoring
                         }
                         double tempValue = measurement.Value;
                         string tempSignalID = measurement.SignalID.ToString().ToUpper();
-                        if (tempValue != double.NaN)
+                        if (!double.IsNaN(tempValue) && !double.IsInfinity(tempValue))      //process data only if it is not NaN or Infinity.
                         {                            
                             ConcurrentQueue<double> tempCollection;
                             if (m_yAxisDataCollection.TryGetValue(tempSignalID, out tempCollection))
