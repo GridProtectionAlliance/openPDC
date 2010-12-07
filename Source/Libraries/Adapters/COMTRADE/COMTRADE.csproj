@@ -107,10 +107,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.PhasorProtocols, Version=1.2.26.57261, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Build\Output\Release\Libraries\TVA.PhasorProtocols.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileExporter.cs" />
@@ -132,6 +128,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj">
+      <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>
+      <Name>TVA.PhasorProtocols</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
