@@ -91,7 +91,8 @@ namespace openPDCManager.Pages.Monitoring
         string m_measurementDataPointsForSubscription;                                          //this measurements IDs will be used for subscribing data for tree.
         bool m_subscribedForTree;
         int m_processingNewMeasurementsForTree = 0;
-                
+        bool m_restartConnectionCycle = true;        
+
         #endregion
 
         #region [ Constructor ]
@@ -116,7 +117,8 @@ namespace openPDCManager.Pages.Monitoring
         #region [ Page Event Handlers ]
 
         void InputStatusUserControl_Unloaded(object sender, RoutedEventArgs e)
-        {            
+        {
+            m_restartConnectionCycle = false;
             UnsubscribeDataForChart();
             UnsubscribeDataForTree();
       
@@ -260,7 +262,8 @@ namespace openPDCManager.Pages.Monitoring
             //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Subscription Connection Terminated.");
             m_subscribedForChart = false;
             UnsubscribeDataForChart();
-            StartSubscriptionForChart();    //Restart connection cycle.
+            if (m_restartConnectionCycle)
+                StartSubscriptionForChart();    //Restart connection cycle.
         }
 
         void chartSubscriber_ProcessException(object sender, TVA.EventArgs<Exception> e)
@@ -282,7 +285,7 @@ namespace openPDCManager.Pages.Monitoring
             if (0 == Interlocked.Exchange(ref m_processingNewMeasurementsForTree, 1))
             {
                 try
-                {
+                {                    
                     System.Diagnostics.Debug.WriteLine("*************************************");
                     foreach (DeviceMeasurementData deviceMeasurementData in m_deviceMeasurementDataList)
                     {
@@ -326,7 +329,8 @@ namespace openPDCManager.Pages.Monitoring
         {
             m_subscribedForTree = false;
             UnsubscribeDataForTree();
-            StartSubscriptionForTreeData();     //Restart connection cycle.            
+            if (m_restartConnectionCycle)
+                StartSubscriptionForTreeData();     //Restart connection cycle.            
         }
 
         void measurementDataSubscriber_ProcessException(object sender, TVA.EventArgs<Exception> e)
@@ -358,6 +362,8 @@ namespace openPDCManager.Pages.Monitoring
             int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("MeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
             double.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("LagTime").ToString(), out m_lagTime);
             double.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("LeadTime").ToString(), out m_leadTime);
+
+            TextBlockRefreshInterval.Text = "Refresh Interval: " + m_measurementsDataRefreshInterval + " sec";
 
             m_xAxisDataCollection = new int[m_numberOfDataPointsToPlot];
 
@@ -660,11 +666,12 @@ namespace openPDCManager.Pages.Monitoring
         void RefreshDeviceMeasurementData()
         {
             TreeViewDeviceMeasurements.Dispatcher.BeginInvoke((Action)delegate()
-            {                
+            {   
                 m_dataForBinding.DeviceMeasurementDataList = m_deviceMeasurementDataList;
                 m_dataForBinding.IsExpanded = false;             
                 TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
                 TreeViewDeviceMeasurements.Items.Refresh();
+                TextBlockLastRefresh.Text = "Last Refresh: " + DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss.fff");
             });            
         }
 
