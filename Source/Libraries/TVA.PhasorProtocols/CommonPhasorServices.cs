@@ -315,7 +315,7 @@ namespace TVA.PhasorProtocols
             m_frameParser.SkipDisableRealTimeData = true;
 
             // Create a new data publishing server
-            //m_dataPublisher = new DataPublisher();
+            m_dataPublisher = new DataPublisher();
         }
 
         /// <summary>
@@ -752,9 +752,9 @@ namespace TVA.PhasorProtocols
                         {
                             m_dataPublisher.StatusMessage -= StatusMessage;
                             m_dataPublisher.ProcessException -= ProcessException;
-                            //m_dataPublisher.NewMeasurements -= NewMeasurements;
+                            m_dataPublisher.NewMeasurements -= NewMeasurements;
                             m_dataPublisher.UnpublishedSamples -= UnpublishedSamples;
-                            //m_dataPublisher.DiscardingMeasurements -= DiscardingMeasurements;
+                            m_dataPublisher.DiscardingMeasurements -= DiscardingMeasurements;
                             m_dataPublisher.Dispose();
                         }
                         m_dataPublisher = null;
@@ -820,9 +820,9 @@ namespace TVA.PhasorProtocols
                 m_dataPublisher.Name = "dataPublisher";
                 m_dataPublisher.StatusMessage += StatusMessage;
                 m_dataPublisher.ProcessException += ProcessException;
-                //m_dataPublisher.NewMeasurements += NewMeasurements;
+                m_dataPublisher.NewMeasurements += NewMeasurements;
                 m_dataPublisher.UnpublishedSamples += UnpublishedSamples;
-                //m_dataPublisher.DiscardingMeasurements += DiscardingMeasurements;
+                m_dataPublisher.DiscardingMeasurements += DiscardingMeasurements;
                 m_dataPublisher.Initialize();
             }
         }

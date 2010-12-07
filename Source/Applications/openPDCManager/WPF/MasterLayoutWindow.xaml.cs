@@ -443,9 +443,9 @@ namespace openPDCManager
             else if (item.Name == "InputMonitor")
             {
                 //SubscriptionTest inputMonitor = new SubscriptionTest();
-                //InputStatusUserControl inputMonitor = new InputStatusUserControl();
+                InputStatusUserControl inputMonitor = new InputStatusUserControl();
                                 
-                InputMonitoringUserControl inputMonitor = new InputMonitoringUserControl();
+                //InputMonitoringUserControl inputMonitor = new InputMonitoringUserControl();
                 ContentFrame.Navigate(inputMonitor);
             }
             else if (item.Name == "ConfigurationWizard")

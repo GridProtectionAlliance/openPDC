@@ -59,7 +59,7 @@ namespace openPDCManager.Pages.Monitoring
 
         #region [ Members for Dynamic Data Display ]
         
-        int[] m_xAxisDataCollection;                                                   //contains source data for the binding collection.
+        int[] m_xAxisDataCollection;                                                            //contains source data for the binding collection.
         EnumerableDataSource<int> m_xAxisBindingCollection;                                     //contains values plotted on X-Axis.
         ConcurrentDictionary<string, ConcurrentQueue<double>> m_yAxisDataCollection;            //contains source data for the binding collection. Format is <signalID, collection of values from subscription API>.
         ConcurrentDictionary<string, EnumerableDataSource<double>> m_yAxisBindingCollection;    //contains values plotted on Y-Axis.
@@ -69,20 +69,24 @@ namespace openPDCManager.Pages.Monitoring
         int m_framesPerSecond = 30;                                                             //sample rate of the data from subscription API.
         int m_refreshInterval = 250;                                                            //miliseconds interval to refresh chart.
         List<Color> m_lineColors;                                                               //stores list of colors to draw line chart.
-        int m_processingNewMeasurements = 0;
+        int m_processingNewMeasurementsForChart = 0;
         bool m_displayFrequencyAxis, m_displayPhaseAngleAxis, m_displayVoltageAxis, m_displayCurrentAxis, m_displayXAxis;
         ConcurrentQueue<string> m_timeStampList;
+        DataSubscriber m_chartSubscriber;
+        ConcurrentDictionary<string, MeasurementInfo> m_selectedMeasurements;                   //this will contain a list of SignalIDs and MeasurementInfo.
+        bool m_subscribedForChart;                                                              //indicates if connection to subscription API is set or not.
 
-        #endregion
-                
-        DataSubscriber m_subscriber;
+        #endregion                
+        
         ActivityWindow m_activityWindow;
         ObservableCollection<DeviceMeasurementData> m_deviceMeasurementDataList;
-        DeviceMeasurementDataForBinding m_dataForBinding;
-        ConcurrentDictionary<string, MeasurementInfo> m_selectedMeasurements;                   //this will contain a list of SignalIDs and MeasurementInfo.
-        bool m_subscribed;                                                                      //indicates if connection to subscription API is set or not.
+        DeviceMeasurementDataForBinding m_dataForBinding;        
         Dictionary<string, InputMonitorData> m_currentValuesList;
         int m_measurementsDataRefreshInterval = 30;
+        DataSubscriber m_measurementDataSubscriber;                                             //this subscription will be used to refresh tree values.
+        string m_measurementDataPointsForSubscription;                                          //this measurements IDs will be used for subscribing data for tree.
+        bool m_subscribedForTree;
+        int m_processingNewMeasurementsForTree = 0;
                 
         #endregion
 
@@ -109,7 +113,8 @@ namespace openPDCManager.Pages.Monitoring
 
         void InputStatusUserControl_Unloaded(object sender, RoutedEventArgs e)
         {            
-            UnsubscribeData();      
+            UnsubscribeDataForChart();
+            UnsubscribeDataForTree();
       
             //Save selected points to Isolated Storage before exiting this page.
             List<string> pointList = new List<string>();
@@ -133,11 +138,11 @@ namespace openPDCManager.Pages.Monitoring
 
         #endregion
 
-        #region [ Subscription API Code ]
+        #region [ Subscription API Code for Chart ]
 
-        void subscriber_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
+        void chartSubscriber_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
         {            
-            if (0 == Interlocked.Exchange(ref m_processingNewMeasurements, 1))
+            if (0 == Interlocked.Exchange(ref m_processingNewMeasurementsForChart, 1))
             {                    
                 try
                 {
@@ -234,37 +239,103 @@ namespace openPDCManager.Pages.Monitoring
                 }
                 finally
                 {
-                    Interlocked.Exchange(ref m_processingNewMeasurements, 0);
+                    Interlocked.Exchange(ref m_processingNewMeasurementsForChart, 0);
                 }
             }            
         }
 
-        void subscriber_ConnectionEstablished(object sender, EventArgs e)
+        void chartSubscriber_ConnectionEstablished(object sender, EventArgs e)
         {
             //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Subscription Connection Established.");
-            m_subscribed = true;
-            SubscribeData();                      
+            m_subscribedForChart = true;
+            SubscribeDataForChart();                      
         }
 
-        void subscriber_ConnectionTerminated(object sender, EventArgs e)
+        void chartSubscriber_ConnectionTerminated(object sender, EventArgs e)
         {
             //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Subscription Connection Terminated.");
-            m_subscribed = false;
-            UnsubscribeData();
-            StartSubscription();    //Restart connection cycle.
+            m_subscribedForChart = false;
+            UnsubscribeDataForChart();
+            StartSubscriptionForChart();    //Restart connection cycle.
         }
 
-        void subscriber_ProcessException(object sender, TVA.EventArgs<Exception> e)
+        void chartSubscriber_ProcessException(object sender, TVA.EventArgs<Exception> e)
         {
-            //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: EXCEPTION: " + e.Argument.Message);            
+            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: EXCEPTION: " + e.Argument.Message);            
         }
 
-        void subscriber_StatusMessage(object sender, TVA.EventArgs<string> e)
+        void chartSubscriber_StatusMessage(object sender, TVA.EventArgs<string> e)
+        {
+            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: " + e.Argument);
+        }
+
+        #endregion 
+        
+        #region [ Subscription API Code for Tree ]
+
+        void measurementDataSubscriber_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
+        {
+            if (0 == Interlocked.Exchange(ref m_processingNewMeasurementsForTree, 1))
+            {
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine("*************************************");
+                    foreach (DeviceMeasurementData deviceMeasurementData in m_deviceMeasurementDataList)
+                    {
+                        foreach (DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
+                        {
+                            foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
+                            {
+                                foreach (IMeasurement measurement in e.Argument)
+                                {
+                                    if (measurement.SignalID.ToString().ToUpper() == measurementInfo.SignalID.ToUpper())
+                                    {
+                                        measurementInfo.CurrentQuality = measurement.ValueQualityIsGood ? "GOOD" : "BAD";
+                                        measurementInfo.CurrentTimeTag = measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff");
+                                        measurementInfo.CurrentValue = measurement.Value.ToString("0.###");
+                                        System.Diagnostics.Debug.WriteLine(measurement.Value.ToString() + " || " + measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff"));
+                                    }
+                                }
+                            }
+                        }
+                    }                    
+                    RefreshDeviceMeasurementData();
+                }
+                catch
+                { 
+                    //System.Diagnostics.Debug.WriteLine("Exception Occured"); 
+                }
+                finally
+                {
+                    Interlocked.Exchange(ref m_processingNewMeasurementsForTree, 0);
+                }
+            }
+        }
+
+        void measurementDataSubscriber_ConnectionEstablished(object sender, EventArgs e)
+        {
+            m_subscribedForTree = true;
+            SubscribeDataForTree();
+        }
+
+        void measurementDataSubscriber_ConnectionTerminated(object sender, EventArgs e)
+        {
+            m_subscribedForTree = false;
+            UnsubscribeDataForTree();
+            StartSubscriptionForTreeData();     //Restart connection cycle.            
+        }
+
+        void measurementDataSubscriber_ProcessException(object sender, TVA.EventArgs<Exception> e)
+        {
+            //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: EXCEPTION: " + e.Argument.Message);
+        }
+
+        void measurementDataSubscriber_StatusMessage(object sender, TVA.EventArgs<string> e)
         {
             //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: " + e.Argument);
         }
 
-        #endregion                
+        #endregion 
     
         #region [ Methods ]
 
@@ -286,12 +357,17 @@ namespace openPDCManager.Pages.Monitoring
             List<string> pointList = IsolatedStorageManager.ReadInputMonitoringPoints();
             if (pointList.Count > 0)
             {
+                StringBuilder sb = new StringBuilder();
+
                 foreach (DeviceMeasurementData deviceMeasurementData in m_deviceMeasurementDataList)
                 {
                     foreach (DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
                     {
                         foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
                         {
+                            //create a string of measurements to subscribe for real time data
+                            sb.Append(measurementInfo.HistorianAcronym + ":" + measurementInfo.PointID + ";");
+
                             if (pointList.Contains(measurementInfo.SignalReference))
                             {
                                 measurementInfo.IsSelected = true;
@@ -303,15 +379,20 @@ namespace openPDCManager.Pages.Monitoring
                         }
                     }
                 }
+
+                m_measurementDataPointsForSubscription = sb.ToString();
+                if (m_measurementDataPointsForSubscription.Length > 0)
+                    m_measurementDataPointsForSubscription = m_measurementDataPointsForSubscription.Substring(0, m_measurementDataPointsForSubscription.Length - 1);
+
             }
-            
-            m_dataForBinding.DeviceMeasurementDataList = m_deviceMeasurementDataList;
-            m_dataForBinding.IsExpanded = false;
-            TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
+
+            RefreshDeviceMeasurementData();
             if (m_selectedMeasurements.Count > 0)
-                SubscribeData();                
+                SubscribeDataForChart();                
             
         }
+
+        #region [ Methods related to chart data refresh ]
 
         void StartChartRefreshTimer()
         {
@@ -410,32 +491,32 @@ namespace openPDCManager.Pages.Monitoring
             m_xAxisBindingCollection.SetXMapping(x => x);
         }
 
-        void StartSubscription()
+        void StartSubscriptionForChart()
         {
             //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Starting Subscription.");
-            m_subscriber = new DataSubscriber();
-            m_subscriber.StatusMessage += subscriber_StatusMessage;
-            m_subscriber.ProcessException += subscriber_ProcessException;
-            m_subscriber.ConnectionEstablished += subscriber_ConnectionEstablished;            
-            m_subscriber.NewMeasurements += subscriber_NewMeasurements;
-            m_subscriber.ConnectionTerminated += subscriber_ConnectionTerminated;
-            m_subscriber.ConnectionString = "server=localhost:6165";            
-            m_subscriber.Initialize();
-            m_subscriber.Start();
+            m_chartSubscriber = new DataSubscriber();
+            m_chartSubscriber.StatusMessage += chartSubscriber_StatusMessage;
+            m_chartSubscriber.ProcessException += chartSubscriber_ProcessException;
+            m_chartSubscriber.ConnectionEstablished += chartSubscriber_ConnectionEstablished;
+            m_chartSubscriber.NewMeasurements += chartSubscriber_NewMeasurements;
+            m_chartSubscriber.ConnectionTerminated += chartSubscriber_ConnectionTerminated;
+            m_chartSubscriber.ConnectionString = "server=localhost:6165";            
+            m_chartSubscriber.Initialize();
+            m_chartSubscriber.Start();
         }
 
-        void SubscribeData()
+        void SubscribeDataForChart()
         {
             //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Subscribing Data.");
 
             if (m_selectedMeasurements.Count == 0)
-                UnsubscribeData();
+                UnsubscribeDataForChart();
             else
             {                
-                if (m_subscriber == null)
-                    StartSubscription();
+                if (m_chartSubscriber == null)
+                    StartSubscriptionForChart();
 
-                if (m_subscribed)
+                if (m_subscribedForChart)
                 {
                     //StopChartRefreshTimer();
                     StringBuilder sb = new StringBuilder();
@@ -446,55 +527,35 @@ namespace openPDCManager.Pages.Monitoring
                     if (subscriptionPoints.Length > 0)
                         subscriptionPoints = subscriptionPoints.Substring(0, subscriptionPoints.Length - 1);
 
-                    m_subscriber.SynchronizedSubscribe(true, m_framesPerSecond, 0.5D, 1.0D, subscriptionPoints);
+                    m_chartSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, 0.5D, 1.0D, subscriptionPoints);
                     ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate() { StartChartRefreshTimer(); });
                 }
             }
         }
 
-        void UnsubscribeData()
+        void UnsubscribeDataForChart()
         {
-            if (m_subscriber != null)
+            if (m_chartSubscriber != null)
             {
                 //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Un-Subscribing Data.");
-                m_subscriber.Unsubscribe();
-                StopSubscription();              
+                m_chartSubscriber.Unsubscribe();
+                StopSubscriptionForChart();              
             }
             StopChartRefreshTimer();
         }
 
-        void StopSubscription()
+        void StopSubscriptionForChart()
         {
-            if (m_subscriber != null)
+            if (m_chartSubscriber != null)
             {
-                m_subscriber.StatusMessage -= subscriber_StatusMessage;
-                m_subscriber.ProcessException -= subscriber_ProcessException;
-                m_subscriber.ConnectionEstablished -= subscriber_ConnectionEstablished;
-                m_subscriber.NewMeasurements -= subscriber_NewMeasurements;  
-                m_subscriber.Stop();
-                m_subscriber.Dispose();
-                m_subscriber = null;
+                m_chartSubscriber.StatusMessage -= chartSubscriber_StatusMessage;
+                m_chartSubscriber.ProcessException -= chartSubscriber_ProcessException;
+                m_chartSubscriber.ConnectionEstablished -= chartSubscriber_ConnectionEstablished;
+                m_chartSubscriber.NewMeasurements -= chartSubscriber_NewMeasurements;  
+                m_chartSubscriber.Stop();
+                m_chartSubscriber.Dispose();
+                m_chartSubscriber = null;
             }
-        }
-
-        void GetDeviceMeasurementData()
-        {
-            try
-            {
-                m_deviceMeasurementDataList = CommonFunctions.GetDeviceMeasurementData(null, ((App)Application.Current).NodeValue);
-                GetSettingsFromIsolatedStorage();
-            }
-            catch (Exception ex)
-            {
-                CommonFunctions.LogException(null, "WPF.GetDeviceMeasurementsData", ex);
-                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Current Device Measurements Tree Data", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
-                        ButtonType.OkOnly);
-                sm.Owner = Window.GetWindow(this);
-                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                sm.ShowPopup();
-            }
-            if (m_activityWindow != null)
-                m_activityWindow.Close();
         }
 
         void RemoveLineGraph(MeasurementInfo measurementInfo)
@@ -503,12 +564,12 @@ namespace openPDCManager.Pages.Monitoring
             LineGraph lineGraphToBeRemoved;
             EnumerableDataSource<double> bindingCollectionToBeRemoved;
             ConcurrentQueue<double> dataCollectionToBeRemoved;
-            
+
             m_selectedMeasurements.TryRemove(measurementInfo.SignalID.ToUpper(), out measurementToBeRemoved);
-            SubscribeData();
+            SubscribeDataForChart();
             m_yAxisBindingCollection.TryRemove(measurementInfo.SignalID.ToUpper(), out bindingCollectionToBeRemoved);
             m_yAxisDataCollection.TryRemove(measurementInfo.SignalID.ToUpper(), out dataCollectionToBeRemoved);
-            
+
             m_lineGraphCollection.TryRemove(measurementInfo.SignalID.ToUpper(), out lineGraphToBeRemoved);
             if (measurementInfo.SignalAcronym == "FREQ")
                 ChartPlotterDynamic.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
@@ -517,7 +578,7 @@ namespace openPDCManager.Pages.Monitoring
             else if (measurementInfo.SignalAcronym == "VPHM")
                 VoltagePlotter.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
             else if (measurementInfo.SignalAcronym == "IPHM")
-                CurrentPlotter.Children.Remove((IPlotterElement)lineGraphToBeRemoved);                        
+                CurrentPlotter.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
         }
 
         void AddToCurrentValuesList(object state)
@@ -533,21 +594,21 @@ namespace openPDCManager.Pages.Monitoring
             inputMonitorData.Background = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
             //ListBoxCurrentValues.Dispatcher.Invoke((Action)delegate()
             //{
-                lock (m_currentValuesList)
-                {
-                    if (m_currentValuesList.ContainsKey(measurementInfo.SignalID.ToUpper()))
-                        m_currentValuesList[measurementInfo.SignalID.ToUpper()] = inputMonitorData;
-                    else
-                        m_currentValuesList.Add(measurementInfo.SignalID.ToUpper(), inputMonitorData);
-                    ListBoxCurrentValues.Items.Refresh();
-                    ListBoxCurrentValues.ItemsSource = m_currentValuesList;
-                }
+            lock (m_currentValuesList)
+            {
+                if (m_currentValuesList.ContainsKey(measurementInfo.SignalID.ToUpper()))
+                    m_currentValuesList[measurementInfo.SignalID.ToUpper()] = inputMonitorData;
+                else
+                    m_currentValuesList.Add(measurementInfo.SignalID.ToUpper(), inputMonitorData);
+                ListBoxCurrentValues.Items.Refresh();
+                ListBoxCurrentValues.ItemsSource = m_currentValuesList;
+            }
             //});            
         }
 
         void RemoveFromCurrentValuesList(object state)
         {
-            MeasurementInfo measurementInfo = (MeasurementInfo)state;                         
+            MeasurementInfo measurementInfo = (MeasurementInfo)state;
             ListBoxCurrentValues.Dispatcher.Invoke((Action)delegate()
             {
                 lock (m_currentValuesList)
@@ -559,8 +620,94 @@ namespace openPDCManager.Pages.Monitoring
                         ListBoxCurrentValues.ItemsSource = m_currentValuesList;
                     }
                 }
+            });
+        }
+
+        #endregion
+
+        #region [ Methods releated to tree data display ]
+                
+        void GetDeviceMeasurementData()
+        {
+            try
+            {
+                m_deviceMeasurementDataList = CommonFunctions.GetDeviceMeasurementData(null, ((App)Application.Current).NodeValue);
+                GetSettingsFromIsolatedStorage();
+                if (m_deviceMeasurementDataList.Count > 0 && !string.IsNullOrEmpty(m_measurementDataPointsForSubscription))
+                    SubscribeDataForTree();
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException(null, "WPF.GetDeviceMeasurementsData", ex);
+                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Current Device Measurements Tree Data", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
+                        ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+            }
+            if (m_activityWindow != null)
+                m_activityWindow.Close();
+        }
+
+        void RefreshDeviceMeasurementData()
+        {
+            TreeViewDeviceMeasurements.Dispatcher.BeginInvoke((Action)delegate()
+            {                
+                m_dataForBinding.DeviceMeasurementDataList = m_deviceMeasurementDataList;
+                m_dataForBinding.IsExpanded = false;             
+                TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
+                TreeViewDeviceMeasurements.Items.Refresh();
             });            
         }
+
+        void StartSubscriptionForTreeData()
+        {
+            m_measurementDataSubscriber = new DataSubscriber();
+            m_measurementDataSubscriber.StatusMessage += measurementDataSubscriber_StatusMessage;
+            m_measurementDataSubscriber.ProcessException += measurementDataSubscriber_ProcessException;
+            m_measurementDataSubscriber.ConnectionEstablished += measurementDataSubscriber_ConnectionEstablished;
+            m_measurementDataSubscriber.NewMeasurements += measurementDataSubscriber_NewMeasurements;
+            m_measurementDataSubscriber.ConnectionTerminated += measurementDataSubscriber_ConnectionTerminated;
+            m_measurementDataSubscriber.ConnectionString = "server=localhost:6165";
+            m_measurementDataSubscriber.Initialize();
+            m_measurementDataSubscriber.Start(); 
+        }
+
+        void SubscribeDataForTree()
+        {
+            if (m_measurementDataSubscriber == null)
+                StartSubscriptionForTreeData();
+
+            if (m_subscribedForTree && !string.IsNullOrEmpty(m_measurementDataPointsForSubscription))
+            {
+                m_measurementDataSubscriber.UnsynchronizedSubscribe(true, true, m_measurementDataPointsForSubscription, m_measurementsDataRefreshInterval);
+            }
+        }
+
+        void UnsubscribeDataForTree()
+        {
+            if (m_measurementDataSubscriber != null)
+            {
+                m_measurementDataSubscriber.Unsubscribe();
+                StopSubscriptionForTree();
+            }
+        }
+
+        void StopSubscriptionForTree()
+        {
+            if (m_measurementDataSubscriber != null)
+            {
+                m_measurementDataSubscriber.StatusMessage -= measurementDataSubscriber_StatusMessage;
+                m_measurementDataSubscriber.ProcessException -= measurementDataSubscriber_ProcessException;
+                m_measurementDataSubscriber.ConnectionEstablished -= measurementDataSubscriber_ConnectionEstablished;
+                m_measurementDataSubscriber.NewMeasurements -= measurementDataSubscriber_NewMeasurements;
+                m_measurementDataSubscriber.Stop();
+                m_measurementDataSubscriber.Dispose();
+                m_measurementDataSubscriber = null;
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -631,7 +778,7 @@ namespace openPDCManager.Pages.Monitoring
                 }
 
                 if (m_selectedMeasurements.Count > 0)
-                    SubscribeData();
+                    SubscribeDataForChart();
             }
         }
 
@@ -650,7 +797,7 @@ namespace openPDCManager.Pages.Monitoring
             AddToCurrentValuesList(measurementInfo);
             if (!m_selectedMeasurements.ContainsKey(measurementInfo.SignalID.ToUpper()))
                 m_selectedMeasurements.TryAdd(measurementInfo.SignalID.ToUpper(), measurementInfo);
-            SubscribeData();
+            SubscribeDataForChart();
         }
 
         private void ButtonGetStatistics_Click(object sender, RoutedEventArgs e)
@@ -692,5 +839,6 @@ namespace openPDCManager.Pages.Monitoring
         }
 
         #endregion
+    
     }
 }

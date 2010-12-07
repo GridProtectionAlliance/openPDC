@@ -261,6 +261,21 @@ namespace openPDCManager.Pages.Manage
                 return isValid;
             }
 
+            if (Convert.ToDouble(TextBoxFrequencyRangeMax.Text) <= Convert.ToDouble(TextBoxFrequencyRangeMin.Text))
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Frequency Range Max must be higher than Frequency Range Min", SystemMessage = "Please provide higher numeric value for Frequency Range Max.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {                    
+                    TextBoxFrequencyRangeMax.Focus();
+                });
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+                return isValid;
+            }
+
             return isValid;
         }
 
