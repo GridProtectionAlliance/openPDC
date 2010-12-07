@@ -132,6 +132,7 @@
                                     <CheckBox x:Name="CheckboxDisplayCurrentAxis" Content="Display Current Magnitude Y-Axis" Grid.Row="10" Grid.Column="1" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
 
                                     <CheckBox x:Name="CheckboxDisplayXAxis" Content="Display X-Axis" Grid.Row="11" Grid.Column="0" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                                    <CheckBox x:Name="CheckboxDisplayLegend" Content="Display Legend" Grid.Row="11" Grid.Column="1" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
 
                                 </Grid>
                             </Border>

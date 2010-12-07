@@ -148,6 +148,9 @@ namespace openPDCManager.Utilities
 
             if (!storage.FileExists("FrequencyRangeMax") || overWrite)
                 SaveIntoIsolatedStorage("FrequencyRangeMax", 60.05);
+
+            if (!storage.FileExists("DisplayLegend") || overWrite)
+                SaveIntoIsolatedStorage("DisplayLegend", "true");
         }
     }
 }

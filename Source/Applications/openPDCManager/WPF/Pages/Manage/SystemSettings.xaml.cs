@@ -89,6 +89,7 @@ namespace openPDCManager.Pages.Manage
                 IsolatedStorageManager.SaveIntoIsolatedStorage("DisplayCurrentYAxis", (bool)CheckboxDisplayCurrentAxis.IsChecked);
                 IsolatedStorageManager.SaveIntoIsolatedStorage("FrequencyRangeMin", TextBoxFrequencyRangeMin.Text);
                 IsolatedStorageManager.SaveIntoIsolatedStorage("FrequencyRangeMax", TextBoxFrequencyRangeMax.Text);
+                IsolatedStorageManager.SaveIntoIsolatedStorage("DisplayLegend", (bool)CheckboxDisplayLegend.IsChecked);
 
                 LoadSettingsFromIsolatedStorage();
 
@@ -142,6 +143,7 @@ namespace openPDCManager.Pages.Manage
             CheckboxDisplayPhaseAngleAxis.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayPhaseAngleYAxis"));
             CheckboxDisplayVoltageAxis.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayVoltageYAxis"));
             CheckboxDisplayCurrentAxis.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayCurrentYAxis"));
+            CheckboxDisplayLegend.IsChecked = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayLegend"));
             TextBoxFrequencyRangeMin.Text = IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin").ToString();
             TextBoxFrequencyRangeMax.Text = IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax").ToString();
         }

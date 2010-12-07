@@ -91,7 +91,8 @@ namespace openPDCManager.Pages.Monitoring
         string m_measurementDataPointsForSubscription;                                          //this measurements IDs will be used for subscribing data for tree.
         bool m_subscribedForTree;
         int m_processingNewMeasurementsForTree = 0;
-        bool m_restartConnectionCycle = true;        
+        bool m_restartConnectionCycle = true;
+        bool m_displayLegend = true;
 
         #endregion
 
@@ -289,18 +290,27 @@ namespace openPDCManager.Pages.Monitoring
                     System.Diagnostics.Debug.WriteLine("*************************************");
                     foreach (DeviceMeasurementData deviceMeasurementData in m_deviceMeasurementDataList)
                     {
-                        foreach (DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
+                        if (deviceMeasurementData.IsExpanded)
                         {
-                            foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
+                            foreach (DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
                             {
-                                foreach (IMeasurement measurement in e.Argument)
+                                if (deviceInfo.IsExpanded)
                                 {
-                                    if (measurement.SignalID.ToString().ToUpper() == measurementInfo.SignalID.ToUpper())
+                                    foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
                                     {
-                                        measurementInfo.CurrentQuality = measurement.ValueQualityIsGood ? "GOOD" : "BAD";
-                                        measurementInfo.CurrentTimeTag = measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff");
-                                        measurementInfo.CurrentValue = measurement.Value.ToString("0.###");
-                                        System.Diagnostics.Debug.WriteLine(measurement.Value.ToString() + " || " + measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff"));
+                                        //if (measurementInfo.IsExpanded)
+                                        //{
+                                            foreach (IMeasurement measurement in e.Argument)
+                                            {
+                                                if (measurement.SignalID.ToString().ToUpper() == measurementInfo.SignalID.ToUpper())
+                                                {
+                                                    measurementInfo.CurrentQuality = measurement.ValueQualityIsGood ? "GOOD" : "BAD";
+                                                    measurementInfo.CurrentTimeTag = measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff");
+                                                    measurementInfo.CurrentValue = measurement.Value.ToString("0.###");
+                                                    System.Diagnostics.Debug.WriteLine(measurement.Value.ToString() + " || " + measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff"));
+                                                }
+                                            }
+                                        //}
                                     }
                                 }
                             }
@@ -355,7 +365,8 @@ namespace openPDCManager.Pages.Monitoring
             m_displayCurrentAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayCurrentYAxis"));
             m_displayXAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayXAxis"));
             m_useLocalClockAsRealtime = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("UseLocalClockAsRealtime"));
-            m_ignoreBadTimestamps = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("IgnoreBadTimestamps"));            
+            m_ignoreBadTimestamps = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("IgnoreBadTimestamps"));
+            m_displayLegend = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayLegend"));
             int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("DataResolution").ToString(), out m_framesPerSecond);
             int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfDataPointsToPlot").ToString(), out m_numberOfDataPointsToPlot);
             int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("ChartRefreshInterval").ToString(), out m_refreshInterval);
@@ -364,6 +375,7 @@ namespace openPDCManager.Pages.Monitoring
             double.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("LeadTime").ToString(), out m_leadTime);
 
             TextBlockRefreshInterval.Text = "Refresh Interval: " + m_measurementsDataRefreshInterval + " sec";
+            ChartPlotterDynamic.NewLegendVisible = m_displayLegend;
 
             m_xAxisDataCollection = new int[m_numberOfDataPointsToPlot];
 
@@ -483,8 +495,11 @@ namespace openPDCManager.Pages.Monitoring
             ((HorizontalAxis)ChartPlotterDynamic.MainHorizontalAxis).LabelProvider.LabelStringFormat = "";
 
             //Remove legend on the right.
-            Panel legendParent = (Panel)ChartPlotterDynamic.Legend.ContentGrid.Parent;
-            legendParent.Children.Remove(ChartPlotterDynamic.Legend.ContentGrid);
+            //Panel legendParent = (Panel)ChartPlotterDynamic.Legend.ContentGrid.Parent;
+            //legendParent.Children.Remove(ChartPlotterDynamic.Legend.ContentGrid);
+
+            ChartPlotterDynamic.LegendVisibility = Visibility.Collapsed;
+            
 
             //Set Y-Axis and X-Axis Visibility.
             ChartPlotterDynamic.MainVerticalAxisVisibility = FrequencyAxisTitle.Visibility = m_displayFrequencyAxis ? Visibility.Visible : Visibility.Collapsed;            
