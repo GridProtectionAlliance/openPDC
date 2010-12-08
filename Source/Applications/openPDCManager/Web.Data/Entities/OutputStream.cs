@@ -20,7 +20,8 @@
 //       Generated original version of source code.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
-//
+//  12/01/2010 - Mehulbhai P Thakkar
+//       Added PerformTimestampReasonableCheck Property
 //******************************************************************************************************
 
 
@@ -59,5 +60,6 @@ namespace openPDCManager.Data.Entities
         public int DigitalMaskValue { get; set; }
 		public string NodeName { get; set; }
 		public string TypeName { get; set; }
+        public bool PerformTimestampReasonabilityCheck { get; set; }
     }
 }

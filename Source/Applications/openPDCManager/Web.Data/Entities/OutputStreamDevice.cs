@@ -18,7 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  10/16/2009 - Mehulbhai P Thakkar
 //       Generated original version of source code.
-//
+//  12/01/2010 - Mehulbhai P Thakkar
+//       Added IdCode Property
 //******************************************************************************************************
 
 
@@ -29,6 +30,7 @@ namespace openPDCManager.Data.Entities
 		public string NodeID { get; set; }
 		public int AdapterID { get; set; }
 		public int ID { get; set; }
+        public int IdCode { get; set; }
 		public string Acronym { get; set; }
 		public string BpaAcronym { get; set; }
 		public string Name { get; set; }

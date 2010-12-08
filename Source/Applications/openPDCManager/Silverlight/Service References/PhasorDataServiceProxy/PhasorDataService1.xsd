@@ -65,6 +65,7 @@
       <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DeviceID" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="EngineeringUnits" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="HistorianAcronym" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="IsExpanded" type="xs:boolean" />
       <xs:element minOccurs="0" name="IsSelected" type="xs:boolean" />
       <xs:element minOccurs="0" name="PointID" type="xs:int" />

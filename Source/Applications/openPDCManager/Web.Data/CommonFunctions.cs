@@ -24,7 +24,6 @@
 //******************************************************************************************************
 
 using System;
-
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -1142,7 +1141,8 @@ namespace openPDCManager.Data
                                         CurrentScalingValue = Convert.ToInt32(item.Field<object>("CurrentScalingValue")),
                                         VoltageScalingValue = Convert.ToInt32(item.Field<object>("VoltageScalingValue")),
                                         AnalogScalingValue = Convert.ToInt32(item.Field<object>("AnalogScalingValue")),
-                                        DigitalMaskValue = Convert.ToInt32(item.Field<object>("DigitalMaskValue"))
+                                        DigitalMaskValue = Convert.ToInt32(item.Field<object>("DigitalMaskValue")),
+                                        PerformTimestampReasonabilityCheck = Convert.ToBoolean(item.Field<object>("PerformTimestampReasonabilityCheck"))
                                     }).ToList();
                 return outputStreamList;
             }			
@@ -1170,15 +1170,15 @@ namespace openPDCManager.Data
                 if (isNew)
                     command.CommandText = "INSERT INTO OutputStream (NodeID, Acronym, Name, Type, ConnectionString, IDCode, CommandChannel, DataChannel, AutoPublishConfigFrame, AutoStartDataChannel, NominalFrequency, FramesPerSecond, LagTime, LeadTime, " +
                                         "UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, DownsamplingMethod, DataFormat, CoordinateFormat, CurrentScalingValue, VoltageScalingValue, " +
-                                        "AnalogScalingValue, DigitalMaskValue) VALUES (@nodeID, @acronym, @name, @type, @connectionString, @idCode, @commandChannel, @dataChannel, @autoPublishConfigFrame, @autoStartDataChannel, @nominalFrequency, @framesPerSecond, " +
+                                        "AnalogScalingValue, DigitalMaskValue, PerformTimestampReasonabilityCheck) VALUES (@nodeID, @acronym, @name, @type, @connectionString, @idCode, @commandChannel, @dataChannel, @autoPublishConfigFrame, @autoStartDataChannel, @nominalFrequency, @framesPerSecond, " +
                                         "@lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled, @ignoreBadTimeStamps, @timeResolution, @allowPreemptivePublishing, @downsamplingMethod, @dataFormat, @coordinateFormat, " +
-                                        "@currentScalingValue, @voltageScalingValue, @analogScalingValue, @digitalMaskValue)";
+                                        "@currentScalingValue, @voltageScalingValue, @analogScalingValue, @digitalMaskValue, @performTimestampReasonabilityCheck)";
                 else
                     command.CommandText = "UPDATE OutputStream SET NodeID = @nodeID, Acronym = @acronym, Name = @name, Type = @type, ConnectionString = @connectionString, IDCode = @idCode, CommandChannel = @commandChannel, DataChannel = @dataChannel, AutoPublishConfigFrame = @autoPublishConfigFrame, " +
                                         "AutoStartDataChannel = @autoStartDataChannel, NominalFrequency = @nominalFrequency, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, UseLocalClockAsRealTime = @useLocalClockAsRealTime, " +
                                         "AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled, IgnoreBadTimeStamps = @ignoreBadTimeStamps, TimeResolution = @timeResolution, AllowPreemptivePublishing = @allowPreemptivePublishing, " +
                                         "DownsamplingMethod = @downsamplingMethod, DataFormat = @dataFormat, CoordinateFormat = @coordinateFormat, CurrentScalingValue = @currentScalingValue, VoltageScalingValue = @voltageScalingValue, " +
-                                        "AnalogScalingValue = @analogScalingValue, DigitalMaskValue = @digitalMaskValue WHERE ID = @id";
+                                        "AnalogScalingValue = @analogScalingValue, DigitalMaskValue = @digitalMaskValue, PerformTimestampReasonabilityCheck = @performTimestampReasonabilityCheck WHERE ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", outputStream.NodeID));
                 command.Parameters.Add(AddWithValue(command, "@acronym", outputStream.Acronym.Replace(" ", "").ToUpper()));
@@ -1208,6 +1208,7 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@voltageScalingValue", outputStream.VoltageScalingValue));
                 command.Parameters.Add(AddWithValue(command, "@analogScalingValue", outputStream.AnalogScalingValue));
                 command.Parameters.Add(AddWithValue(command, "@digitalMaskValue", outputStream.DigitalMaskValue));
+                command.Parameters.Add(AddWithValue(command, "@performTimestampReasonabilityCheck", outputStream.PerformTimestampReasonabilityCheck));
 
                 if (!isNew)
                     command.Parameters.Add(AddWithValue(command, "@id", outputStream.ID));
@@ -1463,6 +1464,7 @@ namespace openPDCManager.Data
                                               NodeID = item.Field<object>("NodeID").ToString(),
                                               AdapterID = item.Field<int>("AdapterID"),
                                               ID = item.Field<int>("ID"),
+                                              IdCode = item.Field<int>("IDCode"),
                                               Acronym = item.Field<string>("Acronym"),
                                               Name = item.Field<string>("Name"),
                                               BpaAcronym = item.Field<string>("BpaAcronym"),
@@ -1507,6 +1509,7 @@ namespace openPDCManager.Data
         {
             //DataConnection connection = new DataConnection();
             bool createdConnection = false;
+            
             try
             {
                 if (connection == null)
@@ -1519,15 +1522,16 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
 
                 if (isNew)
-                    command.CommandText = "Insert Into OutputStreamDevice (NodeID, AdapterID, Acronym, BpaAcronym, Name, LoadOrder, Enabled, PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat) " +
-                        "Values (@nodeID, @adapterID, @acronym, @bpaAcronym, @name, @loadOrder, @enabled, @phasorDataFormat, @frequencyDataFormat, @analogDataFormat, @coordinateFormat)";
+                    command.CommandText = "Insert Into OutputStreamDevice (NodeID, AdapterID, IDCode, Acronym, BpaAcronym, Name, LoadOrder, Enabled, PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat) " +
+                        "Values (@nodeID, @adapterID, @idCode @acronym, @bpaAcronym, @name, @loadOrder, @enabled, @phasorDataFormat, @frequencyDataFormat, @analogDataFormat, @coordinateFormat)";
                 else
-                    command.CommandText = "Update OutputStreamDevice Set NodeID = @nodeID, AdapterID = @adapterID, Acronym = @acronym, " +
+                    command.CommandText = "Update OutputStreamDevice Set NodeID = @nodeID, AdapterID = @adapterID, IDCode = @idCode, Acronym = @acronym, " +
                         "BpaAcronym = @bpaAcronym, Name = @name, LoadOrder = @loadOrder, Enabled = @enabled, PhasorDataFormat = @phasorDataFormat, " +
                         "FrequencyDataFormat = @frequencyDataFormat, AnalogDataFormat = @analogDataFormat, CoordinateFormat = @coordinateFormat Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDevice.NodeID));
                 command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamDevice.AdapterID));
+                command.Parameters.Add(AddWithValue(command, "@idCode", outputStreamDevice.IdCode));
                 command.Parameters.Add(AddWithValue(command, "@acronym", outputStreamDevice.Acronym.Replace(" ", "").ToUpper()));
                 command.Parameters.Add(AddWithValue(command, "@bpaAcronym", outputStreamDevice.BpaAcronym.Replace(" ", "").ToUpper()));
                 command.Parameters.Add(AddWithValue(command, "@name", outputStreamDevice.Name));
@@ -1573,6 +1577,19 @@ namespace openPDCManager.Data
                 }
 
                 command.ExecuteNonQuery();
+
+                if (isNew && outputStreamDevice.IdCode == 0)
+                {
+                    //TODO: update IDCode to auto generated ID value.      
+                    OutputStreamDevice deviceJustAdded = GetOutputStreamDevice(connection, outputStreamDevice.AdapterID, outputStreamDevice.Acronym.Replace(" ", "").ToUpper());
+                    command = connection.Connection.CreateCommand();
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "Update OutputStreamDevice SET IDCode = @idCode Where ID = @id";
+                    command.Parameters.Add(AddWithValue(command, "@idCode", deviceJustAdded.ID));
+                    command.Parameters.Add(AddWithValue(command, "@id", deviceJustAdded.ID));
+                    command.ExecuteNonQuery();
+                }
+
                 return "Output Stream Device Information Saved Successfully";
             }			
             finally
@@ -4132,7 +4149,8 @@ namespace openPDCManager.Data
                                                  TimeResolution = Convert.ToInt32(item.Field<object>("TimeResolution")),
                                                  AllowPreemptivePublishing = Convert.ToBoolean(item.Field<object>("AllowPreemptivePublishing")),
                                                  DownsamplingMethod = item.Field<string>("DownSamplingMethod"),
-                                                 NodeName = item.Field<string>("NodeName")
+                                                 NodeName = item.Field<string>("NodeName"),
+                                                 PerformTimestampReasonabilityCheck = Convert.ToBoolean(item.Field<object>("PerformTimestampReasonabilityCheck"))
                                              }).ToList();
                                 
                 return calculatedMeasurementList;
@@ -4159,13 +4177,13 @@ namespace openPDCManager.Data
 
                 if (isNew)
                     command.CommandText = "Insert Into CalculatedMeasurement (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, ConfigSection, InputMeasurements, OutputMeasurements, MinimumMeasurementsToUse, FramesPerSecond, LagTime, LeadTime, " +
-                        "UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, DownsamplingMethod) Values (@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @configSection, @inputMeasurements, @outputMeasurements, @minimumMeasurementsToUse, " +
-                        "@framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled, @ignoreBadTimeStamps, @timeResolution, @allowPreemptivePublishing, @downsamplingMethod)";
+                        "UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, DownsamplingMethod, PerformTimestampReasonabilityCheck) Values (@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @configSection, @inputMeasurements, @outputMeasurements, @minimumMeasurementsToUse, " +
+                        "@framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled, @ignoreBadTimeStamps, @timeResolution, @allowPreemptivePublishing, @downsamplingMethod, @performTimestampReasonabilityCheck)";
                 else
                     command.CommandText = "Update CalculatedMeasurement Set NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, TypeName = @typeName, ConnectionString = @connectionString, ConfigSection = @configSection, " +
                         "InputMeasurements = @inputMeasurements, OutputMeasurements = @outputMeasurements, MinimumMeasurementsToUse = @minimumMeasurementsToUse, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, " +
                         "UseLocalClockAsRealTime = @useLocalClockAsRealTime, AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled, " +
-                        "IgnoreBadTimeStamps = @ignoreBadTimeStamps, TimeResolution = @timeResolution, AllowPreemptivePublishing = @allowPreemptivePublishing, DownsamplingMethod = @downsamplingMethod Where ID = @id";
+                        "IgnoreBadTimeStamps = @ignoreBadTimeStamps, TimeResolution = @timeResolution, AllowPreemptivePublishing = @allowPreemptivePublishing, DownsamplingMethod = @downsamplingMethod, PerformTimestampReasonabilityCheck = @performTimestampReasonabilityCheck Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", calculatedMeasurement.NodeId));
                 command.Parameters.Add(AddWithValue(command, "@acronym", calculatedMeasurement.Acronym.Replace(" ", "").ToUpper()));
@@ -4188,6 +4206,7 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@timeResolution", calculatedMeasurement.TimeResolution));
                 command.Parameters.Add(AddWithValue(command, "@allowPreemptivePublishing", calculatedMeasurement.AllowPreemptivePublishing));
                 command.Parameters.Add(AddWithValue(command, "@downsamplingMethod", calculatedMeasurement.DownsamplingMethod));
+                command.Parameters.Add(AddWithValue(command, "@performTimestampReasonabilityCheck", calculatedMeasurement.PerformTimestampReasonabilityCheck));
 
                 if (!isNew)
                     command.Parameters.Add(AddWithValue(command, "@id", calculatedMeasurement.ID));
@@ -4601,7 +4620,7 @@ namespace openPDCManager.Data
                                                                                           HistorianAcronym = measurement.Field<string>("HistorianAcronym"),
                                                                                           IsExpanded = false,
                                                                                           CurrentTimeTag = "N/A",
-                                                                                          CurrentValue = "NaN",
+                                                                                          CurrentValue = "--",
                                                                                           CurrentQuality = "N/A"
                                                                                       }).ToList())
                                                                }).ToList())
@@ -4731,7 +4750,7 @@ namespace openPDCManager.Data
                                                               Description = statistic.Field<string>("Description"),
                                                               Quality = "N/A",
                                                               TimeTag = "N/A",
-                                                              Value = "N/A",
+                                                              Value = "--",
                                                               DataType = statistic.Field<object>("DataType") == null ? string.Empty : statistic.Field<string>("DataType"),
                                                               DisplayFormat = statistic.Field<object>("DisplayFormat") == null ? string.Empty : statistic.Field<string>("DisplayFormat"),
                                                               IsConnectedState = Convert.ToBoolean(statistic.Field<object>("IsConnectedState")),
@@ -4857,7 +4876,7 @@ namespace openPDCManager.Data
                                                              Description = statistic.Field<string>("Description"),
                                                              Quality = "N/A",
                                                              TimeTag = "N/A",
-                                                             Value = "N/A",
+                                                             Value = "--",
                                                              DataType = statistic.Field<object>("DataType") == null ? string.Empty : statistic.Field<string>("DataType"),
                                                              DisplayFormat = statistic.Field<object>("DisplayFormat") == null ? string.Empty : statistic.Field<string>("DisplayFormat"),
                                                              IsConnectedState = Convert.ToBoolean(statistic.Field<object>("IsConnectedState")),
@@ -4936,7 +4955,7 @@ namespace openPDCManager.Data
                                                             Description = statistic.Field<string>("Description"),
                                                             Quality = "N/A",
                                                             TimeTag = "N/A",
-                                                            Value = "N/A",
+                                                            Value = "--",
                                                             DataType = statistic.Field<object>("DataType") == null ? string.Empty : statistic.Field<string>("DataType"),
                                                             DisplayFormat = statistic.Field<object>("DisplayFormat") == null ? string.Empty : statistic.Field<string>("DisplayFormat"),
                                                             IsConnectedState = Convert.ToBoolean(statistic.Field<object>("IsConnectedState")),

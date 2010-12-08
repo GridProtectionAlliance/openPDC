@@ -20,7 +20,8 @@
 //       Generated original version of source code.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
-//
+//  12/01/2010 - Mehulbhai P Thakkar
+//       Added PerformTimestampReasonableCheck Property
 //******************************************************************************************************
 
 
@@ -51,5 +52,6 @@ namespace openPDCManager.Data.Entities
         public bool AllowPreemptivePublishing { get; set; }
         public string DownsamplingMethod { get; set; }
 		public string NodeName { get; set; }
+        public bool PerformTimestampReasonabilityCheck { get; set; }
     }
 }

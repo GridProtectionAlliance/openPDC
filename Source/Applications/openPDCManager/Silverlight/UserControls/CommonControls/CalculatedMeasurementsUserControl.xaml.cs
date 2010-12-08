@@ -330,6 +330,7 @@ namespace openPDCManager.UserControls.CommonControls
                 calculatedMeasurement.TimeResolution = TextBoxTimeResolution.Text.ToInteger();
                 calculatedMeasurement.AllowPreemptivePublishing = (bool)CheckBoxAllowPreemptivePublishing.IsChecked;
                 calculatedMeasurement.DownsamplingMethod = ComboboxDownsamplingMethod.SelectedItem.ToString();
+                calculatedMeasurement.PerformTimestampReasonabilityCheck = (bool)CheckBoxPerformTimestampCheck.IsChecked;
 
                 if (m_inEditMode == true && m_calculatedMeasurementID > 0)
                 {

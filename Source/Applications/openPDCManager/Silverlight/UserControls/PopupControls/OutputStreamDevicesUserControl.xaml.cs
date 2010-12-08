@@ -98,6 +98,7 @@ namespace openPDCManager.UserControls.PopupControls
                 outputStreamDevice.FrequencyDataFormat = ComboboxFrequencyDataFormat.SelectedIndex == 0 ? string.Empty : ComboboxFrequencyDataFormat.SelectedItem.ToString();
                 outputStreamDevice.AnalogDataFormat = ComboboxAnalogDataFormat.SelectedIndex == 0 ? string.Empty : ComboboxAnalogDataFormat.SelectedItem.ToString();
                 outputStreamDevice.CoordinateFormat = ComboboxCoordinateFormat.SelectedIndex == 0 ? string.Empty : ComboboxCoordinateFormat.SelectedItem.ToString();
+                outputStreamDevice.IdCode = TextBoxIDCode.Text.ToInteger();
 
                 if (m_inEditMode == true && m_outputStreamDeviceID > 0)
                 {
@@ -290,6 +291,24 @@ namespace openPDCManager.UserControls.PopupControls
                 return isValid;
             }
 
+            if (!TextBoxIDCode.Text.IsInteger())
+            {
+                isValid = false;
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid ID Code", SystemMessage = "Please provide valid integer value for ID Code.", UserMessageType = MessageType.Error },
+                    ButtonType.OkOnly);
+                sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                {
+                    TextBoxIDCode.Focus();
+                    TextBoxIDCode.Text = "0";
+                });
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+                return isValid;
+            }
+
             return isValid;
         }
 
@@ -300,7 +319,7 @@ namespace openPDCManager.UserControls.PopupControls
             ComboboxAnalogDataFormat.SelectedIndex = 0;
             ComboboxFrequencyDataFormat.SelectedIndex = 0;
             ComboboxPhasorDataFormat.SelectedIndex = 0;
-            CheckBoxEnabled.IsChecked = true;
+            CheckBoxEnabled.IsChecked = true;            
             m_inEditMode = false;
             m_outputStreamDeviceID = 0;
             ListBoxOutputStreamDeviceList.SelectedIndex = -1;

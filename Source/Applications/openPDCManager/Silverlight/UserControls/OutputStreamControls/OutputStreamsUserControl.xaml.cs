@@ -140,6 +140,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             CheckBoxAutoStartDataChannel.IsChecked = selectedOutputStream.AutoStartDataChannel;
             CheckBoxEnabled.IsChecked = selectedOutputStream.Enabled;
             CheckBoxUseLocalClockAsRealTime.IsChecked = selectedOutputStream.UseLocalClockAsRealTime;
+            CheckBoxPerformTimestampCheck.IsChecked = selectedOutputStream.PerformTimestampReasonabilityCheck;
 
             m_oldAcronym = selectedOutputStream.Acronym;
             m_oldName = selectedOutputStream.Name;
@@ -192,6 +193,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 outputStream.VoltageScalingValue = TextBoxVoltageScalingValue.Text.ToInteger();
                 outputStream.AnalogScalingValue = TextBoxAnalogScalingValue.Text.ToInteger();
                 outputStream.DigitalMaskValue = TextBoxDigitalMaskValue.Text.ToInteger();
+                outputStream.PerformTimestampReasonabilityCheck = (bool)CheckBoxPerformTimestampCheck.IsChecked;
 
                 if (m_inEditMode == true && m_outputStreamID > 0)
                 {
@@ -489,7 +491,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
                 return isValid;
             }
 
-            if (!TextBoxIDCode.Text.IsInteger())
+            if (!TextBoxIDCode.Text.IsInteger() || Convert.ToInt32(TextBoxIDCode.Text) < 0)
             {
                 isValid = false;
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid ID Code", SystemMessage = "Please provide valid integer value for ID Code.", UserMessageType = MessageType.Error },
@@ -667,6 +669,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             CheckBoxAutoStartDataChannel.IsChecked = false;
             CheckBoxEnabled.IsChecked = false;
             CheckBoxUseLocalClockAsRealTime.IsChecked = false;
+            CheckBoxPerformTimestampCheck.IsChecked = false;
             m_inEditMode = false;
             m_outputStreamID = 0;
             ListBoxOutputStreamList.SelectedIndex = -1;
@@ -699,6 +702,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             CheckBoxUseLocalClockAsRealTime.Visibility = visibility;
             CheckBoxAllowPreemptivePublishing.Visibility = visibility;
             CheckBoxIgnoreBadTimeStamps.Visibility = visibility;
+            CheckBoxPerformTimestampCheck.Visibility = visibility;
 
 #if !SILVERLIGHT
             ButtonAllowPreemptivePublishingHelp.Visibility = visibility;
@@ -714,8 +718,6 @@ namespace openPDCManager.UserControls.OutputStreamControls
         }
 
         #endregion
-
-        
 
     }
 }

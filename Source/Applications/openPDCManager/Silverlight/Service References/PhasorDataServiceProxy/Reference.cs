@@ -797,6 +797,8 @@ namespace openPDCManager.PhasorDataServiceProxy {
         
         private string EngineeringUnitsField;
         
+        private string HistorianAcronymField;
+        
         private bool IsExpandedField;
         
         private bool IsSelectedField;
@@ -887,6 +889,19 @@ namespace openPDCManager.PhasorDataServiceProxy {
                 if ((object.ReferenceEquals(this.EngineeringUnitsField, value) != true)) {
                     this.EngineeringUnitsField = value;
                     this.RaisePropertyChanged("EngineeringUnits");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string HistorianAcronym {
+            get {
+                return this.HistorianAcronymField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.HistorianAcronymField, value) != true)) {
+                    this.HistorianAcronymField = value;
+                    this.RaisePropertyChanged("HistorianAcronym");
                 }
             }
         }
@@ -3030,6 +3045,8 @@ namespace openPDCManager.PhasorDataServiceProxy {
         
         private string OutputMeasurementsField;
         
+        private bool PerformTimestampReasonabilityCheckField;
+        
         private int TimeResolutionField;
         
         private string TypeNameField;
@@ -3292,6 +3309,19 @@ namespace openPDCManager.PhasorDataServiceProxy {
                 if ((object.ReferenceEquals(this.OutputMeasurementsField, value) != true)) {
                     this.OutputMeasurementsField = value;
                     this.RaisePropertyChanged("OutputMeasurements");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool PerformTimestampReasonabilityCheck {
+            get {
+                return this.PerformTimestampReasonabilityCheckField;
+            }
+            set {
+                if ((this.PerformTimestampReasonabilityCheckField.Equals(value) != true)) {
+                    this.PerformTimestampReasonabilityCheckField = value;
+                    this.RaisePropertyChanged("PerformTimestampReasonabilityCheck");
                 }
             }
         }
@@ -3580,6 +3610,8 @@ namespace openPDCManager.PhasorDataServiceProxy {
         private string NodeNameField;
         
         private int NominalFrequencyField;
+        
+        private bool PerformTimestampReasonabilityCheckField;
         
         private int TimeResolutionField;
         
@@ -3930,6 +3962,19 @@ namespace openPDCManager.PhasorDataServiceProxy {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool PerformTimestampReasonabilityCheck {
+            get {
+                return this.PerformTimestampReasonabilityCheckField;
+            }
+            set {
+                if ((this.PerformTimestampReasonabilityCheckField.Equals(value) != true)) {
+                    this.PerformTimestampReasonabilityCheckField = value;
+                    this.RaisePropertyChanged("PerformTimestampReasonabilityCheck");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public int TimeResolution {
             get {
                 return this.TimeResolutionField;
@@ -4024,6 +4069,8 @@ namespace openPDCManager.PhasorDataServiceProxy {
         private string FrequencyDataFormatField;
         
         private int IDField;
+        
+        private int IdCodeField;
         
         private int LoadOrderField;
         
@@ -4135,6 +4182,19 @@ namespace openPDCManager.PhasorDataServiceProxy {
                 if ((this.IDField.Equals(value) != true)) {
                     this.IDField = value;
                     this.RaisePropertyChanged("ID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int IdCode {
+            get {
+                return this.IdCodeField;
+            }
+            set {
+                if ((this.IdCodeField.Equals(value) != true)) {
+                    this.IdCodeField = value;
+                    this.RaisePropertyChanged("IdCode");
                 }
             }
         }
