@@ -200,6 +200,10 @@
             <summary>
             Represents an <see cref="T:TVA.Security.ISecurityProvider"/> that uses Active Directory for its backend datastore and credential authentication.
             </summary>
+            <remarks>
+            A <a href="http://en.wikipedia.org/wiki/Security_Identifier" target="_blank">Security Identifier</a> can also be specified in 
+            <b>IncludedResources</b> instead of a role name in the format of 'SID:&lt;Security Identifier&gt;' (Example: SID:S-1-5-21-19610888-1443184010-1631745340-269783).
+            </remarks>
             <example>
             Required config file entries:
             <code>
@@ -350,6 +354,13 @@
             <param name="password">Password to be used for authentication.</param>
             <returns>true if the user is authenticated, otherwise false.</returns>
         </member>
+        <member name="M:TVA.Security.ISecurityProvider.TranslateRole(System.String)">
+            <summary>
+            Performs a translation of the specified user <paramref name="role"/>.
+            </summary>
+            <param name="role">The user role to be translated.</param>
+            <returns>The user role that the specified user <paramref name="role"/> translates to.</returns>
+        </member>
         <member name="P:TVA.Security.ISecurityProvider.ApplicationName">
             <summary>
             Gets or sets the name of the application being secured as defined in the backend security datastore.
@@ -396,6 +407,19 @@
             Releases the unmanaged resources before the security provider is reclaimed by <see cref="T:System.GC"/>.
             </summary>
         </member>
+        <member name="M:TVA.Security.SecurityProviderBase.RefreshData">
+            <summary>
+            When overridden in a derived class, refreshes the <see cref="P:TVA.Security.SecurityProviderBase.UserData"/>.
+            </summary>
+            <returns>true if <see cref="P:TVA.Security.SecurityProviderBase.UserData"/> is refreshed, otherwise false.</returns>
+        </member>
+        <member name="M:TVA.Security.SecurityProviderBase.Authenticate(System.String)">
+            <summary>
+            When overridden in a derived class, authenticates the user.
+            </summary>
+            <param name="password">Password to be used for authentication.</param>
+            <returns>true if the user is authenticated, otherwise false.</returns>
+        </member>
         <member name="M:TVA.Security.SecurityProviderBase.Dispose">
             <summary>
             Releases all the resources used by the security provider.
@@ -418,18 +442,12 @@
             </summary>
             <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Security.SecurityProviderBase.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
-        <member name="M:TVA.Security.SecurityProviderBase.RefreshData">
+        <member name="M:TVA.Security.SecurityProviderBase.TranslateRole(System.String)">
             <summary>
-            When overridden in a derived class, refreshes the <see cref="P:TVA.Security.SecurityProviderBase.UserData"/>.
+            Performs a translation of the specified user <paramref name="role"/>.
             </summary>
-            <returns>true if <see cref="P:TVA.Security.SecurityProviderBase.UserData"/> is refreshed, otherwise false.</returns>
-        </member>
-        <member name="M:TVA.Security.SecurityProviderBase.Authenticate(System.String)">
-            <summary>
-            When overridden in a derived class, authenticates the user.
-            </summary>
-            <param name="password">Password to be used for authentication.</param>
-            <returns>true if the user is authenticated, otherwise false.</returns>
+            <param name="role">The user role to be translated.</param>
+            <returns>The user role that the specified user <paramref name="role"/> translates to.</returns>
         </member>
         <member name="M:TVA.Security.SecurityProviderBase.Dispose(System.Boolean)">
             <summary>
@@ -486,6 +504,13 @@
             </summary>
             <param name="password">Password to be used for authentication.</param>
             <returns>true if the user is authenticated, otherwise false.</returns>
+        </member>
+        <member name="M:TVA.Security.LdapSecurityProvider.TranslateRole(System.String)">
+            <summary>
+            Performs a translation of the specified user <paramref name="role"/>.
+            </summary>
+            <param name="role">The user role to be translated.</param>
+            <returns>The user role that the specified user <paramref name="role"/> translates to.</returns>
         </member>
         <member name="P:TVA.Security.LdapSecurityProvider.WindowsPrincipal">
             <summary>

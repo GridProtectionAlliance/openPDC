@@ -1239,6 +1239,11 @@
             <param name="attributeValue">Function delegate used to return desired attribute property.</param>
             <returns>Specified attribute value if it exists; otherwise default value.</returns>
         </member>
+        <member name="P:TVA.Configuration.SettingsBase.Culture">
+            <summary>
+            Gets or sets the <see cref="T:System.Globalization.CultureInfo"/> to use for the conversion of setting values to and from <see cref="T:System.String"/>.
+            </summary>
+        </member>
         <member name="P:TVA.Configuration.SettingsBase.MemberAccessBindingFlags">
             <summary>
             Gets or sets <see cref="T:System.Reflection.BindingFlags"/> used to access fields and properties of dervied class.
@@ -18788,6 +18793,24 @@
             </para>
             </remarks>
         </member>
+        <member name="M:TVA.Common.TypeConvertToString(System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts <paramref name="value"/> to a <see cref="T:System.String"/> using an appropriate <see cref="T:System.ComponentModel.TypeConverter"/>.
+            </summary>
+            <param name="value">Value to convert to a <see cref="T:System.String"/>.</param>
+            <param name="culture"><see cref="T:System.Globalization.CultureInfo"/> to use for the conversion.</param>
+            <returns><paramref name="value"/> converted to a <see cref="T:System.String"/>.</returns>
+            <remarks>
+            <para>
+            If <see cref="T:System.ComponentModel.TypeConverter"/> fails, the value's <c>ToString()</c> value will be returned.
+            Returned value will never be null, if no value exists an empty string ("") will be returned.
+            </para>
+            <para>
+            You can use the <see cref="M:TVA.StringExtensions.ConvertToType``1(System.String)"/> string extension method to
+            convert the string back to its original <see cref="T:System.Type"/>.
+            </para>
+            </remarks>
+        </member>
         <member name="M:TVA.Common.IsDefaultValue(System.Object)">
             <summary>Determines if given item is equal to its default value (e.g., null or 0.0).</summary>
             <param name="item">Object to evaluate.</param>
@@ -23164,13 +23187,30 @@
             <see cref="M:TVA.Common.TypeConvertToString(System.Object)"/> method for an easy way to do this.
             </remarks>
         </member>
-        <member name="M:TVA.StringExtensions.ConvertToType(System.String,System.Type)">
+        <member name="M:TVA.StringExtensions.ConvertToType``1(System.String,System.Type)">
             <summary>
             Converts this string into the specified type.
             </summary>
+            <typeparam name="T"><see cref="T:System.Type"/> to convert string to.</typeparam>
             <param name="value">Source string to convert to type.</param>
             <param name="type"><see cref="T:System.Type"/> to convert string to.</param>
-            <returns><see cref="T:System.String"/> converted to specfied <see cref="T:System.Type"/>; null if conversion fails.</returns>
+            <returns><see cref="T:System.String"/> converted to specfied <see cref="T:System.Type"/>; default value of specified type T if conversion fails.</returns>
+            <remarks>
+            This function makes use of a <see cref="T:System.ComponentModel.TypeConverter"/> to convert this <see cref="T:System.String"/> to the specified <paramref name="type"/>,
+            the best way to make sure <paramref name="value"/> can be converted back to its original type is to use the same
+            <see cref="T:System.ComponentModel.TypeConverter"/> to convert the original object to a <see cref="T:System.String"/>; see the
+            <see cref="M:TVA.Common.TypeConvertToString(System.Object)"/> method for an easy way to do this.
+            </remarks>
+        </member>
+        <member name="M:TVA.StringExtensions.ConvertToType``1(System.String,System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            Converts this string into the specified type.
+            </summary>
+            <typeparam name="T"><see cref="T:System.Type"/> to convert string to.</typeparam>
+            <param name="value">Source string to convert to type.</param>
+            <param name="type"><see cref="T:System.Type"/> to convert string to.</param>
+            <param name="culture"><see cref="T:System.Globalization.CultureInfo"/> to use for the conversion.</param>
+            <returns><see cref="T:System.String"/> converted to specfied <see cref="T:System.Type"/>; default value of specified type T if conversion fails.</returns>
             <remarks>
             This function makes use of a <see cref="T:System.ComponentModel.TypeConverter"/> to convert this <see cref="T:System.String"/> to the specified <paramref name="type"/>,
             the best way to make sure <paramref name="value"/> can be converted back to its original type is to use the same
@@ -27739,6 +27779,11 @@
             </summary>
             <param name="configFilePath">Path of the config file that belongs to a Windows or Web application.</param>
             <returns>An <see cref="T:TVA.Configuration.ConfigurationFile"/> object.</returns>
+        </member>
+        <member name="P:TVA.Configuration.ConfigurationFile.Culture">
+            <summary>
+            Gets or sets the <see cref="T:System.Globalization.CultureInfo"/> to use for the conversion of setting values to and from <see cref="T:System.String"/>.
+            </summary>
         </member>
         <member name="P:TVA.Configuration.ConfigurationFile.Configuration">
             <summary>

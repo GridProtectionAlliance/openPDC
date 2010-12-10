@@ -1043,7 +1043,7 @@
             Embedded WCF REST service contract used for securing external facing WCF services.
             </summary>
         </member>
-        <member name="M:TVA.Web.Embedded.ISecurityService.Login(System.String,System.String)">
+        <member name="M:TVA.Web.Embedded.ISecurityService.Authenticate(System.String,System.String)">
             <summary>
             Authenticates a user and caches the security context upon successful authentication for subsequent use.
             </summary>
@@ -1051,13 +1051,37 @@
             <param name="password">Password of the user.</param>
             <returns>An <see cref="T:TVA.Security.UserData"/> object of the user.</returns>
         </member>
-        <member name="M:TVA.Web.Embedded.SecurityService.Login(System.String,System.String)">
+        <member name="M:TVA.Web.Embedded.ISecurityService.GetUserData">
+            <summary>
+            Returns information about the current user. 
+            </summary>
+            <returns>An <see cref="T:TVA.Security.UserData"/> object of the user if user's security context has been initialized, otherwise null.</returns>
+        </member>
+        <member name="M:TVA.Web.Embedded.ISecurityService.RefreshUserData">
+            <summary>
+            Refreshes and returns information about the current user. 
+            </summary>
+            <returns>An <see cref="T:TVA.Security.UserData"/> object of the user if user's security context has been initialized, otherwise null.</returns>
+        </member>
+        <member name="M:TVA.Web.Embedded.SecurityService.Authenticate(System.String,System.String)">
             <summary>
             Authenticates a user and caches the security context upon successful authentication for subsequent use.
             </summary>
             <param name="username">Username of the user.</param>
             <param name="password">Password of the user.</param>
             <returns>An <see cref="T:TVA.Security.UserData"/> object of the user.</returns>
+        </member>
+        <member name="M:TVA.Web.Embedded.SecurityService.GetUserData">
+            <summary>
+            Returns information about the current user. 
+            </summary>
+            <returns>An <see cref="T:TVA.Security.UserData"/> object of the user if user's security context has been initialized, otherwise null.</returns>
+        </member>
+        <member name="M:TVA.Web.Embedded.SecurityService.RefreshUserData">
+            <summary>
+            Refreshes and returns information about the current user. 
+            </summary>
+            <returns>An <see cref="T:TVA.Security.UserData"/> object of the user if user's security context has been initialized, otherwise null.</returns>
         </member>
         <member name="T:TVA.Web.Embedded.SecurityPortal">
             <summary>

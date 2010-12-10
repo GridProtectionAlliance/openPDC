@@ -829,7 +829,7 @@ namespace openPDCManager.Data
                 }
             }
             
-            return "".ConvertToType(dataType);
+            return "".ConvertToType<object>(dataType);
         }
 
         public static KeyValuePair<int, int> GetMinMaxPointIDs(DataConnection connection, string nodeID)
