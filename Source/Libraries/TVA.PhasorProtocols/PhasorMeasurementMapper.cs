@@ -69,6 +69,8 @@ namespace TVA.PhasorProtocols
         private long m_totalDataFrames;
         private long m_totalConfigurationFrames;
         private long m_totalHeaderFrames;
+        private string m_sharedMapping;
+        private uint m_sharedMappingID;
         private ushort m_accessID;
         private bool m_isConcentrator;
         private bool m_receivedConfigFrame;
@@ -408,6 +410,62 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Gets or sets acronym of other device for which to assume a shared mapping.
+        /// </summary>
+        /// <remarks>
+        /// Assigning acronym to this property automatically looks up ID of associated device.
+        /// </remarks>
+        public string SharedMapping
+        {
+            get
+            {
+                return m_sharedMapping;
+            }
+            set
+            {
+                m_sharedMapping = value;
+                m_sharedMappingID = 0;
+
+                if (!string.IsNullOrEmpty(m_sharedMapping))
+                {
+                    try
+                    {
+                        DataRow[] filteredRows = DataSource.Tables["InputAdapters"].Select(string.Format("AdapterName = '{0}'", m_sharedMapping));
+
+                        if (filteredRows.Length > 0)
+                        {
+                            m_sharedMappingID = uint.Parse(filteredRows[0]["ID"].ToString());
+                        }
+                        else
+                        {
+                            OnProcessException(new InvalidOperationException(string.Format("Failed to find input adapter ID for shared mapping \"{0}\", mapping was not assigned.", m_sharedMapping)));
+                            m_sharedMapping = null;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        OnProcessException(new InvalidOperationException(string.Format("Failed to find input adapter ID for shared mapping \"{0}\" due to exception: {1} Mapping was not assigned.", m_sharedMapping, ex.Message), ex));
+                        m_sharedMapping = null;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns ID of associated device with shared mapping or <see cref="AdapterBase.ID"/> of this <see cref="PhasorMeasurementMapper"/> if no shared mapping is defined.
+        /// </summary>
+        public uint SharedMappingID
+        {
+            get
+            {
+                if (m_sharedMappingID == 0)
+                    return ID;
+
+                return m_sharedMappingID;
+            }
+        }
+
+        /// <summary>
         /// Gets flag that determines if the data input connects asynchronously.
         /// </summary>
         protected override bool UseAsyncConnect
@@ -431,6 +489,11 @@ namespace TVA.PhasorProtocols
                 status.Append(base.Status);
                 status.AppendFormat("    Source is concentrator: {0}", m_isConcentrator);
                 status.AppendLine();
+                if (!string.IsNullOrEmpty(SharedMapping))
+                {
+                    status.AppendFormat("     Shared mapping source: {0}", SharedMapping);
+                    status.AppendLine();
+                }
                 status.AppendFormat("   Source device time zone: {0}", m_timezone.Id);
                 status.AppendLine();
                 status.AppendFormat("    Manual time adjustment: {0} seconds", m_timeAdjustmentTicks.ToSeconds().ToString("0.000"));
@@ -633,6 +696,11 @@ namespace TVA.PhasorProtocols
             else
                 m_accessID = 1;
 
+            if (settings.TryGetValue("sharedMapping", out setting))
+                SharedMapping = setting.Trim();
+            else
+                SharedMapping = null;
+
             if (settings.TryGetValue("timeZone", out setting) && !string.IsNullOrEmpty(setting) && string.Compare(setting.Trim(), "UTC", true) != 0 && string.Compare(setting.Trim(), "Coordinated Universal Time", true) != 0)
             {
                 try
@@ -765,7 +833,7 @@ namespace TVA.PhasorProtocols
                 deviceStatus.AppendLine();
 
                 // Making a connection to a concentrator that can support multiple devices
-                foreach (DataRow row in DataSource.Tables["InputStreamDevices"].Select(string.Format("ParentID={0}", ID)))
+                foreach (DataRow row in DataSource.Tables["InputStreamDevices"].Select(string.Format("ParentID={0}", SharedMappingID)))
                 {
                     // Create new configuration cell parsing needed ID code and label from input stream configuration
                     definedDevice = new ConfigurationCell(ushort.Parse(row["AccessID"].ToString()));
@@ -823,7 +891,14 @@ namespace TVA.PhasorProtocols
             {
                 // Making a connection to a single device
                 definedDevice = new ConfigurationCell(m_accessID);
-                deviceName = Name.ToNonNullString("[undefined]").Trim();
+
+                // Used shared mapping name for single device connection if defined - this causes measurement mappings to be associated
+                // with alternate device by caching signal references associated with shared mapping acronym
+                if (string.IsNullOrEmpty(SharedMapping))
+                    deviceName = Name.ToNonNullString("[undefined]").Trim();
+                else
+                    deviceName = SharedMapping;
+                
                 definedDevice.StationName = deviceName.TruncateRight(definedDevice.MaximumStationNameLength);
                 definedDevice.IDLabel = deviceName.TruncateRight(definedDevice.IDLabelLength);
                 definedDevice.Tag = ID;
@@ -841,7 +916,7 @@ namespace TVA.PhasorProtocols
 
             m_definedMeasurements = new Dictionary<string, IMeasurement>();
 
-            foreach (DataRow row in DataSource.Tables["ActiveMeasurements"].Select(string.Format("DeviceID={0}", ID)))
+            foreach (DataRow row in DataSource.Tables["ActiveMeasurements"].Select(string.Format("DeviceID={0}", SharedMappingID)))
             {
                 signalReference = row["SignalReference"].ToString();
 
