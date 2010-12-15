@@ -265,6 +265,7 @@ namespace openPDCManager.UserControls.CommonControls
             ComboboxDownsamplingMethod.Items.Add("LastReceived");
             ComboboxDownsamplingMethod.Items.Add("Closest");
             ComboboxDownsamplingMethod.Items.Add("Filtered");
+            ComboboxDownsamplingMethod.Items.Add("BestQuality");
             ComboboxDownsamplingMethod.SelectedIndex = 0;
             GetCalculatedMeasurements();
         }

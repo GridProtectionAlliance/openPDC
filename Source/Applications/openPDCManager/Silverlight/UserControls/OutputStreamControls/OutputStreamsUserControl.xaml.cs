@@ -94,6 +94,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             ComboboxDownsamplingMethod.Items.Add("LastReceived");
             ComboboxDownsamplingMethod.Items.Add("Closest");
             ComboboxDownsamplingMethod.Items.Add("Filtered");
+            ComboboxDownsamplingMethod.Items.Add("BestQuality");
             ComboboxDownsamplingMethod.SelectedIndex = 0;
             ComboboxDataFormat.Items.Add("FloatingPoint");
             ComboboxDataFormat.Items.Add("FixedInteger");
