@@ -103,6 +103,9 @@
       <HintPath Condition=" '$(SignAssembly)' != 'true' ">..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
       <HintPath Condition=" '$(SignAssembly)' == 'true' ">..\..\Dependencies\TVA\Signed\TVA.Core.dll</HintPath>
     </Reference>
+    <Reference Include="TVA.Historian, Version=1.1.36.59543, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\Dependencies\TVA\TVA.Historian.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -346,6 +349,7 @@
     <Compile Include="SelFastMessage\PhasorValue.cs" />
     <Compile Include="SignalReference.cs" />
     <Compile Include="SignalReferenceMeasurement.cs" />
+    <Compile Include="StatisticsReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TVA.PhasorProtocols.ruleset" />
