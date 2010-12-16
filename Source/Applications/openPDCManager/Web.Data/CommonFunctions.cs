@@ -1523,7 +1523,7 @@ namespace openPDCManager.Data
 
                 if (isNew)
                     command.CommandText = "Insert Into OutputStreamDevice (NodeID, AdapterID, IDCode, Acronym, BpaAcronym, Name, LoadOrder, Enabled, PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat) " +
-                        "Values (@nodeID, @adapterID, @idCode @acronym, @bpaAcronym, @name, @loadOrder, @enabled, @phasorDataFormat, @frequencyDataFormat, @analogDataFormat, @coordinateFormat)";
+                        "Values (@nodeID, @adapterID, @idCode, @acronym, @bpaAcronym, @name, @loadOrder, @enabled, @phasorDataFormat, @frequencyDataFormat, @analogDataFormat, @coordinateFormat)";
                 else
                     command.CommandText = "Update OutputStreamDevice Set NodeID = @nodeID, AdapterID = @adapterID, IDCode = @idCode, Acronym = @acronym, " +
                         "BpaAcronym = @bpaAcronym, Name = @name, LoadOrder = @loadOrder, Enabled = @enabled, PhasorDataFormat = @phasorDataFormat, " +
