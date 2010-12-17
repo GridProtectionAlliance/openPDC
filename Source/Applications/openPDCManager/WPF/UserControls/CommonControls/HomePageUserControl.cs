@@ -34,6 +34,9 @@ using openPDCManager.Data.Entities;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using System.Threading;
+using TimeSeriesFramework.Transport;
+using TVA;
+using TimeSeriesFramework;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -41,13 +44,128 @@ namespace openPDCManager.UserControls.CommonControls
     {
         #region [ Members ]
                 
-        bool m_connected = false;
-        DispatcherTimer m_secondsTimer, m_thirtySecondsTimer;
+        bool m_connected = false;        
+        DispatcherTimer m_thirtySecondsTimer;
         List<InterconnectionStatus> interconnectionStatusList = new List<InterconnectionStatus>();
         ObservableCollection<TimeSeriesDataPoint> timeSeriesDataList = new ObservableCollection<TimeSeriesDataPoint>();
-        string m_url;
-        bool m_retrievingData;
+        
+        //Subscription API related declarations.
+        DataSubscriber m_dataSubscriber;
+        bool m_subscribed;
+        int m_processing;
+        bool m_restartConnectionCycle = true;
+        string m_measurementForSubscription;
 
+        #endregion
+
+        #region [ Subscription API Code ]
+
+        #region [ Methods ]
+
+        void StartSubscription()
+        {
+            m_dataSubscriber = new DataSubscriber();
+            m_dataSubscriber.StatusMessage += dataSubscriber_StatusMessage;
+            m_dataSubscriber.ProcessException += dataSubscriber_ProcessException;
+            m_dataSubscriber.ConnectionEstablished += dataSubscriber_ConnectionEstablished;
+            m_dataSubscriber.NewMeasurements += dataSubscriber_NewMeasurements;
+            m_dataSubscriber.ConnectionTerminated += dataSubscriber_ConnectionTerminated;
+            m_dataSubscriber.ConnectionString = "server=localhost:6165";
+            m_dataSubscriber.Initialize();
+            m_dataSubscriber.Start(); 
+        }
+
+        void SubscribeData()
+        {
+            if (m_dataSubscriber == null)
+                StartSubscription();
+
+            if (m_subscribed && !string.IsNullOrEmpty(m_measurementForSubscription))
+                m_dataSubscriber.UnsynchronizedSubscribe(true, true, m_measurementForSubscription, 1);
+        }
+
+        void UnsubscribeData()
+        {
+            if (m_dataSubscriber != null)
+            {
+                m_dataSubscriber.Unsubscribe();
+                StopSubscription();
+            }
+        }
+
+        void StopSubscription()
+        {
+            if (m_dataSubscriber != null)
+            {
+                m_dataSubscriber.StatusMessage -= dataSubscriber_StatusMessage;
+                m_dataSubscriber.ProcessException -= dataSubscriber_ProcessException;
+                m_dataSubscriber.ConnectionEstablished -= dataSubscriber_ConnectionEstablished;
+                m_dataSubscriber.NewMeasurements -= dataSubscriber_NewMeasurements;
+                m_dataSubscriber.Stop();
+                m_dataSubscriber.Dispose();
+                m_dataSubscriber = null;
+            }
+        }
+
+        #endregion
+
+        #region [ Event Handlers ]
+
+        void dataSubscriber_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
+        {
+            if (0 == Interlocked.Exchange(ref m_processing, 1))
+            {
+                try
+                {
+                    foreach (IMeasurement measurement in e.Argument)
+                    {
+                        ChartRealTimeData.Dispatcher.BeginInvoke((Action)delegate()
+                        {
+                            if (timeSeriesDataList.Count == 0)
+                                timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = measurement.Value });
+                            else
+                                timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = measurement.Value });
+
+                            if (timeSeriesDataList.Count > 30)
+                                timeSeriesDataList.RemoveAt(0);
+
+                            ChartRealTimeData.DataContext = timeSeriesDataList;
+                        });
+                    }
+                }                
+                finally
+                {
+                    Interlocked.Exchange(ref m_processing, 0);
+                }
+            }
+        }
+
+        void dataSubscriber_ConnectionEstablished(object sender, EventArgs e)
+        {
+            m_subscribed = true;
+            SubscribeData();
+        }
+
+        void dataSubscriber_ConnectionTerminated(object sender, EventArgs e)
+        {
+            m_subscribed = false;
+            UnsubscribeData();
+            if (m_restartConnectionCycle)
+                StartSubscription();
+        }
+
+        void dataSubscriber_ProcessException(object sender, TVA.EventArgs<Exception> e)
+        {
+            //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: EXCEPTION: " + e.Argument.Message);
+        }
+
+        void dataSubscriber_StatusMessage(object sender, TVA.EventArgs<string> e)
+        {
+            //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: " + e.Argument);
+        }
+
+        #endregion
+        
         #endregion
 
         #region [ Methods ]
@@ -55,26 +173,7 @@ namespace openPDCManager.UserControls.CommonControls
         void Initialize()
         {
             this.Unloaded += new RoutedEventHandler(HomePageUserControl_Unloaded);
-            ComboBoxMeasurements.SelectionChanged += new SelectionChangedEventHandler(ComboBoxMeasurements_SelectionChanged);
-            //Setter setter = new Setter();
-            //setter.Property = PieDataPoint.TemplateProperty;
-            //setter.Value = Application.Current.Resources["PieDataPointTemplate"] as ControlTemplate;
-
-            //Style pieDataPointStyle = new Style(typeof(PieDataPoint));
-            //pieDataPointStyle.Setters.Add(setter);
-            //((PieSeries)ChartDeviceDistribution.Series[0]).DataPointStyle = pieDataPointStyle;
-
-            //DataPointSeries series = new ColumnSeries();
-           
-            //series.Title = "Quantity";
-            //series.
-            //series.DependentValueBinding = new Binding("Value");
-            //series.IndependentValueBinding = new Binding("Label");
-            //series.ItemsSource = list; 
-            //series.SelectionChanged += new SelectionChangedEventHandler(series_SelectionChanged);
-            //this.chartingToolkitControl.Series.Add(series); 
-
-
+            ComboBoxMeasurements.SelectionChanged += new SelectionChangedEventHandler(ComboBoxMeasurements_SelectionChanged);            
         }
 
         void StartThirtySecondsTimer()
@@ -83,71 +182,6 @@ namespace openPDCManager.UserControls.CommonControls
             m_thirtySecondsTimer.Interval = TimeSpan.FromSeconds(10);
             m_thirtySecondsTimer.Tick += new EventHandler(thirtySecondsTimer_Tick);
             m_thirtySecondsTimer.Start();
-        }
-
-        void StartSecondsTimer()
-        {
-            m_secondsTimer = new DispatcherTimer();
-            m_secondsTimer.Interval = TimeSpan.FromMilliseconds(1000);
-            m_secondsTimer.Tick += new EventHandler(secondsTimer_Tick);
-            m_secondsTimer.Start();
-        }
-
-        void GetTimeSeriesData(object timeSeriesDataServiceUrl)
-        {
-            if (!m_retrievingData)
-            {
-                try
-                {
-                    m_retrievingData = true;
-                    //App app = (App)Application.Current;
-                    List<TimeSeriesDataPoint> temp = new List<TimeSeriesDataPoint>();
-                    temp = CommonFunctions.GetTimeSeriesData(timeSeriesDataServiceUrl.ToString());
-
-                    ChartRealTimeData.Dispatcher.BeginInvoke((Action)delegate()
-                    {
-                        if (temp.Count > m_framesPerSecond)
-                        {
-                            for (int i = 0; i < (int)(temp.Count / m_framesPerSecond); i++)
-                            {
-                                if (timeSeriesDataList.Count == 0)
-                                    timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = temp[(i * m_framesPerSecond)].Value });
-                                else
-                                    timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = temp[(i * m_framesPerSecond)].Value });
-                            }
-                        }
-                        else if (temp.Count > 0)
-                        {
-                            if (timeSeriesDataList.Count == 0)
-                                timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = 0, Value = temp[0].Value });
-                            else
-                                timeSeriesDataList.Add(new TimeSeriesDataPoint() { Index = timeSeriesDataList[timeSeriesDataList.Count - 1].Index + 1, Value = temp[0].Value });
-                        }
-                        if (timeSeriesDataList.Count > 30)
-                            timeSeriesDataList.RemoveAt(0);
-                                            
-                        ChartRealTimeData.DataContext = timeSeriesDataList;
-                    });                    
-
-                    if (m_secondsTimer == null)
-                        StartSecondsTimer();
-
-                    m_retrievingData = false;
-                }
-                catch (Exception ex)
-                {
-                    CommonFunctions.LogException(null, "WPF.GetTimeSeriesData", ex);
-                    if (m_secondsTimer != null)
-                    {
-                        m_secondsTimer.Stop();
-                        m_secondsTimer = null;
-                    }                    
-                }
-                finally
-                {
-                    m_retrievingData = false;
-                }
-            }
         }
 
         void GetDeviceDistributionList()
@@ -234,6 +268,7 @@ namespace openPDCManager.UserControls.CommonControls
         {
             //reset time series data list
             timeSeriesDataList = new ObservableCollection<TimeSeriesDataPoint>();
+            SubscribeData();
         }
 
         #endregion
@@ -243,17 +278,16 @@ namespace openPDCManager.UserControls.CommonControls
         void ComboBoxMeasurements_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ComboBoxMeasurements.Items.Count > 0 && ComboBoxMeasurements.SelectedIndex >= 0)
-            {
-#if !SILVERLIGHT
+            {                
+                openPDCManager.Data.Entities.Measurement measurement = (openPDCManager.Data.Entities.Measurement)ComboBoxMeasurements.SelectedItem;
+
                 //This was done for WPF to make sure there are measurements available in the dropdown before calling time series data service. Otherwise ComboboxMeasurements.SelectedItem returned NULL.
-                ReconnectToService();
-                GetTimeSeriesData(((App)Application.Current).TimeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + ((Measurement)ComboBoxMeasurements.SelectedItem).PointID.ToString() + "/*-30S/*/XML");
-#endif
-                
-                m_url = ((App)Application.Current).TimeSeriesDataServiceUrl + "/timeseriesdata/read/current/" + ((Measurement)ComboBoxMeasurements.SelectedItem).PointID.ToString() + "/XML";
-                m_framesPerSecond = (int)((Measurement)ComboBoxMeasurements.SelectedItem).FramesPerSecond;
+                m_measurementForSubscription = measurement.HistorianAcronym + ":" + measurement.PointID;
+                ReconnectToService();                
+        
+                m_framesPerSecond = (int)measurement.FramesPerSecond;
                 LinearAxis yAxis = (LinearAxis)ChartRealTimeData.Axes[1];
-                if (((Measurement)ComboBoxMeasurements.SelectedItem).SignalSuffix == "PA")
+                if (measurement.SignalSuffix == "PA")
                 {
                     yAxis.Minimum = -180;
                     yAxis.Maximum = 180;
@@ -266,18 +300,12 @@ namespace openPDCManager.UserControls.CommonControls
                     yAxis.Interval = (yAxis.Maximum - yAxis.Minimum) / 5.0; // 0.02;
                 }
             }
-            else
-                m_url = string.Empty;
         }
 
         void HomePageUserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                m_secondsTimer.Stop();               
-                m_secondsTimer = null;                
-            }
-            catch { }
+            m_restartConnectionCycle = false;
+            UnsubscribeData();
 
             try
             {
@@ -291,13 +319,6 @@ namespace openPDCManager.UserControls.CommonControls
         {
             GetInterconnectionStatus();            
             GetDeviceDistributionList();   
-        }
-
-        void secondsTimer_Tick(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(m_url))
-                ThreadPool.QueueUserWorkItem(GetTimeSeriesData, m_url);
-                //GetTimeSeriesData(m_url);
         }
 
         #endregion

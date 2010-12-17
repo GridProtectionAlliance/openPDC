@@ -76,8 +76,7 @@ namespace openPDCManager.UserControls.CommonControls
             ButtonGetData.Content = new BitmapImage(new Uri(@"images/RequestData.png", UriKind.Relative));
 #endif
             ButtonGetData.Click += new RoutedEventHandler(ButtonGetData_Click);
-            ComboBoxDevice.SelectionChanged += new SelectionChangedEventHandler(ComboBoxDevice_SelectionChanged);
-            
+            ComboBoxDevice.SelectionChanged += new SelectionChangedEventHandler(ComboBoxDevice_SelectionChanged);            
         }
 
         #endregion
@@ -212,8 +211,7 @@ namespace openPDCManager.UserControls.CommonControls
         #endregion
 
         #region [ Methods ]
-
-        
+                
         public void DisconnectFromService()
         {
             if (m_connected)

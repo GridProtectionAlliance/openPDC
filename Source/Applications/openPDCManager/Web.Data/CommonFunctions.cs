@@ -1278,7 +1278,7 @@ namespace openPDCManager.Data
             }
             catch (Exception ex)
             {
-                LogException(connection, "GetDeviceByAcronym", ex);
+                LogException(connection, "GetOutputStreamByAcronym", ex);
                 return null;
             }
         }        
