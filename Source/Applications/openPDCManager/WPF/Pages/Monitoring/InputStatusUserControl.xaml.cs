@@ -93,6 +93,10 @@ namespace openPDCManager.Pages.Monitoring
         int m_processingNewMeasurementsForTree = 0;
         bool m_restartConnectionCycle = true;
         bool m_displayLegend = true;
+        string m_urlForStatistics;
+        KeyValuePair<int, int> m_minMaxPointIDs;
+        Dictionary<int, int> m_deviceIDsWithStatusPointIDs;
+        bool m_retrievingData;
 
         #endregion
 
@@ -111,6 +115,8 @@ namespace openPDCManager.Pages.Monitoring
             m_lineGraphCollection = new ConcurrentDictionary<string, LineGraph>();
             m_currentValuesList = new Dictionary<string, InputMonitorData>();
             m_timeStampList = new ConcurrentQueue<string>();
+            m_minMaxPointIDs = new KeyValuePair<int, int>();
+            m_deviceIDsWithStatusPointIDs = new Dictionary<int, int>();
         }        
 
         #endregion
@@ -136,10 +142,17 @@ namespace openPDCManager.Pages.Monitoring
             m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
             m_activityWindow.Owner = Window.GetWindow(this);
             m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            m_activityWindow.Show();      
+            m_activityWindow.Show();
+
+            GetMinMaxPointIDs();
+            string statisticServiceUrl = ((App)Application.Current).RealTimeStatisticServiceUrl;
+            if (!string.IsNullOrEmpty(statisticServiceUrl))
+                m_urlForStatistics = statisticServiceUrl + "/timeseriesdata/read/current/" + m_minMaxPointIDs.Key.ToString() + "-" + m_minMaxPointIDs.Value.ToString() + "/XML";
 
             InitializeColors();            
-            GetDeviceMeasurementData();            
+            GetDeviceMeasurementData();
+            m_deviceIDsWithStatusPointIDs = CommonFunctions.GetDeviceIDsWithStatusPointIDs(null, ((App)Application.Current).NodeValue);
+            GetTimeTaggedMeasurementsForStatus(m_urlForStatistics);
             InitializeChart();            
         }
 
@@ -290,33 +303,47 @@ namespace openPDCManager.Pages.Monitoring
                     System.Diagnostics.Debug.WriteLine("*************************************");
                     foreach (DeviceMeasurementData deviceMeasurementData in m_deviceMeasurementDataList)
                     {
-                        if (deviceMeasurementData.IsExpanded)
-                        {
+                        //if (deviceMeasurementData.IsExpanded)
+                        //{
                             foreach (DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
                             {
-                                if (deviceInfo.IsExpanded)
-                                {
+                                //if (deviceInfo.IsExpanded)
+                                //{
                                     foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
-                                    {
-                                        //if (measurementInfo.IsExpanded)
-                                        //{
-                                            foreach (IMeasurement measurement in e.Argument)
+                                    {                                        
+                                        foreach (IMeasurement measurement in e.Argument)
+                                        {
+                                            if (measurement.SignalID.ToString().ToUpper() == measurementInfo.SignalID.ToUpper())
                                             {
-                                                if (measurement.SignalID.ToString().ToUpper() == measurementInfo.SignalID.ToUpper())
+                                                measurementInfo.CurrentQuality = measurement.ValueQualityIsGood ? "GOOD" : "BAD";
+                                                measurementInfo.CurrentTimeTag = measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff");
+                                                measurementInfo.CurrentValue = measurement.Value.ToString("0.###");
+
+                                                if (measurementInfo.SignalAcronym == "FLAG")
                                                 {
-                                                    measurementInfo.CurrentQuality = measurement.ValueQualityIsGood ? "GOOD" : "BAD";
-                                                    measurementInfo.CurrentTimeTag = measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff");
-                                                    measurementInfo.CurrentValue = measurement.Value.ToString("0.###");
-                                                    System.Diagnostics.Debug.WriteLine(measurement.Value.ToString() + " || " + measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff"));
+                                                    if (!deviceMeasurementData.Enabled && deviceMeasurementData.StatusColor != "Transparent")
+                                                    {
+                                                        deviceMeasurementData.StatusColor = "Gray";
+                                                        deviceInfo.StatusColor = "Gray";
+                                                    }
+                                                    else if (!deviceInfo.Enabled)
+                                                        deviceInfo.StatusColor = "Gray";
+                                                    else if (deviceMeasurementData.StatusColor == "Red")
+                                                        deviceInfo.StatusColor = "Red";
+                                                    else if (measurement.ValueQualityIsGood)
+                                                        deviceInfo.StatusColor = "Green";
+                                                    else
+                                                        deviceInfo.StatusColor = "Yellow";
                                                 }
                                             }
-                                        //}
+                                        }                                     
                                     }
-                                }
+                                //}
                             }
-                        }
-                    }                    
-                    RefreshDeviceMeasurementData();
+                        //}
+                    }
+                    GetTimeTaggedMeasurementsForStatus(m_urlForStatistics); 
+                    RefreshDeviceMeasurementData();                    
                 }
                 catch
                 { 
@@ -356,6 +383,11 @@ namespace openPDCManager.Pages.Monitoring
         #endregion 
     
         #region [ Methods ]
+
+        void GetMinMaxPointIDs()
+        {
+            m_minMaxPointIDs = CommonFunctions.GetMinMaxPointIDs(null, ((App)Application.Current).NodeValue);
+        }
 
         void GetSettingsFromIsolatedStorage()
         {
@@ -676,6 +708,63 @@ namespace openPDCManager.Pages.Monitoring
             }
             if (m_activityWindow != null)
                 m_activityWindow.Close();
+        }
+
+        void GetTimeTaggedMeasurementsForStatus(string url)
+        {
+            if (!string.IsNullOrEmpty(url) && !m_retrievingData)
+            {
+                try
+                {
+                    m_retrievingData = true;
+                    Dictionary<int, TimeTaggedMeasurement> timeTaggedMeasurements = new Dictionary<int, TimeTaggedMeasurement>();
+                    timeTaggedMeasurements = CommonFunctions.GetTimeTaggedMeasurements(url);
+                    foreach (DeviceMeasurementData deviceMeasurement in m_deviceMeasurementDataList)
+                    {
+                        int statusPointID;
+
+                        if (!deviceMeasurement.Enabled && deviceMeasurement.StatusColor != "Transparent")
+                            deviceMeasurement.StatusColor = "Gray";
+                        else if (m_deviceIDsWithStatusPointIDs.TryGetValue(deviceMeasurement.ID, out statusPointID))
+                        {
+                            if (timeTaggedMeasurements.ContainsKey(statusPointID))
+                            {
+                                if (Convert.ToBoolean(Convert.ToInt32(timeTaggedMeasurements[statusPointID].CurrentValue)))
+                                    deviceMeasurement.StatusColor = "Green";
+                                else
+                                    deviceMeasurement.StatusColor = "Red";
+                            }
+                        }
+
+                        foreach (DeviceInfo device in deviceMeasurement.DeviceList)
+                        {
+                            if (!deviceMeasurement.Enabled && deviceMeasurement.StatusColor != "Transparent")
+                                device.StatusColor = "Gray";
+                            else if (device.ID != null)
+                            {
+                                if (m_deviceIDsWithStatusPointIDs.TryGetValue((int)device.ID, out statusPointID))
+                                {
+                                    if (timeTaggedMeasurements.ContainsKey(statusPointID))
+                                    {
+                                        if (Convert.ToBoolean(Convert.ToInt32(timeTaggedMeasurements[statusPointID].CurrentValue)))
+                                            device.StatusColor = "Green";
+                                        else
+                                            device.StatusColor = "Red";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    CommonFunctions.LogException(null, "WPF.GetTimeTaggedMeasurements", ex);
+                }
+                finally
+                {
+                    m_retrievingData = false;
+                }
+            }
         }
 
         void RefreshDeviceMeasurementData()
