@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.DataVisualization.Charting;
@@ -33,10 +34,9 @@ using openPDCManager.Data.BusinessObjects;
 using openPDCManager.Data.Entities;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
-using System.Threading;
+using TimeSeriesFramework;
 using TimeSeriesFramework.Transport;
 using TVA;
-using TimeSeriesFramework;
 
 namespace openPDCManager.UserControls.CommonControls
 {

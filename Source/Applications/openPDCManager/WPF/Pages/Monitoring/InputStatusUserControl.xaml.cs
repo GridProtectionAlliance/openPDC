@@ -300,7 +300,7 @@ namespace openPDCManager.Pages.Monitoring
             {
                 try
                 {                    
-                    System.Diagnostics.Debug.WriteLine("*************************************");
+                    //System.Diagnostics.Debug.WriteLine("*************************************");
                     foreach (DeviceMeasurementData deviceMeasurementData in m_deviceMeasurementDataList)
                     {
                         //if (deviceMeasurementData.IsExpanded)
