@@ -555,13 +555,16 @@ namespace openPDCManager.Pages.Monitoring
         void StartSubscriptionForChart()
         {
             //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Starting Subscription.");
+            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl;
+            connectionString = connectionString.Substring(0, connectionString.LastIndexOf(":"));
+
             m_chartSubscriber = new DataSubscriber();
             m_chartSubscriber.StatusMessage += chartSubscriber_StatusMessage;
             m_chartSubscriber.ProcessException += chartSubscriber_ProcessException;
             m_chartSubscriber.ConnectionEstablished += chartSubscriber_ConnectionEstablished;
             m_chartSubscriber.NewMeasurements += chartSubscriber_NewMeasurements;
             m_chartSubscriber.ConnectionTerminated += chartSubscriber_ConnectionTerminated;
-            m_chartSubscriber.ConnectionString = "server=localhost:6165";            
+            m_chartSubscriber.ConnectionString = connectionString + ":6165";            
             m_chartSubscriber.Initialize();
             m_chartSubscriber.Start();
         }
@@ -781,13 +784,16 @@ namespace openPDCManager.Pages.Monitoring
 
         void StartSubscriptionForTreeData()
         {
+            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl;
+            connectionString = connectionString.Substring(0, connectionString.LastIndexOf(":"));
+
             m_measurementDataSubscriber = new DataSubscriber();
             m_measurementDataSubscriber.StatusMessage += measurementDataSubscriber_StatusMessage;
             m_measurementDataSubscriber.ProcessException += measurementDataSubscriber_ProcessException;
             m_measurementDataSubscriber.ConnectionEstablished += measurementDataSubscriber_ConnectionEstablished;
             m_measurementDataSubscriber.NewMeasurements += measurementDataSubscriber_NewMeasurements;
             m_measurementDataSubscriber.ConnectionTerminated += measurementDataSubscriber_ConnectionTerminated;
-            m_measurementDataSubscriber.ConnectionString = "server=localhost:6165";
+            m_measurementDataSubscriber.ConnectionString = connectionString + ":6165";
             m_measurementDataSubscriber.Initialize();
             m_measurementDataSubscriber.Start(); 
         }

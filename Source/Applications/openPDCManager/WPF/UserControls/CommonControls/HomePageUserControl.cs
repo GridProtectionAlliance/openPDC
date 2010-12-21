@@ -64,13 +64,16 @@ namespace openPDCManager.UserControls.CommonControls
 
         void StartSubscription()
         {
+            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl;
+            connectionString = connectionString.Substring(0, connectionString.LastIndexOf(":"));
+
             m_dataSubscriber = new DataSubscriber();
             m_dataSubscriber.StatusMessage += dataSubscriber_StatusMessage;
             m_dataSubscriber.ProcessException += dataSubscriber_ProcessException;
             m_dataSubscriber.ConnectionEstablished += dataSubscriber_ConnectionEstablished;
             m_dataSubscriber.NewMeasurements += dataSubscriber_NewMeasurements;
             m_dataSubscriber.ConnectionTerminated += dataSubscriber_ConnectionTerminated;
-            m_dataSubscriber.ConnectionString = "server=localhost:6165";
+            m_dataSubscriber.ConnectionString =  connectionString + ":6165";
             m_dataSubscriber.Initialize();
             m_dataSubscriber.Start(); 
         }
