@@ -458,7 +458,10 @@ namespace PowerCalculations
             else
             { 
                 // Use stored average value when minimum set is not available
-                angleAverage = m_latestCalculatedAngles.Average() % 360.0D;
+                if (m_latestCalculatedAngles.Count > 0)
+                    angleAverage = m_latestCalculatedAngles.Average() % 360.0D;
+                else
+                    angleAverage = double.NaN;
 
                 // Mark quality as "bad" when falling back to stored value
                 calculatedMeasurement.ValueQualityIsGood = false;
