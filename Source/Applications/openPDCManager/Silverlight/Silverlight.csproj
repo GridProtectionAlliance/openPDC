@@ -863,6 +863,7 @@
     <Resource Include="Images\Log.png" />
     <Resource Include="Images\Copy.png" />
     <Resource Include="Images\GPALock.png" />
+    <Resource Include="Images\Secure.png" />
     <Content Include="ServiceReferences.ClientConfig" />
   </ItemGroup>
   <ItemGroup>
