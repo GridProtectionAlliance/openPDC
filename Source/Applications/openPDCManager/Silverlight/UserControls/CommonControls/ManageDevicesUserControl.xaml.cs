@@ -59,7 +59,7 @@ namespace openPDCManager.UserControls.CommonControls
 #if !SILVERLIGHT
             ButtonSave.Content = new BitmapImage(new Uri(@"images/save.png", UriKind.Relative));
             ButtonClear.Content = new BitmapImage(new Uri(@"images/cancel.png", UriKind.Relative));
-            ButtonView.Content = new BitmapImage(new Uri(@"images/search.png", UriKind.Relative));
+            ButtonView.Content = new BitmapImage(new Uri(@"images/next.png", UriKind.Relative));
             ButtonBuildConnectionString.Content = new BitmapImage(new Uri(@"images/add.png", UriKind.Relative));
             ButtonBuildAlternateCommandChannel.Content = new BitmapImage(new Uri(@"images/add.png", UriKind.Relative));
             UpdateLayout();
