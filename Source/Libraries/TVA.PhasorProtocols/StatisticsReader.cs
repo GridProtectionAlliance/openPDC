@@ -318,7 +318,7 @@ namespace TVA.PhasorProtocols
         }
 
         // Determines whether the given MetadataRecord describes the data quality error statistic.
-        private bool IsDataQualityError(MetadataRecord record)
+        private static bool IsDataQualityError(MetadataRecord record)
         {
             return record.Name.EndsWith(":ST1")
                 && !record.Name.EndsWith("!IS:ST1")
@@ -326,7 +326,7 @@ namespace TVA.PhasorProtocols
         }
 
         // Determines whether the given MetadataRecord describes the time quality error statistic.
-        private bool IsTimeQualityError(MetadataRecord record)
+        private static bool IsTimeQualityError(MetadataRecord record)
         {
             return record.Name.EndsWith(":ST2")
                 && !record.Name.EndsWith("!IS:ST2")

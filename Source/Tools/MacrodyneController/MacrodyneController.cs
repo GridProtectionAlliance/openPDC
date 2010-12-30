@@ -73,8 +73,9 @@ namespace MacrodyneController
 
             // Initialize command enumerations
             foreach (DeviceCommand command in Enum.GetValues(typeof(DeviceCommand)).Cast<DeviceCommand>())
-            {                
-                ComboBoxCommands.Items.Add(new CommandItem(command));
+            {
+                if (command != DeviceCommand.Undefined)
+                    ComboBoxCommands.Items.Add(new CommandItem(command));
             }
 
             ComboBoxCommands.SelectedIndex = 0;

@@ -1,4 +1,5 @@
 ﻿using System;
+using TVA;
 using TVA.PhasorProtocols.Macrodyne;
 
 namespace MacrodyneController
@@ -27,7 +28,7 @@ namespace MacrodyneController
         // Provide a formatted enumeration string
         public override string ToString()
         {
-            return Enum.GetName(typeof(DeviceCommand), m_command).ToFormattedEnumName();
+            return m_command.GetFormattedName();
         }
     }
 }
