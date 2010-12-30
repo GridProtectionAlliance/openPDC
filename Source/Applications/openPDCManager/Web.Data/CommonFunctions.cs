@@ -1498,9 +1498,10 @@ namespace openPDCManager.Data
                                 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;                
-                command.CommandText = "Select * From OutputStreamDeviceDetail Where AdapterID = @adapterID";                
+                command.CommandText = "Select * From OutputStreamDeviceDetail Where AdapterID = @adapterID AND Acronym = @acronym";                
                 command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
-                
+                command.Parameters.Add(AddWithValue(command, "@acronym", acronym));
+
                 DataTable resultTable = new DataTable();
                 resultTable.Load(command.ExecuteReader());
 
@@ -5516,6 +5517,286 @@ namespace openPDCManager.Data
 
             return deviceIdsWithStatusPointIDs;
         }
+
+        #endregion
+
+        #region " Application Security Code"
+
+        #region " User Management Code"
+        
+        public static List<User> GetUsers(DataConnection connection)
+        {
+            bool createdConnection = false;
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+                List<User> users = new List<User>();
+
+                IDbCommand command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;                
+                command.CommandText = "Select * From [User] Order By Name";
+                
+                DataTable resultTable = new DataTable();
+                resultTable.Load(command.ExecuteReader());
+                users = (from item in resultTable.AsEnumerable()
+                         select new User()
+                         {
+                             ID = item.Field<object>("ID").ToString(),
+                             Name = item.Field<string>("Name"),
+                             Password = item.Field<object>("Password") == null ? string.Empty : item.Field<string>("Password"),
+                             FirstName = item.Field<object>("FirstName") == null ? string.Empty : item.Field<string>("FirstName"),
+                             LastName = item.Field<object>("LastName") == null ? string.Empty : item.Field<string>("LastName"),
+                             DefaultNodeID = item.Field<object>("DefaultNodeID").ToString(),
+                             Phone = item.Field<object>("Phone") == null ? string.Empty : item.Field<string>("Phone"),
+                             Email = item.Field<object>("Email") == null ? string.Empty : item.Field<string>("Email"),
+                             LockedOut = Convert.ToBoolean(item.Field<object>("LockedOut")),
+                             UseADAuthentication = Convert.ToBoolean(item.Field<object>("UseADAuthentication")),
+                             ChangePasswordOn = item.Field<object>("ChangePasswordOn") == null ? DateTime.MinValue : Convert.ToDateTime(item.Field<object>("ChangePasswordOn")),
+                             CreatedOn = Convert.ToDateTime(item.Field<object>("CreatedOn")),
+                             CreatedBy = item.Field<string>("CreatedBy"),
+                             UpdatedOn = Convert.ToDateTime(item.Field<object>("UpdatedOn")),
+                             UpdatedBy = item.Field<string>("UpdatedBy")
+                         }).ToList();               
+
+                return users;
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
+        public static string SaveUser(DataConnection connection, User user, bool isNew)
+        {
+            bool createdConnection = false;
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+                IDbCommand command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+
+                if (isNew)
+                    command.CommandText = "Insert Into [User] (Name, Password, FirstName, LastName, DefaultNodeID, Phone, Email, LockedOut, UseADAuthentication, ChangePasswordOn, UpdatedBy, CreatedBy) " +
+                        "Values (@name, @password, @firstName, @lastName, @defaultNodeID, @phone, @email, @lockedOut, @useADAuthentication, @changePasswordOn, @updatedBy, @createdBy)";
+                else
+                    command.CommandText = "Update [User] Set Name = @name, Password = @password, FirstName = @firstName, LastName = @lastName, DefaultNodeID = @defaultNodeID, Phone = @phone, Email = @email, " +
+                        "LockedOut = @lockedOut, UseADAuthentication = @useADAuthentication, ChangePasswordOn = @changePasswordOn, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
+
+                command.Parameters.Add(AddWithValue(command, "@name", user.Name));
+                command.Parameters.Add(AddWithValue(command, "@password", user.Password));
+                command.Parameters.Add(AddWithValue(command, "@firstName", user.FirstName));
+                command.Parameters.Add(AddWithValue(command, "@lastName", user.LastName));
+                command.Parameters.Add(AddWithValue(command, "@defaultNodeID", user.DefaultNodeID));
+                command.Parameters.Add(AddWithValue(command, "@phone", user.Phone));
+                command.Parameters.Add(AddWithValue(command, "@email", user.Email));
+                command.Parameters.Add(AddWithValue(command, "@lockedOut", user.LockedOut));
+                command.Parameters.Add(AddWithValue(command, "@useADAuthentication", user.UseADAuthentication));
+                command.Parameters.Add(AddWithValue(command, "@changePasswordOn", user.ChangePasswordOn));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", user.UpdatedBy));
+                
+                if (isNew)
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", user.CreatedBy));
+                else
+                {
+                    command.Parameters.Add(AddWithValue(command, "@updatedOn", user.UpdatedOn));
+                    command.Parameters.Add(AddWithValue(command, "@id", user.ID));
+                }
+
+                command.ExecuteNonQuery();
+
+                return "User Information Saved Successfully";
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
+        public static string DeleteUser(DataConnection connection, string userID)
+        {
+            bool createdConnection = false;
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+                
+                IDbCommand command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = "Delete From [User] Where ID = @id";
+                command.Parameters.Add(AddWithValue(command, "@id", userID));
+                command.ExecuteNonQuery();
+
+                return "User Deleted Successfully";
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
+        #endregion
+
+        #region " Group Management Code"
+
+        public static List<Group> GetGroups(DataConnection connection)
+        {
+            bool createdConnection = false;
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+                List<Group> groups = new List<Group>();
+
+                IDbCommand command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = "Select * From Group Order By Name";
+
+                DataTable groupsTable = new DataTable();
+                groupsTable.Load(command.ExecuteReader());
+
+                command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = "Select * From GroupUsersDetail";
+
+                DataTable groupUsersTable = new DataTable();
+                groupUsersTable.Load(command.ExecuteReader());
+
+                List<User> usersList = GetUsers(connection);
+
+                groups = (from groupitem in groupsTable.AsEnumerable()
+                         select new Group()
+                         {
+                             ID = groupitem.Field<object>("ID").ToString(),
+                             Name = groupitem.Field<string>("Name"),
+                             Description = groupitem.Field<object>("Description") == null ? string.Empty : groupitem.Field<string>("Description"),
+                             CreatedOn = Convert.ToDateTime(groupitem.Field<object>("CreatedOn")),
+                             CreatedBy = groupitem.Field<string>("CreatedBy"),
+                             UpdatedOn = Convert.ToDateTime(groupitem.Field<object>("UpdatedOn")),
+                             UpdatedBy = groupitem.Field<string>("UpdatedBy"),
+                             CurrentGroupUsers = ( from usersitem in groupUsersTable.AsEnumerable()
+                                            where groupitem.Field<object>("ID").ToString().ToUpper() == usersitem.Field<object>("GroupID").ToString().ToUpper()
+                                            select new User()
+                                            {
+                                                ID = usersitem.Field<object>("UserID").ToString(),
+                                                Name = usersitem.Field<string>("UserName"),
+                                                FirstName = usersitem.Field<string>("FirstName"),
+                                                LastName = usersitem.Field<string>("LastName"),
+                                                Email = usersitem.Field<string>("Email")
+                                            }).ToList()
+                         }).ToList();
+
+                return groups;
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
+        public static string SaveGroup(DataConnection connection, Group group, bool isNew)
+        {
+            bool createdConnection = false;            
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+                IDbCommand command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+
+                if (isNew)
+                    command.CommandText = "Insert Into Group (Name, Description, UpdatedBy, CreatedBy) Values (@name, @description, @updatedBy, @createdBy)";
+                else
+                    command.CommandText = "Update Group Set Name = @name, Description = @description, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
+
+                command.Parameters.Add(AddWithValue(command, "@name", group.Name));
+                command.Parameters.Add(AddWithValue(command, "@description", group.Description));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", group.UpdatedBy));
+
+                if (isNew)
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", group.CreatedBy));
+                else
+                {
+                    command.Parameters.Add(AddWithValue(command, "@updatedOn", group.UpdatedOn));
+                    command.Parameters.Add(AddWithValue(command, "@id", group.ID));
+                }
+
+                command.ExecuteNonQuery();
+                                
+                command.Parameters.Clear();
+                command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = "Delete From GroupUsers Where GroupID = @groupID";
+                command.Parameters.Add(AddWithValue(command, "@groupID", group.ID));
+                command.ExecuteNonQuery();
+
+                foreach (User user in group.CurrentGroupUsers)
+                {
+                    command.Parameters.Clear();
+                    command = connection.Connection.CreateCommand();
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "Insert Into GroupUsers (GroupID, UserID) Values (@groupID, @userID)";
+                    command.Parameters.Add(AddWithValue(command, "@groupID", group.ID));
+                    command.Parameters.Add(AddWithValue(command, "@userID", user.ID));
+                    command.ExecuteNonQuery();
+                }
+
+                return "Group Information Saved Successfully"; 
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
+        public static string DeleteGroup(DataConnection connection, string groupID)
+        {
+            bool createdConnection = false;
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
+                IDbCommand command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = "Delete From [Group] Where ID = @id";
+                command.Parameters.Add(AddWithValue(command, "@id", groupID));
+                command.ExecuteNonQuery();
+
+                return "Group Deleted Successfully";
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
+        #endregion
 
         #endregion
     }
