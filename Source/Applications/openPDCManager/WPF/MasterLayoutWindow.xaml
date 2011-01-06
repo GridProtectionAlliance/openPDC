@@ -193,6 +193,12 @@
                                                 <Image Source="images/Configuration.png" Height="16" Width="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
+                                        <!--<Separator />
+                                        <MenuItem Header="Application Security" Style="{StaticResource MainSubMenuItemStyle}" x:Name="Security" Click="MenuItem_Click">
+                                            <MenuItem.Icon>
+                                                <Image Source="images/Secure.png" Height="16" Width="16" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>-->
                                     </MenuItem>
                                     <MenuItem Header="Help" Style="{StaticResource MainMenuItemStyle}" x:Name="Help" Click="MenuItem_Click" />
                                 </Menu>

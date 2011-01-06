@@ -136,6 +136,7 @@
     <Compile Include="Entities\Company.cs" />
     <Compile Include="Entities\Device.cs" />
     <Compile Include="Entities\ErrorLog.cs" />
+    <Compile Include="Entities\Group.cs" />
     <Compile Include="Entities\Historian.cs" />
     <Compile Include="Entities\Measurement.cs" />
     <Compile Include="Entities\Node.cs" />
@@ -147,6 +148,8 @@
     <Compile Include="Entities\OutputStreamDevicePhasor.cs" />
     <Compile Include="Entities\OutputStreamMeasurement.cs" />
     <Compile Include="Entities\Phasor.cs" />
+    <Compile Include="Entities\Role.cs" />
+    <Compile Include="Entities\User.cs" />
     <Compile Include="Entities\Vendor.cs" />
     <Compile Include="Entities\VendorDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

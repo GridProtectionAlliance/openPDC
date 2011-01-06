@@ -89,10 +89,17 @@ namespace openPDCManager.UserControls.CommonControls
 
         void UnsubscribeData()
         {
-            if (m_dataSubscriber != null)
+            try
             {
-                m_dataSubscriber.Unsubscribe();
-                StopSubscription();
+                if (m_dataSubscriber != null)
+                {
+                    m_dataSubscriber.Unsubscribe();
+                    StopSubscription();
+                }
+            }
+            catch
+            {
+                m_dataSubscriber = null;
             }
         }
 

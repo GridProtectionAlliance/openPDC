@@ -458,6 +458,11 @@ namespace openPDCManager
                 SystemSettings systemSettings = new SystemSettings();
                 ContentFrame.Navigate(systemSettings);
             }
+            else if (item.Name == "Security")
+            {
+                ApplicationSecurity security = new ApplicationSecurity();
+                ContentFrame.Navigate(security);
+            }
             else if (item.Name == "Help")
                 Process.Start("http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration");
         }

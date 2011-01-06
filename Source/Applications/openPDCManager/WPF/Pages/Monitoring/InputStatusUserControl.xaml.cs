@@ -599,13 +599,21 @@ namespace openPDCManager.Pages.Monitoring
 
         void UnsubscribeDataForChart()
         {
-            if (m_chartSubscriber != null)
+            try
             {
-                //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Un-Subscribing Data.");
-                m_chartSubscriber.Unsubscribe();
-                StopSubscriptionForChart();              
+                if (m_chartSubscriber != null)
+                {
+                    //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Un-Subscribing Data.");
+                    m_chartSubscriber.Unsubscribe();
+                    StopSubscriptionForChart();
+                }
             }
-            StopChartRefreshTimer();
+            catch
+            {
+                m_chartSubscriber = null;
+            }
+            
+            StopChartRefreshTimer();            
         }
 
         void StopSubscriptionForChart()
@@ -811,10 +819,17 @@ namespace openPDCManager.Pages.Monitoring
 
         void UnsubscribeDataForTree()
         {
-            if (m_measurementDataSubscriber != null)
+            try
             {
-                m_measurementDataSubscriber.Unsubscribe();
-                StopSubscriptionForTree();
+                if (m_measurementDataSubscriber != null)
+                {
+                    m_measurementDataSubscriber.Unsubscribe();
+                    StopSubscriptionForTree();
+                }
+            }
+            catch
+            {
+                m_measurementDataSubscriber = null;
             }
         }
 

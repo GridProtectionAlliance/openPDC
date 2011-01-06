@@ -107,6 +107,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Controls.DataVisualization.Toolkit">
       <HintPath>..\..\..\Dependencies\Microsoft\WPF\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
     </Reference>
@@ -174,6 +175,9 @@
     </Compile>
     <Compile Include="ModalDialogs\SelectMeasurement.xaml.cs">
       <DependentUpon>SelectMeasurement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Manage\ApplicationSecurity.xaml.cs">
+      <DependentUpon>ApplicationSecurity.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Manage\SystemSettings.xaml.cs">
       <DependentUpon>SystemSettings.xaml</DependentUpon>
@@ -472,6 +476,10 @@
       <Generator>MSBuild:Compile</Generator>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Manage\ApplicationSecurity.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Manage\Measurements.xaml">
       <SubType>Designer</SubType>
@@ -962,6 +970,11 @@
     </Resource>
     <Resource Include="..\..\..\Documentation\Images\HMC - Use Local Clock as RealTime.png">
       <Link>Images\HMC - Use Local Clock as RealTime.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\..\..\..\..\SecureWPFBranch\Source\Applications\openPDCManager\Silverlight\Images\Secure.png">
+      <Link>Images\Secure.png</Link>
     </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
