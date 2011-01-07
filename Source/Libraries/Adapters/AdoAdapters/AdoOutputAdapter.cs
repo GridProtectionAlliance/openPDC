@@ -93,7 +93,7 @@ namespace AdoAdapters
         /// </summary>
         [ConnectionStringParameter,
         Description("Define the connection string used to connect to the data source."),
-        DefaultValue(string.Empty)]
+        DefaultValue("")]
         public string DbConnectionString
         {
             get

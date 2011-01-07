@@ -141,7 +141,7 @@ namespace HistorianAdapters
         /// </summary>
         [ConnectionStringParameter,
         Description("Define the location of the archive."),
-        DefaultValue(FilePath.GetAbsolutePath(""))]
+        DefaultValue("")]
         public string ArchivePath
         {
             get
@@ -231,7 +231,7 @@ namespace HistorianAdapters
         /// Refreshes metadata using all available and enabled providers.
         /// </summary>
         [AdapterCommand("Refreshes metadata using all available and enabled providers.")]
-        public void RefreshMetadata()
+        public void RefreshAllMetadata()
         {
             bool queueEnabled = InternalProcessQueue.Enabled;
 
@@ -439,7 +439,7 @@ namespace HistorianAdapters
 
             if (m_refreshMetadata)
             {
-                RefreshMetadata();
+                RefreshAllMetadata();
                 m_refreshMetadata = false;
             }
 

@@ -187,10 +187,6 @@ namespace HistorianAdapters
             {
                 return m_outputIsForArchive;
             }
-            set
-            {
-                m_outputIsForArchive = value;
-            }
         }
 
         /// <summary>
