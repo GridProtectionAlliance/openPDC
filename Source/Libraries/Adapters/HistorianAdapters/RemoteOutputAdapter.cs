@@ -33,6 +33,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Threading;
 using TimeSeriesFramework;
@@ -46,6 +47,7 @@ namespace HistorianAdapters
     /// <summary>
     /// Represents an output adapter that publishes measurements to TVA Historian for archival.
     /// </summary>
+    [Description("Creates an output adapter that will publish measurements to another historian for archival.")]
     public class RemoteOutputAdapter : OutputAdapterBase
     {
         #region [ Members ]
@@ -57,9 +59,13 @@ namespace HistorianAdapters
         private const bool DefaultOutputIsForArchive = true;
         private const bool DefaultThrottleTransmission = true;
         private const int DefaultSamplesPerTransmission = 100000;
-        private const int PubliserWaitTime = 5000;
+        private const int PublisherWaitTime = 5000;
 
         // Fields
+        private string m_server;
+        private int m_port;
+        private bool m_payloadAware;
+        private bool m_conserveBandwidth;
         private bool m_outputIsForArchive;
         private bool m_throttleTransmission;
         private int m_samplesPerTransmission;
@@ -83,11 +89,159 @@ namespace HistorianAdapters
         {
             m_historianPublisher = new TcpClient();
             m_publisherWaitHandle = new ManualResetEvent(false);
+
+            m_port = DefaultHistorianPort;
+            m_payloadAware = DefaultPayloadAware;
+            m_conserveBandwidth = DefaultConserveBandwidth;
+            m_outputIsForArchive = DefaultOutputIsForArchive;
+            m_throttleTransmission = DefaultThrottleTransmission;
+            m_samplesPerTransmission = DefaultSamplesPerTransmission;
         }
 
         #endregion
 
         #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets the host name for the server hosting the remote historian.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the host name of the remote historian.")]
+        public string Server
+        {
+            get
+            {
+                return m_server;
+            }
+            set
+            {
+                m_server = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the port on which the remote historian is listening.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the port on which the remote historian is listening."),
+        DefaultValue(1003)]
+        public int Port
+        {
+            get
+            {
+                return m_port;
+            }
+            set
+            {
+                m_port = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean value indicating whether the payload
+        /// boundaries are to be preserved during transmission.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define a value indicating whether to preserve payload boundaries during transmission."),
+        DefaultValue(true)]
+        public bool PayloadAware
+        {
+            get
+            {
+                return m_payloadAware;
+            }
+            set
+            {
+                m_payloadAware = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines the packet
+        /// type to be used when sending data to the server.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define a value indicating the packet type when sending data to the server."),
+        DefaultValue(true)]
+        public bool ConserveBandwidth
+        {
+            get
+            {
+                return m_conserveBandwidth;
+            }
+            set
+            {
+                m_conserveBandwidth = value;
+            }
+        }
+
+        /// <summary>
+        /// Returns a flag that determines if measurements sent to this <see cref="RemoteOutputAdapter"/> are destined for archival.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define a value that determines whether the measurements are destined for archival."),
+        DefaultValue(true)]
+        public override bool OutputIsForArchive
+        {
+            get
+            {
+                return m_outputIsForArchive;
+            }
+            set
+            {
+                m_outputIsForArchive = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines whether to wait for
+        /// acknowledgement from the historian that the last set of points have
+        /// been received before attempting to send the next set of points.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define a value that determines whether to wait for acknowledgement before sending more points."),
+        DefaultValue(true)]
+        public bool ThrottleTransmission
+        {
+            get
+            {
+                return m_throttleTransmission;
+            }
+            set
+            {
+                m_throttleTransmission = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets an integer that indicates the maximum number
+        /// of points to be published to the historian at once.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the maximum number of points to be published at once."),
+        DefaultValue(100000)]
+        public int SamplesPerTransmission
+        {
+            get
+            {
+                return m_samplesPerTransmission;
+            }
+            set
+            {
+                m_samplesPerTransmission = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets flag that determines if this <see cref="RemoteOutputAdapter"/> uses an asynchronous connection.
+        /// </summary>
+        protected override bool UseAsyncConnect
+        {
+            get 
+            {
+                return true;
+            }
+        }
 
         /// <summary>
         /// Returns the detailed status of the data output source.
@@ -105,28 +259,6 @@ namespace HistorianAdapters
             }
         }
 
-        /// <summary>
-        /// Returns a flag that determines if measurements sent to this <see cref="RemoteOutputAdapter"/> are destined for archival.
-        /// </summary>
-        public override bool OutputIsForArchive
-        {
-            get 
-            {
-                return m_outputIsForArchive; 
-            }
-        }
-
-        /// <summary>
-        /// Gets flag that determines if this <see cref="RemoteOutputAdapter"/> uses an asynchronous connection.
-        /// </summary>
-        protected override bool UseAsyncConnect
-        {
-            get 
-            {
-                return true;
-            }
-        }
-
         #endregion
 
         #region [ Methods ]
@@ -139,45 +271,34 @@ namespace HistorianAdapters
         {
             base.Initialize();
 
-            string server;
-            string port;
-            string payloadAware;
-            string conserveBandwidth;
-            string outputIsForArchive;
-            string throttleTransmission;
-            string samplesPerTransmission;
             string errorMessage = "{0} is missing from Settings - Example: server=localhost;port=1003;payloadAware=True;conserveBandwidth=True;outputIsForArchive=True;throttleTransmission=True;samplesPerTransmission=100000";
             Dictionary<string, string> settings = Settings;
+            string setting;
 
             // Validate settings.
-            if (!settings.TryGetValue("server", out server))
+            if (!settings.TryGetValue("server", out m_server))
                 throw new ArgumentException(string.Format(errorMessage, "server"));
 
-            if (!settings.TryGetValue("port", out port))
-                port = DefaultHistorianPort.ToString();
+            if (settings.TryGetValue("port", out setting))
+                m_port = int.Parse(setting);
 
-            if (!settings.TryGetValue("payloadaware", out payloadAware))
-                payloadAware = DefaultPayloadAware.ToString();
+            if (settings.TryGetValue("payloadaware", out setting))
+                m_payloadAware = setting.ParseBoolean();
 
-            if (!settings.TryGetValue("conservebandwidth", out conserveBandwidth))
-                conserveBandwidth = DefaultConserveBandwidth.ToString();
+            if (settings.TryGetValue("conservebandwidth", out setting))
+                m_conserveBandwidth = setting.ParseBoolean();
 
-            if (!settings.TryGetValue("outputisforarchive", out outputIsForArchive))
-                outputIsForArchive = DefaultOutputIsForArchive.ToString();
+            if (settings.TryGetValue("outputisforarchive", out setting))
+                m_outputIsForArchive = setting.ParseBoolean();
 
-            if (!settings.TryGetValue("throttletransmission", out throttleTransmission))
-                throttleTransmission = DefaultThrottleTransmission.ToString();
+            if (settings.TryGetValue("throttletransmission", out setting))
+                m_throttleTransmission = setting.ParseBoolean();
 
-            if (!settings.TryGetValue("samplespertransmission", out samplesPerTransmission))
-                samplesPerTransmission = DefaultSamplesPerTransmission.ToString();
-
-            // Initialize member variables.
-            m_outputIsForArchive = outputIsForArchive.ParseBoolean();
-            m_throttleTransmission = throttleTransmission.ParseBoolean();
-            m_samplesPerTransmission = int.Parse(samplesPerTransmission);
+            if (settings.TryGetValue("samplespertransmission", out setting))
+                m_samplesPerTransmission = int.Parse(setting);
 
             // Initialize publisher delegates.
-            if (conserveBandwidth.ParseBoolean())
+            if (m_conserveBandwidth)
             {
                 m_publisherDelegate = TransmitPacketType101;
             }
@@ -188,8 +309,8 @@ namespace HistorianAdapters
             }
             
             // Initialize publiser socket.
-            m_historianPublisher.ConnectionString = string.Format("Server={0}:{1}", server, port);
-            m_historianPublisher.PayloadAware = payloadAware.ParseBoolean();
+            m_historianPublisher.ConnectionString = string.Format("Server={0}:{1}", m_server, m_port);
+            m_historianPublisher.PayloadAware = m_payloadAware;
             m_historianPublisher.ConnectionAttempt += HistorianPublisher_ConnectionAttempt;
             m_historianPublisher.ConnectionEstablished += HistorianPublisher_ConnectionEstablished;
             m_historianPublisher.ConnectionTerminated += HistorianPublisher_ConnectionTerminated;
@@ -282,7 +403,7 @@ namespace HistorianAdapters
                     // Wait for historian acknowledgement.
                     if (m_throttleTransmission)
                     {
-                        if (!m_publisherWaitHandle.WaitOne(PubliserWaitTime))
+                        if (!m_publisherWaitHandle.WaitOne(PublisherWaitTime))
                             throw new OperationCanceledException("Timeout waiting for acknowledgement from historian");
                     }
 

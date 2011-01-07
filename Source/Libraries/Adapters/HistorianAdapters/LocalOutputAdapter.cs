@@ -55,6 +55,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
@@ -79,6 +80,7 @@ namespace HistorianAdapters
     /// <summary>
     /// Represents an output adapter that archives measurements to a local archive.
     /// </summary>
+    [Description("Creates an output adapter that will archive measurements to a local historian.")]
     public class LocalOutputAdapter : OutputAdapterBase
     {
         #region [ Members ]
@@ -90,6 +92,7 @@ namespace HistorianAdapters
         private ReplicationProviders m_replicationProviders;
         private bool m_refreshMetadata;
         private string m_instanceName;
+        private string m_archivePath;
         private long m_archivedMeasurements;
         private bool m_disposed;
 
@@ -115,8 +118,9 @@ namespace HistorianAdapters
         #region [ Properties ]
 
         /// <summary>
-        /// Gets instance name defined for this <see cref="LocalOutputAdapter"/>.
+        /// Gets or sets instance name defined for this <see cref="LocalOutputAdapter"/>.
         /// </summary>
+        [ConnectionStringParameter, Description("Define the instance name for the historian.")]
         public string InstanceName
         {
             get
@@ -125,6 +129,47 @@ namespace HistorianAdapters
                     return Name.ToLower();
 
                 return m_instanceName;
+            }
+            set
+            {
+                m_instanceName = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the path to the archive.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the location of the archive."),
+        DefaultValue(FilePath.GetAbsolutePath(""))]
+        public string ArchivePath
+        {
+            get
+            {
+                return m_archivePath;
+            }
+            set
+            {
+                m_archivePath = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean indicating whether or not metadata is
+        /// refreshed when the adapter attempts to connect to the archive.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define a boolean indicating whether to refresh metadata on connect."),
+        DefaultValue(true)]
+        public bool RefreshMetadata
+        {
+            get
+            {
+                return m_refreshMetadata;
+            }
+            set
+            {
+                m_refreshMetadata = value;
             }
         }
 

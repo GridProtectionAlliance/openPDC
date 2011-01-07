@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Reflection;
@@ -36,6 +37,7 @@ namespace AdoAdapters
     /// <summary>
     /// Represents an output adapter that archives measurements to a database.
     /// </summary>
+    [Description("Creates an output adapter that will archive measurements to any ADO data source (e.g. OSI-PI via ODBC).")]
     public class AdoOutputAdapter : OutputAdapterBase
     {
 
@@ -67,6 +69,78 @@ namespace AdoAdapters
         #endregion
 
         #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets the table name used by the <see cref="AdoOutputAdapter"/>.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the table name in the data source used to archive data."),
+        DefaultValue("PICOMP")]
+        public string TableName
+        {
+            get
+            {
+                return m_dbTableName;
+            }
+            set
+            {
+                m_dbTableName = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the connection string used to connect to the data source.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the connection string used to connect to the data source."),
+        DefaultValue(string.Empty)]
+        public string DbConnectionString
+        {
+            get
+            {
+                return m_dbConnectionString;
+            }
+            set
+            {
+                m_dbConnectionString = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the data provider string used to connect to the data source.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the data provider string used to connect to the data source."),
+        DefaultValue("AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.Odbc.OdbcConnection; AdapterType=System.Data.Odbc.OdbcDataAdapter")]
+        public string DataProviderString
+        {
+            get
+            {
+                return m_dataProviderString;
+            }
+            set
+            {
+                m_dataProviderString = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the format used to output measurement timestamps to the data source.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the date and time format used to output the timestamp to the data source."),
+        DefaultValue("dd-MMM-yyyy HH:mm:ss.fff")]
+        public string TimestampFormat
+        {
+            get
+            {
+                return m_timestampFormat;
+            }
+            set
+            {
+                m_timestampFormat = value;
+            }
+        }
 
         /// <summary>
         /// Returns a flag that determines if measurements sent to this
@@ -138,7 +212,7 @@ namespace AdoAdapters
                 m_dbTableName = "PICOMP";
 
             // Get database connection string or default to empty.
-            if (!settings.TryGetValue("connectionString", out m_dbConnectionString))
+            if (!settings.TryGetValue("dbConnectionString", out m_dbConnectionString))
                 m_dbConnectionString = string.Empty;
 
             // Get data provider string or default to a generic ODBC connection.

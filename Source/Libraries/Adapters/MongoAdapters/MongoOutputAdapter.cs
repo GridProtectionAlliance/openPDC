@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using MongoDB;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
@@ -32,6 +33,7 @@ namespace MongoAdapters
     /// <summary>
     /// Represents an output adapter that archives measurements to a MongoDB database.
     /// </summary>
+    [Description("Creates an output adapter that will archive measurements to a MongoDB database.")]
     public class MongoOutputAdapter : OutputAdapterBase
     {
 
@@ -70,6 +72,9 @@ namespace MongoAdapters
         /// <summary>
         /// Gets or sets the name of the MongoDB database.
         /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the name of the MongoDB database."),
+        DefaultValue("openPDC")]
         public string DatabaseName
         {
             get
@@ -91,6 +96,9 @@ namespace MongoAdapters
         /// <summary>
         /// Gets or sets the name of the measurement collection.
         /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the name of the collection of measurements."),
+        DefaultValue("measurements")]
         public string CollectionName
         {
             get
@@ -112,6 +120,9 @@ namespace MongoAdapters
         /// <summary>
         /// Gets or sets the server on which the MongoDB daemon is running.
         /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the IP or host name of the MongoDB server."),
+        DefaultValue("localhost")]
         public string Server
         {
             get
@@ -133,6 +144,9 @@ namespace MongoAdapters
         /// <summary>
         /// Gets or sets the port on which the MongoDB daemon is listening.
         /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the port on which the MongoDB server is listening."),
+        DefaultValue(27017)]
         public int Port
         {
             get
