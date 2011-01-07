@@ -287,7 +287,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// </summary>
         public ConnectionParameters()
         {
-            m_refreshConfigurationFileOnChange = true;
+            m_refreshConfigurationFileOnChange = false;
         }
 
         /// <summary>

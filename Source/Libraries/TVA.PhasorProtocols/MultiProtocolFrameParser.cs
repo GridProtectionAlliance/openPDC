@@ -1590,6 +1590,8 @@ namespace TVA.PhasorProtocols
 
                         if (settings.TryGetValue("refreshConfigFileOnChange", out setting))
                             bpaPdcParameters.RefreshConfigurationFileOnChange = setting.ParseBoolean();
+                        else
+                            bpaPdcParameters.RefreshConfigurationFileOnChange = false;
 
                         if (settings.TryGetValue("parseWordCountFromByte", out setting))
                             bpaPdcParameters.ParseWordCountFromByte = setting.ParseBoolean();
