@@ -705,7 +705,13 @@ namespace HistorianAdapters
                 // Load the defined local system historians
                 IEnumerable<DataRow> historians = connection.RetrieveData(adapterType, string.Format("SELECT AdapterName FROM RuntimeHistorian WHERE NodeID = {0} AND TypeName = 'HistorianAdapters.LocalOutputAdapter';", nodeIDQueryString)).AsEnumerable();
                 List<string> validHistorians = new List<string>();
-                string name, acronym;
+                string name, acronym, archivePath, fileName, defaultFileName;
+                
+                // Make sure archive path exists to hold historian files
+                archivePath = FilePath.GetAbsolutePath(FilePath.AddPathSuffix("Archive"));
+
+                if (!Directory.Exists(archivePath))
+                    Directory.CreateDirectory(archivePath);
 
                 // Apply settings optimizations to local historians
                 foreach (DataRow row in historians)
@@ -724,6 +730,18 @@ namespace HistorianAdapters
                         settings["LoadOnOpen"].Update(true);
                         settings["ReloadOnModify"].Update(true);
 
+                        // Older versions of the openPDC placed the archive data files in the same folder as the executables, for both better
+                        // organization and performance related to file monitoring, these files are now located in their own folder
+                        defaultFileName = string.Format("{0}\\{1}_dbase.dat", archivePath, acronym);
+                        settings.Add("FileName", defaultFileName, string.Format("Name of the {0} meta-data file including its path.", acronym));
+                        fileName = settings["FileName"].Value;
+
+                        if (string.Compare(FilePath.GetDirectoryName(fileName), FilePath.AddPathSuffix(FilePath.GetAbsolutePath("")), true) == 0)
+                        {
+                            File.Move(fileName, defaultFileName);
+                            settings["FileName"].Update(defaultFileName);
+                        }
+
                         settings = configFile.Settings[string.Format("{0}StateFile", acronym)];
                         settings.Add("AutoSaveInterval", 10000, string.Format("Interval in milliseconds at which the file records loaded in memory are to be saved automatically to disk. Use -1 to disable automatic saving - this defaults to 10,000 for the {0} state file.", name));
                         settings.Add("LoadOnOpen", true, string.Format("True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the {0} state file.", name));
@@ -731,6 +749,16 @@ namespace HistorianAdapters
                         settings["AutoSaveInterval"].Update(10000);
                         settings["LoadOnOpen"].Update(true);
                         settings["SaveOnClose"].Update(true);
+
+                        defaultFileName = string.Format("{0}\\{1}_startup.dat", archivePath, acronym);
+                        settings.Add("FileName", defaultFileName, string.Format("Name of the {0} state file including its path.", acronym));
+                        fileName = settings["FileName"].Value;
+
+                        if (string.Compare(FilePath.GetDirectoryName(fileName), FilePath.AddPathSuffix(FilePath.GetAbsolutePath("")), true) == 0)
+                        {
+                            File.Move(fileName, defaultFileName);
+                            settings["FileName"].Update(defaultFileName);
+                        }
 
                         settings = configFile.Settings[string.Format("{0}IntercomFile", acronym)];
                         settings.Add("AutoSaveInterval", 1000, string.Format("Interval in milliseconds at which the file records loaded in memory are to be saved automatically to disk. Use -1 to disable automatic saving - this defaults to 1,000 for the {0} intercom file.", name));
@@ -740,11 +768,44 @@ namespace HistorianAdapters
                         settings["LoadOnOpen"].Update(true);
                         settings["SaveOnClose"].Update(true);
 
+                        defaultFileName = string.Format("{0}\\scratch.dat", archivePath);
+                        settings.Add("FileName", defaultFileName, string.Format("Name of the {0} intercom file including its path.", acronym));
+                        fileName = settings["FileName"].Value;
+
+                        if (string.Compare(FilePath.GetDirectoryName(fileName), FilePath.AddPathSuffix(FilePath.GetAbsolutePath("")), true) == 0)
+                        {
+                            File.Move(fileName, defaultFileName);
+                            settings["FileName"].Update(defaultFileName);
+                        }
+
                         settings = configFile.Settings[string.Format("{0}ArchiveFile", acronym)];
                         settings.Add("CacheWrites", true, string.Format("True if writes are to be cached for performance; otherwise False - this defaults to True for the {0} working archive file.", name));
                         settings.Add("ConserveMemory", false, string.Format("True if attempts are to be made to conserve memory; otherwise False - this defaults to False for the {0} working archive file.", name));
                         settings["CacheWrites"].Update(true);
                         settings["ConserveMemory"].Update(false);
+
+                        defaultFileName = string.Format("{0}\\{1}_archive.d", archivePath, acronym);
+                        settings.Add("FileName", defaultFileName, string.Format("Name of the {0} working archive file including its path.", acronym));
+                        fileName = settings["FileName"].Value;
+
+                        if (string.Compare(FilePath.GetDirectoryName(fileName), FilePath.AddPathSuffix(FilePath.GetAbsolutePath("")), true) == 0)
+                        {
+                            File.Move(fileName, defaultFileName);
+                            settings["FileName"].Update(defaultFileName);
+                        }
+
+                        // Move any historical files in executable folder to the archive folder...
+                        string[] archiveFileNames = FilePath.GetFileList(string.Format("{0}\\{1}_archive*.d", FilePath.GetAbsolutePath(""), acronym));
+
+                        if (archiveFileNames != null && archiveFileNames.Length > 0)
+                        {
+                            statusMessage("LocalOutputAdapter", new EventArgs<string>("Relocating existing historical data to \"Archive\" folder..."));
+
+                            foreach (string archiveFileName in archiveFileNames)
+                            {
+                                File.Move(archiveFileName, string.Format("{0}\\{1}", archivePath, FilePath.GetFileName(archiveFileName)));
+                            }
+                        }
                     }
                 }
 

@@ -565,6 +565,24 @@ namespace TVA.PhasorProtocols
                 status.AppendLine();
                 status.Append(base.Status);
 
+                if (m_commandChannel != null)
+                {
+                    Guid[] clientIDs = m_commandChannel.ClientIDs;
+
+                    if (clientIDs != null && clientIDs.Length > 0)
+                    {
+                        status.AppendLine();
+                        status.AppendFormat("Command channel has {0} connected clients:\r\n\r\n", clientIDs.Length);
+
+                        for (int i = 0; i < clientIDs.Length; i++)
+                        {
+                            status.AppendFormat("    {0}) {1}\r\n", i + 1, GetConnectionID(m_commandChannel, clientIDs[i]));
+                        }
+
+                        status.AppendLine();
+                    }
+                }
+
                 return status.ToString();
             }
         }
@@ -1223,6 +1241,18 @@ namespace TVA.PhasorProtocols
                                 connectionID = "[" + remoteEndPoint.Address + "]:" + remoteEndPoint.Port;
                             else
                                 connectionID = remoteEndPoint.Address + ":" + remoteEndPoint.Port;
+
+                            try
+                            {
+                                IPHostEntry ipHost = Dns.GetHostEntry(remoteEndPoint.Address);
+
+                                if (!string.IsNullOrWhiteSpace(ipHost.HostName))
+                                    connectionID = ipHost.HostName + " (" + connectionID + ")";
+                            }
+                            catch
+                            {
+                                // Just ignoring possible DNS lookup failures...
+                            }
                         }
                     }
                     catch (Exception ex)
