@@ -705,7 +705,10 @@ namespace HistorianAdapters
                 // Load the defined local system historians
                 IEnumerable<DataRow> historians = connection.RetrieveData(adapterType, string.Format("SELECT AdapterName FROM RuntimeHistorian WHERE NodeID = {0} AND TypeName = 'HistorianAdapters.LocalOutputAdapter';", nodeIDQueryString)).AsEnumerable();
                 List<string> validHistorians = new List<string>();
-                string name, acronym, archivePath, fileName, defaultFileName;
+                string name, acronym, currentPath, archivePath, fileName, defaultFileName;
+
+                // Get current execution path
+                currentPath = FilePath.AddPathSuffix(FilePath.GetAbsolutePath(""));
                 
                 // Make sure archive path exists to hold historian files
                 archivePath = FilePath.GetAbsolutePath(FilePath.AddPathSuffix("Archive"));
@@ -736,9 +739,10 @@ namespace HistorianAdapters
                         settings.Add("FileName", defaultFileName, string.Format("Name of the {0} meta-data file including its path.", acronym));
                         fileName = settings["FileName"].Value;
 
-                        if (string.Compare(FilePath.GetDirectoryName(fileName), FilePath.AddPathSuffix(FilePath.GetAbsolutePath("")), true) == 0)
+                        if (string.Compare(FilePath.GetDirectoryName(fileName), currentPath, true) == 0)
                         {
-                            File.Move(fileName, defaultFileName);
+                            if (!File.Exists(defaultFileName))
+                                File.Move(fileName, defaultFileName);
                             settings["FileName"].Update(defaultFileName);
                         }
 
@@ -754,9 +758,10 @@ namespace HistorianAdapters
                         settings.Add("FileName", defaultFileName, string.Format("Name of the {0} state file including its path.", acronym));
                         fileName = settings["FileName"].Value;
 
-                        if (string.Compare(FilePath.GetDirectoryName(fileName), FilePath.AddPathSuffix(FilePath.GetAbsolutePath("")), true) == 0)
+                        if (string.Compare(FilePath.GetDirectoryName(fileName), currentPath, true) == 0)
                         {
-                            File.Move(fileName, defaultFileName);
+                            if (!File.Exists(defaultFileName))
+                                File.Move(fileName, defaultFileName);
                             settings["FileName"].Update(defaultFileName);
                         }
 
@@ -772,9 +777,10 @@ namespace HistorianAdapters
                         settings.Add("FileName", defaultFileName, string.Format("Name of the {0} intercom file including its path.", acronym));
                         fileName = settings["FileName"].Value;
 
-                        if (string.Compare(FilePath.GetDirectoryName(fileName), FilePath.AddPathSuffix(FilePath.GetAbsolutePath("")), true) == 0)
+                        if (string.Compare(FilePath.GetDirectoryName(fileName), currentPath, true) == 0)
                         {
-                            File.Move(fileName, defaultFileName);
+                            if (!File.Exists(defaultFileName))
+                                File.Move(fileName, defaultFileName);
                             settings["FileName"].Update(defaultFileName);
                         }
 
@@ -788,9 +794,10 @@ namespace HistorianAdapters
                         settings.Add("FileName", defaultFileName, string.Format("Name of the {0} working archive file including its path.", acronym));
                         fileName = settings["FileName"].Value;
 
-                        if (string.Compare(FilePath.GetDirectoryName(fileName), FilePath.AddPathSuffix(FilePath.GetAbsolutePath("")), true) == 0)
+                        if (string.Compare(FilePath.GetDirectoryName(fileName), currentPath, true) == 0)
                         {
-                            File.Move(fileName, defaultFileName);
+                            if (!File.Exists(defaultFileName))
+                                File.Move(fileName, defaultFileName);
                             settings["FileName"].Update(defaultFileName);
                         }
 
@@ -803,7 +810,10 @@ namespace HistorianAdapters
 
                             foreach (string archiveFileName in archiveFileNames)
                             {
-                                File.Move(archiveFileName, string.Format("{0}\\{1}", archivePath, FilePath.GetFileName(archiveFileName)));
+                                defaultFileName = string.Format("{0}\\{1}", archivePath, FilePath.GetFileName(archiveFileName));
+
+                                if (!File.Exists(defaultFileName))
+                                    File.Move(archiveFileName, defaultFileName);
                             }
                         }
                     }
