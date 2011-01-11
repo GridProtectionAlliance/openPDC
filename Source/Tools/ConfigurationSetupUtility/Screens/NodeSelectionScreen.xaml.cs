@@ -75,7 +75,13 @@ namespace ConfigurationSetupUtility.Screens
         /// <summary>
         /// Gets or sets the screen to be displayed when the user clicks the "Next" button.
         /// </summary>
-        public IScreen NextScreen { get; set; }
+        public IScreen NextScreen
+        {
+            get
+            {
+                return (IScreen)m_state["setupReadyScreen"];
+            }
+        }
 
         /// <summary>
         /// Gets a boolean indicating whether the user can advance to

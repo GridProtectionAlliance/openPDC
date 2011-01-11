@@ -40,6 +40,7 @@ namespace ConfigurationSetupUtility.Screens
         // Fields
 
         private NodeSelectionScreen m_nodeSelectionScreen;
+        private HistorianSetupScreen m_historianSetupScreen;
         private SetupReadyScreen m_setupReadyScreen;
         private Dictionary<string, object> m_state;
 
@@ -54,8 +55,8 @@ namespace ConfigurationSetupUtility.Screens
         {
             InitializeComponent();
             m_nodeSelectionScreen = new NodeSelectionScreen();
+            m_historianSetupScreen = new HistorianSetupScreen();
             m_setupReadyScreen = new SetupReadyScreen();
-            m_nodeSelectionScreen.NextScreen = m_setupReadyScreen;
         }
 
         #endregion
@@ -71,14 +72,15 @@ namespace ConfigurationSetupUtility.Screens
             {
                 bool applyChangesToService = Convert.ToBoolean(m_state["applyChangesToService"]);
                 bool existing = Convert.ToBoolean(m_state["existing"]);
+                bool initialDataScript = !existing && Convert.ToBoolean(m_state["initialDataScript"]);
+                bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
 
-                if (applyChangesToService && existing)
+                if (!existing)
+                    return m_historianSetupScreen;
+                else if (applyChangesToService)
                     return m_nodeSelectionScreen;
                 else
-                {
-                    m_state.Remove("selectedNodeId");
                     return m_setupReadyScreen;
-                }
             }
         }
 
@@ -177,6 +179,7 @@ namespace ConfigurationSetupUtility.Screens
             m_state["applyChangesToService"] = m_openPdcServiceCheckBox.IsChecked.Value;
             m_state["applyChangesToLocalManager"] = m_openPdcManagerLocalCheckBox.IsChecked.Value;
             m_state["applyChangesToWebManager"] = m_openPdcManagerWebCheckBox.IsChecked.Value;
+            m_state["setupReadyScreen"] = m_setupReadyScreen;
         }
 
         // Occurs when the user chooses to apply changes to the openPDC service.

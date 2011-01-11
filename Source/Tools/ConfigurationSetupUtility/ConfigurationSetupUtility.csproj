@@ -89,6 +89,9 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="TimeSeriesFramework">
+      <HintPath>..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
+    </Reference>
     <Reference Include="TVA.Core">
       <HintPath>..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
     </Reference>
@@ -123,6 +126,12 @@
       <DependentUpon>ExistingConfigurationScreen.xaml</DependentUpon>
     </Compile>
     <Compile Include="IScreen.cs" />
+    <Compile Include="Screens\HistorianConnectionStringScreen.xaml.cs">
+      <DependentUpon>HistorianConnectionStringScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\HistorianSetupScreen.xaml.cs">
+      <DependentUpon>HistorianSetupScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Screens\MySqlDatabaseSetupScreen.xaml.cs">
       <DependentUpon>MySqlDatabaseSetupScreen.xaml</DependentUpon>
     </Compile>
@@ -199,6 +208,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Screens\HistorianConnectionStringScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\HistorianSetupScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Screens\MySqlDatabaseSetupScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

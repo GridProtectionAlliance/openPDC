@@ -26,15 +26,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.ServiceProcess;
 using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Xml;
 using Microsoft.Win32;
+using TVA;
+using TVA.IO;
 using TVA.Security.Cryptography;
 
 namespace ConfigurationSetupUtility.Screens
@@ -215,6 +219,7 @@ namespace ConfigurationSetupUtility.Screens
                 string filePath = null;
                 string destination = m_state["accessDatabaseFilePath"].ToString();
                 string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + destination;
+                string dataProviderString = "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter";
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
 
@@ -235,13 +240,17 @@ namespace ConfigurationSetupUtility.Screens
 
                     // Copy the file to the specified path.
                     File.Copy(filePath, destination, true);
-                    UpdateProgressBar(95);
+                    UpdateProgressBar(90);
                     AppendStatusMessage("File copy successful.");
                     AppendStatusMessage(string.Empty);
+
+                    // Set up the initial historian.
+                    if (!existing)
+                        SetUpInitialHistorian(connectionString, dataProviderString);
                 }
 
                 // Modify the openPDC configuration file.
-                ModifyConfigFiles(connectionString, "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter", false);
+                ModifyConfigFiles(connectionString, dataProviderString, false);
                 
                 m_state["oldOleDbConnectionString"] = m_oldConnectionString;
                 m_state["newOleDbConnectionString"] = connectionString;
@@ -265,6 +274,8 @@ namespace ConfigurationSetupUtility.Screens
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
                 string adminUserName, adminPassword;
+                object dataProviderStringValue;
+                string dataProviderString = null;
 
                 mySqlSetup = m_state["mySqlSetup"] as MySqlSetup;
                 mySqlSetup.OutputDataReceived += MySqlSetup_OutputDataReceived;
@@ -272,6 +283,13 @@ namespace ConfigurationSetupUtility.Screens
                 m_state["newOleDbConnectionString"] = mySqlSetup.OleDbConnectionString;
                 adminUserName = mySqlSetup.UserName;
                 adminPassword = mySqlSetup.Password;
+
+                // Get user customized data provider string
+                if (m_state.TryGetValue("mySqlDataProviderString", out dataProviderStringValue))
+                    dataProviderString = dataProviderStringValue.ToString();
+
+                if (string.IsNullOrWhiteSpace(dataProviderString))
+                    dataProviderString = "AssemblyName={MySql.Data, Version=6.3.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
 
                 if (!existing || migrate)
                 {
@@ -307,6 +325,10 @@ namespace ConfigurationSetupUtility.Screens
                         AppendStatusMessage(string.Empty);
                     }
 
+                    // Set up the initial historian.
+                    if (!existing)
+                        SetUpInitialHistorian(mySqlSetup.ConnectionString, dataProviderString);
+
                     // Create new MySQL database user.
                     if (createNewUser)
                     {
@@ -325,23 +347,13 @@ namespace ConfigurationSetupUtility.Screens
                         mySqlSetup.UserName = user;
                         mySqlSetup.Password = pass;
 
-                        UpdateProgressBar(95);
+                        UpdateProgressBar(98);
                         AppendStatusMessage("New user created successfully.");
                         AppendStatusMessage(string.Empty);
                     }
                 }
 
                 // Modify the openPDC configuration file.
-                object dataProviderStringValue;
-                string dataProviderString = null;
-
-                // Get user customized data provider string
-                if (m_state.TryGetValue("mySqlDataProviderString", out dataProviderStringValue))
-                    dataProviderString = dataProviderStringValue.ToString();
-
-                if (string.IsNullOrWhiteSpace(dataProviderString))
-                    dataProviderString = "AssemblyName={MySql.Data, Version=6.3.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
-
                 ModifyConfigFiles(mySqlSetup.ConnectionString, dataProviderString, Convert.ToBoolean(m_state["encryptMySqlConnectionStrings"]));
                 SaveOldConnectionString();
 
@@ -372,6 +384,8 @@ namespace ConfigurationSetupUtility.Screens
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
                 string adminUserName, adminPassword;
+                object dataProviderStringValue;
+                string dataProviderString = null;
 
                 sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;
                 sqlServerSetup.OutputDataReceived += SqlServerSetup_OutputDataReceived;
@@ -379,6 +393,13 @@ namespace ConfigurationSetupUtility.Screens
                 m_state["newOleDbConnectionString"] = sqlServerSetup.OleDbConnectionString;
                 adminUserName = sqlServerSetup.UserName;
                 adminPassword = sqlServerSetup.Password;
+
+                // Get user customized data provider string
+                if (m_state.TryGetValue("sqlServerDataProviderString", out dataProviderStringValue))
+                    dataProviderString = dataProviderStringValue.ToString();
+
+                if (string.IsNullOrWhiteSpace(dataProviderString))
+                    dataProviderString = "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter";
 
                 if (!existing || migrate)
                 {
@@ -414,7 +435,9 @@ namespace ConfigurationSetupUtility.Screens
                         AppendStatusMessage(string.Empty);
                     }
 
-                    m_state["oleDbConnectionString"] = "Provider=SQLOLEDB; " + sqlServerSetup.ConnectionString;
+                    // Set up the initial historian.
+                    if (!existing)
+                        SetUpInitialHistorian(sqlServerSetup.ConnectionString, dataProviderString);
 
                     // Create new SQL Server database user.
                     if (createNewUser)
@@ -448,23 +471,13 @@ namespace ConfigurationSetupUtility.Screens
                         sqlServerSetup.UserName = user;
                         sqlServerSetup.Password = pass;
 
-                        UpdateProgressBar(95);
+                        UpdateProgressBar(98);
                         AppendStatusMessage("New user created successfully.");
                         AppendStatusMessage(string.Empty);
                     }
                 }
 
                 // Modify the openPDC configuration file.
-                object dataProviderStringValue;
-                string dataProviderString = null;
-
-                // Get user customized data provider string
-                if (m_state.TryGetValue("sqlServerDataProviderString", out dataProviderStringValue))
-                    dataProviderString = dataProviderStringValue.ToString();
-
-                if (string.IsNullOrWhiteSpace(dataProviderString))
-                    dataProviderString = "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter";
-
                 ModifyConfigFiles(sqlServerSetup.ConnectionString, dataProviderString, Convert.ToBoolean(m_state["encryptSqlServerConnectionStrings"]));
                 SaveOldConnectionString();
 
@@ -514,6 +527,114 @@ namespace ConfigurationSetupUtility.Screens
             {
                 AppendStatusMessage(ex.Message);
                 OnSetupFailed();
+            }
+        }
+
+        // Sets up the initial historian in new configurations.
+        private void SetUpInitialHistorian(string connectionString, string dataProviderString)
+        {
+            bool initialDataScript = Convert.ToBoolean(m_state["initialDataScript"]);
+            bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
+
+            string historianAssemblyName = m_state["historianAssemblyName"].ToString();
+            string historianTypeName = m_state["historianTypeName"].ToString();
+            string historianAcronym = m_state["historianAcronym"].ToString();
+            string historianName = m_state["historianName"].ToString();
+            string historianDescription = m_state["historianDescription"].ToString();
+            string historianConnectionString = m_state["historianConnectionString"].ToString();
+
+            Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
+            Dictionary<string, string> dataProviderSettings = dataProviderString.ParseKeyValuePairs();
+            string assemblyName = dataProviderSettings["AssemblyName"];
+            string connectionTypeName = dataProviderSettings["ConnectionType"];
+            string connectionSetting;
+
+            Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
+            Type connectionType = assembly.GetType(connectionTypeName);
+            IDbConnection connection = null;
+
+            try
+            {
+                IDbCommand nodeIdCommand;
+                IDbCommand historianCommand;
+                IDataReader nodeIdReader = null;
+                string nodeId = null;
+                string nodeIdQueryString = null;
+
+                AppendStatusMessage("Attempting to set up the initial historian...");
+
+                if (settings.TryGetValue("Provider", out connectionSetting))
+                {
+                    // Check if provider is for Access to make sure the path is fully qualified.
+                    if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (settings.TryGetValue("Data Source", out connectionSetting))
+                        {
+                            settings["Data Source"] = FilePath.GetAbsolutePath(connectionSetting);
+                            connectionString = settings.JoinKeyValuePairs();
+                        }
+                    }
+                }
+
+                connection = (IDbConnection)Activator.CreateInstance(connectionType);
+                connection.ConnectionString = connectionString;
+                connection.Open();
+
+                // Set up default node.
+                if (!sampleDataScript)
+                {
+                    IDbCommand nodeCommand = connection.CreateCommand();
+                    nodeCommand.CommandText = "INSERT INTO Node(Name, CompanyID, Description, TimeSeriesDataServiceUrl, RemoteStatusServiceUrl, RealTimeStatisticServiceUrl, Master, LoadOrder, Enabled) VALUES('Default', NULL, 'Default node', 'http://localhost:6152/historian', 'Server=localhost:8500', 'http://localhost:6052/historian', 1, 0, 1)";
+                    nodeCommand.ExecuteNonQuery();
+                }
+
+                // Get the node ID from the database.
+                try
+                {
+                    nodeIdCommand = connection.CreateCommand();
+                    nodeIdCommand.CommandText = "SELECT ID FROM Node WHERE Name = 'Default'";
+                    nodeIdReader = nodeIdCommand.ExecuteReader();
+
+                    if (nodeIdReader.Read())
+                        nodeId = nodeIdReader["ID"].ToNonNullString();
+
+                    if (settings.TryGetValue("Provider", out connectionSetting))
+                    {
+                        // Check if provider is for Access since it uses braces as Guid delimeters
+                        if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                            nodeIdQueryString = "{" + nodeId + "}";
+                    }
+
+                    if (string.IsNullOrWhiteSpace(nodeIdQueryString))
+                        nodeIdQueryString = "'" + nodeId + "'";
+
+                    m_state["selectedNodeId"] = nodeId;
+                }
+                finally
+                {
+                    if (nodeIdReader != null)
+                        nodeIdReader.Close();
+                }
+
+                // Set up initial historian.
+                historianCommand = connection.CreateCommand();
+
+                if (sampleDataScript)
+                    historianCommand.CommandText = string.Format("UPDATE Historian SET AssemblyName='{0}', TypeName='{1}', Acronym='{2}', Name='{3}', Description='{4}', ConnectionString='{5}'", historianAssemblyName, historianTypeName, historianAcronym, historianName, historianDescription, historianConnectionString);
+                else
+                    historianCommand.CommandText = string.Format("INSERT INTO Historian(NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) VALUES({0}, '{3}', '{4}', '{1}', '{2}', '{6}', 0, '{5}', 0, 1)", nodeIdQueryString, historianAssemblyName, historianTypeName, historianAcronym, historianName, historianDescription, historianConnectionString);
+
+                historianCommand.ExecuteNonQuery();
+
+                // Report success to the user.
+                AppendStatusMessage("Successfully set up initial historian.");
+                AppendStatusMessage(string.Empty);
+                UpdateProgressBar(95);
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
             }
         }
 

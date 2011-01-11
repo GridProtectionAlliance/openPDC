@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="ConfigurationSetupUtility.Screens.HistorianSetupScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=FrameworkElement, AncestorLevel=1}, Path=ActualWidth}">
+    <DockPanel>
+        <Label Content="Set up historian" DockPanel.Dock="Top" HorizontalContentAlignment="Center" FontWeight="Bold" FontSize="16" Margin="10" />
+        <StackPanel DockPanel.Dock="Bottom">
+            <TextBlock Text="Please select the type of historian you would like to use." Margin="20,0" TextAlignment="Center" />
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Label Content="Assembly Name:" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="10" />
+                <Label Content="Type Name:" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="2" FontSize="10" />
+                <ListBox VerticalAlignment="Stretch" Grid.Row="1" Name="AssemblyNameListBox" SelectionChanged="AssemblyNameListBox_SelectionChanged" Height="120" />
+                <ListBox Grid.Column="2" Name="TypeNameListBox" VerticalAlignment="Stretch" Grid.Row="1" SelectionChanged="TypeNameListBox_SelectionChanged" Height="120" />
+                <Label Content="-&gt;" Grid.RowSpan="2" HorizontalAlignment="Stretch" Name="label1" VerticalAlignment="Center" Grid.Column="1" Margin="5,0" />
+            </Grid>
+            <Grid Margin="10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label Content="Acronym:" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="10" />
+                <TextBox Height="23" Text="INITARCHIVE" Grid.Column="1" Margin="5,0,0,0" Name="AcronymTextBox" TextChanged="AcronymTextBox_TextChanged" />
+                <Label Content="Name:" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" FontSize="10" />
+                <TextBox Grid.Row="1" Height="23" Margin="5,0,0,0" Text="Initial Archive" Grid.Column="1" Name="NameTextBox" TextChanged="NameTextBox_TextChanged" />
+                <Label Content="Description:" Grid.Row="2" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="10" />
+                <TextBox Grid.Row="2" Text="Created by the Configuration Setup Utility" Grid.Column="1" Margin="5,0,0,0" Name="DescriptionTextBox" TextChanged="DescriptionTextBox_TextChanged" />
+            </Grid>
+        </StackPanel>
+    </DockPanel>
+</UserControl>
