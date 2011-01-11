@@ -285,7 +285,7 @@ namespace openPDCManager.ModalDialogs
             {
                 TabItemTCP.Visibility = Visibility.Visible;
                 TabItemUDP.Visibility = Visibility.Collapsed;
-                TabItemSerial.Visibility = Visibility.Visible;
+                TabItemSerial.Visibility = Visibility.Collapsed;
                 TabItemFile.Visibility = Visibility.Collapsed;
                 TabItemUdpServer.Visibility = Visibility.Collapsed;
                 TextBlockHostIP.Visibility = Visibility.Collapsed;
@@ -373,6 +373,16 @@ namespace openPDCManager.ModalDialogs
                     {
                         keyvaluepairs.Add(keyvaluepair[0].Trim(), keyvaluepair[1].Trim());
                     }
+                }
+
+                if (m_connectionType == ConnectionType.CommandChannel)  //command channel is TCP
+                {
+                    if (!keyvaluepairs.ContainsKey("transportprotocol") && !keyvaluepairs.ContainsKey("protocol"))
+                        keyvaluepairs.Add("transportprotocol", "tcp");
+                    else if (keyvaluepairs.ContainsKey("transportprotocol"))
+                        keyvaluepairs["transportprotocol"] = "tcp";
+                    else if (keyvaluepairs.ContainsKey("protocol"))
+                        keyvaluepairs["protocol"] = "tcp";
                 }
 
                 if (m_connectionType == ConnectionType.DataChannel) //then it is UDP server.
@@ -495,7 +505,15 @@ namespace openPDCManager.ModalDialogs
 
         void SetConnectionString(TransportProtocol transportProtocol)
         {
-            if (m_connectionType != ConnectionType.DataChannel)	// don't need transport protocol if it is a data channel. By default it is UDP.
+            if (m_connectionType == ConnectionType.DataChannel || m_connectionType == ConnectionType.CommandChannel)	// don't need transport protocol if it is a data channel or command channel.
+            {
+                if (keyvaluepairs.ContainsKey("transportprotocol"))
+                    keyvaluepairs.Remove("transportprotocol");
+
+                if (keyvaluepairs.ContainsKey("protocol"))
+                    keyvaluepairs.Remove("protocol");
+            }
+            else 
             {
                 if (!keyvaluepairs.ContainsKey("transportprotocol") && !keyvaluepairs.ContainsKey("protocol"))
                     keyvaluepairs.Add("transportprotocol", transportProtocol.ToString());
