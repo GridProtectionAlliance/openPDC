@@ -2473,7 +2473,7 @@ namespace TVA.PhasorProtocols
             if (outputStream != null)
             {
                 if (outputStream.Enabled)
-                    statistic = (s_statisticValueCache.GetDifference(outputStream, outputStream.ConnectionAttempts, "ConnectionAttempts") == 0.0D ? 1.0D : 0.0D);
+                    statistic = (s_statisticValueCache.GetDifference(outputStream, outputStream.ActiveConnections, "ActiveConnections") == 0.0D ? 1.0D : 0.0D);
             }
 
             return statistic;

@@ -142,7 +142,7 @@ namespace TVA.PhasorProtocols
         private Dictionary<MeasurementKey, SignalReference[]> m_signalReferences;
         private Dictionary<SignalKind, string[]> m_generatedSignalReferenceCache;
         private Dictionary<Guid, string> m_connectionIDCache;
-        private long m_connectionAttempts;
+        private long m_activeConnections;
         private LineFrequency m_nominalFrequency;
         private DataFormat m_dataFormat;
         private CoordinateFormat m_coordinateFormat;
@@ -215,13 +215,13 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets the total number of connection attempts.
+        /// Gets the total number of active socket connections.
         /// </summary>
-        public long ConnectionAttempts
+        public long ActiveConnections
         {
             get
             {
-                return m_connectionAttempts;
+                return m_activeConnections;
             }
         }
 
@@ -1392,13 +1392,15 @@ namespace TVA.PhasorProtocols
         {
             // Start concentration engine
             base.Start();
-            m_connectionAttempts++;
+            m_activeConnections++;
 
             OnStatusMessage("Data channel started.");
         }
 
         private void m_dataChannel_ServerStopped(object sender, EventArgs e)
         {
+            m_activeConnections--;
+
             lock (m_connectionIDCache)
             {
                 foreach (Guid clientID in m_dataChannel.ClientIDs)
@@ -1445,12 +1447,22 @@ namespace TVA.PhasorProtocols
         private void m_commandChannel_ServerStarted(object sender, EventArgs e)
         {
             OnStatusMessage("Command channel started.");
-            m_connectionAttempts++;
+            m_activeConnections++;
         }
 
         private void m_commandChannel_ServerStopped(object sender, EventArgs e)
         {
-            OnStatusMessage("Command channel stopped.");
+            m_activeConnections--;
+
+            if (Enabled)
+            {
+                OnStatusMessage("Command channel was unexpectedly terminated, restarting...");
+
+                if (m_commandChannel != null)
+                    m_commandChannel.Start();
+            }
+            else
+                OnStatusMessage("Command channel stopped.");
         }
 
         #endregion
