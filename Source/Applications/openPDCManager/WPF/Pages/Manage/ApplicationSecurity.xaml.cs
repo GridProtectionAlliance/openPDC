@@ -33,6 +33,7 @@ using openPDCManager.Utilities;
 using System.Text;
 using System.Web.Security;
 using System.Threading;
+using System.Windows.Threading;
 
 namespace openPDCManager.Pages.Manage
 {
@@ -53,6 +54,8 @@ namespace openPDCManager.Pages.Manage
 
         Role m_selectedRole;
         bool m_editRoleMode;
+
+        DispatcherTimer m_groupUsersTimer, m_roleUsersTimer, m_roleGroupsTimer;
 
         #endregion
 
@@ -124,8 +127,7 @@ namespace openPDCManager.Pages.Manage
             GetRoles();
             ClearRoleInformation();
             TextBlockManageRoles.Text = "Manage Roles For Node: " + ((App)Application.Current).NodeName;
-
-            // Password does not meet the strong password rule defined below, so we don't encrypt the password.
+                        
             m_invalidPasswordMessage = new StringBuilder();
             m_invalidPasswordMessage.Append("Password does not meet the following criteria:");
             m_invalidPasswordMessage.AppendLine();
@@ -136,6 +138,51 @@ namespace openPDCManager.Pages.Manage
             m_invalidPasswordMessage.Append("- Password must contain at least 1 upper case letter");
             m_invalidPasswordMessage.AppendLine();
             m_invalidPasswordMessage.Append("- Password must contain at least 1 lower case letter");
+
+            m_groupUsersTimer = new DispatcherTimer();
+            m_groupUsersTimer.Interval = TimeSpan.FromSeconds(5);
+            m_groupUsersTimer.Tick += new EventHandler(m_groupUsersTimer_Tick);
+
+            m_roleUsersTimer = new DispatcherTimer();
+            m_roleUsersTimer.Interval = TimeSpan.FromSeconds(5);
+            m_roleUsersTimer.Tick += new EventHandler(m_roleUsersTimer_Tick);
+
+            m_roleGroupsTimer = new DispatcherTimer();
+            m_roleGroupsTimer.Interval = TimeSpan.FromSeconds(5);
+            m_roleGroupsTimer.Tick += new EventHandler(m_roleGroupsTimer_Tick);
+        }
+
+        void m_roleGroupsTimer_Tick(object sender, EventArgs e)
+        {
+            if (TextBlockRoleGroupsMessage.Visibility == Visibility.Collapsed)
+                TextBlockRoleGroupsMessage.Visibility = Visibility.Visible;
+            else
+            {
+                TextBlockRoleGroupsMessage.Visibility = Visibility.Collapsed;
+                m_roleGroupsTimer.Stop();
+            }
+        }
+
+        void m_roleUsersTimer_Tick(object sender, EventArgs e)
+        {
+            if (TextBlockRoleUsersMessage.Visibility == Visibility.Collapsed)
+                TextBlockRoleUsersMessage.Visibility = Visibility.Visible;
+            else
+            {
+                TextBlockRoleUsersMessage.Visibility = Visibility.Collapsed;
+                m_roleUsersTimer.Stop();
+            }
+        }
+
+        void m_groupUsersTimer_Tick(object sender, EventArgs e)
+        {
+            if (TextBlockGroupUsersMessage.Visibility == Visibility.Collapsed)
+                TextBlockGroupUsersMessage.Visibility = Visibility.Visible;
+            else
+            {
+                TextBlockGroupUsersMessage.Visibility = Visibility.Collapsed;
+                m_groupUsersTimer.Stop();
+            }
         }
 
         #endregion
@@ -176,13 +223,26 @@ namespace openPDCManager.Pages.Manage
                 if (m_selectedUser == null)
                     throw new Exception("Please select User from the list to delete.");
 
-                string result = CommonFunctions.DeleteUser(null, m_selectedUser.ID);
-                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-                        ButtonType.OkOnly);
-                sm.Owner = Window.GetWindow(this);
-                sm.ShowPopup();
-                GetUsers();
-                ClearUserInformation();
+                SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = "Do you want to delete user?", SystemMessage = "Username: " + m_selectedUser.Name, UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+
+                sm1.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)sm1.DialogResult)
+                    {
+
+                        string result = CommonFunctions.DeleteUser(null, m_selectedUser.ID);
+                        sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                                ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.ShowPopup();
+                        GetUsers();
+                        ClearUserInformation();
+                    }
+                });
+
+                sm1.Owner = Window.GetWindow(this);
+                sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm1.ShowPopup();
             }
             catch (Exception ex)
             {
@@ -247,7 +307,7 @@ namespace openPDCManager.Pages.Manage
                         if (string.IsNullOrEmpty(TextBoxPassword.Password))
                             user.Password = m_selectedUser.Password;    //keep existing password.
                         else
-                            user.Password = FormsAuthentication.HashPasswordForStoringInConfigFile("O3990\\P78f9E66b:a35_VÂ©6M13Â©6~2&[" + TextBoxPassword.Password, "SHA1");
+                            user.Password = FormsAuthentication.HashPasswordForStoringInConfigFile(@"O3990\P78f9E66b:a35_V©6M13©6~2&[" + TextBoxPassword.Password, "SHA1");
                         user.ID = m_selectedUser.ID;
                         user.CreatedBy = m_selectedUser.CreatedBy;
                         user.CreatedOn = m_selectedUser.CreatedOn;
@@ -260,7 +320,7 @@ namespace openPDCManager.Pages.Manage
                         {
                             if (string.IsNullOrEmpty(TextBoxPassword.Password))
                                 throw new Exception(m_invalidPasswordMessage.ToString());
-                            user.Password = FormsAuthentication.HashPasswordForStoringInConfigFile("O3990\\P78f9E66b:a35_VÂ©6M13Â©6~2&[" + TextBoxPassword.Password, "SHA1");
+                            user.Password = FormsAuthentication.HashPasswordForStoringInConfigFile(@"O3990\P78f9E66b:a35_V©6M13©6~2&[" + TextBoxPassword.Password, "SHA1");
                         }
                         else
                             user.Password = string.Empty;
@@ -390,13 +450,25 @@ namespace openPDCManager.Pages.Manage
                 if (m_selectedGroup == null)
                     throw new Exception("Please select Group from the list to delete.");
 
-                string result = CommonFunctions.DeleteGroup(null, m_selectedGroup.ID);
-                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-                        ButtonType.OkOnly);
-                sm.Owner = Window.GetWindow(this);
-                sm.ShowPopup();
-                GetGroups();
-                ClearGroupInformation();
+                SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = "Do you want to delete group?", SystemMessage = "Group Name: " + m_selectedGroup.Name, UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+
+                sm1.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)sm1.DialogResult)
+                    {
+                        string result = CommonFunctions.DeleteGroup(null, m_selectedGroup.ID);
+                        sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                                ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.ShowPopup();
+                        GetGroups();
+                        ClearGroupInformation();
+                    }
+                });
+
+                sm1.Owner = Window.GetWindow(this);
+                sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm1.ShowPopup();
             }
             catch (Exception ex)
             {
@@ -427,9 +499,13 @@ namespace openPDCManager.Pages.Manage
 
                 ListBoxCurrentGroupUsers.ItemsSource = m_selectedGroup.CurrentGroupUsers = CommonFunctions.GetCurrentGroupUsers(null, m_selectedGroup.ID);
                 ListBoxPossibleGroupUsers.ItemsSource = m_selectedGroup.PossibleGroupUsers = CommonFunctions.GetPossibleGroupUsers(null, m_selectedGroup.ID);
+
+                TextBlockGroupUsersMessage.Visibility = Visibility.Visible;
+                m_groupUsersTimer.Start();
             }
             catch (Exception ex)
             {
+                TextBlockGroupUsersMessage.Visibility = Visibility.Collapsed;
                 CommonFunctions.LogException(null, "WPF.DeleteGroupUsers", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Group Users", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                        ButtonType.OkOnly);
@@ -452,9 +528,13 @@ namespace openPDCManager.Pages.Manage
 
                 ListBoxCurrentGroupUsers.ItemsSource = m_selectedGroup.CurrentGroupUsers = CommonFunctions.GetCurrentGroupUsers(null, m_selectedGroup.ID);
                 ListBoxPossibleGroupUsers.ItemsSource = m_selectedGroup.PossibleGroupUsers = CommonFunctions.GetPossibleGroupUsers(null, m_selectedGroup.ID);
+
+                TextBlockGroupUsersMessage.Visibility = Visibility.Visible;
+                m_groupUsersTimer.Start();
             }
             catch (Exception ex)
             {
+                TextBlockGroupUsersMessage.Visibility = Visibility.Collapsed;   
                 CommonFunctions.LogException(null, "WPF.AddGroupUsers", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Add Group Users", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                        ButtonType.OkOnly);
@@ -481,9 +561,13 @@ namespace openPDCManager.Pages.Manage
 
                 ListBoxCurrentRoleGroups.ItemsSource = m_selectedRole.CurrentRoleGroups = CommonFunctions.GetCurrentRoleGroups(null, m_selectedRole.ID);
                 ListBoxPossibleRoleGroups.ItemsSource = m_selectedRole.PossibleRoleGroups = CommonFunctions.GetPossibleRoleGroups(null, m_selectedRole.ID);
+
+                TextBlockRoleGroupsMessage.Visibility = Visibility.Visible;
+                m_roleGroupsTimer.Start();
             }
             catch (Exception ex)
             {
+                TextBlockRoleGroupsMessage.Visibility = Visibility.Collapsed;
                 CommonFunctions.LogException(null, "WPF.DeleteRoleGroups", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Role Groups", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                        ButtonType.OkOnly);
@@ -506,9 +590,13 @@ namespace openPDCManager.Pages.Manage
 
                 ListBoxCurrentRoleGroups.ItemsSource = m_selectedRole.CurrentRoleGroups = CommonFunctions.GetCurrentRoleGroups(null, m_selectedRole.ID);                
                 ListBoxPossibleRoleGroups.ItemsSource = m_selectedRole.PossibleRoleGroups = CommonFunctions.GetPossibleRoleGroups(null, m_selectedRole.ID);
+                
+                TextBlockRoleGroupsMessage.Visibility = Visibility.Visible;
+                m_roleGroupsTimer.Start();
             }
             catch (Exception ex)
             {
+                TextBlockRoleGroupsMessage.Visibility = Visibility.Collapsed;
                 CommonFunctions.LogException(null, "WPF.AddRoleGroups", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Add Role Groups", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                        ButtonType.OkOnly);
@@ -531,9 +619,13 @@ namespace openPDCManager.Pages.Manage
 
                 ListBoxCurrentRoleUsers.ItemsSource = m_selectedRole.CurrentRoleUsers = CommonFunctions.GetCurrentRoleUsers(null, m_selectedRole.ID);
                 ListBoxPossibleRoleUsers.ItemsSource = m_selectedRole.PossibleRoleUsers = CommonFunctions.GetPossibleRoleUsers(null, m_selectedRole.ID);
+
+                TextBlockRoleUsersMessage.Visibility = Visibility.Visible;
+                m_roleUsersTimer.Start();
             }
             catch (Exception ex)
             {
+                TextBlockRoleUsersMessage.Visibility = Visibility.Collapsed;
                 CommonFunctions.LogException(null, "WPF.DeleteRoleUsers", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Role Users", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                        ButtonType.OkOnly);
@@ -556,9 +648,13 @@ namespace openPDCManager.Pages.Manage
 
                 ListBoxCurrentRoleUsers.ItemsSource = m_selectedRole.CurrentRoleUsers = CommonFunctions.GetCurrentRoleUsers(null, m_selectedRole.ID);
                 ListBoxPossibleRoleUsers.ItemsSource = m_selectedRole.PossibleRoleUsers = CommonFunctions.GetPossibleRoleUsers(null, m_selectedRole.ID);
+
+                TextBlockRoleUsersMessage.Visibility = Visibility.Visible;
+                m_roleUsersTimer.Start();
             }
             catch (Exception ex)
             {
+                TextBlockRoleUsersMessage.Visibility = Visibility.Collapsed;
                 CommonFunctions.LogException(null, "WPF.AddRoleUsers", ex);
                 sm = new SystemMessages(new Message() { UserMessage = "Failed to Add Role Users", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                        ButtonType.OkOnly);
@@ -774,6 +870,7 @@ namespace openPDCManager.Pages.Manage
             ButtonSaveGroup.Tag = "Add";
             m_editGroupMode = false;
             ListBoxGroups.SelectedIndex = -1;
+            TextBlockGroupUsersMessage.Visibility = Visibility.Collapsed;
             ChangeGroupsUsersVisualization();
         }
 
@@ -831,6 +928,7 @@ namespace openPDCManager.Pages.Manage
             GridManageRoles.DataContext = new Role();
             m_editRoleMode = false;
             ListBoxRoles.SelectedIndex = -1;
+            TextBlockRoleUsersMessage.Visibility = Visibility.Collapsed;
             ChangeRoleUserAndGroupsVisualization();
         }
 

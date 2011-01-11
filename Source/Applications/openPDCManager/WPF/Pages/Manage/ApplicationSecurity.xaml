@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" >
+            
     <Grid x:Name="GridManageApplicationSecurity">
         <Border Style="{StaticResource PortletBorderStyle}">
             <StackPanel Orientation="Vertical">
@@ -79,7 +80,7 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>                                    
                                 </Grid.RowDefinitions>
 
                                 <ListBox x:Name="ListBoxGroups" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Width="115" Height="170" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -114,7 +115,8 @@
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>                                            
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
                                         <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Text="Press and hold CTRL key to select multiple users from the list." FontSize="{StaticResource SmallerTextSize}" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2"/>
@@ -142,6 +144,8 @@
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
                                         </ListBox>
+
+                                        <TextBlock x:Name="TextBlockGroupUsersMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Text="Changes Saved Successfully." FontSize="{StaticResource SmallTextSize}" Foreground="Navy" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" Visibility="Collapsed"/>
                                         
                                     </Grid>
                                 </GroupBox>
@@ -195,6 +199,7 @@
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
                                         <TextBlock Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="0" Text="Press and hold CTRL key to select multiple users from the list." FontSize="{StaticResource SmallerTextSize}" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2"/>
@@ -223,6 +228,8 @@
                                             </ListBox.ItemTemplate>
                                         </ListBox>
 
+                                        <TextBlock x:Name="TextBlockRoleUsersMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Text="Changes Saved Successfully." FontSize="{StaticResource SmallTextSize}" Foreground="Navy" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" Visibility="Collapsed"/>
+                                        
                                     </Grid>
                                 </GroupBox>
 
@@ -234,6 +241,7 @@
                                             <ColumnDefinition Width="125" />
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
@@ -265,6 +273,8 @@
                                             </ListBox.ItemTemplate>
                                         </ListBox>
 
+                                        <TextBlock x:Name="TextBlockRoleGroupsMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Text="Changes Saved Successfully." FontSize="{StaticResource SmallTextSize}" Foreground="Navy" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" Visibility="Collapsed"/>
+                                        
                                     </Grid>
                                 </GroupBox>
                                 
