@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using TimeSeriesFramework.Adapters;
@@ -36,20 +37,29 @@ using System.Windows;
 
 namespace ConfigurationSetupUtility.Screens
 {
+    public static class Temp
+    {
+        // TODO: remove from here and add to code library
+        public static bool IsNumeric(this Type type)
+        {
+            Type[] numericTypes = { typeof(SByte), typeof(Byte), typeof(Int16), typeof(UInt16), typeof(Int32), typeof(UInt32), typeof(Int64), typeof(UInt64), typeof(Single), typeof(Double), typeof(Decimal) };
+            return numericTypes.Contains(type);
+        }
+    }
+
     /// <summary>
     /// Interaction logic for HistorianConnectionStringScreen.xaml
     /// </summary>
     public partial class HistorianConnectionStringScreen : UserControl, IScreen
     {
-
         #region [ Members ]
 
         // Fields
-
         private Dictionary<string, object> m_state;
         private Dictionary<string, PropertyInfo> m_connectionStringParameters;
         private Dictionary<string, string> m_settings;
         private bool m_suppressTextChangedEvents;
+        private bool m_applyNumericValidation;
 
         #endregion
 
@@ -167,9 +177,19 @@ namespace ConfigurationSetupUtility.Screens
         // Initializes the state keys to their default values.
         private void InitializeState()
         {
+            string assemblyName, typeName;
+
             m_state["historianConnectionString"] = string.Empty;
             InitializeConnectionStringParameters();
             ParameterNameListBox.ItemsSource = GetConnectionStringParameterNamesList();
+
+            if (ParameterNameListBox.Items.Count > 0)
+                ParameterNameListBox.SelectedIndex = 0;
+            
+            assemblyName = m_state["historianAssemblyName"].ToNonNullString();
+            typeName = m_state["historianTypeName"].ToNonNullString();
+
+            AssemblyInfoLabel.Content = typeName + " from " + assemblyName;
         }
         
         // Initializes the collection of connection string parameters.
@@ -188,6 +208,9 @@ namespace ConfigurationSetupUtility.Screens
                 if (property.TryGetAttribute(out connectionStringParameterAttribute))
                     m_connectionStringParameters.Add(property.Name, property);
             }
+
+            ConnectionStringTextBox.Text = string.Empty;
+            m_settings.Clear();
         }
 
         // Gets a list of connection string parameter names as ListBoxItems.
@@ -213,21 +236,25 @@ namespace ConfigurationSetupUtility.Screens
         // Gets the value associated with the given parameter.
         // If the parameter is in the connection string, the value from the connection string is returned.
         // If not, the default value of the given parameter is returned.
-        private string GetValue(string parameterName)
+        private string GetValue(string parameterName, out Type parameterType)
         {
+            DefaultValueAttribute defaultValueAttribute;
+            PropertyInfo propertyInfo;
             string value;
 
-            if (m_settings.TryGetValue(parameterName, out value))
-                return value;
-            else
+            m_settings.TryGetValue(parameterName, out value);
+
+            if (m_connectionStringParameters.TryGetValue(parameterName, out propertyInfo))
             {
-                DefaultValueAttribute defaultValueAttribute;
+                if (string.IsNullOrWhiteSpace(value) && propertyInfo.TryGetAttribute(out defaultValueAttribute))
+                    value = defaultValueAttribute.Value.ToNonNullString();
 
-                if (m_connectionStringParameters[parameterName].TryGetAttribute(out defaultValueAttribute))
-                    return defaultValueAttribute.Value.ToNonNullString();
+                parameterType = propertyInfo.PropertyType;
             }
+            else
+                parameterType = typeof(string);
 
-            return null;
+            return value;
         }
 
         // Determines whether the given parameter is a required parameter (it does not have a default value).
@@ -292,12 +319,9 @@ namespace ConfigurationSetupUtility.Screens
             ListBoxItem selectedItem = ParameterNameListBox.SelectedItem as ListBoxItem;
 
             // If the parameter value text box isn't focused,
-            // clear the contents of that and the description text block.
+            // clear the contents the description text block.
             if (!ParameterValueTextBox.IsFocused)
-            {
-                ParameterValueTextBox.Text = string.Empty;
                 DescriptionTextBlock.Text = string.Empty;
-            }
 
             if (selectedItem != null)
             {
@@ -310,13 +334,68 @@ namespace ConfigurationSetupUtility.Screens
                 // change its contents to the value of the newly selected parameter.
                 if (!ParameterValueTextBox.IsFocused)
                 {
+                    string value;
+                    Type parameterType;
+
                     m_suppressTextChangedEvents = true;
-                    ParameterValueTextBox.Text = GetValue(parameterName);
+                    value = GetValue(parameterName, out parameterType);
+
+                    if (parameterType.IsEnum)
+                    {
+                        // Handle enumerations as a drop-down combo
+                        ParameterValueTextBox.Visibility = Visibility.Collapsed;
+                        ParameterValueTrueRadioButton.Visibility = Visibility.Collapsed;
+                        ParameterValueFalseRadioButton.Visibility = Visibility.Collapsed;
+
+                        ParameterValueComboBox.Items.Clear();
+
+                        foreach (object item in Enum.GetValues(parameterType))
+                        {
+                            ParameterValueComboBox.Items.Add(item.ToString());
+                        }
+                        
+                        ParameterValueComboBox.SelectedItem = value;
+                        ParameterValueComboBox.Visibility = Visibility.Visible;
+                    }
+                    else if (parameterType == typeof(bool))
+                    {
+                        // Handle boolean values with a radio button group
+                        ParameterValueTextBox.Visibility = Visibility.Collapsed;
+                        ParameterValueComboBox.Visibility = Visibility.Collapsed;
+
+                        if (string.IsNullOrWhiteSpace(value))
+                        {
+                            ParameterValueTrueRadioButton.IsChecked = false;
+                            ParameterValueFalseRadioButton.IsChecked = false;
+                        }
+                        else
+                        {
+                            if (value.ParseBoolean())
+                                ParameterValueTrueRadioButton.IsChecked = true;
+                            else
+                                ParameterValueFalseRadioButton.IsChecked = true;
+                        }
+
+                        ParameterValueTrueRadioButton.Visibility = Visibility.Visible;
+                        ParameterValueFalseRadioButton.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        // Handle string values with a text box
+                        ParameterValueComboBox.Visibility = Visibility.Collapsed;
+                        ParameterValueTrueRadioButton.Visibility = Visibility.Collapsed;
+                        ParameterValueFalseRadioButton.Visibility = Visibility.Collapsed;
+                        ParameterValueTextBox.Text = value;
+                        m_applyNumericValidation = parameterType.IsNumeric();
+                        ParameterValueTextBox.Visibility = Visibility.Visible;
+                    }
+
                     m_suppressTextChangedEvents = suppress;
                 }
 
-                // Update the description text block to the description of the newly seleted parameter.
                 DescriptionTextBlock.Text = string.Empty;
+
+                // Update the description text block to the description of the newly seleted parameter.
                 if (m_connectionStringParameters.TryGetValue(parameterName, out property))
                 {
                     if (property.TryGetAttribute(out descriptionAttribute))
@@ -335,7 +414,62 @@ namespace ConfigurationSetupUtility.Screens
                 string parameterName = selectedItem.Content.ToString();
                 string value = ParameterValueTextBox.Text;
 
-                m_settings[parameterName] = value;
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    m_settings.Remove(parameterName);
+                }
+                else
+                {
+                    if (m_applyNumericValidation && !Common.IsNumeric(value))
+                        ParameterValueTextBox.Text = value.RemoveCharacters(chr => !(Char.IsDigit(chr) || chr == '.' || chr == '+' || chr == '-' || Char.ToLower(chr) == 'e'));
+                    else
+                        m_settings[parameterName] = value;
+                }
+
+                UpdateAll();
+            }
+        }
+
+        // Updates the connection string when the value of a parameter is changed by the user.
+        private void ParameterValueComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListBoxItem selectedItem = ParameterNameListBox.SelectedItem as ListBoxItem;
+
+            if (!m_suppressTextChangedEvents && selectedItem != null)
+            {
+                string parameterName = selectedItem.Content.ToString();
+                string value = ParameterValueComboBox.SelectedItem.ToNonNullString();
+
+                if (string.IsNullOrWhiteSpace(value))
+                    m_settings.Remove(parameterName);
+                else
+                    m_settings[parameterName] = value;
+
+                UpdateAll();
+            }
+        }
+
+        // Updates the connection string when the value of a parameter is changed by the user.
+        private void ParameterValueTrueRadioButton_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            BooleanParameterValueChecked(true);
+        }
+
+        private void ParameterValueFalseRadioButton_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            BooleanParameterValueChecked(false);
+        }
+
+        private void BooleanParameterValueChecked(bool value)
+        {
+            ListBoxItem selectedItem = ParameterNameListBox.SelectedItem as ListBoxItem;
+
+            if (!m_suppressTextChangedEvents && selectedItem != null)
+            {
+                string parameterName = selectedItem.Content.ToString();
+
+                m_settings[parameterName] = value.ToString();
+
                 UpdateAll();
             }
         }
