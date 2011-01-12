@@ -35,7 +35,7 @@ namespace MySqlAdapters
     /// <summary>
     /// Represents an output adapter that archives measurements to a MySQL database table.
     /// </summary>
-    [Description("Creates an output adapter that will archive measurements to a MySQL database.")]
+    [Description("MySQL: archives measurements to a MySQL database.")]
     public class MySqlOutputAdapter : OutputAdapterBase
     {
         #region [ Members ]

@@ -75,7 +75,7 @@ namespace ConfigurationSetupUtility.Screens
                 bool initialDataScript = !existing && Convert.ToBoolean(m_state["initialDataScript"]);
                 bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
 
-                if (!existing)
+                if (initialDataScript && !sampleDataScript)
                     return m_historianSetupScreen;
                 else if (applyChangesToService)
                     return m_nodeSelectionScreen;

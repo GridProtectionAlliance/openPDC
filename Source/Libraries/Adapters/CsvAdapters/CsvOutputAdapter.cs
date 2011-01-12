@@ -34,7 +34,7 @@ namespace CsvAdapters
     /// <summary>
     /// Represents an output adapter that writes measurements to a CSV file.
     /// </summary>
-    [Description("Creates an output adapter that will archive measurements to a CSV file.")]
+    [Description("CSV: archives measurements to a CSV file.")]
     public class CsvOutputAdapter : OutputAdapterBase
     {
 

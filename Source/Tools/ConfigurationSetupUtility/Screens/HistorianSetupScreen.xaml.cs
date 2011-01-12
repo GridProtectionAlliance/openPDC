@@ -1,7 +1,7 @@
 ﻿//******************************************************************************************************
 //  HistorianSetupScreen.xaml.cs - Gbtc
 //
-//  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
+//  Copyright © 2011, Grid Protection Alliance.  All Rights Reserved.
 //
 //  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
 //  the NOTICE file distributed with this work for additional information regarding copyright ownership.
@@ -18,18 +18,22 @@
 //  ----------------------------------------------------------------------------------------------------
 //  12/20/2010 - Stephen C. Wills
 //       Generated original version of source code.
+//  01/12/2011 - J. Ritchie Carroll
+//       Modified adapter list to display descriptions instead of assemblies / types
 //
 //******************************************************************************************************
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Windows;
 using System.Windows.Controls;
 using TimeSeriesFramework.Adapters;
 using TVA;
-using System.Windows;
-using System.Reflection;
+using TVA.Reflection;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -38,13 +42,84 @@ namespace ConfigurationSetupUtility.Screens
     /// </summary>
     public partial class HistorianSetupScreen : UserControl, IScreen
     {
-
         #region [ Members ]
 
-        // Fields
+        // Nested Types
+        private class HistorianAdapter
+        {
+            #region [ Members ]
+            
+            // Fields
+            private Type m_type;
+            private string m_description;
 
+            #endregion
+
+            #region [ Constructors ]
+
+            /// <summary>
+            /// Creates a new <see cref="HistorianAdapter"/>.
+            /// </summary>
+            /// <param name="type"><see cref="Type"/> of historian adapter.</param>
+            public HistorianAdapter(Type type)
+            {
+                m_type = type;
+
+                DescriptionAttribute descriptionAttribute;
+
+                if (m_type.TryGetAttribute(out descriptionAttribute))
+                    m_description = descriptionAttribute.Description;
+                else
+                    m_description = m_type.FullName;
+            }
+
+            #endregion
+
+            #region [ Properties ]
+
+            /// <summary>
+            /// Gets type name of <see cref="HistorianAdapter"/>.
+            /// </summary>
+            public string TypeName
+            {
+                get
+                {
+                    return m_type.FullName;
+                }
+            }
+
+            /// <summary>
+            /// Gets assembly name of <see cref="HistorianAdapter"/>.
+            /// </summary>
+            public string AssemblyName
+            {
+                get
+                {
+                    return Path.GetFileName(m_type.Assembly.Location);
+                }
+            }
+
+            #endregion
+
+            #region [ Methods ]
+
+            /// <summary>
+            /// Provides the description of the <see cref="HistorianAdapter"/> as its string reprensentation.
+            /// </summary>
+            /// <returns>The description of the <see cref="HistorianAdapter"/>.</returns>
+            public override string ToString()
+            {
+                return m_description;
+            }
+
+            #endregion
+        }
+
+        // Fields
         private IScreen m_nextScreen;
         private Dictionary<string, object> m_state;
+        private List<HistorianAdapter> m_historianAdapters;
+        private HistorianAdapter m_defaultAdapter;
         private string m_assemblyName;
         private string m_typeName;
 
@@ -58,8 +133,30 @@ namespace ConfigurationSetupUtility.Screens
         public HistorianSetupScreen()
         {
             m_nextScreen = new HistorianConnectionStringScreen();
-            m_assemblyName = "HistorianAdapters.dll";
-            m_typeName = "HistorianAdapters.LocalOutputAdapter";
+            m_historianAdapters = new List<HistorianAdapter>();
+
+            foreach (Type type in GetHistorianTypes())
+            {
+                m_historianAdapters.Add(new HistorianAdapter(type));
+            }
+
+            if (m_historianAdapters.Count > 0)
+            {
+                m_defaultAdapter = m_historianAdapters.Find(adapter => adapter.TypeName == "HistorianAdapters.LocalOutputAdapter");
+
+                if (m_defaultAdapter == null)
+                    m_defaultAdapter = m_historianAdapters[0];
+
+                m_assemblyName = m_defaultAdapter.AssemblyName;
+                m_typeName = m_defaultAdapter.TypeName;
+            }
+
+            if (m_defaultAdapter == null)
+            {
+                m_assemblyName = "HistorianAdapters.dll";
+                m_typeName = "HistorianAdapters.LocalOutputAdapter";
+            }
+
             InitializeComponent();
         }
 
@@ -121,11 +218,11 @@ namespace ConfigurationSetupUtility.Screens
         {
             get
             {
-                if (!string.IsNullOrEmpty(m_assemblyName) && !string.IsNullOrEmpty(m_typeName))
+                if (!string.IsNullOrWhiteSpace(AcronymTextBox.Text))
                     return true;
                 else
                 {
-                    MessageBox.Show("Please select an assembly name and a type name.");
+                    MessageBox.Show("You must specify an acronym for the historian.");
                     return false;
                 }
             }
@@ -160,10 +257,6 @@ namespace ConfigurationSetupUtility.Screens
         // Initializes the state keys to their default values.
         private void InitializeState()
         {
-            List<string> assemblies = GetHistorianTypes()
-                .Select(type => Path.GetFileName(type.Assembly.Location))
-                .Distinct().ToList();
-
             if (!m_state.ContainsKey("historianAssemblyName"))
                 m_state["historianAssemblyName"] = m_assemblyName;
 
@@ -179,8 +272,8 @@ namespace ConfigurationSetupUtility.Screens
             if (!m_state.ContainsKey("historianDescription"))
                 m_state["historianDescription"] = DescriptionTextBox.Text;
 
-            AssemblyNameListBox.ItemsSource = assemblies;
-            AssemblyNameListBox.SelectedIndex = assemblies.IndexOf(m_assemblyName);
+            HistorianAdapterListBox.ItemsSource = m_historianAdapters;
+            HistorianAdapterListBox.SelectedItem = m_defaultAdapter;
         }
 
         // Searches the assemblies in the current directory for historian implementations.
@@ -188,49 +281,53 @@ namespace ConfigurationSetupUtility.Screens
         // OutputIsForArchive is true.
         private List<Type> GetHistorianTypes()
         {
-            Func<Type, bool> whereFunction = type =>
+            Func<Type, bool> outputIsForArchive = type =>
             {
                 IOutputAdapter adapter = Activator.CreateInstance(type) as IOutputAdapter;
                 return (adapter != null) && adapter.OutputIsForArchive;
             };
 
-            return typeof(IOutputAdapter).LoadImplementations(true).Where(whereFunction).ToList();
-        }
-
-        // Occurs when the user changes the selected assembly in the assembly list box.
-        // This updates the historian list box to contain the historians that are found
-        // in the selected assembly.
-        private void AssemblyNameListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            List<string> historianTypes;
-
-            Func<Type, bool> whereFunction = type =>
-            {
-                string typeAssemblyName = Path.GetFileName(type.Assembly.Location);
-                return typeAssemblyName.Equals(m_assemblyName, StringComparison.CurrentCultureIgnoreCase);
-            };
-
-            m_assemblyName = AssemblyNameListBox.SelectedItem.ToNonNullString();
-            m_state["historianAssemblyName"] = m_assemblyName;
-
-            historianTypes = GetHistorianTypes().Where(whereFunction).Select(type => type.FullName).ToList();
-            TypeNameListBox.ItemsSource = historianTypes;
-            TypeNameListBox.SelectedIndex = historianTypes.IndexOf(m_typeName);
+            return typeof(IOutputAdapter).LoadImplementations(true).Where(outputIsForArchive).ToList();
         }
 
         // Occurs when the user changes the selection in the historian list box.
         // It saves the selection made by the user for future steps in the setup process.
-        private void TypeNameListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void HistorianAdapterListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            m_typeName = TypeNameListBox.SelectedItem.ToNonNullString();
-            m_state["historianTypeName"] = m_typeName;
+            HistorianAdapter adapter = HistorianAdapterListBox.SelectedItem as HistorianAdapter;
+
+            if (adapter != null)
+            {
+                m_assemblyName = adapter.AssemblyName;
+                m_typeName = adapter.TypeName;
+
+                m_state["historianTypeName"] = m_typeName;
+                m_state["historianAssemblyName"] = m_assemblyName;
+
+                AssemblyInfoTextBox.Content = m_typeName + " from " + m_assemblyName;
+            }
         }
 
         // Occurs when the user changes the acronym of the historian.
         private void AcronymTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (m_state != null)
-                m_state["historianAcronym"] = AcronymTextBox.Text;
+            // Validate format of acronym
+            string currentValue = AcronymTextBox.Text;
+
+            if (string.IsNullOrWhiteSpace(currentValue))
+            {
+                AcronymTextBox.Text = "PPA";
+            }
+            else
+            {
+                string newValue = currentValue.RemoveWhiteSpace().RemoveControlCharacters().ToUpper();
+
+                if (string.Compare(currentValue, newValue) != 0)
+                    AcronymTextBox.Text = newValue;
+
+                if (m_state != null)
+                    m_state["historianAcronym"] = AcronymTextBox.Text;
+            }
         }
 
         // Occurs when the user changes the name of the historian.

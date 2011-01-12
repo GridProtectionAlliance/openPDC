@@ -33,7 +33,7 @@ namespace MongoAdapters
     /// <summary>
     /// Represents an output adapter that archives measurements to a MongoDB database.
     /// </summary>
-    [Description("Creates an output adapter that will archive measurements to a MongoDB database.")]
+    [Description("MongoDB: archives measurements to a MongoDB database.")]
     public class MongoOutputAdapter : OutputAdapterBase
     {
 

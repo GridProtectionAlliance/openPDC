@@ -204,7 +204,7 @@ namespace ConfigurationSetupUtility.Screens
         // Gets a database connection based on the selections the user made earlier in the setup.
         private IDbConnection GetDatabaseConnection()
         {
-            if (Convert.ToBoolean(m_state["updateConfiguration"]))
+            if (m_state.ContainsKey("updateConfiguration") && Convert.ToBoolean(m_state["updateConfiguration"]))
                 return GetConnectionFromConfigFile();
             else
             {

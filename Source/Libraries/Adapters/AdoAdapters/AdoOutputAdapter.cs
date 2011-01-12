@@ -37,7 +37,7 @@ namespace AdoAdapters
     /// <summary>
     /// Represents an output adapter that archives measurements to a database.
     /// </summary>
-    [Description("Creates an output adapter that will archive measurements to any ADO data source (e.g. OSI-PI via ODBC).")]
+    [Description("ADO: archives measurements to any ADO data source (e.g., OSI-PI via ODBC).")]
     public class AdoOutputAdapter : OutputAdapterBase
     {
 
