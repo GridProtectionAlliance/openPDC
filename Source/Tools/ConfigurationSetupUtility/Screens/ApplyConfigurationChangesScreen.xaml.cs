@@ -77,7 +77,7 @@ namespace ConfigurationSetupUtility.Screens
 
                 if (initialDataScript && !sampleDataScript)
                     return m_historianSetupScreen;
-                else if (applyChangesToService)
+                else if (existing && applyChangesToService)
                     return m_nodeSelectionScreen;
                 else
                     return m_setupReadyScreen;
