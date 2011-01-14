@@ -72,10 +72,9 @@ namespace ConfigurationSetupUtility.Screens
             {
                 bool applyChangesToService = Convert.ToBoolean(m_state["applyChangesToService"]);
                 bool existing = Convert.ToBoolean(m_state["existing"]);
-                bool initialDataScript = !existing && Convert.ToBoolean(m_state["initialDataScript"]);
-                bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
+                bool setupHistorian = Convert.ToBoolean(m_state["setupHistorian"]);
 
-                if (initialDataScript && !sampleDataScript)
+                if (setupHistorian)
                     return m_historianSetupScreen;
                 else if (existing && applyChangesToService)
                     return m_nodeSelectionScreen;
@@ -163,6 +162,8 @@ namespace ConfigurationSetupUtility.Screens
             object webManagerDir = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\openPDCManagerServices", "Installation Path", null) ?? Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\openPDCManagerServices", "Installation Path", null);
             bool managerOptionsEnabled = m_state["configurationType"].ToString() == "database";
             bool webManagerOptionEnabled = managerOptionsEnabled && (webManagerDir != null);
+            bool existing = Convert.ToBoolean(m_state["existing"]);
+            bool initialDataScript = !existing && Convert.ToBoolean(m_state["initialDataScript"]);
 
             // Enable or disable the options based on whether those options are available for the current configuration.
             m_openPdcManagerLocalCheckBox.IsEnabled = managerOptionsEnabled;
@@ -180,6 +181,10 @@ namespace ConfigurationSetupUtility.Screens
             m_state["applyChangesToLocalManager"] = m_openPdcManagerLocalCheckBox.IsChecked.Value;
             m_state["applyChangesToWebManager"] = m_openPdcManagerWebCheckBox.IsChecked.Value;
             m_state["setupReadyScreen"] = m_setupReadyScreen;
+            m_state["setupHistorian"] = initialDataScript;
+
+            m_setupHistorianCheckBox.Visibility = (Convert.ToBoolean(m_state["setupHistorian"]) ? Visibility.Visible : Visibility.Collapsed);
+            m_horizontalRule.Visibility = m_setupHistorianCheckBox.Visibility;
         }
 
         // Occurs when the user chooses to apply changes to the openPDC service.
@@ -224,6 +229,19 @@ namespace ConfigurationSetupUtility.Screens
                 m_state["applyChangesToWebManager"] = false;
         }
 
+        // Occurs when the user chooses to setup historian.
+        private void SetupHistorianCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (m_state != null)
+                m_state["setupHistorian"] = true;
+        }
+
+        // Occurs when the user chooses to not to setup historian.
+        private void SetupHistorianCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (m_state != null)
+                m_state["setupHistorian"] = false;
+        }
         #endregion
     }
 }
