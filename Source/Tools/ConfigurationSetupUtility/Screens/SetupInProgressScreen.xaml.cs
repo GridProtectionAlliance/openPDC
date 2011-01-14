@@ -245,7 +245,7 @@ namespace ConfigurationSetupUtility.Screens
                     AppendStatusMessage(string.Empty);
 
                     // Set up the initial historian.
-                    if (!existing)
+                    if (!existing && !sampleDataScript)
                         SetUpInitialHistorian(connectionString, dataProviderString);
                 }
 
@@ -326,7 +326,7 @@ namespace ConfigurationSetupUtility.Screens
                     }
 
                     // Set up the initial historian.
-                    if (!existing)
+                    if (!existing && !sampleDataScript)
                         SetUpInitialHistorian(mySqlSetup.ConnectionString, dataProviderString);
 
                     // Create new MySQL database user.
@@ -436,7 +436,7 @@ namespace ConfigurationSetupUtility.Screens
                     }
 
                     // Set up the initial historian.
-                    if (!existing)
+                    if (!existing && !sampleDataScript)
                         SetUpInitialHistorian(sqlServerSetup.ConnectionString, dataProviderString);
 
                     // Create new SQL Server database user.
