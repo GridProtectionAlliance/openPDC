@@ -33,20 +33,9 @@ using TimeSeriesFramework.Adapters;
 using TVA;
 using TVA.Reflection;
 using System.IO;
-using System.Windows;
 
 namespace ConfigurationSetupUtility.Screens
 {
-    public static class Temp
-    {
-        // TODO: remove from here and add to code library
-        public static bool IsNumeric(this Type type)
-        {
-            Type[] numericTypes = { typeof(SByte), typeof(Byte), typeof(Int16), typeof(UInt16), typeof(Int32), typeof(UInt32), typeof(Int64), typeof(UInt64), typeof(Single), typeof(Double), typeof(Decimal) };
-            return numericTypes.Contains(type);
-        }
-    }
-
     /// <summary>
     /// Interaction logic for HistorianConnectionStringScreen.xaml
     /// </summary>
@@ -307,9 +296,14 @@ namespace ConfigurationSetupUtility.Screens
             foreach (ListBoxItem item in ParameterNameListBox.Items)
             {
                 string name = item.Content.ToString();
+                bool settingIsDefined = m_settings.ContainsKey(name);
 
-                if (IsRequiredParameter(name) && !m_settings.ContainsKey(name))
+                if (IsRequiredParameter(name) && !settingIsDefined)
                     item.Foreground = Brushes.Red;
+                else
+                    item.Foreground = SystemColors.ControlTextBrush;
+
+                item.FontWeight = (settingIsDefined ? FontWeights.Bold : FontWeights.Normal);
             }
         }
 

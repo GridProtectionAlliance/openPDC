@@ -120,7 +120,6 @@ namespace HistorianAdapters
         /// <summary>
         /// Gets or sets instance name defined for this <see cref="LocalOutputAdapter"/>.
         /// </summary>
-        [ConnectionStringParameter, Description("Define the instance name for the historian.")]
         public string InstanceName
         {
             get
@@ -140,7 +139,7 @@ namespace HistorianAdapters
         /// Gets or sets the path to the archive.
         /// </summary>
         [ConnectionStringParameter,
-        Description("Define the location of the archive."),
+        Description("Define the desired location of the archive. Leave this value blank for the default location. This can be changed later from within the configuration file."),
         DefaultValue("")]
         public string ArchivePath
         {
