@@ -496,7 +496,7 @@ namespace ConfigurationSetupUtility.Screens
                     UpdateAll();
 
                 // Change the foreground to black if there were no errors in parsing.
-                ConnectionStringTextBox.Foreground = Brushes.Black;
+                ConnectionStringTextBox.Foreground = SystemColors.ControlTextBrush;
             }
             catch
             {
