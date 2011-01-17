@@ -154,6 +154,17 @@ namespace ConfigurationSetupUtility.Screens
         }
 
         /// <summary>
+        /// Gets dictionary of connection string parameters.
+        /// </summary>
+        public Dictionary<string, PropertyInfo> ConnectionStringParameters
+        {
+            get
+            {
+                return m_connectionStringParameters;
+            }
+        }
+
+        /// <summary>
         /// Allows the screen to update the navigation buttons after a change is made
         /// that would affect the user's ability to navigate to other screens.
         /// </summary>
@@ -187,19 +198,33 @@ namespace ConfigurationSetupUtility.Screens
             string assemblyName = m_state["historianAssemblyName"].ToString();
             string typeName = m_state["historianTypeName"].ToString();
 
-            Assembly historianAssembly = Assembly.LoadFrom(assemblyName);
-            Type historianType = historianAssembly.GetType(typeName);
-            ConnectionStringParameterAttribute connectionStringParameterAttribute;
-
-            m_connectionStringParameters.Clear();
-            foreach (PropertyInfo property in historianType.GetProperties())
-            {
-                if (property.TryGetAttribute(out connectionStringParameterAttribute))
-                    m_connectionStringParameters.Add(property.Name, property);
-            }
+            RefreshConnectionStringParameters(assemblyName, typeName);
 
             ConnectionStringTextBox.Text = string.Empty;
             m_settings.Clear();
+        }
+
+        /// <summary>
+        /// Refreshes the connection string parameters.
+        /// </summary>
+        /// <param name="assemblyName">Assembly name to load connection string parameters from.</param>
+        /// <param name="typeName">Type name to load connection string parameters from.</param>
+        public void RefreshConnectionStringParameters(string assemblyName, string typeName)
+        {
+            m_connectionStringParameters.Clear();
+
+            if (!string.IsNullOrWhiteSpace(assemblyName) && !string.IsNullOrWhiteSpace(typeName))
+            {
+                Assembly historianAssembly = Assembly.LoadFrom(assemblyName);
+                Type historianType = historianAssembly.GetType(typeName);
+                ConnectionStringParameterAttribute connectionStringParameterAttribute;
+
+                foreach (PropertyInfo property in historianType.GetProperties())
+                {
+                    if (property.TryGetAttribute(out connectionStringParameterAttribute))
+                        m_connectionStringParameters.Add(property.Name, property);
+                }
+            }
         }
 
         // Gets a list of connection string parameter names as ListBoxItems.

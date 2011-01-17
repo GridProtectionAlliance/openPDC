@@ -116,7 +116,7 @@ namespace ConfigurationSetupUtility.Screens
         }
 
         // Fields
-        private IScreen m_nextScreen;
+        private HistorianConnectionStringScreen m_parametersScreen;
         private Dictionary<string, object> m_state;
         private List<HistorianAdapter> m_historianAdapters;
         private HistorianAdapter m_defaultAdapter;
@@ -132,7 +132,7 @@ namespace ConfigurationSetupUtility.Screens
         /// </summary>
         public HistorianSetupScreen()
         {
-            m_nextScreen = new HistorianConnectionStringScreen();
+            m_parametersScreen = new HistorianConnectionStringScreen();
             m_historianAdapters = new List<HistorianAdapter>();
 
             foreach (Type type in GetHistorianTypes())
@@ -171,7 +171,18 @@ namespace ConfigurationSetupUtility.Screens
         {
             get
             {
-                return m_nextScreen;
+                string assemblyName = m_state["historianAssemblyName"].ToString();
+                string typeName = m_state["historianTypeName"].ToString();
+
+                m_parametersScreen.RefreshConnectionStringParameters(assemblyName, typeName);
+
+                // As long as there are parameters for this adapter, go to the connection string
+                // parameters setup screen
+                if (m_parametersScreen.ConnectionStringParameters.Count > 0)
+                    return m_parametersScreen;
+
+                // Otherwise, setup is ready
+                return (IScreen)m_state["setupReadyScreen"];
             }
         }
 
