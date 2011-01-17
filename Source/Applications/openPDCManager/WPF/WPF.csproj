@@ -821,17 +821,26 @@
     <Resource Include="..\Silverlight\Images\Configuration.png">
       <Link>Images\Configuration.png</Link>
     </Resource>
+    <Resource Include="..\Silverlight\Images\Console.png">
+      <Link>Images\Console.png</Link>
+    </Resource>
     <Resource Include="..\Silverlight\Images\Contacts.png">
       <Link>Images\Contacts.png</Link>
     </Resource>
     <Resource Include="..\Silverlight\Images\ContactUs.png">
       <Link>Images\ContactUs.png</Link>
     </Resource>
+    <Resource Include="..\Silverlight\Images\Copy.png">
+      <Link>Images\Copy.png</Link>
+    </Resource>
     <Resource Include="..\Silverlight\Images\Earth.png">
       <Link>Images\Earth.png</Link>
     </Resource>
     <Resource Include="..\Silverlight\Images\Error.png">
       <Link>Images\Error.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\GPALock.png">
+      <Link>Images\GPALock.png</Link>
     </Resource>
     <Resource Include="..\Silverlight\Images\Home.png">
       <Link>Images\Home.png</Link>
@@ -841,6 +850,9 @@
     </Resource>
     <Resource Include="..\Silverlight\Images\Input.png">
       <Link>Images\Input.png</Link>
+    </Resource>
+    <Resource Include="..\Silverlight\Images\Log.png">
+      <Link>Images\Log.png</Link>
     </Resource>
     <Resource Include="..\Silverlight\Images\List.png">
       <Link>Images\List.png</Link>
@@ -881,6 +893,9 @@
     <Resource Include="..\Silverlight\Images\Search.png">
       <Link>Images\Search.png</Link>
     </Resource>
+    <Resource Include="..\Silverlight\Images\Secure.png">
+      <Link>Images\Secure.png</Link>
+    </Resource>
     <Resource Include="..\Silverlight\Images\Success.png">
       <Link>Images\Success.png</Link>
     </Resource>
@@ -895,11 +910,6 @@
     </Resource>
     <Resource Include="..\Silverlight\Images\Warning.png">
       <Link>Images\Warning.png</Link>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="..\Silverlight\Images\Console.png">
-      <Link>Images\Console.png</Link>
     </Resource>
   </ItemGroup>
   <ItemGroup>
@@ -920,22 +930,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="..\Silverlight\Images\Log.png">
-      <Link>Images\Log.png</Link>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="openPDCManager.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="..\Silverlight\Images\Copy.png">
-      <Link>Images\Copy.png</Link>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="..\Silverlight\Images\GPALock.png">
-      <Link>Images\GPALock.png</Link>
-    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="openPDC.ico" />
@@ -970,11 +965,6 @@
     </Resource>
     <Resource Include="..\..\..\Documentation\Images\HMC - Use Local Clock as RealTime.png">
       <Link>Images\HMC - Use Local Clock as RealTime.png</Link>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="..\..\..\..\..\SecureWPFBranch\Source\Applications\openPDCManager\Silverlight\Images\Secure.png">
-      <Link>Images\Secure.png</Link>
     </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
