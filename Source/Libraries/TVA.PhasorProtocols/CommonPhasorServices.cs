@@ -57,7 +57,7 @@ namespace TVA.PhasorProtocols
     /// <remarks>
     /// Typically class should be implemented as a singleton since one instance will suffice.
     /// </remarks>
-    public class CommonPhasorServices : IActionAdapter
+    public class CommonPhasorServices : FacileActionAdapterBase
     {
         #region [ Members ]
 
@@ -190,76 +190,12 @@ namespace TVA.PhasorProtocols
             #endregion
         }
 
-        // Constants
-        private const int DefaultMeasurementReportingInterval = 100000;
-        private const int DefaultInitializationTimeout = 15000;
-
-        // Events
-
-        /// <summary>
-        /// Provides status messages to consumer.
-        /// </summary>
-        /// <remarks>
-        /// <see cref="EventArgs{T}.Argument"/> is new status message.
-        /// </remarks>
-        public event EventHandler<EventArgs<string>> StatusMessage;
-
-        /// <summary>
-        /// Event is raised when there is an exception encountered while processing.
-        /// </summary>
-        /// <remarks>
-        /// <see cref="EventArgs{T}.Argument"/> is the exception that was thrown.
-        /// </remarks>
-        public event EventHandler<EventArgs<Exception>> ProcessException;
-
-        /// <summary>
-        /// Provides new measurements from action adapter.
-        /// </summary>
-        /// <remarks>
-        /// <see cref="EventArgs{T}.Argument"/> is a collection of new measurements for host to process.
-        /// </remarks>
-        public event EventHandler<EventArgs<ICollection<IMeasurement>>> NewMeasurements;
-
-        /// <summary>
-        /// This event is raised, if needed, to track current number of unpublished seconds of data in the queue.
-        /// </summary>
-        /// <remarks>
-        /// <see cref="EventArgs{T}.Argument"/> is the total number of unpublished seconds of data.
-        /// </remarks>
-        public event EventHandler<EventArgs<int>> UnpublishedSamples;
-
-        /// <summary>
-        /// This event is raised if there are any measurements being discarded during the sorting process.
-        /// </summary>
-        /// <remarks>
-        /// <see cref="EventArgs{T}.Argument"/> is the enumeration of <see cref="IMeasurement"/> values that are being discarded during the sorting process.
-        /// </remarks>
-        public event EventHandler<EventArgs<IEnumerable<IMeasurement>>> DiscardingMeasurements;
-
-        /// <summary>
-        /// Event is raised when <see cref="CommonPhasorServices"/> is disposed.
-        /// </summary>
-        /// <remarks>
-        /// If an adapter references another adapter by enumerating the <see cref="Parent"/> collection, this
-        /// event should be monitored to release the reference.
-        /// </remarks>
-        public event EventHandler Disposed;
 
         // Fields
-        private string m_name;
-        private uint m_id;
-        private string m_connectionString;
         private IAdapterCollection m_parent;
         private InputAdapterCollection m_inputAdapters;
         private ActionAdapterCollection m_actionAdapters;
         //private OutputAdapterCollection m_outputAdapters;
-        private Dictionary<string, string> m_settings;
-        private DataSet m_dataSource;
-        private int m_initializationTimeout;
-        private ManualResetEvent m_initializeWaitHandle;
-        private long m_processedMeasurements;
-        private int m_measurementReportingInterval;
-        private int m_framesPerSecond;
         private ManualResetEvent m_configurationWaitHandle;
         private MultiProtocolFrameParser m_frameParser;
         private IConfigurationFrame m_configurationFrame;
@@ -272,8 +208,6 @@ namespace TVA.PhasorProtocols
         private Dictionary<string, IMeasurement> m_definedMeasurements;
         private System.Timers.Timer m_statisticCalculationTimer;
         private DataPublisher m_dataPublisher;
-        private bool m_enabled;
-        private bool m_initialized;
         private bool m_disposed;
 
         #endregion
@@ -285,12 +219,6 @@ namespace TVA.PhasorProtocols
         /// </summary>
         public CommonPhasorServices()
         {
-            // Initialize default adapter settings
-            m_name = this.GetType().Name;
-            m_initializeWaitHandle = new ManualResetEvent(false);
-            m_settings = new Dictionary<string, string>();
-            m_initializationTimeout = DefaultInitializationTimeout;
-
             // Create wait handle to use to wait for configuration frame
             m_configurationWaitHandle = new ManualResetEvent(false);
 
@@ -309,21 +237,21 @@ namespace TVA.PhasorProtocols
 
             // We only want to try to connect to device and retrieve configuration as quickly as possible
             m_frameParser.MaximumConnectionAttempts = 1;
-            m_frameParser.SourceName = m_name;
+            m_frameParser.SourceName = Name;
             m_frameParser.AutoRepeatCapturedPlayback = false;
             m_frameParser.AutoStartDataParsingSequence = false;
             m_frameParser.SkipDisableRealTimeData = true;
 
             // Create a new data publishing server
             m_dataPublisher = new DataPublisher();
-        }
+            m_dataPublisher.Name = "dataPublisher";
 
-        /// <summary>
-        /// Releases the unmanaged resources before the <see cref="CommonPhasorServices"/> object is reclaimed by <see cref="GC"/>.
-        /// </summary>
-        ~CommonPhasorServices()
-        {
-            Dispose(false);
+            // Attach to events on new data publishing server reference
+            m_dataPublisher.StatusMessage += m_dataPublisher_StatusMessage;
+            m_dataPublisher.ProcessException += m_dataPublisher_ProcessException;
+            m_dataPublisher.NewMeasurements += m_dataPublisher_NewMeasurements;
+            m_dataPublisher.UnpublishedSamples += m_dataPublisher_UnpublishedSamples;
+            m_dataPublisher.DiscardingMeasurements += m_dataPublisher_DiscardingMeasurements;
         }
 
         #endregion
@@ -331,348 +259,18 @@ namespace TVA.PhasorProtocols
         #region [ Properties ]
 
         /// <summary>
-        /// Gets or sets the name of this <see cref="CommonPhasorServices"/> instance.
-        /// </summary>
-        /// <remarks>
-        /// Derived classes should provide a name for the adapter.
-        /// </remarks>
-        public string Name
-        {
-            get
-            {
-                return m_name;
-            }
-            set
-            {
-                m_name = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets numeric ID associated with this <see cref="CommonPhasorServices"/> instance.
-        /// </summary>
-        public uint ID
-        {
-            get
-            {
-                return m_id;
-            }
-            set
-            {
-                m_id = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets key/value pair connection information specific to this <see cref="CommonPhasorServices"/> instance.
-        /// </summary>
-        public string ConnectionString
-        {
-            get
-            {
-                return m_connectionString;
-            }
-            set
-            {
-                m_connectionString = value;
-
-                // Preparse settings upon connection string assignment
-                if (string.IsNullOrEmpty(m_connectionString))
-                    m_settings = new Dictionary<string, string>();
-                else
-                    m_settings = m_connectionString.ParseKeyValuePairs();
-            }
-        }
-
-        /// <summary>
-        /// Gets a read-only reference to the collection that contains this <see cref="CommonPhasorServices"/> instance.
-        /// </summary>
-        public ReadOnlyCollection<IAdapter> Parent
-        {
-            get
-            {
-                return new ReadOnlyCollection<IAdapter>(m_parent);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets <see cref="DataSet"/> based data source available to this <see cref="CommonPhasorServices"/> instance.
-        /// </summary>
-        public DataSet DataSource
-        {
-            get
-            {
-                return m_dataSource;
-            }
-            set
-            {
-                m_dataSource = value;
-
-                // Cascade to data publishing server
-                if (m_dataPublisher != null)
-                    m_dataPublisher.DataSource = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets maximum time system will wait during <see cref="Start"/> for initialization.
-        /// </summary>
-        /// <remarks>
-        /// Set to <see cref="Timeout.Infinite"/> to wait indefinitely.
-        /// </remarks>
-        public int InitializationTimeout
-        {
-            get
-            {
-                return m_initializationTimeout;
-            }
-            set
-            {
-                m_initializationTimeout = value;
-
-                // Cascade to data publishing server
-                if (m_dataPublisher != null)
-                    m_dataPublisher.InitializationTimeout = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets output measurements that the <see cref="CommonPhasorServices"/> will produce, if any.
-        /// </summary>
-        public IMeasurement[] OutputMeasurements
-        {
-            get
-            {
-                return null;
-            }
-            set
-            {
-                // Not used
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets primary keys of input measurements the <see cref="CommonPhasorServices"/> expects, if any.
-        /// </summary>
-        public MeasurementKey[] InputMeasurementKeys
-        {
-            get
-            {
-                return null;
-            }
-            set
-            {
-                // Not used
-            }
-        }
-
-        /// <summary>
-        /// Gets the total number of measurements handled thus far by the <see cref="CommonPhasorServices"/>.
-        /// </summary>
-        public long ProcessedMeasurements
-        {
-            get
-            {
-                return m_processedMeasurements;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the measurement reporting interval.
-        /// </summary>
-        /// <remarks>
-        /// This is used to determined how many measurements should be processed before reporting status.
-        /// </remarks>
-        public int MeasurementReportingInterval
-        {
-            get
-            {
-                return m_measurementReportingInterval;
-            }
-            set
-            {
-                m_measurementReportingInterval = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets flag indicating if the adapter has been initialized successfully.
-        /// </summary>
-        public bool Initialized
-        {
-            get
-            {
-                return m_initialized;
-            }
-            set
-            {
-                m_initialized = value;
-
-                // When initialization is complete we send notification
-                if (m_initializeWaitHandle != null)
-                {
-                    if (value)
-                        m_initializeWaitHandle.Set();
-                    else
-                        m_initializeWaitHandle.Reset();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets enabled state of this <see cref="CommonPhasorServices"/> instance.
-        /// </summary>
-        /// <remarks>
-        /// Base class simply starts or stops <see cref="CommonPhasorServices"/> based on flag value. Derived classes should
-        /// extend this if needed to enable or disable operational state of the adapter based on flag value.
-        /// </remarks>
-        public bool Enabled
-        {
-            get
-            {
-                return m_enabled;
-            }
-            set
-            {
-                if (m_enabled && !value)
-                    Stop();
-                else if (!m_enabled && value)
-                    Start();
-            }
-        }
-
-        /// <summary>
-        /// Gets settings <see cref="Dictionary{TKey,TValue}"/> parsed when <see cref="ConnectionString"/> was assigned.
-        /// </summary>
-        public Dictionary<string, string> Settings
-        {
-            get
-            {
-                return m_settings;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the frames per second to be used by the <see cref="CommonPhasorServices"/>.
-        /// </summary>
-        /// <remarks>
-        /// This value is only tracked in the <see cref="CommonPhasorServices"/>.
-        /// </remarks>
-        public int FramesPerSecond
-        {
-            get
-            {
-                return m_framesPerSecond;
-            }
-            set
-            {
-                m_framesPerSecond = value;
-            }
-        }
-
-        /// <summary>
         /// Gets the status of this <see cref="CommonPhasorServices"/> instance.
         /// </summary>
         /// <remarks>
         /// Derived classes should provide current status information about the adapter for display purposes.
         /// </remarks>
-        public string Status
+        public override string Status
         {
             get
             {
-                const int MaxMeasurementsToShow = 10;
-
                 StringBuilder status = new StringBuilder();
-                DataSet dataSource = this.DataSource;
 
-                status.AppendFormat("       Data source defined: {0}", (dataSource != null));
-                status.AppendLine();
-                if (dataSource != null)
-                {
-                    status.AppendFormat("    Referenced data source: {0}, {1} tables", dataSource.DataSetName, dataSource.Tables.Count);
-                    status.AppendLine();
-                }
-                status.AppendFormat("    Initialization timeout: {0}", InitializationTimeout < 0 ? "Infinite" : InitializationTimeout.ToString() + " milliseconds");
-                status.AppendLine();
-                status.AppendFormat("       Adapter initialized: {0}", Initialized);
-                status.AppendLine();
-                status.AppendFormat("         Parent collection: {0}", m_parent == null ? "Undefined" : m_parent.Name);
-                status.AppendLine();
-                status.AppendFormat("         Operational state: {0}", Enabled ? "Running" : "Stopped");
-                status.AppendLine();
-                status.AppendFormat("    Processed measurements: {0}", ProcessedMeasurements);
-                status.AppendLine();
-                status.AppendFormat("   Item reporting interval: {0}", MeasurementReportingInterval);
-                status.AppendLine();
-                status.AppendFormat("                Adpater ID: {0}", ID);
-                status.AppendLine();
-
-                Dictionary<string, string> keyValuePairs = Settings;
-                char[] keyChars;
-                string value;
-
-                status.AppendFormat("         Connection string: {0} key/value pairs", keyValuePairs.Count);
-                //                            1         2         3         4         5         6         7
-                //                   123456789012345678901234567890123456789012345678901234567890123456789012345678
-                //                                         Key = Value
-                //                                                        1         2         3         4         5
-                //                                               12345678901234567890123456789012345678901234567890
-                status.AppendLine();
-                status.AppendLine();
-
-                foreach (KeyValuePair<string, string> item in keyValuePairs)
-                {
-                    keyChars = item.Key.Trim().ToCharArray();
-                    keyChars[0] = char.ToUpper(keyChars[0]);
-
-                    value = item.Value.Trim();
-                    if (value.Length > 50)
-                        value = value.TruncateRight(47) + "...";
-
-                    status.AppendFormat("{0} = {1}", (new string(keyChars)).TruncateRight(25).PadLeft(25), value.PadRight(50));
-                    status.AppendLine();
-                }
-
-                status.AppendLine();
-
-                if (OutputMeasurements != null)
-                {
-                    status.AppendFormat("       Output measurements: {0} defined measurements", OutputMeasurements.Length);
-                    status.AppendLine();
-                    status.AppendLine();
-
-                    for (int i = 0; i < TVA.Common.Min(OutputMeasurements.Length, MaxMeasurementsToShow); i++)
-                    {
-                        status.Append(OutputMeasurements[i].ToString().TruncateRight(25).PadLeft(25));
-                        status.Append(" ");
-                        status.AppendLine(OutputMeasurements[i].SignalID.ToString());
-                    }
-
-                    if (OutputMeasurements.Length > MaxMeasurementsToShow)
-                        status.AppendLine("...".PadLeft(26));
-
-                    status.AppendLine();
-                }
-
-                if (InputMeasurementKeys != null)
-                {
-                    status.AppendFormat("        Input measurements: {0} defined measurements", InputMeasurementKeys.Length);
-                    status.AppendLine();
-                    status.AppendLine();
-
-                    for (int i = 0; i < TVA.Common.Min(InputMeasurementKeys.Length, MaxMeasurementsToShow); i++)
-                    {
-                        status.AppendLine(InputMeasurementKeys[i].ToString().TruncateRight(25).CenterText(50));
-                    }
-
-                    if (InputMeasurementKeys.Length > MaxMeasurementsToShow)
-                        status.AppendLine("...".CenterText(50));
-
-                    status.AppendLine();
-                }
-
-                status.AppendFormat("        Defined frame rate: {0} frames/sec", FramesPerSecond);
-                status.AppendLine();
+                status.Append(base.Status);
 
                 if (m_dataPublisher != null)
                 {
@@ -691,19 +289,10 @@ namespace TVA.PhasorProtocols
         #region [ Methods ]
 
         /// <summary>
-        /// Releases all the resources used by the <see cref="CommonPhasorServices"/> object.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
         /// Releases the unmanaged resources used by the <see cref="CommonPhasorServices"/> object and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (!m_disposed)
             {
@@ -711,12 +300,6 @@ namespace TVA.PhasorProtocols
                 {
                     if (disposing)
                     {
-                        // Dispose of initialization wait handle
-                        if (m_initializeWaitHandle != null)
-                            m_initializeWaitHandle.Close();
-
-                        m_initializeWaitHandle = null;
-
                         // Detach from frame parser events and dispose
                         if (m_frameParser != null)
                         {
@@ -736,7 +319,6 @@ namespace TVA.PhasorProtocols
                             m_configurationWaitHandle.Close();
 
                         m_configurationWaitHandle = null;
-
                         m_configurationFrame = null;
 
                         // Dispose of statistic calculation timer
@@ -750,23 +332,20 @@ namespace TVA.PhasorProtocols
                         // Dispose of data publishing server
                         if (m_dataPublisher != null)
                         {
-                            m_dataPublisher.StatusMessage -= StatusMessage;
-                            m_dataPublisher.ProcessException -= ProcessException;
-                            m_dataPublisher.NewMeasurements -= NewMeasurements;
-                            m_dataPublisher.UnpublishedSamples -= UnpublishedSamples;
-                            m_dataPublisher.DiscardingMeasurements -= DiscardingMeasurements;
+                            m_dataPublisher.StatusMessage -= m_dataPublisher_StatusMessage;
+                            m_dataPublisher.ProcessException -= m_dataPublisher_ProcessException;
+                            m_dataPublisher.NewMeasurements -= m_dataPublisher_NewMeasurements;
+                            m_dataPublisher.UnpublishedSamples -= m_dataPublisher_UnpublishedSamples;
+                            m_dataPublisher.DiscardingMeasurements -= m_dataPublisher_DiscardingMeasurements;
                             m_dataPublisher.Dispose();
                         }
                         m_dataPublisher = null;
-
                     }
                 }
                 finally
                 {
-                    m_disposed = true;  // Prevent duplicate dispose.
-
-                    if (Disposed != null)
-                        Disposed(this, EventArgs.Empty);
+                    m_disposed = true;          // Prevent duplicate dispose.
+                    base.Dispose(disposing);    // Call base class Dispose().
                 }
             }
         }
@@ -774,28 +353,13 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Intializes <see cref="CommonPhasorServices"/>.
         /// </summary>
-        public void Initialize()
+        public override void Initialize()
         {
-            Initialized = false;
+            base.Initialize();
 
             Dictionary<string, string> settings = Settings;
             string setting;
             double reportingInterval;
-
-            // Initialize standard adapter settings
-            if (settings.TryGetValue("inputMeasurementKeys", out setting))
-                InputMeasurementKeys = AdapterBase.ParseInputMeasurementKeys(DataSource, setting);
-
-            if (settings.TryGetValue("outputMeasurements", out setting))
-                OutputMeasurements = AdapterBase.ParseOutputMeasurements(DataSource, setting);
-
-            if (settings.TryGetValue("measurementReportingInterval", out setting))
-                MeasurementReportingInterval = int.Parse(setting);
-            else
-                MeasurementReportingInterval = DefaultMeasurementReportingInterval;
-
-            if (settings.TryGetValue("framesPerSecond", out setting))
-                m_framesPerSecond = int.Parse(setting);
 
             // Load the statistic reporting interval - note that the CommonPhasorServices instance
             // is usually loaded from the configuration data source so changes in this value should
@@ -816,58 +380,41 @@ namespace TVA.PhasorProtocols
 
             // Initialize the data publishing server (load settings from config file)
             if (m_dataPublisher != null)
-            {
-                m_dataPublisher.Name = "dataPublisher";
-                m_dataPublisher.StatusMessage += StatusMessage;
-                m_dataPublisher.ProcessException += ProcessException;
-                m_dataPublisher.NewMeasurements += NewMeasurements;
-                m_dataPublisher.UnpublishedSamples += UnpublishedSamples;
-                m_dataPublisher.DiscardingMeasurements += DiscardingMeasurements;
                 m_dataPublisher.Initialize();
-            }
         }
 
         /// <summary>
         /// Starts the <see cref="CommonPhasorServices"/> or restarts it if it is already running.
         /// </summary>
         [AdapterCommand("Starts the common phasor services adapter or restarts it if it is already running.")]
-        public void Start()
+        public override void Start()
         {
-            // Make sure we are stopped (e.g., disconnected) before attempting to start (e.g., connect)
-            if (!m_enabled)
-            {
-                // Wait for adapter intialization to complete...
-                m_enabled = WaitForInitialize(InitializationTimeout);
+            base.Start();
 
-                if (m_dataPublisher != null)
-                    m_dataPublisher.Start();
-
-                if (!m_enabled)
-                    OnProcessException(new TimeoutException("Failed to start adapter due to timeout waiting for initialization."));
-            }
+            if (Enabled && m_dataPublisher != null)
+                m_dataPublisher.Start();
         }
 
         /// <summary>
         /// Stops the <see cref="CommonPhasorServices"/>.
         /// </summary>		
         [AdapterCommand("Stops the common phasor services adapter.")]
-        public void Stop()
+        public override void Stop()
         {
-            m_enabled = false;
+            base.Stop();
 
             if (m_dataPublisher != null)
                 m_dataPublisher.Stop();
         }
 
-        // Assigns the reference to the parent adapter collection that will contain this adapter.
-        void IAdapter.AssignParentCollection(IAdapterCollection parent)
+        /// <summary>
+        /// Assigns the reference to the parent <see cref="IAdapterCollection"/> that will contain this <see cref="AdapterBase"/>.
+        /// </summary>
+        /// <param name="parent">Parent adapter collection.</param>
+        protected override void AssignParentCollection(IAdapterCollection parent)
         {
-            // The common phasor services class does not inherit from the FacileActionAdapterBase (or ActionAdapterBase) since
-            // it needs an internal reference to the IAdapter collections. With this internal reference all adapter collections
-            // in the AllAdaptersCollection (the parent of the ActionAdapterCollection) can be referenced. This is needed so
-            // that the common phasor services instance can cross reference the input adapter collection for monitoring devices
-            // for statistic collection. As such this painfully requires full implementation of IAdapter and IActionAdapter, as
-            // you see inside this class.
+            base.AssignParentCollection(parent);
+
             m_parent = parent;
 
             if (parent != null)
@@ -890,38 +437,15 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Manually sets the intialized state of the <see cref="CommonPhasorServices"/>.
-        /// </summary>
-        /// <param name="initialized">Desired initialized state.</param>
-        [AdapterCommand("Manually sets the intialized state of the adapter.")]
-        public void SetInitializedState(bool initialized)
-        {
-            this.Initialized = initialized;
-        }
-
-        /// <summary>
         /// Gets a short one-line status of this <see cref="CommonPhasorServices"/>.
         /// </summary>
         /// <param name="maxLength">Maximum number of available characters for display.</param>
         /// <returns>A short one-line summary of the current status of the <see cref="CommonPhasorServices"/>.</returns>
-        public string GetShortStatus(int maxLength)
+        public override string GetShortStatus(int maxLength)
         {
             return "Type \"LISTCOMMANDS 0\" to enumerate service commands.".CenterText(maxLength);
         }
-
-        /// <summary>
-        /// Blocks the <see cref="Thread.CurrentThread"/> until the adapter is <see cref="Initialized"/>.
-        /// </summary>
-        /// <param name="timeout">The number of milliseconds to wait.</param>
-        /// <returns><c>true</c> if the initialization succeeds; otherwise, <c>false</c>.</returns>
-        public bool WaitForInitialize(int timeout)
-        {
-            if (m_initializeWaitHandle != null)
-                return m_initializeWaitHandle.WaitOne(timeout);
-
-            return false;
-        }
-
+        
         /// <summary>
         /// Requests a configuration frame from a phasor device.
         /// </summary>
@@ -1025,109 +549,15 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Queues a single measurement for processing.
-        /// </summary>
-        /// <param name="measurement">Measurement to queue for processing.</param>
-        public void QueueMeasurementForProcessing(IMeasurement measurement)
-        {
-            QueueMeasurementsForProcessing(new IMeasurement[] { measurement });
-        }
-
-        /// <summary>
         /// Queues a collection of measurements for processing.
         /// </summary>
         /// <param name="measurements">Collection of measurements to queue for processing.</param>
-        public void QueueMeasurementsForProcessing(IEnumerable<IMeasurement> measurements)
+        public override void QueueMeasurementsForProcessing(IEnumerable<IMeasurement> measurements)
         {
+            base.QueueMeasurementsForProcessing(measurements);
+
             if (m_dataPublisher != null)
                 m_dataPublisher.QueueMeasurementsForProcessing(measurements);
-        }
-
-        /// <summary>
-        /// Raises the <see cref="StatusMessage"/> event.
-        /// </summary>
-        /// <param name="status">New status message.</param>
-        protected virtual void OnStatusMessage(string status)
-        {
-            if (StatusMessage != null)
-                StatusMessage(this, new EventArgs<string>(status));
-        }
-
-        /// <summary>
-        /// Raises the <see cref="StatusMessage"/> event with a formatted status message.
-        /// </summary>
-        /// <param name="formattedStatus">Formatted status message.</param>
-        /// <param name="args">Arguments for <paramref name="formattedStatus"/>.</param>
-        /// <remarks>
-        /// This overload combines string.Format and OnStatusMessage for convienence.
-        /// </remarks>
-        protected virtual void OnStatusMessage(string formattedStatus, params object[] args)
-        {
-            if (StatusMessage != null)
-                StatusMessage(this, new EventArgs<string>(string.Format(formattedStatus, args)));
-        }
-
-        /// <summary>
-        /// Raises <see cref="ProcessException"/> event.
-        /// </summary>
-        /// <param name="ex">Processing <see cref="Exception"/>.</param>
-        protected virtual void OnProcessException(Exception ex)
-        {
-            if (ProcessException != null)
-                ProcessException(this, new EventArgs<Exception>(ex));
-        }
-
-        /// <summary>
-        /// Raises the <see cref="NewMeasurements"/> event.
-        /// </summary>
-        protected virtual void OnNewMeasurements(ICollection<IMeasurement> measurements)
-        {
-            if (NewMeasurements != null)
-                NewMeasurements(this, new EventArgs<ICollection<IMeasurement>>(measurements));
-
-            IncrementProcessedMeasurements(measurements.Count);
-        }
-
-        /// <summary>
-        /// Raises the <see cref="UnpublishedSamples"/> event.
-        /// </summary>
-        /// <param name="seconds">Total number of unpublished seconds of data.</param>
-        protected virtual void OnUnpublishedSamples(int seconds)
-        {
-            if (UnpublishedSamples != null)
-                UnpublishedSamples(this, new EventArgs<int>(seconds));
-        }
-
-        /// <summary>
-        /// Raises the <see cref="DiscardingMeasurements"/> event.
-        /// </summary>
-        /// <param name="measurements">Enumeration of <see cref="IMeasurement"/> values being discarded.</param>
-        protected virtual void OnDiscardingMeasurements(IEnumerable<IMeasurement> measurements)
-        {
-            if (DiscardingMeasurements != null)
-                DiscardingMeasurements(this, new EventArgs<IEnumerable<IMeasurement>>(measurements));
-        }
-
-        /// <summary>
-        /// Safely increments the total processed measurements.
-        /// </summary>
-        /// <param name="totalAdded"></param>
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        protected virtual void IncrementProcessedMeasurements(long totalAdded)
-        {
-            // Check to see if total number of added points will exceed process interval used to show periodic
-            // messages of how many points have been archived so far...
-            int interval = MeasurementReportingInterval;
-
-            if (interval > 0)
-            {
-                bool showMessage = m_processedMeasurements + totalAdded >= (m_processedMeasurements / interval + 1) * interval;
-
-                m_processedMeasurements += totalAdded;
-
-                if (showMessage)
-                    OnStatusMessage("{0:N0} measurements have been processed so far...", m_processedMeasurements);
-            }
         }
 
         /// <summary>
@@ -1475,6 +905,31 @@ namespace TVA.PhasorProtocols
             OnStatusMessage("Attempting {0} {1} based connection...", m_frameParser.PhasorProtocol.GetFormattedProtocolName(), m_frameParser.TransportProtocol.ToString().ToUpper());
         }
 
+        private void m_dataPublisher_StatusMessage(object sender, EventArgs<string> e)
+        {
+            OnStatusMessage(e.Argument);
+        }
+
+        private void m_dataPublisher_ProcessException(object sender, EventArgs<Exception> e)
+        {
+            OnProcessException(e.Argument);
+        }
+
+        private void m_dataPublisher_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
+        {
+            OnNewMeasurements(e.Argument);
+        }
+
+        private void m_dataPublisher_UnpublishedSamples(object sender, EventArgs<int> e)
+        {
+            OnUnpublishedSamples(e.Argument);
+        }
+
+        private void m_dataPublisher_DiscardingMeasurements(object sender, EventArgs<IEnumerable<IMeasurement>> e)
+        {
+            OnDiscardingMeasurements(e.Argument);
+        }
+
         #endregion
 
         #region [ Static ]
@@ -1610,7 +1065,7 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", device.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
-                            using (IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, device.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
+                            using (IDbCommand command = connection.CreateParameterizedCommand("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, device.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
                             {
                                 command.ExecuteNonQuery();
                             }
@@ -1636,7 +1091,7 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", inputStream.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
-                            using (IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, inputStream.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
+                            using (IDbCommand command = connection.CreateParameterizedCommand("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, inputStream.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
                             {
                                 command.ExecuteNonQuery();
                             }
@@ -1681,7 +1136,7 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} Statistic for {1}", outputStream.Field<string>("Name"), statistic.Field<string>("Description"));
 
-                            using (IDbCommand command = CreateParameterizedCommand(connection, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, NULL, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, pointTag, statSignalTypeID, signalReference, description))
+                            using (IDbCommand command = connection.CreateParameterizedCommand("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, NULL, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, pointTag, statSignalTypeID, signalReference, description))
                             {
                                 command.ExecuteNonQuery();
                             }
@@ -1725,41 +1180,6 @@ namespace TVA.PhasorProtocols
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Creates and returns a parameterized SQL command. Parameter names are embedded in the SQL statement
-        /// passed as a parameter to this method. This method does very rudimentary parsing of the SQL statement so parameter
-        /// names should start with the '@' character and should be surrounded by either spaces, parentheses, or commas.
-        /// </summary>
-        /// <param name="connection">The database connection.</param>
-        /// <param name="sql">The SQL statement.</param>
-        /// <param name="args">The parameters for the command in the order that they appear in the SQL statement.</param>
-        /// <returns>The parameterized command.</returns>
-        [SuppressMessage("Microsoft.Security", "CA2100")]
-        private static IDbCommand CreateParameterizedCommand(IDbConnection connection, string sql, params object[] args)
-        {
-            // TODO: Migrate to function in TVA.Data.DataExtensions once new version is rolled down...
-            string[] tokens = sql.Split(' ', '(', ')', ',');
-            IDbCommand command = connection.CreateCommand();
-            int i = 0;
-
-            foreach (string token in tokens)
-            {
-                if (token.StartsWith("@") && !command.Parameters.Contains(token))
-                {
-                    IDbDataParameter parameter = command.CreateParameter();
-
-                    parameter.ParameterName = token;
-                    parameter.Value = args[i++];
-                    parameter.Direction = ParameterDirection.Input;
-
-                    command.Parameters.Add(parameter);
-                }
-            }
-
-            command.CommandText = sql;
-            return command;
         }
 
         /// <summary>
