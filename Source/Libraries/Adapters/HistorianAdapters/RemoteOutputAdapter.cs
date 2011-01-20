@@ -28,6 +28,8 @@
 //       Added outputIsForArchive and throttleTransmission setting parameters for more control over 
 //       the adapter.
 //       Switched to ManualResetEvent for waiting on historian acknowledgement for efficiency.
+//  01/20/2011 - Pinal C. Patel
+//       Modified to use Settings for the ConnectionString property of historian socket.
 //
 //******************************************************************************************************
 
@@ -277,6 +279,8 @@ namespace HistorianAdapters
 
             if (settings.TryGetValue("port", out setting))
                 m_port = int.Parse(setting);
+            else
+                settings.Add("port", m_port.ToString());
 
             if (settings.TryGetValue("payloadaware", out setting))
                 m_payloadAware = setting.ParseBoolean();
@@ -305,7 +309,7 @@ namespace HistorianAdapters
             }
             
             // Initialize publiser socket.
-            m_historianPublisher.ConnectionString = string.Format("Server={0}:{1}", m_server, m_port);
+            m_historianPublisher.ConnectionString = settings.JoinKeyValuePairs();
             m_historianPublisher.PayloadAware = m_payloadAware;
             m_historianPublisher.ConnectionAttempt += HistorianPublisher_ConnectionAttempt;
             m_historianPublisher.ConnectionEstablished += HistorianPublisher_ConnectionEstablished;
