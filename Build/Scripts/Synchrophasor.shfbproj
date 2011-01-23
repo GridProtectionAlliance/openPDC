@@ -36,7 +36,7 @@
     <PlugInConfigurations>
     </PlugInConfigurations>
     <KeepLogFile>False</KeepLogFile>
-    <HtmlSdkLinkType>None</HtmlSdkLinkType>
+    <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
   </PropertyGroup>
   <!-- There are no properties for these two groups but they need to appear in
        order for Visual Studio to perform the build. -->
