@@ -48,16 +48,13 @@ namespace ConfigurationSetupUtility.Screens
     /// </summary>
     public partial class SetupInProgressScreen : UserControl, IScreen
     {
-
         #region [ Members ]
 
         // Constants
-
         private const CipherStrength CryptoStrength = CipherStrength.Aes256;
         private const string DefaultCryptoKey = "0679d9ae-aca5-4702-a3f5-604415096987";
 
         // Fields
-
         private bool m_canGoForward;
         private bool m_canGoBack;
         private bool m_canCancel;

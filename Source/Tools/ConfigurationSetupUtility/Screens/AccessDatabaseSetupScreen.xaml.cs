@@ -21,6 +21,8 @@
 //  09/19/2010 - J. Ritchie Carroll
 //      Made default path for Access database point to a non-restrictive location.
 //      Added user verification for override of existing Access configuration.
+//  01/21/2011 - J. Ritchie Carroll
+//       Modified next page to be admin user account credentials setup.
 //
 //******************************************************************************************************
 
@@ -38,11 +40,9 @@ namespace ConfigurationSetupUtility.Screens
     /// </summary>
     public partial class AccessDatabaseSetupScreen : UserControl, IScreen
     {
-
         #region [ Members ]
 
         // Fields
-
         private Dictionary<string, object> m_state;
 
         #endregion
@@ -84,14 +84,24 @@ namespace ConfigurationSetupUtility.Screens
         {
             get
             {
-                IScreen applyChangesScreen;
+                IScreen nextScreen;
 
-                if (!State.ContainsKey("applyChangesScreen"))
-                    State.Add("applyChangesScreen", new ApplyConfigurationChangesScreen());
+                if (Convert.ToBoolean(m_state["existing"]))
+                {
+                    if (!m_state.ContainsKey("applyChangesScreen"))
+                        m_state.Add("applyChangesScreen", new ApplyConfigurationChangesScreen());
 
-                applyChangesScreen = State["applyChangesScreen"] as IScreen;
+                    nextScreen = m_state["applyChangesScreen"] as IScreen;
+                }
+                else
+                {
+                    if (!m_state.ContainsKey("userAccountSetupScreen"))
+                        m_state.Add("userAccountSetupScreen", new UserAccountCredentialsSetupScreen());
 
-                return applyChangesScreen;
+                    nextScreen = m_state["userAccountSetupScreen"] as IScreen;
+                }
+
+                return nextScreen;
             }
         }
 

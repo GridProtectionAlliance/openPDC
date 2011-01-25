@@ -134,6 +134,9 @@
     <Compile Include="Screens\ConfigurationTypeScreen.xaml.cs">
       <DependentUpon>ConfigurationTypeScreen.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Screens\UserAccountCredentialsSetupScreen.xaml.cs">
+      <DependentUpon>UserAccountCredentialsSetupScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Screens\DatabaseSetupScreen.xaml.cs">
       <DependentUpon>DatabaseSetupScreen.xaml</DependentUpon>
     </Compile>
@@ -201,6 +204,10 @@
     <Page Include="Screens\ConfigurationTypeScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\UserAccountCredentialsSetupScreen.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Screens\DatabaseSetupScreen.xaml">
       <SubType>Designer</SubType>

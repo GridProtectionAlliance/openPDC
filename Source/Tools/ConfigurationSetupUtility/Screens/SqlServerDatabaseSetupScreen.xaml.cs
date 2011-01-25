@@ -18,6 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  09/09/2010 - Stephen C. Wills
 //       Generated original version of source code.
+//  01/21/2011 - J. Ritchie Carroll
+//       Modified next page to be admin user account credentials setup.
 //
 //******************************************************************************************************
 
@@ -37,11 +39,9 @@ namespace ConfigurationSetupUtility.Screens
     /// </summary>
     public partial class SqlServerDatabaseSetupScreen : UserControl, IScreen
     {
-
         #region [ Members ]
 
         // Fields
-
         private SqlServerSetup m_sqlServerSetup;
         private Dictionary<string, object> m_state;
         private Button m_advancedButton;
@@ -70,14 +70,24 @@ namespace ConfigurationSetupUtility.Screens
         {
             get
             {
-                IScreen applyChangesScreen;
+                IScreen nextScreen;
 
-                if (!State.ContainsKey("applyChangesScreen"))
-                    State.Add("applyChangesScreen", new ApplyConfigurationChangesScreen());
+                if (Convert.ToBoolean(m_state["existing"]))
+                {
+                    if (!m_state.ContainsKey("applyChangesScreen"))
+                        m_state.Add("applyChangesScreen", new ApplyConfigurationChangesScreen());
 
-                applyChangesScreen = State["applyChangesScreen"] as IScreen;
+                    nextScreen = m_state["applyChangesScreen"] as IScreen;
+                }
+                else
+                {
+                    if (!m_state.ContainsKey("userAccountSetupScreen"))
+                        m_state.Add("userAccountSetupScreen", new UserAccountCredentialsSetupScreen());
 
-                return applyChangesScreen;
+                    nextScreen = m_state["userAccountSetupScreen"] as IScreen;
+                }
+
+                return nextScreen;
             }
         }
 

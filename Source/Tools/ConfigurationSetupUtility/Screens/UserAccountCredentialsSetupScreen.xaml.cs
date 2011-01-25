@@ -1,7 +1,7 @@
 ﻿//******************************************************************************************************
-//  ExistingConfigurationScreen.xaml.cs - Gbtc
+//  UserAccountCredentialsSetupScreen.xaml.cs - Gbtc
 //
-//  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
+//  Copyright © 2011, Grid Protection Alliance.  All Rights Reserved.
 //
 //  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
 //  the NOTICE file distributed with this work for additional information regarding copyright ownership.
@@ -16,7 +16,7 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  09/07/2010 - Stephen C. Wills
+//  01/23/2011 - J. Ritchie Carroll
 //       Generated original version of source code.
 //
 //******************************************************************************************************
@@ -25,18 +25,18 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using TVA;
 
 namespace ConfigurationSetupUtility.Screens
 {
     /// <summary>
-    /// Interaction logic for ExistingConfigurationScreen.xaml
+    /// Interaction logic for UserAccountCredentialsSetupScreen.xaml
     /// </summary>
-    public partial class ExistingConfigurationScreen : UserControl, IScreen
+    public partial class UserAccountCredentialsSetupScreen : UserControl, IScreen
     {
         #region [ Members ]
 
         // Fields
-        private IScreen m_nextScreen;
         private Dictionary<string, object> m_state;
 
         #endregion
@@ -44,12 +44,11 @@ namespace ConfigurationSetupUtility.Screens
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new instance of the <see cref="ExistingConfigurationScreen"/> class.
+        /// Creates a new instance of the <see cref="UserAccountCredentialsSetupScreen"/> class.
         /// </summary>
-        public ExistingConfigurationScreen()
+        public UserAccountCredentialsSetupScreen()
         {
             InitializeComponent();
-            m_nextScreen = new ConfigurationTypeScreen();
         }
 
         #endregion
@@ -63,7 +62,14 @@ namespace ConfigurationSetupUtility.Screens
         {
             get
             {
-                return m_nextScreen;
+                IScreen applyChangesScreen;
+
+                if (!State.ContainsKey("applyChangesScreen"))
+                    State.Add("applyChangesScreen", new ApplyConfigurationChangesScreen());
+
+                applyChangesScreen = State["applyChangesScreen"] as IScreen;
+
+                return applyChangesScreen;
             }
         }
 
@@ -110,7 +116,34 @@ namespace ConfigurationSetupUtility.Screens
         {
             get
             {
-                return true;
+                string adminUserName = null, adminPassword = null;
+
+                // Assign or re-assign state values, change events won't fire if user left default values
+                m_state["adminUserName"] = m_userNameTextBox.Text.Trim();
+                m_state["adminPassword"] = m_userPasswordTextBox.Password.Trim();
+
+                adminUserName = m_state["adminUserName"] as string;
+                adminPassword = m_state["adminPassword"] as string;
+
+                if (!string.IsNullOrWhiteSpace(adminUserName))
+                {
+                    if (!string.IsNullOrWhiteSpace(adminPassword))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please enter a password for the administrative user.");
+                        m_userPasswordTextBox.Focus();
+                        return false;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please enter a user name for the administrative user.");
+                    m_userNameTextBox.Focus();
+                    return false;
+                }
             }
         }
 
@@ -126,9 +159,7 @@ namespace ConfigurationSetupUtility.Screens
             set
             {
                 m_state = value;
-
-                if (!m_state.ContainsKey("existing"))
-                    m_state.Add("existing", false);
+                InitializeState();
             }
         }
 
@@ -142,18 +173,22 @@ namespace ConfigurationSetupUtility.Screens
 
         #region [ Methods ]
 
-        // Occurs when the user chooses to set up using a new configuration.
-        private void NewConfigurationRadioButton_Checked(object sender, RoutedEventArgs e)
+        // Initializes the state keys to their default values.
+        private void InitializeState()
         {
-            if(m_state != null)
-                m_state["existing"] = false;
+            m_userPasswordTextBox.Focus();
         }
 
-        // Occurs when the user chooses to set up using an existing configuration.
-        private void ExistingConfigurationRadioButton_Checked(object sender, RoutedEventArgs e)
+        private void UserNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if(m_state != null)
-                m_state["existing"] = true;
+            if (m_state != null)
+                m_state["adminUserName"] = m_userNameTextBox.Text.Trim();
+        }
+
+        private void UserPasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (m_state != null)
+                m_state["adminPassword"] = m_userPasswordTextBox.Password.Trim();
         }
 
         #endregion
