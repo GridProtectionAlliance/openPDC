@@ -2324,7 +2324,6 @@ namespace Database
         private TableType m_restriction;
         private bool m_immediateClose;
         private bool m_allowTextNulls;
-
         private bool m_allowNumericNulls;
 
         #endregion
@@ -2361,6 +2360,14 @@ namespace Database
         {
             container.Add(this);
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources before the <see cref="Schema"/> object is reclaimed by <see cref="GC"/>.
+        /// </summary>
+        ~Schema()
+        {
+            Dispose(false);
         }
 
         #endregion
@@ -2686,28 +2693,6 @@ namespace Database
             if (m_schemaConnection.State == ConnectionState.Closed)
                 m_schemaConnection.Open();
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected override void Finalize()
-        {
-
-            Dispose(true);
-
-        }
-
-
-        //protected virtual void Dispose(bool disposing)
-        //{
-        //    if (disposing && (components != null))
-        //    {
-        //        components.Dispose();
-        //    }
-        //    base.Dispose(disposing);
-        //    Close();
-        //    GC.SuppressFinalize(this);
-        //}
 
         /// <summary>
         /// Close <see cref="OleDbConnection"/> 

@@ -22,15 +22,10 @@
 //******************************************************************************************************
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
 using Microsoft.Win32;
 
 namespace Setup
@@ -55,17 +50,6 @@ namespace Setup
             {
                 labelVersion.Visible = false;
             }
-
-            if (Program.MediaPlayerAvailable && axVideoPlayer != null)
-            {
-                axVideoPlayer.settings.autoStart = false;
-                axVideoPlayer.settings.playCount = 1;
-                axVideoPlayer.settings.volume = 10;
-                axVideoPlayer.stretchToFit = true;
-                axVideoPlayer.URL = "Help\\InstallationVideo.wmv";
-            }
-            else
-                tabControlMain.TabPages.RemoveAt(1);
         }
 
         private void buttonInstall_Click(object sender, EventArgs e)
@@ -187,12 +171,7 @@ namespace Setup
         private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Load release notes
-            if (tabControlMain.SelectedTab == tabPageHelpVideo)
-            {                
-                if (axVideoPlayer.openState != WMPLib.WMPOpenState.wmposMediaOpen)
-                    axVideoPlayer.Ctlcontrols.play();
-            }
-            else if (tabControlMain.SelectedTab == tabPageReleaseNotes && richTextBoxReleaseNotes.TextLength == 0)
+            if (tabControlMain.SelectedTab == tabPageReleaseNotes && richTextBoxReleaseNotes.TextLength == 0)
             {
                 if (File.Exists("Help\\ReleaseNotes.rtf"))
                     richTextBoxReleaseNotes.LoadFile("Help\\ReleaseNotes.rtf");
