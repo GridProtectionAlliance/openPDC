@@ -283,6 +283,9 @@ namespace ConfigurationSetupUtility.Screens
             if (!m_state.ContainsKey("historianDescription"))
                 m_state["historianDescription"] = DescriptionTextBox.Text;
 
+            if (!m_state.ContainsKey("historianConnectionString"))
+                m_state["historianConnectionString"] = string.Empty;
+
             HistorianAdapterListBox.ItemsSource = m_historianAdapters;
             HistorianAdapterListBox.SelectedItem = m_defaultAdapter;
         }
