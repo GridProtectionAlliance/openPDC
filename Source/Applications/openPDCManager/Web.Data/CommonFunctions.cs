@@ -475,7 +475,7 @@ namespace openPDCManager.Data
             IDbDataParameter param = command.CreateParameter();
             param.ParameterName = name;
             param.Value = value;
-            param.Direction = direction;			
+            param.Direction = direction;			    
             return param;
         }
 
@@ -2368,6 +2368,60 @@ namespace openPDCManager.Data
             }
         }
 
+        public static Node GetNodeByName(DataConnection connection, string name)
+        {
+            bool createdConnection = false;
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
+                IDbCommand command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = "Select * From NodeDetail WHERE [Name] = @name";
+                command.Parameters.Add(AddWithValue(command, "@name", name));
+
+                DataTable resultTable = new DataTable();
+                resultTable.Load(command.ExecuteReader());
+
+                if (resultTable.Rows.Count == 0)
+                    return null;
+
+                Node node = (from item in resultTable.AsEnumerable()
+                             select new Node()
+                             {
+                                 ID = item.Field<object>("ID").ToString(),
+                                 Name = item.Field<string>("Name"),
+                                 CompanyID = item.Field<int?>("CompanyID"),
+                                 Longitude = item.Field<decimal?>("Longitude"),
+                                 Latitude = item.Field<decimal?>("Latitude"),
+                                 Description = item.Field<string>("Description"),
+                                 Image = item.Field<string>("ImagePath"),
+                                 Master = Convert.ToBoolean(item.Field<object>("Master")),
+                                 LoadOrder = item.Field<int>("LoadOrder"),
+                                 Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+                                 TimeSeriesDataServiceUrl = item.Field<string>("TimeSeriesDataServiceUrl"),
+                                 RemoteStatusServiceUrl = item.Field<string>("RemoteStatusServiceUrl"),
+                                 RealTimeStatisticServiceUrl = item.Field<string>("RealTimeStatisticServiceUrl"),
+                                 CompanyName = item.Field<string>("CompanyName")
+                             }).First();
+                return node;
+            }
+            catch (Exception ex)
+            {
+                LogException(connection, "GetNodeByName", ex);
+                return null;
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
         public static Node GetNodeByID(DataConnection connection, string id)
         {
             bool createdConnection = false;
@@ -3410,7 +3464,7 @@ namespace openPDCManager.Data
             }
         }
 
-        static DataTable s_phasorSignalTypes;
+        static DataTable s_currentPhasorSignalTypes, s_voltagePhasorSignalTypes, s_phasorSignalTypes;
         public static string SavePhasor(DataConnection connection, Phasor phasor, bool isNew)
         {
             //DataConnection connection = new DataConnection();
@@ -3449,9 +3503,18 @@ namespace openPDCManager.Data
 
                 Measurement measurement;
 
-                if (s_phasorSignalTypes == null || s_phasorSignalTypes.Rows.Count == 0)
-                    s_phasorSignalTypes = GetPhasorSignalTypes(connection, phasor.Type);
                 
+                if (s_voltagePhasorSignalTypes == null || s_voltagePhasorSignalTypes.Rows.Count == 0)
+                    s_voltagePhasorSignalTypes = GetPhasorSignalTypes(connection, "V");
+                
+                if (s_currentPhasorSignalTypes == null || s_currentPhasorSignalTypes.Rows.Count == 0)
+                    s_currentPhasorSignalTypes = GetPhasorSignalTypes(connection, "I");
+
+                if (phasor.Type == "V")
+                    s_phasorSignalTypes = s_voltagePhasorSignalTypes;
+                else
+                    s_phasorSignalTypes = s_currentPhasorSignalTypes;
+
                 Phasor addedPhasor = new Phasor();				
                 //addedPhasor = GetPhasorByLabel(phasor.DeviceID, phasor.Label);
                 addedPhasor = GetPhasorBySourceIndex(connection, phasor.DeviceID, phasor.SourceIndex);
@@ -5538,7 +5601,7 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Select * From [User] Order By Name";
+                command.CommandText = "Select * From UserAccount Order By Name";
 
                 DataTable resultTable = new DataTable();
                 resultTable.Load(command.ExecuteReader());
@@ -5585,30 +5648,51 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
 
                 if (isNew)
-                    command.CommandText = "Insert Into [User] (Name, Password, FirstName, LastName, DefaultNodeID, Phone, Email, LockedOut, UseADAuthentication, ChangePasswordOn, UpdatedBy, CreatedBy) " +
-                        "Values (@name, @password, @firstName, @lastName, @defaultNodeID, @phone, @email, @lockedOut, @useADAuthentication, @changePasswordOn, @updatedBy, @createdBy)";
+                    if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                        command.CommandText = "Insert Into UserAccount (Name, [Password], FirstName, LastName, DefaultNodeID, Phone, Email, LockedOut, UseADAuthentication, ChangePasswordOn, UpdatedBy, CreatedBy) " +
+                            "Values (@name, @password, @firstName, @lastName, @defaultNodeID, @phone, @email, @lockedOut, @useADAuthentication, @changePasswordOn, @updatedBy, @createdBy)";
+                    else
+                        command.CommandText = "Insert Into UserAccount (Name, Password, FirstName, LastName, DefaultNodeID, Phone, Email, LockedOut, UseADAuthentication, ChangePasswordOn, UpdatedBy, CreatedBy) " +
+                            "Values (@name, @password, @firstName, @lastName, @defaultNodeID, @phone, @email, @lockedOut, @useADAuthentication, @changePasswordOn, @updatedBy, @createdBy)";
                 else
-                    command.CommandText = "Update [User] Set Name = @name, Password = @password, FirstName = @firstName, LastName = @lastName, DefaultNodeID = @defaultNodeID, Phone = @phone, Email = @email, " +
-                        "LockedOut = @lockedOut, UseADAuthentication = @useADAuthentication, ChangePasswordOn = @changePasswordOn, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
+                    if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                        command.CommandText = "Update UserAccount Set Name = @name, [Password] = @password, FirstName = @firstName, LastName = @lastName, DefaultNodeID = @defaultNodeID, Phone = @phone, " +
+                            "Email = @email, LockedOut = @lockedOut, UseADAuthentication = @useADAuthentication, ChangePasswordOn = @changePasswordOn, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
+                    else
+                        command.CommandText = "Update UserAccount Set Name = @name, Password = @password, FirstName = @firstName, LastName = @lastName, DefaultNodeID = @defaultNodeID, Phone = @phone, Email = @email, " +
+                            "LockedOut = @lockedOut, UseADAuthentication = @useADAuthentication, ChangePasswordOn = @changePasswordOn, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@name", user.Name));
                 command.Parameters.Add(AddWithValue(command, "@password", user.Password));
                 command.Parameters.Add(AddWithValue(command, "@firstName", user.FirstName));
                 command.Parameters.Add(AddWithValue(command, "@lastName", user.LastName));
-                command.Parameters.Add(AddWithValue(command, "@defaultNodeID", user.DefaultNodeID));
+                if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    command.Parameters.Add(AddWithValue(command, "@defaultNodeID", "{" + user.DefaultNodeID + "}"));
+                else
+                    command.Parameters.Add(AddWithValue(command, "@defaultNodeID", user.DefaultNodeID));
                 command.Parameters.Add(AddWithValue(command, "@phone", user.Phone));
                 command.Parameters.Add(AddWithValue(command, "@email", user.Email));
                 command.Parameters.Add(AddWithValue(command, "@lockedOut", user.LockedOut));
                 command.Parameters.Add(AddWithValue(command, "@useADAuthentication", user.UseADAuthentication));
-                command.Parameters.Add(AddWithValue(command, "@changePasswordOn", user.ChangePasswordOn == DateTime.MinValue ? (object) DBNull.Value : user.ChangePasswordOn));
-                command.Parameters.Add(AddWithValue(command, "@updatedBy", user.UpdatedBy));
+                if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    command.Parameters.Add(AddWithValue(command, "@changePasswordOn", user.ChangePasswordOn == DateTime.MinValue ? DateTime.Now.Date : user.ChangePasswordOn.Date));
+                else
+                    command.Parameters.Add(AddWithValue(command, "@changePasswordOn", user.ChangePasswordOn == DateTime.MinValue ? (object)DBNull.Value : user.ChangePasswordOn));
 
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", string.IsNullOrEmpty(user.UpdatedBy) ? "Administrator" : user.UpdatedBy));
                 if (isNew)
-                    command.Parameters.Add(AddWithValue(command, "@createdBy", user.CreatedBy));
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", string.IsNullOrEmpty(user.CreatedBy) ? "Administrator" : user.CreatedBy));
                 else
                 {
-                    command.Parameters.Add(AddWithValue(command, "@updatedOn", user.UpdatedOn));
-                    command.Parameters.Add(AddWithValue(command, "@id", user.ID));
+                    if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                        command.Parameters.Add(AddWithValue(command, "@updatedOn", DateTime.Now.Date));
+                    else
+                        command.Parameters.Add(AddWithValue(command, "@updatedOn", DateTime.Now));
+
+                    if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                        command.Parameters.Add(AddWithValue(command, "@id", "{" + user.ID + "}"));
+                    else
+                        command.Parameters.Add(AddWithValue(command, "@id", user.ID));
                 }
 
                 command.ExecuteNonQuery();
@@ -5635,8 +5719,12 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Delete From [User] Where ID = @id";
-                command.Parameters.Add(AddWithValue(command, "@id", userID));
+                command.CommandText = "Delete From UserAccount Where ID = @id";
+                if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    command.Parameters.Add(AddWithValue(command, "@id", "{" + userID + "}"));
+                else
+                    command.Parameters.Add(AddWithValue(command, "@id", userID));
+
                 command.ExecuteNonQuery();
 
                 return "User Deleted Successfully";
@@ -5666,7 +5754,7 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Select * From [Group] Order By Name";
+                command.CommandText = "Select * From SecurityGroup Order By Name";
 
                 DataTable groupsTable = new DataTable();
                 groupsTable.Load(command.ExecuteReader());
@@ -5706,9 +5794,9 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
 
                 if (isNew)
-                    command.CommandText = "Insert Into [Group] (Name, Description, UpdatedBy, CreatedBy) Values (@name, @description, @updatedBy, @createdBy)";
+                    command.CommandText = "Insert Into SecurityGroup (Name, Description, UpdatedBy, CreatedBy) Values (@name, @description, @updatedBy, @createdBy)";
                 else
-                    command.CommandText = "Update [Group] Set Name = @name, Description = @description, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
+                    command.CommandText = "Update SecurityGroup Set Name = @name, Description = @description, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@name", group.Name));
                 command.Parameters.Add(AddWithValue(command, "@description", group.Description));
@@ -5746,8 +5834,11 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Delete From [Group] Where ID = @id";
-                command.Parameters.Add(AddWithValue(command, "@id", groupID));
+                command.CommandText = "Delete From SecurityGroup Where ID = @id";
+                if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    command.Parameters.Add(AddWithValue(command, "@id", "{" + groupID + "}"));
+                else
+                    command.Parameters.Add(AddWithValue(command, "@id", groupID));
                 command.ExecuteNonQuery();
 
                 return "Group Deleted Successfully";
@@ -5775,9 +5866,17 @@ namespace openPDCManager.Data
                 {                    
                     command = connection.Connection.CreateCommand();
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "Delete From GroupUsers Where GroupID = @groupID AND UserID = @userID";
-                    command.Parameters.Add(AddWithValue(command, "@groupID", groupID));
-                    command.Parameters.Add(AddWithValue(command, "@userID", userID));
+                    command.CommandText = "Delete From SecurityGroupUserAccount Where SecurityGroupID = @groupID AND UserAccountID = @userID";
+                    if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    {
+                        command.Parameters.Add(AddWithValue(command, "@groupID", "{" + groupID + "}"));
+                        command.Parameters.Add(AddWithValue(command, "@userID", "{" + userID + "}"));
+                    }
+                    else
+                    {
+                        command.Parameters.Add(AddWithValue(command, "@groupID", groupID));
+                        command.Parameters.Add(AddWithValue(command, "@userID", userID));
+                    }
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
                 }
@@ -5805,9 +5904,17 @@ namespace openPDCManager.Data
                 {
                     command = connection.Connection.CreateCommand();
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "Insert Into GroupUsers (GroupID, UserID) Values (@groupID, @userID)";
-                    command.Parameters.Add(AddWithValue(command, "@groupID", groupID));
-                    command.Parameters.Add(AddWithValue(command, "@userID", userID));
+                    command.CommandText = "Insert Into SecurityGroupUserAccount (SecurityGroupID, UserAccountID) Values (@groupID, @userID)";
+                    if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    {
+                        command.Parameters.Add(AddWithValue(command, "@groupID", "{" + groupID + "}"));
+                        command.Parameters.Add(AddWithValue(command, "@userID", "{" + userID + "}"));
+                    }
+                    else
+                    {
+                        command.Parameters.Add(AddWithValue(command, "@groupID", groupID));
+                        command.Parameters.Add(AddWithValue(command, "@userID", userID));
+                    }
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
                 }
@@ -5833,8 +5940,11 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Select * From [User] WHERE ID NOT IN (Select UserID From GroupUsers Where GroupID = @groupID) Order By Name";
-                command.Parameters.Add(AddWithValue(command, "@groupID", groupID));
+                command.CommandText = "Select * From UserAccount WHERE ID NOT IN (Select UserAccountID From SecurityGroupUserAccount Where SecurityGroupID = @groupID) Order By Name";
+                if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    command.Parameters.Add(AddWithValue(command, "@groupID", "{" + groupID + "}"));
+                else
+                    command.Parameters.Add(AddWithValue(command, "@groupID", groupID));
 
                 DataTable resultTable = new DataTable();
                 resultTable.Load(command.ExecuteReader());
@@ -5871,15 +5981,18 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Select * From GroupUsersDetail WHERE GroupID = @groupID Order By UserName";
-                command.Parameters.Add(AddWithValue(command, "@groupID", groupID));
+                command.CommandText = "Select * From SecurityGroupUserAccountDetail WHERE SecurityGroupID = @groupID Order By UserName";
+                if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    command.Parameters.Add(AddWithValue(command, "@groupID", "{" + groupID + "}"));
+                else
+                    command.Parameters.Add(AddWithValue(command, "@groupID", groupID));
 
                 DataTable resultTable = new DataTable();
                 resultTable.Load(command.ExecuteReader());
                 users = new ObservableCollection<User>((from item in resultTable.AsEnumerable()
                                                         select new User()
                                                         {
-                                                            ID = item.Field<object>("UserID").ToString(),
+                                                            ID = item.Field<object>("UserAccountID").ToString(),
                                                             Name = item.Field<string>("UserName"),
                                                             FirstName = item.Field<object>("FirstName") == null ? string.Empty : item.Field<string>("FirstName"),
                                                             LastName = item.Field<object>("LastName") == null ? string.Empty : item.Field<string>("LastName"),
@@ -5912,7 +6025,7 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Select * From [Role] Where NodeID = @nodeID Order By Name";
+                command.CommandText = "Select * From ApplicationRole Where NodeID = @nodeID Order By Name";
 
                 if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                     command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
@@ -5944,7 +6057,52 @@ namespace openPDCManager.Data
             }
         }
 
-        public static void DeleteRoleUsers(DataConnection connection, string roleID, List<string> userIDsToBeDeleted)
+        public static string SaveRole(DataConnection connection, Role role, bool isNew)
+        {
+            bool createdConnection = false;
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+                IDbCommand command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+
+                if (isNew)
+                    command.CommandText = "Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values (@name, @description, @nodeID, @updatedBy, @createdBy)";
+                else
+                    command.CommandText = "Update ApplicationRole Set Name = @name, Description = @description, NodeID = @nodeID, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
+
+                command.Parameters.Add(AddWithValue(command, "@name", role.Name));
+                command.Parameters.Add(AddWithValue(command, "@description", role.Description));
+                if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + role.NodeID + "}"));
+                else
+                    command.Parameters.Add(AddWithValue(command, "@nodeID", role.NodeID));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", role.UpdatedBy));
+
+                if (isNew)
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", role.CreatedBy));
+                else
+                {
+                    command.Parameters.Add(AddWithValue(command, "@updatedOn", role.UpdatedOn));
+                    command.Parameters.Add(AddWithValue(command, "@id", role.ID));
+                }
+
+                command.ExecuteNonQuery();
+
+                return "Role Information Saved Successfully";
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
+        public static void DeleteRoleUsers(DataConnection connection, string applicationRoleID, List<string> userIDsToBeDeleted)
         {
             bool createdConnection = false;
             try
@@ -5960,9 +6118,17 @@ namespace openPDCManager.Data
                 {
                     command = connection.Connection.CreateCommand();
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "Delete From RoleUsers Where RoleID = @roleID AND UserID = @userID";
-                    command.Parameters.Add(AddWithValue(command, "@roleID", roleID));
-                    command.Parameters.Add(AddWithValue(command, "@userID", userID));
+                    command.CommandText = "Delete From ApplicationRoleUserAccount Where ApplicationRoleID = @applicationRoleID AND UserAccountID = @userID";
+                    if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    {
+                        command.Parameters.Add(AddWithValue(command, "@applicationRoleID", "{" + applicationRoleID + "}"));
+                        command.Parameters.Add(AddWithValue(command, "@userID", "{" + userID + "}"));
+                    }
+                    else
+                    {
+                        command.Parameters.Add(AddWithValue(command, "@applicationRoleID", applicationRoleID));
+                        command.Parameters.Add(AddWithValue(command, "@userID", userID));
+                    }
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
                 }
@@ -5974,7 +6140,7 @@ namespace openPDCManager.Data
             }
         }
 
-        public static void DeleteRoleGroups(DataConnection connection, string roleID, List<string> groupIDsToBeDeleted)
+        public static void DeleteRoleGroups(DataConnection connection, string applicationRoleID, List<string> groupIDsToBeDeleted)
         {
             bool createdConnection = false;
             try
@@ -5990,9 +6156,17 @@ namespace openPDCManager.Data
                 {
                     command = connection.Connection.CreateCommand();
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "Delete From RoleGroups Where RoleID = @roleID AND GroupID = @groupID";
-                    command.Parameters.Add(AddWithValue(command, "@roleID", roleID));
-                    command.Parameters.Add(AddWithValue(command, "@groupID", groupID));
+                    command.CommandText = "Delete From ApplicationRoleSecurityGroup Where ApplicationRoleID = @applicationRoleID AND SecurityGroupID = @groupID";
+                    if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    {
+                        command.Parameters.Add(AddWithValue(command, "@applicationRoleID", "{" + applicationRoleID + "}"));
+                        command.Parameters.Add(AddWithValue(command, "@groupID", "{" + groupID + "}"));
+                    }
+                    else
+                    {
+                        command.Parameters.Add(AddWithValue(command, "@applicationRoleID", applicationRoleID));
+                        command.Parameters.Add(AddWithValue(command, "@groupID", groupID));
+                    }
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
                 }
@@ -6004,7 +6178,7 @@ namespace openPDCManager.Data
             }
         }
 
-        public static void AddRoleUsers(DataConnection connection, string roleID, List<string> userIDsToBeAdded)
+        public static void AddRoleUsers(DataConnection connection, string applicationRoleID, List<string> userIDsToBeAdded)
         {
             bool createdConnection = false;
             try
@@ -6020,9 +6194,17 @@ namespace openPDCManager.Data
                 {
                     command = connection.Connection.CreateCommand();
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "Insert Into RoleUsers (RoleID, UserID) Values (@roleID, @userID)";
-                    command.Parameters.Add(AddWithValue(command, "@roleID", roleID));
-                    command.Parameters.Add(AddWithValue(command, "@userID", userID));
+                    command.CommandText = "Insert Into ApplicationRoleUserAccount (ApplicationRoleID, UserAccountID) Values (@applicationRoleID, @userID)";
+                    if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    {
+                        command.Parameters.Add(AddWithValue(command, "@applicationRoleID", "{" + applicationRoleID + "}"));
+                        command.Parameters.Add(AddWithValue(command, "@userID", "{" + userID + "}"));
+                    }
+                    else
+                    {
+                        command.Parameters.Add(AddWithValue(command, "@applicationRoleID", applicationRoleID));
+                        command.Parameters.Add(AddWithValue(command, "@userID", userID));
+                    }
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
                 }
@@ -6034,7 +6216,7 @@ namespace openPDCManager.Data
             }
         }
 
-        public static void AddRoleGroups(DataConnection connection, string roleID, List<string> groupIDsToBeAdded)
+        public static void AddRoleGroups(DataConnection connection, string applicationRoleID, List<string> groupIDsToBeAdded)
         {
             bool createdConnection = false;
             try
@@ -6050,9 +6232,17 @@ namespace openPDCManager.Data
                 {
                     command = connection.Connection.CreateCommand();
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "Insert Into RoleGroups (RoleID, GroupID) Values (@roleID, @groupID)";
-                    command.Parameters.Add(AddWithValue(command, "@roleID", roleID));
-                    command.Parameters.Add(AddWithValue(command, "@groupID", groupID));                    
+                    command.CommandText = "Insert Into ApplicationRoleSecurityGroup (ApplicationRoleID, SecurityGroupID) Values (@applicationRoleID, @groupID)";
+                    if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    {
+                        command.Parameters.Add(AddWithValue(command, "@applicationRoleID", "{" + applicationRoleID + "}"));
+                        command.Parameters.Add(AddWithValue(command, "@groupID", "{" + groupID + "}"));
+                    }
+                    else
+                    {
+                        command.Parameters.Add(AddWithValue(command, "@applicationRoleID", applicationRoleID));
+                        command.Parameters.Add(AddWithValue(command, "@groupID", groupID));
+                    }                    
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
                 }
@@ -6064,7 +6254,7 @@ namespace openPDCManager.Data
             }
         }
 
-        public static ObservableCollection<User> GetPossibleRoleUsers(DataConnection connection, string roleID)
+        public static ObservableCollection<User> GetPossibleRoleUsers(DataConnection connection, string applicationRoleID)
         {
             bool createdConnection = false;
             try
@@ -6078,8 +6268,11 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Select * From [User] WHERE ID NOT IN (Select UserID From RoleUsers Where RoleID = @roleID) Order By Name";
-                command.Parameters.Add(AddWithValue(command, "@roleID", roleID));
+                command.CommandText = "Select * From UserAccount WHERE ID NOT IN (Select UserAccountID From ApplicationRoleUserAccount Where ApplicationRoleID = @applicationRoleID) Order By Name";
+                if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    command.Parameters.Add(AddWithValue(command, "@applicationRoleID", "{" + applicationRoleID + "}"));
+                else
+                    command.Parameters.Add(AddWithValue(command, "@applicationRoleID", applicationRoleID));
 
                 DataTable resultTable = new DataTable();
                 resultTable.Load(command.ExecuteReader());
@@ -6102,7 +6295,7 @@ namespace openPDCManager.Data
             }   
         }
 
-        public static ObservableCollection<User> GetCurrentRoleUsers(DataConnection connection, string roleID)
+        public static ObservableCollection<User> GetCurrentRoleUsers(DataConnection connection, string applicationRoleID)
         {
             bool createdConnection = false;
             try
@@ -6116,15 +6309,20 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Select * From RoleUsersDetail WHERE RoleID = @roleID Order By UserName";
-                command.Parameters.Add(AddWithValue(command, "@roleID", roleID));
+                command.CommandText = "Select * From ApplicationRoleUserAccountDetail WHERE ApplicationRoleID = @applicationRoleID Order By UserName";
+                
+
+                if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))                    
+                    command.Parameters.Add(AddWithValue(command, "@applicationRoleID", "{" + applicationRoleID + "}"));
+                else
+                    command.Parameters.Add(AddWithValue(command, "@applicationRoleID", applicationRoleID));
 
                 DataTable resultTable = new DataTable();
                 resultTable.Load(command.ExecuteReader());
                 users = new ObservableCollection<User>((from item in resultTable.AsEnumerable()
                                                         select new User()
                                                         {
-                                                            ID = item.Field<object>("UserID").ToString(),
+                                                            ID = item.Field<object>("UserAccountID").ToString(),
                                                             Name = item.Field<string>("UserName"),
                                                             FirstName = item.Field<object>("FirstName") == null ? string.Empty : item.Field<string>("FirstName"),
                                                             LastName = item.Field<object>("LastName") == null ? string.Empty : item.Field<string>("LastName"),
@@ -6139,7 +6337,7 @@ namespace openPDCManager.Data
             }
         }
 
-        public static ObservableCollection<Group> GetPossibleRoleGroups(DataConnection connection, string roleID)
+        public static ObservableCollection<Group> GetPossibleRoleGroups(DataConnection connection, string applicationRoleID)
         {
             bool createdConnection = false;
             try
@@ -6153,8 +6351,11 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Select * From [Group] WHERE ID NOT IN (Select GroupID From RoleGroups Where RoleID = @roleID) Order By Name";
-                command.Parameters.Add(AddWithValue(command, "@roleID", roleID));
+                command.CommandText = "Select * From SecurityGroup WHERE ID NOT IN (Select SecurityGroupID From ApplicationRoleSecurityGroup Where ApplicationRoleID = @applicationRoleID) Order By Name";
+                if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    command.Parameters.Add(AddWithValue(command, "@applicationRoleID", "{" + applicationRoleID + "}"));
+                else
+                    command.Parameters.Add(AddWithValue(command, "@applicationRoleID", applicationRoleID));
 
                 DataTable resultTable = new DataTable();
                 resultTable.Load(command.ExecuteReader());
@@ -6173,7 +6374,7 @@ namespace openPDCManager.Data
             }   
         }
 
-        public static ObservableCollection<Group> GetCurrentRoleGroups(DataConnection connection, string roleID)
+        public static ObservableCollection<Group> GetCurrentRoleGroups(DataConnection connection, string applicationRoleID)
         {
             bool createdConnection = false;
             try
@@ -6187,16 +6388,19 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Select * From RoleGroupsDetail WHERE RoleID = @roleID Order By GroupName";
-                command.Parameters.Add(AddWithValue(command, "@roleID", roleID));
+                command.CommandText = "Select * From ApplicationRoleSecurityGroupDetail WHERE ApplicationRoleID = @applicationRoleID Order By SecurityGroupName";
+                if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    command.Parameters.Add(AddWithValue(command, "@applicationRoleID", "{" + applicationRoleID + "}"));
+                else
+                    command.Parameters.Add(AddWithValue(command, "@applicationRoleID", applicationRoleID));
 
                 DataTable resultTable = new DataTable();
                 resultTable.Load(command.ExecuteReader());
                 groups = new ObservableCollection<Group>((from item in resultTable.AsEnumerable()
                                                         select new Group()
                                                         {
-                                                            ID = item.Field<object>("GroupID").ToString(),
-                                                            Name = item.Field<string>("GroupName")
+                                                            ID = item.Field<object>("SecurityGroupID").ToString(),
+                                                            Name = item.Field<string>("SecurityGroupName")
                                                         }));
                 return groups;
             }
