@@ -426,7 +426,7 @@ namespace TVA.PhasorProtocols
                 m_sharedMapping = value;
                 m_sharedMappingID = 0;
 
-                if (!string.IsNullOrEmpty(m_sharedMapping))
+                if (!string.IsNullOrWhiteSpace(m_sharedMapping))
                 {
                     try
                     {
@@ -489,7 +489,7 @@ namespace TVA.PhasorProtocols
                 status.Append(base.Status);
                 status.AppendFormat("    Source is concentrator: {0}", m_isConcentrator);
                 status.AppendLine();
-                if (!string.IsNullOrEmpty(SharedMapping))
+                if (!string.IsNullOrWhiteSpace(SharedMapping))
                 {
                     status.AppendFormat("     Shared mapping source: {0}", SharedMapping);
                     status.AppendLine();
@@ -499,6 +499,8 @@ namespace TVA.PhasorProtocols
                 status.AppendFormat("    Manual time adjustment: {0} seconds", m_timeAdjustmentTicks.ToSeconds().ToString("0.000"));
                 status.AppendLine();
                 status.AppendFormat("Allow use of cached config: {0}", m_allowUseOfCachedConfiguration);
+                status.AppendLine();
+                status.AppendFormat("No data reconnect interval: {0} seconds", Ticks.FromMilliseconds(m_dataStreamMonitor.Interval).ToSeconds().ToString("0.000"));
                 status.AppendLine();
 
                 if (m_allowUseOfCachedConfiguration)
@@ -701,7 +703,7 @@ namespace TVA.PhasorProtocols
             else
                 SharedMapping = null;
 
-            if (settings.TryGetValue("timeZone", out setting) && !string.IsNullOrEmpty(setting) && string.Compare(setting.Trim(), "UTC", true) != 0 && string.Compare(setting.Trim(), "Coordinated Universal Time", true) != 0)
+            if (settings.TryGetValue("timeZone", out setting) && !string.IsNullOrWhiteSpace(setting) && string.Compare(setting.Trim(), "UTC", true) != 0 && string.Compare(setting.Trim(), "Coordinated Universal Time", true) != 0)
             {
                 try
                 {
@@ -894,7 +896,7 @@ namespace TVA.PhasorProtocols
 
                 // Used shared mapping name for single device connection if defined - this causes measurement mappings to be associated
                 // with alternate device by caching signal references associated with shared mapping acronym
-                if (string.IsNullOrEmpty(SharedMapping))
+                if (string.IsNullOrWhiteSpace(SharedMapping))
                     deviceName = Name.ToNonNullString("[undefined]").Trim();
                 else
                     deviceName = SharedMapping;
@@ -920,7 +922,7 @@ namespace TVA.PhasorProtocols
             {
                 signalReference = row["SignalReference"].ToString();
 
-                if (!string.IsNullOrEmpty(signalReference))
+                if (!string.IsNullOrWhiteSpace(signalReference))
                 {
                     try
                     {
@@ -1508,7 +1510,7 @@ namespace TVA.PhasorProtocols
             ResetStatistics();
 
             // Enable data stream monitor for connections that support commands
-            m_dataStreamMonitor.Enabled = m_frameParser.DeviceSupportsCommands;
+            m_dataStreamMonitor.Enabled = m_frameParser.DeviceSupportsCommands || m_allowUseOfCachedConfiguration;
         }
 
         private void m_frameParser_ConnectionException(object sender, EventArgs<Exception, int> e)
@@ -1558,11 +1560,11 @@ namespace TVA.PhasorProtocols
 
         private void m_dataStreamMonitor_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (m_bytesReceived == 0)
+            if (m_bytesReceived == 0 && m_frameParser.DeviceSupportsCommands)
             {
                 // If we've received no data in the last timespan, we restart connect cycle...
                 m_dataStreamMonitor.Enabled = false;
-                OnStatusMessage("\r\nNo data received in {0} seconds, restarting connect cycle...\r\n", (int)m_dataStreamMonitor.Interval / 1000.0D);
+                OnStatusMessage("\r\nNo data received in {0} seconds, restarting connect cycle...\r\n", (m_dataStreamMonitor.Interval / 1000.0D).ToString("0.0"));
                 Start();
             }
             else if (!m_receivedConfigFrame && m_allowUseOfCachedConfiguration)
@@ -1570,11 +1572,11 @@ namespace TVA.PhasorProtocols
                 // If data is being received but a configuration has yet to be loaded, attempt to load last known good configuration
                 if (!m_cachedConfigLoadAttempted)
                 {
-                    OnStatusMessage("WARNING: Configuration frame has yet to be received, attempting to load cached configuration...");
+                    OnStatusMessage("Configuration frame has yet to be received, attempting to load cached configuration...");
                     m_cachedConfigLoadAttempted = true;
                     LoadCachedConfiguration();
                 }
-                else
+                else if (m_frameParser.DeviceSupportsCommands)
                 {
                     OnStatusMessage("\r\nConfiguration frame has yet to be received even after attempt to load from cache, restarting connect cycle...\r\n");
                     Start();

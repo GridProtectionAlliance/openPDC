@@ -304,7 +304,7 @@ namespace ICCPExport
                     status.AppendLine();
                 }
 
-                if (!string.IsNullOrEmpty(m_companyTagPrefix))
+                if (!string.IsNullOrWhiteSpace(m_companyTagPrefix))
                 {
                     status.AppendFormat("        Company tag prefix: {0}", m_companyTagPrefix);
                     status.AppendLine();
@@ -340,6 +340,8 @@ namespace ICCPExport
                         if (m_dataExporter != null)
                         {
                             m_dataExporter.SaveSettings();
+                            m_dataExporter.StatusMessage -= m_dataExporter_StatusMessage;
+                            m_dataExporter.ProcessException -= m_dataExporter_ProcessException;
                             m_dataExporter.Dispose();
                         }
 
@@ -413,11 +415,13 @@ namespace ICCPExport
                 m_useNumericQuality = false;
 
             // Suffix company tag prefix with an underscore if defined
-            if (!string.IsNullOrEmpty(m_companyTagPrefix))
+            if (!string.IsNullOrWhiteSpace(m_companyTagPrefix))
                 m_companyTagPrefix = m_companyTagPrefix.EnsureEnd('_');
 
             // Define a default export location - user can override and add multiple locations in config later...
             m_dataExporter = new MultipleDestinationExporter(ConfigurationSection, m_exportInterval * 1000);
+            m_dataExporter.StatusMessage += m_dataExporter_StatusMessage;
+            m_dataExporter.ProcessException += m_dataExporter_ProcessException;
             m_dataExporter.Initialize(new ExportDestination[] { new ExportDestination(FilePath.GetAbsolutePath(ConfigurationSection + ".txt"), false, "", "", "") });
 
             // Create new measurement tag name dictionary
@@ -439,7 +443,7 @@ namespace ICCPExport
                     string pointTag = row["PointTag"].ToNonNullString(pointID).Replace('-', '_').Replace(':', '_').ToUpper();
 
                     // Prefix point tag with company prefix if defined
-                    if (!string.IsNullOrEmpty(m_companyTagPrefix) && !pointTag.StartsWith(m_companyTagPrefix))
+                    if (!string.IsNullOrWhiteSpace(m_companyTagPrefix) && !pointTag.StartsWith(m_companyTagPrefix))
                         pointTag = m_companyTagPrefix + pointTag;
 
                     m_measurementTags.Add(key, pointTag);
@@ -490,7 +494,7 @@ namespace ICCPExport
                 //   C) This is a defined input measurement for this adapter
                 sortMeasurement = 
                         ((DateTime)timestamp).Second % m_exportInterval == 0 && // <-- A
-                        timestamp.DistanceBeyondSecond() < TicksPerFrame &&     // <-- B
+                        timestamp.DistanceBeyondSecond() < TicksPerFrame / 2 && // <-- B
                         IsInputMeasurement(measurement.Key);                    // <-- C
 
                 if (sortMeasurement)
@@ -648,6 +652,16 @@ namespace ICCPExport
                 // No data was available in the frame, lag time set too tight?
                 OnProcessException(new InvalidOperationException("No measurements were available for file based data export, possible reasons: system is initializing , receiving no data or lag time is too small. File creation was skipped."));
             }
+        }
+
+        private void m_dataExporter_StatusMessage(object sender, EventArgs<string> e)
+        {
+            OnStatusMessage(e.Argument);
+        }
+
+        private void m_dataExporter_ProcessException(object sender, EventArgs<Exception> e)
+        {
+            OnProcessException(e.Argument);
         }
 
         #endregion

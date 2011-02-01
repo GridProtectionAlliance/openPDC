@@ -697,6 +697,15 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Handles unknown frame types.
+        /// </summary>
+        /// <param name="frameType">Unknown frame ID.</param>
+        protected virtual void OnUnknownFrameTypeEncountered(TFrameIdentifier frameType)
+        {
+            OnParsingException(new InvalidOperationException(string.Format("WARNING: Encountered an undefined frame type identfier \"{0}\". Output was not parsed.", frameType)));
+        }
+
+        /// <summary>
         /// Creates the internal buffer queue.
         /// </summary>
         /// <remarks>
@@ -741,12 +750,14 @@ namespace TVA.PhasorProtocols
         // Handles output type not found error from base class event "OutputTypeNotFound"
         private void base_OutputTypeNotFound(object sender, EventArgs<TFrameIdentifier> e)
         {
-            OnParsingException(new InvalidOperationException(string.Format("Stream parsing error: encountered an undefined frame type identfier \"{0}\". Output was not parsed.", e.Argument)));
+            // Call overridable output type not found function handler...
+            OnUnknownFrameTypeEncountered(e.Argument);
         }
 
         // Handles duplicate type handler encountered warning from base class event "DuplicateTypeHandlerEncountered"
         private void base_DuplicateTypeHandlerEncountered(object sender, EventArgs<Type, TFrameIdentifier> e)
         {
+            // This exception will only occur on start up and is a result of not defining unique frame identifiers for the base types
             OnParsingException(new InvalidOperationException(string.Format("WARNING: Duplicate frame type identfier \"{0}\" encountered for parsing type {1} during initialization. Only the first defined type for this identifier will ever be parsed.", e.Argument2, e.Argument1.FullName)));
         }
 

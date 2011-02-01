@@ -976,7 +976,7 @@ namespace TVA.PhasorProtocols
             {
                 // If using file based source and auto-repeat is enabled, we don't allow execution on a separate thread
                 // since file based streaming data source will continue to queue data as quickly as possible and add data
-                // data to processing queue much faster than it will be processed thereby consuming all available memory
+                // to processing queue much faster than it will be processed thereby consuming all available memory
                 if (m_transportProtocol == TransportProtocol.File && m_autoRepeatCapturedPlayback)
                     m_executeParseOnSeparateThread = false;
                 else
@@ -1206,7 +1206,7 @@ namespace TVA.PhasorProtocols
                 if (m_serverBasedDataChannel == null)
                 {
                     // No connection is currently active, see if connection string defines a server based connection
-                    if (!string.IsNullOrEmpty(m_connectionString))
+                    if (!string.IsNullOrWhiteSpace(m_connectionString))
                     {
                         Dictionary<string, string> settings = m_connectionString.ParseKeyValuePairs();
                         string setting;
@@ -1331,7 +1331,7 @@ namespace TVA.PhasorProtocols
             get
             {
 
-                if (string.IsNullOrEmpty(m_sourceName))
+                if (string.IsNullOrWhiteSpace(m_sourceName))
                     return "ID " + m_deviceID + " using " + m_phasorProtocol.GetFormattedProtocolName() + " over " + m_transportProtocol;
                 else
                     return m_sourceName + " (" + m_deviceID + ")";
@@ -1585,7 +1585,7 @@ namespace TVA.PhasorProtocols
                         // INI file name setting is required
                         if (settings.TryGetValue("iniFileName", out setting))
                             bpaPdcParameters.ConfigurationFileName = FilePath.GetAbsolutePath(setting);
-                        else if (string.IsNullOrEmpty(bpaPdcParameters.ConfigurationFileName))
+                        else if (string.IsNullOrWhiteSpace(bpaPdcParameters.ConfigurationFileName))
                             throw new ArgumentException("BPA PDCstream INI filename setting (e.g., \"inifilename=DEVICE_PDC.ini\") was not found. This setting is required for BPA PDCstream protocol connections - frame parser initialization terminated.");
 
                         if (settings.TryGetValue("refreshConfigFileOnChange", out setting))
@@ -2096,7 +2096,7 @@ namespace TVA.PhasorProtocols
                 if (m_transportProtocol == TransportProtocol.Tcp || m_transportProtocol == TransportProtocol.Serial)
                     return true;
 
-                if (!string.IsNullOrEmpty(m_connectionString))
+                if (!string.IsNullOrWhiteSpace(m_connectionString))
                 {
                     Dictionary<string, string> settings = m_connectionString.ParseKeyValuePairs();
 

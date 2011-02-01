@@ -38,8 +38,8 @@ namespace TVA.PhasorProtocols.IeeeC37_118
     /// <summary>
     /// Represents an IEEE C37.118 phasor data concentrator.
     /// </summary>
-	public class Concentrator : PhasorDataConcentratorBase
-	{
+    public class Concentrator : PhasorDataConcentratorBase
+    {
         #region [ Members ]
 
         // Fields
@@ -282,7 +282,14 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                         case DeviceCommand.SendHeaderFrame:
                             if (commandChannel != null)
                             {
-                                HeaderFrame headerFrame = new HeaderFrame("IEEE C37.118 Concentrator Status:\r\n\r\n" + Status);
+                                StringBuilder status = new StringBuilder();
+                                status.Append("IEEE C37.118 Concentrator:\r\n\r\n");
+                                status.AppendFormat(" Auto-publish config frame: {0}\r\n", AutoPublishConfigurationFrame);
+                                status.AppendFormat("   Auto-start data channel: {0}\r\n", AutoStartDataChannel);
+                                status.AppendFormat("       Data stream ID code: {0}\r\n", IDCode);
+                                status.AppendFormat("       Dervied system time: {0} UTC\r\n", ((DateTime)RealTime).ToString("yyyy-MM-dd HH:mm:ss.fff"));
+
+                                HeaderFrame headerFrame = new HeaderFrame(status.ToString());
                                 commandChannel.SendToAsync(clientID, headerFrame.BinaryImage);
                                 OnStatusMessage("Received request for \"SendHeaderFrame\" from \"{0}\" - frame was returned.", connectionID);
                             }
@@ -324,5 +331,5 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         }
 
         #endregion
-	}
+    }
 }

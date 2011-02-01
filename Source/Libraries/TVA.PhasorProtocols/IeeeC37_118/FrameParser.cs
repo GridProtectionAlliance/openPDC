@@ -296,6 +296,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         private DraftRevision m_draftRevision;
         private ConfigurationFrame2 m_configurationFrame2;
         private bool m_configurationChangeHandled;
+        private long m_unexpectedCommandFrames;
 
         #endregion
 
@@ -391,6 +392,9 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                 status.Append("         Current time base: ");
                 status.Append(Timebase);
                 status.AppendLine();
+                status.Append(" Unexpected command frames: ");
+                status.Append(m_unexpectedCommandFrames);
+                status.AppendLine();
                 status.Append(base.Status);
 
                 return status.ToString();
@@ -407,6 +411,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         public override void Start()
         {
             m_configurationChangeHandled = false;
+            m_unexpectedCommandFrames = 0;
 
             // We narrow down parsing types to just those needed...
             if (m_draftRevision == DraftRevision.Draft7)
@@ -593,6 +598,21 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Handles unknown frame types.
+        /// </summary>
+        /// <param name="frameType">Unknown frame ID.</param>
+        protected override void OnUnknownFrameTypeEncountered(FrameType frameType)
+        {
+            // It is unusual, but not all that uncommon, for a device to send a command frame to its host. Normally the host sends to commands
+            // to the device. However, since some devices seem to do this frequently we suppress reporting that the frame is "undefined".
+            // Technically the frame is defined, but it is not part of the valid set of frames intended for reception.
+            if (frameType != FrameType.CommandFrame)
+                base.OnUnknownFrameTypeEncountered(frameType);
+            else
+                m_unexpectedCommandFrames++;
         }
 
         #endregion
