@@ -64,7 +64,7 @@
                     <TextBlock Grid.Row="3" Grid.Column="2" Text="Historian" Style="{StaticResource GenericLabelStyle}"/>
                     <ComboBox x:Name="ComboboxHistorian" Grid.Row="3" Grid.Column="3" Margin="5" DisplayMemberPath="Value" Width="{StaticResource XLargeItemSize}" HorizontalAlignment="Left"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0">
-                        <TextBlock Text="AccessID" Style="{StaticResource GenericLabelStyle}"/>
+                        <TextBlock Text="ID Code (AccessID)" Style="{StaticResource GenericLabelStyle}"/>
                         <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
                     </StackPanel>
                     <TextBox x:Name="TextBoxAccessID" Grid.Row="4" Grid.Column="1" Text="{Binding Path=AccessID}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
