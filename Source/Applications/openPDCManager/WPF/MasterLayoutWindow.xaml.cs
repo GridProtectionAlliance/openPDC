@@ -18,11 +18,14 @@
 //  ----------------------------------------------------------------------------------------------------
 //  08/31/2010 - Mehulbhai P Thakkar
 //       Generated original version of source code.
+//  02/06/2011 - J. Ritchie Carroll
+//       Updated "Help" action to launch local help if internet connectivity is not available.
 //
 //******************************************************************************************************
 
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -30,6 +33,7 @@ using System.Windows.Media.Imaging;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using openPDCManager.Data.ServiceCommunication;
+using openPDCManager.ModalDialogs;
 using openPDCManager.Pages.Adapters;
 using openPDCManager.Pages.Devices;
 using openPDCManager.Pages.Manage;
@@ -38,7 +42,6 @@ using openPDCManager.UserControls.CommonControls;
 using openPDCManager.UserControls.OutputStreamControls;
 using openPDCManager.Utilities;
 using TVA.Reflection;
-using openPDCManager.ModalDialogs;
 
 namespace openPDCManager
 {
@@ -464,7 +467,20 @@ namespace openPDCManager
                 ContentFrame.Navigate(security);
             }
             else if (item.Name == "Help")
-                Process.Start("http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration");
+            {
+                try
+                {
+                    // Check for internet connectivity.
+                    Dns.GetHostEntry("openpdc.codeplex.com");
+                    // Launch the help page available on web.
+                    Process.Start("http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration");
+                }
+                catch
+                {
+                    // Launch the offline copy of the help page.
+                    Process.Start("openPDCManagerHelp.mht");
+                }
+            }
         }
 
         #endregion
