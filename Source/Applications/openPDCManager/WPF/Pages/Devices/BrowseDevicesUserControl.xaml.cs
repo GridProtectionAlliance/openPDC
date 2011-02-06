@@ -35,6 +35,7 @@ using openPDCManager.UserControls.CommonControls;
 using openPDCManager.Utilities;
 using openPDCManager.Data.ServiceCommunication;
 using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace openPDCManager.Pages.Devices
 {
@@ -129,141 +130,163 @@ namespace openPDCManager.Pages.Devices
         void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
             SystemMessages sm;
-            try
-            {
-                Device device = new Device();
-                device = ((Button)sender).DataContext as Device;
-                string result = CommonFunctions.SaveDevice(null, device, false, 0, 0);
-                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-                        ButtonType.OkOnly);
-
-                //Update Metadata in the openPDC Service.                
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            {                
                 try
                 {
-                    WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
-                    if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                    Device device = new Device();
+                    device = ((Button)sender).DataContext as Device;
+                    string result = CommonFunctions.SaveDevice(null, device, false, 0, 0);
+                    sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                            ButtonType.OkOnly);
+
+                    //Update Metadata in the openPDC Service.                
+                    try
                     {
-                        if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.
+                        WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
+                        if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                         {
-                            if (device.ParentID == null)
-                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", device.ID));
+                            if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.
+                            {
+                                if (device.ParentID == null)
+                                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", device.ID));
+                                else
+                                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", (int)device.ParentID));
+                            }
                             else
-                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", (int)device.ParentID));
+                                CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
+
+                            if (device.HistorianID != null)
+                            {
+                                string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)device.HistorianID);
+                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshallmetadata");
+                            }
+
+                            //now also update Stat historian metadata.
+                            Historian statHistorian = CommonFunctions.GetHistorianByAcronym(null, "STAT");
+                            if (statHistorian != null)
+                            {
+                                string statRuntimeID = CommonFunctions.GetRuntimeID(null, "Historian", statHistorian.ID);
+                                if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshallmetadata");
+                            }
+
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");
                         }
                         else
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
-
-                        if (device.HistorianID != null)
                         {
-                            string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)device.HistorianID);
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
+                            sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                            sm.Owner = Window.GetWindow(this);
+                            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            sm.ShowPopup();
                         }
-
-                        //now also update Stat historian metadata.
-                        Historian statHistorian = CommonFunctions.GetHistorianByAcronym(null, "STAT");
-                        if (statHistorian != null)
-                        {
-                            string statRuntimeID = CommonFunctions.GetRuntimeID(null, "Historian", statHistorian.ID);
-                            if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshmetadata");
-                        }
-
-                        CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");
                     }
-                    else
-                    {                     
-                        sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
-                        sm.Owner = Window.GetWindow(this);
-                        sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                        sm.ShowPopup();
+                    catch (Exception ex)
+                    {
+                        SystemMessages sm1 = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                        sm1.Owner = Window.GetWindow(this);
+                        sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        sm1.ShowPopup();
+                        CommonFunctions.LogException(null, "ButtonSave_Click.RefreshMetadata", ex);
                     }
+
                 }
                 catch (Exception ex)
                 {
-                    SystemMessages sm1 = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
-                    sm1.Owner = Window.GetWindow(this);
-                    sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                    sm1.ShowPopup();
-                    CommonFunctions.LogException(null, "ButtonSave_Click.RefreshMetadata", ex);
+                    CommonFunctions.LogException(null, "WPF.SaveDevice", ex);
+                    sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                            ButtonType.OkOnly);
                 }
-
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+                RefreshDeviceList();
             }
-            catch (Exception ex)
+            else
             {
-                CommonFunctions.LogException(null, "WPF.SaveDevice", ex);
-                sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
-                        ButtonType.OkOnly);
+                sm = new SystemMessages(new Message() { UserMessage = "Unauthorized Access", SystemMessage = "You are not authorized to perform this operation.", UserMessageType = MessageType.Warning },
+                            ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
             }
-            sm.Owner = Window.GetWindow(this);
-            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            sm.ShowPopup();
-            RefreshDeviceList();
         }
 
         void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
             SystemMessages sm;
-            try
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
             {
-                string result;
-                Device device = new Device();
-                device = ((Button)sender).DataContext as Device;
-
-                if (device.IsConcentrator)
-                    sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete concentrator device?", SystemMessage = "Device Acronym: " + device.Acronym + Environment.NewLine + "Deleting concentrator will also delete " + CommonFunctions.GetDeviceListByParentID(null, device.ID).Count() + " associated device(s).", UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
-                else
-                    sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete device?", SystemMessage = "Device Acronym: " + device.Acronym, UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
-                
-                sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                try
                 {
-                    if ((bool)sm.DialogResult)
+                    string result;
+                    Device device = new Device();
+                    device = ((Button)sender).DataContext as Device;
+
+                    if (device.IsConcentrator)
+                        sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete concentrator device?", SystemMessage = "Device Acronym: " + device.Acronym + Environment.NewLine + "Deleting concentrator will also delete " + CommonFunctions.GetDeviceListByParentID(null, device.ID).Count() + " associated device(s).", UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                    else
+                        sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete device?", SystemMessage = "Device Acronym: " + device.Acronym, UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+
+                    sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
                     {
-                        if (device.IsConcentrator)
+                        if ((bool)sm.DialogResult)
                         {
-                            List<Device> deviceList = CommonFunctions.GetDeviceListByParentID(null, device.ID);
-                            foreach (Device d in deviceList)
-                                CommonFunctions.DeleteDevice(null, d.ID);
-                            result = CommonFunctions.DeleteDevice(null, device.ID);
-                        }
-                        else
-                            result = CommonFunctions.DeleteDevice(null, device.ID);                    
-                        
-                        SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-                            ButtonType.OkOnly);
-                        sm1.Owner = Window.GetWindow(this);
-                        sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                        sm1.ShowPopup();
-                        RefreshDeviceList();
-
-                        //Update Metadata in the openPDC Service.                
-                        try
-                        {
-                            WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
-                            if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                            {                                
-                                if (device.ParentID == null)
-                                    CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig");
-                                else
-                                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", (int)device.ParentID));                                
+                            if (device.IsConcentrator)
+                            {
+                                List<Device> deviceList = CommonFunctions.GetDeviceListByParentID(null, device.ID);
+                                foreach (Device d in deviceList)
+                                    CommonFunctions.DeleteDevice(null, d.ID);
+                                result = CommonFunctions.DeleteDevice(null, device.ID);
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            CommonFunctions.LogException(null, "ButtonSave_Click.RefreshMetadata", ex);
-                        }
+                            else
+                                result = CommonFunctions.DeleteDevice(null, device.ID);
 
-                    }
-                });                
+                            SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                                ButtonType.OkOnly);
+                            sm1.Owner = Window.GetWindow(this);
+                            sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            sm1.ShowPopup();
+                            RefreshDeviceList();
+
+                            //Update Metadata in the openPDC Service.                
+                            try
+                            {
+                                WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
+                                if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                                {
+                                    if (device.ParentID == null)
+                                        CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig");
+                                    else
+                                        CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + CommonFunctions.GetRuntimeID(null, "Device", (int)device.ParentID));
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                CommonFunctions.LogException(null, "ButtonSave_Click.RefreshMetadata", ex);
+                            }
+
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    CommonFunctions.LogException(null, "WPF.DeleteDevice", ex);
+                    sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                            ButtonType.OkOnly);
+                }
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
             }
-            catch (Exception ex)
+            else
             {
-                CommonFunctions.LogException(null, "WPF.DeleteDevice", ex);
-                sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
-                        ButtonType.OkOnly);                
+                sm = new SystemMessages(new Message() { UserMessage = "Unauthorized Access", SystemMessage = "You are not authorized to perform this operation.", UserMessageType = MessageType.Warning },
+                            ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
             }
-            sm.Owner = Window.GetWindow(this);
-            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            sm.ShowPopup();
         }
 
         void ButtonCopy_Click(object sender, RoutedEventArgs e)

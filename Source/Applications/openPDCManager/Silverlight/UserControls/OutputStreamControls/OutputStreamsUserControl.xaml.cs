@@ -35,6 +35,7 @@ using openPDCManager.PhasorDataServiceProxy;
 using openPDCManager.Data.Entities;
 using System.Windows.Media.Imaging;
 using openPDCManager.Data;
+using System.Threading;
 #endif
 
 namespace openPDCManager.UserControls.OutputStreamControls
@@ -313,37 +314,53 @@ namespace openPDCManager.UserControls.OutputStreamControls
 
         void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-            try
+            bool continueAllowed = true;
+
+#if !SILVERLIGHT
+            if (!Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
             {
-                int outputStreamId;
-                Button deleteButton = (Button)sender;
-
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete output stream?", SystemMessage = "Output Stream Acronym: " + ToolTipService.GetToolTip(deleteButton).ToString(), UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
-                sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
-                {
-                    if ((bool)sm.DialogResult)
-                    {
-                        if (int.TryParse(((Button)sender).Tag.ToString(), out outputStreamId))
-                            DeleteOutputStream(outputStreamId);
-
-                        ClearForm();
-                    }
-                });
-#if !SILVERLIGHT
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Unauthorized Access", SystemMessage = "You are not authorized to perform this operation.", UserMessageType = MessageType.Error },
+                            ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-#endif
                 sm.ShowPopup();
+                continueAllowed = false;
             }
-            catch (Exception ex)
-            {                
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to delete output stream.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
-                        ButtonType.OkOnly);
-#if !SILVERLIGHT
-                sm.Owner = Window.GetWindow(this);
-                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 #endif
-                sm.ShowPopup();
+            if (continueAllowed)
+            {
+                try
+                {
+                    int outputStreamId;
+                    Button deleteButton = (Button)sender;
+
+                    SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete output stream?", SystemMessage = "Output Stream Acronym: " + ToolTipService.GetToolTip(deleteButton).ToString(), UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                    sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                    {
+                        if ((bool)sm.DialogResult)
+                        {
+                            if (int.TryParse(((Button)sender).Tag.ToString(), out outputStreamId))
+                                DeleteOutputStream(outputStreamId);
+
+                            ClearForm();
+                        }
+                    });
+#if !SILVERLIGHT
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                    sm.ShowPopup();
+                }
+                catch (Exception ex)
+                {
+                    SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to delete output stream.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                            ButtonType.OkOnly);
+#if !SILVERLIGHT
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                    sm.ShowPopup();
+                }
             }
         }
 

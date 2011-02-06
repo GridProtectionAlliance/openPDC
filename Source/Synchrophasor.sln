@@ -63,6 +63,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVA", "TVA", "{4CA4A21E-97E
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\TVA\Hadoop.Replication.dll = Dependencies\TVA\Hadoop.Replication.dll
 		Dependencies\TVA\Hadoop.Replication.XML = Dependencies\TVA\Hadoop.Replication.XML
+		Dependencies\TVA\TVA.Communication.dll = Dependencies\TVA\TVA.Communication.dll
 		Dependencies\TVA\TVA.Communication.xml = Dependencies\TVA\TVA.Communication.xml
 		Dependencies\TVA\TVA.Core.dll = Dependencies\TVA\TVA.Core.dll
 		Dependencies\TVA\TVA.Core.XML = Dependencies\TVA\TVA.Core.XML

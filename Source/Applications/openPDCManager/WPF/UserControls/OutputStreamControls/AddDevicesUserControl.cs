@@ -29,6 +29,7 @@ using openPDCManager.Data;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using System.Windows;
+using System.Threading;
 
 namespace openPDCManager.UserControls.OutputStreamControls
 {
@@ -38,7 +39,11 @@ namespace openPDCManager.UserControls.OutputStreamControls
 
         void Initialize()
         {
-            //this.KeyDown += new System.Windows.Input.KeyEventHandler(AddDevicesUserControl_KeyDown);  
+            //this.KeyDown += new System.Windows.Input.KeyEventHandler(AddDevicesUserControl_KeyDown); 
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+                ButtonAdd.IsEnabled = true;
+            else
+                ButtonAdd.IsEnabled = false;
         }
         
         void GetDevicesForOutputStream()

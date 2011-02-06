@@ -251,6 +251,96 @@
             Gets the descriptive status of the <see cref="T:TVA.Services.ServiceProcess"/>.
             </summary>
         </member>
+        <member name="T:TVA.Services.RecoverAction">
+            <summary>
+            Defines the recover action to be performed upon service failure.
+            </summary>
+            <remarks>
+            Enum values correspond to Win32 equivalents.
+            </remarks>
+        </member>
+        <member name="F:TVA.Services.RecoverAction.None">
+            <summary>
+            No action.
+            </summary>
+        </member>
+        <member name="F:TVA.Services.RecoverAction.Restart">
+            <summary>
+            Restart the service.
+            </summary>
+        </member>
+        <member name="F:TVA.Services.RecoverAction.Reboot">
+            <summary>
+            Reboot the computer.
+            </summary>
+        </member>
+        <member name="F:TVA.Services.RecoverAction.RunCommand">
+            <summary>
+            Run a command.
+            </summary>
+        </member>
+        <member name="T:TVA.Services.ServiceInstallerEx">
+            <summary>
+            Defines an extended service installer class that can define service failure actions at install time.
+            </summary>
+        </member>
+        <member name="M:TVA.Services.ServiceInstallerEx.#ctor">
+            <summary>
+            Creates a new <see cref="T:TVA.Services.ServiceInstallerEx"/>.
+            </summary>
+        </member>
+        <member name="M:TVA.Services.ServiceInstallerEx.DefineRecoverAction(TVA.Services.RecoverAction,System.Int32)">
+            <summary>
+            Defines a new recover action to be performed upon service failure.
+            </summary>
+            <param name="recoverAction"><see cref="T:TVA.Services.RecoverAction"/> to execute upon service failure.</param>
+            <param name="delay">The time to wait before performing the specified <paramref name="recoverAction"/>, in milliseconds.</param>
+        </member>
+        <member name="P:TVA.Services.ServiceInstallerEx.FailResetPeriod">
+            <summary>
+            Sets the time after which to reset the failure count to zero if there are no failures, in seconds.
+            Specify <see cref="F:System.Threading.Timeout.Infinite"/> to indicate that this value should never be reset.
+            </summary>
+        </member>
+        <member name="P:TVA.Services.ServiceInstallerEx.FailRebootMessage">
+            <summary>
+            Sets the service fail reboot message.
+            </summary>
+        </member>
+        <member name="P:TVA.Services.ServiceInstallerEx.FailRunCommand">
+            <summary>
+            Sets the service fail run command.
+            </summary>
+        </member>
+        <member name="P:TVA.Services.ServiceInstallerEx.ExecuteActionsOnNonCrashErrors">
+            <summary>
+            Sets flag that determines when failure actions are to be executed.
+            </summary>
+            <remarks>
+            <para>
+            If this member is <c>true</c> and the service has configured failure actions, the failure actions are queued if the service process
+            terminates without reporting a status of SERVICE_STOPPED or if it enters the SERVICE_STOPPED state but the exit code returned in the
+            SERVICE_STATUS structure is not ERROR_SUCCESS (0).
+            </para>
+            <para>
+            If this member is <c>false</c> and the service has configured failure actions, the failure actions are queued only if the service
+            terminates without reporting a status of SERVICE_STOPPED.
+            </para>
+            <para>
+            This setting is ignored unless the service has configured failure actions.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:TVA.Services.ServiceInstallerEx.StartOnInstall">
+            <summary>
+            Sets the boolean value to configure the service to start after it is installed.
+            </summary>
+        </member>
+        <member name="P:TVA.Services.ServiceInstallerEx.StartTimeout">
+            <summary>
+            Sets the service start timeout in milliseconds.
+            </summary>
+        </member>
         <member name="T:TVA.Services.ClientRequest">
             <summary>
             Represents a request sent by <see cref="T:TVA.Services.ClientHelper"/> to <see cref="T:TVA.Services.ServiceHelper"/>.

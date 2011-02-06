@@ -22,28 +22,22 @@
 //******************************************************************************************************
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using TVA.PhasorProtocols;
+using TVA.Windows;
+using System.Threading;
 
 namespace openPDCManager.ModalDialogs
 {
     /// <summary>
     /// Interaction logic for ManualConfigurator.xaml
     /// </summary>
-    public partial class ManualConfigurator : Window
+    public partial class ManualConfigurator : SecureWindow
     {
         public ManualConfigurator(IConfigurationFrame configurationFrame)
         {
+            Thread.CurrentPrincipal = ((App)Application.Current).Principal;
             InitializeComponent();
             ButtonSave.Content = new BitmapImage(new Uri(@"images/Save.png", UriKind.Relative));
             ButtonClear.Content = new BitmapImage(new Uri(@"images/Cancel.png", UriKind.Relative));

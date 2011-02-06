@@ -22,16 +22,19 @@
 //******************************************************************************************************
 
 using System.Windows;
+using TVA.Windows;
+using System.Threading;
 
 namespace openPDCManager.ModalDialogs
 {
     /// <summary>
     /// Interaction logic for OutputStreamDeviceDigitals.xaml
     /// </summary>
-    public partial class OutputStreamDeviceDigitals : Window
+    public partial class OutputStreamDeviceDigitals : SecureWindow
     {
         public OutputStreamDeviceDigitals(int outputStreamDeviceID, string outputStreamDeviceAcronym)
         {
+            Thread.CurrentPrincipal = ((App)Application.Current).Principal;
             InitializeComponent();
             this.Title = "Manage Digitals For Output Stream Device: " + outputStreamDeviceAcronym;
             UserControlOutputStreamDeviceDigitals.m_sourceOutputStreamDeviceID = outputStreamDeviceID;

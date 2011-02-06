@@ -26,6 +26,9 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using TVA;
+using TVA.Identity;
+using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -37,7 +40,7 @@ namespace ConfigurationSetupUtility.Screens
         #region [ Members ]
 
         // Fields
-        private Dictionary<string, object> m_state;
+        private Dictionary<string, object> m_state;        
 
         #endregion
 
@@ -49,6 +52,7 @@ namespace ConfigurationSetupUtility.Screens
         public UserAccountCredentialsSetupScreen()
         {
             InitializeComponent();
+            this.Loaded += new RoutedEventHandler(UserAccountCredentialsSetupScreen_Loaded);          
         }
 
         #endregion
@@ -116,34 +120,72 @@ namespace ConfigurationSetupUtility.Screens
         {
             get
             {
-                string adminUserName = null, adminPassword = null;
-
-                // Assign or re-assign state values, change events won't fire if user left default values
-                m_state["adminUserName"] = m_userNameTextBox.Text.Trim();
-                m_state["adminPassword"] = m_userPasswordTextBox.Password.Trim();
-
-                adminUserName = m_state["adminUserName"] as string;
-                adminPassword = m_state["adminPassword"] as string;
-
-                if (!string.IsNullOrWhiteSpace(adminUserName))
+                if ((bool)RadioButtonWindowsAuthentication.IsChecked)
                 {
-                    if (!string.IsNullOrWhiteSpace(adminPassword))
+                    string errorMessage = string.Empty;
+                    try
                     {
-                        return true;
+                        string[] userData = Thread.CurrentPrincipal.Identity.Name.Split(new char[] { '\\' });
+
+                        if (UserInfo.AuthenticateUser(userData[0], userData[1], m_userPasswordTextBox.Password.Trim(), out errorMessage) == null)
+                        {
+                            MessageBox.Show("Authentication failed. Please verify your username and password.", "Verifying Windows Credentials");
+                            return false;
+                        }
                     }
-                    else
-                    {
-                        MessageBox.Show("Please enter a password for the administrative user.");
-                        m_userPasswordTextBox.Focus();
+                    catch (Exception ex)
+                    {                        
+                        MessageBox.Show(ex.Message + Environment.NewLine + errorMessage, "Verifying Windows Credentials - ERROR!");
                         return false;
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Please enter a user name for the administrative user.");
-                    m_userNameTextBox.Focus();
-                    return false;
+                    string passwordRequirementRegex = "^.*(?=.{8,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).*$";
+                    string passwordRequirementError = "Invalid Password: Password must be at least 8 characters; must contain at least 1 number, 1 upper case letter, and 1 lower case letter";
+
+                    string userName = m_userNameTextBox.Text.Trim();
+                    string password = m_userPasswordTextBox.Password.Trim();
+                    string confirmPassword = m_userConfirmPasswordTextBox.Password.Trim();
+                    string firstName = m_userFirstNameTextBox.Text.Trim();
+                    string lastName = m_userLastNameTextBox.Text.Trim();
+
+                    if (string.IsNullOrEmpty(userName))
+                    {
+                        MessageBox.Show("Please provide administrative user account name.", "Database User Credentials");
+                        m_userNameTextBox.Focus();
+                        return false;
+                    }
+                    else if (string.IsNullOrEmpty(password) || !Regex.IsMatch(password, passwordRequirementRegex))
+                    {
+                        MessageBox.Show("Please provide valid password for administrative user." + Environment.NewLine + passwordRequirementError, "Database User Credentials");
+                        m_userPasswordTextBox.Focus();
+                        return false;
+                    }
+                    else if (password != confirmPassword)
+                    {
+                        MessageBox.Show("Password does not match the cofirm password", "Database User Credentials");
+                        m_userConfirmPasswordTextBox.SelectAll();
+                        m_userConfirmPasswordTextBox.Focus();
+                        return false;
+                    }
+                    else if (string.IsNullOrEmpty(m_userFirstNameTextBox.Text.Trim()))
+                    {
+                        MessageBox.Show("Please provide first name for administrative user", "Database User Credentials");                        
+                        m_userFirstNameTextBox.Focus();
+                        return false;
+                    }
+                    else if (string.IsNullOrEmpty(m_userLastNameTextBox.Text.Trim()))
+                    {
+                        MessageBox.Show("Please provide last name for administrative user", "Database User Credentials");
+                        m_userLastNameTextBox.Focus();
+                        return false;
+                    }
                 }
+
+                //Update state values to the latest entered on the form.
+                InitializeState();
+                return true;
             }
         }
 
@@ -176,19 +218,39 @@ namespace ConfigurationSetupUtility.Screens
         // Initializes the state keys to their default values.
         private void InitializeState()
         {
-            m_userPasswordTextBox.Focus();
-        }
-
-        private void UserNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
             if (m_state != null)
+            {
+                m_state["authenticationType"] =  (bool)RadioButtonWindowsAuthentication.IsChecked ? "windows" : "database";
                 m_state["adminUserName"] = m_userNameTextBox.Text.Trim();
+                m_state["adminPassword"] = m_userPasswordTextBox.Password.Trim();
+                m_state["adminUserFirstName"] = m_userFirstNameTextBox.Text.Trim();
+                m_state["adminUserLastName"] = m_userLastNameTextBox.Text.Trim();
+            }
+        }
+               
+        private void RadioButtonWindowsAuthentication_Checked(object sender, RoutedEventArgs e)
+        {
+            //i.e. Windows Authentication Selected.            
+            m_messageTextBlock.Text = "Please enter current credentials for active directory user to be the administrator for openPDC. Credentials will be validated by operating system.";
+            m_userAccountHeaderTextBlock.Text = "Windows Authentication";
+            m_userNameTextBox.Text = Thread.CurrentPrincipal.Identity.Name.Contains(@"\") ? Thread.CurrentPrincipal.Identity.Name.Substring(Thread.CurrentPrincipal.Identity.Name.LastIndexOf(@"\") + 1) : Thread.CurrentPrincipal.Identity.Name;
+            m_dbInfoGrid.Visibility = Visibility.Collapsed;            
         }
 
-        private void UserPasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
+        private void RadioButtonWindowsAuthentication_Unchecked(object sender, RoutedEventArgs e)
         {
-            if (m_state != null)
-                m_state["adminPassword"] = m_userPasswordTextBox.Password.Trim();
+            //i.e. Database Authentication Selected.
+            m_messageTextBlock.Text = "Please provide the desired credentials for database user to be the administrator for openPDC.";
+            m_userAccountHeaderTextBlock.Text = "Database Authentication";
+            m_userNameTextBox.Text = string.Empty;
+            m_dbInfoGrid.Visibility = Visibility.Visible;
+        }
+
+        void UserAccountCredentialsSetupScreen_Loaded(object sender, RoutedEventArgs e)
+        {
+            m_userNameTextBox.SelectAll();
+            m_userNameTextBox.Focus();
+            RadioButtonWindowsAuthentication.IsChecked = true;            
         }
 
         #endregion

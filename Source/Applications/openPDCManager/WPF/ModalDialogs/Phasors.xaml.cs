@@ -22,20 +22,23 @@
 //******************************************************************************************************
 
 using System.Windows;
+using TVA.Windows;
+using System.Threading;
 
 namespace openPDCManager.ModalDialogs
 {
     /// <summary>
     /// Interaction logic for Phasors.xaml
     /// </summary>
-    public partial class Phasors : Window
+    public partial class Phasors : SecureWindow
     {
         public Phasors(int deviceID, string deviceAcronym)
         {
+            Thread.CurrentPrincipal = ((App)Application.Current).Principal;
             InitializeComponent();
             UserControlPhasors.m_sourceDeviceID = deviceID;
             UserControlPhasors.m_sourceDeviceAcronym = deviceAcronym;
-            this.Title = "Manage Phasors For Device: " + deviceAcronym;
+            this.Title = "Manage Phasors For Device: " + deviceAcronym;            
         }
     }
 }

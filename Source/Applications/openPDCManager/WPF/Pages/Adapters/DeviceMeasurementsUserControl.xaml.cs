@@ -142,8 +142,15 @@ namespace openPDCManager.Pages.Adapters
 
         void StartSubscription()
         {
-            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl;
-            connectionString = connectionString.Substring(0, connectionString.LastIndexOf(":"));
+            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl.ToLower();
+            Dictionary<string, string> keyValues = connectionString.ParseKeyValuePairs();
+            string server = "localhost";
+            string port = "6165";
+            if (keyValues.ContainsKey("server"))
+                server = keyValues["server"].Substring(0, keyValues["server"].LastIndexOf(":"));
+
+            if (keyValues.ContainsKey("datapublisherport"))
+                port = keyValues["datapublisherport"];
 
             m_dataSubscriber = new DataSubscriber();
             m_dataSubscriber.StatusMessage += dataSubscriber_StatusMessage;
@@ -151,7 +158,7 @@ namespace openPDCManager.Pages.Adapters
             m_dataSubscriber.ConnectionEstablished += dataSubscriber_ConnectionEstablished;
             m_dataSubscriber.NewMeasurements += dataSubscriber_NewMeasurements;
             m_dataSubscriber.ConnectionTerminated += dataSubscriber_ConnectionTerminated;
-            m_dataSubscriber.ConnectionString = connectionString + ":6165";
+            m_dataSubscriber.ConnectionString = "server=" + server + ":" + port;
             m_dataSubscriber.Initialize();
             m_dataSubscriber.Start();
         }

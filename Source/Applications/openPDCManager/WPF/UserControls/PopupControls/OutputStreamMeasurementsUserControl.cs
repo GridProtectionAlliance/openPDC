@@ -29,6 +29,7 @@ using openPDCManager.Data;
 using openPDCManager.Utilities;
 using openPDCManager.ModalDialogs;
 using System.Windows;
+using System.Threading;
 
 namespace openPDCManager.UserControls.PopupControls
 {
@@ -39,6 +40,10 @@ namespace openPDCManager.UserControls.PopupControls
         void Initialize()
         {
             ListBoxOutputStreamMeasurementList.LayoutUpdated += new EventHandler(ListBoxOutputStreamMeasurementList_LayoutUpdated);
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+                ButtonSave.IsEnabled = true;
+            else
+                ButtonSave.IsEnabled = false;
         }
 
         void ListBoxOutputStreamMeasurementList_LayoutUpdated(object sender, EventArgs e)

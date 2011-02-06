@@ -1,4 +1,5 @@
-﻿<Window x:Class="openPDCManager.ModalDialogs.ManualConfigurator"
+﻿<src:SecureWindow x:Class="openPDCManager.ModalDialogs.ManualConfigurator"
+        xmlns:src="clr-namespace:TVA.Windows;assembly=TVA.Windows"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:uc="clr-namespace:openPDCManager.UserControls.Configurator"
@@ -14,4 +15,4 @@
             </StackPanel>
         </StackPanel>
     </Border>
-</Window>
+</src:SecureWindow>

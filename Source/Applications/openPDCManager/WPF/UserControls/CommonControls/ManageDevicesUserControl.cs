@@ -33,6 +33,7 @@ using System.Windows.Controls;
 using System.Windows;
 using openPDCManager.Data.ServiceCommunication;
 using openPDCManager.Pages.Devices;
+using System.Threading;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -49,7 +50,17 @@ namespace openPDCManager.UserControls.CommonControls
 
         void Initialize()
         {            
-            serviceClient = ((App)Application.Current).ServiceClient;         
+            serviceClient = ((App)Application.Current).ServiceClient;
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            {
+                ButtonSave.IsEnabled = true;
+                ButtonInitialize.IsEnabled = true;
+            }
+            else
+            {
+                ButtonSave.IsEnabled = false;
+                ButtonInitialize.IsEnabled = false;
+            }
         }
 
         void SendInitialize()
@@ -431,7 +442,7 @@ namespace openPDCManager.UserControls.CommonControls
                         if (device.HistorianID != null) //Update historian metadata
                         {
                             string runtimeID = CommonFunctions.GetRuntimeID(connection, "Historian", (int)device.HistorianID);
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshallmetadata");
                         }
 
                         //now also update Stat historian metadata.
@@ -439,7 +450,7 @@ namespace openPDCManager.UserControls.CommonControls
                         if (statHistorian != null)
                         {
                             string statRuntimeID = CommonFunctions.GetRuntimeID(connection, "Historian", statHistorian.ID);
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshmetadata");
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshallmetadata");
                         }
 
                         CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");

@@ -27,6 +27,7 @@ using openPDCManager.Utilities;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using openPDCManager.ModalDialogs;
+using System.Threading;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -36,7 +37,10 @@ namespace openPDCManager.UserControls.CommonControls
 
         void Initialize()
         {
-            
+            if (Thread.CurrentPrincipal.IsInRole("Administrator"))
+                ButtonSave.IsEnabled = true;
+            else
+                ButtonSave.IsEnabled = false;
         }
 
         void GetNodes()
@@ -89,6 +93,20 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 string result = CommonFunctions.SaveNode(null, node, isNew);
+                try
+                {
+                    string nodeID = CommonFunctions.GetNodeByName(null, node.Name).ID;
+                    if (isNew)
+                        CreateRoles(nodeID);
+                }
+                catch (Exception ex1)
+                {
+                    CommonFunctions.LogException(null, "WPF.CreateRoles", ex1);
+                    sm = new SystemMessages(new Message() { UserMessage = "Failed to Create Application Roles for Node", SystemMessage = ex1.Message, UserMessageType = MessageType.Error },
+                           ButtonType.OkOnly);
+                    sm.Owner = Window.GetWindow(this);
+                    sm.ShowPopup();
+                }
                 sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -105,6 +123,23 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.Owner = Window.GetWindow(this);
                 sm.ShowPopup();
             }
+        }
+
+        void CreateRoles(string nodeID)
+        {
+            Role role;
+
+            //Create Administrator role
+            role = new Role() { Name = "Administrator", Description = "Administrator Role", NodeID = nodeID, CreatedBy = Thread.CurrentPrincipal.Identity.Name, UpdatedBy = Thread.CurrentPrincipal.Identity.Name };
+            CommonFunctions.SaveRole(null, role, true);
+
+            //Create Editor role
+            role = new Role() { Name = "Editor", Description = "Editor Role", NodeID = nodeID, CreatedBy = Thread.CurrentPrincipal.Identity.Name, UpdatedBy = Thread.CurrentPrincipal.Identity.Name };
+            CommonFunctions.SaveRole(null, role, true);
+
+            //Create Viewer role
+            role = new Role() { Name = "Viewer", Description = "Viewer Role", NodeID = nodeID, CreatedBy = Thread.CurrentPrincipal.Identity.Name, UpdatedBy = Thread.CurrentPrincipal.Identity.Name };
+            CommonFunctions.SaveRole(null, role, true);
         }
 
         #endregion

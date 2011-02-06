@@ -18,11 +18,15 @@
 //  ----------------------------------------------------------------------------------------------------
 //  09/07/2010 - Stephen C. Wills
 //       Generated original version of source code.
+//  02/03/2011 - Mehul Thakkar
+//       Set PrinicipalPolicy to WindowsPrincipal so that current windows user can be identified.
 //
 //******************************************************************************************************
 
 using System.Windows;
 using ConfigurationSetupUtility.Screens;
+using System;
+using System.Security.Principal;
 
 namespace ConfigurationSetupUtility
 {
@@ -50,6 +54,7 @@ namespace ConfigurationSetupUtility
             InitializeComponent();
             this.Topmost = true;
             m_screenManager = new ScreenManager(this, new WelcomeScreen());
+            AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
         }
 
         #endregion

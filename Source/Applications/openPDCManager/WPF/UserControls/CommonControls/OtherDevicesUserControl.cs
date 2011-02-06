@@ -28,6 +28,7 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
+using System.Threading;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -36,7 +37,7 @@ namespace openPDCManager.UserControls.CommonControls
         #region [ Methods ]
 
         void Initialize()
-        {
+        {            
         }
 
         void GetOtherDeviceList()

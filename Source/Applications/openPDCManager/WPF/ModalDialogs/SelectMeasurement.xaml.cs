@@ -32,13 +32,15 @@ using System.Windows.Media.Imaging;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using openPDCManager.Utilities;
+using TVA.Windows;
+using System.Threading;
 
 namespace openPDCManager.ModalDialogs
 {
     /// <summary>
     /// Interaction logic for SelectMeasurement.xaml
     /// </summary>
-    public partial class SelectMeasurement : Window
+    public partial class SelectMeasurement : SecureWindow
     {
         #region [ Members ]
 
@@ -54,6 +56,7 @@ namespace openPDCManager.ModalDialogs
         
         public SelectMeasurement(int outputStreamID, string outputStreamAcronym)
         {
+            Thread.CurrentPrincipal = ((App)Application.Current).Principal;
             InitializeComponent();            
             ButtonAdd.Content = new BitmapImage(new Uri(@"Images/Add.png", UriKind.Relative));
             ButtonSearch.Content = new BitmapImage(new Uri(@"Images/Search.png", UriKind.Relative));

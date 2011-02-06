@@ -29,6 +29,7 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using openPDCManager.Data.ServiceCommunication;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -44,7 +45,17 @@ namespace openPDCManager.UserControls.CommonControls
 
         void Initialize()
         {            
-            serviceClient = ((App)Application.Current).ServiceClient;         
+            serviceClient = ((App)Application.Current).ServiceClient;
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            {
+                ButtonSave.IsEnabled = true;
+                ButtonInitialize.IsEnabled = true;
+            }
+            else
+            {
+                ButtonSave.IsEnabled = false;
+                ButtonInitialize.IsEnabled = false;
+            }
         }
 
         void SendInitialize()

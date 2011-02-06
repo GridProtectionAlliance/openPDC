@@ -555,8 +555,15 @@ namespace openPDCManager.Pages.Monitoring
         void StartSubscriptionForChart()
         {
             //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Starting Subscription.");
-            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl;
-            connectionString = connectionString.Substring(0, connectionString.LastIndexOf(":"));
+            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl.ToLower();
+            Dictionary<string, string> keyValues = connectionString.ParseKeyValuePairs();
+            string server = "localhost";
+            string port = "6165";
+            if (keyValues.ContainsKey("server"))
+                server = keyValues["server"].Substring(0, keyValues["server"].LastIndexOf(":"));
+
+            if (keyValues.ContainsKey("datapublisherport"))
+                port = keyValues["datapublisherport"];
 
             m_chartSubscriber = new DataSubscriber();
             m_chartSubscriber.StatusMessage += chartSubscriber_StatusMessage;
@@ -564,7 +571,7 @@ namespace openPDCManager.Pages.Monitoring
             m_chartSubscriber.ConnectionEstablished += chartSubscriber_ConnectionEstablished;
             m_chartSubscriber.NewMeasurements += chartSubscriber_NewMeasurements;
             m_chartSubscriber.ConnectionTerminated += chartSubscriber_ConnectionTerminated;
-            m_chartSubscriber.ConnectionString = connectionString + ":6165";            
+            m_chartSubscriber.ConnectionString = "server=" + server + ":" + port;            
             m_chartSubscriber.Initialize();
             m_chartSubscriber.Start();
         }
@@ -792,8 +799,15 @@ namespace openPDCManager.Pages.Monitoring
 
         void StartSubscriptionForTreeData()
         {
-            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl;
-            connectionString = connectionString.Substring(0, connectionString.LastIndexOf(":"));
+            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl.ToLower();
+            Dictionary<string, string> keyValues = connectionString.ParseKeyValuePairs();
+            string server = "localhost";
+            string port = "6165";
+            if (keyValues.ContainsKey("server"))
+                server = keyValues["server"].Substring(0, keyValues["server"].LastIndexOf(":"));
+
+            if (keyValues.ContainsKey("datapublisherport"))
+                port = keyValues["datapublisherport"];
 
             m_measurementDataSubscriber = new DataSubscriber();
             m_measurementDataSubscriber.StatusMessage += measurementDataSubscriber_StatusMessage;
@@ -801,7 +815,7 @@ namespace openPDCManager.Pages.Monitoring
             m_measurementDataSubscriber.ConnectionEstablished += measurementDataSubscriber_ConnectionEstablished;
             m_measurementDataSubscriber.NewMeasurements += measurementDataSubscriber_NewMeasurements;
             m_measurementDataSubscriber.ConnectionTerminated += measurementDataSubscriber_ConnectionTerminated;
-            m_measurementDataSubscriber.ConnectionString = connectionString + ":6165";
+            m_measurementDataSubscriber.ConnectionString = "server=" + server + ":" + port;
             m_measurementDataSubscriber.Initialize();
             m_measurementDataSubscriber.Start(); 
         }

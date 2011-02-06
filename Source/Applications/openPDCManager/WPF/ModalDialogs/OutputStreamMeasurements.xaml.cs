@@ -22,16 +22,19 @@
 //******************************************************************************************************
 
 using System.Windows;
+using TVA.Windows;
+using System.Threading;
 
 namespace openPDCManager.ModalDialogs
 {
     /// <summary>
     /// Interaction logic for OutputStreamMeasurements.xaml
     /// </summary>
-    public partial class OutputStreamMeasurements : Window
+    public partial class OutputStreamMeasurements : SecureWindow
     {
         public OutputStreamMeasurements(int outputStreamID, string outputStreamAcronym)
         {
+            Thread.CurrentPrincipal = ((App)Application.Current).Principal;
             InitializeComponent();
             UserControlOutputStreamMeasurements.m_sourceOutputStreamID = outputStreamID;
             UserControlOutputStreamMeasurements.m_sourceOutputStreamAcronym = outputStreamAcronym;

@@ -22,16 +22,19 @@
 //******************************************************************************************************
 
 using System.Windows;
+using TVA.Windows;
+using System.Threading;
 
 namespace openPDCManager.ModalDialogs
 {
     /// <summary>
     /// Interaction logic for OutputStreamDevicePhasors.xaml
     /// </summary>
-    public partial class OutputStreamDevicePhasors : Window
+    public partial class OutputStreamDevicePhasors : SecureWindow
     {
         public OutputStreamDevicePhasors(int outputStreamDeviceID, string outputStreamDeviceAcronym)
         {
+            Thread.CurrentPrincipal = ((App)Application.Current).Principal;
             InitializeComponent();
             this.Title = "Manage Phasors For Output Stream Device: " + outputStreamDeviceAcronym;            
             UserControlOutputStreamDevicePhasors.m_sourceOutputStreamDeviceID = outputStreamDeviceID;

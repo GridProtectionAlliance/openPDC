@@ -22,16 +22,19 @@
 //******************************************************************************************************
 
 using System.Windows;
+using TVA.Windows;
+using System.Threading;
 
 namespace openPDCManager.ModalDialogs.OutputStreamWizard
 {
     /// <summary>
     /// Interaction logic for CurrentDevices.xaml
     /// </summary>
-    public partial class CurrentDevices : Window
+    public partial class CurrentDevices : SecureWindow
     {
         public CurrentDevices(int outputStreamID, string outputStreamAcronym)
         {
+            Thread.CurrentPrincipal = ((App)Application.Current).Principal;
             InitializeComponent();
             UserControlCurrentDevices.m_sourceOutputStreamID = outputStreamID;
             UserControlCurrentDevices.m_sourceOutputStreamAcronym = outputStreamAcronym;

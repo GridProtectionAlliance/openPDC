@@ -28,6 +28,7 @@ using openPDCManager.Utilities;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -37,6 +38,10 @@ namespace openPDCManager.UserControls.CommonControls
 
         void Initialize()
         {
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+                ButtonSave.IsEnabled = true;
+            else
+                ButtonSave.IsEnabled = false;
         }
 
         void GetCompanies()

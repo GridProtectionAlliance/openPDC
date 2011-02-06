@@ -29,6 +29,7 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
+using System.Threading;
 
 namespace openPDCManager.UserControls.PopupControls
 {
@@ -37,7 +38,11 @@ namespace openPDCManager.UserControls.PopupControls
         #region [ Methods ]
 
         void Initialize()
-        {            
+        {
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+                ButtonSave.IsEnabled = true;
+            else
+                ButtonSave.IsEnabled = false;
         }
 
         void GetOutputStreamDeviceList()

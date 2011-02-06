@@ -40,6 +40,7 @@ using Microsoft.Win32;
 using TVA;
 using TVA.IO;
 using TVA.Security.Cryptography;
+using System.Web.Security;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -62,6 +63,7 @@ namespace ConfigurationSetupUtility.Screens
         private Dictionary<string, object> m_state;
         private string m_oldConnectionString;
         private string m_oldDataProviderString;
+        private bool m_defaultNodeAdded;
 
         #endregion
 
@@ -244,6 +246,9 @@ namespace ConfigurationSetupUtility.Screens
                     // Set up the initial historian.
                     if (Convert.ToBoolean(m_state["setupHistorian"]))
                         SetUpInitialHistorian(connectionString, dataProviderString);
+
+                    //Set up administrative user credentials.
+                    SetupAdminUserCredentials(connectionString, dataProviderString);
                 }
 
                 // Modify the openPDC configuration file.
@@ -345,9 +350,12 @@ namespace ConfigurationSetupUtility.Screens
                         mySqlSetup.Password = pass;
 
                         UpdateProgressBar(98);
-                        AppendStatusMessage("New user created successfully.");
+                        AppendStatusMessage("New database user created successfully.");
                         AppendStatusMessage(string.Empty);
                     }
+
+                    //Set up administrative user credentials.
+                    SetupAdminUserCredentials(mySqlSetup.ConnectionString, dataProviderString);
                 }
 
                 // Modify the openPDC configuration file.
@@ -469,9 +477,12 @@ namespace ConfigurationSetupUtility.Screens
                         sqlServerSetup.Password = pass;
 
                         UpdateProgressBar(98);
-                        AppendStatusMessage("New user created successfully.");
+                        AppendStatusMessage("New database user created successfully.");
                         AppendStatusMessage(string.Empty);
                     }
+
+                    //Set up administrative user credentials.
+                    SetupAdminUserCredentials(sqlServerSetup.ConnectionString, dataProviderString);
                 }
 
                 // Modify the openPDC configuration file.
@@ -551,11 +562,8 @@ namespace ConfigurationSetupUtility.Screens
             IDbConnection connection = null;
 
             try
-            {
-                IDbCommand nodeIdCommand;
+            {                
                 IDbCommand historianCommand;
-                IDataReader nodeIdReader = null;
-                string nodeId = null;
                 string nodeIdQueryString = null;
 
                 AppendStatusMessage("Attempting to set up the initial historian...");
@@ -578,40 +586,19 @@ namespace ConfigurationSetupUtility.Screens
                 connection.Open();
 
                 // Set up default node.
-                if (!sampleDataScript)
+                bool defaultNodeCreatedHere = ManageDefaultNode(connection, sampleDataScript, m_defaultNodeAdded);
+                
+                if (settings.TryGetValue("Provider", out connectionSetting))
                 {
-                    IDbCommand nodeCommand = connection.CreateCommand();
-                    nodeCommand.CommandText = "INSERT INTO Node(Name, CompanyID, Description, TimeSeriesDataServiceUrl, RemoteStatusServiceUrl, RealTimeStatisticServiceUrl, Master, LoadOrder, Enabled) VALUES('Default', NULL, 'Default node', 'http://localhost:6152/historian', 'Server=localhost:8500', 'http://localhost:6052/historian', 1, 0, 1)";
-                    nodeCommand.ExecuteNonQuery();
+                    // Check if provider is for Access since it uses braces as Guid delimeters
+                    if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                        nodeIdQueryString = "{" + m_state["selectedNodeId"].ToString() + "}";
                 }
+                if (string.IsNullOrWhiteSpace(nodeIdQueryString))
+                    nodeIdQueryString = "'" + m_state["selectedNodeId"].ToString() + "'";
 
-                // Get the node ID from the database.
-                try
-                {
-                    nodeIdCommand = connection.CreateCommand();
-                    nodeIdCommand.CommandText = "SELECT ID FROM Node WHERE Name = 'Default'";
-                    nodeIdReader = nodeIdCommand.ExecuteReader();
-
-                    if (nodeIdReader.Read())
-                        nodeId = nodeIdReader["ID"].ToNonNullString();
-
-                    if (settings.TryGetValue("Provider", out connectionSetting))
-                    {
-                        // Check if provider is for Access since it uses braces as Guid delimeters
-                        if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                            nodeIdQueryString = "{" + nodeId + "}";
-                    }
-
-                    if (string.IsNullOrWhiteSpace(nodeIdQueryString))
-                        nodeIdQueryString = "'" + nodeId + "'";
-
-                    m_state["selectedNodeId"] = nodeId;
-                }
-                finally
-                {
-                    if (nodeIdReader != null)
-                        nodeIdReader.Close();
-                }
+                if (defaultNodeCreatedHere)
+                    AddRolesForNode(connection, nodeIdQueryString);
 
                 // Set up initial historian.
                 historianCommand = connection.CreateCommand();
@@ -633,6 +620,205 @@ namespace ConfigurationSetupUtility.Screens
                 if (connection != null)
                     connection.Close();
             }
+        }
+
+        private void SetupAdminUserCredentials(string connectionString, string dataProviderString)
+        {
+            bool sampleDataScript = Convert.ToBoolean(m_state["initialDataScript"]) && Convert.ToBoolean(m_state["sampleDataScript"]);
+
+            Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
+            Dictionary<string, string> dataProviderSettings = dataProviderString.ParseKeyValuePairs();
+            string assemblyName = dataProviderSettings["AssemblyName"];
+            string connectionTypeName = dataProviderSettings["ConnectionType"];
+            string connectionSetting;
+            string adminRoleID = string.Empty;
+            string adminUserID = string.Empty;
+
+            Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
+            Type connectionType = assembly.GetType(connectionTypeName);
+            IDbConnection connection = null;
+
+            try
+            {                
+                string nodeIdQueryString = null;
+
+                AppendStatusMessage("Attempting to set up administrative user...");
+
+                if (settings.TryGetValue("Provider", out connectionSetting))
+                {
+                    // Check if provider is for Access to make sure the path is fully qualified.
+                    if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (settings.TryGetValue("Data Source", out connectionSetting))
+                        {
+                            settings["Data Source"] = FilePath.GetAbsolutePath(connectionSetting);
+                            connectionString = settings.JoinKeyValuePairs();
+                        }
+                    }
+                }
+
+                connection = (IDbConnection)Activator.CreateInstance(connectionType);
+                connection.ConnectionString = connectionString;
+                connection.Open();
+
+                bool defaultNodeCreatedHere = ManageDefaultNode(connection, sampleDataScript, m_defaultNodeAdded);
+                    
+                if (settings.TryGetValue("Provider", out connectionSetting))
+                {
+                    // Check if provider is for Access since it uses braces as Guid delimeters
+                    if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                        nodeIdQueryString = "{" + m_state["selectedNodeId"].ToString() + "}";
+                }
+                if (string.IsNullOrWhiteSpace(nodeIdQueryString))
+                    nodeIdQueryString = "'" + m_state["selectedNodeId"].ToString() + "'";
+
+                if (defaultNodeCreatedHere)
+                    AddRolesForNode(connection, nodeIdQueryString);
+
+                //Get Administrative RoleID
+                IDbCommand roleIdCommand;
+                IDataReader roleIdReader = null;                
+                // Get the node ID from the database.
+                try
+                {
+                    roleIdCommand = connection.CreateCommand();
+                    roleIdCommand.CommandText = "SELECT ID FROM ApplicationRole WHERE Name = 'Administrator'";
+                    roleIdReader = roleIdCommand.ExecuteReader();
+
+                    if (roleIdReader.Read())
+                         adminRoleID = roleIdReader["ID"].ToNonNullString();
+                }
+                finally
+                {
+                    if (roleIdReader != null)
+                        roleIdReader.Close();
+                }
+                                                
+                //Add Administrative User.                
+                IDbCommand adminCredentialCommand = connection.CreateCommand();
+                if (m_state["authenticationType"].ToString() == "windows")
+                    adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, DefaultNodeID, CreatedBy, UpdatedBy) Values ('{0}', {1}, '{2}', '{3}')", m_state["adminUserName"].ToString(), nodeIdQueryString, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+                else
+                    adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, Password, FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) Values " +
+                            "('{0}', '{1}', '{2}', '{3}', {4}, 1, '{5}', '{6}')", m_state["adminUserName"].ToString(), FormsAuthentication.HashPasswordForStoringInConfigFile(@"O3990\P78f9E66b:a35_V©6M13©6~2&[" + m_state["adminPassword"].ToString(), "SHA1"), m_state["adminUserFirstName"].ToString(),
+                            m_state["adminUserLastName"].ToString(), nodeIdQueryString, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+
+                adminCredentialCommand.ExecuteNonQuery();
+                
+                // Get the admin user ID from the database.
+                IDataReader userIdReader = null;
+                try
+                {
+                    adminCredentialCommand.CommandText = string.Format("SELECT ID FROM UserAccount WHERE Name = '{0}'", m_state["adminUserName"].ToString());
+                    userIdReader = adminCredentialCommand.ExecuteReader();
+
+                    if (userIdReader.Read())
+                        adminUserID = userIdReader["ID"].ToNonNullString();
+                }
+                finally
+                {
+                    if (userIdReader != null)
+                        userIdReader.Close();
+                }
+
+                //Assign Administrative User to Administrator Role.
+                if (!string.IsNullOrEmpty(adminRoleID) && !string.IsNullOrEmpty(adminUserID))
+                {
+                    if (settings.TryGetValue("Provider", out connectionSetting))
+                    {
+                        // Check if provider is for Access since it uses braces as Guid delimeters
+                        if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                        {
+                            adminUserID = "{" + adminUserID + "}";
+                            adminRoleID = "{" + adminRoleID + "}";
+                        }                        
+                    }
+                    else
+                    {
+                        adminUserID = "'" + adminUserID + "'";
+                        adminRoleID = "'" + adminRoleID + "'";
+                    }
+
+                    adminCredentialCommand.CommandText = string.Format("INSERT INTO ApplicationRoleUserAccount(ApplicationRoleID, UserAccountID) VALUES ({0}, {1})", adminRoleID, adminUserID);
+                    adminCredentialCommand.ExecuteNonQuery();                    
+                }
+
+                // Report success to the user.
+                AppendStatusMessage("Successfully set up credentials for administrative user.");
+                AppendStatusMessage(string.Empty);
+                UpdateProgressBar(97);
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// Checks to see if sample database script was selected to be run. If not, then create default node otherwise assign default nodeID to m_state["selectedNodeId"]
+        /// </summary>
+        /// <param name="connection">IDbConnection used for database operation</param>
+        /// <param name="sampleDataScript">Indicates if sample database script was selected to be run</param>
+        /// <param name="defaultNodeHasBeenAdded">indicates if default node has been added previously</param>
+        /// <returns>true if new node was added otherwise false</returns>
+        private bool ManageDefaultNode(IDbConnection connection, bool sampleDataScript, bool defaultNodeHasBeenAdded)
+        {
+            bool defaultNodeCreated = false;
+            IDbCommand nodeIdCommand;            
+            IDataReader nodeIdReader = null;
+            string nodeId = null;            
+
+            // Set up default node if it has not been added to in the SetupDefaultHistorian method above.            
+            if (!sampleDataScript && !m_defaultNodeAdded)
+            {
+                IDbCommand nodeCommand = connection.CreateCommand();
+                nodeCommand.CommandText = "INSERT INTO Node(Name, CompanyID, Description, TimeSeriesDataServiceUrl, RemoteStatusServiceUrl, RealTimeStatisticServiceUrl, Master, LoadOrder, Enabled) VALUES('Default', NULL, 'Default node', 'http://localhost:6152/historian', 'Server=localhost:8500', 'http://localhost:6052/historian', 1, 0, 1)";
+                nodeCommand.ExecuteNonQuery();
+                m_defaultNodeAdded = true;
+                defaultNodeCreated = true;
+            }
+
+            // Get the node ID from the database.
+            try
+            {
+                nodeIdCommand = connection.CreateCommand();
+                nodeIdCommand.CommandText = "SELECT ID FROM Node WHERE Name = 'Default'";
+                nodeIdReader = nodeIdCommand.ExecuteReader();
+
+                if (nodeIdReader.Read())
+                    nodeId = nodeIdReader["ID"].ToNonNullString();                
+
+                m_state["selectedNodeId"] = nodeId;                
+            }
+            finally
+            {
+                if (nodeIdReader != null)
+                    nodeIdReader.Close();
+            }
+
+            return defaultNodeCreated;
+        }
+
+        /// <summary>
+        /// Adds three default roles for newly added node (Administrator, Editor, Viewer).
+        /// </summary>
+        /// <param name="connection">IDbConnection to be used for database operations.</param>
+        /// <param name="nodeID">Node ID to which three roles are being assigned</param>        
+        private void AddRolesForNode(IDbConnection connection, string nodeID)
+        {
+            //When a new node added, also add 3 roles to it (Administrator, Editor, Viewer).
+            IDbCommand adminCredentialCommand;
+            adminCredentialCommand = connection.CreateCommand();
+            adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Administrator', 'Administrator Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+            adminCredentialCommand.ExecuteNonQuery();
+
+            adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Editor', 'Editor Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+            adminCredentialCommand.ExecuteNonQuery();
+
+            adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Viewer', 'Viewer Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+            adminCredentialCommand.ExecuteNonQuery();
+
         }
 
         // Attempt to stop key processes/services before modifying their configuration files

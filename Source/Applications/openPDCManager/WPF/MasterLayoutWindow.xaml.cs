@@ -42,13 +42,16 @@ using openPDCManager.UserControls.CommonControls;
 using openPDCManager.UserControls.OutputStreamControls;
 using openPDCManager.Utilities;
 using TVA.Reflection;
+using openPDCManager.ModalDialogs;
+using TVA.Windows;
+using System.Threading;
 
 namespace openPDCManager
 {
     /// <summary>
     /// Interaction logic for MasterLayoutWindow.xaml
     /// </summary>
-    public partial class MasterLayoutWindow : Window
+    public partial class MasterLayoutWindow : SecureWindow
     {
         #region [ Members ]
 
@@ -62,8 +65,11 @@ namespace openPDCManager
         #region [ Constructor ]
 
         public MasterLayoutWindow()
-        {
+        {            
             InitializeComponent();
+            if (!string.IsNullOrEmpty(Thread.CurrentPrincipal.Identity.Name))
+                TextBlockCurrentUser.Text = "(Current User: " + Thread.CurrentPrincipal.Identity.Name + ")";
+
             ButtonErrorLog.Content = new BitmapImage(new Uri(@"images/Log.png", UriKind.Relative));
             ButtonLogo.Content = new BitmapImage(new Uri(@"images/GPALock.png", UriKind.Relative));
             UserControlSelectNode.NodeCollectionChanged += new openPDCManager.UserControls.CommonControls.SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);
@@ -82,10 +88,31 @@ namespace openPDCManager
         #region [ Windows Event Handlers ]
 
         void MasterLayoutWindow_Loaded(object sender, RoutedEventArgs e)
-        {            
-            IsolatedStorageManager.SetDefuaultStorage(false);            
-            HomePageUserControl home = new HomePageUserControl();            
-            ContentFrame.Navigate(home);            
+        {
+            ((App)Application.Current).Principal = Thread.CurrentPrincipal;
+
+            if (Thread.CurrentPrincipal.IsInRole("Administrator"))
+                Nodes.Visibility = Security.Visibility = Visibility.Visible;
+            else
+                Nodes.Visibility = Security.Visibility = Visibility.Collapsed;
+
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+                ConfigurationWizard.Visibility = Visibility.Visible;
+            else
+                ConfigurationWizard.Visibility = Visibility.Collapsed;
+
+            IsolatedStorageManager.SetDefuaultStorage(false);
+
+            if (UserControlSelectNode.ComboboxNode.Items.Count > 0)
+            {
+                HomePageUserControl home = new HomePageUserControl();
+                ContentFrame.Navigate(home);
+            }
+            else
+            {
+                NodesUserControl nodesUserControl = new NodesUserControl();
+                ContentFrame.Navigate(nodesUserControl);
+            }
         }
 
         void MasterLayoutWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -270,7 +297,9 @@ namespace openPDCManager
                 else if (ContentFrame.Content.GetType() == typeof(HomePageUserControl))
                 {
                     HomePageUserControl homePageUserControl = (HomePageUserControl)ContentFrame.Content;
-                    homePageUserControl.ButtonRestartOpenPDC.IsEnabled = true;
+                    //Eventhough connection has been established, check if user is administrator, then only enable it.
+                    if (Thread.CurrentPrincipal.IsInRole("Administrator"))
+                        homePageUserControl.ButtonRestartOpenPDC.IsEnabled = true;
                 }
 
             });            
@@ -305,9 +334,10 @@ namespace openPDCManager
         {
             if (UserControlSelectNode.ComboboxNode.SelectedItem != null)
                 TextBlockNode.Text = ((Node)UserControlSelectNode.ComboboxNode.SelectedItem).Name;
+                        
             HomePageUserControl home = new HomePageUserControl();
             ContentFrame.Navigate(home);
-
+            
             if (m_serviceClient == null || m_serviceClient.Helper.RemotingClient.ConnectionString != ((App)Application.Current).RemoteStatusServiceUrl || m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Disconnected)
                 ConnectToService();
         }
@@ -340,7 +370,13 @@ namespace openPDCManager
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem item = (MenuItem)e.OriginalSource;
-            if (item.Name == "CustomInputs")
+            //if no node is defined then force user to add node.
+            if (UserControlSelectNode.ComboboxNode.Items.Count == 0)
+            {
+                NodesUserControl nodesUserControl = new NodesUserControl();
+                ContentFrame.Navigate(nodesUserControl);
+            }
+            else if (item.Name == "CustomInputs")
             {
                 AdapterUserControl adapter = new AdapterUserControl();
                 adapter.TypeOfAdapter = AdapterType.Input;

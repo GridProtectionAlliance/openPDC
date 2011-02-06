@@ -30,7 +30,7 @@ CREATE TABLE ErrorLog(
 );
 
 CREATE TRIGGER UpdateErrorLogDatetime BEFORE INSERT ON ErrorLog FOR EACH ROW
-SET NEW.CreatedOn = NOW();
+SET NEW.CreatedOn = UTC_TIMESTAMP();
 
 CREATE TABLE Runtime(
 	ID INT AUTO_INCREMENT NOT NULL,
@@ -179,7 +179,7 @@ CREATE TABLE Device(
 );
 
 CREATE TRIGGER UpdateDeviceDatetime BEFORE INSERT ON Device FOR EACH ROW
-SET NEW.CreatedOn = NOW();
+SET NEW.CreatedOn = UTC_TIMESTAMP();
 
 CREATE TABLE VendorDevice(
 	ID INT AUTO_INCREMENT NOT NULL,
@@ -440,6 +440,72 @@ CREATE TABLE CustomOutputAdapter(
 	CONSTRAINT PK_CustomOutputAdapter PRIMARY KEY (ID ASC)
 );
 
+CREATE TABLE AccessLog (
+  ID INT(11) NOT NULL AUTO_INCREMENT,
+  UserName VARCHAR(50) NOT NULL,
+  AccessGranted TINYINT(3) UNSIGNED NOT NULL,
+  COMMENT LONGTEXT,
+  CreatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  CONSTRAINT PK_AccessLog PRIMARY KEY (ID ASC)
+);
+
+CREATE TABLE UserAccount (
+  ID NCHAR(36) NOT NULL DEFAULT '',
+  NAME VARCHAR(50) NOT NULL,
+  PASSWORD VARCHAR(256) DEFAULT NULL,
+  FirstName VARCHAR(50) DEFAULT NULL,
+  LastName VARCHAR(50) DEFAULT NULL,
+  DefaultNodeID NCHAR(36) NOT NULL,
+  Phone VARCHAR(50) DEFAULT NULL,
+  Email VARCHAR(256) DEFAULT NULL,
+  LockedOut TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  UseADAuthentication TINYINT(3) UNSIGNED NOT NULL DEFAULT '1',
+  ChangePasswordOn DATETIME DEFAULT NULL,
+  CreatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  CreatedBy VARCHAR(50) NOT NULL,
+  UpdatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  UpdatedBy VARCHAR(50) NOT NULL,
+  CONSTRAINT PK_UserAccount PRIMARY KEY (ID ASC)  
+);
+
+CREATE TABLE SecurityGroup (
+  ID NCHAR(36) NOT NULL DEFAULT '',
+  NAME VARCHAR(50) NOT NULL,
+  Description LONGTEXT,
+  CreatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  CreatedBy VARCHAR(50) DEFAULT NULL,
+  UpdatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  UpdatedBy VARCHAR(50) DEFAULT NULL,
+  CONSTRAINT PK_SecurityGorup PRIMARY KEY (ID ASC)
+);
+
+CREATE TABLE ApplicationRole (
+  ID NCHAR(36) NOT NULL DEFAULT '',
+  NAME VARCHAR(50) NOT NULL,
+  Description LONGTEXT,
+  NodeID NCHAR(36) NOT NULL,
+  CreatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  CreatedBy VARCHAR(50) DEFAULT NULL,
+  UpdatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  UpdatedBy VARCHAR(50) DEFAULT NULL,
+  CONSTRAINT PK_ApplicationRole PRIMARY KEY (ID ASC)  
+);
+
+CREATE TABLE ApplicationRoleSecurityGroup (
+  ApplicationRoleID NCHAR(36) NOT NULL,
+  SecurityGroupID NCHAR(36) NOT NULL  
+);
+
+CREATE TABLE ApplicationRoleUserAccount (
+  ApplicationRoleID NCHAR(36) NOT NULL,
+  UserAccountID NCHAR(36) NOT NULL  
+);
+
+CREATE TABLE SecurityGroupUserAccount (
+  SecurityGroupID NCHAR(36) NOT NULL,
+  UserAccountID NCHAR(36) NOT NULL  
+);
+
 ALTER TABLE Node ADD CONSTRAINT FK_Node_Company FOREIGN KEY(CompanyID) REFERENCES Company (ID);
 
 ALTER TABLE DataOperation ADD CONSTRAINT FK_DataOperation_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
@@ -513,6 +579,22 @@ ALTER TABLE CustomInputAdapter ADD CONSTRAINT FK_CustomInputAdapter_Node FOREIGN
 ALTER TABLE OutputStream ADD CONSTRAINT FK_OutputStream_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
 
 ALTER TABLE CustomOutputAdapter ADD CONSTRAINT FK_CustomOutputAdapter_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
+
+ALTER TABLE ApplicationRoleSecurityGroup ADD CONSTRAINT FK_applicationrolesecuritygroup_applicationrole FOREIGN KEY (ApplicationRoleID) REFERENCES applicationrole (ID) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE ApplicationRoleSecurityGroup ADD CONSTRAINT FK_applicationrolesecuritygroup_securitygroup FOREIGN KEY (SecurityGroupID) REFERENCES securitygroup (ID) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE UserAccount ADD CONSTRAINT FK_useraccount FOREIGN KEY (DefaultNodeID) REFERENCES node (ID) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE ApplicationRole ADD CONSTRAINT FK_applicationrole FOREIGN KEY (NodeID) REFERENCES node (ID) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE ApplicationRoleUserAccount ADD CONSTRAINT FK_applicationroleuseraccount_useraccount FOREIGN KEY (UserAccountID) REFERENCES useraccount (ID) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE ApplicationRoleUserAccount ADD CONSTRAINT FK_applicationroleuseraccount_applicationrole FOREIGN KEY (ApplicationRoleID) REFERENCES applicationrole (ID) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE SecurityGroupUserAccount ADD CONSTRAINT FK_securitygroupuseraccount_useraccount FOREIGN KEY (UserAccountID) REFERENCES useraccount (ID) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE SecurityGroupUserAccount ADD CONSTRAINT FK_securitygroupuseraccount_securitygroup FOREIGN KEY (SecurityGroupID) REFERENCES securitygroup (ID) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE VIEW RuntimeOutputStreamMeasurement
 AS
@@ -908,6 +990,19 @@ SELECT     MeasurementDetail.CompanyID, MeasurementDetail.CompanyAcronym, Measur
 FROM MeasurementDetail 
 WHERE MeasurementDetail.SignalAcronym = 'STAT';
 
+CREATE VIEW applicationrolesecuritygroupdetail AS 
+SELECT applicationrolesecuritygroup.ApplicationRoleID AS ApplicationRoleID,applicationrolesecuritygroup.SecurityGroupID AS SecurityGroupID,applicationrole.Name AS ApplicationRoleName,applicationrole.Description AS ApplicationRoleDescription,securitygroup.Name AS SecurityGroupName,securitygroup.Description AS SecurityGroupDescription 
+FROM ((applicationrolesecuritygroup JOIN applicationrole ON((applicationrolesecuritygroup.ApplicationRoleID = applicationrole.ID))) 
+	JOIN securitygroup ON((applicationrolesecuritygroup.SecurityGroupID = securitygroup.ID)));
+
+CREATE VIEW applicationroleuseraccountdetail AS 
+SELECT applicationroleuseraccount.ApplicationRoleID AS ApplicationRoleID,applicationroleuseraccount.UserAccountID AS UserAccountID,useraccount.Name AS UserName,useraccount.FirstName AS FirstName,useraccount.LastName AS LastName,useraccount.Email AS Email,applicationrole.Name AS ApplicationRoleName,applicationrole.Description AS ApplicationRoleDescription 
+FROM ((applicationroleuseraccount JOIN applicationrole ON((applicationroleuseraccount.ApplicationRoleID = applicationrole.ID))) JOIN useraccount ON((applicationroleuseraccount.UserAccountID = useraccount.ID)));
+
+CREATE VIEW securitygroupuseraccountdetail AS 
+SELECT securitygroupuseraccount.SecurityGroupID AS SecurityGroupID,securitygroupuseraccount.UserAccountID AS UserAccountID,useraccount.Name AS UserName,useraccount.FirstName AS FirstName,useraccount.LastName AS LastName,useraccount.Email AS Email,securitygroup.Name AS SecurityGroupName,securitygroup.Description AS SecurityGroupDescription 
+FROM ((securitygroupuseraccount JOIN securitygroup ON((securitygroupuseraccount.SecurityGroupID = securitygroup.ID))) JOIN useraccount ON((securitygroupuseraccount.UserAccountID = useraccount.ID)));
+
 CREATE TRIGGER CustomActionAdapter_RuntimeSync_Insert AFTER INSERT ON CustomActionAdapter
 FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, N'CustomActionAdapter');
 
@@ -949,6 +1044,19 @@ FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, N'Histor
 
 CREATE TRIGGER Historian_RuntimeSync_Delete BEFORE DELETE ON Historian
 FOR EACH ROW DELETE FROM Runtime WHERE SourceID = OLD.ID AND SourceTable = N'Historian';
+
+CREATE  TRIGGER UpdateAccessLog BEFORE INSERT ON accesslog 
+FOR EACH ROW SET NEW.CreatedOn = UTC_TIMESTAMP();
+
+CREATE  TRIGGER UpdateApplicationRole BEFORE INSERT ON applicationrole 
+FOR EACH ROW SET NEW.ID = UUID(), NEW.CreatedBy = USER(), NEW.CreatedOn = UTC_TIMESTAMP(), NEW.UpdatedBy = USER(), NEW.UpdatedOn = UTC_TIMESTAMP();
+
+CREATE  TRIGGER UpdateSecurityGroup BEFORE INSERT ON securitygroup 
+FOR EACH ROW SET NEW.ID = UUID(), NEW.CreatedBy = USER(), NEW.CreatedOn = UTC_TIMESTAMP(), NEW.UpdatedBy = USER(), NEW.UpdatedOn = UTC_TIMESTAMP();
+
+CREATE  TRIGGER UpdateUserAccount BEFORE INSERT ON useraccount 
+FOR EACH ROW SET NEW.ID = UUID(), NEW.ChangePasswordOn = ADDDATE(UTC_TIMESTAMP(), 90), NEW.CreatedBy = USER(), NEW.CreatedOn = UTC_TIMESTAMP(), NEW.UpdatedBy = USER(), NEW.UpdatedOn = UTC_TIMESTAMP();
+
 
 /*
 CREATE FUNCTION StringToGuid(str CHAR(36)) RETURNS BINARY(16)

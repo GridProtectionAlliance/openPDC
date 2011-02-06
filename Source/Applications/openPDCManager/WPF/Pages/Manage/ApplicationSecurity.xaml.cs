@@ -117,6 +117,43 @@ namespace openPDCManager.Pages.Manage
         
         void ApplicationSecurity_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Thread.CurrentPrincipal.IsInRole("Administrator"))
+            {
+                ButtonAddGroupUsers.IsEnabled = true;
+                ButtonAddNewGroup.IsEnabled = true;
+                ButtonAddNewUser.IsEnabled = true;
+                ButtonAddRoleGroups.IsEnabled = true;
+                ButtonAddRoleUsers.IsEnabled = true;
+                ButtonClearGroup.IsEnabled = true;
+                ButtonClearRole.IsEnabled = true;
+                ButtonClearUser.IsEnabled = true;
+                ButtonDeleteGroup.IsEnabled = true;
+                ButtonDeleteGroupUsers.IsEnabled = true;
+                ButtonDeleteRoleGroups.IsEnabled = true;
+                ButtonDeleteRoleUsers.IsEnabled = true;
+                ButtonDeleteUser.IsEnabled = true;
+                ButtonSaveGroup.IsEnabled = true;
+                ButtonSaveUser.IsEnabled = true;                
+            }
+            else
+            {
+                ButtonAddGroupUsers.IsEnabled = false;
+                ButtonAddNewGroup.IsEnabled = false;
+                ButtonAddNewUser.IsEnabled = false;
+                ButtonAddRoleGroups.IsEnabled = false;
+                ButtonAddRoleUsers.IsEnabled = false;
+                ButtonClearGroup.IsEnabled = false;
+                ButtonClearRole.IsEnabled = false;
+                ButtonClearUser.IsEnabled = false;
+                ButtonDeleteGroup.IsEnabled = false;
+                ButtonDeleteGroupUsers.IsEnabled = false;
+                ButtonDeleteRoleGroups.IsEnabled = false;
+                ButtonDeleteRoleUsers.IsEnabled = false;
+                ButtonDeleteUser.IsEnabled = false;
+                ButtonSaveGroup.IsEnabled = false;
+                ButtonSaveUser.IsEnabled = false;
+            }
+
             ComboBoxAuthentication.Items.Add("Active Directory");
             ComboBoxAuthentication.Items.Add("Database");
             ComboBoxAuthentication.SelectedIndex = 0;            
@@ -126,7 +163,7 @@ namespace openPDCManager.Pages.Manage
             ClearGroupInformation();
             GetRoles();
             ClearRoleInformation();
-            TextBlockManageRoles.Text = "Manage Roles For Node: " + ((App)Application.Current).NodeName;
+            TextBlockManageRoles.Text = "Manage Application Roles For Node: " + ((App)Application.Current).NodeName;
                         
             m_invalidPasswordMessage = new StringBuilder();
             m_invalidPasswordMessage.Append("Password does not meet the following criteria:");

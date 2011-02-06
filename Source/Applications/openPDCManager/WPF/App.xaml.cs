@@ -27,6 +27,7 @@ using System;
 using System.Windows;
 using openPDCManager.Data.ServiceCommunication;
 using TVA.ErrorManagement;
+using System.Security.Principal;
 
 namespace openPDCManager
 {
@@ -70,7 +71,8 @@ namespace openPDCManager
         public string RealTimeStatisticServiceUrl { get; set; }
         //public ApplicationIdCredentialsProvider Credentials { get; set; }
         public WindowsServiceClient ServiceClient { get; set; }
-
+        public IPrincipal Principal { get; set; }
+       
         #endregion
 
         #region [ Methods ]

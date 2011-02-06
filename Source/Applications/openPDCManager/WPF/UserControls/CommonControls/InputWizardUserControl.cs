@@ -306,7 +306,7 @@ namespace openPDCManager.UserControls.CommonControls
                         if (historianID != null)
                         {
                             string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)historianID);
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshallmetadata");
                         }
 
                         //now also update Stat historian metadata.
@@ -314,7 +314,7 @@ namespace openPDCManager.UserControls.CommonControls
                         if (statHistorian != null)
                         {
                             string statRuntimeID = CommonFunctions.GetRuntimeID(null, "Historian", statHistorian.ID);
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshmetadata");
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshallmetadata");
                         }
 
                         //Issue reload statistics command for CommonPhasorServices to pick up change in statistics measurement if any.

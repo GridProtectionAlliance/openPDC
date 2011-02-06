@@ -29,6 +29,7 @@ using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using openPDCManager.Data.ServiceCommunication;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace openPDCManager.UserControls.OutputStreamControls
 {
@@ -44,58 +45,90 @@ namespace openPDCManager.UserControls.OutputStreamControls
 
         void Initialize()
         {            
-            serviceClient = ((App)Application.Current).ServiceClient;         
+            serviceClient = ((App)Application.Current).ServiceClient;
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            {
+                ButtonSave.IsEnabled = true;
+                ButtonInitialize.IsEnabled = true;
+            }
+            else
+            {
+                ButtonSave.IsEnabled = false;
+                ButtonInitialize.IsEnabled = false;
+            }
         }
 
         void SendInitialize()
         {
             SystemMessages sm;
-            try
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
             {
-                if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                {                    
-                    string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + TextBlockRuntimeID.Text);                    
-                    sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
-                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");
+                try
+                {
+                    if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                    {
+                        string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + TextBlockRuntimeID.Text);
+                        sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
+                        CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");
+                    }
+                    else
+                        sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);
                 }
-                else
-                    sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);             
+                catch (Exception ex)
+                {
+                    CommonFunctions.LogException(null, "WPF.SendInitialize", ex);
+                    sm = new SystemMessages(new Message() { UserMessage = "Failed to Send Initialize Command", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                            ButtonType.OkOnly);
+                }
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
             }
-            catch (Exception ex)
+            else
             {
-                CommonFunctions.LogException(null, "WPF.SendInitialize", ex);
-                sm = new SystemMessages(new Message() { UserMessage = "Failed to Send Initialize Command", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
-                        ButtonType.OkOnly);                
+                sm = new SystemMessages(new Message() { UserMessage = "Unauthorized Access", SystemMessage = "You are not authorized to perform this operation.", UserMessageType = MessageType.Error },
+                            ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
             }
-            sm.Owner = Window.GetWindow(this);
-            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            sm.ShowPopup();
         }
 
         void SendUpdateConfiguration(int outputStreamID)
         {
             SystemMessages sm;
-            try
-            {                
-                if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                {
-                    string runtimeID = CommonFunctions.GetRuntimeID(null, "OutputStream", outputStreamID);
-                    string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "reloadconfig");
-                    result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " UpdateConfiguration");
-                    sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
-                }
-                else
-                    sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);                             
-            }
-            catch (Exception ex)
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
             {
-                CommonFunctions.LogException(null, "WPF.SendUpdateConfiguration", ex);
-                sm = new SystemMessages(new Message() { UserMessage = "Failed to Update Configuration", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
-                        ButtonType.OkOnly);
+                try
+                {
+                    if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                    {
+                        string runtimeID = CommonFunctions.GetRuntimeID(null, "OutputStream", outputStreamID);
+                        string result = CommonFunctions.SendCommandToWindowsService(serviceClient, "reloadconfig");
+                        result = CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " UpdateConfiguration");
+                        sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = "", UserMessageType = MessageType.Success }, ButtonType.OkOnly);
+                    }
+                    else
+                        sm = new SystemMessages(new Message() { UserMessage = "Application is disconnected", SystemMessage = "Connection String: " + ((App)Application.Current).RemoteStatusServiceUrl, UserMessageType = MessageType.Error }, ButtonType.OkOnly);
+                }
+                catch (Exception ex)
+                {
+                    CommonFunctions.LogException(null, "WPF.SendUpdateConfiguration", ex);
+                    sm = new SystemMessages(new Message() { UserMessage = "Failed to Update Configuration", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                            ButtonType.OkOnly);
+                }
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
             }
-            sm.Owner = Window.GetWindow(this);
-            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            sm.ShowPopup();
+            else
+            {
+                sm = new SystemMessages(new Message() { UserMessage = "Unauthorized Access", SystemMessage = "You are not authorized to perform this operation.", UserMessageType = MessageType.Error },
+                            ButtonType.OkOnly);
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                sm.ShowPopup();
+            }
         }
 
         void DisplayRuntimeID()

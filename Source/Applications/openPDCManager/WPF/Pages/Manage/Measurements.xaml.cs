@@ -34,6 +34,7 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using openPDCManager.Data.ServiceCommunication;
 using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace openPDCManager.Pages.Manage
 {
@@ -207,6 +208,11 @@ namespace openPDCManager.Pages.Manage
 
         void Measurements_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+                ButtonSave.IsEnabled = true;
+            else
+                ButtonSave.IsEnabled = false;
+
             m_measurementList = new List<Measurement>();
             App app = (App)Application.Current;
             m_activityWindow = new ActivityWindow("Loading Data... Please Wait...");
@@ -260,7 +266,7 @@ namespace openPDCManager.Pages.Manage
                         string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)measurement.HistorianID);
                         WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
                         if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshallmetadata");
                     }
                 }
                 catch (Exception ex)

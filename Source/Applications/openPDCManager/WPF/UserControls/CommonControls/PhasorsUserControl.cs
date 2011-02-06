@@ -29,6 +29,7 @@ using System.Windows;
 using openPDCManager.Data.Entities;
 using openPDCManager.Data.ServiceCommunication;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -37,7 +38,11 @@ namespace openPDCManager.UserControls.CommonControls
         #region [ Methods ]
 
         void Initialize()
-        {           
+        {
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+                ButtonSave.IsEnabled = true;
+            else
+                ButtonSave.IsEnabled = false;
         }
 
         void SavePhasor(Phasor phasor, bool isNew)
@@ -71,7 +76,7 @@ namespace openPDCManager.UserControls.CommonControls
                         if (device.HistorianID != null)
                         {
                             string runtimeID = CommonFunctions.GetRuntimeID(connection, "Historian", (int)device.HistorianID);
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshmetadata");
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshallmetadata");
                         }
 
                         if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.

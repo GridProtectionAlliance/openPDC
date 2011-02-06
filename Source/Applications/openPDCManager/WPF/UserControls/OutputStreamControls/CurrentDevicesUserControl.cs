@@ -27,6 +27,7 @@ using System.Windows;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using openPDCManager.Data;
+using System.Threading;
 
 namespace openPDCManager.UserControls.OutputStreamControls
 {
@@ -35,7 +36,11 @@ namespace openPDCManager.UserControls.OutputStreamControls
         #region [ Methods ]
 
         void Initialize()
-        {           
+        {
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+                ButtonAdd.IsEnabled = true;
+            else
+                ButtonAdd.IsEnabled = false;
         }
 
         void GetOutputStreamDeviceList()

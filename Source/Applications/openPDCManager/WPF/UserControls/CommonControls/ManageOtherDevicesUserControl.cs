@@ -31,6 +31,7 @@ using System.Windows.Media.Imaging;
 using System.Windows;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
+using System.Threading;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -61,6 +62,10 @@ namespace openPDCManager.UserControls.CommonControls
             GetVendorDevices();
             GetInterconnections();
             ClearForm();
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+                ButtonSave.IsEnabled = true;
+            else
+                ButtonSave.IsEnabled = false;
         }
 
         public void GetCompanies()

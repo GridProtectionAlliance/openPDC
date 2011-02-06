@@ -141,6 +141,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Services.dll</HintPath>
     </Reference>
+    <Reference Include="TVA.Windows, Version=4.0.1.61337, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\TVA\TVA.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="UIAutomationProvider">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -187,9 +191,6 @@
     </Compile>
     <Compile Include="ApplicationInstall.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Pages\Monitoring\SubscriptionTest.xaml.cs">
-      <DependentUpon>SubscriptionTest.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\Configurator\ConfigurationCreator.xaml.cs">
       <DependentUpon>ConfigurationCreator.xaml</DependentUpon>
@@ -491,19 +492,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Monitoring\InputMonitoringUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\Manage\SystemSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Monitoring\InputStatusUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Monitoring\SubscriptionTest.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -721,9 +714,6 @@
       <DependentUpon>DeviceDetailInfoUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Monitoring\InputMonitorData.cs" />
-    <Compile Include="Pages\Monitoring\InputMonitoringUserControl.xaml.cs">
-      <DependentUpon>InputMonitoringUserControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -764,7 +754,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="App64.config" />
     <Content Include="openPDCManagerHelp.mht">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

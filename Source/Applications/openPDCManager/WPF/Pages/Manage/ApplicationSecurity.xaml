@@ -13,7 +13,7 @@
                     <StackPanel Orientation="Vertical">
                         <GroupBox Margin="5">                           
                             <HeaderedContentControl.Header>
-                                <TextBlock Text="Manage Users" FontWeight="Bold"/>
+                                <TextBlock Text="Manage User Accounts" FontWeight="Bold"/>
                             </HeaderedContentControl.Header>
                             <Grid x:Name="GridManageUsers">
                                 <Grid.ColumnDefinitions>
@@ -155,7 +155,7 @@
 
                         <GroupBox Margin="5">
                             <HeaderedContentControl.Header>
-                                <TextBlock x:Name="TextBlockManageRoles" Text="Manage Roles" FontWeight="Bold"/>
+                                <TextBlock x:Name="TextBlockManageRoles" Text="Manage Application Roles" FontWeight="Bold"/>
                             </HeaderedContentControl.Header>
                             
                             <Grid x:Name="GridManageRoles">

@@ -28,6 +28,7 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 using System.Windows.Media.Imaging;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace openPDCManager.Pages.Manage
 {
@@ -118,6 +119,16 @@ namespace openPDCManager.Pages.Manage
         void SystemSettings_Loaded(object sender, RoutedEventArgs e)
         {
             LoadSettingsFromIsolatedStorage();
+            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            {
+                ButtonSave.IsEnabled = true;
+                ButtonClear.IsEnabled = true;
+            }
+            else
+            {
+                ButtonSave.IsEnabled = false;
+                ButtonClear.IsEnabled = false;
+            }
         }
         
         #endregion

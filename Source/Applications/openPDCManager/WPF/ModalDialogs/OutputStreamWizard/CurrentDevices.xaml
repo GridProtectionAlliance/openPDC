@@ -1,4 +1,5 @@
-﻿<Window x:Class="openPDCManager.ModalDialogs.OutputStreamWizard.CurrentDevices"
+﻿<src:SecureWindow x:Class="openPDCManager.ModalDialogs.OutputStreamWizard.CurrentDevices"
+    xmlns:src="clr-namespace:TVA.Windows;assembly=TVA.Windows"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:uc="clr-namespace:openPDCManager.UserControls.OutputStreamControls"
@@ -6,4 +7,4 @@
     <Grid>
         <uc:CurrentDevicesUserControl x:Name="UserControlCurrentDevices" />
     </Grid>
-</Window>
+</src:SecureWindow>
