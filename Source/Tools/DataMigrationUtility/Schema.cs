@@ -1514,7 +1514,7 @@ namespace Database
                     break;
             }
 
-            if (Rows == 0)
+            if (Rows == 0 && m_tableType == TableType.Table)
             {
                 try
                 {

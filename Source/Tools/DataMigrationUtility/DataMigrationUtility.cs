@@ -20,6 +20,8 @@
 //       Generated original version of source code.
 //  08/27/2010 - Mihir Brahmbhatt
 //       Convert code from VB to C#
+//  02/07/2011 - Aniket Salver
+//       Added final message box to indicate activity completion.
 //
 //******************************************************************************************************
 
@@ -39,6 +41,7 @@ using Database;
 using TVA.Units;
 using TVA.Windows;
 using TVA.Windows.Forms;
+using System.Threading;
 
 namespace DataMigrationUtility
 {
@@ -46,6 +49,7 @@ namespace DataMigrationUtility
     {
         internal string AppName = AssemblyInfo.ExecutingAssembly.Name;
         private ApplicationSettings m_applicationSettings;
+        private bool m_exceptionsEncountered;
 
         public DataMigrationUtility()
         {
@@ -157,9 +161,9 @@ namespace DataMigrationUtility
 
         private void Import_Click(object sender, EventArgs e)
         {
-            if(FromConnectString.Text.Length == 0)
+            if (FromConnectString.Text.Length == 0)
             {
-                MessageBox.Show(this,"Cannot perform migration until source DSN is selected.", AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "Cannot perform migration until source DSN is selected.", AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 FromConnectString.Focus();
                 return;
             }
@@ -178,13 +182,19 @@ namespace DataMigrationUtility
                 // Don't allow user to inadvertently click the import button again
                 Import.Enabled = false;
 
+                // Reset exception flag
+                m_exceptionsEncountered = false;
+
+                // Reset message text
+                Messages.Text = "Messages:";
+
                 UpdateProgress("Analyzing data structures, please wait...");
 
                 FromSchema.ConnectString = FromConnectString.Text;
-                FromSchema.DataSourceType =  (DatabaseType) FromDataType.SelectedIndex; //' IIf(FromIsSQLServer.Checked, DatabaseType.SqlServer, DatabaseType.Unspecified)
-            
+                FromSchema.DataSourceType = (DatabaseType)FromDataType.SelectedIndex;
+
                 ToSchema.ConnectString = ToConnectString.Text;
-                ToSchema.DataSourceType = (DatabaseType) ToDataType.SelectedIndex; // ' IIf(ToIsSQLServer.Checked, DatabaseType.SqlServer, DatabaseType.Unspecified)
+                ToSchema.DataSourceType = (DatabaseType)ToDataType.SelectedIndex;
 
                 DataInserter.UseFromSchemaReferentialIntegrity = UseFromForRI.Checked;
 
@@ -193,19 +203,28 @@ namespace DataMigrationUtility
                     DataInserter.ExcludedTables.AddRange(ExcludedTablesTextBox.Text.Split(','));
                 }
                 DataInserter.PreservePrimaryKeyValue = chkPreservePrimaryKey.Checked;
-                DataInserter.Execute();            
+                DataInserter.Execute();
             }
-             catch (Exception ex)
+            catch (Exception ex)
             {
+                m_exceptionsEncountered = true;
                 UpdateProgress("Exception - " + ex.Message);
-                MessageBox.Show(this, "Exception occured during insert: " + ex.Message, "Data Insert Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
-                Import.Enabled = true;
                 Cursor.Current = Cursors.Default;
             }
-       }
+
+            if (m_exceptionsEncountered)
+            {
+                MessageBox.Show(this, "There were errors during the data transfer. Click OK to review.", "Data Insert Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show(this, "Data transfer complete. Data Migration Utility will now exit.", "Data Migration Succeeded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+            }
+        }
 
         private void DataType_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -260,43 +279,34 @@ namespace DataMigrationUtility
         private void DataInserter_OverallProgress(object sender, OverallProgressEventHandler<int, int> e)
         {
             if (OverallProgress.Minimum != 0)
-            {
                 OverallProgress.Minimum = 0;
-            }
-            
+
             if (OverallProgress.Maximum != e.Total)
-            {
                 OverallProgress.Maximum = e.Total;
-            }
 
             OverallProgress.Value = e.Current;
             OverallProgress.Refresh();
-            //if (e.Current == e.Total)
-            //{
-            //    OverallProgress.Refresh();
-            //}
 
-            Application.DoEvents();
+            if (e.Current == e.Total)
+                Application.DoEvents();
         }
 
-        private void DataHandler_RowProgress(object sender, RowProgressEventHandler<string,int, int> e)
+        private void DataHandler_RowProgress(object sender, RowProgressEventHandler<string, int, int> e)
         {
             if (ProgressBar.Minimum != 0)
-            {
                 ProgressBar.Minimum = 0;
-            }
+
             if (ProgressBar.Maximum != e.TotalRows)
-            {
                 ProgressBar.Maximum = e.TotalRows;
-            }
+
             ProgressBar.Value = (e.CurrentRow < e.TotalRows ? e.CurrentRow : e.TotalRows);
             ProgressBar.Refresh();
 
             if (e.CurrentRow == e.TotalRows)
             {
-                ProgressBar.Refresh();
+                Application.DoEvents();
+                Thread.Sleep(500);
             }
-            Application.DoEvents();
         }
 
         private void DataHandler_TableProgress(object sender, TableProgressEventHandler<string, bool, int, int> e)
@@ -332,6 +342,7 @@ namespace DataMigrationUtility
 
         private void DataHandler_BulkInsertException(string TableName, string SQL, System.Exception ex)
         {
+            m_exceptionsEncountered = true;
             AddMessage("Exception occurred during bulk insert into table " + TableName + ": " + ex.Message);
             AddMessage("    Bulk Insert SQL: " + SQL);
         }
@@ -343,7 +354,28 @@ namespace DataMigrationUtility
 
         private void DataHandler_SqlFailure(object sender, SqlFailureEventHandler<string, Exception> e)
         {
+            m_exceptionsEncountered = true;
             AddSQLErrorMessage(e.Sql, e.Ex.Message);
+        }
+
+        private void DataHandler_TableProgress(object sender)
+        {
+
+        }
+
+        private void DataHandler_RowProgress(object sender)
+        {
+
+        }
+
+        private void DataInserter_OverallProgress(object sender)
+        {
+
+        }
+
+        private void DataHandler_SqlFailure(object sender)
+        {
+
         }
     }
 }
