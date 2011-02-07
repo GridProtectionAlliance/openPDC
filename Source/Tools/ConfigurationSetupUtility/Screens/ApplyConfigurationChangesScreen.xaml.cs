@@ -181,9 +181,13 @@ namespace ConfigurationSetupUtility.Screens
             m_state["applyChangesToLocalManager"] = m_openPdcManagerLocalCheckBox.IsChecked.Value;
             m_state["applyChangesToWebManager"] = m_openPdcManagerWebCheckBox.IsChecked.Value;
             m_state["setupReadyScreen"] = m_setupReadyScreen;
-            m_state["setupHistorian"] = initialDataScript;
+            //m_state["setupHistorian"] = initialDataScript;
+            //m_setupHistorianCheckBox.Visibility = (Convert.ToBoolean(m_state["setupHistorian"]) ? Visibility.Visible : Visibility.Collapsed);
 
-            m_setupHistorianCheckBox.Visibility = (Convert.ToBoolean(m_state["setupHistorian"]) ? Visibility.Visible : Visibility.Collapsed);
+            //Replaced above two lines with two lines below because initialDataScript should only be used for visibility of checkbox.
+            m_state["setupHistorian"] = (bool)m_setupHistorianCheckBox.IsChecked;
+            m_setupHistorianCheckBox.Visibility = initialDataScript ? Visibility.Visible : Visibility.Collapsed;
+
             m_horizontalRule.Visibility = m_setupHistorianCheckBox.Visibility;
         }
 

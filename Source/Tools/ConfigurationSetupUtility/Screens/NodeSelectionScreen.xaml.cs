@@ -348,7 +348,7 @@ namespace ConfigurationSetupUtility.Screens
                 }
                 finally
                 {
-                    connection.Close();
+                    connection.Dispose();
                 }
             }
 

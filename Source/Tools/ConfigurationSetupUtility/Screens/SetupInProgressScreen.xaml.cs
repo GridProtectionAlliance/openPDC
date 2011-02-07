@@ -41,6 +41,8 @@ using TVA;
 using TVA.IO;
 using TVA.Security.Cryptography;
 using System.Web.Security;
+using System.Windows;
+using System.Text;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -295,67 +297,80 @@ namespace ConfigurationSetupUtility.Screens
 
                 if (!existing || migrate)
                 {
-                    List<string> scriptNames = new List<string>();
-                    bool initialDataScript = !migrate && Convert.ToBoolean(m_state["initialDataScript"]);
-                    bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
-                    bool createNewUser = Convert.ToBoolean(m_state["createNewMySqlUser"]);
-                    int progress = 0;
-
-                    // Determine which scripts need to be run.
-                    scriptNames.Add("openPDC.sql");
-                    if (initialDataScript)
+                    if (!CheckIfDatabaseExists(mySqlSetup.ConnectionString, dataProviderString, mySqlSetup.DatabaseName))
                     {
-                        scriptNames.Add("InitialDataSet.sql");
-                        if (sampleDataScript)
-                            scriptNames.Add("SampleDataSet.sql");
-                    }
+                        List<string> scriptNames = new List<string>();
+                        bool initialDataScript = !migrate && Convert.ToBoolean(m_state["initialDataScript"]);
+                        bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
+                        bool createNewUser = Convert.ToBoolean(m_state["createNewMySqlUser"]);
+                        int progress = 0;
 
-                    foreach (string scriptName in scriptNames)
-                    {
-                        string scriptPath = Directory.GetCurrentDirectory() + "\\Database scripts\\MySQL\\" + scriptName;
-                        AppendStatusMessage(string.Format("Attempting to run {0} script...", scriptName));
-
-                        if (!mySqlSetup.ExecuteScript(scriptPath))
+                        // Determine which scripts need to be run.
+                        scriptNames.Add("openPDC.sql");
+                        if (initialDataScript)
                         {
-                            OnSetupFailed();
-                            return;
+                            scriptNames.Add("InitialDataSet.sql");
+                            if (sampleDataScript)
+                                scriptNames.Add("SampleDataSet.sql");
                         }
 
-                        progress += 90 / scriptNames.Count;
-                        UpdateProgressBar(progress);
-                        AppendStatusMessage(string.Format("{0} ran successfully.", scriptName));
-                        AppendStatusMessage(string.Empty);
-                    }
-
-                    // Set up the initial historian.
-                    if (Convert.ToBoolean(m_state["setupHistorian"]))
-                        SetUpInitialHistorian(mySqlSetup.ConnectionString, dataProviderString);
-
-                    // Create new MySQL database user.
-                    if (createNewUser)
-                    {
-                        string user = m_state["newMySqlUserName"].ToString();
-                        string pass = m_state["newMySqlUserPassword"].ToString();
-                        AppendStatusMessage(string.Format("Attempting to create new user {0}...", user));
-
-                        if (!mySqlSetup.ExecuteStatement(string.Format("GRANT SELECT, UPDATE, INSERT ON {0}.* TO {1} IDENTIFIED BY '{2}'", mySqlSetup.DatabaseName, user, pass)))
+                        foreach (string scriptName in scriptNames)
                         {
-                            // If we couldn't grant the necessary permissions to
-                            // the database user, then the setup should fail.
-                            OnSetupFailed();
-                            return;
+                            string scriptPath = Directory.GetCurrentDirectory() + "\\Database scripts\\MySQL\\" + scriptName;
+                            AppendStatusMessage(string.Format("Attempting to run {0} script...", scriptName));
+
+                            if (!mySqlSetup.ExecuteScript(scriptPath))
+                            {
+                                OnSetupFailed();
+                                return;
+                            }
+
+                            progress += 90 / scriptNames.Count;
+                            UpdateProgressBar(progress);
+                            AppendStatusMessage(string.Format("{0} ran successfully.", scriptName));
+                            AppendStatusMessage(string.Empty);
                         }
 
-                        mySqlSetup.UserName = user;
-                        mySqlSetup.Password = pass;
+                        // Set up the initial historian.
+                        if (Convert.ToBoolean(m_state["setupHistorian"]))
+                            SetUpInitialHistorian(mySqlSetup.ConnectionString, dataProviderString);
 
-                        UpdateProgressBar(98);
-                        AppendStatusMessage("New database user created successfully.");
-                        AppendStatusMessage(string.Empty);
+                        // Create new MySQL database user.
+                        if (createNewUser)
+                        {
+                            string user = m_state["newMySqlUserName"].ToString();
+                            string pass = m_state["newMySqlUserPassword"].ToString();
+                            AppendStatusMessage(string.Format("Attempting to create new user {0}...", user));
+
+                            if (!mySqlSetup.ExecuteStatement(string.Format("GRANT SELECT, UPDATE, INSERT ON {0}.* TO {1} IDENTIFIED BY '{2}'", mySqlSetup.DatabaseName, user, pass)))
+                            {
+                                // If we couldn't grant the necessary permissions to
+                                // the database user, then the setup should fail.
+                                OnSetupFailed();
+                                return;
+                            }
+
+                            mySqlSetup.UserName = user;
+                            mySqlSetup.Password = pass;
+
+                            UpdateProgressBar(98);
+                            AppendStatusMessage("New database user created successfully.");
+                            AppendStatusMessage(string.Empty);
+                        }
+
+                        //Set up administrative user credentials.
+                        SetupAdminUserCredentials(mySqlSetup.ConnectionString, dataProviderString);
                     }
-
-                    //Set up administrative user credentials.
-                    SetupAdminUserCredentials(mySqlSetup.ConnectionString, dataProviderString);
+                    else
+                    {
+                        this.CanGoBack = true;
+                        ScreenManager sm = m_state["screenManager"] as ScreenManager;
+                        this.Dispatcher.Invoke((Action)delegate()
+                        {
+                            while (!(sm.CurrentScreen is MySqlDatabaseSetupScreen))
+                                sm.GoToPreviousScreen();
+                        });
+                    }
                 }
 
                 // Modify the openPDC configuration file.
@@ -408,81 +423,93 @@ namespace ConfigurationSetupUtility.Screens
 
                 if (!existing || migrate)
                 {
-                    List<string> scriptNames = new List<string>();
-                    bool initialDataScript = !migrate && Convert.ToBoolean(m_state["initialDataScript"]);
-                    bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
-                    bool createNewUser = Convert.ToBoolean(m_state["createNewSqlServerUser"]);
-                    int progress = 0;
-
-                    // Determine which scripts need to be run.
-                    scriptNames.Add("openPDC.sql");
-                    if (initialDataScript)
+                    if (!CheckIfDatabaseExists(sqlServerSetup.ConnectionString, dataProviderString, sqlServerSetup.DatabaseName))
                     {
-                        scriptNames.Add("InitialDataSet.sql");
-                        if (sampleDataScript)
-                            scriptNames.Add("SampleDataSet.sql");
-                    }
+                        List<string> scriptNames = new List<string>();
+                        bool initialDataScript = !migrate && Convert.ToBoolean(m_state["initialDataScript"]);
+                        bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
+                        bool createNewUser = Convert.ToBoolean(m_state["createNewSqlServerUser"]);
+                        int progress = 0;
 
-                    foreach (string scriptName in scriptNames)
+                        // Determine which scripts need to be run.
+                        scriptNames.Add("openPDC.sql");
+                        if (initialDataScript)
+                        {
+                            scriptNames.Add("InitialDataSet.sql");
+                            if (sampleDataScript)
+                                scriptNames.Add("SampleDataSet.sql");
+                        }
+
+                        foreach (string scriptName in scriptNames)
+                        {
+                            string scriptPath = Directory.GetCurrentDirectory() + "\\Database scripts\\SQL Server\\" + scriptName;
+                            AppendStatusMessage(string.Format("Attempting to run {0} script...", scriptName));
+
+                            if (!sqlServerSetup.ExecuteScript(scriptPath))
+                            {
+                                OnSetupFailed();
+                                return;
+                            }
+
+                            progress += 90 / scriptNames.Count;
+                            UpdateProgressBar(progress);
+                            AppendStatusMessage(string.Format("{0} ran successfully.", scriptName));
+                            AppendStatusMessage(string.Empty);
+                        }
+
+                        // Set up the initial historian.
+                        if (Convert.ToBoolean(m_state["setupHistorian"]))
+                            SetUpInitialHistorian(sqlServerSetup.ConnectionString, dataProviderString);
+
+                        // Create new SQL Server database user.
+                        if (createNewUser)
+                        {
+                            string user = m_state["newSqlServerUserName"].ToString();
+                            string pass = m_state["newSqlServerUserPassword"].ToString();
+
+                            AppendStatusMessage(string.Format("Attempting to create new user {0}...", user));
+                            string db = sqlServerSetup.DatabaseName;
+
+                            sqlServerSetup.DatabaseName = "master";
+                            if (!sqlServerSetup.ExecuteStatement(string.Format("IF NOT EXISTS (SELECT * FROM sys.server_principals WHERE name = N'{0}') CREATE LOGIN [{0}] WITH PASSWORD=N'{1}', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF", user, pass)))
+                            {
+                                OnSetupFailed();
+                                return;
+                            }
+
+                            sqlServerSetup.DatabaseName = db;
+                            if (!sqlServerSetup.ExecuteStatement(string.Format("CREATE USER [{0}] FOR LOGIN [{0}]", user)))
+                            {
+                                OnSetupFailed();
+                                return;
+                            }
+
+                            if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'openPDCManagerRole', N'{0}'", user)))
+                            {
+                                OnSetupFailed();
+                                return;
+                            }
+
+                            sqlServerSetup.UserName = user;
+                            sqlServerSetup.Password = pass;
+
+                            UpdateProgressBar(98);
+                            AppendStatusMessage("New database user created successfully.");
+                            AppendStatusMessage(string.Empty);
+                        }
+
+                        //Set up administrative user credentials.
+                        SetupAdminUserCredentials(sqlServerSetup.ConnectionString, dataProviderString);
+                    }
+                    else
                     {
-                        string scriptPath = Directory.GetCurrentDirectory() + "\\Database scripts\\SQL Server\\" + scriptName;
-                        AppendStatusMessage(string.Format("Attempting to run {0} script...", scriptName));
-
-                        if (!sqlServerSetup.ExecuteScript(scriptPath))
-                        {
-                            OnSetupFailed();
-                            return;
-                        }
-
-                        progress += 90 / scriptNames.Count;
-                        UpdateProgressBar(progress);
-                        AppendStatusMessage(string.Format("{0} ran successfully.", scriptName));
-                        AppendStatusMessage(string.Empty);
+                        this.CanGoBack = true;
+                        ScreenManager sm = m_state["screenManager"] as ScreenManager;
+                        this.Dispatcher.Invoke((Action)delegate() {
+                            while (!(sm.CurrentScreen is SqlServerDatabaseSetupScreen))
+                                sm.GoToPreviousScreen();
+                        });                        
                     }
-
-                    // Set up the initial historian.
-                    if (Convert.ToBoolean(m_state["setupHistorian"]))
-                        SetUpInitialHistorian(sqlServerSetup.ConnectionString, dataProviderString);
-
-                    // Create new SQL Server database user.
-                    if (createNewUser)
-                    {
-                        string user = m_state["newSqlServerUserName"].ToString();
-                        string pass = m_state["newSqlServerUserPassword"].ToString();
-                        string db = sqlServerSetup.DatabaseName;
-
-                        AppendStatusMessage(string.Format("Attempting to create new user {0}...", user));
-
-                        sqlServerSetup.DatabaseName = "master";
-                        if (!sqlServerSetup.ExecuteStatement(string.Format("IF NOT EXISTS (SELECT * FROM sys.server_principals WHERE name = N'{0}') CREATE LOGIN [{0}] WITH PASSWORD=N'{1}', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF", user, pass)))
-                        {
-                            OnSetupFailed();
-                            return;
-                        }
-
-                        sqlServerSetup.DatabaseName = db;
-                        if (!sqlServerSetup.ExecuteStatement(string.Format("CREATE USER [{0}] FOR LOGIN [{0}]", user)))
-                        {
-                            OnSetupFailed();
-                            return;
-                        }
-
-                        if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'openPDCManagerRole', N'{0}'", user)))
-                        {
-                            OnSetupFailed();
-                            return;
-                        }
-
-                        sqlServerSetup.UserName = user;
-                        sqlServerSetup.Password = pass;
-
-                        UpdateProgressBar(98);
-                        AppendStatusMessage("New database user created successfully.");
-                        AppendStatusMessage(string.Empty);
-                    }
-
-                    //Set up administrative user credentials.
-                    SetupAdminUserCredentials(sqlServerSetup.ConnectionString, dataProviderString);
                 }
 
                 // Modify the openPDC configuration file.
@@ -503,6 +530,110 @@ namespace ConfigurationSetupUtility.Screens
                     sqlServerSetup.OutputDataReceived -= SqlServerSetup_OutputDataReceived;
                     sqlServerSetup.ErrorDataReceived -= SqlServerSetup_ErrorDataReceived;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Checks if user requested database already exists.
+        /// </summary>
+        /// <param name="connectionString">Connection string to the database server.</param>
+        /// <param name="dataProviderString">Data provider string.</param>
+        /// <param name="databaseName">Name of the database to check for.</param>
+        /// <returns>returns true if database exists or user says no to database delete, false if database does not exist or user says yes to database delete.</returns>
+        private bool CheckIfDatabaseExists(string connectionString, string dataProviderString, string databaseName)
+        {
+            AppendStatusMessage(string.Format("Checking if database {0} already exists.", databaseName));
+
+            Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
+            Dictionary<string, string> dataProviderSettings = dataProviderString.ParseKeyValuePairs();
+            string assemblyName = dataProviderSettings["AssemblyName"];
+            string connectionTypeName = dataProviderSettings["ConnectionType"];
+
+            Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
+            Type connectionType = assembly.GetType(connectionTypeName);
+            IDbConnection connection = null;
+
+            try
+            {
+                int dbCount = 0;
+
+                try
+                {
+                    connection = (IDbConnection)Activator.CreateInstance(connectionType);
+                    if (m_state["databaseType"].ToString() == "sql server")
+                        connection.ConnectionString = connectionString + ";pooling=false;"; //this was done to avoid connection pooling so SQL database can be deleted easily.
+                    else
+                        connection.ConnectionString = connectionString;
+                    connection.Open();
+                    IDbCommand command = connection.CreateCommand();
+                    if (m_state["databaseType"].ToString() == "sql server")
+                        command.CommandText = string.Format("SELECT COUNT(*) FROM sys.databases WHERE name = '{0}'", databaseName);
+                    else
+                        command.CommandText = string.Format("SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{0}'", databaseName);
+
+                    dbCount = Convert.ToInt32(command.ExecuteScalar());
+                }
+                finally
+                {
+                    if (connection != null)                    
+                        connection.Dispose();                        
+                }
+
+                if (dbCount > 0)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append(string.Format("Database {0} already exists.", databaseName));
+                    sb.AppendLine();
+                    sb.AppendLine("Click YES to delete existing database.");                    
+                    sb.AppendLine("Click NO to go back to change database name.");
+                    sb.AppendLine();
+
+                    bool dropDatabase = false;
+
+                    this.Dispatcher.Invoke((Action)delegate()
+                    {
+                        if (MessageBox.Show(sb.ToString(), "Database Exists!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                            dropDatabase = true;
+                    });
+
+                    if (dropDatabase)
+                    {
+                        if (m_state["databaseType"].ToString() == "sql server")
+                        {
+                            SqlServerSetup sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;
+                            sqlServerSetup.DatabaseName = "master";
+                            if (!sqlServerSetup.ExecuteStatement(string.Format("USE [master] ALTER DATABASE {0} SET SINGLE_USER WITH ROLLBACK IMMEDIATE DROP DATABASE {1}", databaseName, databaseName)))
+                                this.Dispatcher.Invoke((Action)delegate()
+                                {
+                                    MessageBox.Show(string.Format("Failed to delete database {0}", databaseName), "Delete Database Failed");
+                                });
+                            else
+                                this.Dispatcher.Invoke((Action)delegate()
+                                {
+                                    AppendStatusMessage(string.Format("Dropped database {0} successfully.", databaseName));
+                                });
+
+                            sqlServerSetup.DatabaseName = databaseName;
+                        }
+                        else
+                        {
+                            MySqlSetup mySqlSetup = m_state["mySqlSetup"] as MySqlSetup;
+                            if (!mySqlSetup.ExecuteStatement(string.Format("DROP DATABASE {0}", databaseName)))
+                                MessageBox.Show(string.Format("Failed to delete database {0}", databaseName), "Delete Database Failed");
+                            else
+                                AppendStatusMessage(string.Format("Dropped database {0} successfully.", databaseName));
+                        }
+                        return false;
+                    }
+                    else
+                        return true;                     
+                }
+                return false;
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Dispose();
             }
         }
 
@@ -618,10 +749,11 @@ namespace ConfigurationSetupUtility.Screens
             finally
             {
                 if (connection != null)
-                    connection.Close();
+                    connection.Dispose();
             }
         }
 
+        //Sets up administrative user credentials in the database.
         private void SetupAdminUserCredentials(string connectionString, string dataProviderString)
         {
             bool sampleDataScript = Convert.ToBoolean(m_state["initialDataScript"]) && Convert.ToBoolean(m_state["sampleDataScript"]);
@@ -751,7 +883,7 @@ namespace ConfigurationSetupUtility.Screens
             finally
             {
                 if (connection != null)
-                    connection.Close();
+                    connection.Dispose();
             }
         }
 
