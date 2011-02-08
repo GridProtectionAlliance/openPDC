@@ -90,7 +90,7 @@ namespace HistorianAdapters
         private DataServices m_dataServices;
         private MetadataProviders m_metadataProviders;
         private ReplicationProviders m_replicationProviders;
-        private bool m_refreshMetadata;
+        private bool m_autoRefreshMetadata;
         private string m_instanceName;
         private string m_archivePath;
         private long m_archivedMeasurements;
@@ -106,7 +106,7 @@ namespace HistorianAdapters
         public LocalOutputAdapter()
             : base()
         {
-            m_refreshMetadata = true;
+            m_autoRefreshMetadata = true;
             m_archive = new ArchiveFile();
             m_archive.MetadataFile = new MetadataFile();
             m_archive.StateFile = new StateFile();
@@ -160,15 +160,15 @@ namespace HistorianAdapters
         [ConnectionStringParameter,
         Description("Define a boolean indicating whether to refresh metadata on connect."),
         DefaultValue(true)]
-        public bool RefreshMetadata
+        public bool AutoRefreshMetadata
         {
             get
             {
-                return m_refreshMetadata;
+                return m_autoRefreshMetadata;
             }
             set
             {
-                m_refreshMetadata = value;
+                m_autoRefreshMetadata = value;
             }
         }
 
@@ -226,6 +226,8 @@ namespace HistorianAdapters
 
         #region [ Methods ]
 
+        // TODO: Rename to RefreshMetaData as override once next TimeSeriesLibrary is rolled down... Modify openPDC Manager to invoke "RefreshMetadata" instead of "RefreshAllMetadata"
+
         /// <summary>
         /// Refreshes metadata using all available and enabled providers.
         /// </summary>
@@ -270,7 +272,7 @@ namespace HistorianAdapters
 
             string archivePath;
             string refreshMetadata;
-            string errorMessage = "{0} is missing from Settings - Example: instanceName=XX;archivePath=c:\\;refreshMetadata=True";
+            string errorMessage = "{0} is missing from Settings - Example: instanceName=XX;archivePath=c:\\;autoRefreshMetadata=True";
             Dictionary<string, string> settings = Settings;
 
             // Validate settings.
@@ -280,8 +282,8 @@ namespace HistorianAdapters
             if (!settings.TryGetValue("archivepath", out archivePath))
                 archivePath = FilePath.GetAbsolutePath("");
 
-            if (settings.TryGetValue("refreshmetadata", out refreshMetadata))
-                m_refreshMetadata = refreshMetadata.ParseBoolean();
+            if (settings.TryGetValue("refreshmetadata", out refreshMetadata) || settings.TryGetValue("autorefreshmetadata", out refreshMetadata))
+                m_autoRefreshMetadata = refreshMetadata.ParseBoolean();
 
             // Initialize metadata file.
             m_instanceName = m_instanceName.ToLower();
@@ -436,10 +438,10 @@ namespace HistorianAdapters
             m_metadataProviders.Initialize();
             m_replicationProviders.Initialize();
 
-            if (m_refreshMetadata)
+            if (m_autoRefreshMetadata)
             {
                 RefreshAllMetadata();
-                m_refreshMetadata = false;
+                m_autoRefreshMetadata = false;
             }
 
             OnConnected();
