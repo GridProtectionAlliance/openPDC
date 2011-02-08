@@ -80,7 +80,7 @@ namespace openPDCManager
             ButtonErrorLog.Click += new RoutedEventHandler(ButtonErrorLog_Click);
 
             Version appVersion = AssemblyInfo.EntryAssembly.Version;
-            Title = "openPDC Manager" + " v" + appVersion.Major + "." + appVersion.Minor + "." + appVersion.Build + "." + appVersion.Revision;
+            Title = "openPDC Manager" + " v" + appVersion.Major + "." + appVersion.Minor + "." + appVersion.Build;
         }
         
         #endregion
