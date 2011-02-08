@@ -233,7 +233,7 @@ namespace ConfigurationSetupUtility.Screens
             //i.e. Windows Authentication Selected.            
             m_messageTextBlock.Text = "Please enter current credentials for active directory user to be the administrator for openPDC. Credentials will be validated by operating system.";
             m_userAccountHeaderTextBlock.Text = "Windows Authentication";
-            m_userNameTextBox.Text = Thread.CurrentPrincipal.Identity.Name.Contains(@"\") ? Thread.CurrentPrincipal.Identity.Name.Substring(Thread.CurrentPrincipal.Identity.Name.LastIndexOf(@"\") + 1) : Thread.CurrentPrincipal.Identity.Name;
+            m_userNameTextBox.Text = Thread.CurrentPrincipal.Identity.Name;
             m_dbInfoGrid.Visibility = Visibility.Collapsed;            
         }
 
