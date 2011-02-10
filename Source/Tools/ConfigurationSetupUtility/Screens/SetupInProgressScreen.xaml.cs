@@ -249,8 +249,9 @@ namespace ConfigurationSetupUtility.Screens
                     if (Convert.ToBoolean(m_state["setupHistorian"]))
                         SetUpInitialHistorian(connectionString, dataProviderString);
 
-                    //Set up administrative user credentials.
-                    SetupAdminUserCredentials(connectionString, dataProviderString);
+                    //Set up administrative user credentials only if it is new database and not migration.
+                    if (!migrate)
+                        SetupAdminUserCredentials(connectionString, dataProviderString);
                 }
 
                 // Modify the openPDC configuration file.
@@ -358,8 +359,9 @@ namespace ConfigurationSetupUtility.Screens
                             AppendStatusMessage(string.Empty);
                         }
 
-                        //Set up administrative user credentials.
-                        SetupAdminUserCredentials(mySqlSetup.ConnectionString, dataProviderString);
+                        //Set up administrative user credentials only if it is new database and not migration.
+                        if (!migrate)
+                            SetupAdminUserCredentials(mySqlSetup.ConnectionString, dataProviderString);
                     }
                     else
                     {
@@ -498,8 +500,9 @@ namespace ConfigurationSetupUtility.Screens
                             AppendStatusMessage(string.Empty);
                         }
 
-                        //Set up administrative user credentials.
-                        SetupAdminUserCredentials(sqlServerSetup.ConnectionString, dataProviderString);
+                        //Set up administrative user credentials only if it is new database and not migration.
+                        if (!migrate)
+                            SetupAdminUserCredentials(sqlServerSetup.ConnectionString, dataProviderString);
                     }
                     else
                     {
@@ -572,6 +575,11 @@ namespace ConfigurationSetupUtility.Screens
                         command.CommandText = string.Format("SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{0}'", databaseName);
 
                     dbCount = Convert.ToInt32(command.ExecuteScalar());
+                }
+                catch
+                {
+                    // if we cannot open connection then assume database does not exist. If for some other reason, connection or query failed then during script run, it will fail gracefully.
+                    return false;
                 }
                 finally
                 {

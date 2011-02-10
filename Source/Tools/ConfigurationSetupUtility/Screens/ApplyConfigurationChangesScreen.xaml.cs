@@ -176,6 +176,11 @@ namespace ConfigurationSetupUtility.Screens
             if (!webManagerOptionEnabled)
                 m_openPdcManagerWebCheckBox.IsChecked = false;
 
+            if (initialDataScript)
+                m_setupHistorianCheckBox.IsChecked = true;
+            else
+                m_setupHistorianCheckBox.IsChecked = false;
+
             // Set up the state object with the proper initial values.
             m_state["applyChangesToService"] = m_openPdcServiceCheckBox.IsChecked.Value;
             m_state["applyChangesToLocalManager"] = m_openPdcManagerLocalCheckBox.IsChecked.Value;
