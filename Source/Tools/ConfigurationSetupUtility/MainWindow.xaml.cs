@@ -52,9 +52,12 @@ namespace ConfigurationSetupUtility
         public MainWindow()
         {
             InitializeComponent();
-            this.Topmost = true;
             m_screenManager = new ScreenManager(this, new WelcomeScreen());
             AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+
+#if !DEBUG
+            this.Topmost = true;
+#endif
         }
 
         #endregion
