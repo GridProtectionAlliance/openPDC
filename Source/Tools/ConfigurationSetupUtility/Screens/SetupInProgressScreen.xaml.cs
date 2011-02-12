@@ -1084,10 +1084,10 @@ namespace ConfigurationSetupUtility.Screens
 
             if (webManagerDir != null)
             {
-                configFile = webManagerDir.ToString();
+                configFile = webManagerDir.ToString() + "\\Web.config";
                 
                 if (applyChangesToWebManager && File.Exists(configFile))
-                    ModifyConfigFile(webManagerDir.ToString() + "\\Web.config", connectionString, dataProviderString, encrypted);
+                    ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted);
             }
 
             AppendStatusMessage("Modification of configuration files was successful.");
