@@ -837,11 +837,58 @@ namespace ConfigurationSetupUtility.Screens
                 //Add Administrative User.                
                 IDbCommand adminCredentialCommand = connection.CreateCommand();
                 if (m_state["authenticationType"].ToString() == "windows")
-                    adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, DefaultNodeID, CreatedBy, UpdatedBy) Values ('{0}', {1}, '{2}', '{3}')", m_state["adminUserName"].ToString(), nodeIdQueryString, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+                {
+                    IDbDataParameter nameParameter = adminCredentialCommand.CreateParameter();
+                    IDbDataParameter createdByParameter = adminCredentialCommand.CreateParameter();
+                    IDbDataParameter updatedByParameter = adminCredentialCommand.CreateParameter();
+
+                    nameParameter.ParameterName = "@name";
+                    createdByParameter.ParameterName = "@createdBy";
+                    updatedByParameter.ParameterName = "@updatedBy";
+
+                    nameParameter.Value = m_state["adminUserName"].ToString();
+                    createdByParameter.Value = Thread.CurrentPrincipal.Identity.Name;
+                    updatedByParameter.Value = Thread.CurrentPrincipal.Identity.Name;
+
+                    adminCredentialCommand.Parameters.Add(nameParameter);
+                    adminCredentialCommand.Parameters.Add(createdByParameter);
+                    adminCredentialCommand.Parameters.Add(updatedByParameter);
+
+                    adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, DefaultNodeID, CreatedBy, UpdatedBy) Values (@name, {0}, @createdBy, @updatedBy)", nodeIdQueryString);
+                }
                 else
+                {
+                    IDbDataParameter nameParameter = adminCredentialCommand.CreateParameter();
+                    IDbDataParameter passwordParameter = adminCredentialCommand.CreateParameter();
+                    IDbDataParameter firstNameParameter = adminCredentialCommand.CreateParameter();
+                    IDbDataParameter lastNameParameter = adminCredentialCommand.CreateParameter();
+                    IDbDataParameter createdByParameter = adminCredentialCommand.CreateParameter();
+                    IDbDataParameter updatedByParameter = adminCredentialCommand.CreateParameter();
+
+                    nameParameter.ParameterName = "@name";
+                    passwordParameter.ParameterName = "@password";
+                    firstNameParameter.ParameterName = "@firstName";
+                    lastNameParameter.ParameterName = "@lastName";
+                    createdByParameter.ParameterName = "@createdBy";
+                    updatedByParameter.ParameterName = "@updatedBy";
+
+                    nameParameter.Value = m_state["adminUserName"].ToString();
+                    passwordParameter.Value = FormsAuthentication.HashPasswordForStoringInConfigFile(@"O3990\P78f9E66b:a35_V©6M13©6~2&[" + m_state["adminPassword"].ToString(), "SHA1");
+                    firstNameParameter.Value = m_state["adminUserFirstName"].ToString();
+                    lastNameParameter.Value = m_state["adminUserLastName"].ToString();
+                    createdByParameter.Value = Thread.CurrentPrincipal.Identity.Name;
+                    updatedByParameter.Value = Thread.CurrentPrincipal.Identity.Name;
+
+                    adminCredentialCommand.Parameters.Add(nameParameter);
+                    adminCredentialCommand.Parameters.Add(passwordParameter);
+                    adminCredentialCommand.Parameters.Add(firstNameParameter);
+                    adminCredentialCommand.Parameters.Add(lastNameParameter);
+                    adminCredentialCommand.Parameters.Add(createdByParameter);
+                    adminCredentialCommand.Parameters.Add(updatedByParameter);
+
                     adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, Password, FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) Values " +
-                            "('{0}', '{1}', '{2}', '{3}', {4}, 0, '{5}', '{6}')", m_state["adminUserName"].ToString(), FormsAuthentication.HashPasswordForStoringInConfigFile(@"O3990\P78f9E66b:a35_V©6M13©6~2&[" + m_state["adminPassword"].ToString(), "SHA1"), m_state["adminUserFirstName"].ToString(),
-                            m_state["adminUserLastName"].ToString(), nodeIdQueryString, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+                            "(@name, @password, @firstName, @lastName, {0}, 0, @createdBy, @updatedBy)", nodeIdQueryString);
+                }
 
                 adminCredentialCommand.ExecuteNonQuery();
                 
@@ -849,7 +896,14 @@ namespace ConfigurationSetupUtility.Screens
                 IDataReader userIdReader = null;
                 try
                 {
-                    adminCredentialCommand.CommandText = string.Format("SELECT ID FROM UserAccount WHERE Name = '{0}'", m_state["adminUserName"].ToString());
+                    IDbDataParameter nameParameter = adminCredentialCommand.CreateParameter();
+
+                    nameParameter.ParameterName = "@name";
+                    nameParameter.Value = m_state["adminUserName"].ToString();
+
+                    adminCredentialCommand.CommandText = "SELECT ID FROM UserAccount WHERE Name = @name";
+                    adminCredentialCommand.Parameters.Clear();
+                    adminCredentialCommand.Parameters.Add(nameParameter);
                     userIdReader = adminCredentialCommand.ExecuteReader();
 
                     if (userIdReader.Read())
