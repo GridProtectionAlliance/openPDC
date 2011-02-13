@@ -100,9 +100,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Historian.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Web, Version=1.0.44.38951, Culture=neutral, PublicKeyToken=0912cfbda5dae2d1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Dependencies\TVA\TVA.Web.dll</HintPath>
+    <Reference Include="TVA.Services">
+      <HintPath>..\..\..\Dependencies\TVA\TVA.Services.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

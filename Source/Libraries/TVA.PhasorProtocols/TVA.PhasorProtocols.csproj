@@ -103,7 +103,8 @@
       <HintPath Condition=" '$(SignAssembly)' != 'true' ">..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
       <HintPath Condition=" '$(SignAssembly)' == 'true' ">..\..\Dependencies\TVA\Signed\TVA.Core.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Historian, Version=1.1.36.59543, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Historian, Version=1.1.37.63338, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\TVA\TVA.Historian.dll</HintPath>
     </Reference>
   </ItemGroup>

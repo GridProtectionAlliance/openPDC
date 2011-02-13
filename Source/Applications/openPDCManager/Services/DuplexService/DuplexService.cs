@@ -208,7 +208,7 @@ namespace openPDCManager.Services.DuplexService
 						System.Diagnostics.Debug.WriteLine("Sending Cached Status to Client Connected on System Monitor Page.");
 						PushMessageToClient(session, new ServiceUpdateMessage()
 												{
-													ServiceUpdateType = TVA.Services.UpdateType.Information,
+													ServiceUpdateType = TVA.Services.ServiceProcess.UpdateType.Information,
 													ServiceUpdate = serviceClientList[currentClient.NodeID].CachedStatus
 												});
 					}					

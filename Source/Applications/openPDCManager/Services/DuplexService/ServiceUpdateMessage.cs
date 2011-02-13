@@ -22,7 +22,7 @@
 //******************************************************************************************************
 
 using System.Runtime.Serialization;
-using TVA.Services;
+using TVA.Services.ServiceProcess;
 
 namespace openPDCManager.Services.DuplexService
 {

@@ -24,7 +24,7 @@ using System.ServiceModel.Web;
 using System.Text;
 using TVA.Configuration;
 using TVA.Data;
-using TVA.Web.Services;
+using TVA.Services.ServiceModel;
 
 namespace openPDCServices
 {

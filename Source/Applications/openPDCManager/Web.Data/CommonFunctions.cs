@@ -271,8 +271,8 @@ namespace openPDCManager.Data
             try
             {
                 s_responseWaitHandle = new ManualResetEvent(false);
-                windowsServiceClient.Helper.ReceivedServiceResponse += new EventHandler<TVA.EventArgs<TVA.Services.ServiceResponse>>(Helper_ReceivedServiceResponse);
-                windowsServiceClient.Helper.ReceivedServiceUpdate += new EventHandler<TVA.EventArgs<TVA.Services.UpdateType, string>>(Helper_ReceivedServiceUpdate);
+                windowsServiceClient.Helper.ReceivedServiceResponse += new EventHandler<TVA.EventArgs<TVA.Services.ServiceProcess.ServiceResponse>>(Helper_ReceivedServiceResponse);
+                windowsServiceClient.Helper.ReceivedServiceUpdate += new EventHandler<TVA.EventArgs<TVA.Services.ServiceProcess.UpdateType, string>>(Helper_ReceivedServiceUpdate);
                 windowsServiceClient.Helper.RemotingClient.MaxConnectionAttempts = 10;
                 windowsServiceClient.Helper.Connect();
                 if (windowsServiceClient.Helper.RemotingClient.Enabled)
@@ -306,13 +306,13 @@ namespace openPDCManager.Data
             }
         }
 
-        static void Helper_ReceivedServiceUpdate(object sender, TVA.EventArgs<TVA.Services.UpdateType, string> e)
+        static void Helper_ReceivedServiceUpdate(object sender, TVA.EventArgs<TVA.Services.ServiceProcess.UpdateType, string> e)
         {
             if (e.Argument2.StartsWith("[PHASOR!SERVICES]") && !e.Argument2.Contains("*"))
                 s_responseMessage += e.Argument2.Replace("[PHASOR!SERVICES]", "").Replace("\r\n\r\n", "\r\n");			
         }
 
-        private static void Helper_ReceivedServiceResponse(object sender, TVA.EventArgs<TVA.Services.ServiceResponse> e)
+        private static void Helper_ReceivedServiceResponse(object sender, TVA.EventArgs<TVA.Services.ServiceProcess.ServiceResponse> e)
         {			           
             List<object> attachments = e.Argument.Attachments;
 
