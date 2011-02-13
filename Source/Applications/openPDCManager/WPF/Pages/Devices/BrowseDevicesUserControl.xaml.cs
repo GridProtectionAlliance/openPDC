@@ -54,7 +54,8 @@ namespace openPDCManager.Pages.Devices
         #region [ Constructor ]
 
         public BrowseDevicesUserControl()
-        {            
+        {
+            //Thread.CurrentPrincipal = ((App)Application.Current).Principal;
             InitializeComponent();
             ButtonSearch.Content = new BitmapImage(new Uri(@"images/Search.png", UriKind.Relative));
             ButtonShowAll.Content = new BitmapImage(new Uri(@"images/CancelSearch.png", UriKind.Relative));                       
@@ -62,7 +63,7 @@ namespace openPDCManager.Pages.Devices
 
             Loaded += new RoutedEventHandler(Browse_Loaded);
             ButtonSearch.Click += new RoutedEventHandler(ButtonSearch_Click);
-            ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);            
+            ButtonShowAll.Click += new RoutedEventHandler(ButtonShowAll_Click);
         }
 
         #endregion
@@ -130,7 +131,7 @@ namespace openPDCManager.Pages.Devices
         void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
             SystemMessages sm;
-            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
             {                
                 try
                 {
@@ -175,10 +176,10 @@ namespace openPDCManager.Pages.Devices
                         }
                         else
                         {
-                            sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
-                            sm.Owner = Window.GetWindow(this);
-                            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                            sm.ShowPopup();
+                            SystemMessages sm2 = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                            sm2.Owner = Window.GetWindow(this);
+                            sm2.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            sm2.ShowPopup();
                         }
                     }
                     catch (Exception ex)
@@ -215,7 +216,7 @@ namespace openPDCManager.Pages.Devices
         void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
             SystemMessages sm;
-            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
             {
                 try
                 {
@@ -236,11 +237,11 @@ namespace openPDCManager.Pages.Devices
                             {
                                 List<Device> deviceList = CommonFunctions.GetDeviceListByParentID(null, device.ID);
                                 foreach (Device d in deviceList)
-                                    CommonFunctions.DeleteDevice(null, d.ID);
-                                result = CommonFunctions.DeleteDevice(null, device.ID);
+                                    CommonFunctions.DeleteDevice(null, d.ID);   //, ((App)Application.Current).Principal.Identity.Name);
+                                result = CommonFunctions.DeleteDevice(null, device.ID); //, ((App)Application.Current).Principal.Identity.Name);
                             }
                             else
-                                result = CommonFunctions.DeleteDevice(null, device.ID);
+                                result = CommonFunctions.DeleteDevice(null, device.ID);     //, ((App)Application.Current).Principal.Identity.Name);
 
                             SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                                 ButtonType.OkOnly);
@@ -401,7 +402,7 @@ namespace openPDCManager.Pages.Devices
             m_activityWindow.Owner = Window.GetWindow(this);
             m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             m_activityWindow.Show();
-            RefreshDeviceList();
+            RefreshDeviceList();            
         }
 
         #endregion

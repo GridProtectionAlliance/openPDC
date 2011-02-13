@@ -242,7 +242,7 @@ namespace openPDCManager.UserControls.CommonControls
             GetDeviceDistributionList();
             //GetTimeSeriesData(((App)Application.Current).TimeSeriesDataServiceUrl + "/timeseriesdata/read/historic/" + ((Measurement)ComboBoxMeasurements.SelectedItem).PointID.ToString() + "/*-30S/*/XML");            
             WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
-            if (serviceClient == null || serviceClient.Helper.RemotingClient.CurrentState != TVA.Communication.ClientState.Connected || !Thread.CurrentPrincipal.IsInRole("Administrator"))
+            if (serviceClient == null || serviceClient.Helper.RemotingClient.CurrentState != TVA.Communication.ClientState.Connected || !((App)Application.Current).Principal.IsInRole("Administrator"))
                 ButtonRestartOpenPDC.IsEnabled = false;
 #endif
             //if (!string.IsNullOrEmpty(((App)Application.Current).NodeValue))

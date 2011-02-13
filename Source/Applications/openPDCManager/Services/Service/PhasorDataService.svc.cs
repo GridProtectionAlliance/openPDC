@@ -324,7 +324,7 @@ namespace openPDCManager.Services.Service
 		{
 			try
 			{
-                return CommonFunctions.DeleteDevice(null, deviceID);
+                return CommonFunctions.DeleteDevice(null, deviceID); //, string.Empty);
 			}
 			catch (Exception ex)
 			{

@@ -3314,9 +3314,35 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
+                IDbCommand command;
+                ////First of all set Current User for the database session for this connection.
+                //if (connection.Connection.GetType().Name.ToLower() == "sqlconnection")
+                //{
+                //    string contextSql = "DECLARE @context VARBINARY(128)\n SELECT @context = CONVERT(VARBINARY(128), CONVERT(VARCHAR(128), @userName))\n SET CONTEXT_INFO @context";
+                //    command = connection.Connection.CreateCommand();
+                //    command.CommandType = CommandType.Text;
+                //    command.CommandText = contextSql;
+                //    command.Parameters.Add(AddWithValue(command, "@userName", userName));                    
+                //    command.ExecuteNonQuery(); 
+                //}
+                //else if (connection.Connection.GetType().Name.ToLower() == "mysqlconnection")
+                //{
+                //    try
+                //    {                        
+                //        command = connection.Connection.CreateCommand();
+                //        command.CommandType = CommandType.Text;                        
+                //        command.CommandText = "SET @context = '" + userName + "'";                        
+                //        command.ExecuteNonQuery();
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        throw new Exception(ex.Message);
+                //    }
+                //}
+
                 Device device = GetDeviceByDeviceID(connection, deviceID);
                 string deviceAcronym = device.Acronym;
-                IDbCommand command = connection.Connection.CreateCommand();
+                command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Delete From Device Where ID = @id";
                 command.Parameters.Add(AddWithValue(command, "@id", deviceID));
@@ -3336,8 +3362,12 @@ namespace openPDCManager.Data
                     command.ExecuteNonQuery();
                 }
 
+                //command = connection.Connection.CreateCommand();
+                //command.CommandText = "SELECT UserName From AuditLog";
+                //return command.ExecuteScalar().ToString().RemoveNull().Trim();
+
                 return "Device Deleted Successfully";
-            }			
+            }            
             finally
             {
                 if (createdConnection && connection != null)

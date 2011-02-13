@@ -91,12 +91,12 @@ namespace openPDCManager
         {
             ((App)Application.Current).Principal = Thread.CurrentPrincipal;
 
-            if (Thread.CurrentPrincipal.IsInRole("Administrator"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator"))
                 Nodes.Visibility = Security.Visibility = Visibility.Visible;
             else
                 Nodes.Visibility = Security.Visibility = Visibility.Collapsed;
 
-            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
                 ConfigurationWizard.Visibility = Visibility.Visible;
             else
                 ConfigurationWizard.Visibility = Visibility.Collapsed;
@@ -298,7 +298,7 @@ namespace openPDCManager
                 {
                     HomePageUserControl homePageUserControl = (HomePageUserControl)ContentFrame.Content;
                     //Eventhough connection has been established, check if user is administrator, then only enable it.
-                    if (Thread.CurrentPrincipal.IsInRole("Administrator"))
+                    if (((App)Application.Current).Principal.IsInRole("Administrator"))
                         homePageUserControl.ButtonRestartOpenPDC.IsEnabled = true;
                 }
 

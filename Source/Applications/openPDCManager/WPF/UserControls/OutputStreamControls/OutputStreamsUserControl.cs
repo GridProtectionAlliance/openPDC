@@ -46,7 +46,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
         void Initialize()
         {            
             serviceClient = ((App)Application.Current).ServiceClient;
-            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
             {
                 ButtonSave.IsEnabled = true;
                 ButtonInitialize.IsEnabled = true;
@@ -61,7 +61,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
         void SendInitialize()
         {
             SystemMessages sm;
-            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
             {
                 try
                 {
@@ -97,7 +97,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
         void SendUpdateConfiguration(int outputStreamID)
         {
             SystemMessages sm;
-            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
             {
                 try
                 {

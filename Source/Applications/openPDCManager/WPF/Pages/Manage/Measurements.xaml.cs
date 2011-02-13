@@ -208,7 +208,7 @@ namespace openPDCManager.Pages.Manage
 
         void Measurements_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
                 ButtonSave.IsEnabled = true;
             else
                 ButtonSave.IsEnabled = false;

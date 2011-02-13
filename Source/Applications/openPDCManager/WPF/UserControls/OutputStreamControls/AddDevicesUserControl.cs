@@ -40,7 +40,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
         void Initialize()
         {
             //this.KeyDown += new System.Windows.Input.KeyEventHandler(AddDevicesUserControl_KeyDown); 
-            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
                 ButtonAdd.IsEnabled = true;
             else
                 ButtonAdd.IsEnabled = false;

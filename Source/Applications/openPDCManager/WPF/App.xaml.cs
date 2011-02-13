@@ -71,7 +71,24 @@ namespace openPDCManager
         public string RealTimeStatisticServiceUrl { get; set; }
         //public ApplicationIdCredentialsProvider Credentials { get; set; }
         public WindowsServiceClient ServiceClient { get; set; }
-        public IPrincipal Principal { get; set; }
+
+        IPrincipal m_principal;
+        public IPrincipal Principal 
+        {
+            get { return m_principal; }
+            set 
+            { 
+                m_principal = value;
+                //try
+                //{
+                //    AppDomain.CurrentDomain.SetThreadPrincipal(m_principal);
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show(ex.ToString());
+                //}
+            }
+        }
        
         #endregion
 

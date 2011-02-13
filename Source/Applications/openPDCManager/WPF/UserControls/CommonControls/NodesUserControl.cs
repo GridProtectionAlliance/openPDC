@@ -37,7 +37,7 @@ namespace openPDCManager.UserControls.CommonControls
 
         void Initialize()
         {
-            if (Thread.CurrentPrincipal.IsInRole("Administrator"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator"))
                 ButtonSave.IsEnabled = true;
             else
                 ButtonSave.IsEnabled = false;
@@ -130,15 +130,15 @@ namespace openPDCManager.UserControls.CommonControls
             Role role;
 
             //Create Administrator role
-            role = new Role() { Name = "Administrator", Description = "Administrator Role", NodeID = nodeID, CreatedBy = Thread.CurrentPrincipal.Identity.Name, UpdatedBy = Thread.CurrentPrincipal.Identity.Name };
+            role = new Role() { Name = "Administrator", Description = "Administrator Role", NodeID = nodeID, CreatedBy = ((App)Application.Current).Principal.Identity.Name, UpdatedBy = ((App)Application.Current).Principal.Identity.Name };
             CommonFunctions.SaveRole(null, role, true);
 
             //Create Editor role
-            role = new Role() { Name = "Editor", Description = "Editor Role", NodeID = nodeID, CreatedBy = Thread.CurrentPrincipal.Identity.Name, UpdatedBy = Thread.CurrentPrincipal.Identity.Name };
+            role = new Role() { Name = "Editor", Description = "Editor Role", NodeID = nodeID, CreatedBy = ((App)Application.Current).Principal.Identity.Name, UpdatedBy = ((App)Application.Current).Principal.Identity.Name };
             CommonFunctions.SaveRole(null, role, true);
 
             //Create Viewer role
-            role = new Role() { Name = "Viewer", Description = "Viewer Role", NodeID = nodeID, CreatedBy = Thread.CurrentPrincipal.Identity.Name, UpdatedBy = Thread.CurrentPrincipal.Identity.Name };
+            role = new Role() { Name = "Viewer", Description = "Viewer Role", NodeID = nodeID, CreatedBy = ((App)Application.Current).Principal.Identity.Name, UpdatedBy = ((App)Application.Current).Principal.Identity.Name };
             CommonFunctions.SaveRole(null, role, true);
         }
 

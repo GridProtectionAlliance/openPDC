@@ -119,7 +119,7 @@ namespace openPDCManager.Pages.Manage
         void SystemSettings_Loaded(object sender, RoutedEventArgs e)
         {
             LoadSettingsFromIsolatedStorage();
-            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
             {
                 ButtonSave.IsEnabled = true;
                 ButtonClear.IsEnabled = true;

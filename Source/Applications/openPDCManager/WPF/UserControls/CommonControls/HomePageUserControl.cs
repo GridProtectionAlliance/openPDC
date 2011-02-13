@@ -191,7 +191,7 @@ namespace openPDCManager.UserControls.CommonControls
         {
             this.Unloaded += new RoutedEventHandler(HomePageUserControl_Unloaded);
             ComboBoxMeasurements.SelectionChanged += new SelectionChangedEventHandler(ComboBoxMeasurements_SelectionChanged);
-            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
                 ButtonAddDevice.IsEnabled = true;
             else
                 ButtonAddDevice.IsEnabled = false;

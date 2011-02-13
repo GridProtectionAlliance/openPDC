@@ -317,7 +317,7 @@ namespace openPDCManager.UserControls.OutputStreamControls
             bool continueAllowed = true;
 
 #if !SILVERLIGHT
-            if (!Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            if (!((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
             {
                 SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Unauthorized Access", SystemMessage = "You are not authorized to perform this operation.", UserMessageType = MessageType.Error },
                             ButtonType.OkOnly);

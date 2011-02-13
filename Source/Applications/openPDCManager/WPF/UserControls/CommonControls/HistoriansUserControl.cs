@@ -46,7 +46,7 @@ namespace openPDCManager.UserControls.CommonControls
         void Initialize()
         {            
             serviceClient = ((App)Application.Current).ServiceClient;
-            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
             {
                 ButtonSave.IsEnabled = true;
                 ButtonInitialize.IsEnabled = true;

@@ -117,7 +117,7 @@ namespace openPDCManager.Pages.Manage
         
         void ApplicationSecurity_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Thread.CurrentPrincipal.IsInRole("Administrator"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator"))
             {
                 ButtonAddGroupUsers.IsEnabled = true;
                 ButtonAddNewGroup.IsEnabled = true;
@@ -318,7 +318,7 @@ namespace openPDCManager.Pages.Manage
                     user.LockedOut = (bool)CheckBoxLockedOut.IsChecked;
                     user.UseADAuthentication = true;
                     user.ChangePasswordOn = DateTime.MinValue;
-                    user.UpdatedBy = Thread.CurrentPrincipal.Identity.Name;
+                    user.UpdatedBy = ((App)Application.Current).Principal.Identity.Name;
                     user.UpdatedOn = DateTime.UtcNow;
                     if (ComboBoxAuthentication.SelectedValue.ToString() == "Database")
                     {
@@ -361,7 +361,7 @@ namespace openPDCManager.Pages.Manage
                         }
                         else
                             user.Password = string.Empty;
-                        user.CreatedBy = Thread.CurrentPrincipal.Identity.Name;
+                        user.CreatedBy = ((App)Application.Current).Principal.Identity.Name;
                         user.CreatedOn = DateTime.UtcNow;
                         result = CommonFunctions.SaveUser(null, user, true);                        
                     }
@@ -438,7 +438,7 @@ namespace openPDCManager.Pages.Manage
                     Group group = new Group();
                     group.Name = TextBoxGroupName.Text.CleanText();
                     group.Description = TextBoxGroupDescription.Text.CleanText();
-                    group.UpdatedBy = Thread.CurrentPrincipal.Identity.Name;
+                    group.UpdatedBy = ((App)Application.Current).Principal.Identity.Name;
                     if (m_editGroupMode)
                     {
                         group.ID = m_selectedGroup.ID;
@@ -449,7 +449,7 @@ namespace openPDCManager.Pages.Manage
                     }
                     else
                     {                        
-                        group.CreatedBy = Thread.CurrentPrincipal.Identity.Name;                        
+                        group.CreatedBy = ((App)Application.Current).Principal.Identity.Name;                        
                         result = CommonFunctions.SaveGroup(null, group, true);
                     }
 

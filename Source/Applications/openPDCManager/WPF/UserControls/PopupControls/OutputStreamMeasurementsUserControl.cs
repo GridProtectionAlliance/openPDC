@@ -40,7 +40,7 @@ namespace openPDCManager.UserControls.PopupControls
         void Initialize()
         {
             ListBoxOutputStreamMeasurementList.LayoutUpdated += new EventHandler(ListBoxOutputStreamMeasurementList_LayoutUpdated);
-            if (Thread.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
                 ButtonSave.IsEnabled = true;
             else
                 ButtonSave.IsEnabled = false;
