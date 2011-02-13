@@ -250,6 +250,11 @@ namespace ConfigurationSetupUtility.Screens
                     m_userNameLabel.Content = "User name:";
                     m_passwordLabel.Content = "Password:";
                 }
+                else
+                {
+                    m_userNameLabel.Content = "Admin user name:";
+                    m_passwordLabel.Content = "Admin password:";
+                }
 
                 if (!m_state.ContainsKey("mySqlDataProviderString"))
                     m_state.Add("mySqlDataProviderString", m_dataProviderString);

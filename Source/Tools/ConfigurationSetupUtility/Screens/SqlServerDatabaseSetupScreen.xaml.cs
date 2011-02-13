@@ -212,6 +212,11 @@ namespace ConfigurationSetupUtility.Screens
                     m_userNameLabel.Content = "User name:";
                     m_passwordLabel.Content = "Password:";
                 }
+                else
+                {
+                    m_userNameLabel.Content = "Admin user name:";
+                    m_passwordLabel.Content = "Admin password:";
+                }
 
                 if (!m_state.ContainsKey("sqlServerDataProviderString"))
                     m_state.Add("sqlServerDataProviderString", "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter");
