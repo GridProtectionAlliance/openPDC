@@ -235,7 +235,7 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using TimeSeriesFramework;
-using TVA.Web.Services;
+using TVA.Services.ServiceModel;
 
 namespace DataQualityMonitoring.Services
 {
