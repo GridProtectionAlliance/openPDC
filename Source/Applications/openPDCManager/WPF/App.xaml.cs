@@ -20,6 +20,8 @@
 //       Generated original version of source code.
 //  09/19/2010 - J. Ritchie Carroll
 //       Added unhandled exception logger with dialog for better end user problem diagnosis.
+//  02/14/2011 - J. Ritchie Carroll
+//       Set the startup principal policy to windows principal.
 //
 //******************************************************************************************************
 
@@ -47,6 +49,7 @@ namespace openPDCManager
 
         public App()
         {
+            AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
             m_errorLogger = new ErrorLogger();
             m_defaultErrorText = m_errorLogger.ErrorTextMethod;
             m_errorLogger.ErrorTextMethod = ErrorText;
