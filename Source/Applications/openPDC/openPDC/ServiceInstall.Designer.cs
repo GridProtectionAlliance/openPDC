@@ -52,7 +52,7 @@ namespace openPDC
         private void InitializeComponent()
         {
             this.serviceProcessInstaller = new System.ServiceProcess.ServiceProcessInstaller();
-            this.serviceInstaller = new System.ServiceProcess.ServiceInstaller();
+            this.serviceInstallerEx = new TVA.Services.ServiceProcess.ServiceInstallerEx();
             // 
             // serviceProcessInstaller
             // 
@@ -60,25 +60,25 @@ namespace openPDC
             this.serviceProcessInstaller.Password = null;
             this.serviceProcessInstaller.Username = null;
             // 
-            // serviceInstaller
+            // serviceInstallerEx
             // 
-            this.serviceInstaller.Description = "Provides processing for streaming time-series data in real-time including phasor " +
+            this.serviceInstallerEx.Description = "Provides processing for streaming time-series data in real-time including phasor " +
                 "data concentration services for synchrophasor applications.";
-            this.serviceInstaller.DisplayName = "openPDC";
-            this.serviceInstaller.ServiceName = "openPDC";
-            this.serviceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
+            this.serviceInstallerEx.DisplayName = "openPDC";
+            this.serviceInstallerEx.ServiceName = "openPDC";
+            this.serviceInstallerEx.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ServiceInstall
             // 
             this.Installers.AddRange(new System.Configuration.Install.Installer[] {
             this.serviceProcessInstaller,
-            this.serviceInstaller});
+            this.serviceInstallerEx});
 
         }
 
         #endregion
 
         private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller;
-        private System.ServiceProcess.ServiceInstaller serviceInstaller;
+        private TVA.Services.ServiceProcess.ServiceInstallerEx serviceInstallerEx;
     }
 }

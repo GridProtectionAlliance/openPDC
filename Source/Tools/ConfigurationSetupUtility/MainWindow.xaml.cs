@@ -23,10 +23,17 @@
 //
 //******************************************************************************************************
 
+using System;
+using System.Diagnostics;
+using System.Security.Principal;
+using System.Threading;
 using System.Windows;
 using ConfigurationSetupUtility.Screens;
-using System;
-using System.Security.Principal;
+using TVA.Collections;
+using TVA.ErrorManagement;
+using TVA.Identity;
+using TVA.IO;
+using TVA.Reflection;
 
 namespace ConfigurationSetupUtility
 {
@@ -35,11 +42,9 @@ namespace ConfigurationSetupUtility
     /// </summary>
     public partial class MainWindow : Window
     {
-
         #region [ Members ]
 
         // Fields
-
         private ScreenManager m_screenManager;
 
         #endregion
@@ -52,12 +57,80 @@ namespace ConfigurationSetupUtility
         public MainWindow()
         {
             InitializeComponent();
+            //LogFile logger = null;
+            //bool restartingAsCurrentUser = false;
+
+            //try
+            //{
+            //    logger = new LogFile();
+            //    logger.FileName = FilePath.GetAbsolutePath("ErrorLog" + TVA.Security.Cryptography.Random.Byte +".txt");
+            //    logger.Open();
+
+            //    AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+            //    logger.WriteTimestampedLine("Startup user: " + Thread.CurrentPrincipal.Identity.Name);
+            //    logger.WriteTimestampedLine("User is elevated: " + UserAccountControl.IsCurrentProcessElevated);
+            //    logger.WriteTimestampedLine("Current command line: " + Environment.CommandLine);
+
+            //    // If an application is being launched from an installer it will have the NT Authority\System identity which
+            //    // will not have available user information or desired rights - so we launch us current user instead
+            //    if (string.Compare(Thread.CurrentPrincipal.Identity.Name, "NT AUTHORITY\\SYSTEM", true) == 0)
+            //    {
+            //        restartingAsCurrentUser = true;
+
+            //        string fileName = AssemblyInfo.EntryAssembly.Location;
+            //        string arguments = Environment.GetCommandLineArgs().ToDelimitedString(' ');
+
+            //        if (UserAccountControl.IsCurrentProcessElevated)
+            //        {
+            //            logger.WriteTimestampedLine("Attempting to create process \"" + fileName + "\" as standard user: " + arguments);
+            //            logger.Flush();
+
+            //            using (Process process = UserAccountControl.CreateProcessAsStandardUser(fileName, arguments))
+            //            {
+            //                logger.WriteTimestampedLine("Create process as standard user succeeded with command line: " + Environment.CommandLine);
+            //                process.WaitForExit();
+            //            }
+            //        }
+            //        else
+            //        {
+            //            logger.WriteTimestampedLine("Attempting to create process \"" + fileName + "\" as admin user: " + arguments);
+            //            logger.Flush();
+
+            //            using (Process process = UserAccountControl.CreateProcessAsAdmin(fileName, arguments))
+            //            {
+            //                logger.WriteTimestampedLine("Create process as admin user succeeded with command line: " + Environment.CommandLine);
+            //                process.WaitForExit();
+            //            }
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    // At worst, we log the error and try continuing on as the current user...
+            //    if (logger != null)
+            //        logger.WriteTimestampedLine(ErrorLogger.GetExceptionInfo(ex, false));
+            //}
+            //finally
+            //{
+            //    if (logger != null)
+            //        logger.Dispose();
+            //}
+
+            //if (restartingAsCurrentUser)
+            //{
+            //    // Close application
+            //    this.Close();
+            //}
+            //else
+            //{
+
+            // Setup screen manager
             m_screenManager = new ScreenManager(this, new WelcomeScreen());
-            AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
 
 #if !DEBUG
             this.Topmost = true;
 #endif
+            //}
         }
 
         #endregion

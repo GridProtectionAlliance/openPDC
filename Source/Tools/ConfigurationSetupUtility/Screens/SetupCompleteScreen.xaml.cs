@@ -29,10 +29,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.ServiceProcess;
+using System.Windows;
 using System.Windows.Controls;
 using TVA.Configuration;
+using TVA.Identity;
 using TVA.IO;
-using System.Windows;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -148,7 +149,11 @@ namespace ConfigurationSetupUtility.Screens
         /// Allows the screen to update the navigation buttons after a change is made
         /// that would affect the user's ability to navigate to other screens.
         /// </summary>
-        public Action UpdateNavigation { get; set; }
+        public Action UpdateNavigation
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -173,6 +178,9 @@ namespace ConfigurationSetupUtility.Screens
         private void InitializeManagerCheckboxState()
         {
             bool managerInstalled = File.Exists("openPDCManager.exe");
+            string[] args = Environment.GetCommandLineArgs();
+            bool installFlag = args.Contains("-install", StringComparer.CurrentCultureIgnoreCase);
+
             m_managerStartCheckBox.IsChecked = managerInstalled;
             m_managerStartCheckBox.IsEnabled = managerInstalled;
         }
@@ -247,7 +255,7 @@ namespace ConfigurationSetupUtility.Screens
                             Process.Start("openPDC.exe");
                         #else
                             m_openPdcServiceController.Start();
-                        #endif                            
+                        #endif
                         }
                         catch
                         {
@@ -257,7 +265,21 @@ namespace ConfigurationSetupUtility.Screens
 
                     // If the user requested it, start the openPDC Manager.
                     if (m_managerStartCheckBox.IsChecked.Value)
-                        Process.Start("openPDCManager.exe");
+                    {
+                        if (UserAccountControl.IsUacEnabled && UserAccountControl.IsCurrentProcessElevated)
+                        {
+                            try
+                            {
+                                UserAccountControl.CreateProcessAsStandardUser("openPDCManager.exe");
+                            }
+                            catch
+                            {
+                                Process.Start("openPDCManager.exe");
+                            }
+                        }
+                        else
+                            Process.Start("openPDCManager.exe");
+                    }
                 }
                 finally
                 {

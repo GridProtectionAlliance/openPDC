@@ -3,13 +3,21 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:self="clr-namespace:openPDCManager"
-    Title="openPDC Manager" 
-    Height="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationHeight, Mode=TwoWay}" 
-    Width="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationWidth, Mode=TwoWay}" 
+    xmlns:uc="clr-namespace:openPDCManager.UserControls.CommonControls"
+    Title="openPDC Manager"
+    WindowStyle="SingleBorderWindow"
+    ResizeMode="CanResize"
+    Background="Transparent"
+    MinHeight="600"
+    MinWidth="800"
+    ForceLoginDisplay="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ForceLoginDisplay, Mode=TwoWay}"
+    Height="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationHeight, Mode=TwoWay}"
+    Width="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationWidth, Mode=TwoWay}"
     Left="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationLeft, Mode=TwoWay}"
     Top="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationTop, Mode=TwoWay}"
-    ResizeMode="CanResize"  MinHeight="600" MinWidth="800" Icon="openPDC.ico"
-    xmlns:uc="clr-namespace:openPDCManager.UserControls.CommonControls" WindowStyle="SingleBorderWindow"  Background="Transparent" MouseDown="MainWindow_MouseDown"
+    ResourceAccessiblity="AlwaysIncluded"
+    IncludedRoles="Administrator, Editor, Viewer"
+    Icon="openPDC.ico"
     >
 
     <Border CornerRadius="0" Background="{StaticResource PageBackgroundBrush}">
@@ -195,7 +203,7 @@
                                     </MenuItem>
                                     <MenuItem Header="Help" Style="{StaticResource MainMenuItemStyle}" x:Name="Help" Click="MenuItem_Click" />
                                 </Menu>                                
-                                <TextBlock Text="Node: " FontWeight="Bold" Margin="0,0,10,10" Foreground="#FFFFFFFF" VerticalAlignment="Bottom" />
+                                <TextBlock Text="Node: " FontWeight="Bold" Margin="0,5,10,10" Foreground="#FFFFFFFF" VerticalAlignment="Bottom" />
                                 <uc:SelectNode x:Name="UserControlSelectNode" Background="Transparent" Margin="5,0,0,0" VerticalAlignment="Bottom"/>
                                 <Button x:Name="ButtonErrorLog" Content="images/Log.png" ToolTip="Error Log" Tag="" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,5,5" Cursor="Hand"/>
                             </StackPanel>

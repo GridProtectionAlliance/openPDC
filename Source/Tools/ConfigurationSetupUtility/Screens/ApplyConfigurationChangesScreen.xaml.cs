@@ -54,9 +54,6 @@ namespace ConfigurationSetupUtility.Screens
         public ApplyConfigurationChangesScreen()
         {
             InitializeComponent();
-            m_nodeSelectionScreen = new NodeSelectionScreen();
-            m_historianSetupScreen = new HistorianSetupScreen();
-            m_setupReadyScreen = new SetupReadyScreen();
         }
 
         #endregion
@@ -165,6 +162,28 @@ namespace ConfigurationSetupUtility.Screens
             bool existing = Convert.ToBoolean(m_state["existing"]);
             bool initialDataScript = !existing && Convert.ToBoolean(m_state["initialDataScript"]);
 
+            m_nodeSelectionScreen = new NodeSelectionScreen();
+
+            if (m_state != null && m_state.ContainsKey("setupReadyScreen"))
+            {
+                m_setupReadyScreen = (SetupReadyScreen)m_state["setupReadyScreen"];
+            }
+            else
+            {
+                m_setupReadyScreen = new SetupReadyScreen();
+                m_state["setupReadyScreen"] = m_setupReadyScreen;
+            }
+
+            if (m_state != null && m_state.ContainsKey("historianSetupScreen"))
+            {
+                m_historianSetupScreen = (HistorianSetupScreen)m_state["historianSetupScreen"];
+            }
+            else
+            {
+                m_historianSetupScreen = new HistorianSetupScreen();
+                m_state["historianSetupScreen"] = m_historianSetupScreen;
+            }
+
             // Enable or disable the options based on whether those options are available for the current configuration.
             m_openPdcManagerLocalCheckBox.IsEnabled = managerOptionsEnabled;
             m_openPdcManagerWebCheckBox.IsEnabled = webManagerOptionEnabled;
@@ -185,7 +204,6 @@ namespace ConfigurationSetupUtility.Screens
             m_state["applyChangesToService"] = m_openPdcServiceCheckBox.IsChecked.Value;
             m_state["applyChangesToLocalManager"] = m_openPdcManagerLocalCheckBox.IsChecked.Value;
             m_state["applyChangesToWebManager"] = m_openPdcManagerWebCheckBox.IsChecked.Value;
-            m_state["setupReadyScreen"] = m_setupReadyScreen;
             //m_state["setupHistorian"] = initialDataScript;
             //m_setupHistorianCheckBox.Visibility = (Convert.ToBoolean(m_state["setupHistorian"]) ? Visibility.Visible : Visibility.Collapsed);
 

@@ -85,7 +85,7 @@ namespace openPDCManager.Utilities
             }
         }
 
-        public static void SetDefuaultStorage(bool overWrite)
+        public static void SetDefaultStorage(bool overWrite)
         {
             if (!storage.FileExists("NumberOfMessages") || overWrite)
                 SaveIntoIsolatedStorage("NumberOfMessages", "75");

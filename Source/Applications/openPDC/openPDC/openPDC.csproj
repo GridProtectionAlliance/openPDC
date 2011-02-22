@@ -183,12 +183,6 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Libraries\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj">
-      <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>
-      <Name>TVA.PhasorProtocols</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)Database Scripts" "$(SolutionDir)Data\*.*"</PostBuildEvent>

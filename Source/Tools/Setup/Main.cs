@@ -140,6 +140,19 @@ namespace Setup
 
             if (openPDCInstall.ExitCode == 0)
             {
+                // Read registry installation parameters
+                string installPath = AddPathSuffix(Registry.LocalMachine.GetValue(@"SOFTWARE\Grid Protection Alliance\openPDC\InstallPath", "").ToString().Trim());
+                string targetBitSize = Registry.LocalMachine.GetValue(@"SOFTWARE\Grid Protection Alliance\openPDC\TargetBitSize", "32bit").ToString().Trim();
+
+                // Run configuration setup utility
+                Process configSetupUtility = new Process();
+
+                configSetupUtility.StartInfo.FileName = installPath + "ConfigurationSetupUtility.exe";
+                configSetupUtility.StartInfo.Arguments = "-install -" + targetBitSize;
+                configSetupUtility.StartInfo.UseShellExecute = false;
+                configSetupUtility.Start();
+                configSetupUtility.WaitForExit();
+
                 if (checkBoxConnectionTester.Checked)
                 {
                     Process connectionTesterInstall = new Process();
@@ -183,6 +196,28 @@ namespace Setup
         private void richTextBoxReleaseNotes_LinkClicked(object sender, LinkClickedEventArgs e)
         {
             Process.Start("Explorer.exe", e.LinkText);
+        }
+
+        /// <summary>
+        /// Makes sure path is suffixed with standard <see cref="Path.DirectorySeparatorChar"/>.
+        /// </summary>
+        /// <param name="filePath">The file path to be suffixed.</param>
+        /// <returns>Suffixed path.</returns>
+        public static string AddPathSuffix(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                filePath = Path.DirectorySeparatorChar.ToString();
+            }
+            else
+            {
+                char suffixChar = filePath[filePath.Length - 1];
+
+                if (suffixChar != Path.DirectorySeparatorChar && suffixChar != Path.AltDirectorySeparatorChar)
+                    filePath += Path.DirectorySeparatorChar;
+            }
+
+            return filePath;
         }
     }
 }

@@ -21,17 +21,10 @@
 //
 //******************************************************************************************************
 
-using System.Collections;
 using System.ComponentModel;
-using System.Configuration.Install;
-using System.Diagnostics;
 using System.Xml;
-using Microsoft.Win32;
-using TVA.IO;
-using TVA.PhasorProtocols;
-using System.IO;
-using System.Windows.Forms;
-using System;
+using TimeSeriesFramework;
+using TVA.Services.ServiceProcess;
 
 namespace openPDC
 {
@@ -41,9 +34,21 @@ namespace openPDC
         public ServiceInstall()
         {
             InitializeComponent();
+
+            // Reset the service failure count to zero after two minutes
+            serviceInstallerEx.FailResetPeriod = 120;
+
+            // Since .NET applications can gracefully fail the service as stopped with an error code, we execute actions on non-crash errors
+            serviceInstallerEx.ExecuteActionsOnNonCrashErrors = true;
+
+            // Define one recovery action to restart the service after failure, waiting two seconds before restart
+            serviceInstallerEx.DefineRecoverAction(RecoverAction.Restart, 2000);
+            
+            // Subsequent recovery actions will require user intervention
+            serviceInstallerEx.DefineRecoverAction(RecoverAction.None, 2000);
         }
 
-        // Get the configuration file name to use for system settings
+        // Define the configuration file name to use for system settings
         protected override string ConfigurationName
         {
             get

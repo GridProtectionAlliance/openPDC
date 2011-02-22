@@ -412,7 +412,7 @@ namespace openPDCManager.UserControls.CommonControls
                 if (m_connectionSettings != null)
                 {
                     string connectionString = m_connectionSettings.ConnectionString.ToLower();
-                    Dictionary<string, string> connectionSettings = connectionString.ParseKeyValuePairs(';', '=', '{', '}');
+                    Dictionary<string, string> connectionSettings = connectionString.ParseKeyValuePairs();
 
                     if (connectionSettings.ContainsKey("commandchannel"))
                     {
@@ -426,7 +426,7 @@ namespace openPDCManager.UserControls.CommonControls
                         connectionSettings.Remove("skipdisablerealtimedata");
                     }
 
-                    TextBoxConnectionString.Text = "TransportProtocol=" + m_connectionSettings.TransportProtocol.ToString() + ";" + connectionSettings.JoinKeyValuePairs(';', '=');
+                    TextBoxConnectionString.Text = "TransportProtocol=" + m_connectionSettings.TransportProtocol.ToString() + ";" + connectionSettings.JoinKeyValuePairs();
 
                     if (m_connectionSettings.ConnectionParameters != null)
                     {

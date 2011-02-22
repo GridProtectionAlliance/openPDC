@@ -22,18 +22,33 @@
 //******************************************************************************************************
 
 using System.ComponentModel;
-using TVA.PhasorProtocols;
+using TimeSeriesFramework;
 
 namespace openPDCManager
 {
     [RunInstaller(true)]
     public partial class ApplicationInstall : InstallerBase
     {
+        public ApplicationInstall()
+        {
+            RunSetupUtility = true;
+        }
+
+        // Define the configuration file name to use for system settings
         protected override string ConfigurationName
         {
             get
             {
-                return "openPDCManager.exe.Config";
+                return "openPDC.exe.Config";
+            }
+        }
+
+        // Define the configuration setup utility name to run post-install
+        protected override string SetupUtilityName
+        {
+            get
+            {
+                return "ConfigurationSetupUtility.exe";
             }
         }
     }

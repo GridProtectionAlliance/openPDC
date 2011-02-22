@@ -138,9 +138,6 @@
     <Compile Include="Anonymous\FrequencyDefinition.cs" />
     <Compile Include="Anonymous\NamespaceDoc.cs" />
     <Compile Include="Anonymous\PhasorDefinition.cs" />
-    <Compile Include="InstallerBase.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="BpaPdcStream\Concentrator.cs" />
     <Compile Include="BpaPdcStream\NamespaceDoc.cs" />
     <Compile Include="CalculatedMeasurementBase.cs" />

@@ -70,5 +70,17 @@ namespace openPDCManager.Properties {
                 this["ApplicationLeft"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ForceLoginDisplay {
+            get {
+                return ((bool)(this["ForceLoginDisplay"]));
+            }
+            set {
+                this["ForceLoginDisplay"] = value;
+            }
+        }
     }
 }

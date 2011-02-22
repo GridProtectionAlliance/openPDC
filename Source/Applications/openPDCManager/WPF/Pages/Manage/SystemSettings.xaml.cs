@@ -56,7 +56,7 @@ namespace openPDCManager.Pages.Manage
         void ButtonClear_Click(object sender, RoutedEventArgs e)
         {            
             //Load Default Settings.
-            IsolatedStorageManager.SetDefuaultStorage(true);
+            IsolatedStorageManager.SetDefaultStorage(true);
             
             LoadSettingsFromIsolatedStorage();
 

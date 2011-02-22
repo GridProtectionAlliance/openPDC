@@ -26,6 +26,7 @@
 using System;
 using System.Diagnostics;
 using System.Net;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -42,9 +43,8 @@ using openPDCManager.UserControls.CommonControls;
 using openPDCManager.UserControls.OutputStreamControls;
 using openPDCManager.Utilities;
 using TVA.Reflection;
-using openPDCManager.ModalDialogs;
+using TVA.Security;
 using TVA.Windows;
-using System.Threading;
 
 namespace openPDCManager
 {
@@ -55,39 +55,46 @@ namespace openPDCManager
     {
         #region [ Members ]
 
-        const double layoutRootHeight = 900;
-        const double layoutRootWidth = 1200;
-        WindowsServiceClient m_serviceClient;
-        bool m_applicationClosing = false;
+        // Constants
+        private const double layoutRootHeight = 900;
+        private const double layoutRootWidth = 1200;
+
+        // Fields
+        private WindowsServiceClient m_serviceClient;
+        private bool m_applicationClosing = false;
 
         #endregion
 
-        #region [ Constructor ]
+        #region [ Constructors ]
 
         public MasterLayoutWindow()
-        {            
+        {
             InitializeComponent();
-            if (!string.IsNullOrEmpty(Thread.CurrentPrincipal.Identity.Name))
-                TextBlockCurrentUser.Text = "(Current User: " + Thread.CurrentPrincipal.Identity.Name + ")";
+
+            Loaded += MainWindow_Loaded;
+            SizeChanged += MainWindow_SizeChanged;
+            MouseDown += MainWindow_MouseDown;
+            Closing += MainWindow_Closing;
 
             ButtonErrorLog.Content = new BitmapImage(new Uri(@"images/Log.png", UriKind.Relative));
+            ButtonErrorLog.Click += ButtonErrorLog_Click;
+            
             ButtonLogo.Content = new BitmapImage(new Uri(@"images/GPALock.png", UriKind.Relative));
+            
             UserControlSelectNode.NodeCollectionChanged += new openPDCManager.UserControls.CommonControls.SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);
-            UserControlSelectNode.ComboboxNode.SelectionChanged += new SelectionChangedEventHandler(ComboboxNode_SelectionChanged);
-            MainWindow.SizeChanged += new SizeChangedEventHandler(MainWindow_SizeChanged);
-            Loaded += new RoutedEventHandler(MasterLayoutWindow_Loaded);
-            Closing += new System.ComponentModel.CancelEventHandler(MasterLayoutWindow_Closing);
-            ButtonErrorLog.Click += new RoutedEventHandler(ButtonErrorLog_Click);
+            UserControlSelectNode.ComboboxNode.SelectionChanged += ComboboxNode_SelectionChanged;
 
             Version appVersion = AssemblyInfo.EntryAssembly.Version;
             Title = "openPDC Manager" + " v" + appVersion.Major + "." + appVersion.Minor + "." + appVersion.Build;
         }
-        
+
         #endregion
+
+        #region [ Methods ]
 
         #region [ Windows Event Handlers ]
 
-        void MasterLayoutWindow_Loaded(object sender, RoutedEventArgs e)
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             ((App)Application.Current).Principal = Thread.CurrentPrincipal;
 
@@ -101,7 +108,7 @@ namespace openPDCManager
             else
                 ConfigurationWizard.Visibility = Visibility.Collapsed;
 
-            IsolatedStorageManager.SetDefuaultStorage(false);
+            IsolatedStorageManager.SetDefaultStorage(false);
 
             if (UserControlSelectNode.ComboboxNode.Items.Count > 0)
             {
@@ -113,102 +120,107 @@ namespace openPDCManager
                 NodesUserControl nodesUserControl = new NodesUserControl();
                 ContentFrame.Navigate(nodesUserControl);
             }
+
+            TextBlockCurrentUser.Text = "Current User: " + SecurityProviderCache.CurrentProvider.UserData.LoginID;
         }
 
-        void MasterLayoutWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             m_applicationClosing = true;
             Properties.Settings.Default.Save();
-            DisconnectFromService();                        
+            DisconnectFromService();
             Application.Current.Shutdown();
         }
 
-        void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            LayoutRootScale.ScaleX = (e.NewSize.Width - 15)/ layoutRootWidth;
-            LayoutRootScale.ScaleY = (e.NewSize.Height - 35)/ layoutRootHeight;
+            LayoutRootScale.ScaleX = (e.NewSize.Width - 15) / layoutRootWidth;
+            LayoutRootScale.ScaleY = (e.NewSize.Height - 35) / layoutRootHeight;
         }
 
-        void MainWindow_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void MainWindow_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (e.ChangedButton == System.Windows.Input.MouseButton.Left)
                 this.DragMove();
         }
 
-        void ConnectToService()
+        private void ConnectToService()
         {
+            EllipseConnectionState.Fill = Application.Current.Resources["RedRadialGradientBrush"] as RadialGradientBrush;
+            ToolTipService.SetToolTip(EllipseConnectionState, "Disconnected from openPDC Service");
+
             if (!string.IsNullOrEmpty(((App)Application.Current).RemoteStatusServiceUrl))
             {
-                m_serviceClient = new WindowsServiceClient(((App)Application.Current).RemoteStatusServiceUrl);
                 try
                 {
-                    m_serviceClient.Helper.RemotingClient.ConnectionEstablished += new EventHandler(RemotingClient_ConnectionEstablished);
-                    m_serviceClient.Helper.RemotingClient.ConnectionTerminated += new EventHandler(RemotingClient_ConnectionTerminated);
+                    // Disconnect from existsing connection if active
+                    if (m_serviceClient != null)
+                        DisconnectFromService();
+
+                    m_serviceClient = new WindowsServiceClient(((App)Application.Current).RemoteStatusServiceUrl);
+                    m_serviceClient.Helper.RemotingClient.ConnectionEstablished += RemotingClient_ConnectionEstablished;
+                    m_serviceClient.Helper.RemotingClient.ConnectionTerminated += RemotingClient_ConnectionTerminated;
+                    m_serviceClient.Helper.RemotingClient.ConnectionAttempt += RemotingClient_ConnectionAttempt;
                     m_serviceClient.Helper.RemotingClient.MaxConnectionAttempts = -1;
-                    m_serviceClient.Helper.RemotingClient.ConnectionAttempt += new EventHandler(RemotingClient_ConnectionAttempt);
+
+                    // Start connection cycle
                     System.Threading.ThreadPool.QueueUserWorkItem(ConnectAsync, null);
 
-                    if (m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                    {
-                        EllipseConnectionState.Fill = Application.Current.Resources["GreenRadialGradientBrush"] as RadialGradientBrush;
-                        ToolTipService.SetToolTip(EllipseConnectionState, "Connected to openPDC Service");
-                    }
-                    else
-                    {
-                        EllipseConnectionState.Fill = Application.Current.Resources["RedRadialGradientBrush"] as RadialGradientBrush;
-                        ToolTipService.SetToolTip(EllipseConnectionState, "Disconnected from openPDC Service");
-                    }
+                    ((App)Application.Current).ServiceClient = m_serviceClient;
                 }
                 catch (Exception ex)
                 {
-                    CommonFunctions.LogException(null, "MasterLayoutWindow_Loaded", ex);
+                    CommonFunctions.LogException(null, "MasterLayoutWindow_Loaded", new InvalidOperationException("Exception encountered while attempting to establish openPDC connection: " + ex.Message, ex));
+                    ((App)Application.Current).ServiceClient = null;
                 }
-
-                ((App)Application.Current).ServiceClient = m_serviceClient;
             }
             else
             {
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please provide Remote Status Service Url value for node.", SystemMessage = "Remote Status Service Url value is not set for " + ((App)Application.Current).NodeName + " node." + Environment.NewLine + "Please go to Manage => Nodes screen to configure node settings." + Environment.NewLine + "For example: Server=localhost:8500", UserMessageType = MessageType.Error },
-                        ButtonType.OkOnly);
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please provide Remote Status Service Url value for node.", SystemMessage = "Remote Status Service Url value is not set for " + ((App)Application.Current).NodeName + " node." + Environment.NewLine + "Please go to Manage => Nodes screen to configure node settings." + Environment.NewLine + "For example: Server=localhost:8500", UserMessageType = MessageType.Error }, ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.ShowPopup();
             }
         }
 
-        void RemotingClient_ConnectionAttempt(object sender, EventArgs e)
+        private void RemotingClient_ConnectionAttempt(object sender, EventArgs e)
         {
-            
         }
 
-        void ConnectAsync(object state)
+        private void ConnectAsync(object state)
         {
             try
             {
                 if (!m_applicationClosing && m_serviceClient != null)
                     m_serviceClient.Helper.Connect();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException(null, "WPF.ConnectAsync", new InvalidOperationException("Connection to openPDC failed: " + ex.Message, ex));
+            }
         }
 
-        void DisconnectFromService()
+        private void DisconnectFromService()
         {
             try
             {
-                //if (m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                //{
-                    m_serviceClient.Helper.RemotingClient.ConnectionEstablished -= new EventHandler(RemotingClient_ConnectionEstablished);
-                    m_serviceClient.Helper.RemotingClient.ConnectionTerminated -= new EventHandler(RemotingClient_ConnectionTerminated);
-                    m_serviceClient.Helper.RemotingClient.MaxConnectionAttempts = 1;
-                    m_serviceClient.Helper.RemotingClient.Disconnect();
-                    m_serviceClient.Helper.Disconnect();                    
-                //}
-                //m_serviceClient.Dispose();
+                if (m_serviceClient != null)
+                {
+                    m_serviceClient.Helper.RemotingClient.ConnectionEstablished -= RemotingClient_ConnectionEstablished;
+                    m_serviceClient.Helper.RemotingClient.ConnectionTerminated -= RemotingClient_ConnectionTerminated;
+                    m_serviceClient.Helper.RemotingClient.ConnectionAttempt -= RemotingClient_ConnectionAttempt;
+                    m_serviceClient.Helper.Disconnect();
+                    m_serviceClient.Dispose();
+                }
+                m_serviceClient = null;
             }
-            catch { }        
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException(null, "WPF.DisconnectFromService", new InvalidOperationException("Exception encountered while attempting to disconnect from openPDC: " + ex.Message, ex));
+            }
         }
-                
-        void RemotingClient_ConnectionTerminated(object sender, EventArgs e)
-        {   
+
+        private void RemotingClient_ConnectionTerminated(object sender, EventArgs e)
+        {
             EllipseConnectionState.Dispatcher.BeginInvoke((Action)delegate()
             {
                 EllipseConnectionState.Fill = Application.Current.Resources["RedRadialGradientBrush"] as RadialGradientBrush;
@@ -252,7 +264,7 @@ namespace openPDCManager
             });
         }
 
-        void RemotingClient_ConnectionEstablished(object sender, EventArgs e)
+        private void RemotingClient_ConnectionEstablished(object sender, EventArgs e)
         {
             EllipseConnectionState.Dispatcher.BeginInvoke((Action)delegate()
             {
@@ -302,14 +314,14 @@ namespace openPDCManager
                         homePageUserControl.ButtonRestartOpenPDC.IsEnabled = true;
                 }
 
-            });            
+            });
         }
 
         #endregion
 
         #region [ Controls Event Handlers ]
 
-        void ButtonErrorLog_Click(object sender, RoutedEventArgs e)
+        private void ButtonErrorLog_Click(object sender, RoutedEventArgs e)
         {
             ErrorLogWindow errorLogWindow = new ErrorLogWindow();
             errorLogWindow.Owner = Window.GetWindow(this);
@@ -330,26 +342,26 @@ namespace openPDCManager
             errorLogWindow.Show();
         }
 
-        void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ComboboxNode_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (UserControlSelectNode.ComboboxNode.SelectedItem != null)
                 TextBlockNode.Text = ((Node)UserControlSelectNode.ComboboxNode.SelectedItem).Name;
-                        
+
             HomePageUserControl home = new HomePageUserControl();
             ContentFrame.Navigate(home);
-            
+
             if (m_serviceClient == null || m_serviceClient.Helper.RemotingClient.ConnectionString != ((App)Application.Current).RemoteStatusServiceUrl || m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Disconnected)
                 ConnectToService();
         }
 
-        void UserControlSelectNode_NodeCollectionChanged(object sender, RoutedEventArgs e)
+        private void UserControlSelectNode_NodeCollectionChanged(object sender, RoutedEventArgs e)
         {
             (sender as SelectNode).RefreshNodeList();
-        }        
+        }
 
         private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;            
+            this.WindowState = WindowState.Minimized;
         }
 
         private void ButtonMaximize_Click(object sender, RoutedEventArgs e)
@@ -364,6 +376,13 @@ namespace openPDCManager
         {
             this.Close();
         }
+
+        private void ButtonLogo_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("http://www.gridprotectionalliance.org/");
+        }
+
+        #endregion
 
         #region [ Menu Event Handlers ]
 
@@ -483,7 +502,7 @@ namespace openPDCManager
             {
                 //SubscriptionTest inputMonitor = new SubscriptionTest();
                 InputStatusUserControl inputMonitor = new InputStatusUserControl();
-                                
+
                 //InputMonitoringUserControl inputMonitor = new InputMonitoringUserControl();
                 ContentFrame.Navigate(inputMonitor);
             }
@@ -508,6 +527,7 @@ namespace openPDCManager
                 {
                     // Check for internet connectivity.
                     Dns.GetHostEntry("openpdc.codeplex.com");
+
                     // Launch the help page available on web.
                     Process.Start("http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration");
                 }
@@ -521,12 +541,6 @@ namespace openPDCManager
 
         #endregion
 
-        private void ButtonLogo_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start("http://www.gridprotectionalliance.org/");
-        }
-
         #endregion
-
     }
 }

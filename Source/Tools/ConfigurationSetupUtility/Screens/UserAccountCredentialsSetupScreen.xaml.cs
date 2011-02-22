@@ -23,12 +23,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Security;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using TVA;
 using TVA.Identity;
-using System.Threading;
-using System.Text.RegularExpressions;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -40,7 +40,7 @@ namespace ConfigurationSetupUtility.Screens
         #region [ Members ]
 
         // Fields
-        private Dictionary<string, object> m_state;        
+        private Dictionary<string, object> m_state;
 
         #endregion
 
@@ -52,7 +52,6 @@ namespace ConfigurationSetupUtility.Screens
         public UserAccountCredentialsSetupScreen()
         {
             InitializeComponent();
-            this.Loaded += new RoutedEventHandler(UserAccountCredentialsSetupScreen_Loaded);          
         }
 
         #endregion
@@ -125,16 +124,24 @@ namespace ConfigurationSetupUtility.Screens
                     string errorMessage = string.Empty;
                     try
                     {
-                        string[] userData = Thread.CurrentPrincipal.Identity.Name.Split(new char[] { '\\' });
+                        string[] userData = m_userNameTextBox.Text.Split(new char[] { '\\' });
 
-                        if (UserInfo.AuthenticateUser(userData[0], userData[1], m_userPasswordTextBox.Password.Trim(), out errorMessage) == null)
+                        if (userData.Length == 2)
                         {
-                            MessageBox.Show("Authentication failed. Please verify your username and password.", "Verifying Windows Credentials");
+                            if (UserInfo.AuthenticateUser(userData[0], userData[1], m_userPasswordTextBox.Password.Trim(), out errorMessage) == null)
+                            {
+                                MessageBox.Show("Authentication failed. Please verify your username and password.", "Verifying Windows Credentials");
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Username format is invalid: for Windows authentication please provide a username formatted like domain\\username.\r\nUse the machine name \"" + Environment.MachineName + "\" as the domain name if the system is not on a domain or you want to use a local account.", "Verifying Windows Credentials");
                             return false;
                         }
                     }
                     catch (Exception ex)
-                    {                        
+                    {
                         MessageBox.Show(ex.Message + Environment.NewLine + errorMessage, "Verifying Windows Credentials - ERROR!");
                         return false;
                     }
@@ -171,7 +178,7 @@ namespace ConfigurationSetupUtility.Screens
                     }
                     else if (string.IsNullOrEmpty(m_userFirstNameTextBox.Text.Trim()))
                     {
-                        MessageBox.Show("Please provide first name for administrative user", "Database User Credentials");                        
+                        MessageBox.Show("Please provide first name for administrative user", "Database User Credentials");
                         m_userFirstNameTextBox.Focus();
                         return false;
                     }
@@ -183,10 +190,24 @@ namespace ConfigurationSetupUtility.Screens
                     }
                 }
 
-                //Update state values to the latest entered on the form.
+                // Update state values to the latest entered on the form.
                 InitializeState();
                 return true;
             }
+        }
+
+        private SecureString ConvertToSecureString(string value)
+        {
+            SecureString ret = new SecureString();
+
+            foreach (char c in value)
+            {
+                ret.AppendChar(c);
+            }
+
+            ret.MakeReadOnly();
+
+            return ret;
         }
 
         /// <summary>
@@ -209,7 +230,11 @@ namespace ConfigurationSetupUtility.Screens
         /// Allows the screen to update the navigation buttons after a change is made
         /// that would affect the user's ability to navigate to other screens.
         /// </summary>
-        public Action UpdateNavigation { get; set; }
+        public Action UpdateNavigation
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -220,21 +245,21 @@ namespace ConfigurationSetupUtility.Screens
         {
             if (m_state != null)
             {
-                m_state["authenticationType"] =  (bool)RadioButtonWindowsAuthentication.IsChecked ? "windows" : "database";
+                m_state["authenticationType"] = (bool)RadioButtonWindowsAuthentication.IsChecked ? "windows" : "database";
                 m_state["adminUserName"] = m_userNameTextBox.Text.Trim();
                 m_state["adminPassword"] = m_userPasswordTextBox.Password.Trim();
                 m_state["adminUserFirstName"] = m_userFirstNameTextBox.Text.Trim();
                 m_state["adminUserLastName"] = m_userLastNameTextBox.Text.Trim();
             }
         }
-               
+
         private void RadioButtonWindowsAuthentication_Checked(object sender, RoutedEventArgs e)
         {
             //i.e. Windows Authentication Selected.            
             m_messageTextBlock.Text = "Please enter current credentials for active directory user to be the administrator for openPDC. Credentials will be validated by operating system.";
             m_userAccountHeaderTextBlock.Text = "Windows Authentication";
             m_userNameTextBox.Text = Thread.CurrentPrincipal.Identity.Name;
-            m_dbInfoGrid.Visibility = Visibility.Collapsed;            
+            m_dbInfoGrid.Visibility = Visibility.Collapsed;
         }
 
         private void RadioButtonWindowsAuthentication_Unchecked(object sender, RoutedEventArgs e)
@@ -246,11 +271,11 @@ namespace ConfigurationSetupUtility.Screens
             m_dbInfoGrid.Visibility = Visibility.Visible;
         }
 
-        void UserAccountCredentialsSetupScreen_Loaded(object sender, RoutedEventArgs e)
+        private void UserAccountCredentialsSetupScreen_Loaded(object sender, RoutedEventArgs e)
         {
             m_userNameTextBox.SelectAll();
             m_userNameTextBox.Focus();
-            RadioButtonWindowsAuthentication.IsChecked = true;            
+            RadioButtonWindowsAuthentication.IsChecked = true;
         }
 
         #endregion

@@ -28,11 +28,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using TimeSeriesFramework.Adapters;
 using TVA;
+using TVA.ErrorManagement;
+using TVA.IO;
 using TVA.Reflection;
 
 namespace ConfigurationSetupUtility.Screens
@@ -135,9 +136,20 @@ namespace ConfigurationSetupUtility.Screens
             m_parametersScreen = new HistorianConnectionStringScreen();
             m_historianAdapters = new List<HistorianAdapter>();
 
-            foreach (Type type in GetHistorianTypes())
+            // This can fail if user is not running under proper credentials
+            try
             {
-                m_historianAdapters.Add(new HistorianAdapter(type));
+                foreach (Type type in GetHistorianTypes())
+                {
+                    m_historianAdapters.Add(new HistorianAdapter(type));
+                }
+            }
+            catch (Exception ex)
+            {
+                LogFile logger = new LogFile();
+                logger.FileName = FilePath.GetAbsolutePath("ErrorLog.txt");
+                logger.WriteTimestampedLine(ErrorLogger.GetExceptionInfo(ex, false));
+                logger.Dispose();
             }
 
             if (m_historianAdapters.Count > 0)
