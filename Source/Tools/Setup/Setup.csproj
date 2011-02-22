@@ -87,6 +87,7 @@
   <PropertyGroup>
     <StartupObject>Setup.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
