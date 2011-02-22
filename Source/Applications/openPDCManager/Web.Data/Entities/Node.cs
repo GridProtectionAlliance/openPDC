@@ -22,6 +22,7 @@
 //******************************************************************************************************
 
 
+using System;
 namespace openPDCManager.Data.Entities
 {
 	public class Node
@@ -40,5 +41,9 @@ namespace openPDCManager.Data.Entities
 		public string RemoteStatusServiceUrl { get; set; }
         public string RealTimeStatisticServiceUrl { get; set; }
 		public string CompanyName { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
 	}
 }

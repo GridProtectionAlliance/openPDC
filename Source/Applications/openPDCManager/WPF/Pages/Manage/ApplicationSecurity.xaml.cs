@@ -154,8 +154,8 @@ namespace openPDCManager.Pages.Manage
                 ButtonSaveUser.IsEnabled = false;
             }
 
-            ComboBoxAuthentication.Items.Add("Active Directory");
-            ComboBoxAuthentication.Items.Add("Database");
+            ComboBoxAuthentication.Items.Add("Windows Authentication");
+            ComboBoxAuthentication.Items.Add("Database Authentication");
             ComboBoxAuthentication.SelectedIndex = 0;            
             GetUsers();
             ClearUserInformation();
@@ -237,9 +237,9 @@ namespace openPDCManager.Pages.Manage
                 if (!m_selectedUser.UseADAuthentication)
                     DatePickerPasswordExpiry.SelectedDate = m_selectedUser.ChangePasswordOn;
                 if (m_selectedUser.UseADAuthentication)
-                    ComboBoxAuthentication.SelectedItem = "Active Directory";
+                    ComboBoxAuthentication.SelectedItem = "Windows Authentication";
                 else
-                    ComboBoxAuthentication.SelectedItem = "Database";
+                    ComboBoxAuthentication.SelectedItem = "Database Authentication";
                 ButtonSaveUser.Tag = "Update";
                 m_editUserMode = true;
             }
@@ -320,7 +320,7 @@ namespace openPDCManager.Pages.Manage
                     user.ChangePasswordOn = DateTime.MinValue;
                     user.UpdatedBy = ((App)Application.Current).Principal.Identity.Name;
                     user.UpdatedOn = DateTime.UtcNow;
-                    if (ComboBoxAuthentication.SelectedValue.ToString() == "Database")
+                    if (ComboBoxAuthentication.SelectedValue.ToString() == "Database Authentication")
                     {
 
                         user.FirstName = TextBoxFirstName.Text.CleanText();
@@ -353,7 +353,7 @@ namespace openPDCManager.Pages.Manage
                     else
                     {
                         //don't need password for active directory users.
-                        if (ComboBoxAuthentication.SelectedValue.ToString() == "Database")
+                        if (ComboBoxAuthentication.SelectedValue.ToString() == "Database Authentication")
                         {
                             if (string.IsNullOrEmpty(TextBoxPassword.Password))
                                 throw new Exception(m_invalidPasswordMessage.ToString());
@@ -748,7 +748,7 @@ namespace openPDCManager.Pages.Manage
 
         void ChangeUserInfoVisualization()
         {
-            if (ComboBoxAuthentication.SelectedValue.ToString() == "Active Directory")
+            if (ComboBoxAuthentication.SelectedValue.ToString() == "Windows Authentication")
             {
                 TextBoxPassword.IsEnabled = false;
                 TextBoxFirstName.IsEnabled = false;
@@ -797,7 +797,7 @@ namespace openPDCManager.Pages.Manage
                 return isValid;
             }
 
-            if (ComboBoxAuthentication.SelectedValue.ToString() == "Database")
+            if (ComboBoxAuthentication.SelectedValue.ToString() == "Database Authentication")
             {
                 //if it is a new user, then only password is required. Otherwise leave existing password as it is.
                 if (!m_editUserMode && string.IsNullOrEmpty(TextBoxPassword.Password))

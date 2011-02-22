@@ -51,6 +51,66 @@ namespace openPDCManager.Data
     /// </summary>
     public static class CommonFunctions
     {
+        public static string s_currentUser;
+
+        /// <summary>
+        /// Purpose of this method is to supply current user information from the UI to DELETE trigger for change logging.
+        /// This method must be called before any delete operation on the database in order to log who deleted this record.
+        /// For SQL server it sets user name into CONTEXT_INFO().
+        /// For MySQL server it sets user name into session variable @context.
+        /// MS Access is not supported for change logging.
+        /// For any other database in the future, such as Oracle, this logic must be extended to support change log in the database.
+        /// </summary>
+        /// <param name="connection">Connection used to set user context before any delete operation.</param>
+        public static void SetCurrentUserContext(DataConnection connection)
+        {           
+            bool createdConnection = false;
+            try
+            {
+                if (string.IsNullOrEmpty(s_currentUser))
+                    s_currentUser = Thread.CurrentPrincipal.Identity.Name;
+
+                if (!string.IsNullOrEmpty(s_currentUser))
+                {
+                    if (connection == null)
+                    {
+                        connection = new DataConnection();
+                        createdConnection = true;
+                    }
+                    IDbCommand command;
+                    //First of all set Current User for the database session for this connection.
+                    if (connection.Connection.GetType().Name.ToLower() == "sqlconnection")
+                    {
+                        string contextSql = "DECLARE @context VARBINARY(128)\n SELECT @context = CONVERT(VARBINARY(128), CONVERT(VARCHAR(128), @userName))\n SET CONTEXT_INFO @context";
+                        command = connection.Connection.CreateCommand();
+                        command.CommandType = CommandType.Text;
+                        command.CommandText = contextSql;
+                        command.Parameters.Add(AddWithValue(command, "@userName", s_currentUser));
+                        command.ExecuteNonQuery();
+                    }
+                    else if (connection.Connection.GetType().Name.ToLower() == "mysqlconnection")
+                    {
+                        try
+                        {
+                            command = connection.Connection.CreateCommand();
+                            command.CommandType = CommandType.Text;
+                            command.CommandText = "SET @context = '" + s_currentUser + "'";
+                            command.ExecuteNonQuery();
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception(ex.Message);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }            
+        }
+                
         static DataSet GetResultSet(IDbCommand command)		//This function was added because at few places mySQL complained about foreign key constraints which I was not able to figure out.
         {
             //TODO: Find a way to get rid of this function for mySQL.
@@ -1050,18 +1110,27 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
 
                 if (isNew)
-                    command.CommandText = "INSERT INTO Company (Acronym, MapAcronym, Name, URL, LoadOrder) VALUES (@acronym, @mapAcronym, @name, @url, @loadOrder)";
+                    command.CommandText = "INSERT INTO Company (Acronym, MapAcronym, Name, URL, LoadOrder, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) VALUES (@acronym, @mapAcronym, @name, @url, @loadOrder, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
-                    command.CommandText = "UPDATE Company SET Acronym = @acronym, MapAcronym = @mapAcronym, Name = @name, URL = @url, LoadOrder = @loadOrder WHERE ID = @id";
+                    command.CommandText = "UPDATE Company SET Acronym = @acronym, MapAcronym = @mapAcronym, Name = @name, URL = @url, LoadOrder = @loadOrder, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@acronym", company.Acronym.Replace(" ", "").ToUpper()));
                 command.Parameters.Add(AddWithValue(command, "@mapAcronym", company.MapAcronym.Replace(" ", "").ToUpper()));
                 command.Parameters.Add(AddWithValue(command, "@name", company.Name));
                 command.Parameters.Add(AddWithValue(command, "@url", company.URL));
                 command.Parameters.Add(AddWithValue(command, "@loadOrder", company.LoadOrder));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
+                {                    
                     command.Parameters.Add(AddWithValue(command, "@id", company.ID));
+                }
 
                 command.ExecuteNonQuery();				
                 return "Company Information Saved Successfully";
@@ -1170,15 +1239,15 @@ namespace openPDCManager.Data
                 if (isNew)
                     command.CommandText = "INSERT INTO OutputStream (NodeID, Acronym, Name, Type, ConnectionString, IDCode, CommandChannel, DataChannel, AutoPublishConfigFrame, AutoStartDataChannel, NominalFrequency, FramesPerSecond, LagTime, LeadTime, " +
                                         "UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, DownsamplingMethod, DataFormat, CoordinateFormat, CurrentScalingValue, VoltageScalingValue, " +
-                                        "AnalogScalingValue, DigitalMaskValue, PerformTimestampReasonabilityCheck) VALUES (@nodeID, @acronym, @name, @type, @connectionString, @idCode, @commandChannel, @dataChannel, @autoPublishConfigFrame, @autoStartDataChannel, @nominalFrequency, @framesPerSecond, " +
+                                        "AnalogScalingValue, DigitalMaskValue, PerformTimestampReasonabilityCheck, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) VALUES (@nodeID, @acronym, @name, @type, @connectionString, @idCode, @commandChannel, @dataChannel, @autoPublishConfigFrame, @autoStartDataChannel, @nominalFrequency, @framesPerSecond, " +
                                         "@lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled, @ignoreBadTimeStamps, @timeResolution, @allowPreemptivePublishing, @downsamplingMethod, @dataFormat, @coordinateFormat, " +
-                                        "@currentScalingValue, @voltageScalingValue, @analogScalingValue, @digitalMaskValue, @performTimestampReasonabilityCheck)";
+                                        "@currentScalingValue, @voltageScalingValue, @analogScalingValue, @digitalMaskValue, @performTimestampReasonabilityCheck, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "UPDATE OutputStream SET NodeID = @nodeID, Acronym = @acronym, Name = @name, Type = @type, ConnectionString = @connectionString, IDCode = @idCode, CommandChannel = @commandChannel, DataChannel = @dataChannel, AutoPublishConfigFrame = @autoPublishConfigFrame, " +
                                         "AutoStartDataChannel = @autoStartDataChannel, NominalFrequency = @nominalFrequency, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, UseLocalClockAsRealTime = @useLocalClockAsRealTime, " +
                                         "AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled, IgnoreBadTimeStamps = @ignoreBadTimeStamps, TimeResolution = @timeResolution, AllowPreemptivePublishing = @allowPreemptivePublishing, " +
                                         "DownsamplingMethod = @downsamplingMethod, DataFormat = @dataFormat, CoordinateFormat = @coordinateFormat, CurrentScalingValue = @currentScalingValue, VoltageScalingValue = @voltageScalingValue, " +
-                                        "AnalogScalingValue = @analogScalingValue, DigitalMaskValue = @digitalMaskValue, PerformTimestampReasonabilityCheck = @performTimestampReasonabilityCheck WHERE ID = @id";
+                                        "AnalogScalingValue = @analogScalingValue, DigitalMaskValue = @digitalMaskValue, PerformTimestampReasonabilityCheck = @performTimestampReasonabilityCheck, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", outputStream.NodeID));
                 command.Parameters.Add(AddWithValue(command, "@acronym", outputStream.Acronym.Replace(" ", "").ToUpper()));
@@ -1209,9 +1278,18 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@analogScalingValue", outputStream.AnalogScalingValue));
                 command.Parameters.Add(AddWithValue(command, "@digitalMaskValue", outputStream.DigitalMaskValue));
                 command.Parameters.Add(AddWithValue(command, "@performTimestampReasonabilityCheck", outputStream.PerformTimestampReasonabilityCheck));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
+                {
                     command.Parameters.Add(AddWithValue(command, "@id", outputStream.ID));
+                }
 
                 command.ExecuteNonQuery();
 
@@ -1239,7 +1317,6 @@ namespace openPDCManager.Data
         public static string DeleteOutputStream(DataConnection connection, int outputStreamID)
         {
             bool createdConnection = false;
-
              try
              {
                  if (connection == null)
@@ -1247,6 +1324,9 @@ namespace openPDCManager.Data
                      connection = new DataConnection();
                      createdConnection = true;
                  }
+
+                 //Setup current users context for Delete trigger.
+                 SetCurrentUserContext(connection);
 
                  IDbCommand command = connection.Connection.CreateCommand();
                  command.CommandType = CommandType.Text;
@@ -1377,20 +1457,29 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
 
                 if (isNew)
-                    command.CommandText = "Insert Into OutputStreamMeasurement (NodeID, AdapterID, HistorianID, PointID, SignalReference) " +
-                        "Values (@nodeID, @adapterID, @historianID, @pointID, @signalReference)";
+                    command.CommandText = "Insert Into OutputStreamMeasurement (NodeID, AdapterID, HistorianID, PointID, SignalReference, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
+                        "Values (@nodeID, @adapterID, @historianID, @pointID, @signalReference, @updatedBy, UpdatedOn, @createdBy, CreatedOn)";
                 else
                     command.CommandText = "Update OutputStreamMeasurement Set NodeID = @nodeID, AdapterID = @adapterID, HistorianID = @historianID, " +
-                        "PointID = @pointID, SignalReference = @signalReference WHERE ID = @id";
+                        "PointID = @pointID, SignalReference = @signalReference, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamMeasurement.NodeID));
                 command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamMeasurement.AdapterID));
                 command.Parameters.Add(AddWithValue(command, "@historianID", outputStreamMeasurement.HistorianID ?? (object)DBNull.Value));
                 command.Parameters.Add(AddWithValue(command, "@pointID", outputStreamMeasurement.PointID));
                 command.Parameters.Add(AddWithValue(command, "@signalReference", outputStreamMeasurement.SignalReference));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
+                {                    
                     command.Parameters.Add(AddWithValue(command, "@id", outputStreamMeasurement.ID));
+                }
 
                 command.ExecuteNonQuery();
                 return "Output Stream Measurement Information Saved Successfully";
@@ -1412,6 +1501,9 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
+
+                //Setup current users context for Delete trigger.
+                SetCurrentUserContext(connection);
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -1557,12 +1649,12 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
 
                 if (isNew)
-                    command.CommandText = "Insert Into OutputStreamDevice (NodeID, AdapterID, IDCode, Acronym, BpaAcronym, Name, LoadOrder, Enabled, PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat) " +
-                        "Values (@nodeID, @adapterID, @idCode, @acronym, @bpaAcronym, @name, @loadOrder, @enabled, @phasorDataFormat, @frequencyDataFormat, @analogDataFormat, @coordinateFormat)";
+                    command.CommandText = "Insert Into OutputStreamDevice (NodeID, AdapterID, IDCode, Acronym, BpaAcronym, Name, LoadOrder, Enabled, PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
+                        "Values (@nodeID, @adapterID, @idCode, @acronym, @bpaAcronym, @name, @loadOrder, @enabled, @phasorDataFormat, @frequencyDataFormat, @analogDataFormat, @coordinateFormat, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update OutputStreamDevice Set NodeID = @nodeID, AdapterID = @adapterID, IDCode = @idCode, Acronym = @acronym, " +
                         "BpaAcronym = @bpaAcronym, Name = @name, LoadOrder = @loadOrder, Enabled = @enabled, PhasorDataFormat = @phasorDataFormat, " +
-                        "FrequencyDataFormat = @frequencyDataFormat, AnalogDataFormat = @analogDataFormat, CoordinateFormat = @coordinateFormat Where ID = @id";
+                        "FrequencyDataFormat = @frequencyDataFormat, AnalogDataFormat = @analogDataFormat, CoordinateFormat = @coordinateFormat, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDevice.NodeID));
                 command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamDevice.AdapterID));
@@ -1576,8 +1668,15 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@frequencyDataFormat", outputStreamDevice.FrequencyDataFormat));
                 command.Parameters.Add(AddWithValue(command, "@analogDataFormat", outputStreamDevice.AnalogDataFormat));
                 command.Parameters.Add(AddWithValue(command, "@coordinateFormat", outputStreamDevice.CoordinateFormat));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
                 {
                     command.Parameters.Add(AddWithValue(command, "@id", outputStreamDevice.ID));
 
@@ -1605,7 +1704,7 @@ namespace openPDCManager.Data
                             command1.CommandText = "Update OutputStreamMeasurement Set SignalReference = Replace(SignalReference, @originalAcronym, @newAcronym) Where AdapterID = @adapterID";	// and SignalReference LIKE @signalReference";
                             command1.Parameters.Add(AddWithValue(command1, "@originalAcronym", originalAcronym));
                             command1.Parameters.Add(AddWithValue(command1, "@newAcronym", outputStreamDevice.Acronym));
-                            command1.Parameters.Add(AddWithValue(command1, "@adapterID", outputStreamDevice.AdapterID));                            
+                            command1.Parameters.Add(AddWithValue(command1, "@adapterID", outputStreamDevice.AdapterID));
                             command1.ExecuteNonQuery();
                         }
                     }
@@ -1644,6 +1743,9 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
+
+                //Setup current users context for Delete trigger.
+                SetCurrentUserContext(connection);
 
                 foreach (string acronym in devicesToBeDeleted)
                 {
@@ -1850,11 +1952,11 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
 
                 if (isNew)
-                    command.CommandText = "Insert Into OutputStreamDevicePhasor (NodeID, OutputStreamDeviceID, Label, Type, Phase, LoadOrder, ScalingValue) " +
-                        "Values (@nodeID, @outputStreamDeviceID, @label, @type, @phase, @loadOrder, @scalingValue)";
+                    command.CommandText = "Insert Into OutputStreamDevicePhasor (NodeID, OutputStreamDeviceID, Label, Type, Phase, LoadOrder, ScalingValue, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
+                        "Values (@nodeID, @outputStreamDeviceID, @label, @type, @phase, @loadOrder, @scalingValue, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update OutputStreamDevicePhasor Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
-                        "Type = @type, Phase = @phase, LoadOrder = @loadOrder, ScalingValue = @scalingValue Where ID = @id";
+                        "Type = @type, Phase = @phase, LoadOrder = @loadOrder, ScalingValue = @scalingValue, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDevicePhasor.NodeID));
                 command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDevicePhasor.OutputStreamDeviceID));
@@ -1863,9 +1965,18 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@phase", outputStreamDevicePhasor.Phase));
                 command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDevicePhasor.LoadOrder));
                 command.Parameters.Add(AddWithValue(command, "@scalingValue", outputStreamDevicePhasor.ScalingValue));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
+                {
                     command.Parameters.Add(AddWithValue(command, "@id", outputStreamDevicePhasor.ID));
+                }
 
                 command.ExecuteNonQuery();
                 return "Output Stream Device Phasor Information Saved Successfully";
@@ -1938,11 +2049,11 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
 
                 if (isNew)
-                    command.CommandText = "Insert Into OutputStreamDeviceAnalog (NodeID, OutputStreamDeviceID, Label, Type, LoadOrder, ScalingValue) " +
-                        "Values (@nodeID, @outputStreamDeviceID, @label, @type, @loadOrder, @scalingValue)";
+                    command.CommandText = "Insert Into OutputStreamDeviceAnalog (NodeID, OutputStreamDeviceID, Label, Type, LoadOrder, ScalingValue, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
+                        "Values (@nodeID, @outputStreamDeviceID, @label, @type, @loadOrder, @scalingValue, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update OutputStreamDeviceAnalog Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
-                        "Type = @type, LoadOrder = @loadOrder, ScalingValue = @scalingValue Where ID = @id";
+                        "Type = @type, LoadOrder = @loadOrder, ScalingValue = @scalingValue, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDeviceAnalog.NodeID));
                 command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceAnalog.OutputStreamDeviceID));
@@ -1950,10 +2061,19 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@type", outputStreamDeviceAnalog.Type));
                 command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDeviceAnalog.LoadOrder));
                 command.Parameters.Add(AddWithValue(command, "@scalingValue", outputStreamDeviceAnalog.ScalingValue));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
+                {
                     command.Parameters.Add(AddWithValue(command, "@id", outputStreamDeviceAnalog.ID));
-
+                }
+                
                 command.ExecuteNonQuery();
                 return "Output Stream Device Analog Information Saved Successfully";
             }			
@@ -2023,19 +2143,29 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
 
                 if (isNew)
-                    command.CommandText = "Insert Into OutputStreamDeviceDigital (NodeID, OutputStreamDeviceID, Label, LoadOrder, MaskValue) " +
-                        "Values (@nodeID, @outputStreamDeviceID, @label, @loadOrder, @maskValue)";
+                    command.CommandText = "Insert Into OutputStreamDeviceDigital (NodeID, OutputStreamDeviceID, Label, LoadOrder, MaskValue, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
+                        "Values (@nodeID, @outputStreamDeviceID, @label, @loadOrder, @maskValue, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update OutputStreamDeviceDigital Set NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID, Label = @label, " +
-                        "LoadOrder = @loadOrder, MaskValue = @maskValue Where ID = @id";
+                        "LoadOrder = @loadOrder, MaskValue = @maskValue, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", outputStreamDeviceDigital.NodeID));
                 command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceID", outputStreamDeviceDigital.OutputStreamDeviceID));
                 command.Parameters.Add(AddWithValue(command, "@label", outputStreamDeviceDigital.Label));
                 command.Parameters.Add(AddWithValue(command, "@loadOrder", outputStreamDeviceDigital.LoadOrder));
                 command.Parameters.Add(AddWithValue(command, "@maskValue", outputStreamDeviceDigital.MaskValue));
-                if (!isNew)
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
+                {
                     command.Parameters.Add(AddWithValue(command, "@id", outputStreamDeviceDigital.ID));
+                }
 
                 command.ExecuteNonQuery();
                 return "Output Stream Device Digital Information Saved Successfully";
@@ -2167,11 +2297,11 @@ namespace openPDCManager.Data
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 if (isNew)
-                    command.CommandText = "Insert Into Historian (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, MeasurementReportingInterval, Description, LoadOrder, Enabled) Values " +
-                        "(@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @isLocal, @measurementReportingInterval, @description, @loadOrder, @enabled)";
+                    command.CommandText = "Insert Into Historian (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, MeasurementReportingInterval, Description, LoadOrder, Enabled, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) Values " +
+                        "(@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @isLocal, @measurementReportingInterval, @description, @loadOrder, @enabled, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update Historian Set NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, TypeName = @typeName, " +
-                        "ConnectionString = @connectionString, IsLocal = @isLocal, MeasurementReportingInterval = @measurementReportingInterval, Description = @description, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+                        "ConnectionString = @connectionString, IsLocal = @isLocal, MeasurementReportingInterval = @measurementReportingInterval, Description = @description, LoadOrder = @loadOrder, Enabled = @enabled, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", historian.NodeID));
                 command.Parameters.Add(AddWithValue(command, "@acronym", historian.Acronym.Replace(" ", "").ToUpper()));
@@ -2184,8 +2314,15 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@description", historian.Description));
                 command.Parameters.Add(AddWithValue(command, "@loadOrder", historian.LoadOrder));
                 command.Parameters.Add(AddWithValue(command, "@enabled", historian.Enabled));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
                     command.Parameters.Add(AddWithValue(command, "@id", historian.ID));
 
                 command.ExecuteNonQuery();
@@ -2330,12 +2467,12 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
 
                 if (isNew)
-                    command.CommandText = "Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, ImagePath, Master, LoadOrder, Enabled, TimeSeriesDataServiceUrl, RemoteStatusServiceUrl, RealTimeStatisticServiceUrl) " +
-                        "Values (@name, @companyID, @longitude, @latitude, @description, @image, @master, @loadOrder, @enabled, @timeSeriesDataServiceUrl, @remoteStatusServiceUrl, @realTimeStatisticServiceUrl)";
+                    command.CommandText = "Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, ImagePath, Master, LoadOrder, Enabled, TimeSeriesDataServiceUrl, RemoteStatusServiceUrl, RealTimeStatisticServiceUrl, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
+                        "Values (@name, @companyID, @longitude, @latitude, @description, @image, @master, @loadOrder, @enabled, @timeSeriesDataServiceUrl, @remoteStatusServiceUrl, @realTimeStatisticServiceUrl, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update Node Set Name = @name, CompanyID = @companyID, Longitude = @longitude, Latitude = @latitude, Description = @description, ImagePath = @image, " + 
                         "Master = @master, LoadOrder = @loadOrder, Enabled = @enabled, TimeSeriesDataServiceUrl = @timeSeriesDataServiceUrl, RemoteStatusServiceUrl = @remoteStatusServiceUrl, " +
-                        "RealTimeStatisticServiceUrl = @realTimeStatisticServiceUrl Where ID = @id";
+                        "RealTimeStatisticServiceUrl = @realTimeStatisticServiceUrl, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@name", node.Name));
                 command.Parameters.Add(AddWithValue(command, "@companyID", node.CompanyID ?? (object)DBNull.Value));
@@ -2349,11 +2486,19 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@timeSeriesDataServiceUrl", node.TimeSeriesDataServiceUrl));
                 command.Parameters.Add(AddWithValue(command, "@remoteStatusServiceUrl", node.RemoteStatusServiceUrl));
                 command.Parameters.Add(AddWithValue(command, "@realTimeStatisticServiceUrl", node.RealTimeStatisticServiceUrl));
-                            
-                if (!isNew)
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+
+                if (isNew)
                 {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
+                {
+
                     if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
-                        command.Parameters.Add(AddWithValue(command, "@id", "{" + node.ID + "}"));						
+                        command.Parameters.Add(AddWithValue(command, "@id", "{" + node.ID + "}"));
                     else
                         command.Parameters.Add(AddWithValue(command, "@id", node.ID));
                 }
@@ -2565,17 +2710,24 @@ namespace openPDCManager.Data
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 if (isNew)
-                    command.CommandText = "Insert Into Vendor (Acronym, Name, PhoneNumber, ContactEmail, URL) Values (@acronym, @name, @phoneNumber, @contactEmail, @url)";
+                    command.CommandText = "Insert Into Vendor (Acronym, Name, PhoneNumber, ContactEmail, URL, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) Values (@acronym, @name, @phoneNumber, @contactEmail, @url, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
-                    command.CommandText = "Update Vendor Set Acronym = @acronym, Name = @name, PhoneNumber = @phoneNumber, ContactEmail = @contactEmail, URL = @url Where ID = @id";
+                    command.CommandText = "Update Vendor Set Acronym = @acronym, Name = @name, PhoneNumber = @phoneNumber, ContactEmail = @contactEmail, URL = @url, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@acronym", vendor.Acronym.Replace(" ", "").ToUpper()));
                 command.Parameters.Add(AddWithValue(command, "@name", vendor.Name));
                 command.Parameters.Add(AddWithValue(command, "@phoneNumber", vendor.PhoneNumber));
                 command.Parameters.Add(AddWithValue(command, "@contactEmail", vendor.ContactEmail));
                 command.Parameters.Add(AddWithValue(command, "@url", vendor.URL));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
                     command.Parameters.Add(AddWithValue(command, "@id", vendor.ID));
 
                 command.ExecuteNonQuery();
@@ -2641,16 +2793,23 @@ namespace openPDCManager.Data
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 if (isNew)
-                    command.CommandText = "Insert Into VendorDevice (VendorID, Name, Description, URL) Values (@vendorID, @name, @description, @url)";
+                    command.CommandText = "Insert Into VendorDevice (VendorID, Name, Description, URL, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) Values (@vendorID, @name, @description, @url, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
-                    command.CommandText = "Update VendorDevice Set VendorID = @vendorID, Name = @name, Description = @description, URL = @url Where ID = @id";
+                    command.CommandText = "Update VendorDevice Set VendorID = @vendorID, Name = @name, Description = @description, URL = @url, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@vendorID", vendorDevice.VendorID));
                 command.Parameters.Add(AddWithValue(command, "@name", vendorDevice.Name));
                 command.Parameters.Add(AddWithValue(command, "@description", vendorDevice.Description));
                 command.Parameters.Add(AddWithValue(command, "@url", vendorDevice.URL));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
                     command.Parameters.Add(AddWithValue(command, "@id", vendorDevice.ID));
 
                 command.ExecuteNonQuery();
@@ -2706,7 +2865,6 @@ namespace openPDCManager.Data
         public static List<Device> GetDeviceList(DataConnection connection, string nodeID)
         {
             bool createdConnection = false;
-//            DataConnection connection = new DataConnection();
             try
             {
                 if (connection == null)
@@ -2817,15 +2975,15 @@ namespace openPDCManager.Data
 
                 if (isNew)
                     command.CommandText = "Insert Into Device (NodeID, ParentID, Acronym, Name, IsConcentrator, CompanyID, HistorianID, AccessID, VendorDeviceID, ProtocolID, Longitude, Latitude, InterconnectionID, ConnectionString, TimeZone, FramesPerSecond, TimeAdjustmentTicks, " +
-                        "DataLossInterval, ContactList, MeasuredLines, LoadOrder, Enabled, AllowedParsingExceptions, ParsingExceptionWindow, DelayedConnectionInterval, AllowUseOfCachedConfiguration, AutoStartDataParsingSequence, SkipDisableRealTimeData, MeasurementReportingInterval) " +
+                        "DataLossInterval, ContactList, MeasuredLines, LoadOrder, Enabled, AllowedParsingExceptions, ParsingExceptionWindow, DelayedConnectionInterval, AllowUseOfCachedConfiguration, AutoStartDataParsingSequence, SkipDisableRealTimeData, MeasurementReportingInterval, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
                         "Values (@nodeID, @parentID, @acronym, @name, @isConcentrator, @companyID, @historianID, @accessID, @vendorDeviceID, @protocolID, @longitude, @latitude, @interconnectionID, " +
                         "@connectionString, @timezone, @framesPerSecond, @timeAdjustmentTicks, @dataLossInterval, @contactList, @measuredLines, @loadOrder, @enabled, @allowedParsingExceptions, " + 
-                        "@parsingExceptionWindow, @delayedConnectionInterval, @allowUseOfCachedConfiguration, @autoStartDataParsingSequence, @skipDisableRealTimeData, @measurementReportingInterval)";
+                        "@parsingExceptionWindow, @delayedConnectionInterval, @allowUseOfCachedConfiguration, @autoStartDataParsingSequence, @skipDisableRealTimeData, @measurementReportingInterval, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update Device Set NodeID = @nodeID, ParentID = @parentID, Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, CompanyID = @companyID, HistorianID = @historianID, AccessID = @accessID, VendorDeviceID = @vendorDeviceID, " +
                         "ProtocolID = @protocolID, Longitude = @longitude, Latitude = @latitude, InterconnectionID = @interconnectionID, ConnectionString = @connectionString, TimeZone = @timezone, FramesPerSecond = @framesPerSecond, TimeAdjustmentTicks = @timeAdjustmentTicks, DataLossInterval = @dataLossInterval, " +
                         "ContactList = @contactList, MeasuredLines = @measuredLines, LoadOrder = @loadOrder, Enabled = @enabled, AllowedParsingExceptions = @allowedParsingExceptions, ParsingExceptionWindow = @parsingExceptionWindow, DelayedConnectionInterval = @delayedConnectionInterval, " + 
-                        "AllowUseOfCachedConfiguration = @allowUseOfCachedConfiguration, AutoStartDataParsingSequence = @autoStartDataParsingSequence, SkipDisableRealTimeData = @skipDisableRealTimeData, MeasurementReportingInterval = @measurementReportingInterval WHERE ID = @id";
+                        "AllowUseOfCachedConfiguration = @allowUseOfCachedConfiguration, AutoStartDataParsingSequence = @autoStartDataParsingSequence, SkipDisableRealTimeData = @skipDisableRealTimeData, MeasurementReportingInterval = @measurementReportingInterval, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id";
 
                 command.CommandType = CommandType.Text;
                 command.Parameters.Add(AddWithValue(command, "@nodeID", device.NodeID));
@@ -2857,8 +3015,15 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@autoStartDataParsingSequence", device.AutoStartDataParsingSequence));
                 command.Parameters.Add(AddWithValue(command, "@skipDisableRealTimeData", device.SkipDisableRealTimeData));
                 command.Parameters.Add(AddWithValue(command, "@measurementReportingInterval", device.MeasurementReportingInterval));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
                 if (!isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
                     command.Parameters.Add(AddWithValue(command, "@id", device.ID));
 
                 command.ExecuteNonQuery();
@@ -3314,32 +3479,11 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
-                IDbCommand command;
-                ////First of all set Current User for the database session for this connection.
-                //if (connection.Connection.GetType().Name.ToLower() == "sqlconnection")
-                //{
-                //    string contextSql = "DECLARE @context VARBINARY(128)\n SELECT @context = CONVERT(VARBINARY(128), CONVERT(VARCHAR(128), @userName))\n SET CONTEXT_INFO @context";
-                //    command = connection.Connection.CreateCommand();
-                //    command.CommandType = CommandType.Text;
-                //    command.CommandText = contextSql;
-                //    command.Parameters.Add(AddWithValue(command, "@userName", userName));                    
-                //    command.ExecuteNonQuery(); 
-                //}
-                //else if (connection.Connection.GetType().Name.ToLower() == "mysqlconnection")
-                //{
-                //    try
-                //    {                        
-                //        command = connection.Connection.CreateCommand();
-                //        command.CommandType = CommandType.Text;                        
-                //        command.CommandText = "SET @context = '" + userName + "'";                        
-                //        command.ExecuteNonQuery();
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        throw new Exception(ex.Message);
-                //    }
-                //}
 
+                //Setup current users context for Delete trigger.
+                SetCurrentUserContext(connection);
+
+                IDbCommand command;
                 Device device = GetDeviceByDeviceID(connection, deviceID);
                 string deviceAcronym = device.Acronym;
                 command = connection.Connection.CreateCommand();
@@ -3510,11 +3654,11 @@ namespace openPDCManager.Data
                 IDbCommand command = connection.Connection.CreateCommand();
 
                 if (isNew)
-                    command.CommandText = "Insert Into Phasor (DeviceID, Label, Type, Phase, DestinationPhasorID, SourceIndex) Values (@deviceID, @label, @type, @phase, " +
-                        "@destinationPhasorID, @sourceIndex)";
+                    command.CommandText = "Insert Into Phasor (DeviceID, Label, Type, Phase, DestinationPhasorID, SourceIndex, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) Values (@deviceID, @label, @type, @phase, " +
+                        "@destinationPhasorID, @sourceIndex, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update Phasor Set DeviceID =@deviceID, Label = @label, Type = @type, Phase = @phase, DestinationPhasorID = @destinationPhasorID, " +
-                        "SourceIndex = @sourceIndex Where ID = @id";
+                        "SourceIndex = @sourceIndex, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@deviceID", phasor.DeviceID));
                 command.Parameters.Add(AddWithValue(command, "@label", phasor.Label));
@@ -3522,8 +3666,15 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@phase", phasor.Phase));
                 command.Parameters.Add(AddWithValue(command, "@destinationPhasorID", phasor.DestinationPhasorID ?? (object)DBNull.Value));
                 command.Parameters.Add(AddWithValue(command, "@sourceIndex", phasor.SourceIndex));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
                     command.Parameters.Add(AddWithValue(command, "@id", phasor.ID));
 
                 command.ExecuteNonQuery();							
@@ -3894,11 +4045,11 @@ namespace openPDCManager.Data
                 IDbCommand command = connection.Connection.CreateCommand();
 
                 if (isNew)
-                    command.CommandText = "Insert Into Measurement (HistorianID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, Adder, Multiplier, Description, Enabled) " +
-                        "Values (@historianID, @deviceID, @pointTag, @alternateTag, @signalTypeID, @phasorSourceIndex, @signalReference, @adder, @multiplier, @description, @enabled)";
+                    command.CommandText = "Insert Into Measurement (HistorianID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, Adder, Multiplier, Description, Enabled, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
+                        "Values (@historianID, @deviceID, @pointTag, @alternateTag, @signalTypeID, @phasorSourceIndex, @signalReference, @adder, @multiplier, @description, @enabled, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update Measurement Set HistorianID = @historianID, DeviceID = @deviceID, PointTag = @pointTag, AlternateTag = @alternateTag, SignalTypeID = @signalTypeID, " +
-                        "PhasorSourceIndex = @phasorSourceIndex, SignalReference = @signalReference, Adder = @adder, Multiplier = @multiplier, Description = @description, Enabled = @enabled Where SignalID = @signalID";
+                        "PhasorSourceIndex = @phasorSourceIndex, SignalReference = @signalReference, Adder = @adder, Multiplier = @multiplier, Description = @description, Enabled = @enabled, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where SignalID = @signalID";
 
                 command.Parameters.Add(AddWithValue(command, "@historianID", measurement.HistorianID ?? (object)DBNull.Value));
                 command.Parameters.Add(AddWithValue(command, "@deviceID", measurement.DeviceID ?? (object)DBNull.Value));
@@ -3910,9 +4061,16 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@adder", measurement.Adder));
                 command.Parameters.Add(AddWithValue(command, "@multiplier", measurement.Multiplier));
                 command.Parameters.Add(AddWithValue(command, "@description", measurement.Description.RemoveDuplicateWhiteSpace()));
-                command.Parameters.Add(AddWithValue(command, "@enabled", measurement.Enabled));							
+                command.Parameters.Add(AddWithValue(command, "@enabled", measurement.Enabled));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
                 {
                     if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                         command.Parameters.Add(AddWithValue(command, "@signalID", "{" + measurement.SignalID + "}"));
@@ -4326,11 +4484,11 @@ namespace openPDCManager.Data
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 if (isNew)
-                    command.CommandText = "Insert Into OtherDevice (Acronym, Name, IsConcentrator, CompanyID, VendorDeviceID, Longitude, Latitude, InterconnectionID, Planned, Desired, InProgress) Values " +
-                        "(@acronym, @name, @isConcentrator, @companyID, @vendorDeviceID, @longitude, @latitude, @interconnectionID, @planned, @desired, @inProgress)";
+                    command.CommandText = "Insert Into OtherDevice (Acronym, Name, IsConcentrator, CompanyID, VendorDeviceID, Longitude, Latitude, InterconnectionID, Planned, Desired, InProgress, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) Values " +
+                        "(@acronym, @name, @isConcentrator, @companyID, @vendorDeviceID, @longitude, @latitude, @interconnectionID, @planned, @desired, @inProgress, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update OtherDevice Set Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, CompanyID = @companyID, VendorDeviceID = @vendorDeviceID, Longitude = @longitude, " +
-                        "Latitude = @latitude, InterconnectionID = @interconnectionID, Planned = @planned, Desired = @desired, InProgress = @inProgress Where ID = @id";
+                        "Latitude = @latitude, InterconnectionID = @interconnectionID, Planned = @planned, Desired = @desired, InProgress = @inProgress, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@acronym", otherDevice.Acronym.Replace(" ", "").ToUpper()));
                 command.Parameters.Add(AddWithValue(command, "@name", otherDevice.Name));
@@ -4343,8 +4501,15 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@planned", otherDevice.Planned));
                 command.Parameters.Add(AddWithValue(command, "@desired", otherDevice.Desired));
                 command.Parameters.Add(AddWithValue(command, "@inProgress", otherDevice.InProgress));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
                     command.Parameters.Add(AddWithValue(command, "@id", otherDevice.ID));
 
                 command.ExecuteScalar();
@@ -4769,13 +4934,13 @@ namespace openPDCManager.Data
 
                 if (isNew)
                     command.CommandText = "Insert Into CalculatedMeasurement (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, ConfigSection, InputMeasurements, OutputMeasurements, MinimumMeasurementsToUse, FramesPerSecond, LagTime, LeadTime, " +
-                        "UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, DownsamplingMethod, PerformTimestampReasonabilityCheck) Values (@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @configSection, @inputMeasurements, @outputMeasurements, @minimumMeasurementsToUse, " +
-                        "@framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled, @ignoreBadTimeStamps, @timeResolution, @allowPreemptivePublishing, @downsamplingMethod, @performTimestampReasonabilityCheck)";
+                        "UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, DownsamplingMethod, PerformTimestampReasonabilityCheck, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) Values (@nodeID, @acronym, @name, @assemblyName, @typeName, @connectionString, @configSection, @inputMeasurements, @outputMeasurements, @minimumMeasurementsToUse, " +
+                        "@framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled, @ignoreBadTimeStamps, @timeResolution, @allowPreemptivePublishing, @downsamplingMethod, @performTimestampReasonabilityCheck, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update CalculatedMeasurement Set NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, TypeName = @typeName, ConnectionString = @connectionString, ConfigSection = @configSection, " +
                         "InputMeasurements = @inputMeasurements, OutputMeasurements = @outputMeasurements, MinimumMeasurementsToUse = @minimumMeasurementsToUse, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, " +
-                        "UseLocalClockAsRealTime = @useLocalClockAsRealTime, AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled, " +
-                        "IgnoreBadTimeStamps = @ignoreBadTimeStamps, TimeResolution = @timeResolution, AllowPreemptivePublishing = @allowPreemptivePublishing, DownsamplingMethod = @downsamplingMethod, PerformTimestampReasonabilityCheck = @performTimestampReasonabilityCheck Where ID = @id";
+                        "UseLocalClockAsRealTime = @useLocalClockAsRealTime, AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled, IgnoreBadTimeStamps = @ignoreBadTimeStamps, TimeResolution = @timeResolution, " +
+                        "AllowPreemptivePublishing = @allowPreemptivePublishing, DownsamplingMethod = @downsamplingMethod, PerformTimestampReasonabilityCheck = @performTimestampReasonabilityCheck, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", calculatedMeasurement.NodeId));
                 command.Parameters.Add(AddWithValue(command, "@acronym", calculatedMeasurement.Acronym.Replace(" ", "").ToUpper()));
@@ -4799,8 +4964,15 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@allowPreemptivePublishing", calculatedMeasurement.AllowPreemptivePublishing));
                 command.Parameters.Add(AddWithValue(command, "@downsamplingMethod", calculatedMeasurement.DownsamplingMethod));
                 command.Parameters.Add(AddWithValue(command, "@performTimestampReasonabilityCheck", calculatedMeasurement.PerformTimestampReasonabilityCheck));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
                     command.Parameters.Add(AddWithValue(command, "@id", calculatedMeasurement.ID));
 
                 command.ExecuteNonQuery();
@@ -4901,11 +5073,11 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
 
                 if (isNew)
-                    command.CommandText = "Insert Into " + tableName + " (NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, LoadOrder, Enabled) Values " +
-                        "(@nodeID, @adapterName, @assemblyName, @typeName, @connectionString, @loadOrder, @enabled)";
+                    command.CommandText = "Insert Into " + tableName + " (NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, LoadOrder, Enabled, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) Values " +
+                        "(@nodeID, @adapterName, @assemblyName, @typeName, @connectionString, @loadOrder, @enabled, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update " + tableName + " Set NodeID = @nodeID, AdapterName = @adapterName, AssemblyName = @assemblyName, TypeName = @typeName, " +
-                        "ConnectionString = @connectionString, LoadOrder = @loadOrder, Enabled = @enabled Where ID = @id";
+                        "ConnectionString = @connectionString, LoadOrder = @loadOrder, Enabled = @enabled, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@nodeID", adapter.NodeID));
                 command.Parameters.Add(AddWithValue(command, "@adapterName", adapter.AdapterName));
@@ -4914,8 +5086,15 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@connectionString", adapter.ConnectionString));
                 command.Parameters.Add(AddWithValue(command, "@loadOrder", adapter.LoadOrder));
                 command.Parameters.Add(AddWithValue(command, "@enabled", adapter.Enabled));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
+                else
                     command.Parameters.Add(AddWithValue(command, "@id", adapter.ID));
 
                 command.ExecuteNonQuery();
@@ -5679,11 +5858,11 @@ namespace openPDCManager.Data
 
                 if (isNew)
                     if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
-                        command.CommandText = "Insert Into UserAccount (Name, [Password], FirstName, LastName, DefaultNodeID, Phone, Email, LockedOut, UseADAuthentication, ChangePasswordOn, UpdatedBy, CreatedBy) " +
-                            "Values (@name, @password, @firstName, @lastName, @defaultNodeID, @phone, @email, @lockedOut, @useADAuthentication, @changePasswordOn, @updatedBy, @createdBy)";
+                        command.CommandText = "Insert Into UserAccount (Name, [Password], FirstName, LastName, DefaultNodeID, Phone, Email, LockedOut, UseADAuthentication, ChangePasswordOn, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
+                            "Values (@name, @password, @firstName, @lastName, @defaultNodeID, @phone, @email, @lockedOut, @useADAuthentication, @changePasswordOn, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                     else
-                        command.CommandText = "Insert Into UserAccount (Name, Password, FirstName, LastName, DefaultNodeID, Phone, Email, LockedOut, UseADAuthentication, ChangePasswordOn, UpdatedBy, CreatedBy) " +
-                            "Values (@name, @password, @firstName, @lastName, @defaultNodeID, @phone, @email, @lockedOut, @useADAuthentication, @changePasswordOn, @updatedBy, @createdBy)";
+                        command.CommandText = "Insert Into UserAccount (Name, Password, FirstName, LastName, DefaultNodeID, Phone, Email, LockedOut, UseADAuthentication, ChangePasswordOn, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
+                            "Values (@name, @password, @firstName, @lastName, @defaultNodeID, @phone, @email, @lockedOut, @useADAuthentication, @changePasswordOn, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                         command.CommandText = "Update UserAccount Set Name = @name, [Password] = @password, FirstName = @firstName, LastName = @lastName, DefaultNodeID = @defaultNodeID, Phone = @phone, " +
@@ -5705,20 +5884,20 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@lockedOut", user.LockedOut));
                 command.Parameters.Add(AddWithValue(command, "@useADAuthentication", user.UseADAuthentication));
                 if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
-                    command.Parameters.Add(AddWithValue(command, "@changePasswordOn", user.ChangePasswordOn == DateTime.MinValue ? DateTime.Now.Date : user.ChangePasswordOn.Date));
+                    command.Parameters.Add(AddWithValue(command, "@changePasswordOn", user.ChangePasswordOn == DateTime.MinValue ? DateTime.UtcNow.Date : user.ChangePasswordOn.Date));
                 else
                     command.Parameters.Add(AddWithValue(command, "@changePasswordOn", user.ChangePasswordOn == DateTime.MinValue ? (object)DBNull.Value : user.ChangePasswordOn));
 
-                command.Parameters.Add(AddWithValue(command, "@updatedBy", string.IsNullOrEmpty(user.UpdatedBy) ? "Administrator" : user.UpdatedBy));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+
                 if (isNew)
-                    command.Parameters.Add(AddWithValue(command, "@createdBy", string.IsNullOrEmpty(user.CreatedBy) ? "Administrator" : user.CreatedBy));
+                {                    
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));                    
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
+                }
                 else
                 {
-                    if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
-                        command.Parameters.Add(AddWithValue(command, "@updatedOn", DateTime.Now.Date));
-                    else
-                        command.Parameters.Add(AddWithValue(command, "@updatedOn", DateTime.Now));
-
                     if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                         command.Parameters.Add(AddWithValue(command, "@id", "{" + user.ID + "}"));
                     else
@@ -5746,6 +5925,9 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
+
+                //Setup current users context for Delete trigger.
+                SetCurrentUserContext(connection);
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -5824,21 +6006,22 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
 
                 if (isNew)
-                    command.CommandText = "Insert Into SecurityGroup (Name, Description, UpdatedBy, CreatedBy) Values (@name, @description, @updatedBy, @createdBy)";
+                    command.CommandText = "Insert Into SecurityGroup (Name, Description, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) Values (@name, @description, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update SecurityGroup Set Name = @name, Description = @description, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
                 command.Parameters.Add(AddWithValue(command, "@name", group.Name));
                 command.Parameters.Add(AddWithValue(command, "@description", group.Description));
-                command.Parameters.Add(AddWithValue(command, "@updatedBy", group.UpdatedBy));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
                 if (isNew)
-                    command.Parameters.Add(AddWithValue(command, "@createdBy", group.CreatedBy));
-                else
                 {
-                    command.Parameters.Add(AddWithValue(command, "@updatedOn", group.UpdatedOn));
-                    command.Parameters.Add(AddWithValue(command, "@id", group.ID));
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
                 }
+                else
+                    command.Parameters.Add(AddWithValue(command, "@id", group.ID));
 
                 command.ExecuteNonQuery();
 
@@ -5861,6 +6044,9 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
+
+                //Setup current users context for Delete trigger.
+                SetCurrentUserContext(connection);
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
@@ -6101,7 +6287,7 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
 
                 if (isNew)
-                    command.CommandText = "Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values (@name, @description, @nodeID, @updatedBy, @createdBy)";
+                    command.CommandText = "Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) Values (@name, @description, @nodeID, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update ApplicationRole Set Name = @name, Description = @description, NodeID = @nodeID, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
@@ -6111,15 +6297,16 @@ namespace openPDCManager.Data
                     command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + role.NodeID + "}"));
                 else
                     command.Parameters.Add(AddWithValue(command, "@nodeID", role.NodeID));
-                command.Parameters.Add(AddWithValue(command, "@updatedBy", role.UpdatedBy));
+                command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
+                command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
                 if (isNew)
-                    command.Parameters.Add(AddWithValue(command, "@createdBy", role.CreatedBy));
-                else
                 {
-                    command.Parameters.Add(AddWithValue(command, "@updatedOn", role.UpdatedOn));
-                    command.Parameters.Add(AddWithValue(command, "@id", role.ID));
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
+                    command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
                 }
+                else
+                    command.Parameters.Add(AddWithValue(command, "@id", role.ID));
 
                 command.ExecuteNonQuery();
 

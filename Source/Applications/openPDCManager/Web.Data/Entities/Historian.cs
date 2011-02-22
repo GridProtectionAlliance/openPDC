@@ -24,6 +24,7 @@
 //******************************************************************************************************
 
 
+using System;
 namespace openPDCManager.Data.Entities
 {
     public class Historian
@@ -41,6 +42,10 @@ namespace openPDCManager.Data.Entities
         public bool Enabled { get; set; }
         public int MeasurementReportingInterval { get; set; }
 		public string NodeName { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
         //public string HistorianLongName { get; set; }
     }
 }

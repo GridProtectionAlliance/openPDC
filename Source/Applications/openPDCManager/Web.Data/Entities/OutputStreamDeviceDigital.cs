@@ -22,6 +22,7 @@
 //******************************************************************************************************
 
 
+using System;
 namespace openPDCManager.Data.Entities
 {
 	public class OutputStreamDeviceDigital
@@ -32,5 +33,9 @@ namespace openPDCManager.Data.Entities
 		public string Label { get; set; }
         public int MaskValue { get; set; }
 		public int LoadOrder { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
 	}
 }

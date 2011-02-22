@@ -22,6 +22,7 @@
 //******************************************************************************************************
 
 
+using System;
 namespace openPDCManager.Data.Entities
 {
 	public class Measurement
@@ -46,5 +47,9 @@ namespace openPDCManager.Data.Entities
 		public string SignalAcronym { get; set; }
 		public string SignalSuffix { get; set; }
 		public string PhasorLabel { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
 	}
 }

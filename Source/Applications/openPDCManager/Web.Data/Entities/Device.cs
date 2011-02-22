@@ -50,8 +50,7 @@ namespace openPDCManager.Data.Entities
 		public string ContactList { get; set; }
 		public int? MeasuredLines { get; set; }
 		public int LoadOrder { get; set; }
-		public bool Enabled { get; set; }
-        public DateTime CreatedOn { get; set; }
+		public bool Enabled { get; set; }        
         public int AllowedParsingExceptions { get; set; }
         public double ParsingExceptionWindow { get; set; }
         public double DelayedConnectionInterval { get; set; }
@@ -67,7 +66,11 @@ namespace openPDCManager.Data.Entities
 		public string ProtocolName { get; set; }
 		public string InterconnectionName { get; set; }
 		public string NodeName { get; set; }
-		public string ParentAcronym { get; set; }        
+		public string ParentAcronym { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
 	}
 
 	public enum DeviceType

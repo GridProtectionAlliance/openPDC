@@ -17,12 +17,12 @@
                             </HeaderedContentControl.Header>
                             <Grid x:Name="GridManageUsers">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="125"/>
+                                    <ColumnDefinition Width="155"/>
                                     <ColumnDefinition Width="100"/>
                                     <ColumnDefinition Width="100"/>
-                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="160"/>
                                     <ColumnDefinition Width="125"/>
-                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="160"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -32,7 +32,7 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <ListBox x:Name="ListBoxUsers" Grid.Column="0" Grid.Row="0" Grid.RowSpan="5" Width="115" Height="170" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ListBox x:Name="ListBoxUsers" Grid.Column="0" Grid.Row="0" Grid.RowSpan="5" Width="150" Height="170" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>                                            
                                             <TextBlock Text="{Binding Path=Name}" TextAlignment="Left" Padding="1" />                                                
@@ -42,19 +42,19 @@
                                 <Button x:Name="ButtonAddNewUser" Tag="Add New" Grid.Column="1" Grid.Row="0" Content="/openPDCManager;component/images/Add.png" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" Cursor="Hand" ToolTip="Add New User"/>
                                 <Button x:Name="ButtonDeleteUser" Tag="Delete" Grid.Column="1" Grid.Row="1" Content="/openPDCManager;component/images/Cancel.png" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" Cursor="Hand" ToolTip="Delete User"/>
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Authentication" Style="{StaticResource GenericLabelStyle}"/>
-                                <ComboBox x:Name="ComboBoxAuthentication" Grid.Row="0" Grid.Column="3" Width="{StaticResource SmallItemSize}" Margin="2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <ComboBox x:Name="ComboBoxAuthentication" Grid.Row="0" Grid.Column="3" Width="150" Margin="2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                 <TextBlock Grid.Row="1" Grid.Column="2" Text="Username" Style="{StaticResource GenericLabelStyle}" HorizontalAlignment="Left" Margin="2"/>
-                                <TextBox x:Name="TextBoxUsername" Grid.Row="1" Grid.Column="3" Text="{Binding Path=Name}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" MaxLength="50"/>
+                                <TextBox x:Name="TextBoxUsername" Grid.Row="1" Grid.Column="3" Text="{Binding Path=Name}" Width="150" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" MaxLength="50"/>
                                 <TextBlock Grid.Row="2" Grid.Column="2" Text="Password" Style="{StaticResource GenericLabelStyle}"/>
-                                <PasswordBox x:Name="TextBoxPassword" Grid.Row="2" Grid.Column="3" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2" />
+                                <PasswordBox x:Name="TextBoxPassword" Grid.Row="2" Grid.Column="3" Width="150" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2" />
                                 <TextBlock Grid.Row="3" Grid.Column="2" Text="First Name" Style="{StaticResource GenericLabelStyle}"/>
-                                <TextBox x:Name="TextBoxFirstName" Grid.Row="3" Grid.Column="3" Text="{Binding Path=FirstName}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" MaxLength="50"/>
+                                <TextBox x:Name="TextBoxFirstName" Grid.Row="3" Grid.Column="3" Text="{Binding Path=FirstName}" Width="150" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" MaxLength="50"/>
                                 <TextBlock Grid.Row="4" Grid.Column="2" Text="Last Name" Style="{StaticResource GenericLabelStyle}"/>
-                                <TextBox x:Name="TextBoxLastName" Grid.Row="4" Grid.Column="3" Text="{Binding Path=LastName}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" MaxLength="50" />                                
+                                <TextBox x:Name="TextBoxLastName" Grid.Row="4" Grid.Column="3" Text="{Binding Path=LastName}" Width="150" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" MaxLength="50" />                                
                                 <TextBlock Grid.Row="0" Grid.Column="4" Text="Phone" Style="{StaticResource GenericLabelStyle}" HorizontalAlignment="Left" Margin="2"/>
-                                <TextBox x:Name="TextBoxPhone" Grid.Row="0" Grid.Column="5" Text="{Binding Path=Phone}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" MaxLength="50"/>
+                                <TextBox x:Name="TextBoxPhone" Grid.Row="0" Grid.Column="5" Text="{Binding Path=Phone}" Width="150" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" MaxLength="50"/>
                                 <TextBlock Grid.Row="1" Grid.Column="4" Text="Email" Style="{StaticResource GenericLabelStyle}" HorizontalAlignment="Left" Margin="2"/>
-                                <TextBox x:Name="TextBoxEmail" Grid.Row="1" Grid.Column="5" Text="{Binding Path=Email}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" MaxLength="256" />
+                                <TextBox x:Name="TextBoxEmail" Grid.Row="1" Grid.Column="5" Text="{Binding Path=Email}" Width="150" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" MaxLength="256" />
                                 <TextBlock Grid.Row="2" Grid.Column="4" Text="Password Expiry" Style="{StaticResource GenericLabelStyle}" HorizontalAlignment="Left" Margin="2"/>
                                 <DatePicker x:Name="DatePickerPasswordExpiry" Grid.Row="2" Grid.Column="5" HorizontalAlignment="Left" Margin="2" Width="{StaticResource SmallItemSize}"/>
                                 <CheckBox x:Name="CheckBoxLockedOut" Content="Locked Out" Grid.Row="3" Grid.Column="5" IsChecked="{Binding Path=LockedOut}" HorizontalAlignment="Left" Margin="2" VerticalAlignment="Center"/>
@@ -71,10 +71,10 @@
                             </HeaderedContentControl.Header>
                             <Grid x:Name="GridManageGroups">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="125"/>
+                                    <ColumnDefinition Width="155"/>
                                     <ColumnDefinition Width="100"/>
                                     <ColumnDefinition Width="100"/>
-                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="160"/>
                                     <ColumnDefinition Width="500"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
@@ -83,7 +83,7 @@
                                     <RowDefinition Height="Auto"/>                                    
                                 </Grid.RowDefinitions>
 
-                                <ListBox x:Name="ListBoxGroups" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Width="115" Height="170" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ListBox x:Name="ListBoxGroups" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Width="150" Height="170" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=Name}" TextAlignment="Left" Padding="1" />
@@ -95,22 +95,22 @@
                                 <Button x:Name="ButtonDeleteGroup" Tag="Delete" Grid.Column="1" Grid.Row="1" Content="/openPDCManager;component/images/Cancel.png" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2" Cursor="Hand" ToolTip="Delete Group"/>
 
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Name" Style="{StaticResource GenericLabelStyle}" HorizontalAlignment="Left" Margin="2"/>
-                                <TextBox x:Name="TextBoxGroupName" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Name}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" MaxLength="50"/>
+                                <TextBox x:Name="TextBoxGroupName" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Name}" Width="150" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" MaxLength="50"/>
 
                                 <TextBlock Grid.Row="1" Grid.Column="2" Text="Description" Style="{StaticResource GenericLabelStyle}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2"/>
-                                <TextBox x:Name="TextBoxGroupDescription" Grid.Row="1" Grid.Column="3" Text="{Binding Path=Description}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" TextWrapping="Wrap"/>
+                                <TextBox x:Name="TextBoxGroupDescription" Grid.Row="1" Grid.Column="3" Text="{Binding Path=Description}" Width="150" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" TextWrapping="Wrap"/>
 
                                 <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <Button x:Name="ButtonClearGroup" Tag="Clear" ToolTip="Clear Group Info" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand" />
                                     <Button x:Name="ButtonSaveGroup" Tag="Add" ToolTip="Save Group Info" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand" />
                                 </StackPanel>
                                 
-                                <GroupBox Header="Manage users in this group" x:Name="GroupBoxGroupUsers" Margin="25,0,0,0" Grid.Row="0" Grid.Column="4" Grid.RowSpan="3" HorizontalAlignment="Center">
+                                <GroupBox Header="Manage users in this group" x:Name="GroupBoxGroupUsers" Margin="10,0,0,0" Grid.Row="0" Grid.Column="4" Grid.RowSpan="3" HorizontalAlignment="Center">
                                     <Grid x:Name="ManageGroupUsers">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="125" />
-                                            <ColumnDefinition Width="50" />
-                                            <ColumnDefinition Width="125" />                                            
+                                            <ColumnDefinition Width="155" />
+                                            <ColumnDefinition Width="30" />
+                                            <ColumnDefinition Width="155" />                                            
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
@@ -124,7 +124,7 @@
                                         <TextBlock Grid.Column="0" Grid.Row="1" Text="Members" FontSize="{StaticResource SmallTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Margin="2"/>
                                         <TextBlock Grid.Column="2" Grid.Row="1" Text="Available" FontSize="{StaticResource SmallTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Margin="2"/>
                                         
-                                        <ListBox x:Name="ListBoxCurrentGroupUsers" ItemsSource="{Binding Path=CurrentGroupUsers}" Grid.Column="0" Grid.Row="2" Width="115" Height="120" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionMode="Multiple">
+                                        <ListBox x:Name="ListBoxCurrentGroupUsers" ItemsSource="{Binding Path=CurrentGroupUsers}" Grid.Column="0" Grid.Row="2" Width="150" Height="120" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionMode="Multiple">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Path=Name}" TextAlignment="Left" Padding="1" />
@@ -137,7 +137,7 @@
                                             <Button x:Name="ButtonAddGroupUsers" Tag="" Content="/openPDCManager;component/images/Previous.png" Template="{StaticResource ImageButtonTemplate}" Margin="5" Cursor="Hand" ToolTip="Add Users"/>                                                
                                         </StackPanel>
 
-                                        <ListBox x:Name="ListBoxPossibleGroupUsers" ItemsSource="{Binding Path=PossibleGroupUsers}" Grid.Column="2" Grid.Row="2" Width="115" Height="120" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionMode="Multiple">
+                                        <ListBox x:Name="ListBoxPossibleGroupUsers" ItemsSource="{Binding Path=PossibleGroupUsers}" Grid.Column="2" Grid.Row="2" Width="150" Height="120" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionMode="Multiple">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Path=Name}" TextAlignment="Left" Padding="1" />
@@ -160,11 +160,11 @@
                             
                             <Grid x:Name="GridManageRoles">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="125"/>                                    
+                                    <ColumnDefinition Width="155"/>                                    
                                     <ColumnDefinition Width="100"/>
                                     <ColumnDefinition Width="150"/>
-                                    <ColumnDefinition Width="400"/>
-                                    <ColumnDefinition Width="400"/>
+                                    <ColumnDefinition Width="375"/>
+                                    <ColumnDefinition Width="375"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -172,7 +172,7 @@
                                     <RowDefinition Height="Auto"/>                                    
                                 </Grid.RowDefinitions>
 
-                                <ListBox x:Name="ListBoxRoles" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Width="115" Height="170" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ListBox x:Name="ListBoxRoles" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Width="150" Height="170" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=Name}" TextAlignment="Left" Padding="1" />
@@ -188,12 +188,12 @@
 
                                 <Button x:Name="ButtonClearRole" Tag="Clear" Grid.Row="2" Grid.Column="2" ToolTip="Clear Role Info" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand" />
                                 
-                                <GroupBox Header="Manage individual users with access to this role" x:Name="GroupBoxRoleUsers" Margin="25,0,0,0" Grid.Row="0" Grid.Column="3" Grid.RowSpan="3" HorizontalAlignment="Center">
+                                <GroupBox Header="Manage individual users with access to this role" x:Name="GroupBoxRoleUsers" Grid.Row="0" Grid.Column="3" Grid.RowSpan="3" HorizontalAlignment="Center">
                                     <Grid x:Name="ManageRoleUsers">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="125" />
-                                            <ColumnDefinition Width="50" />
-                                            <ColumnDefinition Width="125" />
+                                            <ColumnDefinition Width="155" />
+                                            <ColumnDefinition Width="30" />
+                                            <ColumnDefinition Width="155" />
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
@@ -207,7 +207,7 @@
                                         <TextBlock Grid.Column="0" Grid.Row="1" Text="Allowed" FontSize="{StaticResource SmallTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Margin="2"/>
                                         <TextBlock Grid.Column="2" Grid.Row="1" Text="Available" FontSize="{StaticResource SmallTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Margin="2"/>
                                         
-                                        <ListBox x:Name="ListBoxCurrentRoleUsers" ItemsSource="{Binding Path=CurrentRoleUsers}" Grid.Column="0" Grid.Row="2" Width="115" Height="120" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionMode="Multiple">
+                                        <ListBox x:Name="ListBoxCurrentRoleUsers" ItemsSource="{Binding Path=CurrentRoleUsers}" Grid.Column="0" Grid.Row="2" Width="150" Height="120" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionMode="Multiple">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Path=Name}" TextAlignment="Left" Padding="1" />
@@ -220,7 +220,7 @@
                                             <Button x:Name="ButtonAddRoleUsers" Tag="" Content="/openPDCManager;component/images/Previous.png" Template="{StaticResource ImageButtonTemplate}" Margin="5" Cursor="Hand" ToolTip="Add Users"/>
                                         </StackPanel>
 
-                                        <ListBox x:Name="ListBoxPossibleRoleUsers" ItemsSource="{Binding Path=PossibleRoleUsers}" Grid.Column="2" Grid.Row="2" Width="115" Height="120" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionMode="Multiple">
+                                        <ListBox x:Name="ListBoxPossibleRoleUsers" ItemsSource="{Binding Path=PossibleRoleUsers}" Grid.Column="2" Grid.Row="2" Width="150" Height="120" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionMode="Multiple">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Path=Name}" TextAlignment="Left" Padding="1" />
@@ -236,9 +236,9 @@
                                 <GroupBox Header="Manage user groups with access to this role" x:Name="GroupBoxRoleGroups" Margin="5,0,0,0" Grid.Row="0" Grid.Column="4" Grid.RowSpan="3" HorizontalAlignment="Center">
                                     <Grid x:Name="ManageRoleGroups">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="125" />
-                                            <ColumnDefinition Width="50" />
-                                            <ColumnDefinition Width="125" />
+                                            <ColumnDefinition Width="155" />
+                                            <ColumnDefinition Width="30" />
+                                            <ColumnDefinition Width="155" />
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
@@ -252,7 +252,7 @@
                                         <TextBlock Grid.Column="0" Grid.Row="1" Text="Allowed" FontSize="{StaticResource SmallTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Margin="2"/>
                                         <TextBlock Grid.Column="2" Grid.Row="1" Text="Available" FontSize="{StaticResource SmallTextSize}" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Margin="2"/>
 
-                                        <ListBox x:Name="ListBoxCurrentRoleGroups" ItemsSource="{Binding Path=CurrentRoleGroups}" Grid.Column="0" Grid.Row="2" Width="115" Height="120" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionMode="Multiple">
+                                        <ListBox x:Name="ListBoxCurrentRoleGroups" ItemsSource="{Binding Path=CurrentRoleGroups}" Grid.Column="0" Grid.Row="2" Width="150" Height="120" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionMode="Multiple">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Path=Name}" TextAlignment="Left" Padding="1" />
@@ -265,7 +265,7 @@
                                             <Button x:Name="ButtonAddRoleGroups" Tag="" Content="/openPDCManager;component/images/Previous.png" Template="{StaticResource ImageButtonTemplate}" Margin="5" Cursor="Hand" ToolTip="Add Groups"/>
                                         </StackPanel>
 
-                                        <ListBox x:Name="ListBoxPossibleRoleGroups" ItemsSource="{Binding Path=PossibleRoleGroups}" Grid.Column="2" Grid.Row="2" Width="115" Height="120" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionMode="Multiple">
+                                        <ListBox x:Name="ListBoxPossibleRoleGroups" ItemsSource="{Binding Path=PossibleRoleGroups}" Grid.Column="2" Grid.Row="2" Width="150" Height="120" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionMode="Multiple">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Path=Name}" TextAlignment="Left" Padding="1" />

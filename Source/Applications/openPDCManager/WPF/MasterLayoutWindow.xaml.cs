@@ -122,6 +122,7 @@ namespace openPDCManager
             }
 
             TextBlockCurrentUser.Text = "Current User: " + SecurityProviderCache.CurrentProvider.UserData.LoginID;
+            CommonFunctions.s_currentUser = SecurityProviderCache.CurrentProvider.UserData.LoginID;
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

@@ -25,6 +25,7 @@
 //******************************************************************************************************
 
 
+using System;
 namespace openPDCManager.Data.Entities
 {
     public class OutputStream
@@ -61,5 +62,9 @@ namespace openPDCManager.Data.Entities
 		public string NodeName { get; set; }
 		public string TypeName { get; set; }
         public bool PerformTimestampReasonabilityCheck { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
     }
 }

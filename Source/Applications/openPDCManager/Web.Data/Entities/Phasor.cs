@@ -21,6 +21,7 @@
 //
 //******************************************************************************************************
 
+using System;
 namespace openPDCManager.Data.Entities
 {
 	public class Phasor
@@ -36,5 +37,9 @@ namespace openPDCManager.Data.Entities
 		public string DeviceAcronym { get; set; }
 		public string PhasorType { get; set; }
 		public string PhaseType { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
 	}
 }

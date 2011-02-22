@@ -886,7 +886,11 @@ namespace ConfigurationSetupUtility.Screens
                     adminCredentialCommand.Parameters.Add(createdByParameter);
                     adminCredentialCommand.Parameters.Add(updatedByParameter);
 
-                    adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, Password, FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) Values " +
+                    if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                        adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, [Password], FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) Values " +
+                            "(@name, @password, @firstName, @lastName, {0}, 0, @createdBy, @updatedBy)", nodeIdQueryString);
+                    else
+                        adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, Password, FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) Values " +
                             "(@name, @password, @firstName, @lastName, {0}, 0, @createdBy, @updatedBy)", nodeIdQueryString);
                 }
 

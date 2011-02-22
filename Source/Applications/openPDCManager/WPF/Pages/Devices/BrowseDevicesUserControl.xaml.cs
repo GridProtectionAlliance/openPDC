@@ -237,11 +237,11 @@ namespace openPDCManager.Pages.Devices
                             {
                                 List<Device> deviceList = CommonFunctions.GetDeviceListByParentID(null, device.ID);
                                 foreach (Device d in deviceList)
-                                    CommonFunctions.DeleteDevice(null, d.ID);   //, ((App)Application.Current).Principal.Identity.Name);
-                                result = CommonFunctions.DeleteDevice(null, device.ID); //, ((App)Application.Current).Principal.Identity.Name);
+                                    CommonFunctions.DeleteDevice(null, d.ID);
+                                result = CommonFunctions.DeleteDevice(null, device.ID);
                             }
                             else
-                                result = CommonFunctions.DeleteDevice(null, device.ID);     //, ((App)Application.Current).Principal.Identity.Name);
+                                result = CommonFunctions.DeleteDevice(null, device.ID);
 
                             SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
                                 ButtonType.OkOnly);

@@ -22,6 +22,7 @@
 //******************************************************************************************************
 
 
+using System;
 namespace openPDCManager.Data.Entities
 {
 	public class OutputStreamMeasurement
@@ -34,5 +35,9 @@ namespace openPDCManager.Data.Entities
 		public string SignalReference { get; set; }
 		public string SourcePointTag { get; set; }
 		public string HistorianAcronym { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
 	}
 }

@@ -22,6 +22,7 @@
 //******************************************************************************************************
 
 
+using System;
 namespace openPDCManager.Data.Entities
 {
 	public class Adapter
@@ -36,6 +37,10 @@ namespace openPDCManager.Data.Entities
 		public bool Enabled { get; set; }
 		public string NodeName { get; set; }
 		public AdapterType adapterType { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
 	}
 
 	public enum AdapterType
