@@ -34,7 +34,7 @@ namespace openPDCManager
         {
             get
             {
-                return "openPDC.exe.Config";
+                return "openPDCManager.exe.Config";
             }
         }
     }
