@@ -92,9 +92,9 @@ namespace openPDCManager.Utilities
 
             if (!storage.FileExists("ForceIPv4") || overWrite)
             {
-                if (Dns.GetHostEntry(IPAddress.Loopback).AddressList[0].AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
-                    SaveIntoIsolatedStorage("ForceIPv4", "false");
-                else
+                //if (Dns.GetHostEntry(IPAddress.Loopback).AddressList[0].AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                //    SaveIntoIsolatedStorage("ForceIPv4", "false");
+                //else
                     SaveIntoIsolatedStorage("ForceIPv4", "true");
             }
             
@@ -123,16 +123,16 @@ namespace openPDCManager.Utilities
                 SaveIntoIsolatedStorage("ChartRefreshInterval", 250);
 
             if (!storage.FileExists("StatisticsDataRefreshInterval") || overWrite)
-                SaveIntoIsolatedStorage("StatisticsDataRefreshInterval", 30);
+                SaveIntoIsolatedStorage("StatisticsDataRefreshInterval", 10);
 
             if (!storage.FileExists("MeasurementsDataRefreshInterval") || overWrite)
-                SaveIntoIsolatedStorage("MeasurementsDataRefreshInterval", 30);
+                SaveIntoIsolatedStorage("MeasurementsDataRefreshInterval", 10);
 
             if (!storage.FileExists("DisplayXAxis") || overWrite)
                 SaveIntoIsolatedStorage("DisplayXAxis", "false");
 
             if (!storage.FileExists("DisplayFrequencyYAxis") || overWrite)
-                SaveIntoIsolatedStorage("DisplayFrequencyYAxis", "false");
+                SaveIntoIsolatedStorage("DisplayFrequencyYAxis", "true");
 
             if (!storage.FileExists("DisplayPhaseAngleYAxis") || overWrite)
                 SaveIntoIsolatedStorage("DisplayPhaseAngleYAxis", "false");

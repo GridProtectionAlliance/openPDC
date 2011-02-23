@@ -1539,9 +1539,9 @@ namespace openPDCManager.Data
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 if (!enabledOnly)
-                    command.CommandText = "Select * From OutputStreamDeviceDetail Where AdapterID = @adapterID";
+                    command.CommandText = "Select * From OutputStreamDeviceDetail Where AdapterID = @adapterID Order By LoadOrder";
                 else
-                    command.CommandText = "Select * From OutputStreamDeviceDetail Where AdapterID = @adapterID AND Enabled = @enabled";
+                    command.CommandText = "Select * From OutputStreamDeviceDetail Where AdapterID = @adapterID AND Enabled = @enabled Order By LoadOrder";
 
                 command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
                 if (enabledOnly)
