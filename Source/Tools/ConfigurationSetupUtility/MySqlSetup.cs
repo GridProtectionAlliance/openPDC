@@ -18,7 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  06/29/2010 - Stephen C. Wills
 //       Generated original version of source code.
-//
+//  02/23/2011 - Mehulbhai Thakkar
+//       Added "Allow User Variables" setting so that session variables can be created without errors.
 //******************************************************************************************************
 
 using System;
@@ -67,7 +68,7 @@ namespace ConfigurationSetupUtility
         public MySqlSetup()
         {
             m_settings = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
-
+            m_settings["Allow User Variables"] = "true";    // this setting allows creation of user defined session variables.
             try
             {
                 // Try to get path for mysql executable based on registered Windows service path, if this fails, fall back on just the executable name which will require a proper environmental path to run

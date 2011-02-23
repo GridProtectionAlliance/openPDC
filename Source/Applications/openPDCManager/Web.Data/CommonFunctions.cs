@@ -3018,7 +3018,7 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@updatedBy", s_currentUser));
                 command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
-                if (!isNew)
+                if (isNew)
                 {
                     command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
                     command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
