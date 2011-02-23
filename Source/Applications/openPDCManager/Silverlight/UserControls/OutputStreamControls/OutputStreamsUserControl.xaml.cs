@@ -339,10 +339,22 @@ namespace openPDCManager.UserControls.OutputStreamControls
                     {
                         if ((bool)sm.DialogResult)
                         {
-                            if (int.TryParse(((Button)sender).Tag.ToString(), out outputStreamId))
-                                DeleteOutputStream(outputStreamId);
+                            try
+                            {
+                                if (int.TryParse(((Button)sender).Tag.ToString(), out outputStreamId))
+                                    DeleteOutputStream(outputStreamId);
 
-                            ClearForm();
+                                ClearForm();
+                            }
+                            catch (Exception ex)
+                            {
+                                SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = "Failed to delete output stream.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                                    ButtonType.OkOnly);
+                                sm1.Owner = Window.GetWindow(this);
+                                sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                                sm1.ShowPopup();
+                                CommonFunctions.LogException(null, "ButtonDelete_Click", ex);
+                            }
                         }
                     });
 #if !SILVERLIGHT

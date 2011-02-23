@@ -233,23 +233,34 @@ namespace openPDCManager.Pages.Devices
                     {
                         if ((bool)sm.DialogResult)
                         {
-                            if (device.IsConcentrator)
+                            try
                             {
-                                List<Device> deviceList = CommonFunctions.GetDeviceListByParentID(null, device.ID);
-                                foreach (Device d in deviceList)
-                                    CommonFunctions.DeleteDevice(null, d.ID);
-                                result = CommonFunctions.DeleteDevice(null, device.ID);
+                                if (device.IsConcentrator)
+                                {
+                                    List<Device> deviceList = CommonFunctions.GetDeviceListByParentID(null, device.ID);
+                                    foreach (Device d in deviceList)
+                                        CommonFunctions.DeleteDevice(null, d.ID);
+                                    result = CommonFunctions.DeleteDevice(null, device.ID);
+                                }
+                                else
+                                    result = CommonFunctions.DeleteDevice(null, device.ID);
+
+                                SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                                    ButtonType.OkOnly);
+                                sm1.Owner = Window.GetWindow(this);
+                                sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                                sm1.ShowPopup();
+                                RefreshDeviceList();
                             }
-                            else
-                                result = CommonFunctions.DeleteDevice(null, device.ID);
-
-                            SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
-                                ButtonType.OkOnly);
-                            sm1.Owner = Window.GetWindow(this);
-                            sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                            sm1.ShowPopup();
-                            RefreshDeviceList();
-
+                            catch (Exception ex)
+                            {
+                                SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = "Failed to Delete Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                                    ButtonType.OkOnly);
+                                sm1.Owner = Window.GetWindow(this);
+                                sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                                sm1.ShowPopup();
+                                CommonFunctions.LogException(null, "ButtonDelete_Click", ex);
+                            }
                             //Update Metadata in the openPDC Service.                
                             try
                             {
@@ -264,7 +275,7 @@ namespace openPDCManager.Pages.Devices
                             }
                             catch (Exception ex)
                             {
-                                CommonFunctions.LogException(null, "ButtonSave_Click.RefreshMetadata", ex);
+                                CommonFunctions.LogException(null, "ButtonDelete_Click.RefreshMetadata", ex);
                             }
 
                         }
@@ -302,24 +313,36 @@ namespace openPDCManager.Pages.Devices
                 {
                     if ((bool)sm.DialogResult)
                     {
-                        string originalAcronym = device.Acronym;
-                        int i = 1;
-                        do
+                        try
                         {
-                            if (originalAcronym.Length > 15 && i < 10)
-                                device.Acronym = originalAcronym.Substring(0, 14) + i.ToString();
-                            else if (originalAcronym.Length > 15 && i >= 10)
-                                device.Acronym = originalAcronym.Substring(0, 13) + i.ToString();
-                            else
-                                device.Acronym = originalAcronym + i.ToString();
+                            string originalAcronym = device.Acronym;
+                            int i = 1;
+                            do
+                            {
+                                if (originalAcronym.Length > 15 && i < 10)
+                                    device.Acronym = originalAcronym.Substring(0, 14) + i.ToString();
+                                else if (originalAcronym.Length > 15 && i >= 10)
+                                    device.Acronym = originalAcronym.Substring(0, 13) + i.ToString();
+                                else
+                                    device.Acronym = originalAcronym + i.ToString();
 
-                            i++;
-                        } while (CommonFunctions.GetDeviceByAcronym(null, device.Acronym) != null);
+                                i++;
+                            } while (CommonFunctions.GetDeviceByAcronym(null, device.Acronym) != null);
 
-                        device.Name = "Copy of " + device.Name;
-                        device.Enabled = false;
-                        ManageDevicesUserControl manageDevice = new ManageDevicesUserControl(device);
-                        ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(manageDevice);                                           
+                            device.Name = "Copy of " + device.Name;
+                            device.Enabled = false;
+                            ManageDevicesUserControl manageDevice = new ManageDevicesUserControl(device);
+                            ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(manageDevice);
+                        }
+                        catch (Exception ex)
+                        {
+                            SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = "Failed to Create Copy of Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                                ButtonType.OkOnly);
+                            sm1.Owner = Window.GetWindow(this);
+                            sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            sm1.ShowPopup();
+                            CommonFunctions.LogException(null, "ButtonCopy_Click", ex);
+                        }
                     }
                 });
             }
