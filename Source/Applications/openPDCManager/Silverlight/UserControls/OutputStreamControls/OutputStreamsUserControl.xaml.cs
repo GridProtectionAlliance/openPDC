@@ -350,10 +350,13 @@ namespace openPDCManager.UserControls.OutputStreamControls
                             {
                                 SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = "Failed to delete output stream.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
                                     ButtonType.OkOnly);
+#if !SILVERLIGHT
+                                CommonFunctions.LogException(null, "ButtonDelete_Click", ex);
                                 sm1.Owner = Window.GetWindow(this);
                                 sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
                                 sm1.ShowPopup();
-                                CommonFunctions.LogException(null, "ButtonDelete_Click", ex);
+                                
                             }
                         }
                     });
