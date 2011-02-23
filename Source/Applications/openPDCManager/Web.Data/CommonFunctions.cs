@@ -94,7 +94,7 @@ namespace openPDCManager.Data
                         {
                             command = connection.Connection.CreateCommand();
                             command.CommandType = CommandType.Text;
-                            command.CommandText = "SET @context = '" + s_currentUser + "'";
+                            command.CommandText = "SET @context = '" + s_currentUser + "';";
                             command.ExecuteNonQuery();
                         }
                         catch (Exception ex)
