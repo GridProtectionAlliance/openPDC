@@ -202,9 +202,54 @@ namespace openPDCManager.UserControls.PopupControls
 
         private void HyperlinkButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-            int outputStreamDeviceId = Convert.ToInt32(((Button)sender).Tag.ToString());
-            string acronym = ToolTipService.GetToolTip((Button)sender).ToString();  // ((HyperlinkButton)sender).Name;
-            DeleteOutputStreamDevice(m_sourceOutputStreamID, new ObservableCollection<string>() { acronym });
+            try
+                {
+                    int outputStreamDeviceId = Convert.ToInt32(((Button)sender).Tag.ToString());
+                    string acronym = ToolTipService.GetToolTip((Button)sender).ToString();  // ((HyperlinkButton)sender).Name;
+
+                    SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete output stream device?", SystemMessage = "Output Stream  Device Acronym: " + acronym, UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                    sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                    {
+                        if ((bool)sm.DialogResult)
+                        {
+                            try
+                            {
+                                DeleteOutputStreamDevice(m_sourceOutputStreamID, new ObservableCollection<string>() { acronym });
+                                ClearForm();
+                            }
+                            catch (Exception ex)
+                            {
+                                SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = "Failed to delete output stream device.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                                    ButtonType.OkOnly);
+#if !SILVERLIGHT
+                                CommonFunctions.LogException(null, "ButtonDelete_Click", ex);
+                                sm1.Owner = Window.GetWindow(this);
+                                sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                                sm1.ShowPopup();
+                                
+                            }
+                        }
+                    });
+#if !SILVERLIGHT
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                    sm.ShowPopup();
+                }
+                catch (Exception ex)
+                {
+                    SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to delete output stream device.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                            ButtonType.OkOnly);
+#if !SILVERLIGHT
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                    sm.ShowPopup();
+                }
+
+            
+            
         }
 
         private void HyperlinkButton_Click(object sender, RoutedEventArgs e)

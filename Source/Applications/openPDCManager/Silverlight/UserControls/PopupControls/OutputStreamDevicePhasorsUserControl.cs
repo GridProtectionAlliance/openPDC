@@ -57,6 +57,11 @@ namespace openPDCManager.UserControls.PopupControls
             m_client.SaveOutputStreamDevicePhasorAsync(outputStreamDevicePhasor, isNew);
         }
 
+        void DeleteOutputStreamDevicePhasor(int outputStreamDevicePhasorID)
+        {
+            
+        }
+
         #endregion
 
         #region [ Client Event Handlers ]

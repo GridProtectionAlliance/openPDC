@@ -89,6 +89,27 @@ namespace openPDCManager.UserControls.PopupControls
             sm.ShowPopup();
         }
 
+        void DeleteOutputStreamDevicePhasor(int outputStreamDevicePhasorID)
+        {
+            SystemMessages sm;
+            try
+            {
+                string result = CommonFunctions.DeleteOutputStreamDevicePhasor(null, outputStreamDevicePhasorID);
+                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                        ButtonType.OkOnly);
+                GetOutputStreamDevicePhasorList();
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException(null, "WPF.DeleteOutputStreamDevicePhasor", ex);
+                sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Output Stream Device Phasor", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+            }
+            sm.Owner = Window.GetWindow(this);
+            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            sm.ShowPopup();
+        }
+
         #endregion
     }
 }

@@ -1988,6 +1988,35 @@ namespace openPDCManager.Data
             }
         }
 
+        public static string DeleteOutputStreamDevicePhasor(DataConnection connection, int outputStreamDevicePhasorID)
+        {
+            bool createdConnection = false;
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
+                //Setup current users context for Delete trigger.
+                SetCurrentUserContext(connection);
+
+                IDbCommand command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = "Delete From OutputStreamDevicePhasor Where ID = @outputStreamDevicePhasorID";
+                command.Parameters.Add(AddWithValue(command, "@outputStreamDevicePhasorID", outputStreamDevicePhasorID));
+                command.ExecuteNonQuery();
+
+                return "Output Stream Device Phasor Deleted Successfully";
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
         #endregion
 
         #region " Manage Output Stream Device Analogs Code"
