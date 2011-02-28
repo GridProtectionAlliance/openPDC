@@ -482,7 +482,7 @@ CREATE TABLE OutputStream(
 	UseLocalClockAsRealTime TINYINT NOT NULL DEFAULT 0,
 	AllowSortsByArrival TINYINT NOT NULL DEFAULT 1,
 	IgnoreBadTimeStamps TINYINT NOT NULL DEFAULT 0,
-	TimeResolution INT NOT NULL DEFAULT 10000,
+	TimeResolution INT NOT NULL DEFAULT 330000,
 	AllowPreemptivePublishing TINYINT NOT NULL DEFAULT 1,
 	PerformTimestampReasonabilityCheck TINYINT NOT NULL DEFAULT 1,
 	DownsamplingMethod NVARCHAR(15) NOT NULL DEFAULT N'LastReceived',
