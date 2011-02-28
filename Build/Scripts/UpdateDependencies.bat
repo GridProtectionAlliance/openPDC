@@ -21,8 +21,9 @@ SET source1="\\GPAWEB\NightlyBuilds\TVACodeLibrary\Beta\Libraries\*.*"
 SET target1="..\..\Source\Dependencies\TVA"
 SET source2="\\GPAWEB\NightlyBuilds\TimeSeriesFramework\Beta\Libraries\TimeSeriesFramework.*"
 SET target2="..\..\Source\Dependencies\TimeSeriesFramework"
+SET source3="\\GPAWEB\NightlyBuilds\openHistorian\Beta\Libraries\*.*"
+SET target3="..\..\Source\Dependencies\TVA"
 SET solution="..\..\Source\Synchrophasor.sln"
-SET checkinComment="Updated dependencies."
 SET /p checkin=Check-in updates (Y or N)? 
 
 ECHO.
@@ -39,6 +40,7 @@ ECHO.
 ECHO Updating dependencies...
 XCOPY %source1% %target1% /Y
 XCOPY %source2% %target2% /Y
+XCOPY %source3% %target3% /Y /D
 
 ECHO.
 ECHO Building solution...
@@ -50,8 +52,8 @@ GOTO Finalize
 :Checkin
 ECHO.
 ECHO Checking in dependencies...
-%tfs% checkin %target1% /noprompt /recursive /comment:%checkinComment%
-%tfs% checkin %target2% /noprompt /recursive /comment:%checkinComment%
+%tfs% checkin %target1% /noprompt /recursive /comment:"Synchrophasor: Updated code library dependencies."
+%tfs% checkin %target2% /noprompt /recursive /comment:"Synchrophasor: Updated time-series framework dependencies."
 
 :Finalize
 ECHO.
