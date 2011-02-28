@@ -21,7 +21,8 @@
 //  09/19/2010 - J. Ritchie Carroll
 //       Added code to stop key processes prior to modification of configuration files.
 //       Fixed error with AdoMetadataProvider section updates.
-//
+//  02/28/2011 - Mehulbhai P Thakkar
+//       Modified code to update ForceLoginDisplay settings for openPDCManager config file.
 //******************************************************************************************************
 
 using System;
@@ -1228,6 +1229,28 @@ namespace ConfigurationSetupUtility.Screens
                 }
             }
 
+            // the following change will be done only for openPDCManager configuration.
+            if (Convert.ToBoolean(m_state["applyChangesToLocalManager"]))
+            {
+                XmlNode userSettings = configFile.SelectSingleNode("configuration/userSettings/openPDCManager.Properties.Settings");
+                if (userSettings != null)
+                {
+                    foreach (XmlNode child in userSettings.ChildNodes)
+                    {
+                        if (child.Attributes != null)
+                        {
+                            if (child.Attributes["name"].Value == "ForceLoginDisplay")
+                            {
+                                foreach (XmlNode grandChild in child.ChildNodes)
+                                {
+                                    if (grandChild.Name.ToLower() == "value")
+                                        grandChild.InnerXml = m_state["allowPassThroughAuthentication"].ToString() == "True" ? "False" : "True";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             // JRC: Following Linq version was failing without error - section attributes were always null
             // SCW: It should be fixed now.
             // JRC: Thanks! We'll keep your linq code here for reference... :)
@@ -1247,6 +1270,11 @@ namespace ConfigurationSetupUtility.Screens
             //}
 
             configFile.Save(configFileName);
+        }
+
+        private void SaveUserSettingDefault(string configFileName, string clientSectionName, string settingName)
+        {
+
         }
 
         // Saves the old connection string as an OleDB connection string.

@@ -57,6 +57,8 @@ namespace ConfigurationSetupUtility
         public MainWindow()
         {
             InitializeComponent();
+            AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+
             //LogFile logger = null;
             //bool restartingAsCurrentUser = false;
 

@@ -18,7 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  01/23/2011 - J. Ritchie Carroll
 //       Generated original version of source code.
-//
+//  02/28/2011 - Mehulbhai P Thakkar
+//       Added a checkbox to allow pass-through authentication.
 //******************************************************************************************************
 
 using System;
@@ -250,6 +251,7 @@ namespace ConfigurationSetupUtility.Screens
                 m_state["adminPassword"] = m_userPasswordTextBox.Password.Trim();
                 m_state["adminUserFirstName"] = m_userFirstNameTextBox.Text.Trim();
                 m_state["adminUserLastName"] = m_userLastNameTextBox.Text.Trim();
+                m_state["allowPassThroughAuthentication"] = (bool)m_checkBoxPassThroughAuthentication.IsChecked ? "True" : "False";
             }
         }
 
@@ -260,6 +262,8 @@ namespace ConfigurationSetupUtility.Screens
             m_userAccountHeaderTextBlock.Text = "Windows Authentication";
             m_userNameTextBox.Text = Thread.CurrentPrincipal.Identity.Name;
             m_dbInfoGrid.Visibility = Visibility.Collapsed;
+            m_checkBoxPassThroughAuthentication.Visibility = Visibility.Visible;
+            m_textBlockPassThroughMessage.Visibility = Visibility.Visible;
         }
 
         private void RadioButtonWindowsAuthentication_Unchecked(object sender, RoutedEventArgs e)
@@ -269,6 +273,8 @@ namespace ConfigurationSetupUtility.Screens
             m_userAccountHeaderTextBlock.Text = "Database Authentication";
             m_userNameTextBox.Text = string.Empty;
             m_dbInfoGrid.Visibility = Visibility.Visible;
+            m_checkBoxPassThroughAuthentication.Visibility = Visibility.Collapsed;
+            m_textBlockPassThroughMessage.Visibility = Visibility.Collapsed;
         }
 
         private void UserAccountCredentialsSetupScreen_Loaded(object sender, RoutedEventArgs e)
@@ -276,6 +282,7 @@ namespace ConfigurationSetupUtility.Screens
             m_userNameTextBox.SelectAll();
             m_userNameTextBox.Focus();
             RadioButtonWindowsAuthentication.IsChecked = true;
+            m_userNameTextBox.Text = Thread.CurrentPrincipal.Identity.Name;
         }
 
         #endregion
