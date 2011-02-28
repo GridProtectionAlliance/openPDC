@@ -1271,12 +1271,7 @@ namespace ConfigurationSetupUtility.Screens
 
             configFile.Save(configFileName);
         }
-
-        private void SaveUserSettingDefault(string configFileName, string clientSectionName, string settingName)
-        {
-
-        }
-
+              
         // Saves the old connection string as an OleDB connection string.
         private void SaveOldConnectionString()
         {
