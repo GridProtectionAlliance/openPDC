@@ -116,8 +116,8 @@
                                 <TextBox x:Name="TextBoxGroupDescription" Grid.Row="1" Grid.Column="3" Text="{Binding Path=Description}" Width="160" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2" TextWrapping="Wrap"/>
 
                                 <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                    <Button x:Name="ButtonClearGroup" Tag="Clear" ToolTip="Clear Group Info" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,0,5" Cursor="Hand" />
-                                    <Button x:Name="ButtonSaveGroup" Tag="Add" ToolTip="Save Group Info" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,0,5" Cursor="Hand" />
+                                    <Button x:Name="ButtonClearGroup" Tag="Clear" ToolTip="Clear Group Info" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand" />
+                                    <Button x:Name="ButtonSaveGroup" Tag="Add" ToolTip="Save Group Info" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand" />
                                 </StackPanel>
                                 
                                 <GroupBox Header="Manage users in this group" x:Name="GroupBoxGroupUsers" Margin="10,0,0,0" Grid.Row="0" Grid.Column="4" Grid.RowSpan="3" HorizontalAlignment="Center">
