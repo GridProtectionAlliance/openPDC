@@ -95,11 +95,8 @@
                             <TextBlock Text="Signal ID" Width="{StaticResource XXLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Point ID" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
-                        </Border>
-                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <TextBlock Text="Historian" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
-                        </Border>
+                            <TextBlock Text="ID" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>                        
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                             <TextBlock Text="Device" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                         </Border>
@@ -123,11 +120,8 @@
                                                 <TextBlock Text="{Binding Path=SignalID}" Width="{StaticResource XXLargeItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=PointID}" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" Padding="0"/>
-                                            </Border>
-                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=HistorianAcronym}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="0"/>
-                                            </Border>
+                                                <TextBlock Text="{Binding Path=ID}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="0"/>
+                                            </Border>                                            
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                 <TextBlock Text="{Binding Path=DeviceAcronym}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>

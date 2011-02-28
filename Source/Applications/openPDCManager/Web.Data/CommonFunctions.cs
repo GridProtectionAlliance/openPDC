@@ -3967,11 +3967,11 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
                 if (string.IsNullOrEmpty(nodeID) || MasterNode(connection, nodeID))
                     command.CommandText = "Select SignalID, HistorianID, PointID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, " +
-                        "Adder, Multiplier, Description, Enabled, HistorianAcronym, DeviceAcronym, SignalName, SignalAcronym, SignalTypeSuffix, PhasorLabel From MeasurementDetail Order By PointTag";
+                        "Adder, Multiplier, Description, Enabled, HistorianAcronym, DeviceAcronym, SignalName, SignalAcronym, SignalTypeSuffix, PhasorLabel, ID From MeasurementDetail Order By PointTag";
                 else
                 {
                     command.CommandText = "Select SignalID, HistorianID, PointID, DeviceID, PointTag, AlternateTag, SignalTypeID, PhasorSourceIndex, SignalReference, " +
-                        "Adder, Multiplier, Description, Enabled, HistorianAcronym, DeviceAcronym, SignalName, SignalAcronym, SignalTypeSuffix, PhasorLabel From MeasurementDetail Where NodeID = @nodeID Order By PointTag";
+                        "Adder, Multiplier, Description, Enabled, HistorianAcronym, DeviceAcronym, SignalName, SignalAcronym, SignalTypeSuffix, PhasorLabel, ID From MeasurementDetail Where NodeID = @nodeID Order By PointTag";
                     //command.Parameters.Add(AddWithValue(command, "@nodeID", "{" + nodeID + "}"));
 
                     if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
@@ -4001,7 +4001,8 @@ namespace openPDCManager.Data
                                        SignalName = item.Field<string>("SignalName"),
                                        SignalAcronym = item.Field<string>("SignalAcronym"),
                                        SignalSuffix = item.Field<string>("SignalTypeSuffix"),
-                                       PhasorLabel = item.Field<string>("PhasorLabel")
+                                       PhasorLabel = item.Field<string>("PhasorLabel"),
+                                       ID = item.Field<string>("ID")
                                    }).ToList();
                 return measurementList;
             }			

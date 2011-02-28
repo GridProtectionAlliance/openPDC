@@ -51,5 +51,6 @@ namespace openPDCManager.Data.Entities
         public string CreatedBy { get; set; }
         public DateTime UpdatedOn { get; set; }
         public string UpdatedBy { get; set; }
+        public string ID { get; set; }
 	}
 }

@@ -197,7 +197,7 @@ namespace openPDCManager.Pages.Manage
             List<Measurement> searchResult = new List<Measurement>();
             searchResult = (from item in m_measurementList
                             where item.PointTag.Contains(searchText) || item.SignalReference.Contains(searchText) || item.SignalSuffix.Contains(searchText) || item.Description.ToUpper().Contains(searchText)
-                                  || item.DeviceAcronym.ToUpper().Contains(searchText) || item.SignalName.ToUpper().Contains(searchText) || item.SignalAcronym.Contains(searchText)
+                                  || item.DeviceAcronym.ToUpper().Contains(searchText) || item.SignalName.ToUpper().Contains(searchText) || item.SignalAcronym.Contains(searchText) || item.ID.Contains(searchText)
                             select item).ToList();
             BindData(searchResult);
         }

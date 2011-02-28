@@ -889,7 +889,8 @@ SELECT     Device.CompanyID, Company.Acronym AS CompanyAcronym, Company.Name AS 
                       Measurement.PhasorSourceIndex, Phasor.Label AS PhasorLabel, Phasor.Type AS PhasorType, Phasor.Phase, 
                       Measurement.SignalReference, Measurement.Adder, Measurement.Multiplier, Measurement.Description, Measurement.Enabled, 
                       COALESCE (SignalType.EngineeringUnits, N'') AS EngineeringUnits, SignalType.Source, SignalType.Acronym AS SignalAcronym, 
-                      SignalType.Name AS SignalName, SignalType.Suffix AS SignalTypeSuffix, Device.Longitude, Device.Latitude
+                      SignalType.Name AS SignalName, SignalType.Suffix AS SignalTypeSuffix, Device.Longitude, Device.Latitude,
+					  CONCAT_WS(':', COALESCE(Historian.Acronym, Device.Acronym, '__'), CAST(Measurement.PointID AS CHAR)) AS ID
 FROM         Company RIGHT OUTER JOIN
                       Device ON Company.ID = Device.CompanyID RIGHT OUTER JOIN
                       Measurement LEFT OUTER JOIN
