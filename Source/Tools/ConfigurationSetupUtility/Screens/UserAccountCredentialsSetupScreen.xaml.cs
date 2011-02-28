@@ -20,6 +20,8 @@
 //       Generated original version of source code.
 //  02/28/2011 - Mehulbhai P Thakkar
 //       Added a checkbox to allow pass-through authentication.
+//       Added SetFocus() method to set intial focus for better user experience.
+//       Added TextBox_GotFocus() event for all textboxes to highlight current value in the textbox.
 //******************************************************************************************************
 
 using System;
@@ -264,6 +266,8 @@ namespace ConfigurationSetupUtility.Screens
             m_dbInfoGrid.Visibility = Visibility.Collapsed;
             m_checkBoxPassThroughAuthentication.Visibility = Visibility.Visible;
             m_textBlockPassThroughMessage.Visibility = Visibility.Visible;
+            SetFocus();
+
         }
 
         private void RadioButtonWindowsAuthentication_Unchecked(object sender, RoutedEventArgs e)
@@ -275,16 +279,37 @@ namespace ConfigurationSetupUtility.Screens
             m_dbInfoGrid.Visibility = Visibility.Visible;
             m_checkBoxPassThroughAuthentication.Visibility = Visibility.Collapsed;
             m_textBlockPassThroughMessage.Visibility = Visibility.Collapsed;
+            SetFocus();
         }
 
         private void UserAccountCredentialsSetupScreen_Loaded(object sender, RoutedEventArgs e)
-        {
-            m_userNameTextBox.SelectAll();
-            m_userNameTextBox.Focus();
+        {            
             RadioButtonWindowsAuthentication.IsChecked = true;
             m_userNameTextBox.Text = Thread.CurrentPrincipal.Identity.Name;
+            SetFocus();
         }
 
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox)
+                ((TextBox)sender).SelectAll();
+            else if (sender is PasswordBox)
+                ((PasswordBox)sender).SelectAll();
+        }
+
+        private void SetFocus()
+        {
+            if (!string.IsNullOrEmpty(m_userNameTextBox.Text))
+            {
+                m_userPasswordTextBox.Focus();
+            }
+            else
+            {
+                m_userNameTextBox.SelectAll();
+                m_userNameTextBox.Focus();
+            }
+        }
         #endregion
+
     }
 }
