@@ -72,7 +72,7 @@ namespace Setup
                         {
                             try
                             {
-                                // Attempt to launch .NET 4.0 installer... This requires elevated privledges, so this may fail
+                                // Attempt to launch .NET 4.0 installer...
                                 net40Install = new Process();
                                 net40Install.StartInfo.FileName = netInstallPath;
                                 net40Install.StartInfo.UseShellExecute = false;
@@ -124,6 +124,7 @@ namespace Setup
         {
             this.WindowState = FormWindowState.Minimized;
 
+            // Install or uninstall openPDC
             Process openPDCInstall = new Process();
 
             openPDCInstall.StartInfo.FileName = "msiexec.exe";
@@ -140,19 +141,24 @@ namespace Setup
 
             if (openPDCInstall.ExitCode == 0)
             {
-                // Read registry installation parameters
-                string installPath = AddPathSuffix(Registry.LocalMachine.GetValue(@"SOFTWARE\Grid Protection Alliance\openPDC\InstallPath", "").ToString().Trim());
-                string targetBitSize = Registry.LocalMachine.GetValue(@"SOFTWARE\Grid Protection Alliance\openPDC\TargetBitSize", "32bit").ToString().Trim();
+                // Run configuration setup utility post installation of openPDC, but not for uninstalls
+                if (string.Compare(parameters, "/x", true) != 0)
+                {
+                    // Read registry installation parameters
+                    string installPath = AddPathSuffix(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "InstallPath", "").ToString().Trim());
+                    string targetBitSize = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "TargetBitSize", "32bit").ToString().Trim();
 
-                // Run configuration setup utility
-                Process configSetupUtility = new Process();
+                    // Run configuration setup utility
+                    Process configSetupUtility = new Process();
 
-                configSetupUtility.StartInfo.FileName = installPath + "ConfigurationSetupUtility.exe";
-                configSetupUtility.StartInfo.Arguments = "-install -" + targetBitSize;
-                configSetupUtility.StartInfo.UseShellExecute = false;
-                configSetupUtility.Start();
-                configSetupUtility.WaitForExit();
+                    configSetupUtility.StartInfo.FileName = installPath + "ConfigurationSetupUtility.exe";
+                    configSetupUtility.StartInfo.Arguments = "-install -" + targetBitSize;
+                    configSetupUtility.StartInfo.UseShellExecute = false;
+                    configSetupUtility.Start();
+                    configSetupUtility.WaitForExit();
+                }
 
+                // Install or uninstall PMU Connection Tester
                 if (checkBoxConnectionTester.Checked)
                 {
                     Process connectionTesterInstall = new Process();
