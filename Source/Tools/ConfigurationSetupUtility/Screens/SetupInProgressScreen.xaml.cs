@@ -1230,7 +1230,7 @@ namespace ConfigurationSetupUtility.Screens
             }
 
             // the following change will be done only for openPDCManager configuration.
-            if (Convert.ToBoolean(m_state["applyChangesToLocalManager"]))
+            if (Convert.ToBoolean(m_state["applyChangesToLocalManager"]) && m_state.ContainsKey("allowPassThroughAuthentication"))
             {
                 XmlNode userSettings = configFile.SelectSingleNode("configuration/userSettings/openPDCManager.Properties.Settings");
                 if (userSettings != null)
