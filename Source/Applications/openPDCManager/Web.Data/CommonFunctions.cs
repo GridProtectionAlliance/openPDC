@@ -2113,6 +2113,35 @@ namespace openPDCManager.Data
             }
         }
 
+        public static string DeleteOutputStreamDeviceAnalog(DataConnection connection, int outputStreamDeviceAnalogID)
+        {
+            bool createdConnection = false;
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
+                //Setup current users context for Delete trigger.
+                SetCurrentUserContext(connection);
+
+                IDbCommand command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = "Delete From OutputStreamDeviceAnalog Where ID = @outputStreamDeviceAnalogID";
+                command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceAnalogID", outputStreamDeviceAnalogID));
+                command.ExecuteNonQuery();
+
+                return "Output Stream Device Analog Deleted Successfully";
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
         #endregion
 
         #region " Manage Output Stream Device Digitals Code"
@@ -2199,6 +2228,35 @@ namespace openPDCManager.Data
                 command.ExecuteNonQuery();
                 return "Output Stream Device Digital Information Saved Successfully";
             }			
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
+        public static string DeleteOutputStreamDeviceDigital(DataConnection connection, int outputStreamDeviceDigitalID)
+        {
+            bool createdConnection = false;
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
+                //Setup current users context for Delete trigger.
+                SetCurrentUserContext(connection);
+
+                IDbCommand command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = "Delete From OutputStreamDeviceDigital Where ID = @outputStreamDeviceDigitalID";
+                command.Parameters.Add(AddWithValue(command, "@outputStreamDeviceDigitalID", outputStreamDeviceDigitalID));
+                command.ExecuteNonQuery();
+
+                return "Output Stream Device Digital Deleted Successfully";
+            }
             finally
             {
                 if (createdConnection && connection != null)

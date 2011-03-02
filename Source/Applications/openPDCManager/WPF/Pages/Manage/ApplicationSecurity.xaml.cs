@@ -793,12 +793,28 @@ namespace openPDCManager.Pages.Manage
                 {
                     TextBoxUsername.Focus();
                 });
+                sm.Owner = Window.GetWindow(this);
                 sm.ShowPopup();
                 return isValid;
             }
 
             if (ComboBoxAuthentication.SelectedValue.ToString() == "Database Authentication")
             {
+                //do not allow "\" in username when database authentication mode is selected as it may look like a domainname\username.
+                if (TextBoxUsername.Text.Contains("\\"))
+                {
+                    isValid = false;
+                    SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid character in Username", SystemMessage = "User name being used for database authentication appears to have a domain name prefix." + Environment.NewLine + "Avoid using \\ in the user name or switch to Windows authentication mode.", 
+                        UserMessageType = MessageType.Error }, ButtonType.OkOnly);
+                    sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
+                    {
+                        TextBoxUsername.Focus();
+                    });
+                    sm.Owner = Window.GetWindow(this);
+                    sm.ShowPopup();
+                    return isValid;
+                }
+
                 //if it is a new user, then only password is required. Otherwise leave existing password as it is.
                 if (!m_editUserMode && string.IsNullOrEmpty(TextBoxPassword.Password))
                 {
@@ -809,6 +825,7 @@ namespace openPDCManager.Pages.Manage
                     {
                         TextBoxPassword.Focus();
                     });
+                    sm.Owner = Window.GetWindow(this);
                     sm.ShowPopup();
                     return isValid;
                 }
@@ -824,6 +841,7 @@ namespace openPDCManager.Pages.Manage
                     {
                         TextBoxPassword.Focus();
                     });
+                    sm.Owner = Window.GetWindow(this);
                     sm.ShowPopup();
                     return isValid;
                 }
@@ -837,6 +855,7 @@ namespace openPDCManager.Pages.Manage
                     {
                         TextBoxFirstName.Focus();
                     });
+                    sm.Owner = Window.GetWindow(this);
                     sm.ShowPopup();
                     return isValid;
                 }
@@ -850,6 +869,7 @@ namespace openPDCManager.Pages.Manage
                     {
                         TextBoxLastName.Focus();
                     });
+                    sm.Owner = Window.GetWindow(this);
                     sm.ShowPopup();
                     return isValid;
                 }
@@ -863,6 +883,7 @@ namespace openPDCManager.Pages.Manage
                     {
                         DatePickerPasswordExpiry.SelectedDate = DateTime.Now.AddDays(90);
                     });
+                    sm.Owner = Window.GetWindow(this);
                     sm.ShowPopup();
                     return isValid;
                 }
@@ -924,6 +945,7 @@ namespace openPDCManager.Pages.Manage
                 {
                     TextBoxGroupName.Focus();
                 });
+                sm.Owner = Window.GetWindow(this);
                 sm.ShowPopup();
                 return isValid;
             }

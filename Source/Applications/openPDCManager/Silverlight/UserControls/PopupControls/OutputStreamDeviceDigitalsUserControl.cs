@@ -57,6 +57,11 @@ namespace openPDCManager.UserControls.PopupControls
             m_client.SaveOutputStreamDeviceDigitalAsync(outputStreamDeviceDigital, isNew);
         }
 
+        void DeleteOutputStreamDeviceDigital(int outputStreamDeviceDigitalID)
+        {
+
+        }
+
         #endregion
 
         #region [ Service Event Handlers ]

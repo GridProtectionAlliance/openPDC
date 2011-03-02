@@ -34,6 +34,7 @@ using openPDCManager.PhasorDataServiceProxy;
 #else
 using openPDCManager.Data.Entities;
 using System.Windows.Media.Imaging;
+using openPDCManager.Data;
 #endif
 
 namespace openPDCManager.UserControls.PopupControls
@@ -123,6 +124,55 @@ namespace openPDCManager.UserControls.PopupControls
             ClearForm();
         }
 
+        private void ButtonDelete_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int outputStreamDeviceDigitalId = Convert.ToInt32(((Button)sender).Tag.ToString());
+                string label = ToolTipService.GetToolTip((Button)sender).ToString();  // ((HyperlinkButton)sender).Name;
+
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete output stream device digital?", SystemMessage = "Output Stream  Device Digital: " + label, UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)sm.DialogResult)
+                    {
+                        try
+                        {
+                            DeleteOutputStreamDeviceDigital(outputStreamDeviceDigitalId);
+                            ClearForm();
+                        }
+                        catch (Exception ex)
+                        {
+                            SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = "Failed to delete output stream device digital.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                                ButtonType.OkOnly);
+#if !SILVERLIGHT
+                            CommonFunctions.LogException(null, "ButtonDelete_Click", ex);
+                            sm1.Owner = Window.GetWindow(this);
+                            sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                            sm1.ShowPopup();
+
+                        }
+                    }
+                });
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+            catch (Exception ex)
+            {
+                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to delete output stream device digital.", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+#if !SILVERLIGHT
+                sm.Owner = Window.GetWindow(this);
+                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+#endif
+                sm.ShowPopup();
+            }
+        }
+
         #endregion
              
         #region [ Page Event Handlers ]
@@ -207,5 +257,7 @@ namespace openPDCManager.UserControls.PopupControls
         }
 
         #endregion
+
+        
     }
 }

@@ -64,7 +64,7 @@
                         <TextBlock Text="Label" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </Border>
                     <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                        <TextBlock Text="Type" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        <TextBlock Text="Type" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </Border>
                     <Border Style="{StaticResource HeaderRowCellBorderStyle}">
                         <TextBlock Text="Phase" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
@@ -83,7 +83,7 @@
                                             <TextBlock Text="{Binding Path=Label}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
                                         </Border>
                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                            <TextBlock Text="{Binding Path=PhasorType}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
+                                            <TextBlock Text="{Binding Path=PhasorType}" Width="{StaticResource SmallItemSize}" TextAlignment="Center" Padding="1"/>
                                         </Border>
                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                             <TextBlock Text="{Binding Path=PhaseType}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>

@@ -89,6 +89,27 @@ namespace openPDCManager.UserControls.PopupControls
             sm.ShowPopup();
         }
 
+        void DeleteOutputStreamDeviceDigital(int outputStreamDeviceDigitalID)
+        {
+            SystemMessages sm;
+            try
+            {
+                string result = CommonFunctions.DeleteOutputStreamDeviceDigital(null, outputStreamDeviceDigitalID);
+                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                        ButtonType.OkOnly);
+                GetOutputStreamDeviceDigitalList();
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException(null, "WPF.DeleteOutputStreamDeviceDigital", ex);
+                sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Output Stream Device Digital", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+            }
+            sm.Owner = Window.GetWindow(this);
+            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            sm.ShowPopup();
+        }
+
         #endregion
     }
 }

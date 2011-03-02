@@ -90,6 +90,26 @@ namespace openPDCManager.UserControls.PopupControls
             sm.ShowPopup();
         }
 
+        void DeleteOutputStreamDeviceAnalog(int outputStreamDeviceAnalogID)
+        {
+            SystemMessages sm;
+            try
+            {
+                string result = CommonFunctions.DeleteOutputStreamDeviceAnalog(null, outputStreamDeviceAnalogID);
+                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                        ButtonType.OkOnly);
+                GetOutputStreamDeviceAnalogList();
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException(null, "WPF.DeleteOutputStreamDeviceAnalog", ex);
+                sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Output Stream Device Analog", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                        ButtonType.OkOnly);
+            }
+            sm.Owner = Window.GetWindow(this);
+            sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            sm.ShowPopup();
+        }
 
         #endregion
     }

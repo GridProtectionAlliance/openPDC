@@ -64,9 +64,12 @@
                         <TextBlock Text="Label" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </Border>
                     <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                        <TextBlock Text="Type" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        <TextBlock Text="Type" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                     </Border>
-                    <TextBlock Text="Load Order" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <TextBlock Text="Load Order" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </Border>
+                    <TextBlock Text="Delete" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                 </StackPanel>
             </Border>
             <Border Background="{StaticResource PortletBackgroundBrush}">
@@ -84,6 +87,9 @@
                                         </Border>
                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                             <TextBlock Text="{Binding Path=LoadOrder}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <Button Content="Delete" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalContentAlignment="Center" ToolTipService.ToolTip="{Binding Path=Label}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" Click="ButtonDelete_Click" />
                                         </Border>
                                     </StackPanel>
                                 </DataTemplate>
