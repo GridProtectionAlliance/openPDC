@@ -33,7 +33,10 @@
                 <TextBox Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" Name="m_adminUserNameTextBox" TextChanged="AdminUserNameTextBox_TextChanged" />
                 <PasswordBox Grid.Row="3" Height="23" HorizontalAlignment="Left" Name="m_adminPasswordTextBox" VerticalAlignment="Center" Width="150" Grid.Column="1" PasswordChanged="AdminPasswordTextBox_PasswordChanged" />
                 <Button Content="Test Connection" Height="20" HorizontalAlignment="Right" Width="100" FontSize="11" Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Top" Click="TestConnectionButton_Click" />
-                <CheckBox Content="Create new database user" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="5" Margin="5,20,0,5" Name="m_createNewUserCheckBox" Checked="CreateNewUserCheckBox_Checked" Unchecked="CreateNewUserCheckBox_Unchecked" />
+                <StackPanel Grid.ColumnSpan="2" Grid.Row="5">
+                    <CheckBox Content="Use integrated security for openPDC Manager" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,5" Name="m_checkBoxPassThroughAuthentication" Checked="UseIntegratedSecurity_Checked" Unchecked="UseIntegratedSecurity_Unchecked" />
+                    <CheckBox Content="Create new database user" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0,0,5" Name="m_createNewUserCheckBox" Checked="CreateNewUserCheckBox_Checked" Unchecked="CreateNewUserCheckBox_Unchecked" />
+                </StackPanel>
                 <Label Content="User name:" Grid.Row="6" HorizontalAlignment="Left" Height="26" VerticalAlignment="Bottom" IsEnabled="{Binding ElementName=m_createNewUserCheckBox, Path=IsChecked}" Name="m_newUserNameLabel" />
                 <Label Content="Password:" Grid.Row="7" HorizontalAlignment="Left" Margin="0,0,5,0" IsEnabled="{Binding ElementName=m_createNewUserCheckBox, Path=IsChecked}" Name="m_newUserPasswordLabel" />
                 <TextBox Grid.Row="6" Height="23" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" Grid.Column="1" IsEnabled="{Binding ElementName=m_createNewUserCheckBox, Path=IsChecked}" Name="m_newUserNameTextBox" TextChanged="NewUserNameTextBox_TextChanged" />

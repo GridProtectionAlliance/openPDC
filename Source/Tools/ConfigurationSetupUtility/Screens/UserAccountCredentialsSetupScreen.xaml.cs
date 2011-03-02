@@ -134,12 +134,15 @@ namespace ConfigurationSetupUtility.Screens
 
                         if (userData.Length == 2)
                         {
-                            if (UserInfo.AuthenticateUser(userData[0], userData[1], m_userPasswordTextBox.Password.Trim(), out errorMessage) == null)
+                            if (UserInfo.AuthenticateUser(userData[0].Trim(), userData[1].Trim(), m_userPasswordTextBox.Password.Trim(), out errorMessage) == null)
                             {
                                 MessageBox.Show("Authentication failed. Please verify your username and password.\r\n\r\n" + errorMessage, "Windows Authentication User Setup Error");
                                 m_userPasswordTextBox.Focus();
                                 return false;
                             }
+
+                            // We only store user account name in the database in Windows authentication mode - so we make sure it is well formatted
+                            m_userNameTextBox.Text = userData[0].Trim() + "\\" + userData[1].Trim();
                         }
                         else
                         {
@@ -158,7 +161,7 @@ namespace ConfigurationSetupUtility.Screens
                 else
                 {
                     string passwordRequirementRegex = "^.*(?=.{8,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).*$";
-                    string passwordRequirementError = "Invalid Password: Password must be at least 8 characters; must contain at least 1 number, 1 upper case letter, and 1 lower case letter";
+                    string passwordRequirementError = "Invalid Password: Password must be at least 8 characters and must contain at least 1 number, 1 upper case letter and 1 lower case letter";
 
                     string userName = m_userNameTextBox.Text.Trim();
                     string password = m_userPasswordTextBox.Password.Trim();
@@ -174,7 +177,7 @@ namespace ConfigurationSetupUtility.Screens
                     }
                     else if (userName.Contains("\\"))
                     {
-                        MessageBox.Show("User name being used for database authentication appears to have a domain name prefix.\r\nAvoid using a \"\\\" in the user name or switch to Windows authentication mode.", "Database Authentication User Setup Error");
+                        MessageBox.Show("User name being used for database authentication appears to have a domain name prefix.\r\n\r\nAvoid using a \"\\\" in the user name or switch to Windows authentication mode.", "Database Authentication User Setup Error");
                         m_userNameTextBox.Focus();
                         return false;
                     }

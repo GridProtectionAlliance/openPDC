@@ -18,6 +18,9 @@
 //  ----------------------------------------------------------------------------------------------------
 //  06/29/2010 - Stephen C. Wills
 //       Generated original version of source code.
+//  03/02/2011 - J. Ritchie Carroll
+//       Added key value delimeters only between settings.
+//       Added IntegratedSecurityConnectionString property.
 //
 //******************************************************************************************************
 
@@ -121,9 +124,9 @@ namespace ConfigurationSetupUtility
             set
             {
                 if (string.IsNullOrEmpty(value))
-                    m_settings.Remove("User Id");
+                    m_settings.Remove("User ID");
                 else
-                    m_settings["User Id"] = value;
+                    m_settings["User ID"] = value;
             }
         }
 
@@ -159,10 +162,12 @@ namespace ConfigurationSetupUtility
 
                 foreach (string key in m_settings.Keys)
                 {
+                    if (builder.Length > 0)
+                        builder.Append("; ");
+
                     builder.Append(key);
                     builder.Append('=');
                     builder.Append(m_settings[key]);
-                    builder.Append("; ");
                 }
 
                 return builder.ToString();
@@ -170,6 +175,34 @@ namespace ConfigurationSetupUtility
             set
             {
                 m_settings = value.ParseKeyValuePairs();
+            }
+        }
+
+        /// <summary>
+        /// Gets connection string used to access the database with integrated security (i.e., Windows pass through authentication).
+        /// </summary>
+        public string IntegratedSecurityConnectionString
+        {
+            get
+            {
+                StringBuilder builder = new StringBuilder();
+
+                foreach (string key in m_settings.Keys)
+                {
+                    if (string.Compare(key, "User ID", true) != 0 && string.Compare(key, "Password", true) != 0)
+                    {
+                        if (builder.Length > 0)
+                            builder.Append("; ");
+
+                        builder.Append(key);
+                        builder.Append('=');
+                        builder.Append(m_settings[key]);
+                    }
+                }
+
+                builder.Append("; Integrated Security=SSPI");
+
+                return builder.ToString();
             }
         }
 

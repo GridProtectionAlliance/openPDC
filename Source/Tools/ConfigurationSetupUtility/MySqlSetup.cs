@@ -20,6 +20,9 @@
 //       Generated original version of source code.
 //  02/23/2011 - Mehulbhai Thakkar
 //       Added "Allow User Variables" setting so that session variables can be created without errors.
+//  03/02/2011 - J. Ritchie Carroll
+//       Added key value delimeters only between settings.
+//
 //******************************************************************************************************
 
 using System;
@@ -38,7 +41,6 @@ namespace ConfigurationSetupUtility
     /// </summary>
     public class MySqlSetup
     {
-
         #region [ Members ]
 
         // Events
@@ -68,7 +70,8 @@ namespace ConfigurationSetupUtility
         public MySqlSetup()
         {
             m_settings = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
-            m_settings["Allow User Variables"] = "true";    // this setting allows creation of user defined session variables.
+            m_settings["Allow User Variables"] = "true";    // This setting allows creation of user defined session variables.
+
             try
             {
                 // Try to get path for mysql executable based on registered Windows service path, if this fails, fall back on just the executable name which will require a proper environmental path to run
@@ -176,10 +179,12 @@ namespace ConfigurationSetupUtility
 
                 foreach (string key in m_settings.Keys)
                 {
+                    if (builder.Length > 0)
+                        builder.Append("; ");
+
                     builder.Append(key);
                     builder.Append('=');
                     builder.Append(m_settings[key]);
-                    builder.Append("; ");
                 }
 
                 return builder.ToString();
@@ -383,7 +388,5 @@ namespace ConfigurationSetupUtility
         }
 
         #endregion
-        
-        
     }
 }

@@ -233,6 +233,9 @@ namespace ConfigurationSetupUtility.Screens
                 if (!m_state.ContainsKey("encryptSqlServerConnectionStrings"))
                     m_state.Add("encryptSqlServerConnectionStrings", false);
 
+                if (!m_state.ContainsKey("useSqlServerIntegratedSecurity"))
+                    m_state.Add("useSqlServerIntegratedSecurity", false);
+
                 m_databaseNameTextBox.Text = migrate ? "openPDCv2" : "openPDC";
             }
         }
@@ -362,6 +365,20 @@ namespace ConfigurationSetupUtility.Screens
         {
             if (m_state != null)
                 m_state["createNewSqlServerUser"] = false;
+        }
+
+        // Occurs when the user chooses to use pass-through authentication.
+        private void UseIntegratedSecurity_Checked(object sender, RoutedEventArgs e)
+        {
+            if (m_state != null)
+                m_state["useSqlServerIntegratedSecurity"] = true;
+        }
+
+        // Occurs when the user chooses to not use pass-through authentication.
+        private void UseIntegratedSecurity_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (m_state != null)
+                m_state["useSqlServerIntegratedSecurity"] = false;
         }
 
         // Occurs when the user changes the user name of the new database user.
