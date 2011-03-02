@@ -22,6 +22,9 @@
 //       Added a checkbox to allow pass-through authentication.
 //       Added SetFocus() method to set intial focus for better user experience.
 //       Added TextBox_GotFocus() event for all textboxes to highlight current value in the textbox.
+//  03/02/2011 - J. Ritchie Carroll
+//       Improved text box focusing after message box display.
+//
 //******************************************************************************************************
 
 using System;
@@ -133,19 +136,22 @@ namespace ConfigurationSetupUtility.Screens
                         {
                             if (UserInfo.AuthenticateUser(userData[0], userData[1], m_userPasswordTextBox.Password.Trim(), out errorMessage) == null)
                             {
-                                MessageBox.Show("Authentication failed. Please verify your username and password.", "Verifying Windows Credentials");
+                                MessageBox.Show("Authentication failed. Please verify your username and password.\r\n\r\n" + errorMessage, "Windows Authentication User Setup Error");
+                                m_userPasswordTextBox.Focus();
                                 return false;
                             }
                         }
                         else
                         {
-                            MessageBox.Show("Username format is invalid: for Windows authentication please provide a username formatted like domain\\username.\r\nUse the machine name \"" + Environment.MachineName + "\" as the domain name if the system is not on a domain or you want to use a local account.", "Verifying Windows Credentials");
+                            MessageBox.Show("Username format is invalid: for Windows authentication please provide a username formatted like \"domain\\username\".\r\nUse the machine name \"" + Environment.MachineName + "\" as the domain name if the system is not on a domain or you want to use a local account.", "Windows Authentication User Setup Error");
+                            m_userNameTextBox.Focus();
                             return false;
                         }
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message + Environment.NewLine + errorMessage, "Verifying Windows Credentials - ERROR!");
+                        MessageBox.Show(ex.Message + Environment.NewLine + errorMessage, "Windows Authentication User Setup Error");
+                        m_userPasswordTextBox.Focus();
                         return false;
                     }
                 }
@@ -162,32 +168,37 @@ namespace ConfigurationSetupUtility.Screens
 
                     if (string.IsNullOrEmpty(userName))
                     {
-                        MessageBox.Show("Please provide administrative user account name.", "Database User Credentials");
+                        MessageBox.Show("Please provide administrative user account name.", "Database Authentication User Setup Error");
+                        m_userNameTextBox.Focus();
+                        return false;
+                    }
+                    else if (userName.Contains("\\"))
+                    {
+                        MessageBox.Show("User name being used for database authentication appears to have a domain name prefix.\r\nAvoid using a \"\\\" in the user name or switch to Windows authentication mode.", "Database Authentication User Setup Error");
                         m_userNameTextBox.Focus();
                         return false;
                     }
                     else if (string.IsNullOrEmpty(password) || !Regex.IsMatch(password, passwordRequirementRegex))
                     {
-                        MessageBox.Show("Please provide valid password for administrative user." + Environment.NewLine + passwordRequirementError, "Database User Credentials");
+                        MessageBox.Show("Please provide valid password for administrative user." + Environment.NewLine + passwordRequirementError, "Database Authentication User Setup Error");
                         m_userPasswordTextBox.Focus();
                         return false;
                     }
                     else if (password != confirmPassword)
                     {
-                        MessageBox.Show("Password does not match the cofirm password", "Database User Credentials");
-                        m_userConfirmPasswordTextBox.SelectAll();
+                        MessageBox.Show("Password does not match the cofirm password", "Database Authentication User Setup Error");
                         m_userConfirmPasswordTextBox.Focus();
                         return false;
                     }
                     else if (string.IsNullOrEmpty(m_userFirstNameTextBox.Text.Trim()))
                     {
-                        MessageBox.Show("Please provide first name for administrative user", "Database User Credentials");
+                        MessageBox.Show("Please provide first name for administrative user", "Database Authentication User Setup Error");
                         m_userFirstNameTextBox.Focus();
                         return false;
                     }
                     else if (string.IsNullOrEmpty(m_userLastNameTextBox.Text.Trim()))
                     {
-                        MessageBox.Show("Please provide last name for administrative user", "Database User Credentials");
+                        MessageBox.Show("Please provide last name for administrative user", "Database Authentication User Setup Error");
                         m_userLastNameTextBox.Focus();
                         return false;
                     }
@@ -300,14 +311,9 @@ namespace ConfigurationSetupUtility.Screens
         private void SetFocus()
         {
             if (!string.IsNullOrEmpty(m_userNameTextBox.Text))
-            {
                 m_userPasswordTextBox.Focus();
-            }
             else
-            {
-                m_userNameTextBox.SelectAll();
                 m_userNameTextBox.Focus();
-            }
         }
         #endregion
 
