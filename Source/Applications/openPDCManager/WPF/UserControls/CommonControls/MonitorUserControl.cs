@@ -74,8 +74,9 @@ namespace openPDCManager.UserControls.CommonControls
         }
 
         void SendRequest()
-        {
-            m_serviceClient.Helper.SendRequest(TextBoxServiceRequest.Text);            
+        {            
+            if (m_serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                m_serviceClient.Helper.SendRequest(TextBoxServiceRequest.Text);            
         }
 
         public void ReconnectToService()

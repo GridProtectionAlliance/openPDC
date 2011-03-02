@@ -47,7 +47,8 @@ namespace openPDCManager.UserControls.CommonControls
         {
             InitializeComponent();
             Initialize();
-            this.Loaded += new RoutedEventHandler(Monitor_Loaded);            
+            this.Loaded += new RoutedEventHandler(Monitor_Loaded);
+            TextBoxServiceRequest.GotFocus += new RoutedEventHandler(TextBoxServiceRequest_GotFocus);            
             ButtonSendServiceRequest.Click += new RoutedEventHandler(ButtonSendServiceRequest_Click);    
 #if !SILVERLIGHT
             ButtonSendServiceRequest.Content = new BitmapImage(new Uri(@"images/Input.png", UriKind.Relative));
@@ -55,6 +56,11 @@ namespace openPDCManager.UserControls.CommonControls
         }
 
         #region [ Control Event Handlers ]
+
+        void TextBoxServiceRequest_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBoxServiceRequest.SelectAll();
+        }
 
         void ButtonSendServiceRequest_Click(object sender, RoutedEventArgs e)
         {
@@ -68,7 +74,7 @@ namespace openPDCManager.UserControls.CommonControls
             if (!string.IsNullOrEmpty(TextBoxServiceRequest.Text))
             {
                 SendRequest();
-                TextBoxServiceRequest.SelectAll();
+                TextBoxServiceRequest.Focus();
             }
         }
 
@@ -83,7 +89,8 @@ namespace openPDCManager.UserControls.CommonControls
             m_activityWindow.Owner = Window.GetWindow(this);
             m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 #endif
-            m_activityWindow.Show();
+            m_activityWindow.Show();            
+            TextBoxServiceRequest.Focus();
             ReconnectToService();
         }
 
