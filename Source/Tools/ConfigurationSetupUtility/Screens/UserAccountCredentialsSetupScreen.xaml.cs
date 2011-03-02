@@ -273,8 +273,8 @@ namespace ConfigurationSetupUtility.Screens
 
         private void RadioButtonWindowsAuthentication_Checked(object sender, RoutedEventArgs e)
         {
-            //i.e. Windows Authentication Selected.            
-            m_messageTextBlock.Text = "Please enter current credentials for active directory user to be the administrator for openPDC. Credentials will be validated by operating system.";
+            // Windows Authentication Selected.            
+            m_messageTextBlock.Text = "Please enter current credentials for the Windows authenticated user setup to be the administrator for openPDC. Credentials validated by operating system.";
             m_userAccountHeaderTextBlock.Text = "Windows Authentication";
             m_userNameTextBox.Text = Thread.CurrentPrincipal.Identity.Name;
             m_dbInfoGrid.Visibility = Visibility.Collapsed;
@@ -286,8 +286,8 @@ namespace ConfigurationSetupUtility.Screens
 
         private void RadioButtonWindowsAuthentication_Unchecked(object sender, RoutedEventArgs e)
         {
-            //i.e. Database Authentication Selected.
-            m_messageTextBlock.Text = "Please provide the desired credentials for database user to be the administrator for openPDC.";
+            // Database Authentication Selected.
+            m_messageTextBlock.Text = "Please provide the desired credentials for database user setup to be the administrator for openPDC. Password complexity rules apply.";
             m_userAccountHeaderTextBlock.Text = "Database Authentication";
             m_userNameTextBox.Text = string.Empty;
             m_dbInfoGrid.Visibility = Visibility.Visible;
