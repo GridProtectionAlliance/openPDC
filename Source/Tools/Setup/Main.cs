@@ -145,17 +145,36 @@ namespace Setup
                 if (string.Compare(parameters, "/x", true) != 0)
                 {
                     // Read registry installation parameters
-                    string installPath = AddPathSuffix(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "InstallPath", "").ToString().Trim());
-                    string targetBitSize = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "TargetBitSize", "32bit").ToString().Trim();
+                    string installPath, targetBitSize;
 
-                    // Run configuration setup utility
-                    Process configSetupUtility = new Process();
+                    if (IntPtr.Size == 4 || radioButton64bit.Checked)
+                    {
+                        // Read values from primary registry location
+                        installPath = AddPathSuffix(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "InstallPath", "").ToString().Trim());
+                        targetBitSize = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "TargetBitSize", "32bit").ToString().Trim();
+                    }
+                    else
+                    {
+                        // Read values from 32-bit virtualized registry location
+                        installPath = AddPathSuffix(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grid Protection Alliance\openPDC", "InstallPath", "").ToString().Trim());
+                        targetBitSize = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grid Protection Alliance\openPDC", "TargetBitSize", "32bit").ToString().Trim();
+                    }
 
-                    configSetupUtility.StartInfo.FileName = installPath + "ConfigurationSetupUtility.exe";
-                    configSetupUtility.StartInfo.Arguments = "-install -" + targetBitSize;
-                    configSetupUtility.StartInfo.UseShellExecute = false;
-                    configSetupUtility.Start();
-                    configSetupUtility.WaitForExit();
+                    try
+                    {
+                        // Run configuration setup utility
+                        Process configSetupUtility = new Process();
+
+                        configSetupUtility.StartInfo.FileName = installPath + "ConfigurationSetupUtility.exe";
+                        configSetupUtility.StartInfo.Arguments = "-install -" + targetBitSize;
+                        configSetupUtility.StartInfo.UseShellExecute = false;
+                        configSetupUtility.Start();
+                        configSetupUtility.WaitForExit();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Setup program was not able to launch the openPDC Configuration Setup Utility due to an exception. You will need to run this program manually before starting the openPDC.\r\n\r\nError: " + ex.Message, "Configuration Setup Utility Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
 
                 // Install or uninstall PMU Connection Tester

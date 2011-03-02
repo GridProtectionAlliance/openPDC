@@ -165,7 +165,7 @@ namespace ConfigurationSetupUtility.Screens
 
             if (m_defaultAdapter == null)
             {
-                m_assemblyName = "HistorianAdapters.dll";
+                m_assemblyName = FilePath.GetAbsolutePath("HistorianAdapters.dll");
                 m_typeName = "HistorianAdapters.LocalOutputAdapter";
             }
 
