@@ -27,11 +27,21 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using System.ServiceProcess;
 
 namespace Setup
 {
     public partial class Main : Form
     {
+        // openPDC product code, as defined in the setup packages
+        private const string ProductCode = "{493D6CED-50C6-4CF5-93A3-306C364F10A3}";
+
+        private enum SetupType
+        {
+            Install,
+            Uninstall
+        }
+
         public Main()
         {
             InitializeComponent();
@@ -106,13 +116,32 @@ namespace Setup
                 runSetup = (MessageBox.Show("The setup program was not able to determine if Microsoft .NET 4.0 is installed on this computer. The .NET 4.0 framework is required to be installed before you continue installation. Would you like to attempt installation anyway?", ".NET 4.0 Check", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
             }
 
+            // See if an existing version is currently installed
+            RegistryKey openPDCInstallKey;
+
+            openPDCInstallKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\" + ProductCode);
+
+            // If key wasn't found, test for 32-bit virtualized location
+            if (openPDCInstallKey == null)
+                openPDCInstallKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\" + ProductCode);
+
+            if (openPDCInstallKey != null)
+            {
+                if (MessageBox.Show("An existing version of the openPDC is installed on this computer. Would you like to remove the existing version?\r\n\r\nCurrent configuration will be preserved.", "Previous Version Check", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    runSetup = RunSetup(SetupType.Uninstall, false);
+                else
+                    runSetup = (MessageBox.Show("Would you like to attempt installation anyway?", "Previous Version Check", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
+
+                openPDCInstallKey.Close();
+            }
+
             if (runSetup)
-                RunSetup("/i");
+                RunSetup(SetupType.Install, true);
         }
 
         private void buttonUninstall_Click(object sender, EventArgs e)
         {
-            RunSetup("/x");
+            RunSetup(SetupType.Uninstall, false);
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -120,7 +149,7 @@ namespace Setup
             this.Close();
         }
 
-        private void RunSetup(string parameters)
+        private bool RunSetup(SetupType type, bool closeOnSuccess)
         {
             this.WindowState = FormWindowState.Minimized;
 
@@ -129,10 +158,22 @@ namespace Setup
 
             openPDCInstall.StartInfo.FileName = "msiexec.exe";
 
-            if (radioButton64bit.Checked)
-                openPDCInstall.StartInfo.Arguments = parameters + " Installers\\openPDCSetup64.msi";
+            if (type == SetupType.Uninstall)
+            {
+                // Attempt to shutdown processes before uninstall
+                AttemptToStopKeyProcesses();
+
+                // Uninstall any version of the openPDC
+                openPDCInstall.StartInfo.Arguments = "/x " + ProductCode + " /qr";
+            }
             else
-                openPDCInstall.StartInfo.Arguments = parameters + " Installers\\openPDCSetup.msi";
+            {
+                // Install current version of the openPDC
+                if (radioButton64bit.Checked)
+                    openPDCInstall.StartInfo.Arguments = "/i Installers\\openPDCSetup64.msi";
+                else
+                    openPDCInstall.StartInfo.Arguments = "/i Installers\\openPDCSetup.msi";
+            }
 
             openPDCInstall.StartInfo.UseShellExecute = false;
             openPDCInstall.StartInfo.CreateNoWindow = true;
@@ -142,7 +183,7 @@ namespace Setup
             if (openPDCInstall.ExitCode == 0)
             {
                 // Run configuration setup utility post installation of openPDC, but not for uninstalls
-                if (string.Compare(parameters, "/x", true) != 0)
+                if (type == SetupType.Install)
                 {
                     // Read registry installation parameters
                     string installPath, targetBitSize;
@@ -184,10 +225,19 @@ namespace Setup
 
                     connectionTesterInstall.StartInfo.FileName = "msiexec.exe";
 
-                    if (radioButton64bit.Checked)
-                        connectionTesterInstall.StartInfo.Arguments = parameters + " Installers\\PMUConnectionTesterSetup64.msi";
+                    if (type == SetupType.Uninstall)
+                    {
+                        // Uninstall any version of the PMU Connection Tester
+                        connectionTesterInstall.StartInfo.Arguments = "/x {6602B32E-0671-4FE1-A7A4-63025D325F49} /qr";
+                    }
                     else
-                        connectionTesterInstall.StartInfo.Arguments = parameters + " Installers\\PMUConnectionTesterSetup.msi";
+                    {
+                        // Install current version of the PMU Connection Tester
+                        if (radioButton64bit.Checked)
+                            connectionTesterInstall.StartInfo.Arguments = "/i Installers\\PMUConnectionTesterSetup64.msi";
+                        else
+                            connectionTesterInstall.StartInfo.Arguments = "/i Installers\\PMUConnectionTesterSetup.msi";
+                    }
 
                     connectionTesterInstall.StartInfo.UseShellExecute = false;
                     connectionTesterInstall.StartInfo.CreateNoWindow = true;
@@ -195,15 +245,29 @@ namespace Setup
                     connectionTesterInstall.WaitForExit();
 
                     if (connectionTesterInstall.ExitCode == 0)
-                        this.Close();
-                    else
-                        this.WindowState = FormWindowState.Normal;
+                    {
+                        if (closeOnSuccess)
+                            this.Close();
+                        else
+                            this.WindowState = FormWindowState.Normal;
+
+                        return true;
+                    }
+
+                    this.WindowState = FormWindowState.Normal;
+                    return false;
                 }
-                else
+
+                if (closeOnSuccess)
                     this.Close();
+                else
+                    this.WindowState = FormWindowState.Normal;
+
+                return true;
             }
-            else
-                this.WindowState = FormWindowState.Normal;
+
+            this.WindowState = FormWindowState.Normal;
+            return false;
         }
 
         private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e)
@@ -228,7 +292,7 @@ namespace Setup
         /// </summary>
         /// <param name="filePath">The file path to be suffixed.</param>
         /// <returns>Suffixed path.</returns>
-        public static string AddPathSuffix(string filePath)
+        private string AddPathSuffix(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
             {
@@ -243,6 +307,110 @@ namespace Setup
             }
 
             return filePath;
+        }
+
+        // Attempt to stop key processes/services before uninstall
+        private void AttemptToStopKeyProcesses()
+        {
+            try
+            {
+                Process[] instances = Process.GetProcessesByName("openPDCManager");
+
+                if (instances.Length > 0)
+                {
+                    int total = 0;
+
+                    // Terminate all instances of openPDC Manager running on the local computer
+                    foreach (Process process in instances)
+                    {
+                        process.Kill();
+                        total++;
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            // Attempt to access service controller for the openPDC
+            ServiceController openPdcServiceController = null;
+
+            try
+            {
+                foreach (ServiceController service in ServiceController.GetServices())
+                {
+                    if (string.Compare(service.ServiceName, "openPDC", true) == 0)
+                    {
+                        openPdcServiceController = service;
+                        break;
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            if (openPdcServiceController != null)
+            {
+                try
+                {
+                    if (openPdcServiceController.Status == ServiceControllerStatus.Running)
+                    {
+                        openPdcServiceController.Stop();
+
+                        // Can't wait forever for service to stop, so we time-out after 20 seconds
+                        openPdcServiceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(20.0D));
+                    }
+                }
+                catch
+                {
+                }
+            }
+
+            // If the openPDC service failed to stop or it is installed as stand-alone debug application, we try to stop any remaining running instances
+            try
+            {
+                Process[] instances = Process.GetProcessesByName("openPDC");
+
+                if (instances.Length > 0)
+                {
+                    int total = 0;
+
+                    // Terminate all instances of openPDC running on the local computer
+                    foreach (Process process in instances)
+                    {
+                        process.Kill();
+                        total++;
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            // If uninstalling the PMU Connection Tester, we try to stop any running instances
+            if (checkBoxConnectionTester.Checked)
+            {
+                try
+                {
+                    Process[] instances = Process.GetProcessesByName("PMUConnectionTester");
+
+                    if (instances.Length > 0)
+                    {
+                        int total = 0;
+
+                        // Terminate all instances of PMU Connection Tester running on the local computer
+                        foreach (Process process in instances)
+                        {
+                            process.Kill();
+                            total++;
+                        }
+                    }
+                }
+                catch
+                {
+                }
+            }
         }
     }
 }
