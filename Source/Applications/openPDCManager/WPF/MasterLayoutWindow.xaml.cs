@@ -104,9 +104,17 @@ namespace openPDCManager
                 Nodes.Visibility = Security.Visibility = Visibility.Collapsed;
 
             if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
+            {
                 ConfigurationWizard.Visibility = Visibility.Visible;
+                AddNew.Visibility = Visibility.Visible;
+                AddOtherDevice.Visibility = Visibility.Visible;
+            }
             else
+            {
                 ConfigurationWizard.Visibility = Visibility.Collapsed;
+                AddNew.Visibility = Visibility.Collapsed;
+                AddOtherDevice.Visibility = Visibility.Collapsed;
+            }
 
             IsolatedStorageManager.SetDefaultStorage(false);
 
