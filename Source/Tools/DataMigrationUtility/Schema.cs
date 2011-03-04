@@ -2159,9 +2159,9 @@ namespace Database
                 if (table1 == table2)
                     return 0;
 
-                if (table1.IsReferencedBy(table2) || table1.IsReferencedVia(table2))
+                if (table1.IsReferencedBy(table2))// || table1.IsReferencedVia(table2))
                     intCompare = -1;
-                else if (table2.IsReferencedBy(table1) || table2.IsReferencedVia(table1))
+                else if (table2.IsReferencedBy(table1))// || table2.IsReferencedVia(table1))
                     intCompare = 1;
 
                 // Sort by existence of foreign key fields, if defined
@@ -2579,24 +2579,32 @@ namespace Database
                 }
             }
 
-            // Sort tables in proper referential integrity processing order
-            m_tables.TableList.Sort(Tables.ReferentialOrderComparer.Default);
+            // Using a simple (i.e., stable) sorting algorithm here since not all relationships will
+            // be considered mathematically congruent and the fast .NET sort algorithm depends on
+            // comparisons based on perfect equality (i.e., if A > B and B > C then A > C - this may
+            // not be true in terms of referential integrity)
+            List<Table> sortedList = new List<Table>(m_tables.TableList);
+            Table temp = null;
+
+            for (x = 0; x < sortedList.Count; x++)
+            {
+                for (y = 0; y < sortedList.Count; y++)
+                {
+                    if (x != y && Tables.ReferentialOrderComparer.Default.Compare(sortedList[x], sortedList[y]) < 0)
+                    {
+                        temp = sortedList[y];
+                        sortedList[y] = sortedList[x];
+                        sortedList[x] = temp;
+                    }
+                }
+            }
 
             // Set initial I/O processing priorties for tables based on this order.  Processing tables
             // based on the "Priority" field allows user to have final say in processing order
-            for (x = 0; x < m_tables.Count; x++)
+            for (x = 0; x < sortedList.Count; x++)
             {
-                m_tables[x].Priority = x;
+                m_tables.TableList.Find(table => string.Compare(table.Name, sortedList[x].Name, true) == 0).Priority = x;
             }
-
-            //Debug.WriteLine("Node is referenced by Historian = " + m_tables["Node"].IsReferencedBy(m_tables["Historian"]));
-            //Debug.WriteLine("Historian is referenced by Node = " + m_tables["Historian"].IsReferencedBy(m_tables["Node"]));
-            //Debug.WriteLine("Node is referenced by Company = " + m_tables["Node"].IsReferencedBy(m_tables["Company"]));
-            //Debug.WriteLine("Company is referenced by Node = " + m_tables["Company"].IsReferencedBy(m_tables["Node"]));
-            //Debug.WriteLine("Node is referenced by OutputStreamMeasurement = " + m_tables["Node"].IsReferencedBy(m_tables["OutputStreamMeasurement"]));
-            //Debug.WriteLine("OutputStreamMeasurement is referenced by Node = " + m_tables["OutputStreamMeasurement"].IsReferencedBy(m_tables["Node"]));
-            //Debug.WriteLine("Node is referenced by VendorDevice = " + m_tables["Node"].IsReferencedBy(m_tables["VendorDevice"]));
-            //Debug.WriteLine("Node is referenced via VendorDevice = " + m_tables["Node"].IsReferencedVia(m_tables["VendorDevice"]));
 
             // Check to see if user requested to keep connection open, this is just for convience...
             if (m_immediateClose)
