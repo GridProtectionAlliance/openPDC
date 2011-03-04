@@ -224,6 +224,9 @@ namespace ConfigurationSetupUtility.Screens
                         {
                             string oldOleDbConnectionString = m_state["oldOleDbConnectionString"].ToString();
                             applicationSettings["FromConnectionString", true].Value = oldOleDbConnectionString;
+
+                            if (m_state.ContainsKey("oldOleDbDataType"))
+                                applicationSettings["FromDataType", true].Value = m_state["oldOleDbDataType"].ToString();
                         }
 
                         configFile.Save();
@@ -241,9 +244,12 @@ namespace ConfigurationSetupUtility.Screens
                         using (Process migrationProcess = new Process())
                         {
                             migrationProcess.StartInfo.FileName = "DataMigrationUtility.exe";
+                            migrationProcess.StartInfo.Arguments = "-install";
                             migrationProcess.Start();
                             migrationProcess.WaitForExit();
                         }
+
+                        ValidateSecurityRoles();
                     }
 
                     // If the user requested it, start or restart the openPDC service.
@@ -287,6 +293,11 @@ namespace ConfigurationSetupUtility.Screens
                         m_openPdcServiceController.Close();
                 }
             }
+        }
+
+        private void ValidateSecurityRoles()
+        {
+            // TODO: For each Node in new database make sure all roles exist
         }
 
         #endregion

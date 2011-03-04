@@ -55,22 +55,6 @@ namespace ConfigurationSetupUtility.Screens
         public AccessDatabaseSetupScreen()
         {
             InitializeComponent();
-
-            try
-            {
-                // Set a default path for Access database that will allow non-restrictive read/write access
-                string accessDatabaseFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "openPDC\\");
-
-                // Make sure path exists
-                if (!Directory.Exists(accessDatabaseFilePath))
-                    Directory.CreateDirectory(accessDatabaseFilePath);
-
-                m_accessDatabaseFilePathTextBox.Text = Path.Combine(accessDatabaseFilePath, "openPDC.mdb");
-            }
-            catch
-            {
-                m_accessDatabaseFilePathTextBox.Text = "openPDC.mdb";
-            }
         }
 
         #endregion
@@ -85,8 +69,12 @@ namespace ConfigurationSetupUtility.Screens
             get
             {
                 IScreen nextScreen;
+                bool securityUpgrade = false;
 
-                if (Convert.ToBoolean(m_state["existing"]))
+                if (m_state.ContainsKey("securityUpgrade"))
+                    securityUpgrade = Convert.ToBoolean(m_state["securityUpgrade"]);
+
+                if (Convert.ToBoolean(m_state["existing"]) && !securityUpgrade)
                 {
                     if (!m_state.ContainsKey("applyChangesScreen"))
                         m_state.Add("applyChangesScreen", new ApplyConfigurationChangesScreen());
@@ -199,6 +187,22 @@ namespace ConfigurationSetupUtility.Screens
             string oldDatabaseMessage = "Please select the location of your existing database file.";
 
             m_accessDatabaseInstructionTextBlock.Text = (!existing || migrate) ? newDatabaseMessage : oldDatabaseMessage;
+
+            try
+            {
+                // Set a default path for Access database that will allow non-restrictive read/write access
+                string accessDatabaseFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "openPDC\\");
+
+                // Make sure path exists
+                if (!Directory.Exists(accessDatabaseFilePath))
+                    Directory.CreateDirectory(accessDatabaseFilePath);
+
+                m_accessDatabaseFilePathTextBox.Text = Path.Combine(accessDatabaseFilePath, migrate ? "openPDCv2.mdb" : "openPDC.mdb");
+            }
+            catch
+            {
+                m_accessDatabaseFilePathTextBox.Text = migrate ? "openPDCv2.mdb" : "openPDC.mdb";
+            }
 
             if (!m_state.ContainsKey("accessDatabaseFilePath"))
                 m_state.Add("accessDatabaseFilePath", m_accessDatabaseFilePathTextBox.Text);

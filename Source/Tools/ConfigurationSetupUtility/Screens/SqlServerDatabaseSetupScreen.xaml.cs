@@ -71,8 +71,12 @@ namespace ConfigurationSetupUtility.Screens
             get
             {
                 IScreen nextScreen;
+                bool securityUpgrade = false;
 
-                if (Convert.ToBoolean(m_state["existing"]))
+                if (m_state.ContainsKey("securityUpgrade"))
+                    securityUpgrade = Convert.ToBoolean(m_state["securityUpgrade"]);
+
+                if (Convert.ToBoolean(m_state["existing"]) && !securityUpgrade)
                 {
                     if (!m_state.ContainsKey("applyChangesScreen"))
                         m_state.Add("applyChangesScreen", new ApplyConfigurationChangesScreen());
@@ -136,7 +140,7 @@ namespace ConfigurationSetupUtility.Screens
             {
                 if (string.IsNullOrEmpty(m_hostNameTextBox.Text))
                 {
-                    MessageBox.Show("Please enter a valid host name for the MySQL instance.");
+                    MessageBox.Show("Please enter a valid host name for the SQL Server instance.");
                     m_hostNameTextBox.Focus();
                     return false;
                 }

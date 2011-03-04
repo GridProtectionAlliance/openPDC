@@ -36,7 +36,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.ServiceProcess;
+using System.Text;
 using System.Threading;
+using System.Web.Security;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Xml;
@@ -44,9 +47,6 @@ using Microsoft.Win32;
 using TVA;
 using TVA.IO;
 using TVA.Security.Cryptography;
-using System.Web.Security;
-using System.Windows;
-using System.Text;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -56,10 +56,6 @@ namespace ConfigurationSetupUtility.Screens
     public partial class SetupInProgressScreen : UserControl, IScreen
     {
         #region [ Members ]
-
-        // Constants
-        private const CipherStrength CryptoStrength = CipherStrength.Aes256;
-        private const string DefaultCryptoKey = "0679d9ae-aca5-4702-a3f5-604415096987";
 
         // Fields
         private bool m_canGoForward;
@@ -254,7 +250,12 @@ namespace ConfigurationSetupUtility.Screens
                         SetUpInitialHistorian(connectionString, dataProviderString);
 
                     // Set up administrative user credentials only if it is new database and not migration.
-                    if (!migrate)
+                    bool securityUpgrade = false;
+
+                    if (m_state.ContainsKey("securityUpgrade"))
+                        securityUpgrade = Convert.ToBoolean(m_state["securityUpgrade"]);
+
+                    if (!migrate || securityUpgrade)
                         SetupAdminUserCredentials(connectionString, dataProviderString);
                 }
 
@@ -262,6 +263,7 @@ namespace ConfigurationSetupUtility.Screens
                 ModifyConfigFiles(connectionString, connectionString, dataProviderString, false);
                 
                 m_state["oldOleDbConnectionString"] = m_oldConnectionString;
+                m_state["oldOleDbDataType"] = "Access";
                 m_state["newOleDbConnectionString"] = connectionString;
 
                 OnSetupSucceeded();
@@ -364,7 +366,12 @@ namespace ConfigurationSetupUtility.Screens
                         }
 
                         // Set up administrative user credentials only if it is new database and not migration.
-                        if (!migrate)
+                        bool securityUpgrade = false;
+
+                        if (m_state.ContainsKey("securityUpgrade"))
+                            securityUpgrade = Convert.ToBoolean(m_state["securityUpgrade"]);
+
+                        if (!migrate || securityUpgrade)
                             SetupAdminUserCredentials(mySqlSetup.ConnectionString, dataProviderString);
                     }
                     else
@@ -506,7 +513,12 @@ namespace ConfigurationSetupUtility.Screens
                         }
 
                         // Set up administrative user credentials only if it is new database and not migration.
-                        if (!migrate)
+                        bool securityUpgrade = false;
+
+                        if (m_state.ContainsKey("securityUpgrade"))
+                            securityUpgrade = Convert.ToBoolean(m_state["securityUpgrade"]);
+
+                        if (!migrate || securityUpgrade)
                             SetupAdminUserCredentials(sqlServerSetup.ConnectionString, dataProviderString);
                     }
                     else
@@ -741,7 +753,12 @@ namespace ConfigurationSetupUtility.Screens
                 connection.Open();
 
                 // Set up default node.
-                bool defaultNodeCreatedHere = ManageDefaultNode(connection, sampleDataScript, m_defaultNodeAdded);
+                bool defaultNodeCreatedHere = false;
+                bool existing = Convert.ToBoolean(m_state["existing"]);
+                bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+
+                if (!migrate)
+                    defaultNodeCreatedHere = ManageDefaultNode(connection, sampleDataScript, m_defaultNodeAdded);
                 
                 if (settings.TryGetValue("Provider", out connectionSetting))
                 {
@@ -817,7 +834,12 @@ namespace ConfigurationSetupUtility.Screens
                 connection.ConnectionString = connectionString;
                 connection.Open();
 
-                bool defaultNodeCreatedHere = ManageDefaultNode(connection, sampleDataScript, m_defaultNodeAdded);
+                bool defaultNodeCreatedHere = false;
+                bool existing = Convert.ToBoolean(m_state["existing"]);
+                bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+
+                if (!migrate)
+                    defaultNodeCreatedHere = ManageDefaultNode(connection, sampleDataScript, m_defaultNodeAdded);
                     
                 if (settings.TryGetValue("Provider", out connectionSetting))
                 {
@@ -1178,7 +1200,7 @@ namespace ConfigurationSetupUtility.Screens
             XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
 
             if (encrypted)
-                connectionString = Cipher.Encrypt(connectionString, DefaultCryptoKey, CryptoStrength);
+                connectionString = Cipher.Encrypt(connectionString, App.DefaultCryptoKey, App.CryptoStrength);
 
             foreach (XmlNode child in systemSettings.ChildNodes)
             {
@@ -1200,7 +1222,7 @@ namespace ConfigurationSetupUtility.Screens
                             m_oldConnectionString = child.Attributes["value"].Value;
 
                             if (Convert.ToBoolean(child.Attributes["encrypted"].Value))
-                                m_oldConnectionString = Cipher.Decrypt(m_oldConnectionString, DefaultCryptoKey, CryptoStrength);
+                                m_oldConnectionString = Cipher.Decrypt(m_oldConnectionString, App.DefaultCryptoKey, App.CryptoStrength);
                         }
 
                         // Modify the config file settings to the new values.
@@ -1287,11 +1309,13 @@ namespace ConfigurationSetupUtility.Screens
                     MySqlSetup oldConnectionStringSetup = new MySqlSetup();
                     oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
                     m_state["oldOleDbConnectionString"] = oldConnectionStringSetup.OleDbConnectionString;
+                    m_state["oldOleDbDataType"] = "MySQL";
                 }
                 else if (m_oldDataProviderString.Contains("OleDbConnection"))
                 {
                     // Assume it's already an OleDB connection string.
                     m_state["oldOleDbConnectionString"] = m_oldConnectionString;
+                    m_state["oldOleDbDataType"] = "Unspecified";
                 }
                 else
                 {
@@ -1299,6 +1323,7 @@ namespace ConfigurationSetupUtility.Screens
                     SqlServerSetup oldConnectionStringSetup = new SqlServerSetup();
                     oldConnectionStringSetup.ConnectionString = m_oldConnectionString;
                     m_state["oldOleDbConnectionString"] = oldConnectionStringSetup.OleDbConnectionString;
+                    m_state["oldOleDbDataType"] = "SqlServer";
                 }
             }
         }

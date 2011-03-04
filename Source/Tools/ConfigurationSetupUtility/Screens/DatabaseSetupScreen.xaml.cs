@@ -25,8 +25,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Xml;
+using Microsoft.Win32;
+using TVA;
+using TVA.Data;
+using TVA.Security.Cryptography;
+using System.Reflection;
+using System.Data;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -35,16 +43,16 @@ namespace ConfigurationSetupUtility.Screens
     /// </summary>
     public partial class DatabaseSetupScreen : UserControl, IScreen
     {
-
         #region [ Members ]
 
         // Fields
-
         private AccessDatabaseSetupScreen m_accessDatabaseSetupScreen;
         private SqlServerDatabaseSetupScreen m_sqlServerDatabaseSetupScreen;
         private MySqlDatabaseSetupScreen m_mySqlDatabaseSetupScreen;
         private Dictionary<string, object> m_state;
         private bool m_sampleScriptChanged;
+        private string m_oldConnectionString;
+        private string m_oldDataProviderString;
 
         #endregion
 
@@ -148,7 +156,11 @@ namespace ConfigurationSetupUtility.Screens
         /// Allows the screen to update the navigation buttons after a change is made
         /// that would affect the user's ability to navigate to other screens.
         /// </summary>
-        public Action UpdateNavigation { get; set; }
+        public Action UpdateNavigation
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -159,7 +171,9 @@ namespace ConfigurationSetupUtility.Screens
         {
             if (m_state != null)
             {
-                Visibility existingVisibility = Convert.ToBoolean(m_state["existing"]) ? Visibility.Collapsed : Visibility.Visible;
+                bool existing = Convert.ToBoolean(m_state["existing"]);
+                bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+                Visibility existingVisibility = existing ? Visibility.Collapsed : Visibility.Visible;
                 object value;
 
                 m_initialDataScriptCheckBox.Visibility = existingVisibility;
@@ -182,7 +196,90 @@ namespace ConfigurationSetupUtility.Screens
 
                 if (!m_state.ContainsKey("sampleDataScript"))
                     m_state.Add("sampleDataScript", false);
+
+                // If we are migrating to a new schema we need to check the old database if possible so we can determine if this is a
+                // schema update from a non-security enabled database so that we can request admin credentials for the first time...
+                if (migrate)
+                {
+                    object webManagerDir = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\openPDCManagerServices", "Installation Path", null) ?? Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\openPDCManagerServices", "Installation Path", null);
+                    string configFile;
+
+                    m_oldConnectionString = null;
+                    m_oldDataProviderString = null;
+
+                    // Attempt to use the openPDC config file first
+                    configFile = Directory.GetCurrentDirectory() + "\\openPDC.exe.config";
+
+                    if (File.Exists(configFile))
+                    {
+                        LoadOldConnectionStrings(configFile);
+                    }
+                    else
+                    {
+                        // Attempt to use the openPDC Manager config file second
+                        configFile = Directory.GetCurrentDirectory() + "\\openPDCManager.exe.config";
+
+                        if (File.Exists(configFile))
+                        {
+                            LoadOldConnectionStrings(configFile);
+                        }
+                        else
+                        {
+                            // Attempt to use the web based openPDC Manager config file as a last resort
+                            if (webManagerDir != null)
+                            {
+                                configFile = webManagerDir.ToString() + "\\Web.config";
+
+                                if (File.Exists(configFile))
+                                    LoadOldConnectionStrings(configFile);
+                            }
+                        }
+                    }
+
+                    // Attempt to open existing database connection and see if "AuditLog" table exists
+                    if (m_oldConnectionString != null && m_oldDataProviderString != null)
+                    {
+                        IDbConnection connection = null;
+
+                        try
+                        {
+                            Dictionary<string, string> settings = m_oldConnectionString.ParseKeyValuePairs();
+                            Dictionary<string, string> dataProviderSettings = m_oldDataProviderString.ParseKeyValuePairs();
+                            string assemblyName = dataProviderSettings["AssemblyName"];
+                            string connectionTypeName = dataProviderSettings["ConnectionType"];
+
+                            Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
+                            Type connectionType = assembly.GetType(connectionTypeName);
+
+                            connection = (IDbConnection)Activator.CreateInstance(connectionType);
+                            connection.ConnectionString = m_oldConnectionString;
+                            connection.Open();
+
+                            try
+                            {
+                                connection.ExecuteScalar("SELECT * FROM AuditLog WHERE TableName='_'");
+                                m_state["securityUpgrade"] = false;
+                            }
+                            catch
+                            {
+                                m_state["securityUpgrade"] = true;
+                            }
+                        }
+                        catch
+                        {
+                            // Failure to open old database means we can't test if this is a non-security enabled schema
+                        }
+                        finally
+                        {
+                            if (connection != null)
+                                connection.Dispose();
+                        }
+                    }
+                }
             }
+
+            if (!m_state.ContainsKey("securityUpgrade"))
+                m_state.Add("securityUpgrade", false);
         }
 
         // Initializes the screens that can be used as the next screen based on user input.
@@ -255,6 +352,41 @@ namespace ConfigurationSetupUtility.Screens
         {
             if (m_state != null)
                 m_state["sampleDataScript"] = false;
+        }
+
+        // Attempts to load old connection string parameters
+        private void LoadOldConnectionStrings(string configFileName)
+        {
+            // Load existing system settings
+            XmlDocument configFile = new XmlDocument();
+            configFile.Load(configFileName);
+
+            XmlNode categorizedSettings = configFile.SelectSingleNode("configuration/categorizedSettings");
+            XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
+
+            foreach (XmlNode child in systemSettings.ChildNodes)
+            {
+                if (child.Attributes != null)
+                {
+                    if (child.Attributes["name"].Value == "DataProviderString")
+                    {
+                        // Retrieve the old data provider string from the config file.
+                        if (m_oldDataProviderString == null)
+                            m_oldDataProviderString = child.Attributes["value"].Value;
+                    }
+                    else if (child.Attributes["name"].Value == "ConnectionString")
+                    {
+                        if (m_oldConnectionString == null)
+                        {
+                            // Retrieve the old connection string from the config file.
+                            m_oldConnectionString = child.Attributes["value"].Value;
+
+                            if (Convert.ToBoolean(child.Attributes["encrypted"].Value))
+                                m_oldConnectionString = Cipher.Decrypt(m_oldConnectionString, App.DefaultCryptoKey, App.CryptoStrength);
+                        }
+                    }
+                }
+            }
         }
 
         #endregion

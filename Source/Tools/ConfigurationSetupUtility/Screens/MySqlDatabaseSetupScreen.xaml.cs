@@ -109,8 +109,12 @@ namespace ConfigurationSetupUtility.Screens
             get
             {
                 IScreen nextScreen;
+                bool securityUpgrade = false;
 
-                if (Convert.ToBoolean(m_state["existing"]))
+                if (m_state.ContainsKey("securityUpgrade"))
+                    securityUpgrade = Convert.ToBoolean(m_state["securityUpgrade"]);
+
+                if (Convert.ToBoolean(m_state["existing"]) && !securityUpgrade)
                 {
                     if (!m_state.ContainsKey("applyChangesScreen"))
                         m_state.Add("applyChangesScreen", new ApplyConfigurationChangesScreen());

@@ -56,10 +56,10 @@
             this.OverallProgress = new System.Windows.Forms.ProgressBar();
             this.ProgressBar = new System.Windows.Forms.ProgressBar();
             this.ProgressLabel = new System.Windows.Forms.Label();
+            this.chkPreservePrimaryKey = new System.Windows.Forms.CheckBox();
             this.FromSchema = new Database.Schema(this.components);
             this.DataInserter = new Database.DataInserter();
             this.ToSchema = new Database.Schema(this.components);
-            this.chkPreservePrimaryKey = new System.Windows.Forms.CheckBox();
             this.GroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -396,6 +396,19 @@
             this.ProgressLabel.TabIndex = 31;
             this.ProgressLabel.Text = "Progress:";
             // 
+            // chkPreservePrimaryKey
+            // 
+            this.chkPreservePrimaryKey.AutoSize = true;
+            this.chkPreservePrimaryKey.Checked = true;
+            this.chkPreservePrimaryKey.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkPreservePrimaryKey.Font = new System.Drawing.Font("Arial", 8F);
+            this.chkPreservePrimaryKey.Location = new System.Drawing.Point(12, 261);
+            this.chkPreservePrimaryKey.Name = "chkPreservePrimaryKey";
+            this.chkPreservePrimaryKey.Size = new System.Drawing.Size(329, 18);
+            this.chkPreservePrimaryKey.TabIndex = 38;
+            this.chkPreservePrimaryKey.Text = "Preserve auto-increment field values while migrating database.";
+            this.chkPreservePrimaryKey.UseVisualStyleBackColor = true;
+            // 
             // FromSchema
             // 
             this.FromSchema.ConnectString = "";
@@ -429,19 +442,6 @@
             this.ToSchema.Tables = null;
             this.ToSchema.TableTypeRestriction = Database.TableType.Table;
             // 
-            // chkPreservePrimaryKey
-            // 
-            this.chkPreservePrimaryKey.AutoSize = true;
-            this.chkPreservePrimaryKey.Checked = true;
-            this.chkPreservePrimaryKey.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkPreservePrimaryKey.Font = new System.Drawing.Font("Arial", 8F);
-            this.chkPreservePrimaryKey.Location = new System.Drawing.Point(12, 261);
-            this.chkPreservePrimaryKey.Name = "chkPreservePrimaryKey";
-            this.chkPreservePrimaryKey.Size = new System.Drawing.Size(329, 18);
-            this.chkPreservePrimaryKey.TabIndex = 38;
-            this.chkPreservePrimaryKey.Text = "Preserve auto-increment field values while migrating database.";
-            this.chkPreservePrimaryKey.UseVisualStyleBackColor = true;
-            // 
             // DataMigrationUtility
             // 
             this.AcceptButton = this.Import;
@@ -459,6 +459,7 @@
             this.Controls.Add(this.ProgressLabel);
             this.Controls.Add(this.GroupBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Location = new System.Drawing.Point(50, 50);
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(655, 545);
             this.Name = "DataMigrationUtility";
