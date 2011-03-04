@@ -34,6 +34,10 @@ using System.Windows.Controls;
 using TVA.Configuration;
 using TVA.Identity;
 using TVA.IO;
+using TVA;
+using System.Reflection;
+using System.Data;
+using System.Threading;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -251,7 +255,7 @@ namespace ConfigurationSetupUtility.Screens
 
                         ValidateSecurityRoles();
                     }
-
+                    
                     // If the user requested it, start or restart the openPDC service.
                     if (m_serviceStartCheckBox.IsChecked.Value)
                     {
@@ -297,7 +301,141 @@ namespace ConfigurationSetupUtility.Screens
 
         private void ValidateSecurityRoles()
         {
-            // TODO: For each Node in new database make sure all roles exist
+            //For each Node in new database make sure all roles exist
+            IDataReader nodeReader = null;
+            IDbConnection connection = null;
+            try
+            {
+                string databaseType = m_state["databaseType"].ToString();
+                string connectionString = string.Empty;
+                string dataProviderString = string.Empty;
+
+                if (databaseType == "access")
+                {
+                    string destination = m_state["accessDatabaseFilePath"].ToString();
+                    connectionString = "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + destination;
+                }
+                else if (databaseType == "sql server")
+                {
+                    SqlServerSetup sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;
+                    connectionString = sqlServerSetup.ConnectionString;
+
+                    object dataProviderStringValue;
+                    if (m_state.TryGetValue("sqlServerDataProviderString", out dataProviderStringValue))
+                        dataProviderString = dataProviderStringValue.ToString();
+
+                    if (string.IsNullOrWhiteSpace(dataProviderString))
+                        dataProviderString = "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter";
+                }
+                else
+                {
+                    MySqlSetup mySqlSetup = m_state["mySqlSetup"] as MySqlSetup;
+                    connectionString = mySqlSetup.ConnectionString;
+
+                    object dataProviderStringValue;
+                    // Get user customized data provider string
+                    if (m_state.TryGetValue("mySqlDataProviderString", out dataProviderStringValue))
+                        dataProviderString = dataProviderStringValue.ToString();
+
+                    if (string.IsNullOrWhiteSpace(dataProviderString))
+                        dataProviderString = "AssemblyName={MySql.Data, Version=6.3.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
+                }
+
+                if (!string.IsNullOrEmpty(connectionString) && !string.IsNullOrEmpty(dataProviderString))
+                {
+                    Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
+                    Dictionary<string, string> dataProviderSettings = dataProviderString.ParseKeyValuePairs();
+                    string assemblyName = dataProviderSettings["AssemblyName"];
+                    string connectionTypeName = dataProviderSettings["ConnectionType"];
+                    string connectionSetting;
+
+                    Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
+                    Type connectionType = assembly.GetType(connectionTypeName);
+                    
+                    if (settings.TryGetValue("Provider", out connectionSetting))
+                    {
+                        // Check if provider is for Access to make sure the path is fully qualified.
+                        if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (settings.TryGetValue("Data Source", out connectionSetting))
+                            {
+                                settings["Data Source"] = FilePath.GetAbsolutePath(connectionSetting);
+                                connectionString = settings.JoinKeyValuePairs();
+                            }
+                        }
+                    }
+
+                    connection = (IDbConnection)Activator.CreateInstance(connectionType);
+                    connection.ConnectionString = connectionString;
+                    connection.Open();
+
+                    IDbCommand nodeCommand;
+                    
+                    nodeCommand = connection.CreateCommand();
+                    nodeCommand.CommandText = "SELECT ID FROM Node";
+                    nodeReader = nodeCommand.ExecuteReader();
+
+                    DataTable dataTable = new DataTable();
+                    dataTable.Load(nodeReader);
+
+                    if (nodeReader != null) nodeReader.Close();
+
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        string nodeID = row["ID"].ToNonNullString();
+
+                        if (settings.TryGetValue("Provider", out connectionSetting))
+                        {
+                            // Check if provider is for Access since it uses braces as Guid delimeters
+                            if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                                nodeID = "{" + nodeID + "}";
+                        }
+                        else
+                            nodeID = "'" + nodeID + "'";
+
+                        IDbCommand command = connection.CreateCommand();
+                        command.CommandText = string.Format("Select Count(*) From ApplicationRole Where NodeID = {0}", nodeID);
+                        if (Convert.ToInt32(command.ExecuteScalar()) == 0)
+                        {
+                            AddRolesForNode(connection, nodeID);
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to Validate Application Roles for Node(s)" + Environment.NewLine, ex.Message);
+            }
+            finally
+            {
+                if (nodeReader != null)
+                    nodeReader.Close();
+
+                if (connection != null)
+                    connection.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Adds three default roles for newly added node (Administrator, Editor, Viewer).
+        /// </summary>
+        /// <param name="connection">IDbConnection to be used for database operations.</param>
+        /// <param name="nodeID">Node ID to which three roles are being assigned</param>        
+        private void AddRolesForNode(IDbConnection connection, string nodeID)
+        {
+            // When a new node added, also add 3 roles to it (Administrator, Editor, Viewer).
+            IDbCommand adminCredentialCommand;
+            adminCredentialCommand = connection.CreateCommand();
+            adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Administrator', 'Administrator Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+            adminCredentialCommand.ExecuteNonQuery();
+
+            adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Editor', 'Editor Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+            adminCredentialCommand.ExecuteNonQuery();
+
+            adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Viewer', 'Viewer Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+            adminCredentialCommand.ExecuteNonQuery();
+
         }
 
         #endregion
