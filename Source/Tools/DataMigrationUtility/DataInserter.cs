@@ -38,6 +38,7 @@ using System.ComponentModel;
 using System.Drawing;
 using TVA.Data;
 using TVA.Reflection;
+using System.Collections.Generic;
 
 namespace Database
 {
@@ -303,9 +304,9 @@ namespace Database
         /// </summary>
         public override void Execute()
         {
-            ArrayList tablesList = new ArrayList();
-            Table tableLookup; // = default(Table);
-            Database.Table tbl; // = default(Table);
+            List<Table> tablesList = new List<Table>();
+            Table tableLookup = null;
+            Table table = null;
             int x = 0;
 
             intOverallProgress = 0;
@@ -315,13 +316,13 @@ namespace Database
                 Analyze();
 
             // We copy the tables into an array list so we can sort and process them in priority order
-            foreach (Table temptbl in colTables)
+            foreach (Table sourceTable in colTables)
             {
-                if (temptbl.Process)
-                    tablesList.Add(temptbl);
+                if (sourceTable.Process)
+                    tablesList.Add(sourceTable);
             }
 
-            tablesList.Sort();
+            tablesList.Sort((table1, table2) => table1.Priority > table2.Priority ? 1 : (table1.Priority < table2.Priority ? -1 : 0));
 
             // Clear data from destination tables, if requested - we do this in a child to parent
             // direction to help avoid potential constraint issues
@@ -339,31 +340,31 @@ namespace Database
             // Begin inserting data into destination tables
             for (x = 0; x <= tablesList.Count - 1; x++)
             {
-                tbl = (Table)tablesList[x];
+                table = (Table)tablesList[x];
 
                 // Lookup table name in destination datasource
-                tableLookup = schTo.Tables.FindByMapName(tbl.MapName);
+                tableLookup = schTo.Tables.FindByMapName(table.MapName);
 
                 if ((tableLookup != null))
                 {
-                    if (tbl.RowCount > 0)
+                    if (table.RowCount > 0)
                     {
                         // Inform clients of table copy
-                        RaiseEvent_TableProgress(tbl.Name, true, (x + 1), tablesList.Count);
+                        RaiseEvent_TableProgress(table.Name, true, (x + 1), tablesList.Count);
 
                         // Copy source table to destination
-                        ExecuteInserts(tbl, tableLookup);
+                        ExecuteInserts(table, tableLookup);
                     }
                     else
                     {
                         // Inform clients of table skip
-                        RaiseEvent_TableProgress(tbl.Name, false, (x + 1), tablesList.Count);
+                        RaiseEvent_TableProgress(table.Name, false, (x + 1), tablesList.Count);
                     }
                 }
                 else
                 {
                     // Inform clients of table skip
-                    RaiseEvent_TableProgress(tbl.Name, false, (x + 1), tablesList.Count);
+                    RaiseEvent_TableProgress(table.Name, false, (x + 1), tablesList.Count);
                 }
             }
 

@@ -32,9 +32,12 @@ using System.Collections;
 using System.Data;
 using System.ComponentModel;
 using System.Text;
+using System.Linq;
 using System.Data.OleDb;
 using System.Drawing;
 using TVA.Data;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Database
 {
@@ -604,9 +607,7 @@ namespace Database
         /// <returns></returns>
         public int CompareTo(object obj)
         {
-
             // Fields are sorted in ordinal position order
-
             if (obj is Field)
             {
                 //return intOrdinal.CompareTo(((Field)obj).intOrdinal);
@@ -616,7 +617,6 @@ namespace Database
             {
                 throw new ArgumentException("Field can only be compared to other Fields");
             }
-
         }
 
         /// <summary>
@@ -634,6 +634,7 @@ namespace Database
                     {
                         // Attempt to get string based source field value
                         strValue = m_value.ToString().Trim();
+
                         // Format field value based on field's data type
                         switch (m_DataType)
                         {
@@ -1110,11 +1111,11 @@ namespace Database
     {
         #region [ Members ]
 
-        private Field m_Parent;
+        private Field m_parent;
         // Used for field name lookups
-        private Hashtable m_Fields;
+        private Dictionary<string, ForeignKeyField> m_fields;
         // Used for field index lookups
-        private ArrayList m_FieldsList;
+        private List<ForeignKeyField> m_fieldList;
 
         #endregion
 
@@ -1123,9 +1124,9 @@ namespace Database
         internal ForeignKeyFields(Field Parent)
         {
             // We only allow internal creation of this object
-            m_Parent = Parent;
-            m_Fields = new Hashtable(StringComparer.OrdinalIgnoreCase);
-            m_FieldsList = new ArrayList();
+            m_parent = Parent;
+            m_fields = new Dictionary<string, ForeignKeyField>(StringComparer.OrdinalIgnoreCase);
+            m_fieldList = new List<ForeignKeyField>();
 
         }
 
@@ -1140,7 +1141,7 @@ namespace Database
         {
             get
             {
-                return m_Parent;
+                return m_parent;
             }
             //internal set
             //{
@@ -1151,30 +1152,22 @@ namespace Database
         /// <summary>
         /// Get of Set Fields names to lookups
         /// </summary>
-        internal Hashtable Fields
+        internal Dictionary<string, ForeignKeyField> FieldDictionary
         {
             get
             {
-                return m_Fields;
-            }
-            set
-            {
-                m_Fields = value;
+                return m_fields;
             }
         }
 
         /// <summary>
         /// Get or Set field indexs to lookups
         /// </summary>
-        internal ArrayList FieldsList
+        internal List<ForeignKeyField> FieldsList
         {
             get
             {
-                return m_FieldsList;
-            }
-            set
-            {
-                m_FieldsList = value;
+                return m_fieldList;
             }
         }
 
@@ -1187,13 +1180,13 @@ namespace Database
         {
             get
             {
-                if (Index < 0 | Index >= m_FieldsList.Count)
+                if (Index < 0 | Index >= m_fieldList.Count)
                 {
                     return null;
                 }
                 else
                 {
-                    return (ForeignKeyField)m_FieldsList[Index];
+                    return m_fieldList[Index];
                 }
             }
         }
@@ -1207,7 +1200,7 @@ namespace Database
         {
             get
             {
-                return (ForeignKeyField)m_Fields[Name];
+                return m_fields[Name];
             }
         }
 
@@ -1218,7 +1211,7 @@ namespace Database
         {
             get
             {
-                return m_FieldsList.Count;
+                return m_fieldList.Count;
             }
         }
 
@@ -1233,17 +1226,17 @@ namespace Database
         /// <returns></returns>
         public IEnumerator GetEnumerator()
         {
-            return m_FieldsList.GetEnumerator();
+            return m_fieldList.GetEnumerator();
         }
 
         /// <summary>
         /// Add a <see cref="ForeignKeyField"/> to list object
         /// </summary>
-        /// <param name="NewField"><paramref name="NewField"/> is type of <see cref="ForeignKeyField"/></param>
-        internal void Add(ForeignKeyField NewField)
+        /// <param name="newField"><paramref name="newField"/> is type of <see cref="ForeignKeyField"/></param>
+        internal void Add(ForeignKeyField newField)
         {
-            m_FieldsList.Add(NewField);
-            m_Fields.Add((NewField.KeyName.Length > 0 ? NewField.KeyName : "FK" + m_FieldsList.Count), NewField);
+            m_fieldList.Add(newField);
+            m_fields.Add((newField.KeyName.Length > 0 ? newField.KeyName : "FK" + m_fieldList.Count), newField);
         }
 
         /// <summary>
@@ -1254,12 +1247,12 @@ namespace Database
         {
             StringBuilder fieldList = new StringBuilder();
 
-            foreach (Field fld in m_FieldsList)
+            foreach (ForeignKeyField fld in m_fieldList)
             {
                 if (fieldList.Length > 0)
                     fieldList.Append(',');
                 fieldList.Append('[');
-                fieldList.Append(fld.Name);
+                fieldList.Append(fld.ForeignKey.Name);
                 fieldList.Append(']');
             }
 
@@ -1277,11 +1270,11 @@ namespace Database
     {
         #region [ Members ]
 
-        private Table m_Parent;
+        private Table m_parent;
         // Used for field name lookups
-        private Hashtable m_Fields;
+        private Dictionary<string, Field> m_fields;
         // Used for field index lookups
-        private ArrayList m_FieldsList;
+        private List<Field> m_fieldList;
 
         #endregion
 
@@ -1290,9 +1283,9 @@ namespace Database
         internal Fields(Table Parent)
         {
             // We only allow internal creation of this object
-            m_Parent = Parent;
-            m_Fields = new Hashtable(StringComparer.OrdinalIgnoreCase);
-            m_FieldsList = new ArrayList();
+            m_parent = Parent;
+            m_fields = new Dictionary<string, Field>(StringComparer.OrdinalIgnoreCase);
+            m_fieldList = new List<Field>();
 
         }
 
@@ -1307,37 +1300,29 @@ namespace Database
         {
             get
             {
-                return m_Parent;
+                return m_parent;
             }
         }
 
         /// <summary>
         /// Get or Set to fields lookup 
         /// </summary>
-        internal Hashtable FieldsLookup
+        internal Dictionary<string, Field> FieldDictionary
         {
             get
             {
-                return m_Fields;
-            }
-            set
-            {
-                m_Fields = value;
+                return m_fields;
             }
         }
 
         /// <summary>
         /// Get or Set Fields index lookup
         /// </summary>
-        internal ArrayList FieldsList
+        internal List<Field> FieldList
         {
             get
             {
-                return m_FieldsList;
-            }
-            set
-            {
-                m_FieldsList = value;
+                return m_fieldList;
             }
         }
 
@@ -1350,13 +1335,13 @@ namespace Database
         {
             get
             {
-                if (Index < 0 | Index >= FieldsList.Count)
+                if (Index < 0 | Index >= m_fieldList.Count)
                 {
                     return null;
                 }
                 else
                 {
-                    return (Field)FieldsList[Index];
+                    return m_fieldList[Index];
                 }
             }
         }
@@ -1370,7 +1355,7 @@ namespace Database
         {
             get
             {
-                return (Field)FieldsLookup[Name];
+                return m_fields[Name];
             }
         }
 
@@ -1381,7 +1366,7 @@ namespace Database
         {
             get
             {
-                return FieldsList.Count;
+                return m_fieldList.Count;
             }
         }
 
@@ -1395,8 +1380,8 @@ namespace Database
         /// <param name="NewField"></param>
         internal void Add(Field NewField)
         {
-            FieldsLookup.Add(NewField.Name, NewField);
-            FieldsList.Add(NewField);
+            m_fields.Add(NewField.Name, NewField);
+            m_fieldList.Add(NewField);
         }
 
         /// <summary>
@@ -1405,9 +1390,7 @@ namespace Database
         /// <returns></returns>
         public IEnumerator GetEnumerator()
         {
-
-            return FieldsList.GetEnumerator();
-
+            return m_fieldList.GetEnumerator();
         }
 
         /// <summary>
@@ -1418,21 +1401,21 @@ namespace Database
         public string GetList(bool ReturnAutoInc = true)
         {
             //var _with2 = new StringBuilder();
-            StringBuilder FieldList = new StringBuilder();
+            StringBuilder fieldList = new StringBuilder();
 
-            foreach (Field fld in FieldsList)
+            foreach (Field fld in m_fieldList)
             {
                 if (!fld.AutoIncrement | ReturnAutoInc)
                 {
-                    if (FieldList.Length > 0)
-                        FieldList.Append(',');
-                    FieldList.Append('[');
-                    FieldList.Append(fld.Name);
-                    FieldList.Append(']');
+                    if (fieldList.Length > 0)
+                        fieldList.Append(',');
+                    fieldList.Append('[');
+                    fieldList.Append(fld.Name);
+                    fieldList.Append(']');
                 }
             }
 
-            return FieldList.ToString();
+            return fieldList.ToString();
 
         }
 
@@ -1442,7 +1425,7 @@ namespace Database
     /// <summary>
     /// Get data table information for data processing
     /// </summary>
-    public class Table : IComparable
+    public class Table : IComparable, IComparable<Table>
     {
         #region [ Members ]
 
@@ -1824,22 +1807,23 @@ namespace Database
         #region [ Methods ]
 
         /// <summary>
-        /// Get shcema information flag based on <see cref="DatabaseType"/>
+        /// Get schema information flag based on <see cref="DatabaseType"/>
         /// </summary>
         /// <returns></returns>
         public bool UsesDefaultSchema()
         {
-
             if (Parent.Parent.DataSourceType == DatabaseType.SqlServer)
-            {
-                //return (Strings.StrComp(m_schema, "dbo", CompareMethod.Text) == 0);
-                return (string.Compare(m_schema, "dbo") == 0);
-            }
+                return (string.Compare(m_schema, "dbo", true) == 0);
             else
-            {
                 return (Schema.Length == 0);
-            }
+        }
 
+        /// <summary>
+        /// Gets display name for table.
+        /// </summary>
+        public override string ToString()
+        {
+            return MapName;
         }
 
         /// <summary>
@@ -1849,86 +1833,92 @@ namespace Database
         /// <returns></returns>
         public int CompareTo(object obj)
         {
-
             // Tables are sorted in priority order
             if (obj is Table)
-            {
-                return m_priority.CompareTo(((Table)obj).Priority);
-            }
+                return CompareTo(obj as Table);
             else
-            {
                 throw new ArgumentException("Table can only be compared to other Tables");
-            }
+        }
 
+        /// <summary>
+        /// Compare <paramref name="Table"/> with other <see cref="Table"/> object <see cref="Priority"/>
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public int CompareTo(Table other)
+        {
+            return m_priority.CompareTo(other.Priority);
         }
 
         /// <summary>
         /// Check for reference flag, whether table has reference in another table
         /// </summary>
-        /// <param name="OtherTable"></param>
-        /// <param name="TableStack"></param>
+        /// <param name="otherTable"></param>
+        /// <param name="tableStack"></param>
         /// <returns></returns>
-        internal bool ReferencedBy(Table OtherTable, ArrayList TableStack)
+        internal bool IsReferencedBy(Table otherTable, List<Table> tableStack)
         {
+            Table table = null;
+            bool tableIsInStack = false;
 
-            Table tbl = null;
-            bool flgInStack = false;
+            if (tableStack == null)
+                tableStack = new List<Table>();
 
-            if (TableStack == null)
-                TableStack = new ArrayList();
-            TableStack.Add(this);
+            tableStack.Add(this);
 
-            foreach (Field fld in m_fields)
+            foreach (Field field in m_fields)
             {
-                if (fld.IsForeignKey)
+                foreach (ForeignKeyField foreignKey in field.ForeignKeys)
                 {
                     // We don't want to circle back on ourselves
-                    tbl = fld.ReferencedBy.Table;
-                    flgInStack = false;
+                    table = foreignKey.ForeignKey.Table;
+                    tableIsInStack = tableStack.Exists(tbl => string.Compare(tbl.Name, table.Name, true) == 0);
 
-                    for (int x = 0; x <= TableStack.Count - 1; x++)
+                    if (tableIsInStack)
                     {
-                        if (object.ReferenceEquals(tbl, TableStack[x]))
-                        {
-                            flgInStack = true;
-                            break; // TODO: might not be correct. Was : Exit For
-                        }
-                    }
-
-                    if (flgInStack)
-                    {
-                        //if (Strings.StrComp(tbl.Name, OtherTable.Name, CompareMethod.Text) == 0)
-                        if (string.Compare(tbl.Name, OtherTable.Name) == 0)
-                        {
+                        if (string.Compare(table.Name, otherTable.Name, true) == 0)
                             return true;
-                        }
                     }
                     else
                     {
-                        if (tbl.ReferencedBy(OtherTable, TableStack))
-                        {
+                        if (table.IsReferencedBy(otherTable, tableStack))
                             return true;
-                        }
-                        //else if (string.Compare(tbl.Name, OtherTable.Name, CompareMethod.Text) == 0)
-                        else if (string.Compare(tbl.Name, OtherTable.Name) == 0)
-                        {
+                        else if (string.Compare(table.Name, otherTable.Name, true) == 0)
                             return true;
-                        }
                     }
                 }
             }
+
             return false;
         }
+
         /// <summary>
         /// Check for table reference
         /// </summary>
-        /// <param name="OtherTable"></param>
+        /// <param name="otherTable"></param>
         /// <returns></returns>
-        public bool ReferencedBy(Table OtherTable)
+        public bool IsReferencedBy(Table otherTable)
         {
+            return IsReferencedBy(otherTable, null);
+        }
 
-            return ReferencedBy(OtherTable, null);
+        public bool IsReferencedVia(Table otherTable)
+        {
+            Table table = null;
 
+            foreach (Field field in otherTable.Fields)
+            {
+                foreach (ForeignKeyField foreignKey in field.ForeignKeys)
+                {
+                    table = foreignKey.ForeignKey.Table;
+
+                    // Not a direct relation, but children are related
+                    if (string.Compare(m_name, table.Name, true) != 0 && IsReferencedBy(table))
+                        return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -2012,9 +2002,9 @@ namespace Database
         //Fields
         private Schema m_parent;
         // Used for table name lookups
-        private Hashtable m_tablesLookup;
+        private Dictionary<string, Table> m_tables;
         // Used for table index lookups
-        private ArrayList m_tablesList;
+        private List<Table> m_tableList;
 
         #endregion
 
@@ -2024,36 +2014,27 @@ namespace Database
         {
             // We only allow internal creation of this object
             m_parent = Parent;
-            m_tablesLookup = new Hashtable(StringComparer.OrdinalIgnoreCase);
-            TablesList = new ArrayList();
-
+            m_tables = new Dictionary<string, Table>(StringComparer.OrdinalIgnoreCase);
+            m_tableList = new List<Table>();
         }
 
         #endregion
 
         #region [ Properties ]
 
-        public Hashtable TablesLookup
+        internal Dictionary<string, Table> TableDictionary
         {
             get
             {
-                return m_tablesLookup;
-            }
-            internal set
-            {
-                m_tablesLookup = value;
+                return m_tables;
             }
         }
 
-        public ArrayList TablesList
+        internal List<Table> TableList
         {
             get
             {
-                return m_tablesList;
-            }
-            internal set
-            {
-                m_tablesList = value;
+                return m_tableList;
             }
         }
 
@@ -2061,7 +2042,7 @@ namespace Database
         {
             get
             {
-                return m_tablesList.Count;
+                return m_tableList.Count;
             }
         }
 
@@ -2077,43 +2058,43 @@ namespace Database
 
         #region [ Methods ]
 
-        internal void Add(Table NewTable)
+        internal void Add(Table table)
         {
-            m_tablesLookup.Add(NewTable.Name, NewTable);
-            m_tablesList.Add(NewTable);
+            m_tables.Add(table.Name, table);
+            m_tableList.Add(table);
         }
 
-        public Table this[int Index]
+        public Table this[int index]
         {
             get
             {
-                if (Index < 0 | Index >= m_tablesList.Count)
+                if (index < 0 | index >= m_tableList.Count)
                 {
                     return null;
                 }
                 else
                 {
-                    return (Table)m_tablesList[Index];
+                    return m_tableList[index];
                 }
             }
         }
 
-        public Table this[string Name]
+        public Table this[string name]
         {
             get
             {
-                return (Table)m_tablesLookup[Name];
+                return m_tables[name];
             }
         }
 
-        public Table FindByMapName(string MapName)
+        public Table FindByMapName(string mapName)
         {
 
-            foreach (Table tbl in m_tablesList)
+            foreach (Table table in m_tableList)
             {
-                if (string.Compare(tbl.MapName, MapName, true) == 0)
+                if (string.Compare(table.MapName, mapName, true) == 0)
                 {
-                    return tbl;
+                    return table;
                 }
             }
 
@@ -2124,7 +2105,7 @@ namespace Database
         public IEnumerator GetEnumerator()
         {
 
-            return m_tablesList.GetEnumerator();
+            return m_tableList.GetEnumerator();
 
         }
 
@@ -2132,7 +2113,7 @@ namespace Database
         {
             StringBuilder fieldList = new StringBuilder();
 
-            foreach (Table tbl in m_tablesList)
+            foreach (Table tbl in m_tableList)
             {
                 if (fieldList.Length > 0)
                     fieldList.Append(',');
@@ -2150,7 +2131,7 @@ namespace Database
         /// <summary>
         /// Check for referentail order of <see cref="Table"/>
         /// </summary>
-        public class ReferentialOrderComparer : IComparer
+        public class ReferentialOrderComparer : IComparer<Table>
         {
 
             #region  [ Properties ]
@@ -2158,14 +2139,7 @@ namespace Database
             /// <summary>
             /// Default property of object
             /// </summary>
-            public static ReferentialOrderComparer Default
-            {
-                get
-                {
-                    ReferentialOrderComparer rocDefault = new ReferentialOrderComparer();
-                    return rocDefault; // static_Default_rocDefault;
-                }
-            }
+            public readonly static ReferentialOrderComparer Default = new ReferentialOrderComparer();
 
             #endregion
 
@@ -2174,130 +2148,70 @@ namespace Database
             /// <summary>
             /// Allows tables to be sorted in proper referential integrity process object
             /// </summary>
-            /// <param name="Table1"></param>
-            /// <param name="Table2"></param>
+            /// <param name="item1"></param>
+            /// <param name="item2"></param>
             /// <returns></returns>
-            public int Compare(object Table1, object Table2)
+            public int Compare(Table table1, Table table2)
             {
-
                 // This function allows tables to be sorted in proper referential integrity process order
-                if (Table1 is Table & Table2 is Table)
-                {
-                    Table tbl1 = (Table)Table1;
-                    Table tbl2 = (Table)Table2;
-                    int intCompare = 0;
+                int intCompare = 0;
 
-                    if (object.ReferenceEquals(tbl1, tbl2))
-                        return 0;
+                if (table1 == table2)
+                    return 0;
 
-                    if (AutoIncCompare(tbl1, tbl2) == 0)
-                    {
-                        // Either both tables have or don't have autoincs, sort in foreign key order
-                        intCompare = ForeignKeyCompare(tbl1, tbl2);
-                    }
-                    else
-                    {
-                        if (tbl1.HasAutoIncField)
-                        {
-                            if (tbl1.ReferencedBy(tbl2))
-                            {
-                                // Table1 is referenced by Table2, sort it below
-                                intCompare = 1;
-                            }
-                            else
-                            {
-                                // Otherwise, autoincs should process highest in the list
-                                intCompare = -1;
-                            }
-                        }
-                        else if (tbl2.HasAutoIncField)
-                        {
-                            if (tbl2.ReferencedBy(tbl1))
-                            {
-                                // Table2 is referenced by Table1, sort it below
-                                intCompare = -1;
-                            }
-                            else
-                            {
-                                // Otherwise, autoincs should process highest in the list
-                                intCompare = 1;
-                            }
-                        }
-                    }
+                if (table1.IsReferencedBy(table2) || table1.IsReferencedVia(table2))
+                    intCompare = -1;
+                else if (table2.IsReferencedBy(table1) || table2.IsReferencedVia(table1))
+                    intCompare = 1;
 
-                    // Last sort will be based on table name
-                    //return (intCompare == 0 ? Table1.Name.CompareTo(Table2.Name) : intCompare);
-                    return (intCompare == 0 ? tbl1.Name.CompareTo(tbl2.Name) : intCompare);
-                }
-                else
-                {
-                    throw new ArgumentException("Table can only be compared to other Tables");
-                }
+                // Sort by existence of foreign key fields, if defined
+                if (intCompare == 0)
+                    intCompare = ForeignKeyCompare(table1, table2);
 
+                return intCompare;
             }
 
             /// <summary>
             /// Compare foreign key comparation of tables
             /// </summary>
-            /// <param name="tbl1"></param>
-            /// <param name="tbl2"></param>
+            /// <param name="table1"></param>
+            /// <param name="table2"></param>
             /// <returns></returns>
-            private int ForeignKeyCompare(Table tbl1, Table tbl2)
+            private int ForeignKeyCompare(Table table1, Table table2)
             {
-
-                if (tbl1.IsForeignKeyTable & tbl2.IsForeignKeyTable)
+                if (table1.IsForeignKeyTable && table2.IsForeignKeyTable)
                 {
-                    // Both tables have foreign keys so if tables have a relationship,
-                    // table with foreign key reference must fall below
-                    if (tbl1.ReferencedBy(tbl2))
-                    {
-                        // Table1 is referenced by Table2, sort it below
-                        return 1;
-                    }
-                    else if (tbl2.ReferencedBy(tbl1))
-                    {
-                        // Table2 is referenced by Table1, sort it below
-                        return -1;
-                    }
-                    else
-                    {
-                        // If neither table references the other, consider them equal
-                        return 0;
-                    }
+                    // Both tables have foreign key fields, consider them equal
+                    return 0;
                 }
-                else if (!tbl1.IsForeignKeyTable & !tbl2.IsForeignKeyTable)
+                else if (!table1.IsForeignKeyTable && !table2.IsForeignKeyTable)
                 {
                     // Neither table has foreign key fields, consider them equal
                     return 0;
                 }
-                else if (tbl1.IsForeignKeyTable)
+                else if (table1.IsForeignKeyTable)
                 {
                     // Table1 has foreign key fields and Table2 does not, sort it below
                     return 1;
-                    //If tbl2.IsForeignKeyTable Then
                 }
                 else
                 {
                     // Table2 has foreign key fields and Table1 does not, sort it below
                     return -1;
                 }
-
             }
 
-
-            /// <summary>
-            /// We compare based on the existance of AutoInc fields as a secondary compare in case user
-            /// has no defined relational integrity - lastly we just sort by table name
-            /// </summary>
-            /// <param name="tbl1"></param>
-            /// <param name="tbl2"></param>
-            /// <returns></returns>
-            private int AutoIncCompare(Table tbl1, Table tbl2)
-            {
-
-                return (Convert.ToInt32(tbl1.HasAutoIncField) == Convert.ToInt32(tbl2.HasAutoIncField) ? 0 : (tbl1.HasAutoIncField ? -1 : 1));
-
-            }
+            ///// <summary>
+            ///// We compare based on the existance of AutoInc fields as a secondary compare in case user
+            ///// has no defined relational integrity - lastly we just sort by table name
+            ///// </summary>
+            ///// <param name="tbl1"></param>
+            ///// <param name="tbl2"></param>
+            ///// <returns></returns>
+            //private int AutoIncCompare(Table tbl1, Table tbl2)
+            //{
+            //    return (tbl1.HasAutoIncField == tbl2.HasAutoIncField ? 0 : (tbl1.HasAutoIncField ? -1 : 1));
+            //}
 
             #endregion
         }
@@ -2580,7 +2494,7 @@ namespace Database
                     //    null,
                     //    tbl.Name
                     //});
-                    for (y = 0; y <= currentTable.Rows.Count - 1; y++)
+                    for (y = 0; y < currentTable.Rows.Count; y++)
                     {
                         row = currentTable.Rows[y];
 
@@ -2611,8 +2525,7 @@ namespace Database
                     }
 
                     // Sort all loaded fields in ordinal order
-
-                    tbl.Fields.FieldsList.Sort();
+                    tbl.Fields.FieldList.Sort();
 
                     // Define primary keys
                     try
@@ -2667,14 +2580,23 @@ namespace Database
             }
 
             // Sort tables in proper referential integrity processing order
-            m_tables.TablesList.Sort(Tables.ReferentialOrderComparer.Default);
+            m_tables.TableList.Sort(Tables.ReferentialOrderComparer.Default);
 
             // Set initial I/O processing priorties for tables based on this order.  Processing tables
             // based on the "Priority" field allows user to have final say in processing order
-            for (x = 0; x <= m_tables.Count - 1; x++)
+            for (x = 0; x < m_tables.Count; x++)
             {
                 m_tables[x].Priority = x;
             }
+
+            //Debug.WriteLine("Node is referenced by Historian = " + m_tables["Node"].IsReferencedBy(m_tables["Historian"]));
+            //Debug.WriteLine("Historian is referenced by Node = " + m_tables["Historian"].IsReferencedBy(m_tables["Node"]));
+            //Debug.WriteLine("Node is referenced by Company = " + m_tables["Node"].IsReferencedBy(m_tables["Company"]));
+            //Debug.WriteLine("Company is referenced by Node = " + m_tables["Company"].IsReferencedBy(m_tables["Node"]));
+            //Debug.WriteLine("Node is referenced by OutputStreamMeasurement = " + m_tables["Node"].IsReferencedBy(m_tables["OutputStreamMeasurement"]));
+            //Debug.WriteLine("OutputStreamMeasurement is referenced by Node = " + m_tables["OutputStreamMeasurement"].IsReferencedBy(m_tables["Node"]));
+            //Debug.WriteLine("Node is referenced by VendorDevice = " + m_tables["Node"].IsReferencedBy(m_tables["VendorDevice"]));
+            //Debug.WriteLine("Node is referenced via VendorDevice = " + m_tables["Node"].IsReferencedVia(m_tables["VendorDevice"]));
 
             // Check to see if user requested to keep connection open, this is just for convience...
             if (m_immediateClose)
