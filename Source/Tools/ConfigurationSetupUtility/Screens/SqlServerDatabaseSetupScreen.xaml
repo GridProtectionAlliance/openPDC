@@ -40,7 +40,7 @@
                                 Checking this box will cause the openPDC Manager to use a trusted (i.e., Windows authenticated)<LineBreak />
                                 connection to the SQL Server database.<LineBreak /><LineBreak />
                                 
-                                Since the openPDC runs under a local system account, it will still need a user name and password<LineBreak />
+                                Since the openPDC Windows service runs under a local system account, it will still need a user name and password<LineBreak />
                                 to access the database.<LineBreak /><LineBreak />
                                 
                                 Select the &quot;Advanced&quot; button if you want to make sure the connection information is encrypted<LineBreak />

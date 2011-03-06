@@ -80,20 +80,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TVA.Communication">
-      <HintPath>..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.Core">
+    <Reference Include="TVA.Core, Version=4.0.2.12, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.Security">
-      <HintPath>..\..\Dependencies\TVA\TVA.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.Services">
-      <HintPath>..\..\Dependencies\TVA\TVA.Services.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.Windows">
-      <HintPath>..\..\Dependencies\TVA\TVA.Windows.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

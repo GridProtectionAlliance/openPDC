@@ -459,7 +459,6 @@
             this.Controls.Add(this.ProgressLabel);
             this.Controls.Add(this.GroupBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Location = new System.Drawing.Point(50, 50);
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(655, 545);
             this.Name = "DataMigrationUtility";

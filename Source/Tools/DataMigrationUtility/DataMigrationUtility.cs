@@ -117,7 +117,10 @@ namespace DataMigrationUtility
             else
                 UseToForRI.Checked = true;
 
+            this.RestoreLocation();
+
             Show();
+            BringToFront();
 
             string[] args = Environment.GetCommandLineArgs();
             bool installFlag = args.Contains("-install", StringComparer.CurrentCultureIgnoreCase);
@@ -126,8 +129,6 @@ namespace DataMigrationUtility
                 MessageBox.Show(this, "Setup is now ready to migrate your existing configuration database to the new schema.\r\n\r\nYou should now have a new blank \"destination\" database ready for this data transfer and the connection settings should show your original \"source\" database in the \"From Connect String\" and the new \"destination\" database in the \"To Connect String\".\r\n\r\nVerify and test the connection settings and make sure the \"To Connect String\" is selected for referential integrity (i.e., \"Use for RI\") before you begin your data operation.\r\n\r\nClick the \"Migrate\" button to begin the data transfer.", AppName, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             else
                 MessageBox.Show(this, "IMPORTANT: Always backup database before any mass database update and remember to select the proper data source to use for referential integrity BEFORE you begin your data operation!", AppName, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-            BringToFront();
         }
 
         private void DataMigrationUtility_Closed(System.Object eventSender, System.EventArgs eventArgs)
