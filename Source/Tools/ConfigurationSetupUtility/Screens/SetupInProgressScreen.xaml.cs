@@ -248,14 +248,8 @@ namespace ConfigurationSetupUtility.Screens
                     // Set up the initial historian.
                     if (Convert.ToBoolean(m_state["setupHistorian"]))
                         SetUpInitialHistorian(connectionString, dataProviderString);
-
-                    // Set up administrative user credentials only if it is new database and not migration.
-                    bool securityUpgrade = false;
-
-                    if (m_state.ContainsKey("securityUpgrade"))
-                        securityUpgrade = Convert.ToBoolean(m_state["securityUpgrade"]);
-
-                    if (!migrate || securityUpgrade)
+                                        
+                    if (!migrate)
                         SetupAdminUserCredentials(connectionString, dataProviderString);
                 }
 
@@ -365,13 +359,7 @@ namespace ConfigurationSetupUtility.Screens
                             AppendStatusMessage(string.Empty);
                         }
 
-                        // Set up administrative user credentials only if it is new database and not migration.
-                        bool securityUpgrade = false;
-
-                        if (m_state.ContainsKey("securityUpgrade"))
-                            securityUpgrade = Convert.ToBoolean(m_state["securityUpgrade"]);
-
-                        if (!migrate || securityUpgrade)
+                        if (!migrate)
                             SetupAdminUserCredentials(mySqlSetup.ConnectionString, dataProviderString);
                     }
                     else
@@ -511,14 +499,8 @@ namespace ConfigurationSetupUtility.Screens
                             AppendStatusMessage("New database user created successfully.");
                             AppendStatusMessage(string.Empty);
                         }
-
-                        // Set up administrative user credentials only if it is new database and not migration.
-                        bool securityUpgrade = false;
-
-                        if (m_state.ContainsKey("securityUpgrade"))
-                            securityUpgrade = Convert.ToBoolean(m_state["securityUpgrade"]);
-
-                        if (!migrate || securityUpgrade)
+                                                
+                        if (!migrate)
                             SetupAdminUserCredentials(sqlServerSetup.ConnectionString, dataProviderString);
                     }
                     else
