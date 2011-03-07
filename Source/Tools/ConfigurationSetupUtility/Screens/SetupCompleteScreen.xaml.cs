@@ -371,7 +371,7 @@ namespace ConfigurationSetupUtility.Screens
                     connection = (IDbConnection)Activator.CreateInstance(connectionType);
                     connection.ConnectionString = connectionString;
                     connection.Open();
-
+                    
                     IDbCommand nodeCommand;
                     
                     nodeCommand = connection.CreateCommand();
@@ -586,16 +586,10 @@ namespace ConfigurationSetupUtility.Screens
                         if (!string.IsNullOrEmpty(adminRoleID) && !string.IsNullOrEmpty(adminUserID))
                         {
                             if (databaseIsAccess)
-                            {
-                                adminUserID = adminUserID.StartsWith("{") ? adminUserID : "{" + adminUserID + "}";
-                                adminRoleID = adminRoleID.StartsWith("{") ? adminRoleID : "{" + adminRoleID + "}";                             
-                            }
+                                adminUserID = adminUserID.StartsWith("{") ? adminUserID : "{" + adminUserID + "}";                            
                             else
-                            {
                                 adminUserID = "'" + adminUserID + "'";
-                                adminRoleID = "'" + adminRoleID + "'";
-                            }
-
+                            
                             adminCredentialCommand.CommandText = string.Format("INSERT INTO ApplicationRoleUserAccount(ApplicationRoleID, UserAccountID) VALUES ({0}, {1})", adminRoleID, adminUserID);
                             adminCredentialCommand.ExecuteNonQuery();
                         }
