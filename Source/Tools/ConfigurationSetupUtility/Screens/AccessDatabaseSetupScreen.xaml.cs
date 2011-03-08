@@ -194,6 +194,7 @@ namespace ConfigurationSetupUtility.Screens
                 string accessDatabaseFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "openPDC\\");
 
                 // Make sure path exists
+
                 if (!Directory.Exists(accessDatabaseFilePath))
                     Directory.CreateDirectory(accessDatabaseFilePath);
 
