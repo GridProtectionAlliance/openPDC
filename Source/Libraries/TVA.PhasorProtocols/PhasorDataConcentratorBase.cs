@@ -635,6 +635,9 @@ namespace TVA.PhasorProtocols
                 if (m_commandChannel != null && m_commandChannel.CurrentState == ServerState.NotRunning)
                     m_commandChannel.Start();
 
+                // Make sure publication channel is defined
+                EstablishPublicationChannel();
+
                 // Base action adapter gets started once data channel has been started (see m_dataChannel_ServerStarted)
                 // so that the system doesn't attempt to start frame publication without an operational output data channel
                 // when m_autoStartDataChannel is set to false. Otherwise if data is being published on command channel,
@@ -653,6 +656,9 @@ namespace TVA.PhasorProtocols
         {
             // Stop concentration engine
             base.Stop();
+
+            // Stop data publication channel
+            StopDataChannel();
 
             // Stop communications servers
             if (m_dataChannel != null)
@@ -673,9 +679,23 @@ namespace TVA.PhasorProtocols
         [AdapterCommand("Manually starts the real-time data stream.")]
         public virtual void StartDataChannel()
         {
-            // Start data channel
-            if (m_dataChannel != null)
-                m_dataChannel.Start();
+            // Make sure publication channel has started
+            if (m_publishChannel != null && m_publishChannel.CurrentState == ServerState.NotRunning)
+                m_publishChannel.Start();
+
+            // Make sure publication channel is defined
+            EstablishPublicationChannel();
+        }
+
+        // Define publication channel
+        private void EstablishPublicationChannel()
+        {
+            // If data channel is not defined and command channel is defined system assumes
+            // you want to make data available over TCP connection
+            if (m_dataChannel == null && m_commandChannel != null)
+                m_publishChannel = m_commandChannel;
+            else
+                m_publishChannel = m_dataChannel;
         }
 
         /// <summary>
@@ -688,13 +708,8 @@ namespace TVA.PhasorProtocols
         [AdapterCommand("Manually stops the real-time data stream.")]
         public virtual void StopDataChannel()
         {
-            // Stop concentration engine - this is done before stopping data channel since frames may still be
-            // publishing while engine is stopping...
-            base.Stop();
-
-            // Stop data channel
-            if (m_dataChannel != null)
-                m_dataChannel.Stop();
+            // Undefine publication channel. This effectively haults socket based data publication.
+            m_publishChannel = null;
         }
 
         /// <summary>
@@ -795,13 +810,6 @@ namespace TVA.PhasorProtocols
             else
                 this.CommandChannel = null;
 
-            // If data channel is not defined and command channel is defined system assumes you
-            // want to make data available over TCP connection
-            if (m_dataChannel == null && m_commandChannel != null)
-                m_publishChannel = m_commandChannel;
-            else
-                m_publishChannel = m_dataChannel;
-
             // Create the configuration frame
             UpdateConfiguration();
         }
@@ -813,7 +821,7 @@ namespace TVA.PhasorProtocols
         public void UpdateConfiguration()
         {
             const int labelLength = 16;
-            Dictionary<string, int> signalCellIndexes = new Dictionary<string, int>();            
+            Dictionary<string, int> signalCellIndexes = new Dictionary<string, int>();
             SignalReference signal;
             SignalReference[] signals;
             MeasurementKey measurementKey;
@@ -912,7 +920,7 @@ namespace TVA.PhasorProtocols
                                     label,
                                     scalingValue == 0 ? m_analogScalingValue : scalingValue,
                                     analogType));
-                        }                            
+                        }
                     }
 
                     // Optionally define all the digitals configured for this device
@@ -1157,7 +1165,7 @@ namespace TVA.PhasorProtocols
         {
             IDataFrame dataFrame = frame as IDataFrame;
 
-            if (dataFrame != null)
+            if (dataFrame != null && m_publishChannel != null)
             {
                 byte[] image;
 
