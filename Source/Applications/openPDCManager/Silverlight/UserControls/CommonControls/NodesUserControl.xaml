@@ -42,8 +42,10 @@
                     <TextBox x:Name="TextBoxDescription" Grid.Row="3" Grid.Column="1" Text="{Binding Path=Description}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <TextBlock Grid.Row="3" Grid.Column="2" Text="Image" Style="{StaticResource GenericLabelStyle}"/>
                     <TextBox x:Name="TextBoxImage" Grid.Row="3" Grid.Column="3" Text="{Binding Path=Image}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Time Series Data Service URL" Style="{StaticResource GenericLabelStyle}"/>
-                    <TextBox x:Name="TextBoxTimeSeriesDataServiceUrl" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Path=TimeSeriesDataServiceUrl}" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Time Series Data Service URL" Style="{StaticResource GenericLabelStyle}" Visibility="Collapsed"/>
+                    <TextBox x:Name="TextBoxTimeSeriesDataServiceUrl" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Path=TimeSeriesDataServiceUrl}" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" Visibility="Collapsed" />
+                    
                     <TextBlock Grid.Row="5" Grid.Column="0" Text="Remote Status Service URL" Style="{StaticResource GenericLabelStyle}"/>
                     <TextBox x:Name="TextBoxRemoteStatusServiceUrl" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Path=RemoteStatusServiceUrl}" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <TextBlock Grid.Row="6" Grid.Column="0" Text="Real-Time Statistic Service URL" Style="{StaticResource GenericLabelStyle}"/>
@@ -89,7 +91,7 @@
                 </StackPanel>
             </Border>
             <Border Background="{StaticResource PortletBackgroundBrush}">
-                <ScrollViewer BorderThickness="0" Padding="0" Height="430">
+                <ScrollViewer BorderThickness="0" Padding="0" Height="465">
                     <ScrollViewer.Content>
                         <ListBox x:Name="ListBoxNodeList" Margin="0" Padding="0">
                             <ListBox.ItemTemplate>
