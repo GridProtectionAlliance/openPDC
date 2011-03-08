@@ -62,10 +62,16 @@ namespace openPDCManager.Data.ServiceCommunication
             m_remotingClient.SharedSecret = "openPDC";
             m_remotingClient.Handshake = true;
             m_remotingClient.PayloadAware = true;
+            m_remotingClient.ConnectionException += new EventHandler<EventArgs<Exception>>(m_remotingClient_ConnectionException);
             // Initialize windows service client.
             m_clientHelper = new ClientHelper();
             m_clientHelper.RemotingClient = m_remotingClient;
-            m_clientHelper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;			
+            m_clientHelper.ReceivedServiceUpdate += ClientHelper_ReceivedServiceUpdate;			    
+        }
+
+        void m_remotingClient_ConnectionException(object sender, EventArgs<Exception> e)
+        {
+            
         }
 
         /// <summary>

@@ -137,8 +137,8 @@ namespace openPDCManager
         {
             m_applicationClosing = true;
             Properties.Settings.Default.Save();
-            DisconnectFromService();
-            Application.Current.Shutdown();
+            DisconnectFromService();            
+            Application.Current.Shutdown();            
         }
 
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
