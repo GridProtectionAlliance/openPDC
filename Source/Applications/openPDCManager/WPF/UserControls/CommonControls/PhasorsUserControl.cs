@@ -76,7 +76,7 @@ namespace openPDCManager.UserControls.CommonControls
                         if (device.HistorianID != null)
                         {
                             string runtimeID = CommonFunctions.GetRuntimeID(connection, "Historian", (int)device.HistorianID);
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshallmetadata");
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " RefreshMetadata");
                         }
 
                         if (device.Enabled) //if device is enabled then send initialize command otherwise send reloadconfig command.

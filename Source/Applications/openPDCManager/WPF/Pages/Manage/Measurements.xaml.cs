@@ -266,7 +266,7 @@ namespace openPDCManager.Pages.Manage
                         string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)measurement.HistorianID);
                         WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
                         if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshallmetadata");
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " RefreshMetadata");
                     }
                 }
                 catch (Exception ex)

@@ -160,7 +160,7 @@ namespace openPDCManager.Pages.Devices
                             if (device.HistorianID != null)
                             {
                                 string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)device.HistorianID);
-                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshallmetadata");
+                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " RefreshMetadata");
                             }
 
                             //now also update Stat historian metadata.
@@ -169,7 +169,7 @@ namespace openPDCManager.Pages.Devices
                             {
                                 string statRuntimeID = CommonFunctions.GetRuntimeID(null, "Historian", statHistorian.ID);
                                 if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshallmetadata");
+                                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " RefreshMetadata");
                             }
 
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");

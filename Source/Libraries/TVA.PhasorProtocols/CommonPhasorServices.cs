@@ -1001,29 +1001,39 @@ namespace TVA.PhasorProtocols
                 settings.Add("FileName", "Statistics\\stat_dbase.dat", "Name of the statistics meta-data file including its path.");
                 settings.Add("LoadOnOpen", true, "True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the statistics meta-data file.");
                 settings.Add("ReloadOnModify", true, "True if file records loaded in memory are to be re-loaded when file is modified on disk; otherwise False - this defaults to True for the statistics meta-data file.");
+                settings["LoadOnOpen"].Update(true);
+                settings["ReloadOnModify"].Update(true);
 
                 settings = configFile.Settings["statStateFile"];
                 settings.Add("FileName", "Statistics\\stat_startup.dat", "Name of the statistics state file including its path.");
                 settings.Add("AutoSaveInterval", 10000, "Interval in milliseconds at which the file records loaded in memory are to be saved automatically to disk. Use -1 to disable automatic saving - this defaults to 10,000 for the statistics state file.");
                 settings.Add("LoadOnOpen", true, "True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the statistics state file.");
                 settings.Add("SaveOnClose", true, "True if file records loaded in memory are to be saved to disk when file is closed; otherwise False - this defaults to True for the statistics state file.");
+                settings["AutoSaveInterval"].Update(10000);
+                settings["LoadOnOpen"].Update(true);
+                settings["SaveOnClose"].Update(true);
 
                 settings = configFile.Settings["statIntercomFile"];
                 settings.Add("FileName", "Statistics\\scratch.dat", "Name of the statistics intercom file including its path.");
                 settings.Add("AutoSaveInterval", 10000, "Interval in milliseconds at which the file records loaded in memory are to be saved automatically to disk. Use -1 to disable automatic saving - this defaults to 10,000 for the statistics intercom file.");
                 settings.Add("LoadOnOpen", true, "True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the statistics intercom file.");
                 settings.Add("SaveOnClose", true, "True if file records loaded in memory are to be saved to disk when file is closed; otherwise False - this defaults to True for the statistics intercom file.");
+                settings["AutoSaveInterval"].Update(1000);
+                settings["LoadOnOpen"].Update(true);
+                settings["SaveOnClose"].Update(true);
 
                 settings = configFile.Settings["statArchiveFile"];
                 settings.Add("FileName", "Statistics\\stat_archive.d", "Name of the statistics working archive file including its path.");
                 settings.Add("CacheWrites", true, "True if writes are to be cached for performance; otherwise False - this defaults to True for the statistics working archive file.");
                 settings.Add("ConserveMemory", false, "True if attempts are to be made to conserve memory; otherwise False - this defaults to False for the statistics working archive file.");
+                settings["CacheWrites"].Update(true);
+                settings["ConserveMemory"].Update(false);
 
                 settings = configFile.Settings["statMetadataService"];
-                settings.Add("Endpoints", "http.rest://localhost:6051/historian", "Endpoint URIs where this web service is to be hosted - this defaults to http.rest://localhost:6051/historian for the statistics meta-data service.");
+                settings.Add("Endpoints", "http.rest://localhost:6051/historian", "Semicolon delimited list of URIs where the web service can be accessed - this defaults to http.rest://localhost:6051/historian for the statistics meta-data service.");
 
                 settings = configFile.Settings["statTimeSeriesDataService"];
-                settings.Add("Endpoints", "http.rest://localhost:6052/historian", "Endpoint URIs where this web service is to be hosted - this defaults to http.rest://localhost:6052/historian for the statistics time-series data service.");
+                settings.Add("Endpoints", "http.rest://localhost:6052/historian", "Semicolon delimited list of URIs where the web service can be accessed - this defaults to http.rest://localhost:6052/historian for the statistics time-series data service.");
 
                 configFile.Save();
 

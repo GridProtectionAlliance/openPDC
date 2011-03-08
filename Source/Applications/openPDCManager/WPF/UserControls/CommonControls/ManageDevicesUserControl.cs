@@ -442,7 +442,7 @@ namespace openPDCManager.UserControls.CommonControls
                         if (device.HistorianID != null) //Update historian metadata
                         {
                             string runtimeID = CommonFunctions.GetRuntimeID(connection, "Historian", (int)device.HistorianID);
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " refreshallmetadata");
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " RefreshMetadata");
                         }
 
                         //now also update Stat historian metadata.
@@ -450,7 +450,7 @@ namespace openPDCManager.UserControls.CommonControls
                         if (statHistorian != null)
                         {
                             string statRuntimeID = CommonFunctions.GetRuntimeID(connection, "Historian", statHistorian.ID);
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " refreshallmetadata");
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " RefreshMetadata");
                         }
 
                         CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");

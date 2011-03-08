@@ -1224,39 +1224,31 @@ namespace ConfigurationSetupUtility.Screens
                 }
             }
 
-            // Modify ADO metadata provider sections.
-            foreach (XmlNode node in categorizedSettings.ChildNodes)
-            {
-                if (node.Attributes != null)
-                {
-                    if (node.Name.EndsWith("AdoMetadataProvider"))
-                    {
-                        foreach (XmlNode child in node.ChildNodes)
-                        {
-                            if (child.Attributes != null)
-                            {
-                                if (child.Attributes["name"].Value == "DataProviderString")
-                                    child.Attributes["value"].Value = dataProviderString;
-                                else if (child.Attributes["name"].Value == "ConnectionString")
-                                {
-                                    // Modify the config file settings to the new values.
-                                    child.Attributes["value"].Value = connectionString;
-                                    child.Attributes["encrypted"].Value = encrypted.ToString();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // The following change will be done only for openPDCManager configuration.
-            if (Convert.ToBoolean(m_state["applyChangesToLocalManager"]) && m_state.ContainsKey("allowPassThroughAuthentication"))
-            {
-                XmlNode forceLoginDisplayValue = configFile.SelectSingleNode("configuration/userSettings/openPDCManager.Properties.Settings/setting[@name = 'ForceLoginDisplay']/value");
-
-                if (forceLoginDisplayValue != null)
-                    forceLoginDisplayValue.InnerXml = Convert.ToBoolean(m_state["allowPassThroughAuthentication"]) ? "False" : "True";
-            }
+            // Other provider sections should now use Eval expression to reference system settings for connection information
+            //// Modify ADO metadata provider sections.
+            //foreach (XmlNode node in categorizedSettings.ChildNodes)
+            //{
+            //    if (node.Attributes != null)
+            //    {
+            //        if (node.Name.EndsWith("AdoMetadataProvider"))
+            //        {
+            //            foreach (XmlNode child in node.ChildNodes)
+            //            {
+            //                if (child.Attributes != null)
+            //                {
+            //                    if (child.Attributes["name"].Value == "DataProviderString")
+            //                        child.Attributes["value"].Value = dataProviderString;
+            //                    else if (child.Attributes["name"].Value == "ConnectionString")
+            //                    {
+            //                        // Modify the config file settings to the new values.
+            //                        child.Attributes["value"].Value = connectionString;
+            //                        child.Attributes["encrypted"].Value = encrypted.ToString();
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
 
             // JRC: Following Linq version was failing without error - section attributes were always null
             // SCW: It should be fixed now.
@@ -1275,6 +1267,15 @@ namespace ConfigurationSetupUtility.Screens
             //        dataProviderNode.Attributes["value"].Value = dataProviderString;
             //    }
             //}
+
+            // The following change will be done only for openPDCManager configuration.
+            if (Convert.ToBoolean(m_state["applyChangesToLocalManager"]) && m_state.ContainsKey("allowPassThroughAuthentication"))
+            {
+                XmlNode forceLoginDisplayValue = configFile.SelectSingleNode("configuration/userSettings/openPDCManager.Properties.Settings/setting[@name = 'ForceLoginDisplay']/value");
+
+                if (forceLoginDisplayValue != null)
+                    forceLoginDisplayValue.InnerXml = Convert.ToBoolean(m_state["allowPassThroughAuthentication"]) ? "False" : "True";
+            }
 
             configFile.Save(configFileName);
         }

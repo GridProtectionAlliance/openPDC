@@ -226,13 +226,11 @@ namespace HistorianAdapters
 
         #region [ Methods ]
 
-        // TODO: Rename to RefreshMetaData as override once next TimeSeriesLibrary is rolled down... Modify openPDC Manager to invoke "RefreshMetadata" instead of "RefreshAllMetadata"
-
         /// <summary>
         /// Refreshes metadata using all available and enabled providers.
         /// </summary>
         [AdapterCommand("Refreshes metadata using all available and enabled providers.")]
-        public void RefreshAllMetadata()
+        public override void RefreshMetadata()
         {
             bool queueEnabled = InternalProcessQueue.Enabled;
 
@@ -440,7 +438,7 @@ namespace HistorianAdapters
 
             if (m_autoRefreshMetadata)
             {
-                RefreshAllMetadata();
+                RefreshMetadata();
                 m_autoRefreshMetadata = false;
             }
 
@@ -562,32 +560,34 @@ namespace HistorianAdapters
             if (e.Argument.GetType() == typeof(AdoMetadataProvider))
             {
                 // Populate the default configuration for AdoMetadataProvider.
-                ConfigurationFile config = ConfigurationFile.Current;
                 AdoMetadataProvider provider = e.Argument as AdoMetadataProvider;
 
                 provider.Enabled = true;
                 provider.SelectString = string.Format("SELECT * FROM HistorianMetadata WHERE PlantCode='{0}'", Name);
-                provider.DataProviderString = config.Settings["SystemSettings"]["DataProviderString"].Value;
 
-                string connectionString = config.Settings["SystemSettings"]["ConnectionString"].Value;
-                Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
-                string setting;
+                // The following connection information is now provided via configuration Eval mappings
+                //    provider.DataProviderString = config.Settings["SystemSettings"]["DataProviderString"].Value;
 
-                if (settings.TryGetValue("Provider", out setting))
-                {
-                    // Check if provider is for Access
-                    if (setting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                    {
-                        // Make sure path to Access database is fully qualified
-                        if (settings.TryGetValue("Data Source", out setting))
-                        {
-                            settings["Data Source"] = FilePath.GetAbsolutePath(setting);
-                            connectionString = settings.JoinKeyValuePairs();
-                        }
-                    }
-                }
+                //    ConfigurationFile config = ConfigurationFile.Current;
+                //    string connectionString = config.Settings["SystemSettings"]["ConnectionString"].Value;
+                //    Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
+                //    string setting;
 
-                provider.ConnectionString = connectionString;
+                //    if (settings.TryGetValue("Provider", out setting))
+                //    {
+                //        // Check if provider is for Access
+                //        if (setting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                //        {
+                //            // Make sure path to Access database is fully qualified
+                //            if (settings.TryGetValue("Data Source", out setting))
+                //            {
+                //                settings["Data Source"] = FilePath.GetAbsolutePath(setting);
+                //                connectionString = settings.JoinKeyValuePairs();
+                //            }
+                //        }
+                //    }
+
+                //    provider.ConnectionString = connectionString;
             }
         }
 
@@ -710,7 +710,7 @@ namespace HistorianAdapters
 
                 // Get current execution path
                 currentPath = FilePath.AddPathSuffix(FilePath.GetAbsolutePath(""));
-                
+
                 // Make sure archive path exists to hold historian files
                 archivePath = FilePath.GetAbsolutePath(FilePath.AddPathSuffix("Archive"));
 
