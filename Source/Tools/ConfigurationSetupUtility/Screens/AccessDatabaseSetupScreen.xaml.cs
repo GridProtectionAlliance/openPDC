@@ -191,7 +191,7 @@ namespace ConfigurationSetupUtility.Screens
             try
             {
                 // Set a default path for Access database that will allow non-restrictive read/write access
-                string accessDatabaseFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "openPDC\\");
+                string accessDatabaseFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "openPDC\\");
 
                 // Make sure path exists
                 if (!Directory.Exists(accessDatabaseFilePath))

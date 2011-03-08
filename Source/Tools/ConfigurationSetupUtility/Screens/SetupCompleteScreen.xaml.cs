@@ -25,20 +25,20 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.ServiceProcess;
+using System.Threading;
+using System.Web.Security;
 using System.Windows;
 using System.Windows.Controls;
+using TVA;
 using TVA.Configuration;
 using TVA.Identity;
 using TVA.IO;
-using TVA;
-using System.Reflection;
-using System.Data;
-using System.Threading;
-using System.Web.Security;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -67,7 +67,6 @@ namespace ConfigurationSetupUtility.Screens
             InitializeOpenPdcServiceController();
             InitializeServiceCheckboxState();
             InitializeManagerCheckboxState();
-            App.Current.Exit += Current_Exit;
         }
 
         #endregion
@@ -128,6 +127,114 @@ namespace ConfigurationSetupUtility.Screens
         {
             get
             {
+                // Very little input to validate on this page, but we take this opportunity to execute final shut-down operations
+                if (m_state != null)
+                {
+                    try
+                    {
+                        bool existing = Convert.ToBoolean(m_state["existing"]);
+                        bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+
+                        if (migrate)
+                        {
+                            string dataFolder = FilePath.GetApplicationDataFolder();
+                            string migrationDataFolder = dataFolder + "\\..\\DataMigrationUtility";
+                            string newOleDbConnectionString = m_state["newOleDbConnectionString"].ToString();
+                            string databaseType = m_state["databaseType"].ToString().Replace(" ", "");
+                            ConfigurationFile configFile = null;
+                            CategorizedSettingsElementCollection applicationSettings = null;
+
+                            // Copy user-level DataMigrationUtility config file to the ConfigurationSetupUtility application folder.
+                            if (File.Exists(migrationDataFolder + "\\Settings.xml"))
+                            {
+                                if (!Directory.Exists(dataFolder))
+                                    Directory.CreateDirectory(dataFolder);
+
+                                File.Copy(migrationDataFolder + "\\Settings.xml", dataFolder + "\\Settings.xml", true);
+                            }
+
+                            // Modify OleDB configuration file settings for the DataMigrationUtility.
+                            configFile = ConfigurationFile.Open("DataMigrationUtility.exe.config");
+                            applicationSettings = configFile.Settings["applicationSettings"];
+                            applicationSettings["FromDataType", true].Value = "Unspecified";
+                            applicationSettings["ToConnectionString", true].Value = newOleDbConnectionString;
+                            applicationSettings["ToDataType", true].Value = databaseType;
+
+                            if (m_state.ContainsKey("oldOleDbConnectionString"))
+                            {
+                                string oldOleDbConnectionString = m_state["oldOleDbConnectionString"].ToString();
+                                applicationSettings["FromConnectionString", true].Value = oldOleDbConnectionString;
+
+                                if (m_state.ContainsKey("oldOleDbDataType"))
+                                    applicationSettings["FromDataType", true].Value = m_state["oldOleDbDataType"].ToString();
+                            }
+
+                            configFile.Save();
+
+                            // Copy user-level ConfigurationSetupUtility config file to DataMigrationUtility application folder.
+                            if (File.Exists(dataFolder + "\\Settings.xml"))
+                            {
+                                if (!Directory.Exists(migrationDataFolder))
+                                    Directory.CreateDirectory(migrationDataFolder);
+
+                                File.Copy(dataFolder + "\\Settings.xml", migrationDataFolder + "\\Settings.xml", true);
+                            }
+
+                            // Run the DataMigrationUtility.
+                            using (Process migrationProcess = new Process())
+                            {
+                                migrationProcess.StartInfo.FileName = "DataMigrationUtility.exe";
+                                migrationProcess.StartInfo.Arguments = "-install";
+                                migrationProcess.Start();
+                                migrationProcess.WaitForExit();
+                            }
+                        }
+
+                        // Always make sure that all three needed roles are available for each defined node(s) in the database.
+                        ValidateSecurityRoles();
+
+                        // If the user requested it, start or restart the openPDC service.
+                        if (m_serviceStartCheckBox.IsChecked.Value)
+                        {
+                            try
+                            {
+#if DEBUG
+                                Process.Start("openPDC.exe");
+#else
+                                m_openPdcServiceController.Start();
+#endif
+                            }
+                            catch
+                            {
+                                MessageBox.Show("The configuration utility was unable to start openPDC service, you will need to manually start the service.", "Cannot Start Windows Service", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                        }
+
+                        // If the user requested it, start the openPDC Manager.
+                        if (m_managerStartCheckBox.IsChecked.Value)
+                        {
+                            if (UserAccountControl.IsUacEnabled && UserAccountControl.IsCurrentProcessElevated)
+                            {
+                                try
+                                {
+                                    UserAccountControl.CreateProcessAsStandardUser("openPDCManager.exe");
+                                }
+                                catch
+                                {
+                                    Process.Start("openPDCManager.exe");
+                                }
+                            }
+                            else
+                                Process.Start("openPDCManager.exe");
+                        }
+                    }
+                    finally
+                    {
+                        if (m_openPdcServiceController != null)
+                            m_openPdcServiceController.Close();
+                    }
+                }
+
                 return true;
             }
         }
@@ -174,7 +281,11 @@ namespace ConfigurationSetupUtility.Screens
         // Initializes the state of the openPDC service checkbox.
         private void InitializeServiceCheckboxState()
         {
+#if DEBUG
+            bool serviceInstalled = File.Exists("openPDC.exe");
+#else
             bool serviceInstalled = m_openPdcServiceController != null;
+#endif
             m_serviceStartCheckBox.IsChecked = serviceInstalled;
             m_serviceStartCheckBox.IsEnabled = serviceInstalled;
         }
@@ -183,127 +294,13 @@ namespace ConfigurationSetupUtility.Screens
         private void InitializeManagerCheckboxState()
         {
             bool managerInstalled = File.Exists("openPDCManager.exe");
-            string[] args = Environment.GetCommandLineArgs();
-            bool installFlag = args.Contains("-install", StringComparer.CurrentCultureIgnoreCase);
-
             m_managerStartCheckBox.IsChecked = managerInstalled;
             m_managerStartCheckBox.IsEnabled = managerInstalled;
         }
 
-        // Occurs just before the application shuts down.
-        private void Current_Exit(object sender, System.Windows.ExitEventArgs e)
-        {
-            if (m_state != null)
-            {
-                try
-                {
-                    bool existing = Convert.ToBoolean(m_state["existing"]);
-                    bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
-
-                    if (migrate)
-                    {
-                        string dataFolder = FilePath.GetApplicationDataFolder();
-                        string migrationDataFolder = dataFolder + "\\..\\DataMigrationUtility";
-                        string newOleDbConnectionString = m_state["newOleDbConnectionString"].ToString();
-                        string databaseType = m_state["databaseType"].ToString().Replace(" ", "");
-                        ConfigurationFile configFile = null;
-                        CategorizedSettingsElementCollection applicationSettings = null;
-
-                        // Copy user-level DataMigrationUtility config file to the ConfigurationSetupUtility application folder.
-                        if (File.Exists(migrationDataFolder + "\\Settings.xml"))
-                        {
-                            if (!Directory.Exists(dataFolder))
-                                Directory.CreateDirectory(dataFolder);
-
-                            File.Copy(migrationDataFolder + "\\Settings.xml", dataFolder + "\\Settings.xml", true);
-                        }
-
-                        // Modify OleDB configuration file settings for the DataMigrationUtility.
-                        configFile = ConfigurationFile.Open("DataMigrationUtility.exe.config");
-                        applicationSettings = configFile.Settings["applicationSettings"];
-                        applicationSettings["FromDataType", true].Value = "Unspecified";
-                        applicationSettings["ToConnectionString", true].Value = newOleDbConnectionString;
-                        applicationSettings["ToDataType", true].Value = databaseType;
-
-                        if (m_state.ContainsKey("oldOleDbConnectionString"))
-                        {
-                            string oldOleDbConnectionString = m_state["oldOleDbConnectionString"].ToString();
-                            applicationSettings["FromConnectionString", true].Value = oldOleDbConnectionString;
-
-                            if (m_state.ContainsKey("oldOleDbDataType"))
-                                applicationSettings["FromDataType", true].Value = m_state["oldOleDbDataType"].ToString();
-                        }
-
-                        configFile.Save();
-
-                        // Copy user-level ConfigurationSetupUtility config file to DataMigrationUtility application folder.
-                        if (File.Exists(dataFolder + "\\Settings.xml"))
-                        {
-                            if (!Directory.Exists(migrationDataFolder))
-                                Directory.CreateDirectory(migrationDataFolder);
-
-                            File.Copy(dataFolder + "\\Settings.xml", migrationDataFolder + "\\Settings.xml", true);
-                        }
-
-                        // Run the DataMigrationUtility.
-                        using (Process migrationProcess = new Process())
-                        {
-                            migrationProcess.StartInfo.FileName = "DataMigrationUtility.exe";
-                            migrationProcess.StartInfo.Arguments = "-install";
-                            migrationProcess.Start();
-                            migrationProcess.WaitForExit();
-                        }                        
-                    }
-
-                    // Always make sure that all three needed roles are available for each defined node(s) in the database.
-                    ValidateSecurityRoles();
-                    
-                    // If the user requested it, start or restart the openPDC service.
-                    if (m_serviceStartCheckBox.IsChecked.Value)
-                    {
-                        try
-                        {
-                        #if DEBUG
-                            Process.Start("openPDC.exe");
-                        #else
-                            m_openPdcServiceController.Start();
-                        #endif
-                        }
-                        catch
-                        {
-                            MessageBox.Show("The configuration utility was unable to start openPDC service, you will need to manually start the service.", "Cannot Start Windows Service", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                    }
-
-                    // If the user requested it, start the openPDC Manager.
-                    if (m_managerStartCheckBox.IsChecked.Value)
-                    {
-                        if (UserAccountControl.IsUacEnabled && UserAccountControl.IsCurrentProcessElevated)
-                        {
-                            try
-                            {
-                                UserAccountControl.CreateProcessAsStandardUser("openPDCManager.exe");
-                            }
-                            catch
-                            {
-                                Process.Start("openPDCManager.exe");
-                            }
-                        }
-                        else
-                            Process.Start("openPDCManager.exe");
-                    }
-                }
-                finally
-                {
-                    if (m_openPdcServiceController != null)
-                        m_openPdcServiceController.Close();
-                }
-            }
-        }
-
         private void ValidateSecurityRoles()
         {
-            //For each Node in new database make sure all roles exist
+            // For each Node in new database make sure all roles exist
             IDataReader nodeReader = null;
             IDbConnection connection = null;
             try
@@ -354,7 +351,7 @@ namespace ConfigurationSetupUtility.Screens
 
                     Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
                     Type connectionType = assembly.GetType(connectionTypeName);
-                    
+
                     if (settings.TryGetValue("Provider", out connectionSetting))
                     {
                         // Check if provider is for Access to make sure the path is fully qualified.
@@ -371,9 +368,9 @@ namespace ConfigurationSetupUtility.Screens
                     connection = (IDbConnection)Activator.CreateInstance(connectionType);
                     connection.ConnectionString = connectionString;
                     connection.Open();
-                    
+
                     IDbCommand nodeCommand;
-                    
+
                     nodeCommand = connection.CreateCommand();
                     nodeCommand.CommandText = "SELECT ID FROM Node";
                     nodeReader = nodeCommand.ExecuteReader();
@@ -392,6 +389,8 @@ namespace ConfigurationSetupUtility.Screens
                             // Check if provider is for Access since it uses braces as Guid delimeters
                             if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
                                 nodeID = "{" + nodeID + "}";
+                            else
+                                nodeID = "'" + nodeID + "'";
                         }
                         else
                             nodeID = "'" + nodeID + "'";
@@ -401,7 +400,7 @@ namespace ConfigurationSetupUtility.Screens
                         command.CommandText = string.Format("Select Count(*) From ApplicationRole Where NodeID = {0} AND Name = 'Administrator'", nodeID);
                         if (Convert.ToInt32(command.ExecuteScalar()) == 0)
                             AddRolesForNode(connection, nodeID, "Administrator");
-                        else    //verify admin user exists for the node and attached to administrator role.
+                        else    // Verify an admin user exists for the node and attached to administrator role.
                             VerifyAdminUser(connection, nodeID);
 
                         command.CommandText = string.Format("Select Count(*) From ApplicationRole Where NodeID = {0} AND Name = 'Editor'", nodeID);
@@ -435,17 +434,17 @@ namespace ConfigurationSetupUtility.Screens
         /// <param name="connection">IDbConnection to be used for database operations.</param>
         /// <param name="nodeID">Node ID to which three roles are being assigned</param>        
         private void AddRolesForNode(IDbConnection connection, string nodeID, string roleName)
-        {            
+        {
             IDbCommand adminCredentialCommand;
             adminCredentialCommand = connection.CreateCommand();
 
-            if (roleName == "Administrator")                            
+            if (roleName == "Administrator")
                 adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Administrator', 'Administrator Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
             else if (roleName == "Editor")
                 adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Editor', 'Editor Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
             else
                 adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Viewer', 'Viewer Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
-            
+
             adminCredentialCommand.ExecuteNonQuery();
 
             if (roleName == "Administrator")    //verify admin user exists for the node and attached to administrator role.
@@ -454,7 +453,7 @@ namespace ConfigurationSetupUtility.Screens
 
         private void VerifyAdminUser(IDbConnection connection, string nodeID)
         {
-            //find out administrator role ID.
+            // Lookup administrator role ID
             IDbCommand command = connection.CreateCommand();
             command.CommandText = string.Format("SELECT ID FROM ApplicationRole WHERE Name = 'Administrator' AND NodeID = {0}", nodeID);
             string adminRoleID = command.ExecuteScalar().ToNonNullString();
@@ -463,15 +462,15 @@ namespace ConfigurationSetupUtility.Screens
             Dictionary<string, string> settings = connection.ConnectionString.ParseKeyValuePairs();
             string connectionSetting;
             if (settings.TryGetValue("Provider", out connectionSetting))
-            {            
+            {
                 if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                    databaseIsAccess = true;                    
-            }   
+                    databaseIsAccess = true;
+            }
 
             if (databaseIsAccess)
                 adminRoleID = adminRoleID.StartsWith("{") ? adminRoleID : "{" + adminRoleID + "}";
             else
-                adminRoleID = "'" + adminRoleID + "'";
+                adminRoleID = adminRoleID.StartsWith("'") ? adminRoleID : "'" + adminRoleID + "'";
 
             // Check if there is any user associated with the administrator role ID in the ApplicationRoleUserAccount table.
             // if so that means there is atleast one user associated with that role. So we do not need to take any action.
@@ -490,7 +489,7 @@ namespace ConfigurationSetupUtility.Screens
                         if (databaseIsAccess)
                             adminUserID = adminUserID.StartsWith("{") ? adminUserID : "{" + adminUserID + "}";
                         else
-                            adminUserID = "'" + adminUserID + "'";
+                            adminUserID = adminUserID.StartsWith("'") ? adminUserID : "'" + adminUserID + "'";
 
                         command.CommandText = string.Format("INSERT INTO ApplicationRoleUserAccount(ApplicationRoleID, UserAccountID) VALUES ({0}, {1})", adminRoleID, adminUserID);
                         command.ExecuteNonQuery();
@@ -586,10 +585,10 @@ namespace ConfigurationSetupUtility.Screens
                         if (!string.IsNullOrEmpty(adminRoleID) && !string.IsNullOrEmpty(adminUserID))
                         {
                             if (databaseIsAccess)
-                                adminUserID = adminUserID.StartsWith("{") ? adminUserID : "{" + adminUserID + "}";                            
+                                adminUserID = adminUserID.StartsWith("{") ? adminUserID : "{" + adminUserID + "}";
                             else
-                                adminUserID = "'" + adminUserID + "'";
-                            
+                                adminUserID = adminUserID.StartsWith("'") ? adminUserID : "'" + adminUserID + "'";
+
                             adminCredentialCommand.CommandText = string.Format("INSERT INTO ApplicationRoleUserAccount(ApplicationRoleID, UserAccountID) VALUES ({0}, {1})", adminRoleID, adminUserID);
                             adminCredentialCommand.ExecuteNonQuery();
                         }

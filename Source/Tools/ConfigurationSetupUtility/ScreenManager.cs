@@ -169,6 +169,14 @@ namespace ConfigurationSetupUtility
             }
         }
 
+        /// <summary>
+        /// Returns <c>true</c> if final shut-down operations (via user input validation) succeeded.
+        /// </summary>
+        public bool PerformShutdownOperations()
+        {
+            return m_currentScreen.UserInputIsValid;
+        }
+
         #endregion
         
     }

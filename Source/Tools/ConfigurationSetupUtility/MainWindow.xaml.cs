@@ -18,8 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  09/07/2010 - Stephen C. Wills
 //       Generated original version of source code.
-//  02/03/2011 - Mehul Thakkar
-//       Set PrinicipalPolicy to WindowsPrincipal so that current windows user can be identified.
+//  03/07/2011 - J. Ritchie Carroll
+//       Added pre-shutdown validation step.
 //
 //******************************************************************************************************
 
@@ -74,9 +74,16 @@ namespace ConfigurationSetupUtility
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
             if (m_screenManager.CurrentScreen.NextScreen != null)
+            {
+                // Next screen is defined, navigate to it...
                 m_screenManager.GoToNextScreen();
+            }
             else
-                this.Close();
+            {
+                // Attempt pre-shutdown operations
+                if (m_screenManager.PerformShutdownOperations())
+                    this.Close();
+            }
         }
 
         // Occurs when the user clicks the "Back" button.
