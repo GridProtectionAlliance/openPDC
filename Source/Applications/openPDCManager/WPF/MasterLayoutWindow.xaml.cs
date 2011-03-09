@@ -137,7 +137,6 @@ namespace openPDCManager
         {            
             m_applicationClosing = true;
             Properties.Settings.Default.Save();
-            m_serviceClient.Helper.RemotingClient.MaxConnectionAttempts = 0;
             DisconnectFromService();
             Application.Current.Shutdown();        
         }
@@ -171,7 +170,6 @@ namespace openPDCManager
                     m_serviceClient.Helper.RemotingClient.ConnectionEstablished += RemotingClient_ConnectionEstablished;
                     m_serviceClient.Helper.RemotingClient.ConnectionTerminated += RemotingClient_ConnectionTerminated;
                     m_serviceClient.Helper.RemotingClient.ConnectionAttempt += RemotingClient_ConnectionAttempt;
-                    m_serviceClient.Helper.RemotingClient.MaxConnectionAttempts = -1;
 
                     // Start connection cycle
                     System.Threading.ThreadPool.QueueUserWorkItem(ConnectAsync, null);
@@ -217,8 +215,7 @@ namespace openPDCManager
                 {
                     m_serviceClient.Helper.RemotingClient.ConnectionEstablished -= RemotingClient_ConnectionEstablished;
                     m_serviceClient.Helper.RemotingClient.ConnectionTerminated -= RemotingClient_ConnectionTerminated;
-                    m_serviceClient.Helper.RemotingClient.ConnectionAttempt -= RemotingClient_ConnectionAttempt;                    
-                    m_serviceClient.Helper.Disconnect();
+                    m_serviceClient.Helper.RemotingClient.ConnectionAttempt -= RemotingClient_ConnectionAttempt;
                     m_serviceClient.Dispose();
                 }
                 m_serviceClient = null;

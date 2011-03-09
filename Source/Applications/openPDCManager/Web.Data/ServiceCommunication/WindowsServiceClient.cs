@@ -51,18 +51,22 @@ namespace openPDCManager.Data.ServiceCommunication
         {
             // Initialize status cache members.
             string statusBufferSize;
+            
             if (connectionString.ParseKeyValuePairs().TryGetValue("statusBufferSize", out statusBufferSize))
                 m_statusBufferSize = int.Parse(statusBufferSize);
             else
                 m_statusBufferSize = 8192;
+
             m_cachedStatus = string.Empty;
+
             // Initialize remoting client socket.
             m_remotingClient = new TcpClient();
             m_remotingClient.ConnectionString = connectionString;
             m_remotingClient.SharedSecret = "openPDC";
             m_remotingClient.Handshake = true;
             m_remotingClient.PayloadAware = true;
-            m_remotingClient.ConnectionException += new EventHandler<EventArgs<Exception>>(m_remotingClient_ConnectionException);
+            m_remotingClient.MaxConnectionAttempts = -1;
+
             // Initialize windows service client.
             m_clientHelper = new ClientHelper();
             m_clientHelper.RemotingClient = m_remotingClient;
@@ -125,13 +129,22 @@ namespace openPDCManager.Data.ServiceCommunication
             {
                 try
                 {
-                    // This will be done regardless of whether the object is finalized or disposed.
                     if (disposing)
                     {
-                        // This will be done only when the object is disposed by calling Dispose().
-                        m_clientHelper.ReceivedServiceUpdate -= ClientHelper_ReceivedServiceUpdate;
-                        m_clientHelper.Dispose();
-                        m_remotingClient.Dispose();
+                        if (m_clientHelper != null)
+                            m_clientHelper.ReceivedServiceUpdate -= ClientHelper_ReceivedServiceUpdate;
+                        m_clientHelper = null;
+
+                        if (m_remotingClient != null)
+                        {
+                            m_remotingClient.MaxConnectionAttempts = 0;
+
+                            if (m_remotingClient.CurrentState == ClientState.Connected)
+                                m_remotingClient.Disconnect();
+
+                            m_remotingClient.Dispose();
+                        }
+                        m_remotingClient = null;
                     }
                 }
                 finally
