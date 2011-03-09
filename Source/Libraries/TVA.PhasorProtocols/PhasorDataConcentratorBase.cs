@@ -1408,15 +1408,6 @@ namespace TVA.PhasorProtocols
         private void m_dataChannel_ServerStopped(object sender, EventArgs e)
         {
             m_activeConnections--;
-
-            lock (m_connectionIDCache)
-            {
-                foreach (Guid clientID in m_dataChannel.ClientIDs)
-                {
-                    m_connectionIDCache.Remove(clientID);
-                }
-            }
-
             OnStatusMessage("Data channel stopped.");
         }
 
