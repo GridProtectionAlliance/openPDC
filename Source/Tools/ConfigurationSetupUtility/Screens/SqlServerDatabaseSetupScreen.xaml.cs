@@ -57,6 +57,7 @@ namespace ConfigurationSetupUtility.Screens
         {
             m_sqlServerSetup = new SqlServerSetup();
             InitializeComponent();
+            this.Loaded += new RoutedEventHandler(SqlServerDatabaseSetupScreen_Loaded);
         }
 
         #endregion
@@ -188,6 +189,15 @@ namespace ConfigurationSetupUtility.Screens
         #endregion
 
         #region [ Methods ]
+
+        // Set focus on the admin user name textbox onload.
+        private void SqlServerDatabaseSetupScreen_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(m_adminUserNameTextBox.Text))
+                m_adminUserNameTextBox.Focus();
+            else if (string.IsNullOrEmpty(m_adminPasswordTextBox.Password))
+                m_adminPasswordTextBox.Focus();
+        }
 
         // Initialize the state keys to their default values.
         private void InitializeState()

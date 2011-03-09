@@ -10,7 +10,7 @@
         <StackPanel Grid.Row="1" Orientation="Horizontal" FlowDirection="LeftToRight" HorizontalAlignment="Right">
             <Button Content="Cancel" Height="23" Width="75" Margin="10" VerticalAlignment="Bottom" Name="m_cancelButton" Click="CancelButton_Click" HorizontalAlignment="Right" />
             <Button Content="&lt; Back" Height="23" Width="75" Margin="0,10" VerticalAlignment="Bottom" Name="m_backButton" Click="BackButton_Click" HorizontalAlignment="Right" />
-            <Button Content="Next &gt;" Height="23" Width="75" Margin="10" VerticalAlignment="Bottom" Name="m_nextButton" Click="NextButton_Click" HorizontalAlignment="Right" />
+            <Button Content="Next &gt;" Height="23" Width="75" Margin="10" VerticalAlignment="Bottom" Name="m_nextButton" Click="NextButton_Click" HorizontalAlignment="Right" IsDefault="True" />
         </StackPanel>
         <Grid Name="m_screenPanel" />
         <Button Content="Advanced..." Height="23" HorizontalAlignment="Left" Name="m_advancedButton" VerticalAlignment="Center" Width="75" Margin="10" Grid.Row="1" Visibility="Collapsed" />

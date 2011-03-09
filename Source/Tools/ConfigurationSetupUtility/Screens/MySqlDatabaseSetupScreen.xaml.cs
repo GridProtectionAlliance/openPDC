@@ -62,9 +62,10 @@ namespace ConfigurationSetupUtility.Screens
         /// Creates a new instance of the <see cref="MySqlDatabaseSetupScreen"/> class.
         /// </summary>
         public MySqlDatabaseSetupScreen()
-        {
+        {            
             m_mySqlSetup = new MySqlSetup();
             InitializeComponent();
+            this.Loaded += new RoutedEventHandler(MySqlDatabaseSetupScreen_Loaded);
 
             string[] mySQLConnectorNetVersions = { "6.3.4.0", "6.2.4.0", "6.1.5.0", "6.0.7.0", "5.2.7.0", "5.1.7.0", "5.0.9.0" };
             string assemblyNamePrefix = "MySql.Data, Version=";
@@ -96,6 +97,8 @@ namespace ConfigurationSetupUtility.Screens
             if (string.IsNullOrEmpty(m_dataProviderString))
                 m_dataProviderString = "AssemblyName={MySql.Data, Version=6.3.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
         }
+
+        
 
         #endregion
 
@@ -226,6 +229,15 @@ namespace ConfigurationSetupUtility.Screens
         #endregion
 
         #region [ Methods ]
+
+        // Set focus on the admin user name textbox onload.
+        private void MySqlDatabaseSetupScreen_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(m_adminUserNameTextBox.Text))
+                m_adminUserNameTextBox.Focus();
+            else if (string.IsNullOrEmpty(m_adminPasswordTextBox.Password))
+                m_adminPasswordTextBox.Focus();
+        }
 
         // Initializes the state keys to their default values.
         private void InitializeState()
