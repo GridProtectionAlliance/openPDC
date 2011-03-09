@@ -515,7 +515,7 @@ namespace ConfigurationSetupUtility.Screens
                 }
 
                 // Modify the openPDC configuration file.
-                string serviceConnectionString = sqlServerSetup.ConnectionString;
+                string serviceConnectionString = sqlServerSetup.PooledConnectionString;
                 string managerConnectionString = serviceConnectionString;
 
                 // Check to see if user requested to use integrated authentication

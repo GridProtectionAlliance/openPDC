@@ -190,7 +190,7 @@ namespace ConfigurationSetupUtility
 
                 foreach (string key in m_settings.Keys)
                 {
-                    if (string.Compare(key, "User ID", true) != 0 && string.Compare(key, "Password", true) != 0)
+                    if (string.Compare(key, "User ID", true) != 0 && string.Compare(key, "Password", true) != 0 && string.Compare(key, "pooling", true) != 0)
                     {
                         if (builder.Length > 0)
                             builder.Append("; ");
@@ -202,6 +202,32 @@ namespace ConfigurationSetupUtility
                 }
 
                 builder.Append("; Integrated Security=SSPI");
+
+                return builder.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets the connection string without "pooling=false" setting in it (this will be used to store into the config files).
+        /// </summary>
+        public string PooledConnectionString
+        {
+            get
+            {
+                StringBuilder builder = new StringBuilder();
+
+                foreach (string key in m_settings.Keys)
+                {
+                    if (string.Compare(key, "pooling", true) != 0)
+                    {
+                        if (builder.Length > 0)
+                            builder.Append("; ");
+
+                        builder.Append(key);
+                        builder.Append('=');
+                        builder.Append(m_settings[key]);
+                    }
+                }
 
                 return builder.ToString();
             }
