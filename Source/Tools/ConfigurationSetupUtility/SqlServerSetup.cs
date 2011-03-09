@@ -67,6 +67,7 @@ namespace ConfigurationSetupUtility
         public SqlServerSetup()
         {
             m_settings = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+            m_settings["pooling"] = "false";
         }
 
         #endregion

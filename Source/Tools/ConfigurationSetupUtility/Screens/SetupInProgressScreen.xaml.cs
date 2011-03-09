@@ -409,7 +409,7 @@ namespace ConfigurationSetupUtility.Screens
                 object dataProviderStringValue;
                 string dataProviderString = null;
 
-                sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;
+                sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;              
                 sqlServerSetup.OutputDataReceived += SqlServerSetup_OutputDataReceived;
                 sqlServerSetup.ErrorDataReceived += SqlServerSetup_ErrorDataReceived;
                 m_state["newOleDbConnectionString"] = sqlServerSetup.OleDbConnectionString;
@@ -570,11 +570,11 @@ namespace ConfigurationSetupUtility.Screens
                 {
                     connection = (IDbConnection)Activator.CreateInstance(connectionType);
                     
-                    if (m_state["databaseType"].ToString() == "sql server")
-                        connection.ConnectionString = connectionString + ";pooling=false;"; // this was done to avoid connection pooling so SQL database can be deleted easily.
-                    else
-                        connection.ConnectionString = connectionString;
-
+                    //if (m_state["databaseType"].ToString() == "sql server")
+                    //    connection.ConnectionString = connectionString + ";pooling=false;"; // this was done to avoid connection pooling so SQL database can be deleted easily.
+                    //else
+                    //    connection.ConnectionString = connectionString;
+                    connection.ConnectionString = connectionString;
                     connection.Open();
 
                     IDbCommand command = connection.CreateCommand();
