@@ -61,14 +61,18 @@ namespace ConfigurationSetupUtility
             // Setup screen manager
             m_screenManager = new ScreenManager(this, new WelcomeScreen());
 
-#if !DEBUG
-            this.Topmost = true;
-#endif
+            Loaded += MainWindow_Loaded;
         }
 
         #endregion
 
         #region [ Methods ]
+
+        // Make sure window is focused
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            Activate();
+        }
 
         // Occurs when the user clicks the "Next" button.
         private void NextButton_Click(object sender, RoutedEventArgs e)

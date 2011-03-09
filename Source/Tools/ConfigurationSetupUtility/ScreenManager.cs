@@ -33,11 +33,9 @@ namespace ConfigurationSetupUtility
     /// </summary>
     public class ScreenManager
     {
-
         #region [ Members ]
 
         // Fields
-
         private Window m_mainWindow;
         private IScreen m_currentScreen;
         private Stack<IScreen> m_history;
@@ -177,7 +175,14 @@ namespace ConfigurationSetupUtility
             return m_currentScreen.UserInputIsValid;
         }
 
-        #endregion
-        
+        /// <summary>
+        /// Attempts to bring main window into focus.
+        /// </summary>
+        public void Activate()
+        {
+            m_mainWindow.Activate();
+        }
+
+        #endregion        
     }
 }
