@@ -142,6 +142,7 @@ namespace TVA.PhasorProtocols
         private Dictionary<MeasurementKey, SignalReference[]> m_signalReferences;
         private Dictionary<SignalKind, string[]> m_generatedSignalReferenceCache;
         private Dictionary<Guid, string> m_connectionIDCache;
+        private System.Timers.Timer m_commandChannelRestartTimer;
         private long m_activeConnections;
         private LineFrequency m_nominalFrequency;
         private DataFormat m_dataFormat;
@@ -177,6 +178,12 @@ namespace TVA.PhasorProtocols
 
             // Synchrophasor protocols should default to millisecond resolution
             base.TimeResolution = Ticks.PerMillisecond;
+
+            // Setup a timer for restarting the command channel if it fails
+            m_commandChannelRestartTimer = new System.Timers.Timer(2000.0D);
+            m_commandChannelRestartTimer.AutoReset = false;
+            m_commandChannelRestartTimer.Enabled = false;
+            m_commandChannelRestartTimer.Elapsed += m_commandChannelRestartTimer_Elapsed;
         }
 
         #endregion
@@ -603,6 +610,14 @@ namespace TVA.PhasorProtocols
                 {
                     if (disposing)
                     {
+                        // Dispose command channel restart timer
+                        if (m_commandChannelRestartTimer != null)
+                        {
+                            m_commandChannelRestartTimer.Elapsed -= m_commandChannelRestartTimer_Elapsed;
+                            m_commandChannelRestartTimer.Dispose();
+                        }
+                        m_commandChannelRestartTimer = null;
+
                         // Dispose and detach from data and command channel events
                         this.DataChannel = null;
                         this.CommandChannel = null;
@@ -681,7 +696,16 @@ namespace TVA.PhasorProtocols
         {
             // Make sure publication channel has started
             if (m_publishChannel != null && m_publishChannel.CurrentState == ServerState.NotRunning)
-                m_publishChannel.Start();
+            {
+                try
+                {
+                    m_publishChannel.Start();
+                }
+                catch (Exception ex)
+                {
+                    OnProcessException(new InvalidOperationException("Failed to start publication channel: " + ex.Message, ex));
+                }
+            }
 
             // Make sure publication channel is defined
             EstablishPublicationChannel();
@@ -1457,11 +1481,28 @@ namespace TVA.PhasorProtocols
             {
                 OnStatusMessage("Command channel was unexpectedly terminated, restarting...");
 
-                if (m_commandChannel != null)
-                    m_commandChannel.Start();
+                // We must wait for command channel to completely shutdown before trying to restart...
+                if (m_commandChannelRestartTimer != null)
+                    m_commandChannelRestartTimer.Start();
             }
             else
                 OnStatusMessage("Command channel stopped.");
+        }
+
+        private void m_commandChannelRestartTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (m_commandChannel != null)
+            {
+                try
+                {
+                    // After a short delay, we try to restart the command channel
+                    m_commandChannel.Start();
+                }
+                catch (Exception ex)
+                {
+                    OnProcessException(new InvalidOperationException("Failed to restart command channel: " + ex.Message, ex));
+                }
+            }
         }
 
         #endregion
