@@ -75,6 +75,7 @@ namespace openPDCManager.UserControls.CommonControls
             {
                 SendRequest();
                 TextBoxServiceRequest.Focus();
+                TextBoxServiceRequest.SelectAll();
             }
         }
 
