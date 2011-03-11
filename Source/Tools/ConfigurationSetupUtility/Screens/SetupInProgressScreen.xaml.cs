@@ -1262,7 +1262,16 @@ namespace ConfigurationSetupUtility.Screens
                 string existingPassword = dataPublisherPassword.Attributes["value"].Value;
 
                 if (Convert.ToBoolean(dataPublisherPassword.Attributes["encrypted"].Value))
-                    existingPassword = Cipher.Decrypt(existingPassword, App.CipherLookupKey, App.CryptoStrength);
+                {
+                    try
+                    {
+                        existingPassword = Cipher.Decrypt(existingPassword, App.CipherLookupKey, App.CryptoStrength);
+                    }
+                    catch
+                    {
+                        existingPassword = "openPDC";
+                    }
+                }
 
                 // During upgrade from older versions this password will be defaulted to openPDC
                 if (string.Compare(existingPassword, "openPDC", true) == 0)
