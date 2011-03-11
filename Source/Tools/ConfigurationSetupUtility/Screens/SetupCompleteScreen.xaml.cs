@@ -35,6 +35,7 @@ using System.Threading;
 using System.Web.Security;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using TVA;
 using TVA.Configuration;
 using TVA.Identity;
@@ -178,6 +179,24 @@ namespace ConfigurationSetupUtility.Screens
                                     Directory.CreateDirectory(migrationDataFolder);
 
                                 File.Copy(dataFolder + "\\Settings.xml", migrationDataFolder + "\\Settings.xml", true);
+                            }
+
+                            try
+                            {
+                                DependencyObject parent = VisualTreeHelper.GetParent(this);
+                                Window mainWindow;
+
+                                while (parent != null && !(parent is Window))
+                                    parent = VisualTreeHelper.GetParent(parent);
+
+                                mainWindow = parent as Window;
+
+                                if (mainWindow != null)
+                                    mainWindow.WindowState = WindowState.Minimized;
+                            }
+                            catch
+                            {
+                                // Nothing to if we failt to minimize...
                             }
 
                             // Run the DataMigrationUtility.
