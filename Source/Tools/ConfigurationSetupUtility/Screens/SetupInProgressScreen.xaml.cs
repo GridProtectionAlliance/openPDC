@@ -195,13 +195,12 @@ namespace ConfigurationSetupUtility.Screens
             // Establish crypto keys in case they do not exist
             try
             {
-                string setupCryptoKeys = "SetupString";
-                setupCryptoKeys.Encrypt(App.CipherLookupKey, CipherStrength.Aes256);
-                setupCryptoKeys.Encrypt(DataPublisher.CipherLookupKey, CipherStrength.Aes256);
+                "SetupString".Encrypt(App.CipherLookupKey, CipherStrength.Aes256);
+                "SetupString".Encrypt(DataPublisher.CipherLookupKey, CipherStrength.Aes256);
             }
-            catch (Exception ex)
+            catch
             {
-                AppendStatusMessage(string.Format("WARNING: Failed to establish crypto keys due to exception: {0}", ex.Message));
+                //AppendStatusMessage(string.Format("WARNING: Failed to establish crypto keys due to exception: {0}", ex.Message));
             }
 
             if (configurationType == "database")
