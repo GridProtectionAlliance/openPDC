@@ -1458,7 +1458,7 @@ namespace openPDCManager.Data
 
                 if (isNew)
                     command.CommandText = "Insert Into OutputStreamMeasurement (NodeID, AdapterID, HistorianID, PointID, SignalReference, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
-                        "Values (@nodeID, @adapterID, @historianID, @pointID, @signalReference, @updatedBy, UpdatedOn, @createdBy, CreatedOn)";
+                        "Values (@nodeID, @adapterID, @historianID, @pointID, @signalReference, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update OutputStreamMeasurement Set NodeID = @nodeID, AdapterID = @adapterID, HistorianID = @historianID, " +
                         "PointID = @pointID, SignalReference = @signalReference, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id";
