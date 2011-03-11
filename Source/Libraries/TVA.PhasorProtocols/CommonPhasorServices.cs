@@ -246,6 +246,9 @@ namespace TVA.PhasorProtocols
             m_dataPublisher = new DataPublisher();
             m_dataPublisher.Name = "dataPublisher";
 
+            // Set up default parameters, config file can override
+            m_dataPublisher.SharedSecret = "TSF-E1CCE965-39A6-4476-8C60-EF02D8212F16";
+
             // Attach to events on new data publishing server reference
             m_dataPublisher.StatusMessage += m_dataPublisher_StatusMessage;
             m_dataPublisher.ProcessException += m_dataPublisher_ProcessException;
