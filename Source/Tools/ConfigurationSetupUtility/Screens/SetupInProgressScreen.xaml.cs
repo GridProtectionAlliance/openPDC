@@ -44,6 +44,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Xml;
 using Microsoft.Win32;
+using TimeSeriesFramework.Transport;
 using TVA;
 using TVA.IO;
 using TVA.Security.Cryptography;
@@ -190,6 +191,18 @@ namespace ConfigurationSetupUtility.Screens
         {
             string configurationType = m_state["configurationType"].ToString();
             ClearStatusMessages();
+
+            // Establish crypto keys in case they do not exist
+            try
+            {
+                string setupCryptoKeys = "SetupString";
+                setupCryptoKeys.Encrypt(App.CipherLookupKey, CipherStrength.Aes256);
+                setupCryptoKeys.Encrypt(DataPublisher.CipherLookupKey, CipherStrength.Aes256);
+            }
+            catch (Exception ex)
+            {
+                AppendStatusMessage(string.Format("WARNING: Failed to establish crypto keys due to exception: {0}", ex.Message));
+            }
 
             if (configurationType == "database")
                 SetUpDatabase();
@@ -1182,7 +1195,7 @@ namespace ConfigurationSetupUtility.Screens
             XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
 
             if (encrypted)
-                connectionString = Cipher.Encrypt(connectionString, App.DefaultCryptoKey, App.CryptoStrength);
+                connectionString = Cipher.Encrypt(connectionString, App.CipherLookupKey, App.CryptoStrength);
 
             foreach (XmlNode child in systemSettings.ChildNodes)
             {
@@ -1204,7 +1217,7 @@ namespace ConfigurationSetupUtility.Screens
                             m_oldConnectionString = child.Attributes["value"].Value;
 
                             if (Convert.ToBoolean(child.Attributes["encrypted"].Value))
-                                m_oldConnectionString = Cipher.Decrypt(m_oldConnectionString, App.DefaultCryptoKey, App.CryptoStrength);
+                                m_oldConnectionString = Cipher.Decrypt(m_oldConnectionString, App.CipherLookupKey, App.CryptoStrength);
                         }
 
                         // Modify the config file settings to the new values.
@@ -1249,7 +1262,7 @@ namespace ConfigurationSetupUtility.Screens
                 string existingPassword = dataPublisherPassword.Attributes["value"].Value;
 
                 if (Convert.ToBoolean(dataPublisherPassword.Attributes["encrypted"].Value))
-                    existingPassword = Cipher.Decrypt(existingPassword, App.DefaultCryptoKey, App.CryptoStrength);
+                    existingPassword = Cipher.Decrypt(existingPassword, App.CipherLookupKey, App.CryptoStrength);
 
                 // During upgrade from older versions this password will be defaulted to openPDC
                 if (string.Compare(existingPassword, "openPDC", true) == 0)

@@ -42,7 +42,7 @@ namespace ConfigurationSetupUtility
 
         // Constants
         public const CipherStrength CryptoStrength = CipherStrength.Aes256;
-        public const string DefaultCryptoKey = "0679d9ae-aca5-4702-a3f5-604415096987";
+        public const string CipherLookupKey = "0679d9ae-aca5-4702-a3f5-604415096987";
 
         private ErrorLogger m_errorLogger;
         private Func<string> m_defaultErrorText;

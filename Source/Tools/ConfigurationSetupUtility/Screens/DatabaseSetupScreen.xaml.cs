@@ -382,7 +382,7 @@ namespace ConfigurationSetupUtility.Screens
                             m_oldConnectionString = child.Attributes["value"].Value;
 
                             if (Convert.ToBoolean(child.Attributes["encrypted"].Value))
-                                m_oldConnectionString = Cipher.Decrypt(m_oldConnectionString, App.DefaultCryptoKey, App.CryptoStrength);
+                                m_oldConnectionString = Cipher.Decrypt(m_oldConnectionString, App.CipherLookupKey, App.CryptoStrength);
                         }
                     }
                 }
