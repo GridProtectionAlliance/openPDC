@@ -18,6 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  4/9/2010 - J. Ritchie Carroll
 //       Generated original version of source code.
+//  3/11/2011 - Mehulbhai P Thakkar
+//       Fixed bug in PhasorDataSourceValidation when CompanyID is NULL in Device table.
 //
 //******************************************************************************************************
 
@@ -1073,7 +1075,10 @@ namespace TVA.PhasorProtocols
 
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
                         {
-                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", device.Field<int>("CompanyID")));
+                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", device.Field<int?>("CompanyID") ?? 0));
+                            if (string.IsNullOrEmpty(company))
+                                company = configFile.Settings["systemSettings"]["CompanyAcronym"].Value.TruncateRight(3);
+
                             vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0};", device.Field<int?>("VendorDeviceID") ?? 0));
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", device.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
@@ -1099,7 +1104,10 @@ namespace TVA.PhasorProtocols
 
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
                         {
-                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", inputStream.Field<int>("CompanyID")));
+                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", inputStream.Field<int?>("CompanyID") ?? 0));
+                            if (string.IsNullOrEmpty(company))
+                                company = configFile.Settings["systemSettings"]["CompanyAcronym"].Value.TruncateRight(3);
+                            
                             vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0};", inputStream.Field<int?>("VendorDeviceID") ?? 0)); // Modified to retrieve VendorDeviceID into Nullable of Int as it is not a required field.
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", inputStream.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
