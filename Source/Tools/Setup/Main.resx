@@ -565,6 +565,9 @@
         dC9+hv50bf9kb36G/mRN/3Qv/v8B97RhbFIa0rAAAAAASUVORK5CYII=
 </value>
   </data>
+  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <data name="labelNotes.Text" xml:space="preserve">
     <value>During the installation process you will be asked to choose a configuration type. A database is recommended for typical deployments of the openPDC. The openPDC Manager application requires a database to function. The web service and XML configurations available to the openPDC are typically used in combination with a master database configuration that is maintained using the openPDC Manager. For simple installations you can choose an Access database for your configuration. However, Access is not recommended for a production installation and is also not available if you choose a 64-bit installation. Both SQL Server and MySQL are available with versions that may be installed for free.</value>
   </data>

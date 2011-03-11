@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageInstallOptions = new System.Windows.Forms.TabPage();
@@ -43,6 +44,7 @@
             this.richTextBoxReleaseNotes = new System.Windows.Forms.RichTextBox();
             this.labelVersion = new System.Windows.Forms.Label();
             this.pictureBoxLogo = new System.Windows.Forms.PictureBox();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tabControlMain.SuspendLayout();
             this.tabPageInstallOptions.SuspendLayout();
             this.groupBoxInstallationOptions.SuspendLayout();
@@ -133,7 +135,7 @@
             this.checkBoxConnectionTester.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxConnectionTester.Location = new System.Drawing.Point(16, 78);
             this.checkBoxConnectionTester.Name = "checkBoxConnectionTester";
-            this.checkBoxConnectionTester.Size = new System.Drawing.Size(140, 17);
+            this.checkBoxConnectionTester.Size = new System.Drawing.Size(160, 20);
             this.checkBoxConnectionTester.TabIndex = 2;
             this.checkBoxConnectionTester.Text = "PMU Connection Tester";
             this.checkBoxConnectionTester.UseVisualStyleBackColor = true;
@@ -143,10 +145,12 @@
             this.radioButton64bit.AutoSize = true;
             this.radioButton64bit.Location = new System.Drawing.Point(16, 51);
             this.radioButton64bit.Name = "radioButton64bit";
-            this.radioButton64bit.Size = new System.Drawing.Size(167, 17);
+            this.radioButton64bit.Size = new System.Drawing.Size(196, 20);
             this.radioButton64bit.TabIndex = 1;
             this.radioButton64bit.TabStop = true;
             this.radioButton64bit.Text = "64-bit version of the openPDC";
+            this.toolTip.SetToolTip(this.radioButton64bit, "The 64-bit version of the openPDC is recommended for production deployments.\r\nThi" +
+                    "s will require an available database such as SQL Server or MySQL.");
             this.radioButton64bit.UseVisualStyleBackColor = true;
             // 
             // radioButton32bit
@@ -155,10 +159,13 @@
             this.radioButton32bit.Checked = true;
             this.radioButton32bit.Location = new System.Drawing.Point(16, 24);
             this.radioButton32bit.Name = "radioButton32bit";
-            this.radioButton32bit.Size = new System.Drawing.Size(167, 17);
+            this.radioButton32bit.Size = new System.Drawing.Size(196, 20);
             this.radioButton32bit.TabIndex = 0;
             this.radioButton32bit.TabStop = true;
             this.radioButton32bit.Text = "32-bit version of the openPDC";
+            this.toolTip.SetToolTip(this.radioButton32bit, "If you do not have a database server installed locally you can always\r\ninstall th" +
+                    "e 32-bit version of the openPDC and just use an Access database,\r\nno extra softw" +
+                    "are required.");
             this.radioButton32bit.UseVisualStyleBackColor = true;
             // 
             // labelNotes
@@ -263,6 +270,7 @@
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.TabPage tabPageReleaseNotes;
         private System.Windows.Forms.RichTextBox richTextBoxReleaseNotes;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }
 

@@ -1224,49 +1224,40 @@ namespace ConfigurationSetupUtility.Screens
                 }
             }
 
-            // Other provider sections should now use Eval expression to reference system settings for connection information
-            //// Modify ADO metadata provider sections.
-            //foreach (XmlNode node in categorizedSettings.ChildNodes)
-            //{
-            //    if (node.Attributes != null)
-            //    {
-            //        if (node.Name.EndsWith("AdoMetadataProvider"))
-            //        {
-            //            foreach (XmlNode child in node.ChildNodes)
-            //            {
-            //                if (child.Attributes != null)
-            //                {
-            //                    if (child.Attributes["name"].Value == "DataProviderString")
-            //                        child.Attributes["value"].Value = dataProviderString;
-            //                    else if (child.Attributes["name"].Value == "ConnectionString")
-            //                    {
-            //                        // Modify the config file settings to the new values.
-            //                        child.Attributes["value"].Value = connectionString;
-            //                        child.Attributes["encrypted"].Value = encrypted.ToString();
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
+            // Modify ADO metadata provider sections.
+            IEnumerable<XmlNode> adoProviderSections = categorizedSettings.ChildNodes.Cast<XmlNode>().Where(node => node.Name.EndsWith("AdoMetadataProvider"));
 
-            // JRC: Following Linq version was failing without error - section attributes were always null
-            // SCW: It should be fixed now.
-            // JRC: Thanks! We'll keep your linq code here for reference... :)
-            //IEnumerable<XmlNode> adoProviderSections = categorizedSettings.ChildNodes.Cast<XmlNode>().Where(node => node.Name.EndsWith("AdoMetadataProvider"));
+            foreach (XmlNode section in adoProviderSections)
+            {
+                XmlNode connectionNode = section.ChildNodes.Cast<XmlNode>().SingleOrDefault(node => node.Attributes != null && node.Attributes["name"].Value == "ConnectionString");
+                XmlNode dataProviderNode = section.ChildNodes.Cast<XmlNode>().SingleOrDefault(node => node.Attributes != null && node.Attributes["name"].Value == "DataProviderString");
 
-            //foreach (XmlNode section in adoProviderSections)
-            //{
-            //    XmlNode connectionNode = section.ChildNodes.Cast<XmlNode>().SingleOrDefault(node => node.Attributes != null && node.Attributes["name"].Value == "ConnectionString");
-            //    XmlNode dataProviderNode = section.ChildNodes.Cast<XmlNode>().SingleOrDefault(node => node.Attributes != null && node.Attributes["name"].Value == "DataProviderString");
+                if (connectionNode != null && dataProviderNode != null)
+                {
+                    connectionNode.Attributes["value"].Value = "Eval(SystemSettings.ConnectionString)";
+                    connectionNode.Attributes["encrypted"].Value = "False";
+                    dataProviderNode.Attributes["value"].Value = "Eval(SystemSettings.DataProviderString)";
+                    dataProviderNode.Attributes["encrypted"].Value = "False";
+                }
+            }
 
-            //    if (connectionNode != null && dataProviderNode != null)
-            //    {
-            //        connectionNode.Attributes["value"].Value = connectionString;
-            //        connectionNode.Attributes["encrypted"].Value = encrypted.ToString();
-            //        dataProviderNode.Attributes["value"].Value = dataProviderString;
-            //    }
-            //}
+            // Update the data publisher default shared secret, if defined
+            XmlNode dataPublisherPassword = configFile.SelectSingleNode("configuration/categorizedSettings/dataPublisher/add[@name = 'SharedSecret']");
+
+            if (dataPublisherPassword != null)
+            {
+                string existingPassword = dataPublisherPassword.Attributes["value"].Value;
+
+                if (Convert.ToBoolean(dataPublisherPassword.Attributes["encrypted"].Value))
+                    existingPassword = Cipher.Decrypt(existingPassword, App.DefaultCryptoKey, App.CryptoStrength);
+
+                // During upgrade from older versions this password will be defaulted to openPDC
+                if (string.Compare(existingPassword, "openPDC", true) == 0)
+                {
+                    dataPublisherPassword.Attributes["value"].Value = "TSF-E1CCE965-39A6-4476-8C60-EF02D8212F16";
+                    dataPublisherPassword.Attributes["encrypted"].Value = "False";
+                }
+            }
 
             // The following change will be done only for openPDCManager configuration.
             if (Convert.ToBoolean(m_state["applyChangesToLocalManager"]) && m_state.ContainsKey("allowPassThroughAuthentication"))
