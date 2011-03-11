@@ -374,6 +374,42 @@ namespace openPDCManager.Utilities
             }
         }
 
+        public static string GetDataPublisherServer()
+        {
+            string server = "localhost";
+            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl.ToLower();
+            Dictionary<string, string> keyValues = connectionString.ParseKeyValuePairs();
+
+            if (keyValues.ContainsKey("server"))
+                server = keyValues["server"].Substring(0, keyValues["server"].LastIndexOf(":"));
+
+            return server;
+        }
+
+        public static string GetDataPublisherPort()
+        {
+            string port = "6165";
+            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl.ToLower();
+            Dictionary<string, string> keyValues = connectionString.ParseKeyValuePairs();
+
+            if (keyValues.ContainsKey("datapublisherport"))
+                port = keyValues["datapublisherport"];
+
+            return port;
+        }
+
+        public static string GetDataPublisherPassword()
+        {
+            string password = "TSF-E1CCE965-39A6-4476-8C60-EF02D8212F16";
+            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl.ToLower();
+            Dictionary<string, string> keyValues = connectionString.ParseKeyValuePairs();
+            
+            if (keyValues.ContainsKey("datapublisherpassword"))
+                password = keyValues["datapublisherpassword"];
+
+            return password;
+        }
+
 		#endregion
 
 	}

@@ -554,16 +554,8 @@ namespace openPDCManager.Pages.Monitoring
 
         void StartSubscriptionForChart()
         {
-            //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Starting Subscription.");
-            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl.ToLower();
-            Dictionary<string, string> keyValues = connectionString.ParseKeyValuePairs();
-            string server = "localhost";
-            string port = "6165";
-            if (keyValues.ContainsKey("server"))
-                server = keyValues["server"].Substring(0, keyValues["server"].LastIndexOf(":"));
-
-            if (keyValues.ContainsKey("datapublisherport"))
-                port = keyValues["datapublisherport"];
+            string server = openPDCManager.Utilities.Common.GetDataPublisherServer();
+            string port = openPDCManager.Utilities.Common.GetDataPublisherPort();
 
             m_chartSubscriber = new DataSubscriber();
             m_chartSubscriber.StatusMessage += chartSubscriber_StatusMessage;
@@ -598,7 +590,8 @@ namespace openPDCManager.Pages.Monitoring
                     if (subscriptionPoints.Length > 0)
                         subscriptionPoints = subscriptionPoints.Substring(0, subscriptionPoints.Length - 1);
 
-                    m_chartSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, subscriptionPoints, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
+                    string password = openPDCManager.Utilities.Common.GetDataPublisherPassword();
+                    m_chartSubscriber.SynchronizedSubscribe(true, password, m_framesPerSecond, m_lagTime, m_leadTime, subscriptionPoints, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
                     ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate() { StartChartRefreshTimer(); });
                 }
             }
@@ -799,15 +792,8 @@ namespace openPDCManager.Pages.Monitoring
 
         void StartSubscriptionForTreeData()
         {
-            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl.ToLower();
-            Dictionary<string, string> keyValues = connectionString.ParseKeyValuePairs();
-            string server = "localhost";
-            string port = "6165";
-            if (keyValues.ContainsKey("server"))
-                server = keyValues["server"].Substring(0, keyValues["server"].LastIndexOf(":"));
-
-            if (keyValues.ContainsKey("datapublisherport"))
-                port = keyValues["datapublisherport"];
+            string server = openPDCManager.Utilities.Common.GetDataPublisherServer();
+            string port = openPDCManager.Utilities.Common.GetDataPublisherPort();
 
             m_measurementDataSubscriber = new DataSubscriber();
             m_measurementDataSubscriber.StatusMessage += measurementDataSubscriber_StatusMessage;
@@ -827,7 +813,8 @@ namespace openPDCManager.Pages.Monitoring
 
             if (m_subscribedForTree && !string.IsNullOrEmpty(m_measurementDataPointsForSubscription))
             {
-                m_measurementDataSubscriber.UnsynchronizedSubscribe(true, true, m_measurementDataPointsForSubscription, m_measurementsDataRefreshInterval);
+                string password = openPDCManager.Utilities.Common.GetDataPublisherPassword();
+                m_measurementDataSubscriber.UnsynchronizedSubscribe(true, password, true, m_measurementDataPointsForSubscription, m_measurementsDataRefreshInterval);
             }
         }
 

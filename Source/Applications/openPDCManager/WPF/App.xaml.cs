@@ -71,7 +71,7 @@ namespace openPDCManager
         public string NodeName { get; set; }
         public string TimeSeriesDataServiceUrl { get; set; }
         public string RemoteStatusServiceUrl { get; set; }
-        public string RealTimeStatisticServiceUrl { get; set; }
+        public string RealTimeStatisticServiceUrl { get; set; }        
         //public ApplicationIdCredentialsProvider Credentials { get; set; }
         public WindowsServiceClient ServiceClient { get; set; }        
         public IPrincipal Principal { get; set; }

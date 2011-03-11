@@ -64,16 +64,9 @@ namespace openPDCManager.UserControls.CommonControls
 
         void StartSubscription()
         {
-            string connectionString = ((App)Application.Current).RemoteStatusServiceUrl.ToLower();
-            Dictionary<string, string> keyValues = connectionString.ParseKeyValuePairs();
-            string server = "localhost";
-            string port = "6165";
-            if (keyValues.ContainsKey("server"))
-                server = keyValues["server"].Substring(0, keyValues["server"].LastIndexOf(":"));
-
-            if (keyValues.ContainsKey("datapublisherport"))
-                port = keyValues["datapublisherport"];
-
+            string server = openPDCManager.Utilities.Common.GetDataPublisherServer();
+            string port = openPDCManager.Utilities.Common.GetDataPublisherPort();
+            
             m_dataSubscriber = new DataSubscriber();
             m_dataSubscriber.StatusMessage += dataSubscriber_StatusMessage;
             m_dataSubscriber.ProcessException += dataSubscriber_ProcessException;
@@ -91,7 +84,10 @@ namespace openPDCManager.UserControls.CommonControls
                 StartSubscription();
 
             if (m_subscribed && !string.IsNullOrEmpty(m_measurementForSubscription))
-                m_dataSubscriber.UnsynchronizedSubscribe(true, true, m_measurementForSubscription, 1);
+            {
+                string password = openPDCManager.Utilities.Common.GetDataPublisherPassword();
+                m_dataSubscriber.UnsynchronizedSubscribe(true, password, true, m_measurementForSubscription, 1);
+            }
         }
 
         void UnsubscribeData()
