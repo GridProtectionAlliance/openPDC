@@ -614,18 +614,15 @@ namespace ConfigurationSetupUtility.Screens
                     StringBuilder sb = new StringBuilder();
                     sb.Append(string.Format("Database {0} already exists.", databaseName));
                     sb.AppendLine();
-                    sb.AppendLine("Click YES to delete existing database.");                    
-                    sb.AppendLine("Click NO to go back to change database name.");
+                    sb.AppendLine("    Click YES to delete existing database.");
+                    sb.AppendLine("    Click NO to go back to change database name.");
                     sb.AppendLine();
-
+                    sb.AppendLine("WARNING: If you delete the existing database ALL configuration in that database will be permanently deleted.");
+                    
                     bool dropDatabase = false;
-
-                    this.Dispatcher.Invoke((Action)delegate()
-                    {
-                        if (MessageBox.Show(sb.ToString(), "Database Exists!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                            dropDatabase = true;
-                    });
-
+                    if (MessageBox.Show(sb.ToString(), "Database Exists!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                        dropDatabase = true;
+                    
                     if (dropDatabase)
                     {
                         if (m_state["databaseType"].ToString() == "sql server")
@@ -633,16 +630,10 @@ namespace ConfigurationSetupUtility.Screens
                             SqlServerSetup sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;
                             sqlServerSetup.DatabaseName = "master";
                             if (!sqlServerSetup.ExecuteStatement(string.Format("USE [master] ALTER DATABASE {0} SET SINGLE_USER WITH ROLLBACK IMMEDIATE DROP DATABASE {0}", databaseName)))
-                                this.Dispatcher.Invoke((Action)delegate()
-                                {
-                                    MessageBox.Show(string.Format("Failed to delete database {0}", databaseName), "Delete Database Failed");
-                                });
+                                MessageBox.Show(string.Format("Failed to delete database {0}", databaseName), "Delete Database Failed");                                
                             else
-                                this.Dispatcher.Invoke((Action)delegate()
-                                {
-                                    AppendStatusMessage(string.Format("Dropped database {0} successfully.", databaseName));
-                                });
-
+                                AppendStatusMessage(string.Format("Dropped database {0} successfully.", databaseName));
+                                
                             sqlServerSetup.DatabaseName = databaseName;
                         }
                         else
