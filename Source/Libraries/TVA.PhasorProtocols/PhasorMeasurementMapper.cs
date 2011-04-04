@@ -1145,19 +1145,15 @@ namespace TVA.PhasorProtocols
                 }
                 else if (m_frameParser.ConfigurationFrame == null)
                 {
-                    status.Append(">> Awaiting configuration frame - ");
-                    status.Append(m_frameParser.TotalBytesReceived);
-                    status.Append(" bytes received");
+                    status.AppendFormat("  >> Awaiting configuration frame - {0} bytes received", m_frameParser.TotalBytesReceived);
                 }
                 else
                 {
-                    status.Append("** No data mapped, check configuration - ");
-                    status.Append(m_frameParser.TotalBytesReceived);
-                    status.Append(" bytes received");
+                    status.AppendFormat("  ** No data mapped, check configuration - {0} bytes received", m_frameParser.TotalBytesReceived);
                 }
             }
             else
-                status.Append("** Not connected");
+                status.Append("  ** Not connected");
 
             return status.ToString();
         }
