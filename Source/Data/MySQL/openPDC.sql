@@ -811,7 +811,8 @@ SELECT CalculatedMeasurement.NodeID, Runtime.ID, CalculatedMeasurement.Acronym A
  CONCAT(N'timeResolution=', CAST(CalculatedMeasurement.TimeResolution AS CHAR)),
  CONCAT(N'allowPreemptivePublishing=', CAST(CalculatedMeasurement.AllowPreemptivePublishing AS CHAR)),
  CONCAT(N'performTimestampReasonabilityCheck=', CAST(CalculatedMeasurement.PerformTimestampReasonabilityCheck AS CHAR)),
- CONCAT(N'downsamplingMethod=', CalculatedMeasurement.DownsamplingMethod)) AS ConnectionString
+ CONCAT(N'downsamplingMethod=', CalculatedMeasurement.DownsamplingMethod)),
+ CONCAT(N'useLocalClockAsRealTime=', CAST(CalculatedMeasurement.UseLocalClockAsRealTime AS CHAR)) AS ConnectionString
 FROM CalculatedMeasurement LEFT OUTER JOIN
  Runtime ON CalculatedMeasurement.ID = Runtime.SourceID AND Runtime.SourceTable = N'CalculatedMeasurement'
 WHERE (CalculatedMeasurement.Enabled <> 0)
@@ -1068,18 +1069,18 @@ SELECT     MeasurementDetail.CompanyID, MeasurementDetail.CompanyAcronym, Measur
 FROM MeasurementDetail 
 WHERE MeasurementDetail.SignalAcronym = 'STAT';
 
-CREATE VIEW applicationrolesecuritygroupdetail AS 
-SELECT applicationrolesecuritygroup.ApplicationRoleID AS ApplicationRoleID,applicationrolesecuritygroup.SecurityGroupID AS SecurityGroupID,applicationrole.Name AS ApplicationRoleName,applicationrole.Description AS ApplicationRoleDescription,securitygroup.Name AS SecurityGroupName,securitygroup.Description AS SecurityGroupDescription 
-FROM ((applicationrolesecuritygroup JOIN applicationrole ON((applicationrolesecuritygroup.ApplicationRoleID = applicationrole.ID))) 
-	JOIN securitygroup ON((applicationrolesecuritygroup.SecurityGroupID = securitygroup.ID)));
+CREATE VIEW ApplicationRoleSecurityGroupDetail AS 
+SELECT ApplicationRoleSecurityGroup.ApplicationRoleID AS ApplicationRoleID,ApplicationRoleSecurityGroup.SecurityGroupID AS SecurityGroupID,ApplicationRole.Name AS ApplicationRoleName,ApplicationRole.Description AS ApplicationRoleDescription,SecurityGroup.Name AS SecurityGroupName,SecurityGroup.Description AS SecurityGroupDescription 
+FROM ((ApplicationRoleSecurityGroup JOIN ApplicationRole ON((ApplicationRoleSecurityGroup.ApplicationRoleID = ApplicationRole.ID))) 
+	JOIN SecurityGroup ON((ApplicationRoleSecurityGroup.SecurityGroupID = SecurityGroup.ID)));
 
-CREATE VIEW applicationroleuseraccountdetail AS 
-SELECT applicationroleuseraccount.ApplicationRoleID AS ApplicationRoleID,applicationroleuseraccount.UserAccountID AS UserAccountID,useraccount.Name AS UserName,useraccount.FirstName AS FirstName,useraccount.LastName AS LastName,useraccount.Email AS Email,applicationrole.Name AS ApplicationRoleName,applicationrole.Description AS ApplicationRoleDescription 
-FROM ((applicationroleuseraccount JOIN applicationrole ON((applicationroleuseraccount.ApplicationRoleID = applicationrole.ID))) JOIN useraccount ON((applicationroleuseraccount.UserAccountID = useraccount.ID)));
+CREATE VIEW ApplicationRoleUserAccountDetail AS 
+SELECT ApplicationRoleUserAccount.ApplicationRoleID AS ApplicationRoleID,ApplicationRoleUserAccount.UserAccountID AS UserAccountID,UserAccount.Name AS UserName,UserAccount.FirstName AS FirstName,UserAccount.LastName AS LastName,UserAccount.Email AS Email,ApplicationRole.Name AS ApplicationRoleName,ApplicationRole.Description AS ApplicationRoleDescription 
+FROM ((ApplicationRoleUserAccount JOIN ApplicationRole ON((ApplicationRoleUserAccount.ApplicationRoleID = ApplicationRole.ID))) JOIN UserAccount ON((ApplicationRoleUserAccount.UserAccountID = UserAccount.ID)));
 
-CREATE VIEW securitygroupuseraccountdetail AS 
-SELECT securitygroupuseraccount.SecurityGroupID AS SecurityGroupID,securitygroupuseraccount.UserAccountID AS UserAccountID,useraccount.Name AS UserName,useraccount.FirstName AS FirstName,useraccount.LastName AS LastName,useraccount.Email AS Email,securitygroup.Name AS SecurityGroupName,securitygroup.Description AS SecurityGroupDescription 
-FROM ((securitygroupuseraccount JOIN securitygroup ON((securitygroupuseraccount.SecurityGroupID = securitygroup.ID))) JOIN useraccount ON((securitygroupuseraccount.UserAccountID = useraccount.ID)));
+CREATE VIEW SecurityGroupUserAccountDetail AS 
+SELECT SecurityGroupUserAccount.SecurityGroupID AS SecurityGroupID,SecurityGroupUserAccount.UserAccountID AS UserAccountID,UserAccount.Name AS UserName,UserAccount.FirstName AS FirstName,UserAccount.LastName AS LastName,UserAccount.Email AS Email,SecurityGroup.Name AS SecurityGroupName,SecurityGroup.Description AS SecurityGroupDescription 
+FROM ((SecurityGroupUserAccount JOIN SecurityGroup ON((SecurityGroupUserAccount.SecurityGroupID = SecurityGroup.ID))) JOIN UserAccount ON((SecurityGroupUserAccount.UserAccountID = UserAccount.ID)));
 
 CREATE TRIGGER CustomActionAdapter_RuntimeSync_Insert AFTER INSERT ON CustomActionAdapter
 FOR EACH ROW INSERT INTO Runtime (SourceID, SourceTable) VALUES(NEW.ID, N'CustomActionAdapter');
