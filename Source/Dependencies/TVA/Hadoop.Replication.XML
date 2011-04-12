@@ -56,12 +56,12 @@
         </member>
         <member name="M:Hadoop.Replication.HadoopReplicationProvider.SaveSettings">
             <summary>
-            Saves <see cref="T:Hadoop.Replication.HadoopReplicationProvider"/> settings to the config file if the <see cref="P:TVA.Historian.Replication.ReplicationProviderBase.PersistSettings"/> property is set to true.
+            Saves <see cref="T:Hadoop.Replication.HadoopReplicationProvider"/> settings to the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
         </member>
         <member name="M:Hadoop.Replication.HadoopReplicationProvider.LoadSettings">
             <summary>
-            Loads saved <see cref="T:Hadoop.Replication.HadoopReplicationProvider"/> settings from the config file if the <see cref="P:TVA.Historian.Replication.ReplicationProviderBase.PersistSettings"/> property is set to true.
+            Loads saved <see cref="T:Hadoop.Replication.HadoopReplicationProvider"/> settings from the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>  
         </member>
         <member name="M:Hadoop.Replication.HadoopReplicationProvider.ReplicateArchive">

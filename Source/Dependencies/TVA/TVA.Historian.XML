@@ -3132,12 +3132,6 @@
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.IntercomFile"/> class.
             </summary>
         </member>
-        <member name="M:TVA.Historian.Files.IntercomFile.#ctor(System.ComponentModel.IContainer)">
-            <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Files.IntercomFile"/> class.
-            </summary>
-            <param name="container"><see cref="T:System.ComponentModel.IContainer"/> object that contains the <see cref="T:TVA.Historian.Files.IntercomFile"/>.</param>
-        </member>
         <member name="M:TVA.Historian.Files.IntercomFile.GetRecordSize">
             <summary>
             Gets the binary size of a <see cref="T:TVA.Historian.Files.IntercomRecord"/>.
@@ -3232,12 +3226,6 @@
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.MetadataFile"/> class.
             </summary>
-        </member>
-        <member name="M:TVA.Historian.Files.MetadataFile.#ctor(System.ComponentModel.IContainer)">
-            <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Files.MetadataFile"/> class.
-            </summary>
-            <param name="container"><see cref="T:System.ComponentModel.IContainer"/> object that contains the <see cref="T:TVA.Historian.Files.MetadataFile"/>.</param>
         </member>
         <member name="M:TVA.Historian.Files.MetadataFile.Read(System.String)">
             <summary>
@@ -4234,12 +4222,6 @@
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.StateFile"/> class.
             </summary>
         </member>
-        <member name="M:TVA.Historian.Files.StateFile.#ctor(System.ComponentModel.IContainer)">
-            <summary>
-            Initializes a new instance of the <see cref="T:TVA.Historian.Files.StateFile"/> class.
-            </summary>
-            <param name="container"><see cref="T:System.ComponentModel.IContainer"/> object that contains the <see cref="T:TVA.Historian.Files.StateFile"/>.</param>
-        </member>
         <member name="M:TVA.Historian.Files.StateFile.GetRecordSize">
             <summary>
             Gets the binary size of a <see cref="T:TVA.Historian.Files.StateRecord"/>.
@@ -4744,19 +4726,9 @@
             Initializes a new instance of the metadata provider.
             </summary>
         </member>
-        <member name="M:TVA.Historian.MetadataProviders.MetadataProviderBase.Finalize">
-            <summary>
-            Releases the unmanaged resources before the metadata provider is reclaimed by <see cref="T:System.GC"/>.
-            </summary>
-        </member>
         <member name="M:TVA.Historian.MetadataProviders.MetadataProviderBase.RefreshMetadata">
             <summary>
             When overridden in a derived class, refreshes the <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.Metadata"/> from an external source.
-            </summary>
-        </member>
-        <member name="M:TVA.Historian.MetadataProviders.MetadataProviderBase.Dispose">
-            <summary>
-            Releases all the resources used by the metadata provider.
             </summary>
         </member>
         <member name="M:TVA.Historian.MetadataProviders.MetadataProviderBase.Initialize">
@@ -4766,15 +4738,15 @@
         </member>
         <member name="M:TVA.Historian.MetadataProviders.MetadataProviderBase.SaveSettings">
             <summary>
-            Saves metadata provider settings to the config file if the <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.PersistSettings"/> property is set to true.
+            Saves metadata provider settings to the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
-            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.SettingsCategory"/> has a value of null or empty string.</exception>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Adapters.Adapter.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.MetadataProviders.MetadataProviderBase.LoadSettings">
             <summary>
-            Loads saved metadata provider settings from the config file if the <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.PersistSettings"/> property is set to true.
+            Loads saved metadata provider settings from the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
-            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.SettingsCategory"/> has a value of null or empty string.</exception>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Adapters.Adapter.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.MetadataProviders.MetadataProviderBase.Refresh">
             <summary>
@@ -4854,22 +4826,6 @@
             Gets or sets the <see cref="T:TVA.Historian.Files.MetadataFile"/> to be refreshed by the metadata provider.
             </summary>
         </member>
-        <member name="P:TVA.Historian.MetadataProviders.MetadataProviderBase.Enabled">
-            <summary>
-            Gets or sets a boolean value that indicates whether the metadata provider is currently enabled.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.MetadataProviders.MetadataProviderBase.PersistSettings">
-            <summary>
-            Gets or sets a boolean value that indicates whether the metadata provider settings are to be saved to the config file.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.MetadataProviders.MetadataProviderBase.SettingsCategory">
-            <summary>
-            Gets or sets the category under which the metadata provider settings are to be saved to the config file if the <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.PersistSettings"/> property is set to true.
-            </summary>
-            <exception cref="T:System.ArgumentNullException">The value being assigned is a null or empty string.</exception>
-        </member>
         <member name="M:TVA.Historian.MetadataProviders.AdoMetadataProvider.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.MetadataProviders.AdoMetadataProvider"/> class.
@@ -4877,12 +4833,12 @@
         </member>
         <member name="M:TVA.Historian.MetadataProviders.AdoMetadataProvider.SaveSettings">
             <summary>
-            Saves <see cref="T:TVA.Historian.MetadataProviders.AdoMetadataProvider"/> settings to the config file if the <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.PersistSettings"/> property is set to true.
+            Saves <see cref="T:TVA.Historian.MetadataProviders.AdoMetadataProvider"/> settings to the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
         </member>
         <member name="M:TVA.Historian.MetadataProviders.AdoMetadataProvider.LoadSettings">
             <summary>
-            Loads saved <see cref="T:TVA.Historian.MetadataProviders.AdoMetadataProvider"/> settings from the config file if the <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.PersistSettings"/> property is set to true.
+            Loads saved <see cref="T:TVA.Historian.MetadataProviders.AdoMetadataProvider"/> settings from the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
         </member>
         <member name="M:TVA.Historian.MetadataProviders.AdoMetadataProvider.RefreshMetadata">
@@ -5024,12 +4980,12 @@
         </member>
         <member name="M:TVA.Historian.MetadataProviders.OleDbMetadataProvider.SaveSettings">
             <summary>
-            Saves <see cref="T:TVA.Historian.MetadataProviders.OleDbMetadataProvider"/> settings to the config file if the <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.PersistSettings"/> property is set to true.
+            Saves <see cref="T:TVA.Historian.MetadataProviders.OleDbMetadataProvider"/> settings to the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
         </member>
         <member name="M:TVA.Historian.MetadataProviders.OleDbMetadataProvider.LoadSettings">
             <summary>
-            Loads saved <see cref="T:TVA.Historian.MetadataProviders.OleDbMetadataProvider"/> settings from the config file if the <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.PersistSettings"/> property is set to true.
+            Loads saved <see cref="T:TVA.Historian.MetadataProviders.OleDbMetadataProvider"/> settings from the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
         </member>
         <member name="M:TVA.Historian.MetadataProviders.OleDbMetadataProvider.RefreshMetadata">
@@ -5061,12 +5017,12 @@
         </member>
         <member name="M:TVA.Historian.MetadataProviders.RestWebServiceMetadataProvider.SaveSettings">
             <summary>
-            Saves <see cref="T:TVA.Historian.MetadataProviders.RestWebServiceMetadataProvider"/> settings to the config file if the <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.PersistSettings"/> property is set to true.
+            Saves <see cref="T:TVA.Historian.MetadataProviders.RestWebServiceMetadataProvider"/> settings to the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
         </member>
         <member name="M:TVA.Historian.MetadataProviders.RestWebServiceMetadataProvider.LoadSettings">
             <summary>
-            Loads saved <see cref="T:TVA.Historian.MetadataProviders.RestWebServiceMetadataProvider"/> settings from the config file if the <see cref="P:TVA.Historian.MetadataProviders.MetadataProviderBase.PersistSettings"/> property is set to true.
+            Loads saved <see cref="T:TVA.Historian.MetadataProviders.RestWebServiceMetadataProvider"/> settings from the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
         </member>
         <member name="M:TVA.Historian.MetadataProviders.RestWebServiceMetadataProvider.RefreshMetadata">
@@ -5161,19 +5117,9 @@
             Initializes a new instance of the replication provider.
             </summary>
         </member>
-        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.Finalize">
-            <summary>
-            Releases the unmanaged resources before the replication provider is reclaimed by <see cref="T:System.GC"/>.
-            </summary>
-        </member>
         <member name="M:TVA.Historian.Replication.ReplicationProviderBase.ReplicateArchive">
             <summary>
             When overridden in a derived class, replicates the <see cref="T:TVA.Historian.IArchive"/>.
-            </summary>
-        </member>
-        <member name="M:TVA.Historian.Replication.ReplicationProviderBase.Dispose">
-            <summary>
-            Releases all the resources used by the replication provider.
             </summary>
         </member>
         <member name="M:TVA.Historian.Replication.ReplicationProviderBase.Initialize">
@@ -5183,15 +5129,15 @@
         </member>
         <member name="M:TVA.Historian.Replication.ReplicationProviderBase.SaveSettings">
             <summary>
-            Saves replication provider settings to the config file if the <see cref="P:TVA.Historian.Replication.ReplicationProviderBase.PersistSettings"/> property is set to true.
+            Saves replication provider settings to the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
-            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.Replication.ReplicationProviderBase.SettingsCategory"/> has a value of null or empty string.</exception>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Adapters.Adapter.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.Replication.ReplicationProviderBase.LoadSettings">
             <summary>
-            Loads saved replication provider settings from the config file if the <see cref="P:TVA.Historian.Replication.ReplicationProviderBase.PersistSettings"/> property is set to true.
+            Loads saved replication provider settings from the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
-            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.Replication.ReplicationProviderBase.SettingsCategory"/> has a value of null or empty string.</exception>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Adapters.Adapter.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.Replication.ReplicationProviderBase.Replicate">
             <summary>
@@ -5263,22 +5209,6 @@
             Gets or sets the interval in minutes at which the <see cref="T:TVA.Historian.IArchive"/> is to be replicated.
             </summary>
         </member>
-        <member name="P:TVA.Historian.Replication.ReplicationProviderBase.PersistSettings">
-            <summary>
-            Gets or sets a boolean value that indicates whether the replication provider settings are to be saved to the config file.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Replication.ReplicationProviderBase.SettingsCategory">
-            <summary>
-            Gets or sets the category under which the replication provider settings are to be saved to the config file if the <see cref="P:TVA.Historian.Replication.ReplicationProviderBase.PersistSettings"/> property is set to true.
-            </summary>
-            <exception cref="T:System.ArgumentNullException">The value being assigned is a null or empty string.</exception>
-        </member>
-        <member name="P:TVA.Historian.Replication.ReplicationProviderBase.Enabled">
-            <summary>
-            Gets or sets a boolean value that indicates whether the replication provider is currently enabled.
-            </summary>
-        </member>
         <member name="T:TVA.Historian.Replication.ReplicationProviders">
             <summary>
             A class that loads all of the <see cref="T:TVA.Historian.Replication.IReplicationProvider">replication providers</see>.
@@ -5347,11 +5277,6 @@
             </summary>
             <param name="notifyOptions"><see cref="T:TVA.Historian.Notifiers.NotificationTypes"/> that can be processed by the notifier.</param>
         </member>
-        <member name="M:TVA.Historian.Notifiers.NotifierBase.Finalize">
-            <summary>
-            Releases the unmanaged resources before the notifier is reclaimed by <see cref="T:System.GC"/>.
-            </summary>
-        </member>
         <member name="M:TVA.Historian.Notifiers.NotifierBase.NotifyAlarm(System.String,System.String,System.String)">
             <summary>
             When overridden in a derived class, processes a <see cref="F:TVA.Historian.Notifiers.NotificationTypes.Alarm"/> notification.
@@ -5384,27 +5309,17 @@
             <param name="message">Brief message for the notification.</param>
             <param name="details">Detailed message for the notification.</param>
         </member>
-        <member name="M:TVA.Historian.Notifiers.NotifierBase.Dispose">
-            <summary>
-            Releases all the resources used by the notifier.
-            </summary>
-        </member>
-        <member name="M:TVA.Historian.Notifiers.NotifierBase.Initialize">
-            <summary>
-            Initializes the notifier.
-            </summary>
-        </member>
         <member name="M:TVA.Historian.Notifiers.NotifierBase.SaveSettings">
             <summary>
-            Saves notifier settings to the config file if the <see cref="P:TVA.Historian.Notifiers.NotifierBase.PersistSettings"/> property is set to true.
+            Saves notifier settings to the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
-            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.Notifiers.NotifierBase.SettingsCategory"/> has a value of null or empty string.</exception>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Adapters.Adapter.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.Notifiers.NotifierBase.LoadSettings">
             <summary>
-            Loads saved notifier settings from the config file if the <see cref="P:TVA.Historian.Notifiers.NotifierBase.PersistSettings"/> property is set to true.
+            Loads saved notifier settings from the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
-            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Historian.Notifiers.NotifierBase.SettingsCategory"/> has a value of null or empty string.</exception>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"><see cref="P:TVA.Adapters.Adapter.SettingsCategory"/> has a value of null or empty string.</exception>
         </member>
         <member name="M:TVA.Historian.Notifiers.NotifierBase.Notify(System.String,System.String,System.String,TVA.Historian.Notifiers.NotificationTypes)">
             <summary>
@@ -5479,22 +5394,6 @@
             Gets or set <see cref="T:TVA.Historian.Notifiers.NotificationTypes"/> that can be processed by the notifier.
             </summary>
         </member>
-        <member name="P:TVA.Historian.Notifiers.NotifierBase.Enabled">
-            <summary>
-            Gets or sets a boolean value that indicates whether the notifier is currently enabled.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Notifiers.NotifierBase.PersistSettings">
-            <summary>
-            Gets or sets a boolean value that indicates whether the notifier settings are to be saved to the config file.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Notifiers.NotifierBase.SettingsCategory">
-            <summary>
-            Gets or sets the category under which the notifier settings are to be saved to the config file if the <see cref="P:TVA.Historian.Notifiers.NotifierBase.PersistSettings"/> property is set to true.
-            </summary>
-            <exception cref="T:System.ArgumentNullException">The value being assigned is a null or empty string.</exception>
-        </member>
         <member name="M:TVA.Historian.Notifiers.EmailNotifier.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Notifiers.EmailNotifier"/> class.
@@ -5502,12 +5401,12 @@
         </member>
         <member name="M:TVA.Historian.Notifiers.EmailNotifier.SaveSettings">
             <summary>
-            Saves <see cref="T:TVA.Historian.Notifiers.EmailNotifier"/> settings to the config file if the <see cref="P:TVA.Historian.Notifiers.NotifierBase.PersistSettings"/> property is set to true.
+            Saves <see cref="T:TVA.Historian.Notifiers.EmailNotifier"/> settings to the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>        
         </member>
         <member name="M:TVA.Historian.Notifiers.EmailNotifier.LoadSettings">
             <summary>
-            Loads saved <see cref="T:TVA.Historian.Notifiers.EmailNotifier"/> settings from the config file if the <see cref="P:TVA.Historian.Notifiers.NotifierBase.PersistSettings"/> property is set to true.
+            Loads saved <see cref="T:TVA.Historian.Notifiers.EmailNotifier"/> settings from the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>        
         </member>
         <member name="M:TVA.Historian.Notifiers.EmailNotifier.NotifyAlarm(System.String,System.String,System.String)">
@@ -6470,9 +6369,34 @@
             Initializes a new instance of historian data web service.
             </summary>
         </member>
+        <member name="M:TVA.Historian.DataServices.DataService.LoadSettings">
+            <summary>
+            Loads saved web service settings from the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.DataServices.DataService.SaveSettings">
+            <summary>
+            Saves web service settings to the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.DataServices.DataService.OnServiceHostCreated">
+            <summary>
+            Raises the <see cref="E:TVA.Services.ServiceModel.SelfHostingService.ServiceHostCreated"/> event.
+            </summary>
+            <remarks>
+            We override default behavior to update the default close timeout and to make sure the
+            maximum number of items are allowed in the returned graph.
+            </remarks>
+        </member>
         <member name="P:TVA.Historian.DataServices.DataService.Archive">
             <summary>
             Gets or sets the <see cref="T:TVA.Historian.IArchive"/> used by the web service for its data.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.DataService.CloseTimeout">
+            <summary>
+            Gets or sets the desired <see cref="P:System.ServiceModel.Channels.Binding.CloseTimeout"/> used as
+            the interval of time provided for a connection to close before the transport raises an exception.
             </summary>
         </member>
         <member name="M:TVA.Historian.DataServices.MetadataService.#ctor">
