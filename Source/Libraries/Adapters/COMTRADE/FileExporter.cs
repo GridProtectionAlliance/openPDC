@@ -325,16 +325,17 @@ namespace COMTRADE
                 MeasurementKey inputMeasurementKey;
                 SignalType signalType;
                 DataQuality measurementQuality;
-                double measurementValue, referenceAngleValue;
+                double measurementValue; //, referenceAngleValue;
                 string measurementTag;
                 int totalChannels, totalAnalogChannels, totalDigitalChannels;
-                int analogChannelID, digitalChannelID;
+                int analogChannelID; //, digitalChannelID;
 
                 // We need to get calculated reference angle value in order to export relative phase angles
                 // If the value is not here, we don't export
                 referenceAngle = null;
                 analogChannelID = 0;
-                digitalChannelID = 0;
+                //digitalChannelID = 0;
+
                 // Make sure reference made it in this frame...
                 if (m_useReferenceAngle && !measurements.TryGetValue(m_referenceAngleKey, out referenceAngle))
                 {

@@ -43,6 +43,7 @@ using openPDCManager.Data.Entities;
 using openPDCManager.Data.ServiceCommunication;
 using TVA;
 using TVA.PhasorProtocols;
+using TVA.Services.ServiceProcess;
 
 namespace openPDCManager.Data
 {
@@ -63,7 +64,7 @@ namespace openPDCManager.Data
         /// </summary>
         /// <param name="connection">Connection used to set user context before any delete operation.</param>
         public static void SetCurrentUserContext(DataConnection connection)
-        {           
+        {
             bool createdConnection = false;
             try
             {
@@ -108,9 +109,9 @@ namespace openPDCManager.Data
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }            
+            }
         }
-                
+
         static DataSet GetResultSet(IDbCommand command)		//This function was added because at few places mySQL complained about foreign key constraints which I was not able to figure out.
         {
             //TODO: Find a way to get rid of this function for mySQL.
@@ -130,7 +131,7 @@ namespace openPDCManager.Data
             message.SystemMessage = systemMessage;
             message.Detail = detail;
             message.UserMessageType = userMessageType;
-            
+
             MemoryStream memoryStream = new MemoryStream();
             XmlSerializer xs = new XmlSerializer(typeof(Message));
             XmlTextWriter xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
@@ -141,7 +142,7 @@ namespace openPDCManager.Data
 
         public static List<ErrorLog> ReadExceptionLog(int numberOfLogs)
         {
-            DataConnection connection = new DataConnection();            
+            DataConnection connection = new DataConnection();
             try
             {
                 List<ErrorLog> errorLogList = new List<ErrorLog>();
@@ -206,7 +207,7 @@ namespace openPDCManager.Data
         }
 
         public static string SaveIniFile(Stream input)
-        {			
+        {
             string fileName = Guid.NewGuid().ToString() + ".ini";
             using (FileStream fs = File.Create(GetExecutingAssemblyPath() + "\\" + fileName))
             {
@@ -217,13 +218,13 @@ namespace openPDCManager.Data
                     fs.Write(buffer, 0, bytesRead);
                 }
             }
-            return fileName;		
+            return fileName;
         }
 
         public static ConnectionSettings GetConnectionSettings(Stream inputStream)
         {
             ConnectionSettings connectionSettings = new ConnectionSettings();
-        
+
             SoapFormatter sf = new SoapFormatter();
             sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
             sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
@@ -239,16 +240,16 @@ namespace openPDCManager.Data
                 connectionSettings.parseWordCountFromByte = cs.parseWordCountFromByte;
             }
 
-            return connectionSettings;			
+            return connectionSettings;
         }
 
         public static IConfigurationFrame s_configurationFrame;
         public static List<WizardDeviceInfo> GetWizardConfigurationInfo(Stream inputStream)
-        {				
+        {
             SoapFormatter sf = new SoapFormatter();
             sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
             sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
-            IConfigurationFrame configurationFrame = sf.Deserialize(inputStream) as IConfigurationFrame;            
+            IConfigurationFrame configurationFrame = sf.Deserialize(inputStream) as IConfigurationFrame;
             return ParseConfigurationFrame(configurationFrame);
         }
 
@@ -258,59 +259,59 @@ namespace openPDCManager.Data
             //{
             s_configurationFrame = configurationFrame;
 
-                List<WizardDeviceInfo> wizardDeviceInfoList = new List<WizardDeviceInfo>();
-                if (configurationFrame != null)
+            List<WizardDeviceInfo> wizardDeviceInfoList = new List<WizardDeviceInfo>();
+            if (configurationFrame != null)
+            {
+                int parentAccessID = configurationFrame.IDCode;
+                wizardDeviceInfoList = (from cell in configurationFrame.Cells
+                                        select new WizardDeviceInfo()
+                                        {
+                                            Acronym = cell.StationName.Replace(" ", "").ToUpper(),
+                                            Name = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(cell.StationName.ToLower()),
+                                            Longitude = -98.6m,
+                                            Latitude = 37.5m,
+                                            VendorDeviceID = (int?)null,
+                                            AccessID = cell.IDCode,
+                                            ParentAccessID = parentAccessID,
+                                            Include = true,
+                                            DigitalCount = cell.DigitalDefinitions.Count(),
+                                            AnalogCount = cell.AnalogDefinitions.Count(),
+                                            AddDigitals = false,
+                                            AddAnalogs = false,
+                                            IsNew = GetDeviceByAcronym(null, cell.StationName.Replace(" ", "").ToUpper()) == null ? true : false,
+                                            PhasorList = new ObservableCollection<PhasorInfo>((from phasor in cell.PhasorDefinitions
+                                                                                               select new PhasorInfo()
+                                                                                               {
+                                                                                                   Label = phasor.Label,  //CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(phasor.Label.Replace("?", " ").Trim().ToLower()),
+                                                                                                   Type = phasor.PhasorType == PhasorType.Current ? "I" : "V",
+                                                                                                   Phase = "+",
+                                                                                                   DestinationLabel = "",
+                                                                                                   Include = true
+                                                                                               }).ToList())
+                                        }).ToList();
+
+            }
+
+            List<string> nondistinctAcronymList = new List<string>();
+            nondistinctAcronymList = (from item in wizardDeviceInfoList
+                                      group item by item.Acronym into grouped
+                                      where grouped.Count() > 1
+                                      select grouped.Key).ToList();
+
+            if (nondistinctAcronymList.Count > 0)
+            {
+                int i = 0;
+                foreach (WizardDeviceInfo deviceInfo in wizardDeviceInfoList)
                 {
-                    int parentAccessID = configurationFrame.IDCode;
-                    wizardDeviceInfoList = (from cell in configurationFrame.Cells
-                                            select new WizardDeviceInfo()
-                                            {
-                                                Acronym = cell.StationName.Replace(" ", "").ToUpper(),
-                                                Name = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(cell.StationName.ToLower()),
-                                                Longitude = -98.6m,
-                                                Latitude = 37.5m,
-                                                VendorDeviceID = (int?)null,
-                                                AccessID = cell.IDCode,
-                                                ParentAccessID = parentAccessID,
-                                                Include = true,
-                                                DigitalCount = cell.DigitalDefinitions.Count(),
-                                                AnalogCount = cell.AnalogDefinitions.Count(),
-                                                AddDigitals = false,
-                                                AddAnalogs = false,
-                                                IsNew = GetDeviceByAcronym(null, cell.StationName.Replace(" ", "").ToUpper()) == null ? true : false,
-                                                PhasorList = new ObservableCollection<PhasorInfo>( (from phasor in cell.PhasorDefinitions
-                                                              select new PhasorInfo()
-                                                              {
-                                                                  Label = phasor.Label,  //CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(phasor.Label.Replace("?", " ").Trim().ToLower()),
-                                                                  Type = phasor.PhasorType == PhasorType.Current ? "I" : "V",
-                                                                  Phase = "+",
-                                                                  DestinationLabel = "",
-                                                                  Include = true
-                                                              }).ToList())
-                                            }).ToList();
-
-                }                        
-
-                List<string> nondistinctAcronymList = new List<string>();
-                nondistinctAcronymList = (from item in wizardDeviceInfoList                                          
-                                          group item by item.Acronym into grouped
-                                          where grouped.Count() > 1
-                                          select grouped.Key).ToList();
-
-                if (nondistinctAcronymList.Count > 0)
-                {
-                    int i = 0;
-                    foreach (WizardDeviceInfo deviceInfo in wizardDeviceInfoList)
+                    if (deviceInfo.IsNew && nondistinctAcronymList.Contains(deviceInfo.Acronym))
                     {
-                        if (deviceInfo.IsNew && nondistinctAcronymList.Contains(deviceInfo.Acronym))
-                        {
-                            deviceInfo.Acronym = deviceInfo.Acronym.Substring(0, deviceInfo.Acronym.Length - i.ToString().Length) + i.ToString();
-                            i++;
-                        }
-                    }                    
+                        deviceInfo.Acronym = deviceInfo.Acronym.Substring(0, deviceInfo.Acronym.Length - i.ToString().Length) + i.ToString();
+                        i++;
+                    }
                 }
+            }
 
-                return wizardDeviceInfoList;
+            return wizardDeviceInfoList;
             //}
             //catch (Exception ex)
             //{
@@ -331,8 +332,8 @@ namespace openPDCManager.Data
             try
             {
                 s_responseWaitHandle = new ManualResetEvent(false);
-                windowsServiceClient.Helper.ReceivedServiceResponse += new EventHandler<TVA.EventArgs<TVA.Services.ServiceProcess.ServiceResponse>>(Helper_ReceivedServiceResponse);
-                windowsServiceClient.Helper.ReceivedServiceUpdate += new EventHandler<TVA.EventArgs<TVA.Services.ServiceProcess.UpdateType, string>>(Helper_ReceivedServiceUpdate);
+                windowsServiceClient.Helper.ReceivedServiceResponse += Helper_ReceivedServiceResponse;
+                windowsServiceClient.Helper.ReceivedServiceUpdate += Helper_ReceivedServiceUpdate;
                 windowsServiceClient.Helper.RemotingClient.MaxConnectionAttempts = 10;
                 windowsServiceClient.Helper.Connect();
                 if (windowsServiceClient.Helper.RemotingClient.Enabled)
@@ -347,7 +348,7 @@ namespace openPDCManager.Data
                         if (s_responseAttachment is ConfigurationErrorFrame)
                             throw new ApplicationException("Received configuration error frame, invocation request for device configuration has failed.\r\n");
                         else if (s_responseAttachment is IConfigurationFrame)
-                            return ParseConfigurationFrame(s_responseAttachment as IConfigurationFrame);						
+                            return ParseConfigurationFrame(s_responseAttachment as IConfigurationFrame);
                         else
                             throw new ApplicationException("Invalid frame received, invocation for device configuration has failed.");
                     }
@@ -358,7 +359,7 @@ namespace openPDCManager.Data
                 {
                     throw new ApplicationException("Connection timeout occured. Tried 10 times to connect to openPDC windows service.");
                 }
-            }			
+            }
             finally
             {
                 windowsServiceClient.Helper.Disconnect();
@@ -366,14 +367,14 @@ namespace openPDCManager.Data
             }
         }
 
-        static void Helper_ReceivedServiceUpdate(object sender, TVA.EventArgs<TVA.Services.ServiceProcess.UpdateType, string> e)
+        private static void Helper_ReceivedServiceUpdate(object sender, EventArgs<UpdateType, string> e)
         {
             if (e.Argument2.StartsWith("[PHASOR!SERVICES]") && !e.Argument2.Contains("*"))
-                s_responseMessage += e.Argument2.Replace("[PHASOR!SERVICES]", "").Replace("\r\n\r\n", "\r\n");			
+                s_responseMessage += e.Argument2.Replace("[PHASOR!SERVICES]", "").Replace("\r\n\r\n", "\r\n");
         }
 
-        private static void Helper_ReceivedServiceResponse(object sender, TVA.EventArgs<TVA.Services.ServiceProcess.ServiceResponse> e)
-        {			           
+        private static void Helper_ReceivedServiceResponse(object sender, EventArgs<ServiceResponse> e)
+        {
             List<object> attachments = e.Argument.Attachments;
 
             // Handle any special attachments coming in from service
@@ -397,7 +398,7 @@ namespace openPDCManager.Data
             }
         }
 
-        public static string SaveWizardConfigurationInfo(DataConnection connection, string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString, 
+        public static string SaveWizardConfigurationInfo(DataConnection connection, string nodeID, List<WizardDeviceInfo> wizardDeviceInfoList, string connectionString,
                 int? protocolID, int? companyID, int? historianID, int? interconnectionID, int? parentID, bool skipDisableRealTimeData)
         {
             bool createdConnection = false;
@@ -407,7 +408,7 @@ namespace openPDCManager.Data
                 {
                     connection = new DataConnection();
                     createdConnection = true;
-                }                
+                }
                 List<string> nondistinctAcronymList = new List<string>();
                 nondistinctAcronymList = (from item in wizardDeviceInfoList
                                           where item.Include == true
@@ -518,7 +519,7 @@ namespace openPDCManager.Data
                 }
                 return "Configuration Information Saved Successfully";
             }
-            finally 
+            finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
@@ -529,21 +530,21 @@ namespace openPDCManager.Data
         {
             return AddWithValue(command, name, value, ParameterDirection.Input);
         }
-        
+
         public static IDbDataParameter AddWithValue(IDbCommand command, string name, object value, ParameterDirection direction)
         {
             IDbDataParameter param = command.CreateParameter();
             param.ParameterName = name;
             param.Value = value;
-            param.Direction = direction;			    
+            param.Direction = direction;
             return param;
         }
 
         public static bool MasterNode(DataConnection connection, string nodeID)
-        {	
+        {
             bool isMaster = false;
             bool createdConnection = false;
-            
+
             try
             {
                 if (connection == null)
@@ -556,7 +557,7 @@ namespace openPDCManager.Data
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Select Master From Node Where ID = @id";
                 command.Parameters.Add(AddWithValue(command, "@id", nodeID));
-                isMaster = Convert.ToBoolean(command.ExecuteScalar());				
+                isMaster = Convert.ToBoolean(command.ExecuteScalar());
             }
             catch (Exception ex)
             {
@@ -574,17 +575,17 @@ namespace openPDCManager.Data
         public static Dictionary<string, string> GetTimeZones(bool isOptional)
         {
             Dictionary<string, string> timeZonesList = new Dictionary<string, string>();
-                if (isOptional)
-                    timeZonesList.Add("", "Select Timezone");
+            if (isOptional)
+                timeZonesList.Add("", "Select Timezone");
 
-                foreach (TimeZoneInfo tzi in TimeZoneInfo.GetSystemTimeZones())
-                {					
-                    if (!timeZonesList.ContainsKey(tzi.StandardName))
-                        timeZonesList.Add(tzi.StandardName, tzi.DisplayName);
+            foreach (TimeZoneInfo tzi in TimeZoneInfo.GetSystemTimeZones())
+            {
+                if (!timeZonesList.ContainsKey(tzi.StandardName))
+                    timeZonesList.Add(tzi.StandardName, tzi.DisplayName);
 
-                    System.Diagnostics.Debug.WriteLine(tzi.DisplayName);
-                }
-                return timeZonesList;
+                System.Diagnostics.Debug.WriteLine(tzi.DisplayName);
+            }
+            return timeZonesList;
         }
 
         public static Dictionary<string, int> GetVendorDeviceDistribution(DataConnection connection, string nodeID)
@@ -618,7 +619,7 @@ namespace openPDCManager.Data
                     {
                         deviceDistribution.Add(row["VendorName"].ToString(), Convert.ToInt32(row["DeviceCount"]));
                     }
-                }			
+                }
             }
             catch (Exception ex)
             {
@@ -706,16 +707,16 @@ namespace openPDCManager.Data
         }
 
         public static List<TimeSeriesDataPoint> GetTimeSeriesData(string timeSeriesDataUrl)
-        {				
+        {
             List<TimeSeriesDataPoint> timeSeriesData = new List<TimeSeriesDataPoint>();
             try
-            {				
-                HttpWebRequest request = WebRequest.Create(timeSeriesDataUrl) as HttpWebRequest;				
+            {
+                HttpWebRequest request = WebRequest.Create(timeSeriesDataUrl) as HttpWebRequest;
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
-                        StreamReader reader = new StreamReader(response.GetResponseStream());						
+                        StreamReader reader = new StreamReader(response.GetResponseStream());
                         XElement timeSeriesDataPoints = XElement.Parse(reader.ReadToEnd());
                         long index = 0;
 
@@ -752,7 +753,7 @@ namespace openPDCManager.Data
                     {
                         StreamReader reader = new StreamReader(response.GetResponseStream());
                         XElement timeSeriesDataPoints = XElement.Parse(reader.ReadToEnd());
-                        
+
                         foreach (XElement element in timeSeriesDataPoints.Element("TimeSeriesDataPoints").Elements("TimeSeriesDataPoint"))
                         {
                             DateTime sourceDateTime;
@@ -764,11 +765,11 @@ namespace openPDCManager.Data
                                 quality = element.Element("Quality").Value;
 
                             timeSeriesData.Add(new TimeSeriesDataPointDetail()
-                            {                        
-                                TimeStamp =  element.Element("Time").Value,
+                            {
+                                TimeStamp = element.Element("Time").Value,
                                 Value = Convert.ToDouble(element.Element("Value").Value),
                                 Quality = quality
-                            });                            
+                            });
                         }
                     }
                 }
@@ -781,7 +782,7 @@ namespace openPDCManager.Data
 
             return timeSeriesData;
         }
-                
+
         public static Dictionary<int, TimeTaggedMeasurement> GetTimeTaggedMeasurements(string timeSeriesDataUrl)
         {
             Dictionary<int, TimeTaggedMeasurement> timeTaggedMeasurementList = new Dictionary<int, TimeTaggedMeasurement>();
@@ -860,7 +861,7 @@ namespace openPDCManager.Data
                                     CurrentValue = string.Format(basicStatisticInfo.DisplayFormat, ConvertValueToType(element.Element("Value").Value, basicStatisticInfo.DataType)),
                                     Quality = quality
                                 });
-                            }                           
+                            }
                         }
                     }
                 }
@@ -888,7 +889,7 @@ namespace openPDCManager.Data
                         return Convert.ChangeType(value, dataType);
                 }
             }
-            
+
             return "".ConvertToType<object>(dataType);
         }
 
@@ -896,7 +897,7 @@ namespace openPDCManager.Data
         {
             KeyValuePair<int, int> minMaxPointIDs = new KeyValuePair<int, int>(1, 5000);
             bool createdConnection = false;
-            
+
             //DataConnection connection = new DataConnection();
             try
             {
@@ -932,7 +933,7 @@ namespace openPDCManager.Data
 
             return minMaxPointIDs;
         }
-      
+
         public static List<string> GetStopBits()
         {
             List<string> stopBitsList = new List<string>();
@@ -977,7 +978,7 @@ namespace openPDCManager.Data
                     returnValue = temp.ToString();
             }
             catch (Exception ex)
-            {                
+            {
                 LogException(connection, "GetRuntimeID", ex);
             }
             finally
@@ -989,7 +990,7 @@ namespace openPDCManager.Data
         }
 
         public static string SendCommandToWindowsService(WindowsServiceClient serviceClient, string command)
-        {               
+        {
             //WindowsServiceClient serviceClient = new WindowsServiceClient(connectionString);
             try
             {
@@ -1052,7 +1053,7 @@ namespace openPDCManager.Data
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
 
         public static Dictionary<int, string> GetCompanies(DataConnection connection, bool isOptional)
@@ -1087,12 +1088,12 @@ namespace openPDCManager.Data
                         companyList.Add(id, row["Name"].ToString());
                 }
                 return companyList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
 
         public static string SaveCompany(DataConnection connection, Company company, bool isNew)
@@ -1128,11 +1129,11 @@ namespace openPDCManager.Data
                     command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
                 }
                 else
-                {                    
+                {
                     command.Parameters.Add(AddWithValue(command, "@id", company.ID));
                 }
 
-                command.ExecuteNonQuery();				
+                command.ExecuteNonQuery();
                 return "Company Information Saved Successfully";
             }
             finally
@@ -1214,12 +1215,12 @@ namespace openPDCManager.Data
                                         PerformTimestampReasonabilityCheck = Convert.ToBoolean(item.Field<object>("PerformTimestampReasonabilityCheck"))
                                     }).ToList();
                 return outputStreamList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
 
         public static string SaveOutputStream(DataConnection connection, OutputStream outputStream, bool isNew)
@@ -1306,7 +1307,7 @@ namespace openPDCManager.Data
 
                 return "Output Stream Information Saved Successfully";
             }
-            
+
             finally
             {
                 if (createdConnection && connection != null)
@@ -1317,30 +1318,30 @@ namespace openPDCManager.Data
         public static string DeleteOutputStream(DataConnection connection, int outputStreamID)
         {
             bool createdConnection = false;
-             try
-             {
-                 if (connection == null)
-                 {
-                     connection = new DataConnection();
-                     createdConnection = true;
-                 }
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
 
-                 //Setup current users context for Delete trigger.
-                 SetCurrentUserContext(connection);
+                //Setup current users context for Delete trigger.
+                SetCurrentUserContext(connection);
 
-                 IDbCommand command = connection.Connection.CreateCommand();
-                 command.CommandType = CommandType.Text;
-                 command.CommandText = "Delete From OutputStream Where ID = @outputStreamID";
-                 command.Parameters.Add(AddWithValue(command, "@outputStreamID", outputStreamID));                 
-                 command.ExecuteNonQuery();
+                IDbCommand command = connection.Connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = "Delete From OutputStream Where ID = @outputStreamID";
+                command.Parameters.Add(AddWithValue(command, "@outputStreamID", outputStreamID));
+                command.ExecuteNonQuery();
 
-                 return "Output Stream Deleted Successfully";
-             }
-             finally
-             {
-                 if (createdConnection && connection != null)
+                return "Output Stream Deleted Successfully";
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
                     connection.Dispose();
-             }
+            }
         }
 
         public static OutputStream GetOutputStreamByAcronym(DataConnection connection, string acronym, string nodeID)
@@ -1349,8 +1350,8 @@ namespace openPDCManager.Data
             {
                 List<OutputStream> outputStreamList = new List<OutputStream>();
                 outputStreamList = (from item in GetOutputStreamList(connection, false, nodeID)
-                              where item.Acronym.ToUpper() == acronym.ToUpper()
-                              select item).ToList();
+                                    where item.Acronym.ToUpper() == acronym.ToUpper()
+                                    select item).ToList();
                 if (outputStreamList.Count > 0)
                     return outputStreamList[0];
                 else
@@ -1361,7 +1362,7 @@ namespace openPDCManager.Data
                 LogException(connection, "GetOutputStreamByAcronym", ex);
                 return null;
             }
-        }        
+        }
 
         public static string UpdateOutputStreamStatistics(DataConnection connection, string nodeID, string oldAcronym, string newAcronym, string oldName, string newName)
         {
@@ -1379,11 +1380,11 @@ namespace openPDCManager.Data
                 {
                     List<Measurement> measurementList = GetOutputStreamStatistics(connection, nodeID, oldAcronym);
                     foreach (Measurement measurement in measurementList)
-                    {                       
+                    {
                         measurement.SignalReference = measurement.SignalReference.Replace(oldAcronym, newAcronym);
                         measurement.PointTag = measurement.PointTag.Replace(oldAcronym, newAcronym);
                         measurement.Description = System.Text.RegularExpressions.Regex.Replace(measurement.Description, oldName, newName, System.Text.RegularExpressions.RegexOptions.IgnoreCase);      //measurement.Description.Replace(oldAcronym, newAcronym);
-                        SaveMeasurement(connection, measurement, false);                     
+                        SaveMeasurement(connection, measurement, false);
                     }
                 }
 
@@ -1433,12 +1434,12 @@ namespace openPDCManager.Data
                                                    HistorianAcronym = item.Field<string>("HistorianAcronym")
                                                }).ToList();
                 return outputStreamMeasurementList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
 
         public static string SaveOutputStreamMeasurement(DataConnection connection, OutputStreamMeasurement outputStreamMeasurement, bool isNew)
@@ -1477,13 +1478,13 @@ namespace openPDCManager.Data
                     command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
                 }
                 else
-                {                    
+                {
                     command.Parameters.Add(AddWithValue(command, "@id", outputStreamMeasurement.ID));
                 }
 
                 command.ExecuteNonQuery();
                 return "Output Stream Measurement Information Saved Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -1508,11 +1509,11 @@ namespace openPDCManager.Data
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Delete From OutputStreamMeasurement Where ID = @id";
-                command.Parameters.Add(AddWithValue(command, "@id", outputStreamMeasurementID));				
+                command.Parameters.Add(AddWithValue(command, "@id", outputStreamMeasurementID));
                 command.ExecuteNonQuery();
 
                 return "Output Stream Measurement Deleted Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -1569,12 +1570,12 @@ namespace openPDCManager.Data
                                               Virtual = Convert.ToBoolean(item.Field<object>("Virtual"))
                                           }).ToList();
                 return outputStreamDeviceList;
-            }		
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
 
         public static OutputStreamDevice GetOutputStreamDevice(DataConnection connection, int outputStreamID, string acronym)
@@ -1587,10 +1588,10 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
-                                
+
                 IDbCommand command = connection.Connection.CreateCommand();
-                command.CommandType = CommandType.Text;                
-                command.CommandText = "Select * From OutputStreamDeviceDetail Where AdapterID = @adapterID AND Acronym = @acronym";                
+                command.CommandType = CommandType.Text;
+                command.CommandText = "Select * From OutputStreamDeviceDetail Where AdapterID = @adapterID AND Acronym = @acronym";
                 command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));
                 command.Parameters.Add(AddWithValue(command, "@acronym", acronym));
 
@@ -1601,23 +1602,23 @@ namespace openPDCManager.Data
                     return null;
 
                 OutputStreamDevice outputStreamDevice = (from item in resultTable.AsEnumerable()
-                                          select new OutputStreamDevice()
-                                          {
-                                              NodeID = item.Field<object>("NodeID").ToString(),
-                                              AdapterID = item.Field<int>("AdapterID"),
-                                              ID = item.Field<int>("ID"),
-                                              IdCode = item.Field<int>("IDCode"),
-                                              Acronym = item.Field<string>("Acronym"),
-                                              Name = item.Field<string>("Name"),
-                                              BpaAcronym = item.Field<string>("BpaAcronym"),
-                                              LoadOrder = item.Field<int>("LoadOrder"),
-                                              Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-                                              PhasorDataFormat = item.Field<string>("PhasorDataFormat"),
-                                              FrequencyDataFormat = item.Field<string>("FrequencyDataFormat"),
-                                              AnalogDataFormat = item.Field<string>("AnalogDataFormat"),
-                                              CoordinateFormat = item.Field<string>("CoordinateFormat"),
-                                              Virtual = Convert.ToBoolean(item.Field<object>("Virtual"))
-                                          }).First();
+                                                         select new OutputStreamDevice()
+                                                         {
+                                                             NodeID = item.Field<object>("NodeID").ToString(),
+                                                             AdapterID = item.Field<int>("AdapterID"),
+                                                             ID = item.Field<int>("ID"),
+                                                             IdCode = item.Field<int>("IDCode"),
+                                                             Acronym = item.Field<string>("Acronym"),
+                                                             Name = item.Field<string>("Name"),
+                                                             BpaAcronym = item.Field<string>("BpaAcronym"),
+                                                             LoadOrder = item.Field<int>("LoadOrder"),
+                                                             Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+                                                             PhasorDataFormat = item.Field<string>("PhasorDataFormat"),
+                                                             FrequencyDataFormat = item.Field<string>("FrequencyDataFormat"),
+                                                             AnalogDataFormat = item.Field<string>("AnalogDataFormat"),
+                                                             CoordinateFormat = item.Field<string>("CoordinateFormat"),
+                                                             Virtual = Convert.ToBoolean(item.Field<object>("Virtual"))
+                                                         }).First();
                 return outputStreamDevice;
             }
             catch (Exception ex)
@@ -1629,14 +1630,14 @@ namespace openPDCManager.Data
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }            
+            }
         }
 
         public static string SaveOutputStreamDevice(DataConnection connection, OutputStreamDevice outputStreamDevice, bool isNew, string originalAcronym)
         {
             //DataConnection connection = new DataConnection();
             bool createdConnection = false;
-            
+
             try
             {
                 if (connection == null)
@@ -1725,7 +1726,7 @@ namespace openPDCManager.Data
                 }
 
                 return "Output Stream Device Information Saved Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -1765,7 +1766,7 @@ namespace openPDCManager.Data
                 }
 
                 return "Output Stream Device Deleted Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -1783,7 +1784,7 @@ namespace openPDCManager.Data
                 {
                     connection = new DataConnection();
                     createdConnection = true;
-                }                
+                }
                 foreach (KeyValuePair<int, string> deviceInfo in devicesToBeAdded)	//loop through all the devices that needs to be added.
                 {
                     Device device = new Device();
@@ -1881,7 +1882,7 @@ namespace openPDCManager.Data
 
                 return "Output Stream Device(s) Added Successfully";
             }
-            finally 
+            finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
@@ -1924,16 +1925,16 @@ namespace openPDCManager.Data
                                                     ScalingValue = Convert.ToInt32(item.Field<object>("ScalingValue")),
                                                     PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
                                                     PhaseType = item.Field<string>("Phase") == "+" ? "Positive Sequence" : item.Field<string>("Phase") == "-" ? "Negative Sequence" :
-                                                                item.Field<string>("Phase") == "0" ? "Zero Sequence" : item.Field<string>("Phase") == "A" ? "Phase A" : 
+                                                                item.Field<string>("Phase") == "0" ? "Zero Sequence" : item.Field<string>("Phase") == "A" ? "Phase A" :
                                                                 item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
                                                 }).ToList();
                 return outputStreamDevicePhasorList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
 
         public static string SaveOutputStreamDevicePhasor(DataConnection connection, OutputStreamDevicePhasor outputStreamDevicePhasor, bool isNew)
@@ -1980,7 +1981,7 @@ namespace openPDCManager.Data
 
                 command.ExecuteNonQuery();
                 return "Output Stream Device Phasor Information Saved Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -2054,12 +2055,12 @@ namespace openPDCManager.Data
                                                     TypeName = item.Field<int>("Type") == 0 ? "Single point-on-wave" : item.Field<int>("Type") == 1 ? "RMS of analog input" : "Peak of analog input"
                                                 }).ToList();
                 return outputStreamDeviceAnalogList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
 
         public static string SaveOutputStreamDeviceAnalog(DataConnection connection, OutputStreamDeviceAnalog outputStreamDeviceAnalog, bool isNew)
@@ -2102,10 +2103,10 @@ namespace openPDCManager.Data
                 {
                     command.Parameters.Add(AddWithValue(command, "@id", outputStreamDeviceAnalog.ID));
                 }
-                
+
                 command.ExecuteNonQuery();
                 return "Output Stream Device Analog Information Saved Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -2177,12 +2178,12 @@ namespace openPDCManager.Data
                                                      MaskValue = Convert.ToInt32(item.Field<object>("MaskValue"))
                                                  }).ToList();
                 return outputStreamDeviceDigitalList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
 
         public static string SaveOutputStreamDeviceDigital(DataConnection connection, OutputStreamDeviceDigital outputStreamDeviceDigital, bool isNew)
@@ -2227,7 +2228,7 @@ namespace openPDCManager.Data
 
                 command.ExecuteNonQuery();
                 return "Output Stream Device Digital Information Saved Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -2314,12 +2315,12 @@ namespace openPDCManager.Data
                                      NodeName = item.Field<string>("NodeName")
                                  }).ToList();
                 return historianList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
 
         public static Dictionary<int, string> GetHistorians(DataConnection connection, bool enabledOnly, bool isOptional, bool includeSTAT)
@@ -2362,14 +2363,14 @@ namespace openPDCManager.Data
                     }
                 }
                 return historianList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
-                
+
         public static string SaveHistorian(DataConnection connection, Historian historian, bool isNew)
         {
             bool createdConnection = false;
@@ -2414,7 +2415,7 @@ namespace openPDCManager.Data
 
                 command.ExecuteNonQuery();
                 return "Historian Information Saved Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -2423,13 +2424,13 @@ namespace openPDCManager.Data
         }
 
         public static Historian GetHistorianByAcronym(DataConnection connection, string acronym)
-        {           
+        {
             try
             {
                 List<Historian> historianList = new List<Historian>();
                 historianList = (from item in GetHistorianList(connection, string.Empty)
-                              where item.Acronym.ToUpper() == acronym.ToUpper()
-                              select item).ToList();
+                                 where item.Acronym.ToUpper() == acronym.ToUpper()
+                                 select item).ToList();
                 if (historianList.Count > 0)
                     return historianList[0];
                 else
@@ -2440,12 +2441,12 @@ namespace openPDCManager.Data
                 LogException(connection, "GetDeviceByAcronym", ex);
                 return null;
             }
-        }        
+        }
 
         #endregion
 
         #region " Manage Nodes Code"
-        
+
         public static List<Node> GetNodeList(DataConnection connection, bool enabledOnly)
         {
             bool createdConnection = false;
@@ -2489,14 +2490,14 @@ namespace openPDCManager.Data
                                 CompanyName = item.Field<string>("CompanyName")
                             }).ToList();
                 return nodeList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
-        
+
         public static Dictionary<string, string> GetNodes(DataConnection connection, bool enabledOnly, bool isOptional)
         {
             bool createdConnection = false;
@@ -2531,14 +2532,14 @@ namespace openPDCManager.Data
                         nodeList.Add(row["ID"].ToString(), row["Name"].ToString());
                 }
                 return nodeList;
-            }            
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
-        
+
         public static string SaveNode(DataConnection connection, Node node, bool isNew)
         {
             bool createdConnection = false;
@@ -2549,7 +2550,7 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
-				
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
 
@@ -2557,7 +2558,7 @@ namespace openPDCManager.Data
                     command.CommandText = "Insert Into Node (Name, CompanyID, Longitude, Latitude, Description, ImagePath, Master, LoadOrder, Enabled, TimeSeriesDataServiceUrl, RemoteStatusServiceUrl, RealTimeStatisticServiceUrl, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
                         "Values (@name, @companyID, @longitude, @latitude, @description, @image, @master, @loadOrder, @enabled, @timeSeriesDataServiceUrl, @remoteStatusServiceUrl, @realTimeStatisticServiceUrl, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
-                    command.CommandText = "Update Node Set Name = @name, CompanyID = @companyID, Longitude = @longitude, Latitude = @latitude, Description = @description, ImagePath = @image, " + 
+                    command.CommandText = "Update Node Set Name = @name, CompanyID = @companyID, Longitude = @longitude, Latitude = @latitude, Description = @description, ImagePath = @image, " +
                         "Master = @master, LoadOrder = @loadOrder, Enabled = @enabled, TimeSeriesDataServiceUrl = @timeSeriesDataServiceUrl, RemoteStatusServiceUrl = @remoteStatusServiceUrl, " +
                         "RealTimeStatisticServiceUrl = @realTimeStatisticServiceUrl, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn Where ID = @id";
 
@@ -2592,7 +2593,7 @@ namespace openPDCManager.Data
 
                 command.ExecuteNonQuery();
                 return "Node Information Saved Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -2664,9 +2665,9 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
-                                
+
                 IDbCommand command = connection.Connection.CreateCommand();
-                command.CommandType = CommandType.Text;               
+                command.CommandType = CommandType.Text;
                 command.CommandText = "Select * From NodeDetail WHERE ID = @id";
                 command.Parameters.Add(AddWithValue(command, "@id", id));
 
@@ -2677,23 +2678,23 @@ namespace openPDCManager.Data
                     return null;
 
                 Node node = (from item in resultTable.AsEnumerable()
-                            select new Node()
-                            {
-                                ID = item.Field<object>("ID").ToString(),
-                                Name = item.Field<string>("Name"),
-                                CompanyID = item.Field<int?>("CompanyID"),
-                                Longitude = item.Field<decimal?>("Longitude"),
-                                Latitude = item.Field<decimal?>("Latitude"),
-                                Description = item.Field<string>("Description"),
-                                Image = item.Field<string>("ImagePath"),
-                                Master = Convert.ToBoolean(item.Field<object>("Master")),
-                                LoadOrder = item.Field<int>("LoadOrder"),
-                                Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-                                TimeSeriesDataServiceUrl = item.Field<string>("TimeSeriesDataServiceUrl"),
-                                RemoteStatusServiceUrl = item.Field<string>("RemoteStatusServiceUrl"),
-                                RealTimeStatisticServiceUrl = item.Field<string>("RealTimeStatisticServiceUrl"),
-                                CompanyName = item.Field<string>("CompanyName")
-                            }).First();
+                             select new Node()
+                             {
+                                 ID = item.Field<object>("ID").ToString(),
+                                 Name = item.Field<string>("Name"),
+                                 CompanyID = item.Field<int?>("CompanyID"),
+                                 Longitude = item.Field<decimal?>("Longitude"),
+                                 Latitude = item.Field<decimal?>("Latitude"),
+                                 Description = item.Field<string>("Description"),
+                                 Image = item.Field<string>("ImagePath"),
+                                 Master = Convert.ToBoolean(item.Field<object>("Master")),
+                                 LoadOrder = item.Field<int>("LoadOrder"),
+                                 Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+                                 TimeSeriesDataServiceUrl = item.Field<string>("TimeSeriesDataServiceUrl"),
+                                 RemoteStatusServiceUrl = item.Field<string>("RemoteStatusServiceUrl"),
+                                 RealTimeStatisticServiceUrl = item.Field<string>("RealTimeStatisticServiceUrl"),
+                                 CompanyName = item.Field<string>("CompanyName")
+                             }).First();
                 return node;
             }
             catch (Exception ex)
@@ -2705,13 +2706,13 @@ namespace openPDCManager.Data
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }            
+            }
         }
 
         #endregion
-        
+
         #region " Manage Vendors Code"
-        
+
         public static List<Vendor> GetVendorList(DataConnection connection)
         {
             bool createdConnection = false;
@@ -2741,14 +2742,14 @@ namespace openPDCManager.Data
                                   URL = item.Field<string>("URL")
                               }).ToList();
                 return vendorList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
-        
+
         public static Dictionary<int, string> GetVendors(DataConnection connection, bool isOptional)
         {
             bool createdConnection = false;
@@ -2781,9 +2782,9 @@ namespace openPDCManager.Data
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
-        
+
         public static string SaveVendor(DataConnection connection, Vendor vendor, bool isNew)
         {
             bool createdConnection = false;
@@ -2826,11 +2827,11 @@ namespace openPDCManager.Data
                     connection.Dispose();
             }
         }
-        
+
         #endregion
 
         #region " Manage Vendor Devices Code"
-        
+
         public static List<VendorDevice> GetVendorDeviceList(DataConnection connection)
         {
             bool createdConnection = false;
@@ -2859,14 +2860,14 @@ namespace openPDCManager.Data
                                         VendorName = item.Field<string>("VendorName")
                                     }).ToList();
                 return vendorDeviceList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
-        
+
         public static string SaveVendorDevice(DataConnection connection, VendorDevice vendorDevice, bool isNew)
         {
             bool createdConnection = false;
@@ -2902,7 +2903,7 @@ namespace openPDCManager.Data
                 command.ExecuteNonQuery();
 
                 return "Vendor Device Information Saved Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -2937,14 +2938,14 @@ namespace openPDCManager.Data
                         vendorDeviceList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
                 }
                 return vendorDeviceList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
-        
+
         #endregion
 
         #region " Manage Device Code"
@@ -3021,22 +3022,22 @@ namespace openPDCManager.Data
                                   ParentAcronym = item.Field<string>("ParentAcronym")
                               }).ToList();
                 return deviceList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
 
         public static List<Device> GetDeviceListByParentID(DataConnection connection, int parentID)
         {
             List<Device> deviceList = new List<Device>();
             try
-            {				
+            {
                 deviceList = (from item in GetDeviceList(connection, string.Empty)
                               where item.ParentID == parentID
-                              select item).ToList();				
+                              select item).ToList();
             }
             catch (Exception ex)
             {
@@ -3064,12 +3065,12 @@ namespace openPDCManager.Data
                     command.CommandText = "Insert Into Device (NodeID, ParentID, Acronym, Name, IsConcentrator, CompanyID, HistorianID, AccessID, VendorDeviceID, ProtocolID, Longitude, Latitude, InterconnectionID, ConnectionString, TimeZone, FramesPerSecond, TimeAdjustmentTicks, " +
                         "DataLossInterval, ContactList, MeasuredLines, LoadOrder, Enabled, AllowedParsingExceptions, ParsingExceptionWindow, DelayedConnectionInterval, AllowUseOfCachedConfiguration, AutoStartDataParsingSequence, SkipDisableRealTimeData, MeasurementReportingInterval, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
                         "Values (@nodeID, @parentID, @acronym, @name, @isConcentrator, @companyID, @historianID, @accessID, @vendorDeviceID, @protocolID, @longitude, @latitude, @interconnectionID, " +
-                        "@connectionString, @timezone, @framesPerSecond, @timeAdjustmentTicks, @dataLossInterval, @contactList, @measuredLines, @loadOrder, @enabled, @allowedParsingExceptions, " + 
+                        "@connectionString, @timezone, @framesPerSecond, @timeAdjustmentTicks, @dataLossInterval, @contactList, @measuredLines, @loadOrder, @enabled, @allowedParsingExceptions, " +
                         "@parsingExceptionWindow, @delayedConnectionInterval, @allowUseOfCachedConfiguration, @autoStartDataParsingSequence, @skipDisableRealTimeData, @measurementReportingInterval, @updatedBy, @updatedOn, @createdBy, @createdOn)";
                 else
                     command.CommandText = "Update Device Set NodeID = @nodeID, ParentID = @parentID, Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, CompanyID = @companyID, HistorianID = @historianID, AccessID = @accessID, VendorDeviceID = @vendorDeviceID, " +
                         "ProtocolID = @protocolID, Longitude = @longitude, Latitude = @latitude, InterconnectionID = @interconnectionID, ConnectionString = @connectionString, TimeZone = @timezone, FramesPerSecond = @framesPerSecond, TimeAdjustmentTicks = @timeAdjustmentTicks, DataLossInterval = @dataLossInterval, " +
-                        "ContactList = @contactList, MeasuredLines = @measuredLines, LoadOrder = @loadOrder, Enabled = @enabled, AllowedParsingExceptions = @allowedParsingExceptions, ParsingExceptionWindow = @parsingExceptionWindow, DelayedConnectionInterval = @delayedConnectionInterval, " + 
+                        "ContactList = @contactList, MeasuredLines = @measuredLines, LoadOrder = @loadOrder, Enabled = @enabled, AllowedParsingExceptions = @allowedParsingExceptions, ParsingExceptionWindow = @parsingExceptionWindow, DelayedConnectionInterval = @delayedConnectionInterval, " +
                         "AllowUseOfCachedConfiguration = @allowUseOfCachedConfiguration, AutoStartDataParsingSequence = @autoStartDataParsingSequence, SkipDisableRealTimeData = @skipDisableRealTimeData, MeasurementReportingInterval = @measurementReportingInterval, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id";
 
                 command.CommandType = CommandType.Text;
@@ -3114,26 +3115,26 @@ namespace openPDCManager.Data
                     command.Parameters.Add(AddWithValue(command, "@id", device.ID));
 
                 command.ExecuteNonQuery();
-                
+
                 if (device.IsConcentrator)
                     return "Concentrator Device Information Saved Successfully";		//As we do not add measurements for PDC device or device which is concentrator.
 
                 //DataTable pmuSignalTypes = new DataTable();
                 if (s_pmuSignalTypes == null || s_pmuSignalTypes.Rows.Count == 0)
-                    s_pmuSignalTypes = GetPmuSignalTypes(connection); 
+                    s_pmuSignalTypes = GetPmuSignalTypes(connection);
 
-                Measurement measurement;				
+                Measurement measurement;
 
                 Device addedDevice = new Device();
                 addedDevice = GetDeviceByAcronym(connection, device.Acronym);
-                
+
                 //We will try again in a while if addedDevice is NULL. This is done because MS Access is very slow and was returning NULL.
                 if (addedDevice == null)
                 {
                     System.Threading.Thread.Sleep(500);
                     addedDevice = GetDeviceByAcronym(connection, device.Acronym);
                 }
-                            
+
                 foreach (DataRow row in s_pmuSignalTypes.Rows)	//This will only create or update PMU related measurements and not phasor related.
                 {
                     measurement = new Measurement();
@@ -3146,7 +3147,7 @@ namespace openPDCManager.Data
                     measurement.SignalReference = addedDevice.Acronym + "-" + row["Suffix"].ToString();
                     measurement.Adder = 0.0d;
                     measurement.Multiplier = 1.0d;
-                    measurement.Description = addedDevice.Name + " " + addedDevice.VendorDeviceName + " " + row["Name"].ToString();                    
+                    measurement.Description = addedDevice.Name + " " + addedDevice.VendorDeviceName + " " + row["Name"].ToString();
                     measurement.Enabled = true;
                     if (isNew)	//if it is a new device then measurements are new too. So don't worry about updating them.
                         SaveMeasurement(connection, measurement, true);
@@ -3259,14 +3260,14 @@ namespace openPDCManager.Data
                 //    LogException("SaveDevice: PhasorDataSourceValidation", ex);
                 //}
                 return "Device Information Saved Successfully";
-            }            
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
             }
         }
-                
+
         public static Dictionary<int, string> GetDevices(DataConnection connection, DeviceType deviceType, string nodeID, bool isOptional)
         {
             bool createdConnection = false;
@@ -3281,7 +3282,7 @@ namespace openPDCManager.Data
                 if (!string.IsNullOrEmpty(nodeID))
                 {
                     //throw new ArgumentException("Invalid value of NodeID.");
-                   
+
                     if (isOptional)
                         deviceList.Add(0, "Select Device");
 
@@ -3313,15 +3314,15 @@ namespace openPDCManager.Data
                     {
                         if (!deviceList.ContainsKey(Convert.ToInt32(row["ID"])))
                             deviceList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
-                    }                    
+                    }
                 }
                 return deviceList;
-            }            
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
 
         public static Device GetDeviceByDeviceID(DataConnection connection, int deviceID)
@@ -3421,7 +3422,7 @@ namespace openPDCManager.Data
         }
 
         public static Device GetDeviceByAcronym(DataConnection connection, string acronym)
-        {            
+        {
             bool createdConnection = false;
             //            DataConnection connection = new DataConnection();
             try
@@ -3431,61 +3432,61 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
-                                        
+
                 IDbCommand command = connection.Connection.CreateCommand();
-                command.CommandType = CommandType.Text;                    
+                command.CommandType = CommandType.Text;
                 command.CommandText = "Select * From DeviceDetail Where Acronym = @acronym";
                 command.Parameters.Add(AddWithValue(command, "@acronym", acronym.ToUpper()));
-                    
+
                 DataTable resultTable = new DataTable();
                 resultTable.Load(command.ExecuteReader());
                 if (resultTable.Rows.Count == 0)
                     return null;
-                    
-                Device device = (Device) (from item in resultTable.AsEnumerable()
-                                select new Device()
-                                {
-                                    NodeID = item.Field<object>("NodeID").ToString(),
-                                    ID = item.Field<int>("ID"),
-                                    ParentID = item.Field<int?>("ParentID"),
-                                    Acronym = item.Field<string>("Acronym"),
-                                    Name = item.Field<string>("Name"),
-                                    IsConcentrator = Convert.ToBoolean(item.Field<object>("IsConcentrator")),
-                                    CompanyID = item.Field<int?>("CompanyID"),
-                                    HistorianID = item.Field<int?>("HistorianID"),
-                                    AccessID = item.Field<int>("AccessID"),
-                                    VendorDeviceID = item.Field<int?>("VendorDeviceID"),
-                                    ProtocolID = item.Field<int?>("ProtocolID"),
-                                    Longitude = item.Field<decimal?>("Longitude"),
-                                    Latitude = item.Field<decimal?>("Latitude"),
-                                    InterconnectionID = item.Field<int?>("InterconnectionID"),
-                                    ConnectionString = item.Field<string>("ConnectionString"),
-                                    TimeZone = item.Field<string>("TimeZone"),
-                                    FramesPerSecond = Convert.ToInt32(item.Field<object>("FramesPerSecond") ?? 30),
-                                    TimeAdjustmentTicks = Convert.ToInt64(item.Field<object>("TimeAdjustmentTicks")),
-                                    DataLossInterval = item.Field<double>("DataLossInterval"),
-                                    ContactList = item.Field<string>("ContactList"),
-                                    MeasuredLines = item.Field<int?>("MeasuredLines"),
-                                    LoadOrder = item.Field<int>("LoadOrder"),
-                                    Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-                                    CreatedOn = item.Field<DateTime>("CreatedOn"),
-                                    AllowedParsingExceptions = Convert.ToInt32(item.Field<object>("AllowedParsingExceptions")),
-                                    ParsingExceptionWindow = item.Field<double>("ParsingExceptionWindow"),
-                                    DelayedConnectionInterval = item.Field<double>("DelayedConnectionInterval"),
-                                    AllowUseOfCachedConfiguration = Convert.ToBoolean(item.Field<object>("AllowUseOfCachedConfiguration")),
-                                    AutoStartDataParsingSequence = Convert.ToBoolean(item.Field<object>("AutoStartDataParsingSequence")),
-                                    SkipDisableRealTimeData = Convert.ToBoolean(item.Field<object>("SkipDisableRealTimeData")),
-                                    MeasurementReportingInterval = Convert.ToInt32(item.Field<object>("MeasurementReportingInterval")),
-                                    CompanyName = item.Field<string>("CompanyName"),
-                                    CompanyAcronym = item.Field<string>("CompanyAcronym"),
-                                    HistorianAcronym = item.Field<string>("HistorianAcronym"),
-                                    VendorDeviceName = item.Field<string>("VendorDeviceName"),
-                                    VendorAcronym = item.Field<string>("VendorAcronym"),
-                                    ProtocolName = item.Field<string>("ProtocolName"),
-                                    InterconnectionName = item.Field<string>("InterconnectionName"),
-                                    NodeName = item.Field<string>("NodeName"),
-                                    ParentAcronym = item.Field<string>("ParentAcronym")
-                                }).First();
+
+                Device device = (Device)(from item in resultTable.AsEnumerable()
+                                         select new Device()
+                                         {
+                                             NodeID = item.Field<object>("NodeID").ToString(),
+                                             ID = item.Field<int>("ID"),
+                                             ParentID = item.Field<int?>("ParentID"),
+                                             Acronym = item.Field<string>("Acronym"),
+                                             Name = item.Field<string>("Name"),
+                                             IsConcentrator = Convert.ToBoolean(item.Field<object>("IsConcentrator")),
+                                             CompanyID = item.Field<int?>("CompanyID"),
+                                             HistorianID = item.Field<int?>("HistorianID"),
+                                             AccessID = item.Field<int>("AccessID"),
+                                             VendorDeviceID = item.Field<int?>("VendorDeviceID"),
+                                             ProtocolID = item.Field<int?>("ProtocolID"),
+                                             Longitude = item.Field<decimal?>("Longitude"),
+                                             Latitude = item.Field<decimal?>("Latitude"),
+                                             InterconnectionID = item.Field<int?>("InterconnectionID"),
+                                             ConnectionString = item.Field<string>("ConnectionString"),
+                                             TimeZone = item.Field<string>("TimeZone"),
+                                             FramesPerSecond = Convert.ToInt32(item.Field<object>("FramesPerSecond") ?? 30),
+                                             TimeAdjustmentTicks = Convert.ToInt64(item.Field<object>("TimeAdjustmentTicks")),
+                                             DataLossInterval = item.Field<double>("DataLossInterval"),
+                                             ContactList = item.Field<string>("ContactList"),
+                                             MeasuredLines = item.Field<int?>("MeasuredLines"),
+                                             LoadOrder = item.Field<int>("LoadOrder"),
+                                             Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+                                             CreatedOn = item.Field<DateTime>("CreatedOn"),
+                                             AllowedParsingExceptions = Convert.ToInt32(item.Field<object>("AllowedParsingExceptions")),
+                                             ParsingExceptionWindow = item.Field<double>("ParsingExceptionWindow"),
+                                             DelayedConnectionInterval = item.Field<double>("DelayedConnectionInterval"),
+                                             AllowUseOfCachedConfiguration = Convert.ToBoolean(item.Field<object>("AllowUseOfCachedConfiguration")),
+                                             AutoStartDataParsingSequence = Convert.ToBoolean(item.Field<object>("AutoStartDataParsingSequence")),
+                                             SkipDisableRealTimeData = Convert.ToBoolean(item.Field<object>("SkipDisableRealTimeData")),
+                                             MeasurementReportingInterval = Convert.ToInt32(item.Field<object>("MeasurementReportingInterval")),
+                                             CompanyName = item.Field<string>("CompanyName"),
+                                             CompanyAcronym = item.Field<string>("CompanyAcronym"),
+                                             HistorianAcronym = item.Field<string>("HistorianAcronym"),
+                                             VendorDeviceName = item.Field<string>("VendorDeviceName"),
+                                             VendorAcronym = item.Field<string>("VendorAcronym"),
+                                             ProtocolName = item.Field<string>("ProtocolName"),
+                                             InterconnectionName = item.Field<string>("InterconnectionName"),
+                                             NodeName = item.Field<string>("NodeName"),
+                                             ParentAcronym = item.Field<string>("ParentAcronym")
+                                         }).First();
                 return device;
             }
             catch (Exception ex)
@@ -3513,7 +3514,7 @@ namespace openPDCManager.Data
                 Dictionary<int, string> deviceList = new Dictionary<int, string>();
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Select ID, Acronym From Device Where NodeID = @nodeID AND IsConcentrator = @isConcentrator AND Acronym NOT IN (Select Acronym From OutputStreamDevice Where AdapterID = @adapterID)";				
+                command.CommandText = "Select ID, Acronym From Device Where NodeID = @nodeID AND IsConcentrator = @isConcentrator AND Acronym NOT IN (Select Acronym From OutputStreamDevice Where AdapterID = @adapterID)";
                 command.Parameters.Add(AddWithValue(command, "@adapterID", outputStreamID));	//this has to be the first paramter for MS Access to succeed because it evaluates subquery first.
                 //command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
                 if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
@@ -3530,12 +3531,12 @@ namespace openPDCManager.Data
                         deviceList.Add(Convert.ToInt32(row["ID"]), row["Acronym"].ToString());
                 }
                 return deviceList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
 
         public static Device GetConcentratorDevice(DataConnection connection, int deviceID)
@@ -3598,7 +3599,7 @@ namespace openPDCManager.Data
                 //return command.ExecuteScalar().ToString().RemoveNull().Trim();
 
                 return "Device Deleted Successfully";
-            }            
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -3625,13 +3626,13 @@ namespace openPDCManager.Data
                     {
                         //if (measurement.SignalAcronym == "STAT")
                         //{
-                            if (measurement.SignalReference.StartsWith(oldAcronym + "!") || measurement.SignalReference.StartsWith(oldAcronym + "-"))
-                            {                                
-                                measurement.SignalReference = measurement.SignalReference.Replace(oldAcronym, newAcronym);
-                                measurement.PointTag = measurement.PointTag.Replace(oldAcronym, newAcronym);
-                                measurement.Description = System.Text.RegularExpressions.Regex.Replace(measurement.Description, oldDeviceName, newDeviceName, System.Text.RegularExpressions.RegexOptions.IgnoreCase);      //measurement.Description.Replace(oldAcronym, newAcronym);
-                                SaveMeasurement(connection, measurement, false);
-                            }
+                        if (measurement.SignalReference.StartsWith(oldAcronym + "!") || measurement.SignalReference.StartsWith(oldAcronym + "-"))
+                        {
+                            measurement.SignalReference = measurement.SignalReference.Replace(oldAcronym, newAcronym);
+                            measurement.PointTag = measurement.PointTag.Replace(oldAcronym, newAcronym);
+                            measurement.Description = System.Text.RegularExpressions.Regex.Replace(measurement.Description, oldDeviceName, newDeviceName, System.Text.RegularExpressions.RegexOptions.IgnoreCase);      //measurement.Description.Replace(oldAcronym, newAcronym);
+                            SaveMeasurement(connection, measurement, false);
+                        }
                         //}
                     }
                 }
@@ -3682,12 +3683,12 @@ namespace openPDCManager.Data
                                     item.Field<string>("Phase") == "0" ? "Zero Sequence" : item.Field<string>("Phase") == "A" ? "Phase A" : item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
                               }).ToList();
                 return phasorList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }						
+            }
         }
 
         public static Dictionary<int, string> GetPhasors(DataConnection connection, int deviceID, bool isOptional)
@@ -3717,7 +3718,7 @@ namespace openPDCManager.Data
                         phasorList.Add(Convert.ToInt32(row["ID"]), row["Label"].ToString());
                 }
                 return phasorList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -3764,17 +3765,17 @@ namespace openPDCManager.Data
                 else
                     command.Parameters.Add(AddWithValue(command, "@id", phasor.ID));
 
-                command.ExecuteNonQuery();							
+                command.ExecuteNonQuery();
 
                 Device device = new Device();
                 device = GetDeviceByDeviceID(connection, phasor.DeviceID);
 
                 Measurement measurement;
 
-                
+
                 if (s_voltagePhasorSignalTypes == null || s_voltagePhasorSignalTypes.Rows.Count == 0)
                     s_voltagePhasorSignalTypes = GetPhasorSignalTypes(connection, "V");
-                
+
                 if (s_currentPhasorSignalTypes == null || s_currentPhasorSignalTypes.Rows.Count == 0)
                     s_currentPhasorSignalTypes = GetPhasorSignalTypes(connection, "I");
 
@@ -3783,7 +3784,7 @@ namespace openPDCManager.Data
                 else
                     s_phasorSignalTypes = s_currentPhasorSignalTypes;
 
-                Phasor addedPhasor = new Phasor();				
+                Phasor addedPhasor = new Phasor();
                 //addedPhasor = GetPhasorByLabel(phasor.DeviceID, phasor.Label);
                 addedPhasor = GetPhasorBySourceIndex(connection, phasor.DeviceID, phasor.SourceIndex);
 
@@ -3829,7 +3830,7 @@ namespace openPDCManager.Data
                 }
 
                 return "Phasor Information Saved Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -3847,7 +3848,7 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
-                
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Select * From PhasorDetail Where DeviceID = @deviceID and Label = @label";
@@ -3898,7 +3899,7 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
-                
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Select * From PhasorDetail Where DeviceID = @deviceID and ID = @id";
@@ -3956,7 +3957,7 @@ namespace openPDCManager.Data
         }
 
         static Phasor GetPhasorBySourceIndex(DataConnection connection, int deviceID, int sourceIndex)
-        {            
+        {
             bool createdConnection = false;
             try
             {
@@ -3965,7 +3966,7 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
-                
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Select * From PhasorDetail Where DeviceID = @deviceID and SourceIndex = @sourceIndex";
@@ -3976,22 +3977,22 @@ namespace openPDCManager.Data
                 if (resultTable.Rows.Count == 0)
                     return null;
 
-                Phasor phasor = (Phasor) (from item in resultTable.AsEnumerable()
-                              select new Phasor()
-                              {
-                                  ID = item.Field<int>("ID"),
-                                  DeviceID = item.Field<int>("DeviceID"),
-                                  Label = item.Field<string>("Label"),
-                                  Type = item.Field<string>("Type"),
-                                  Phase = item.Field<string>("Phase"),
-                                  DestinationPhasorID = item.Field<int?>("DestinationPhasorID"),
-                                  SourceIndex = item.Field<int>("SourceIndex"),
-                                  DestinationPhasorLabel = item.Field<string>("DestinationPhasorLabel"),
-                                  DeviceAcronym = item.Field<string>("DeviceAcronym"),
-                                  PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
-                                  PhaseType = item.Field<string>("Phase") == "+" ? "Positive Sequence" : item.Field<string>("Phase") == "-" ? "Negative Sequence" :
-                                    item.Field<string>("Phase") == "0" ? "Zero Sequence" : item.Field<string>("Phase") == "A" ? "Phase A" : item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
-                              }).First();
+                Phasor phasor = (Phasor)(from item in resultTable.AsEnumerable()
+                                         select new Phasor()
+                                         {
+                                             ID = item.Field<int>("ID"),
+                                             DeviceID = item.Field<int>("DeviceID"),
+                                             Label = item.Field<string>("Label"),
+                                             Type = item.Field<string>("Type"),
+                                             Phase = item.Field<string>("Phase"),
+                                             DestinationPhasorID = item.Field<int?>("DestinationPhasorID"),
+                                             SourceIndex = item.Field<int>("SourceIndex"),
+                                             DestinationPhasorLabel = item.Field<string>("DestinationPhasorLabel"),
+                                             DeviceAcronym = item.Field<string>("DeviceAcronym"),
+                                             PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
+                                             PhaseType = item.Field<string>("Phase") == "+" ? "Positive Sequence" : item.Field<string>("Phase") == "-" ? "Negative Sequence" :
+                                               item.Field<string>("Phase") == "0" ? "Zero Sequence" : item.Field<string>("Phase") == "A" ? "Phase A" : item.Field<string>("Phase") == "B" ? "Phase B" : "Phase C"
+                                         }).First();
                 return phasor;
             }
             catch (Exception ex)
@@ -4037,7 +4038,7 @@ namespace openPDCManager.Data
                     else
                         command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
                 }
-                
+
                 measurementList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
                                    select new Measurement()
                                    {
@@ -4055,7 +4056,7 @@ namespace openPDCManager.Data
                                        Description = item.Field<string>("Description"),
                                        Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                        HistorianAcronym = item.Field<string>("HistorianAcronym"),
-                                       DeviceAcronym = item.Field<object>("DeviceAcronym")==null ? string.Empty : item.Field<string>("DeviceAcronym"),
+                                       DeviceAcronym = item.Field<object>("DeviceAcronym") == null ? string.Empty : item.Field<string>("DeviceAcronym"),
                                        SignalName = item.Field<string>("SignalName"),
                                        SignalAcronym = item.Field<string>("SignalAcronym"),
                                        SignalSuffix = item.Field<string>("SignalTypeSuffix"),
@@ -4063,12 +4064,12 @@ namespace openPDCManager.Data
                                        ID = item.Field<string>("ID")
                                    }).ToList();
                 return measurementList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }						
+            }
         }
 
         public static List<Measurement> GetMeasurementsByDevice(DataConnection connection, int deviceID)
@@ -4111,14 +4112,14 @@ namespace openPDCManager.Data
                                        PhasorLabel = item.Field<string>("PhasorLabel")
                                    }).ToList();
                 return measurementList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
-        
+
         public static string SaveMeasurement(DataConnection connection, Measurement measurement, bool isNew)
         {
             //DataConnection connection = new DataConnection();
@@ -4168,7 +4169,7 @@ namespace openPDCManager.Data
 
                 command.ExecuteNonQuery();
                 return "Measurement Information Saved Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -4225,9 +4226,9 @@ namespace openPDCManager.Data
                                        SignalAcronym = item.Field<string>("SignalAcronym"),
                                        SignalSuffix = item.Field<string>("SignalTypeSuffix"),
                                        PhasorLabel = item.Field<string>("PhasorLabel")
-                                   }).ToList();				
+                                   }).ToList();
                 return measurementList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -4248,7 +4249,7 @@ namespace openPDCManager.Data
 
                 IDbCommand commnad = connection.Connection.CreateCommand();
                 commnad.CommandType = CommandType.Text;
-                commnad.CommandText = "Select * From MeasurementDetail Where SignalTypeSuffix = @signalTypeSuffix";                
+                commnad.CommandText = "Select * From MeasurementDetail Where SignalTypeSuffix = @signalTypeSuffix";
                 commnad.Parameters.Add(AddWithValue(commnad, "@signalTypeSuffix", signalSuffix));
 
                 if (deviceID != null)
@@ -4302,8 +4303,8 @@ namespace openPDCManager.Data
                 if (createdConnection && connection != null)
                     connection.Dispose();
             }
-        }		
-        
+        }
+
         private static Measurement GetMeasurementInfoBySignalReference(DataConnection connection, int? deviceID, string signalReference, int? phasorSourceIndex)
         {
             bool createdConnection = false;
@@ -4314,7 +4315,7 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
-                
+
                 IDbCommand commnad = connection.Connection.CreateCommand();
                 commnad.CommandType = CommandType.Text;
                 commnad.CommandText = "Select * From MeasurementDetail Where SignalReference = @signalReference";
@@ -4335,29 +4336,29 @@ namespace openPDCManager.Data
                 if (resultTable.Rows.Count == 0)
                     return null;
 
-                Measurement measurement = (Measurement) (from item in resultTable.AsEnumerable()
-                                   select new Measurement()
-                                   {
-                                       SignalID = item.Field<object>("SignalID").ToString(),
-                                       HistorianID = item.Field<int?>("HistorianID"),
-                                       PointID = item.Field<int>("PointID"),
-                                       DeviceID = item.Field<int>("DeviceID"),
-                                       PointTag = item.Field<string>("PointTag"),
-                                       AlternateTag = item.Field<string>("AlternateTag"),
-                                       SignalTypeID = item.Field<int>("SignalTypeID"),
-                                       PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
-                                       SignalReference = item.Field<string>("SignalReference"),
-                                       Adder = item.Field<double>("Adder"),
-                                       Multiplier = item.Field<double>("Multiplier"),
-                                       Description = item.Field<string>("Description"),
-                                       Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-                                       HistorianAcronym = item.Field<string>("HistorianAcronym"),
-                                       DeviceAcronym = item.Field<object>("DeviceAcronym") == null ? string.Empty : item.Field<string>("DeviceAcronym"),
-                                       SignalName = item.Field<string>("SignalName"),
-                                       SignalAcronym = item.Field<string>("SignalAcronym"),
-                                       SignalSuffix = item.Field<string>("SignalTypeSuffix"),
-                                       PhasorLabel = item.Field<string>("PhasorLabel")
-                                   }).First();
+                Measurement measurement = (Measurement)(from item in resultTable.AsEnumerable()
+                                                        select new Measurement()
+                                                        {
+                                                            SignalID = item.Field<object>("SignalID").ToString(),
+                                                            HistorianID = item.Field<int?>("HistorianID"),
+                                                            PointID = item.Field<int>("PointID"),
+                                                            DeviceID = item.Field<int>("DeviceID"),
+                                                            PointTag = item.Field<string>("PointTag"),
+                                                            AlternateTag = item.Field<string>("AlternateTag"),
+                                                            SignalTypeID = item.Field<int>("SignalTypeID"),
+                                                            PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+                                                            SignalReference = item.Field<string>("SignalReference"),
+                                                            Adder = item.Field<double>("Adder"),
+                                                            Multiplier = item.Field<double>("Multiplier"),
+                                                            Description = item.Field<string>("Description"),
+                                                            Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+                                                            HistorianAcronym = item.Field<string>("HistorianAcronym"),
+                                                            DeviceAcronym = item.Field<object>("DeviceAcronym") == null ? string.Empty : item.Field<string>("DeviceAcronym"),
+                                                            SignalName = item.Field<string>("SignalName"),
+                                                            SignalAcronym = item.Field<string>("SignalAcronym"),
+                                                            SignalSuffix = item.Field<string>("SignalTypeSuffix"),
+                                                            PhasorLabel = item.Field<string>("PhasorLabel")
+                                                        }).First();
                 return measurement;
             }
             catch (Exception ex)
@@ -4413,12 +4414,12 @@ namespace openPDCManager.Data
                                        PhasorLabel = item.Field<string>("PhasorLabel")
                                    }).ToList();
                 return measurementList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
 
         public static List<Measurement> GetOutputStreamStatistics(DataConnection connection, string nodeID, string outputStreamAcronym)
@@ -4429,8 +4430,8 @@ namespace openPDCManager.Data
                 measurementList = (from item in GetMeasurementList(connection, nodeID)
                                    where item.SignalReference.StartsWith(outputStreamAcronym + "!OS")
                                    select item).ToList();
-                
-               return measurementList;                
+
+                return measurementList;
             }
             catch (Exception ex)
             {
@@ -4449,7 +4450,7 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
-                
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
 
@@ -4464,7 +4465,7 @@ namespace openPDCManager.Data
                     else
                         command.Parameters.Add(AddWithValue(command, "@nodeID", nodeID));
                 }
-                                
+
                 command.Parameters.Add(AddWithValue(command, "@signalID", signalID));
 
                 DataTable resultTable = GetResultSet(command).Tables[0];
@@ -4472,30 +4473,30 @@ namespace openPDCManager.Data
                 if (resultTable.Rows.Count == 0)
                     return null;
 
-                Measurement measurement = (Measurement) (from item in resultTable.AsEnumerable()
-                                   select new Measurement()
-                                   {
-                                       SignalID = item.Field<object>("SignalID").ToString(),
-                                       HistorianID = item.Field<int?>("HistorianID"),
-                                       PointID = item.Field<int>("PointID"),
-                                       DeviceID = item.Field<int>("DeviceID"),
-                                       PointTag = item.Field<string>("PointTag"),
-                                       AlternateTag = item.Field<string>("AlternateTag"),
-                                       SignalTypeID = item.Field<int>("SignalTypeID"),
-                                       PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
-                                       SignalReference = item.Field<string>("SignalReference"),
-                                       Adder = item.Field<double>("Adder"),
-                                       Multiplier = item.Field<double>("Multiplier"),
-                                       Description = item.Field<string>("Description"),
-                                       Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-                                       HistorianAcronym = item.Field<string>("HistorianAcronym"),
-                                       DeviceAcronym = item.Field<string>("DeviceAcronym"),
-                                       FramesPerSecond = Convert.ToInt32(item.Field<object>("FramesPerSecond") ?? 30),
-                                       SignalName = item.Field<string>("SignalName"),
-                                       SignalAcronym = item.Field<string>("SignalAcronym"),
-                                       SignalSuffix = item.Field<string>("SignalTypeSuffix"),
-                                       PhasorLabel = item.Field<string>("PhasorLabel")
-                                   }).First();
+                Measurement measurement = (Measurement)(from item in resultTable.AsEnumerable()
+                                                        select new Measurement()
+                                                        {
+                                                            SignalID = item.Field<object>("SignalID").ToString(),
+                                                            HistorianID = item.Field<int?>("HistorianID"),
+                                                            PointID = item.Field<int>("PointID"),
+                                                            DeviceID = item.Field<int>("DeviceID"),
+                                                            PointTag = item.Field<string>("PointTag"),
+                                                            AlternateTag = item.Field<string>("AlternateTag"),
+                                                            SignalTypeID = item.Field<int>("SignalTypeID"),
+                                                            PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+                                                            SignalReference = item.Field<string>("SignalReference"),
+                                                            Adder = item.Field<double>("Adder"),
+                                                            Multiplier = item.Field<double>("Multiplier"),
+                                                            Description = item.Field<string>("Description"),
+                                                            Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+                                                            HistorianAcronym = item.Field<string>("HistorianAcronym"),
+                                                            DeviceAcronym = item.Field<string>("DeviceAcronym"),
+                                                            FramesPerSecond = Convert.ToInt32(item.Field<object>("FramesPerSecond") ?? 30),
+                                                            SignalName = item.Field<string>("SignalName"),
+                                                            SignalAcronym = item.Field<string>("SignalAcronym"),
+                                                            SignalSuffix = item.Field<string>("SignalTypeSuffix"),
+                                                            PhasorLabel = item.Field<string>("PhasorLabel")
+                                                        }).First();
                 return measurement;
             }
             catch (Exception ex)
@@ -4507,7 +4508,7 @@ namespace openPDCManager.Data
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }            
+            }
         }
 
         #endregion
@@ -4549,9 +4550,9 @@ namespace openPDCManager.Data
                                        CompanyName = item.Field<string>("CompanyName"),
                                        VendorDeviceName = item.Field<string>("VendorDeviceName"),
                                        InterconnectionName = item.Field<string>("InterconnectionName")
-                                   }).ToList();				
+                                   }).ToList();
                 return otherDeviceList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -4602,7 +4603,7 @@ namespace openPDCManager.Data
 
                 command.ExecuteScalar();
                 return "Other Device Information Saved Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -4620,7 +4621,7 @@ namespace openPDCManager.Data
                     connection = new DataConnection();
                     createdConnection = true;
                 }
-                
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Select * From OtherDeviceDetail WHERE ID = @id";
@@ -4633,24 +4634,24 @@ namespace openPDCManager.Data
                     return null;
 
                 OtherDevice otherDevice = (from item in resultTable.AsEnumerable()
-                                   select new OtherDevice()
-                                   {
-                                       ID = item.Field<int>("ID"),
-                                       Acronym = item.Field<string>("Acronym"),
-                                       Name = item.Field<string>("Name"),
-                                       IsConcentrator = Convert.ToBoolean(item.Field<object>("IsConcentrator")),
-                                       CompanyID = item.Field<int?>("CompanyID"),
-                                       VendorDeviceID = item.Field<int?>("VendorDeviceID"),
-                                       Longitude = item.Field<decimal?>("Longitude"),
-                                       Latitude = item.Field<decimal?>("Latitude"),
-                                       InterconnectionID = item.Field<int?>("InterconnectionID"),
-                                       Planned = Convert.ToBoolean(item.Field<object>("Planned")),
-                                       Desired = Convert.ToBoolean(item.Field<object>("Desired")),
-                                       InProgress = Convert.ToBoolean(item.Field<object>("InProgress")),
-                                       CompanyName = item.Field<string>("CompanyName"),
-                                       VendorDeviceName = item.Field<string>("VendorDeviceName"),
-                                       InterconnectionName = item.Field<string>("InterconnectionName")
-                                   }).First();
+                                           select new OtherDevice()
+                                           {
+                                               ID = item.Field<int>("ID"),
+                                               Acronym = item.Field<string>("Acronym"),
+                                               Name = item.Field<string>("Name"),
+                                               IsConcentrator = Convert.ToBoolean(item.Field<object>("IsConcentrator")),
+                                               CompanyID = item.Field<int?>("CompanyID"),
+                                               VendorDeviceID = item.Field<int?>("VendorDeviceID"),
+                                               Longitude = item.Field<decimal?>("Longitude"),
+                                               Latitude = item.Field<decimal?>("Latitude"),
+                                               InterconnectionID = item.Field<int?>("InterconnectionID"),
+                                               Planned = Convert.ToBoolean(item.Field<object>("Planned")),
+                                               Desired = Convert.ToBoolean(item.Field<object>("Desired")),
+                                               InProgress = Convert.ToBoolean(item.Field<object>("InProgress")),
+                                               CompanyName = item.Field<string>("CompanyName"),
+                                               VendorDeviceName = item.Field<string>("VendorDeviceName"),
+                                               InterconnectionName = item.Field<string>("InterconnectionName")
+                                           }).First();
                 return otherDevice;
             }
             catch (Exception ex)
@@ -4694,9 +4695,9 @@ namespace openPDCManager.Data
                 {
                     if (!interconnectionList.ContainsKey(Convert.ToInt32(row["ID"])))
                         interconnectionList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
-                }				
+                }
                 return interconnectionList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -4732,10 +4733,10 @@ namespace openPDCManager.Data
                 {
                     if (!protocolList.ContainsKey(Convert.ToInt32(row["ID"])))
                         protocolList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
-                }								
+                }
                 return protocolList;
             }
-            
+
             finally
             {
                 if (createdConnection && connection != null)
@@ -4758,7 +4759,7 @@ namespace openPDCManager.Data
                 command.CommandText = "Select ID From Protocol Where Acronym = @acronym";
                 command.Parameters.Add(AddWithValue(command, "@acronym", acronym));
                 DataTable resultTable = new DataTable();
-                resultTable.Load(command.ExecuteReader());				
+                resultTable.Load(command.ExecuteReader());
                 if (resultTable.Rows.Count > 0)
                     return Convert.ToInt32(resultTable.Rows[0]["ID"]);
                 else
@@ -4838,9 +4839,9 @@ namespace openPDCManager.Data
                     if (!signalTypeList.ContainsKey(Convert.ToInt32(row["ID"])))
                         signalTypeList.Add(Convert.ToInt32(row["ID"]), row["Name"].ToString());
                 }
-                                
+
                 return signalTypeList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -4878,7 +4879,7 @@ namespace openPDCManager.Data
         }
 
         static DataTable GetPhasorSignalTypes(DataConnection connection, string phasorType)
-        {            
+        {
             DataTable resultTable = new DataTable();
             bool createdConnection = false;
             try
@@ -4894,8 +4895,8 @@ namespace openPDCManager.Data
                     command.CommandText = "Select * From SignalType Where Source = 'Phasor' AND Acronym LIKE 'V%'";
                 else
                     command.CommandText = "Select * From SignalType Where Source = 'Phasor' AND Acronym LIKE 'I%'";
-                
-                resultTable.Load(command.ExecuteReader());								
+
+                resultTable.Load(command.ExecuteReader());
             }
             catch (Exception ex)
             {
@@ -4997,9 +4998,9 @@ namespace openPDCManager.Data
                                                  NodeName = item.Field<string>("NodeName"),
                                                  PerformTimestampReasonabilityCheck = Convert.ToBoolean(item.Field<object>("PerformTimestampReasonabilityCheck"))
                                              }).ToList();
-                                
+
                 return calculatedMeasurementList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -5066,7 +5067,7 @@ namespace openPDCManager.Data
                 command.ExecuteNonQuery();
 
                 return "Calculated Measurement Information Saved Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -5127,14 +5128,14 @@ namespace openPDCManager.Data
                                    NodeName = item.Field<string>("NodeName"),
                                    adapterType = adapterType
                                }).ToList();
-                
+
                 return adapterList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }			
+            }
         }
 
         public static string SaveAdapter(DataConnection connection, Adapter adapter, bool isNew)
@@ -5188,7 +5189,7 @@ namespace openPDCManager.Data
                 command.ExecuteNonQuery();
 
                 return "Adapter Information Saved Successfully";
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -5225,7 +5226,7 @@ namespace openPDCManager.Data
 
                 DataSet resultSet = new DataSet();
                 resultSet.Tables.Add(rootNodesTable);
-                                
+
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Select * From IaonTreeView Where NodeID = @nodeID";
@@ -5258,9 +5259,9 @@ namespace openPDCManager.Data
                                                        ConnectionString = obj.Field<string>("ConnectionString")
                                                    }).ToList()
                                 }).ToList();
-                
+
                 return iaonTreeList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -5286,8 +5287,8 @@ namespace openPDCManager.Data
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
 
-                if (mapType == MapType.Active)				
-                    command.CommandText = "Select * From MapData Where NodeID = @nodeID and DeviceType = 'Device'";									
+                if (mapType == MapType.Active)
+                    command.CommandText = "Select * From MapData Where NodeID = @nodeID and DeviceType = 'Device'";
                 else
                     command.CommandText = "Select * From MapData Where NodeID = @nodeID UNION ALL Select * From MapData Where NodeID IS NULL";
 
@@ -5333,9 +5334,9 @@ namespace openPDCManager.Data
                                        Planned = Convert.ToBoolean(item.Field<object>("Planned")),
                                        Desired = Convert.ToBoolean(item.Field<object>("Desired"))
                                    }).ToList();
-                                
+
                 return mapDataList;
-            }			
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -5343,8 +5344,8 @@ namespace openPDCManager.Data
             }
         }
 
-        #endregion			
-    
+        #endregion
+
         #region " Current Device Measurements Code"
 
         public static ObservableCollection<DeviceMeasurementData> GetDeviceMeasurementData(DataConnection connection, string nodeID)
@@ -5364,7 +5365,7 @@ namespace openPDCManager.Data
                 DataTable resultTable;
 
                 IDbCommand commandPdc = connection.Connection.CreateCommand();
-                commandPdc.CommandType = CommandType.Text;				
+                commandPdc.CommandType = CommandType.Text;
                 //Get PDCs list
                 commandPdc.CommandText = "Select ID, Acronym, Name, CompanyName, Enabled From DeviceDetail Where NodeID = @nodeID AND IsConcentrator = @isConcentrator AND Enabled = @enabled Order By Acronym";
                 if (commandPdc.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
@@ -5435,10 +5436,10 @@ namespace openPDCManager.Data
 
                 //Instead of adding row few lines above, we will perform this check and then add it.
                 if (resultTable.Select("DeviceID IS NULL").Count() > 0)
-                { 
-                    resultSet.Tables["DeviceTable"].Rows.Add(row); 
+                {
+                    resultSet.Tables["DeviceTable"].Rows.Add(row);
                 }
-                
+
                 deviceMeasurementDataList = (from pdc in resultSet.Tables["PdcTable"].AsEnumerable()
                                              select new DeviceMeasurementData()
                                              {
@@ -5450,44 +5451,44 @@ namespace openPDCManager.Data
                                                  Enabled = Convert.ToBoolean(pdc.Field<object>("Enabled")),
                                                  IsExpanded = false,
                                                  DeviceList = new ObservableCollection<DeviceInfo>((from device in resultSet.Tables["DeviceTable"].AsEnumerable()
-                                                               where device.Field<string>("ParentAcronym") == pdc.Field<string>("Acronym")
-                                                               select new DeviceInfo()
-                                                               {
-                                                                   ID = device.Field<int?>("ID"),
-                                                                   Acronym = device.Field<string>("Acronym"),
-                                                                   Name = device.Field<string>("Name"),
-                                                                   CompanyName = device.Field<string>("CompanyName"),
-                                                                   ProtocolName = device.Field<string>("ProtocolName"),
-                                                                   VendorDeviceName = device.Field<string>("VendorDeviceName"),
-                                                                   ParentAcronym = string.IsNullOrEmpty(device.Field<string>("ParentAcronym")) ? "DIRECT CONNECTED" : device.Field<string>("ParentAcronym"),
-                                                                   IsExpanded = false,
-                                                                   StatusColor = device.Field<int?>("ID") == null ? "Transparent" : "Gray",
-                                                                   Enabled = Convert.ToBoolean(device.Field<object>("Enabled")),
-                                                                   MeasurementList = new ObservableCollection<MeasurementInfo>((from measurement in resultSet.Tables["MeasurementTable"].AsEnumerable()
-                                                                                      where measurement.Field<int?>("DeviceID") == device.Field<int?>("ID")
-                                                                                      select new MeasurementInfo()
-                                                                                      {
-                                                                                          DeviceID = measurement.Field<int?>("DeviceID"),
-                                                                                          SignalID = measurement.Field<object>("SignalID").ToString(),
-                                                                                          PointID = measurement.Field<int>("PointID"),
-                                                                                          PointTag = measurement.Field<string>("PointTag"),
-                                                                                          SignalReference = measurement.Field<string>("SignalReference"),
-                                                                                          SignalAcronym = measurement.Field<string>("SignalAcronym"),
-                                                                                          Description = measurement.Field<string>("description"),
-                                                                                          SignalName = measurement.Field<string>("SignalName"),
-                                                                                          EngineeringUnits = measurement.Field<string>("EngineeringUnits"),
-                                                                                          HistorianAcronym = measurement.Field<string>("HistorianAcronym"),
-                                                                                          IsExpanded = false,
-                                                                                          CurrentTimeTag = "N/A",
-                                                                                          CurrentValue = "--",
-                                                                                          CurrentQuality = "N/A"
-                                                                                      }).ToList())
-                                                               }).ToList())
+                                                                                                    where device.Field<string>("ParentAcronym") == pdc.Field<string>("Acronym")
+                                                                                                    select new DeviceInfo()
+                                                                                                    {
+                                                                                                        ID = device.Field<int?>("ID"),
+                                                                                                        Acronym = device.Field<string>("Acronym"),
+                                                                                                        Name = device.Field<string>("Name"),
+                                                                                                        CompanyName = device.Field<string>("CompanyName"),
+                                                                                                        ProtocolName = device.Field<string>("ProtocolName"),
+                                                                                                        VendorDeviceName = device.Field<string>("VendorDeviceName"),
+                                                                                                        ParentAcronym = string.IsNullOrEmpty(device.Field<string>("ParentAcronym")) ? "DIRECT CONNECTED" : device.Field<string>("ParentAcronym"),
+                                                                                                        IsExpanded = false,
+                                                                                                        StatusColor = device.Field<int?>("ID") == null ? "Transparent" : "Gray",
+                                                                                                        Enabled = Convert.ToBoolean(device.Field<object>("Enabled")),
+                                                                                                        MeasurementList = new ObservableCollection<MeasurementInfo>((from measurement in resultSet.Tables["MeasurementTable"].AsEnumerable()
+                                                                                                                                                                     where measurement.Field<int?>("DeviceID") == device.Field<int?>("ID")
+                                                                                                                                                                     select new MeasurementInfo()
+                                                                                                                                                                     {
+                                                                                                                                                                         DeviceID = measurement.Field<int?>("DeviceID"),
+                                                                                                                                                                         SignalID = measurement.Field<object>("SignalID").ToString(),
+                                                                                                                                                                         PointID = measurement.Field<int>("PointID"),
+                                                                                                                                                                         PointTag = measurement.Field<string>("PointTag"),
+                                                                                                                                                                         SignalReference = measurement.Field<string>("SignalReference"),
+                                                                                                                                                                         SignalAcronym = measurement.Field<string>("SignalAcronym"),
+                                                                                                                                                                         Description = measurement.Field<string>("description"),
+                                                                                                                                                                         SignalName = measurement.Field<string>("SignalName"),
+                                                                                                                                                                         EngineeringUnits = measurement.Field<string>("EngineeringUnits"),
+                                                                                                                                                                         HistorianAcronym = measurement.Field<string>("HistorianAcronym"),
+                                                                                                                                                                         IsExpanded = false,
+                                                                                                                                                                         CurrentTimeTag = "N/A",
+                                                                                                                                                                         CurrentValue = "--",
+                                                                                                                                                                         CurrentQuality = "N/A"
+                                                                                                                                                                     }).ToList())
+                                                                                                    }).ToList())
                                              }).ToList();
 
                 return new ObservableCollection<DeviceMeasurementData>(deviceMeasurementDataList);
             }
-            
+
             finally
             {
                 if (createdConnection && connection != null)
@@ -5512,7 +5513,7 @@ namespace openPDCManager.Data
                 ObservableCollection<StatisticMeasurementData> staticMeasurementDataList = new ObservableCollection<StatisticMeasurementData>();
                 ObservableCollection<StreamInfo> inputStreamInfoList = new ObservableCollection<StreamInfo>();
                 ObservableCollection<StreamInfo> outputStreamInfoList = new ObservableCollection<StreamInfo>();
-               
+
                 DataSet resultSet = new DataSet();
                 resultSet.EnforceConstraints = false;
                 DataTable resultTable;
@@ -5520,7 +5521,7 @@ namespace openPDCManager.Data
                 //****************************************************************************
                 //First get all the PDC devices and directly connected devices. These are our input stream devices.                
                 IDbCommand commandPdc = connection.Connection.CreateCommand();
-                commandPdc.CommandType = CommandType.Text;                
+                commandPdc.CommandType = CommandType.Text;
                 commandPdc.CommandText = "Select ID, Acronym, Name From DeviceDetail Where NodeID = @nodeID AND (IsConcentrator = @isConcentrator OR ParentAcronym = @parentAcronym) Order By Acronym";
                 if (commandPdc.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                     commandPdc.Parameters.Add(AddWithValue(commandPdc, "@nodeID", "{" + nodeID + "}"));
@@ -5575,7 +5576,7 @@ namespace openPDCManager.Data
                     commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", "{" + nodeID + "}"));
                 else
                     commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", nodeID));
-                
+
                 resultTable = new DataTable("StatisticMeasurements");
                 resultSet.Tables.Add(resultTable);
                 resultTable.Load(commandMeasurements.ExecuteReader());
@@ -5602,81 +5603,93 @@ namespace openPDCManager.Data
                                          Statistics = (from statistic in resultSet.Tables["StatisticDefinitions"].AsEnumerable()
                                                        where statistic.Field<string>("Source") == measurement.Field<string>("MeasurementSource") &&
                                                           statistic.Field<int>("SignalIndex") == Convert.ToInt32((measurement.Field<string>("SignalReference")).Substring((measurement.Field<string>("SignalReference")).LastIndexOf("-ST") + 3))
-                                                          select new BasicStatisticInfo()
-                                                          {
-                                                              Source = statistic.Field<string>("Source"),
-                                                              Name = statistic.Field<string>("Name"),
-                                                              Description = statistic.Field<string>("Description"),
-                                                              Quality = "N/A",
-                                                              TimeTag = "N/A",
-                                                              Value = "--",
-                                                              DataType = statistic.Field<object>("DataType") == null ? string.Empty : statistic.Field<string>("DataType"),
-                                                              DisplayFormat = statistic.Field<object>("DisplayFormat") == null ? string.Empty : statistic.Field<string>("DisplayFormat"),
-                                                              IsConnectedState = Convert.ToBoolean(statistic.Field<object>("IsConnectedState")),
-                                                              LoadOrder = Convert.ToInt32(statistic.Field<object>("LoadOrder"))
-                                                          }
+                                                       select new BasicStatisticInfo()
+                                                       {
+                                                           Source = statistic.Field<string>("Source"),
+                                                           Name = statistic.Field<string>("Name"),
+                                                           Description = statistic.Field<string>("Description"),
+                                                           Quality = "N/A",
+                                                           TimeTag = "N/A",
+                                                           Value = "--",
+                                                           DataType = statistic.Field<object>("DataType") == null ? string.Empty : statistic.Field<string>("DataType"),
+                                                           DisplayFormat = statistic.Field<object>("DisplayFormat") == null ? string.Empty : statistic.Field<string>("DisplayFormat"),
+                                                           IsConnectedState = Convert.ToBoolean(statistic.Field<object>("IsConnectedState")),
+                                                           LoadOrder = Convert.ToInt32(statistic.Field<object>("LoadOrder"))
+                                                       }
                                                        ).First()
                                      }).ToList();
-                                
+
                 //****************************************************************************
 
                 inputStreamInfoList = new ObservableCollection<StreamInfo>((from inputDevice in resultSet.Tables["InputStreamDevices"].AsEnumerable()
-                                            select new StreamInfo()
-                                            {
-                                                ID = Convert.ToInt32(inputDevice.Field<object>("ID")),
-                                                Acronym = inputDevice.Field<string>("Acronym"),
-                                                Name = inputDevice.Field<string>("Name"),
-                                                StatusColor = "Gray",
-                                                StatisticList = new ObservableCollection<DetailStatisticInfo>( (from statistic in statisticInfoList
-                                                                 where statistic.DeviceID == Convert.ToInt32(inputDevice.Field<object>("ID"))
-                                                                 select statistic).ToList().OrderBy(o => o.Statistics.Source).ThenBy(o => o.Statistics.LoadOrder).ToList()),
-                                                DeviceStatisticList = new ObservableCollection<DeviceStatistic>( (from pdcDevice in resultSet.Tables["PdcDevices"].AsEnumerable()
-                                                              where Convert.ToInt32(pdcDevice.Field<object>("ParentID")) == Convert.ToInt32(inputDevice.Field<object>("ID"))
-                                                              select new DeviceStatistic()
-                                                              {
-                                                                    ID = Convert.ToInt32(pdcDevice.Field<object>("ID")),
-                                                                    Acronym = pdcDevice.Field<string>("Acronym"),
-                                                                    Name = pdcDevice.Field<string>("Name"),
-                                                                    StatisticList = new ObservableCollection<DetailStatisticInfo>((from statistic in statisticInfoList
-                                                                                     where statistic.DeviceID == Convert.ToInt32(pdcDevice.Field<object>("ID"))
-                                                                                    select statistic 
-                                                                                    ).ToList().OrderBy( o => o.Statistics.LoadOrder).ToList())
-                                                              }).ToList())
-                                            }).ToList());
+                                                                            select new StreamInfo()
+                                                                            {
+                                                                                ID = Convert.ToInt32(inputDevice.Field<object>("ID")),
+                                                                                Acronym = inputDevice.Field<string>("Acronym"),
+                                                                                Name = inputDevice.Field<string>("Name"),
+                                                                                StatusColor = "Gray",
+                                                                                StatisticList = new ObservableCollection<DetailStatisticInfo>((from statistic in statisticInfoList
+                                                                                                                                               where statistic.DeviceID == Convert.ToInt32(inputDevice.Field<object>("ID"))
+                                                                                                                                               select statistic).ToList().OrderBy(o => o.Statistics.Source).ThenBy(o => o.Statistics.LoadOrder).ToList()),
+                                                                                DeviceStatisticList = new ObservableCollection<DeviceStatistic>((from pdcDevice in resultSet.Tables["PdcDevices"].AsEnumerable()
+                                                                                                                                                 where Convert.ToInt32(pdcDevice.Field<object>("ParentID")) == Convert.ToInt32(inputDevice.Field<object>("ID"))
+                                                                                                                                                 select new DeviceStatistic()
+                                                                                                                                                 {
+                                                                                                                                                     ID = Convert.ToInt32(pdcDevice.Field<object>("ID")),
+                                                                                                                                                     Acronym = pdcDevice.Field<string>("Acronym"),
+                                                                                                                                                     Name = pdcDevice.Field<string>("Name"),
+                                                                                                                                                     StatisticList = new ObservableCollection<DetailStatisticInfo>((from statistic in statisticInfoList
+                                                                                                                                                                                                                    where statistic.DeviceID == Convert.ToInt32(pdcDevice.Field<object>("ID"))
+                                                                                                                                                                                                                    select statistic
+                                                                                                                                                                     ).ToList().OrderBy(o => o.Statistics.LoadOrder).ToList())
+                                                                                                                                                 }).ToList())
+                                                                            }).ToList());
 
                 foreach (StreamInfo inputStreamDevice in inputStreamInfoList)
                 {
-                    inputStreamDevice.DeviceStatisticList.Insert(0, new DeviceStatistic() { ID = 0, Acronym = "Run-Time Statistics", Name = "", StatisticList = new ObservableCollection<DetailStatisticInfo>(inputStreamDevice.StatisticList) });
+                    inputStreamDevice.DeviceStatisticList.Insert(0, new DeviceStatistic()
+                    {
+                        ID = 0, Acronym = "Run-Time Statistics", Name = "", StatisticList = new ObservableCollection<DetailStatisticInfo>(inputStreamDevice.StatisticList)
+                    });
                     inputStreamDevice.StatisticList = null;  //since this is moved to dummy device above "Run-Time Statistics", we don't need it anymore.
                 }
-                
-                staticMeasurementDataList.Add(new StatisticMeasurementData() { SourceType = "Input Streams", SourceStreamInfoList = new ObservableCollection<StreamInfo>(inputStreamInfoList) });
+
+                staticMeasurementDataList.Add(new StatisticMeasurementData()
+                {
+                    SourceType = "Input Streams", SourceStreamInfoList = new ObservableCollection<StreamInfo>(inputStreamInfoList)
+                });
                 //****************************************************************************
 
                 //****************************************************************************
                 //Now create a list for output steams.
-                outputStreamInfoList = new ObservableCollection<StreamInfo>( (from outputDevice in resultSet.Tables["OutputStreams"].AsEnumerable()
-                                        select new StreamInfo()
-                                        {
-                                            ID = Convert.ToInt32(outputDevice.Field<object>("ID")),
-                                            Acronym = outputDevice.Field<string>("Acronym"),
-                                            Name = outputDevice.Field<string>("Name"),
-                                            StatusColor = "Gray",
-                                            StatisticList = new ObservableCollection<DetailStatisticInfo>((from statistic in statisticInfoList
-                                                             where statistic.SignalReference.StartsWith(outputDevice.Field<string>("Acronym") + "!")
-                                                             select statistic).ToList().OrderBy(o => o.Statistics.Source).ThenBy(o => o.Statistics.LoadOrder).ToList()),
-                                            DeviceStatisticList = new ObservableCollection<DeviceStatistic>()
-                                        }).ToList());
+                outputStreamInfoList = new ObservableCollection<StreamInfo>((from outputDevice in resultSet.Tables["OutputStreams"].AsEnumerable()
+                                                                             select new StreamInfo()
+                                                                             {
+                                                                                 ID = Convert.ToInt32(outputDevice.Field<object>("ID")),
+                                                                                 Acronym = outputDevice.Field<string>("Acronym"),
+                                                                                 Name = outputDevice.Field<string>("Name"),
+                                                                                 StatusColor = "Gray",
+                                                                                 StatisticList = new ObservableCollection<DetailStatisticInfo>((from statistic in statisticInfoList
+                                                                                                                                                where statistic.SignalReference.StartsWith(outputDevice.Field<string>("Acronym") + "!")
+                                                                                                                                                select statistic).ToList().OrderBy(o => o.Statistics.Source).ThenBy(o => o.Statistics.LoadOrder).ToList()),
+                                                                                 DeviceStatisticList = new ObservableCollection<DeviceStatistic>()
+                                                                             }).ToList());
 
                 foreach (StreamInfo outputStreamDevice in outputStreamInfoList)
                 {
-                    outputStreamDevice.DeviceStatisticList.Insert(0, new DeviceStatistic() { ID = 0, Acronym = "Run-Time Statistics", Name = "", StatisticList = new ObservableCollection<DetailStatisticInfo>(outputStreamDevice.StatisticList) });
+                    outputStreamDevice.DeviceStatisticList.Insert(0, new DeviceStatistic()
+                    {
+                        ID = 0, Acronym = "Run-Time Statistics", Name = "", StatisticList = new ObservableCollection<DetailStatisticInfo>(outputStreamDevice.StatisticList)
+                    });
                     outputStreamDevice.StatisticList = null;
                 }
-                staticMeasurementDataList.Add(new StatisticMeasurementData() { SourceType = "Output Streams", SourceStreamInfoList = outputStreamInfoList });
-                
-                return staticMeasurementDataList;                
-            }			
+                staticMeasurementDataList.Add(new StatisticMeasurementData()
+                {
+                    SourceType = "Output Streams", SourceStreamInfoList = outputStreamInfoList
+                });
+
+                return staticMeasurementDataList;
+            }
             finally
             {
                 if (createdConnection && connection != null)
@@ -5686,78 +5699,78 @@ namespace openPDCManager.Data
 
         public static Dictionary<int, BasicStatisticInfo> GetBasicStatisticInfoList(DataConnection connection, string nodeID)
         {
-             Dictionary<int, BasicStatisticInfo> basicStatisticInfoList = new Dictionary<int, BasicStatisticInfo>();
+            Dictionary<int, BasicStatisticInfo> basicStatisticInfoList = new Dictionary<int, BasicStatisticInfo>();
 
-             bool createdConnection = false;
-             try
-             {
-                 if (connection == null)
-                 {
-                     connection = new DataConnection();
-                     createdConnection = true;
-                 }
-                 DataSet resultSet = new DataSet();
-                 resultSet.EnforceConstraints = false;
-                 DataTable resultTable;
+            bool createdConnection = false;
+            try
+            {
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+                DataSet resultSet = new DataSet();
+                resultSet.EnforceConstraints = false;
+                DataTable resultTable;
 
-                 IDbCommand commandMeasurements = connection.Connection.CreateCommand();
-                 commandMeasurements.CommandType = CommandType.Text;
-                 commandMeasurements.CommandText = "Select DeviceID, PointID, PointTag, SignalReference, MeasurementSource From StatisticMeasurement Where NodeID = @nodeID Order By MeasurementSource, SignalReference";
-                 if (commandMeasurements.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
-                     commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", "{" + nodeID + "}"));
-                 else
-                     commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", nodeID));
+                IDbCommand commandMeasurements = connection.Connection.CreateCommand();
+                commandMeasurements.CommandType = CommandType.Text;
+                commandMeasurements.CommandText = "Select DeviceID, PointID, PointTag, SignalReference, MeasurementSource From StatisticMeasurement Where NodeID = @nodeID Order By MeasurementSource, SignalReference";
+                if (commandMeasurements.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                    commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", "{" + nodeID + "}"));
+                else
+                    commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", nodeID));
 
-                 resultTable = new DataTable("StatisticMeasurements");
-                 resultSet.Tables.Add(resultTable);
-                 resultTable.Load(commandMeasurements.ExecuteReader());
-                 //****************************************************************************
+                resultTable = new DataTable("StatisticMeasurements");
+                resultSet.Tables.Add(resultTable);
+                resultTable.Load(commandMeasurements.ExecuteReader());
+                //****************************************************************************
 
-                 //****************************************************************************
-                 //Get Statistic definitions.
-                 IDbCommand commandStatistics = connection.Connection.CreateCommand();
-                 commandStatistics.CommandType = CommandType.Text;
-                 commandStatistics.CommandText = "Select Source, SignalIndex, Name, Description, DataType, DisplayFormat, IsConnectedState, LoadOrder From Statistic Order By Source, SignalIndex";
-                 resultTable = new DataTable("StatisticDefinitions");
-                 resultSet.Tables.Add(resultTable);
-                 resultTable.Load(commandStatistics.ExecuteReader());
-                 //****************************************************************************
-                               
-                 var tempCollection = (from measurement in resultSet.Tables["StatisticMeasurements"].AsEnumerable()
-                                           select new KeyValuePair<int, BasicStatisticInfo>(Convert.ToInt32(measurement.Field<object>("PointID")),
-                                                (from statistic in resultSet.Tables["StatisticDefinitions"].AsEnumerable()
-                                                         where statistic.Field<string>("Source") == measurement.Field<string>("MeasurementSource") &&
-                                                         statistic.Field<int>("SignalIndex") == Convert.ToInt32((measurement.Field<string>("SignalReference")).Substring((measurement.Field<string>("SignalReference")).LastIndexOf("-ST") + 3))
-                                                         select new BasicStatisticInfo()
-                                                         {
-                                                             Source = statistic.Field<string>("Source"),
-                                                             Name = statistic.Field<string>("Name"),
-                                                             Description = statistic.Field<string>("Description"),
-                                                             Quality = "N/A",
-                                                             TimeTag = "N/A",
-                                                             Value = "--",
-                                                             DataType = statistic.Field<object>("DataType") == null ? string.Empty : statistic.Field<string>("DataType"),
-                                                             DisplayFormat = statistic.Field<object>("DisplayFormat") == null ? string.Empty : statistic.Field<string>("DisplayFormat"),
-                                                             IsConnectedState = Convert.ToBoolean(statistic.Field<object>("IsConnectedState")),
-                                                             LoadOrder = Convert.ToInt32(statistic.Field<object>("LoadOrder"))
-                                                         }
-                                                        ).First()
-                                           )).Distinct();
+                //****************************************************************************
+                //Get Statistic definitions.
+                IDbCommand commandStatistics = connection.Connection.CreateCommand();
+                commandStatistics.CommandType = CommandType.Text;
+                commandStatistics.CommandText = "Select Source, SignalIndex, Name, Description, DataType, DisplayFormat, IsConnectedState, LoadOrder From Statistic Order By Source, SignalIndex";
+                resultTable = new DataTable("StatisticDefinitions");
+                resultSet.Tables.Add(resultTable);
+                resultTable.Load(commandStatistics.ExecuteReader());
+                //****************************************************************************
 
-                 foreach (var item in tempCollection)
-                 {
-                     basicStatisticInfoList.Add(item.Key, item.Value);
-                 }
-             }
-             catch (Exception ex)
-             {
-                 LogException(connection, "GetBasicStatisticInfoList", ex);                 
-             }
-             finally
-             {
-                 if (createdConnection && connection != null)
+                var tempCollection = (from measurement in resultSet.Tables["StatisticMeasurements"].AsEnumerable()
+                                      select new KeyValuePair<int, BasicStatisticInfo>(Convert.ToInt32(measurement.Field<object>("PointID")),
+                                           (from statistic in resultSet.Tables["StatisticDefinitions"].AsEnumerable()
+                                            where statistic.Field<string>("Source") == measurement.Field<string>("MeasurementSource") &&
+                                            statistic.Field<int>("SignalIndex") == Convert.ToInt32((measurement.Field<string>("SignalReference")).Substring((measurement.Field<string>("SignalReference")).LastIndexOf("-ST") + 3))
+                                            select new BasicStatisticInfo()
+                                            {
+                                                Source = statistic.Field<string>("Source"),
+                                                Name = statistic.Field<string>("Name"),
+                                                Description = statistic.Field<string>("Description"),
+                                                Quality = "N/A",
+                                                TimeTag = "N/A",
+                                                Value = "--",
+                                                DataType = statistic.Field<object>("DataType") == null ? string.Empty : statistic.Field<string>("DataType"),
+                                                DisplayFormat = statistic.Field<object>("DisplayFormat") == null ? string.Empty : statistic.Field<string>("DisplayFormat"),
+                                                IsConnectedState = Convert.ToBoolean(statistic.Field<object>("IsConnectedState")),
+                                                LoadOrder = Convert.ToInt32(statistic.Field<object>("LoadOrder"))
+                                            }
+                                                   ).First()
+                                      )).Distinct();
+
+                foreach (var item in tempCollection)
+                {
+                    basicStatisticInfoList.Add(item.Key, item.Value);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException(connection, "GetBasicStatisticInfoList", ex);
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
                     connection.Dispose();
-             }
+            }
 
             return basicStatisticInfoList;
         }
@@ -5781,7 +5794,7 @@ namespace openPDCManager.Data
                 commandMeasurements.CommandType = CommandType.Text;
                 commandMeasurements.CommandText = "Select DeviceID, PointID, PointTag, SignalReference, MeasurementSource From StatisticMeasurement Where DeviceID = @deviceID Order By MeasurementSource, SignalReference";
                 commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@deviceID", deviceID));
-                
+
                 resultTable = new DataTable("StatisticMeasurements");
                 resultSet.Tables.Add(resultTable);
                 resultTable.Load(commandMeasurements.ExecuteReader());
@@ -5869,7 +5882,7 @@ namespace openPDCManager.Data
             {
                 LogException(connection, "GetDeviceIDsWithStatusPointIDs", ex);
             }
-            finally 
+            finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
@@ -5980,8 +5993,8 @@ namespace openPDCManager.Data
                 command.Parameters.Add(AddWithValue(command, "@updatedOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
 
                 if (isNew)
-                {                    
-                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));                    
+                {
+                    command.Parameters.Add(AddWithValue(command, "@createdBy", s_currentUser));
                     command.Parameters.Add(AddWithValue(command, "@createdOn", command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB") ? DateTime.UtcNow.Date : DateTime.UtcNow));
                 }
                 else
@@ -6058,7 +6071,7 @@ namespace openPDCManager.Data
 
                 DataTable groupsTable = new DataTable();
                 groupsTable.Load(command.ExecuteReader());
-                
+
                 groups = (from groupitem in groupsTable.AsEnumerable()
                           select new Group()
                           {
@@ -6068,7 +6081,7 @@ namespace openPDCManager.Data
                               CreatedOn = Convert.ToDateTime(groupitem.Field<object>("CreatedOn")),
                               CreatedBy = groupitem.Field<string>("CreatedBy"),
                               UpdatedOn = Convert.ToDateTime(groupitem.Field<object>("UpdatedOn")),
-                              UpdatedBy = groupitem.Field<string>("UpdatedBy")        
+                              UpdatedBy = groupitem.Field<string>("UpdatedBy")
                           }).ToList();
 
                 return groups;
@@ -6167,7 +6180,7 @@ namespace openPDCManager.Data
 
                 IDbCommand command;
                 foreach (string userID in userIDsToBeDeleted)
-                {                    
+                {
                     command = connection.Connection.CreateCommand();
                     command.CommandType = CommandType.Text;
                     command.CommandText = "Delete From SecurityGroupUserAccount Where SecurityGroupID = @groupID AND UserAccountID = @userID";
@@ -6231,7 +6244,7 @@ namespace openPDCManager.Data
         }
 
         public static ObservableCollection<User> GetPossibleGroupUsers(DataConnection connection, string groupID)
-        {            
+        {
             bool createdConnection = false;
             try
             {
@@ -6253,14 +6266,14 @@ namespace openPDCManager.Data
                 DataTable resultTable = new DataTable();
                 resultTable.Load(command.ExecuteReader());
                 users = new ObservableCollection<User>((from item in resultTable.AsEnumerable()
-                         select new User()
-                         {
-                             ID = item.Field<object>("ID").ToString(),
-                             Name = item.Field<string>("Name"),                             
-                             FirstName = item.Field<object>("FirstName") == null ? string.Empty : item.Field<string>("FirstName"),
-                             LastName = item.Field<object>("LastName") == null ? string.Empty : item.Field<string>("LastName"),                             
-                             Email = item.Field<object>("Email") == null ? string.Empty : item.Field<string>("Email")                             
-                         }));
+                                                        select new User()
+                                                        {
+                                                            ID = item.Field<object>("ID").ToString(),
+                                                            Name = item.Field<string>("Name"),
+                                                            FirstName = item.Field<object>("FirstName") == null ? string.Empty : item.Field<string>("FirstName"),
+                                                            LastName = item.Field<object>("LastName") == null ? string.Empty : item.Field<string>("LastName"),
+                                                            Email = item.Field<object>("Email") == null ? string.Empty : item.Field<string>("Email")
+                                                        }));
 
                 return users;
             }
@@ -6268,7 +6281,7 @@ namespace openPDCManager.Data
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }            
+            }
         }
 
         public static ObservableCollection<User> GetCurrentGroupUsers(DataConnection connection, string groupID)
@@ -6308,7 +6321,7 @@ namespace openPDCManager.Data
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }  
+            }
         }
 
         #endregion
@@ -6340,17 +6353,17 @@ namespace openPDCManager.Data
                 rolesTable.Load(command.ExecuteReader());
 
                 roles = (from roleitem in rolesTable.AsEnumerable()
-                          select new Role()
-                          {
-                              ID = roleitem.Field<object>("ID").ToString(),
-                              Name = roleitem.Field<string>("Name"),
-                              Description = roleitem.Field<object>("Description") == null ? string.Empty : roleitem.Field<string>("Description"),
-                              NodeID = roleitem.Field<object>("NodeID").ToString(),
-                              CreatedOn = Convert.ToDateTime(roleitem.Field<object>("CreatedOn")),
-                              CreatedBy = roleitem.Field<string>("CreatedBy"),
-                              UpdatedOn = Convert.ToDateTime(roleitem.Field<object>("UpdatedOn")),
-                              UpdatedBy = roleitem.Field<string>("UpdatedBy")
-                          }).ToList();
+                         select new Role()
+                         {
+                             ID = roleitem.Field<object>("ID").ToString(),
+                             Name = roleitem.Field<string>("Name"),
+                             Description = roleitem.Field<object>("Description") == null ? string.Empty : roleitem.Field<string>("Description"),
+                             NodeID = roleitem.Field<object>("NodeID").ToString(),
+                             CreatedOn = Convert.ToDateTime(roleitem.Field<object>("CreatedOn")),
+                             CreatedBy = roleitem.Field<string>("CreatedBy"),
+                             UpdatedOn = Convert.ToDateTime(roleitem.Field<object>("UpdatedOn")),
+                             UpdatedBy = roleitem.Field<string>("UpdatedBy")
+                         }).ToList();
 
                 return roles;
             }
@@ -6547,7 +6560,7 @@ namespace openPDCManager.Data
                     {
                         command.Parameters.Add(AddWithValue(command, "@applicationRoleID", applicationRoleID));
                         command.Parameters.Add(AddWithValue(command, "@groupID", groupID));
-                    }                    
+                    }
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
                 }
@@ -6597,7 +6610,7 @@ namespace openPDCManager.Data
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }   
+            }
         }
 
         public static ObservableCollection<User> GetCurrentRoleUsers(DataConnection connection, string applicationRoleID)
@@ -6615,9 +6628,9 @@ namespace openPDCManager.Data
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "Select * From ApplicationRoleUserAccountDetail WHERE ApplicationRoleID = @applicationRoleID Order By UserName";
-                
 
-                if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))                    
+
+                if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                     command.Parameters.Add(AddWithValue(command, "@applicationRoleID", "{" + applicationRoleID + "}"));
                 else
                     command.Parameters.Add(AddWithValue(command, "@applicationRoleID", applicationRoleID));
@@ -6665,18 +6678,18 @@ namespace openPDCManager.Data
                 DataTable resultTable = new DataTable();
                 resultTable.Load(command.ExecuteReader());
                 groups = new ObservableCollection<Group>((from item in resultTable.AsEnumerable()
-                                                        select new Group()
-                                                        {
-                                                            ID = item.Field<object>("ID").ToString(),
-                                                            Name = item.Field<string>("Name")
-                                                        }));
+                                                          select new Group()
+                                                          {
+                                                              ID = item.Field<object>("ID").ToString(),
+                                                              Name = item.Field<string>("Name")
+                                                          }));
                 return groups;
             }
             finally
             {
                 if (createdConnection && connection != null)
                     connection.Dispose();
-            }   
+            }
         }
 
         public static ObservableCollection<Group> GetCurrentRoleGroups(DataConnection connection, string applicationRoleID)
@@ -6702,11 +6715,11 @@ namespace openPDCManager.Data
                 DataTable resultTable = new DataTable();
                 resultTable.Load(command.ExecuteReader());
                 groups = new ObservableCollection<Group>((from item in resultTable.AsEnumerable()
-                                                        select new Group()
-                                                        {
-                                                            ID = item.Field<object>("SecurityGroupID").ToString(),
-                                                            Name = item.Field<string>("SecurityGroupName")
-                                                        }));
+                                                          select new Group()
+                                                          {
+                                                              ID = item.Field<object>("SecurityGroupID").ToString(),
+                                                              Name = item.Field<string>("SecurityGroupName")
+                                                          }));
                 return groups;
             }
             finally

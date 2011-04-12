@@ -634,9 +634,9 @@ namespace HistorianAdapters
             OnStatusMessage("{0} has been unloaded.", e.Argument.GetType().Name);
         }
 
-        private void AdapterLoader_AdapterLoadException(object sender, EventArgs<Type, Exception> e)
+        private void AdapterLoader_AdapterLoadException(object sender, EventArgs<Exception> e)
         {
-            OnProcessException(e.Argument2);
+            OnProcessException(e.Argument);
         }
 
         private void DataServices_ServiceProcessException(object sender, EventArgs<Exception> e)

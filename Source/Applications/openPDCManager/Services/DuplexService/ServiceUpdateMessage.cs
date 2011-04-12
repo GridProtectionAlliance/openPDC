@@ -22,17 +22,25 @@
 //******************************************************************************************************
 
 using System.Runtime.Serialization;
-using TVA.Services.ServiceProcess;
+using TVA;
 
 namespace openPDCManager.Services.DuplexService
 {
-	[DataContract]
-	public class ServiceUpdateMessage : DuplexMessage
-	{
-		[DataMember]
-		public UpdateType ServiceUpdateType { get; set; }
+    [DataContract]
+    public class ServiceUpdateMessage : DuplexMessage
+    {
+        [DataMember]
+        public UpdateType ServiceUpdateType
+        {
+            get;
+            set;
+        }
 
-		[DataMember]
-		public string ServiceUpdate { get; set; }
-	}
+        [DataMember]
+        public string ServiceUpdate
+        {
+            get;
+            set;
+        }
+    }
 }
