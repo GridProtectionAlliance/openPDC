@@ -137,57 +137,8 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// <returns>A new IEEE C37.118 specific <see cref="IConfigurationFrame"/>.</returns>
         protected override IConfigurationFrame CreateNewConfigurationFrame(TVA.PhasorProtocols.Anonymous.ConfigurationFrame baseConfigurationFrame)
         {
-            ConfigurationCell newCell;
-            uint maskValue;
-
             // Create a new IEEE C37.118 configuration frame 2 using base configuration
-            ConfigurationFrame2 configurationFrame = new ConfigurationFrame2(m_timeBase, baseConfigurationFrame.IDCode, DateTime.UtcNow.Ticks, baseConfigurationFrame.FrameRate);
-
-            foreach (TVA.PhasorProtocols.Anonymous.ConfigurationCell baseCell in baseConfigurationFrame.Cells)
-            {
-                // Create a new IEEE C37.118 configuration cell (i.e., a PMU configuration)
-                newCell = new ConfigurationCell(configurationFrame, baseCell.IDCode, base.NominalFrequency);
-
-                // Update other cell level attributes
-                newCell.StationName = baseCell.StationName;
-                newCell.IDLabel = baseCell.IDLabel;
-                newCell.PhasorDataFormat = baseCell.PhasorDataFormat;
-                newCell.PhasorCoordinateFormat = baseCell.PhasorCoordinateFormat;
-                newCell.FrequencyDataFormat = baseCell.FrequencyDataFormat;
-                newCell.AnalogDataFormat = baseCell.AnalogDataFormat;
-
-                // Add phasor definitions
-                foreach (IPhasorDefinition phasorDefinition in baseCell.PhasorDefinitions)
-                {
-                    newCell.PhasorDefinitions.Add(new PhasorDefinition(newCell, phasorDefinition.Label, phasorDefinition.ScalingValue, phasorDefinition.Offset, phasorDefinition.PhasorType, null));
-                }
-
-                // Add frequency definition
-                newCell.FrequencyDefinition = new FrequencyDefinition(newCell, baseCell.FrequencyDefinition.Label);
-
-                // Add analog definitions
-                foreach (IAnalogDefinition analogDefinition in baseCell.AnalogDefinitions)
-                {
-                    newCell.AnalogDefinitions.Add(new AnalogDefinition(newCell, analogDefinition.Label, analogDefinition.ScalingValue, analogDefinition.Offset, analogDefinition.AnalogType));
-                }
-
-                // Add digital definitions
-                foreach (IDigitalDefinition digitalDefinition in baseCell.DigitalDefinitions)
-                {
-                    // Attempt to derive user defined mask value if available
-                    TVA.PhasorProtocols.Anonymous.DigitalDefinition anonymousDigitalDefinition = digitalDefinition as TVA.PhasorProtocols.Anonymous.DigitalDefinition;
-
-                    if (anonymousDigitalDefinition != null)
-                        maskValue = anonymousDigitalDefinition.MaskValue;
-                    else
-                        maskValue = 0U;
-
-                    newCell.DigitalDefinitions.Add(new DigitalDefinition(newCell, digitalDefinition.Label, maskValue.LowWord(), maskValue.HighWord()));
-                }
-
-                // Add new PMU configuration (cell) to protocol specific configuration frame
-                configurationFrame.Cells.Add(newCell);
-            }
+            ConfigurationFrame2 configurationFrame = Concentrator.CreateConfigurationFrame(baseConfigurationFrame, m_timeBase, base.NominalFrequency);
 
             bool configurationChanged = false;
 
@@ -222,8 +173,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         protected override IFrame CreateNewFrame(Ticks timestamp)
         {
             // We create a new IEEE C37.118 data frame based on current configuration frame
-            DataFrame dataFrame = new DataFrame(timestamp, m_configurationFrame);
-            DataCell dataCell;
+            DataFrame dataFrame = Concentrator.CreateDataFrame(timestamp, m_configurationFrame);                       
             bool configurationChanged = false;
 
             if (m_configurationChanged)
@@ -235,17 +185,11 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                     m_configurationChanged = false;
             }
 
-            foreach (ConfigurationCell configurationCell in m_configurationFrame.Cells)
+            foreach (DataCell dataCell in dataFrame.Cells)
             {
-                // Create a new IEEE C37.118 data cell (i.e., a PMU entry for this frame)
-                dataCell = new DataCell(dataFrame, configurationCell, true);
-
                 // Mark cells with configuration changed flag if configuration was reloaded
                 if (configurationChanged)
                     dataCell.ConfigurationChangeDetected = true;
-
-                // Add data cell to the frame
-                dataFrame.Cells.Add(dataCell);
             }
 
             return dataFrame;
@@ -328,6 +272,100 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             {
                 OnProcessException(new InvalidOperationException(string.Format("Remotely connected device \"{0}\" sent an unrecognized data sequence to the concentrator, no action was taken. Exception details: {1}", connectionID, ex.Message), ex));
             }
+        }
+
+        #endregion
+
+        #region [ Static ]
+
+        // Static Methods       
+
+        /// <summary>
+        /// Creates a new IEEE C37.118 <see cref="ConfigurationFrame2"/> based on provided protocol independent <paramref name="baseConfigurationFrame"/>.
+        /// </summary>
+        /// <param name="baseConfigurationFrame">Protocol independent <see cref="TVA.PhasorProtocols.Anonymous.ConfigurationFrame"/>.</param>
+        /// <param name="timeBase">Timebase to use for fraction second resolution.</param>
+        /// <param name="nominalFrequency">The nominal <see cref="LineFrequency"/> to use for the new <see cref="ConfigurationFrame2"/></param>.
+        /// <returns>A new IEEE C37.118 <see cref="ConfigurationFrame2"/>.</returns>
+        public static ConfigurationFrame2 CreateConfigurationFrame(TVA.PhasorProtocols.Anonymous.ConfigurationFrame baseConfigurationFrame, uint timeBase, LineFrequency nominalFrequency)
+        {
+            ConfigurationCell newCell;
+            uint maskValue;
+
+            // Create a new IEEE C37.118 configuration frame 2 using base configuration
+            ConfigurationFrame2 configurationFrame = new ConfigurationFrame2(timeBase, baseConfigurationFrame.IDCode, DateTime.UtcNow.Ticks, baseConfigurationFrame.FrameRate);
+
+            foreach (TVA.PhasorProtocols.Anonymous.ConfigurationCell baseCell in baseConfigurationFrame.Cells)
+            {
+                // Create a new IEEE C37.118 configuration cell (i.e., a PMU configuration)
+                newCell = new ConfigurationCell(configurationFrame, baseCell.IDCode, nominalFrequency);
+
+                // Update other cell level attributes
+                newCell.StationName = baseCell.StationName;
+                newCell.IDLabel = baseCell.IDLabel;
+                newCell.PhasorDataFormat = baseCell.PhasorDataFormat;
+                newCell.PhasorCoordinateFormat = baseCell.PhasorCoordinateFormat;
+                newCell.FrequencyDataFormat = baseCell.FrequencyDataFormat;
+                newCell.AnalogDataFormat = baseCell.AnalogDataFormat;
+
+                // Add phasor definitions
+                foreach (IPhasorDefinition phasorDefinition in baseCell.PhasorDefinitions)
+                {
+                    newCell.PhasorDefinitions.Add(new PhasorDefinition(newCell, phasorDefinition.Label, phasorDefinition.ScalingValue, phasorDefinition.Offset, phasorDefinition.PhasorType, null));
+                }
+
+                // Add frequency definition
+                newCell.FrequencyDefinition = new FrequencyDefinition(newCell, baseCell.FrequencyDefinition.Label);
+
+                // Add analog definitions
+                foreach (IAnalogDefinition analogDefinition in baseCell.AnalogDefinitions)
+                {
+                    newCell.AnalogDefinitions.Add(new AnalogDefinition(newCell, analogDefinition.Label, analogDefinition.ScalingValue, analogDefinition.Offset, analogDefinition.AnalogType));
+                }
+
+                // Add digital definitions
+                foreach (IDigitalDefinition digitalDefinition in baseCell.DigitalDefinitions)
+                {
+                    // Attempt to derive user defined mask value if available
+                    TVA.PhasorProtocols.Anonymous.DigitalDefinition anonymousDigitalDefinition = digitalDefinition as TVA.PhasorProtocols.Anonymous.DigitalDefinition;
+
+                    if (anonymousDigitalDefinition != null)
+                        maskValue = anonymousDigitalDefinition.MaskValue;
+                    else
+                        maskValue = 0U;
+
+                    newCell.DigitalDefinitions.Add(new DigitalDefinition(newCell, digitalDefinition.Label, maskValue.LowWord(), maskValue.HighWord()));
+                }
+
+                // Add new PMU configuration (cell) to protocol specific configuration frame
+                configurationFrame.Cells.Add(newCell);
+            }
+
+            return configurationFrame;
+        }
+
+        /// <summary>
+        /// Creates a new IEEE C37.118 specific <see cref="DataFrame"/> for the given <paramref name="timestamp"/>.
+        /// </summary>
+        /// <param name="timestamp">Timestamp for new <see cref="IFrame"/> in <see cref="Ticks"/>.</param>
+        /// <param name="configurationFrame">Associated <see cref="ConfigurationFrame1"/> for the new <see cref="DataFrame"/>.</param>
+        /// <returns>New IEEE C37.118 <see cref="DataFrame"/> at given <paramref name="timestamp"/>.</returns>
+        public static DataFrame CreateDataFrame(Ticks timestamp, ConfigurationFrame1 configurationFrame)
+        {
+            // We create a new IEEE C37.118 data frame based on current configuration frame
+            DataFrame dataFrame = new DataFrame(timestamp, configurationFrame);
+            DataCell dataCell;
+
+            foreach (ConfigurationCell configurationCell in configurationFrame.Cells)
+            {
+                // Create a new IEEE C37.118 data cell (i.e., a PMU entry for this frame)
+                dataCell = new DataCell(dataFrame, configurationCell, true);
+
+                // Add data cell to the frame
+                dataFrame.Cells.Add(dataCell);
+            }
+
+            return dataFrame;
         }
 
         #endregion
