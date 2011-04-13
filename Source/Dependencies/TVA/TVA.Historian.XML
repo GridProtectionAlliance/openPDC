@@ -4950,12 +4950,12 @@
             <exception cref="T:System.ArgumentNullException"><paramref name="readerData"/> is null.</exception>
             <exception cref="T:System.ArgumentException"><paramref name="readerData"/> does not contain 43 columns.</exception>
         </member>
-        <member name="M:TVA.Historian.MetadataProviders.MetadataUpdater.UpdateMetadata(System.IO.Stream,TVA.Services.ServiceModel.SerializationFormat)">
+        <member name="M:TVA.Historian.MetadataProviders.MetadataUpdater.UpdateMetadata(System.IO.Stream,TVA.SerializationFormat)">
             <summary>
             Updates the <see cref="P:TVA.Historian.MetadataProviders.MetadataUpdater.Metadata"/> from <paramref name="streamData"/>
             </summary>
             <param name="streamData"><see cref="T:System.IO.Stream"/> containing serialized <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/>.</param>
-            <param name="dataFormat"><see cref="T:TVA.Services.ServiceModel.SerializationFormat"/> in which the <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> was serialized to <paramref name="streamData"/>.</param>
+            <param name="dataFormat"><see cref="T:TVA.SerializationFormat"/> in which the <see cref="T:TVA.Historian.DataServices.SerializableMetadata"/> was serialized to <paramref name="streamData"/>.</param>
         </member>
         <member name="P:TVA.Historian.MetadataProviders.MetadataUpdater.Metadata">
             <summary>
@@ -5038,7 +5038,7 @@
         </member>
         <member name="P:TVA.Historian.MetadataProviders.RestWebServiceMetadataProvider.ServiceDataFormat">
             <summary>
-            Gets or sets the <see cref="T:TVA.Services.ServiceModel.SerializationFormat"/> in which the REST web service exposes the data.
+            Gets or sets the <see cref="T:TVA.SerializationFormat"/> in which the REST web service exposes the data.
             </summary>
         </member>
         <member name="T:TVA.Historian.NamespaceDoc">
