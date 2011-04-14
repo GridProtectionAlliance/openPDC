@@ -219,7 +219,7 @@ namespace openPDCManager.Pages.Adapters
                                     if (measurement.SignalID.ToString().ToUpper() == measurementInfo.SignalID.ToUpper())
                                     {
                                         measurementInfo.CurrentQuality = measurement.ValueQualityIsGood ? "GOOD" : "BAD";
-                                        measurementInfo.CurrentTimeTag = measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff");
+                                        measurementInfo.CurrentTimeTag = measurement.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
                                         measurementInfo.CurrentValue = measurement.Value.ToString("0.###");
                                     }
                                 }

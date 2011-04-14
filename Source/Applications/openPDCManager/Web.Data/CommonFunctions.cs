@@ -1801,6 +1801,7 @@ namespace openPDCManager.Data
                     outputStreamDevice.FrequencyDataFormat = string.Empty;
                     outputStreamDevice.AnalogDataFormat = string.Empty;
                     outputStreamDevice.CoordinateFormat = string.Empty;
+                    outputStreamDevice.IdCode = device.AccessID;
                     SaveOutputStreamDevice(connection, outputStreamDevice, true, string.Empty);	//save in to OutputStreamDevice Table.
 
                     int savedOutputStreamDeviceID = GetOutputStreamDevice(connection, outputStreamID, device.Acronym).ID;

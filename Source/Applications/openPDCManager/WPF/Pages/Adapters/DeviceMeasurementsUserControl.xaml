@@ -15,7 +15,7 @@
                                 <converter:StringToColorConverter x:Key="stringToColorConverter" />
                             </StackPanel.Resources>
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                <TextBlock Text="{Binding Path=SignalID}" ToolTipService.ToolTip="Measurement Signal ID" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                <TextBlock Text="{Binding Path=Description}" TextWrapping="Wrap" ToolTipService.ToolTip="{Binding Path=SignalID}" Width="{StaticResource XXLargeItemSize}" TextAlignment="Left" Padding="1"/>
                             </Border>
                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                 <TextBlock Text="{Binding Path=PointID}" ToolTipService.ToolTip="Measurement Point ID" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" Padding="1"/>
