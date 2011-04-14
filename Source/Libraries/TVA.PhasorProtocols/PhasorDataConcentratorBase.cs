@@ -25,6 +25,10 @@
 //  09/27/2010 - J. Ritchie Carroll
 //       Modified phasor label generation to only include phase and type suffix if
 //       it's not already applied.
+//  04/14/2011 - Barb Motteler/ Jian (Ryan) Zuo
+//      In StartDataChannel, moved EstablishPublicationChannel to before check for m_publishChannel
+//      to resolve issue with data UDP data channel not starting on first command if "auto start"
+//      is not checked.
 //
 //******************************************************************************************************
 
@@ -32,6 +36,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using TimeSeriesFramework;
@@ -39,8 +45,6 @@ using TimeSeriesFramework.Adapters;
 using TVA.Communication;
 using TVA.PhasorProtocols.Anonymous;
 using TVA.Units;
-using System.Net;
-using System.Net.Sockets;
 
 namespace TVA.PhasorProtocols
 {
@@ -694,6 +698,8 @@ namespace TVA.PhasorProtocols
         [AdapterCommand("Manually starts the real-time data stream.")]
         public virtual void StartDataChannel()
         {
+            // Make sure publication channel is defined
+            EstablishPublicationChannel();
             // Make sure publication channel has started
             if (m_publishChannel != null && m_publishChannel.CurrentState == ServerState.NotRunning)
             {
@@ -706,9 +712,6 @@ namespace TVA.PhasorProtocols
                     OnProcessException(new InvalidOperationException("Failed to start publication channel: " + ex.Message, ex));
                 }
             }
-
-            // Make sure publication channel is defined
-            EstablishPublicationChannel();
         }
 
         // Define publication channel
