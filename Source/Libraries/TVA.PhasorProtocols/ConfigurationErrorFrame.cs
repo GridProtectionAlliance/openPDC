@@ -469,6 +469,30 @@ namespace TVA.PhasorProtocols
             }
         }
 
+        Ticks TimeSeriesFramework.IFrame.ReceivedTimestamp
+        {
+            get
+            {
+                return DateTime.UtcNow.Ticks;
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        Ticks TimeSeriesFramework.IFrame.PublishedTimestamp
+        {
+            get
+            {
+                return 0;
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         bool IEquatable<TimeSeriesFramework.IFrame>.Equals(TimeSeriesFramework.IFrame other)
         {
             return false;

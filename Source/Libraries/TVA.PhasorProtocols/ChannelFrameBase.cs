@@ -262,6 +262,8 @@ namespace TVA.PhasorProtocols
         private ushort m_idCode;                                            // Numeric identifier of this frame of data (e.g., ID code of the PDC)
         private IChannelCellCollection<T> m_cells;                          // Collection of "cells" within this frame of data (e.g., PMU's in the PDC frame)
         private Ticks m_timestamp;                                          // Time, represented as 100-nanosecond ticks, of this frame of data
+        private Ticks m_receivedTimestamp;                                  // Time, represented as 100-nanosecond ticks, of frame received (i.e. created)
+        private Ticks m_publishedTimestamp;                                 // Time, represented as 100-nanosecond ticks, of frame published (post process)
         private int m_parsedBinaryLength;                                   // Binary length of frame as provided from parsed header
         private bool m_published;                                           // Determines if this frame of data has been published (IFrame.Published)
         private int m_sortedMeasurements;                                   // Total measurements published into this frame        (IFrame.SortedMeasurements)
@@ -283,6 +285,7 @@ namespace TVA.PhasorProtocols
             m_idCode = idCode;
             m_cells = cells;
             m_timestamp = timestamp;
+            m_receivedTimestamp = DateTime.UtcNow.Ticks;
             m_measurements = new Dictionary<MeasurementKey, IMeasurement>();
             m_sortedMeasurements = -1;
         }
@@ -298,6 +301,7 @@ namespace TVA.PhasorProtocols
             m_idCode = info.GetUInt16("idCode");
             m_cells = (IChannelCellCollection<T>)info.GetValue("cells", typeof(IChannelCellCollection<T>));
             m_timestamp = info.GetInt64("timestamp");
+            m_receivedTimestamp = DateTime.UtcNow.Ticks;
             m_measurements = new Dictionary<MeasurementKey, IMeasurement>();
             m_sortedMeasurements = -1;
         }
@@ -309,7 +313,10 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets the <see cref="FundamentalFrameType"/> for this <see cref="ChannelFrameBase{T}"/>.
         /// </summary>
-        public abstract FundamentalFrameType FrameType { get; }
+        public abstract FundamentalFrameType FrameType
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets the strongly-typed reference to the collection of cells for this <see cref="ChannelFrameBase{T}"/>.
@@ -375,6 +382,52 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_timestamp = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets exact timestamp, in ticks, of when this <see cref="ChannelFrameBase{T}"/> was received (i.e., created).
+        /// </summary>
+        /// <remarks>
+        /// <para>In the default implementation, this timestamp will simply be the ticks of <see cref="PrecisionTimer.UtcNow"/> of when this class was created.</para>
+        /// <para>The value of this property represents the number of 100-nanosecond intervals that have elapsed since 12:00:00 midnight, January 1, 0001.</para>
+        /// </remarks>
+        public virtual Ticks ReceivedTimestamp
+        {
+            get
+            {
+                return m_receivedTimestamp;
+            }
+            set
+            {
+                m_receivedTimestamp = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets exact timestamp, in ticks, of when this <see cref="ChannelFrameBase{T}"/> was published (post-processing).
+        /// </summary>
+        /// <remarks>
+        /// <para>In the default implementation, setting this property will update all associated <see cref="IMeasurement.PublishedTimestamp"/>.</para>
+        /// <para>The value of this property represents the number of 100-nanosecond intervals that have elapsed since 12:00:00 midnight, January 1, 0001.</para>
+        /// </remarks>
+        public virtual Ticks PublishedTimestamp
+        {
+            get
+            {
+                return m_publishedTimestamp;
+            }
+            set
+            {
+                m_publishedTimestamp = value;
+
+                if (m_measurements != null)
+                {
+                    foreach (IMeasurement measurement in m_measurements.Values)
+                    {
+                        measurement.PublishedTimestamp = m_publishedTimestamp;
+                    }
+                }
             }
         }
 
@@ -578,16 +631,16 @@ namespace TVA.PhasorProtocols
             // We use data length parsed from data stream if available - in many cases we'll have to as we won't enough
             // information about cell contents at this early parsing stage
             m_parsedBinaryLength = State.ParsedBinaryLength;
-            
+
             // Normal binary image parsing is overriden for a frame so that checksum can be validated           
-            if (!ChecksumIsValid(binaryImage, startIndex) )
+            if (!ChecksumIsValid(binaryImage, startIndex))
             {
                 // If user selects incorrect protocol, image may be very large - so we don't log the image 
                 //  byte[] binaryImageErr = binaryImage.BlockCopy(startIndex, length);
                 //  + BitConverter.ToString(binaryImageErr)
                 throw new CrcException("Invalid binary image detected - check sum of " + this.GetType().Name + " did not match");
             }
-            
+
             // Include 2 bytes for CRC in returned parsed length
             return base.Initialize(binaryImage, startIndex, length) + 2;
         }

@@ -312,6 +312,8 @@ namespace TVA.PhasorProtocols
         private Guid m_signalID;
         private string m_tagName;
         private Ticks m_timestamp;
+        private Ticks m_receivedTimestamp;
+        private Ticks m_publishedTimestamp;
         private double m_adder;
         private double m_multiplier;
         private bool m_isDiscarded;
@@ -344,6 +346,7 @@ namespace TVA.PhasorProtocols
             m_source = "__";
             m_key = PhasorProtocols.Common.UndefinedKey;
             m_timestamp = -1;
+            m_receivedTimestamp = PrecisionTimer.UtcNow.Ticks;
             m_multiplier = 1.0D;
         }
 
@@ -580,7 +583,11 @@ namespace TVA.PhasorProtocols
         /// <remarks>
         /// This value is used to abstractly assign the protocol independent set of <see cref="CommonStatusFlags"/>.
         /// </remarks>
-        public abstract bool DataIsValid { get; set; }
+        public abstract bool DataIsValid
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets flag that determines if timestamp of this <see cref="DataCellBase"/> is valid based on GPS lock.
@@ -588,7 +595,11 @@ namespace TVA.PhasorProtocols
         /// <remarks>
         /// This value is used to abstractly assign the protocol independent set of <see cref="CommonStatusFlags"/>.
         /// </remarks>
-        public abstract bool SynchronizationIsValid { get; set; }
+        public abstract bool SynchronizationIsValid
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets <see cref="PhasorProtocols.DataSortingType"/> of this <see cref="DataCellBase"/>.
@@ -596,7 +607,11 @@ namespace TVA.PhasorProtocols
         /// <remarks>
         /// This value is used to abstractly assign the protocol independent set of <see cref="CommonStatusFlags"/>.
         /// </remarks>
-        public abstract DataSortingType DataSortingType { get; set; }
+        public abstract DataSortingType DataSortingType
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets flag that determines if source device of this <see cref="DataCellBase"/> is reporting an error.
@@ -604,7 +619,11 @@ namespace TVA.PhasorProtocols
         /// <remarks>
         /// This value is used to abstractly assign the protocol independent set of <see cref="CommonStatusFlags"/>.
         /// </remarks>
-        public abstract bool DeviceError { get; set; }
+        public abstract bool DeviceError
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets the length of the <see cref="BodyImage"/>.
@@ -865,6 +884,30 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_timestamp = value;
+            }
+        }
+
+        Ticks IMeasurement.ReceivedTimestamp
+        {
+            get
+            {
+                return m_receivedTimestamp;
+            }
+            set
+            {
+                m_receivedTimestamp = value;
+            }
+        }
+
+        Ticks IMeasurement.PublishedTimestamp
+        {
+            get
+            {
+                return m_publishedTimestamp;
+            }
+            set
+            {
+                m_publishedTimestamp = value;
             }
         }
 

@@ -256,6 +256,8 @@ namespace TVA.PhasorProtocols
         private Guid m_signalID;
         private string m_tagName;
         private Ticks m_timestamp;
+        private Ticks m_receivedTimestamp;
+        private Ticks m_publishedTimestamp;
         private int m_valueIndex;
         private double m_adder;
         private double m_multiplier;
@@ -281,6 +283,7 @@ namespace TVA.PhasorProtocols
             m_source = "__";
             m_key = Common.UndefinedKey;
             m_timestamp = -1;
+            m_receivedTimestamp = PrecisionTimer.UtcNow.Ticks;
             m_multiplier = 1.0D;
             m_dataQualityIsGood = -1;
             m_timeQualityIsGood = -1;
@@ -392,6 +395,43 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_timestamp = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets exact timestamp, in ticks, of when this <see cref="ChannelValueMeasurement{T}"/> was received (i.e., created).
+        /// </summary>
+        /// <remarks>
+        /// <para>In the default implementation, this timestamp will simply be the ticks of <see cref="PrecisionTimer.UtcNow"/> of when this class was created.</para>
+        /// <para>The value of this property represents the number of 100-nanosecond intervals that have elapsed since 12:00:00 midnight, January 1, 0001.</para>
+        /// </remarks>
+        public virtual Ticks ReceivedTimestamp
+        {
+            get
+            {
+                return m_receivedTimestamp;
+            }
+            set
+            {
+                m_receivedTimestamp = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets exact timestamp, in ticks, of when this <see cref="ChannelValueMeasurement{T}"/> was published (post-processing).
+        /// </summary>
+        /// <remarks>
+        /// The value of this property represents the number of 100-nanosecond intervals that have elapsed since 12:00:00 midnight, January 1, 0001.
+        /// </remarks>
+        public virtual Ticks PublishedTimestamp
+        {
+            get
+            {
+                return m_publishedTimestamp;
+            }
+            set
+            {
+                m_publishedTimestamp = value;
             }
         }
 
