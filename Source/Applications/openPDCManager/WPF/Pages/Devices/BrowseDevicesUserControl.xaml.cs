@@ -358,61 +358,52 @@ namespace openPDCManager.Pages.Devices
         }
 
         private void HyperlinkButtonCreatedOn_Click(object sender, RoutedEventArgs e)
-        {
-            //SortData("CreatedOn");
-            List<Device> sortedList = new List<Device>();
-            sortedList = (from device in m_deviceList
+        {           
+            m_deviceList = (from device in m_deviceList
                           select device).ToList().OrderBy(d => d.CreatedOn).ToList();
-            ListBoxDeviceList.ItemsSource = sortedList;
+            BindData(m_deviceList);
         }
 
         private void HyperlinkButtonAcronym_Click(object sender, RoutedEventArgs e)
         {
-            //SortData("Acronym");
-            List<Device> sortedList = new List<Device>();
-            sortedList = (from device in m_deviceList
+            m_deviceList = (from device in m_deviceList
                           select device).ToList().OrderBy(d => d.Acronym).ToList();
-            ListBoxDeviceList.ItemsSource = sortedList;
+            BindData(m_deviceList);
         }
 
         private void HyperlinkButtonName_Click(object sender, RoutedEventArgs e)
         {
-            List<Device> sortedList = new List<Device>();
-            sortedList = (from device in m_deviceList
+            m_deviceList = (from device in m_deviceList
                           select device).ToList().OrderBy(d => d.Name).ToList();
-            ListBoxDeviceList.ItemsSource = sortedList;
+            BindData(m_deviceList);
         }
 
         private void HyperlinkButtonConcentrator_Click(object sender, RoutedEventArgs e)
         {
-            List<Device> sortedList = new List<Device>();
-            sortedList = (from device in m_deviceList
+            m_deviceList = (from device in m_deviceList
                           select device).ToList().OrderBy(d => d.IsConcentrator).ToList();
-            ListBoxDeviceList.ItemsSource = sortedList;
+            BindData(m_deviceList);
         }
 
         private void HyperlinkButtonProtocol_Click(object sender, RoutedEventArgs e)
         {
-            List<Device> sortedList = new List<Device>();
-            sortedList = (from device in m_deviceList
+            m_deviceList = (from device in m_deviceList
                           select device).ToList().OrderBy(d => d.ProtocolName).ToList();
-            ListBoxDeviceList.ItemsSource = sortedList;
+            BindData(m_deviceList);
         }
 
         private void HyperlinkButtonCompany_Click(object sender, RoutedEventArgs e)
         {
-            List<Device> sortedList = new List<Device>();
-            sortedList = (from device in m_deviceList
+            m_deviceList = (from device in m_deviceList
                           select device).ToList().OrderBy(d => d.CompanyAcronym).ToList();
-            ListBoxDeviceList.ItemsSource = sortedList;
+            BindData(m_deviceList);
         }
 
         private void HyperlinkButtonEnabled_Click(object sender, RoutedEventArgs e)
         {
-            List<Device> sortedList = new List<Device>();
-            sortedList = (from device in m_deviceList
+            m_deviceList = (from device in m_deviceList
                           select device).ToList().OrderBy(d => d.Enabled).ToList();
-            ListBoxDeviceList.ItemsSource = sortedList;
+            BindData(m_deviceList);
         }
         
         #endregion
