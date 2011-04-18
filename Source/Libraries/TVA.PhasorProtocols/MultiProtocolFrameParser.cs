@@ -1747,6 +1747,7 @@ namespace TVA.PhasorProtocols
                         fileClient.FileOpenMode = FileMode.Open;
                         fileClient.FileAccessMode = FileAccess.Read;
                         fileClient.FileShareMode = FileShare.Read;
+                        fileClient.ReceiveOnDemand = true;
                         fileClient.AutoRepeat = m_autoRepeatCapturedPlayback;
                     }
                     break;
@@ -2346,6 +2347,10 @@ namespace TVA.PhasorProtocols
             // Only handle client connection from data channel when command channel is undefined
             if (!(m_commandChannel != null && m_commandChannel.CurrentState == ClientState.Connected))
                 ClientConnectedHandler();
+
+            // Start reading file data
+            if (m_transportProtocol == TransportProtocol.File)
+                ThreadPool.QueueUserWorkItem(ReadFileData);
         }
 
         private void m_dataChannel_ConnectionAttempt(object sender, EventArgs e)
@@ -2580,6 +2585,35 @@ namespace TVA.PhasorProtocols
                 m_totalCrcExceptions++;
 
             OnParsingException(ex);
+        }
+
+        private void ReadFileData(object state)
+        {
+            try
+            {
+                FileClient fileClient = m_dataChannel as FileClient;
+
+                if (fileClient != null)
+                {
+                    // Start receiving file data continuously.
+                    while (true)
+                    {
+                        // Time to exit if file client disconnects...
+                        if (fileClient.CurrentState != ClientState.Connected)
+                            break;
+
+                        fileClient.ReceiveData();
+                    }
+                }
+            }
+            catch (ThreadAbortException)
+            {
+                throw;
+            }
+            catch
+            {
+                // For any other exception, we exit gracefully
+            }
         }
 
         #endregion
