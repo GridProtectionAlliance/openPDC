@@ -58,7 +58,7 @@ namespace openPDCManager.Pages.Monitoring
         #region [ Members ]
 
         #region [ Members for Dynamic Data Display ]
-        
+
         int[] m_xAxisDataCollection;                                                            //contains source data for the binding collection.
         EnumerableDataSource<int> m_xAxisBindingCollection;                                     //contains values plotted on X-Axis.
         ConcurrentDictionary<string, ConcurrentQueue<double>> m_yAxisDataCollection;            //contains source data for the binding collection. Format is <signalID, collection of values from subscription API>.
@@ -80,11 +80,11 @@ namespace openPDCManager.Pages.Monitoring
         double m_leadTime = 1.0;
         double m_lagTime = 3.0;
 
-        #endregion                
-        
+        #endregion
+
         ActivityWindow m_activityWindow;
         ObservableCollection<DeviceMeasurementData> m_deviceMeasurementDataList;
-        DeviceMeasurementDataForBinding m_dataForBinding;        
+        DeviceMeasurementDataForBinding m_dataForBinding;
         Dictionary<string, InputMonitorData> m_currentValuesList;
         int m_measurementsDataRefreshInterval = 30;
         DataSubscriber m_measurementDataSubscriber;                                             //this subscription will be used to refresh tree values.
@@ -106,7 +106,7 @@ namespace openPDCManager.Pages.Monitoring
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(InputStatusUserControl_Loaded);
-            this.Unloaded += new RoutedEventHandler(InputStatusUserControl_Unloaded);                
+            this.Unloaded += new RoutedEventHandler(InputStatusUserControl_Unloaded);
             m_yAxisDataCollection = new ConcurrentDictionary<string, ConcurrentQueue<double>>();
             m_yAxisBindingCollection = new ConcurrentDictionary<string, EnumerableDataSource<double>>();
             m_dataForBinding = new DeviceMeasurementDataForBinding();
@@ -117,7 +117,7 @@ namespace openPDCManager.Pages.Monitoring
             m_timeStampList = new ConcurrentQueue<string>();
             m_minMaxPointIDs = new KeyValuePair<int, int>();
             m_deviceIDsWithStatusPointIDs = new Dictionary<int, int>();
-        }        
+        }
 
         #endregion
 
@@ -128,7 +128,7 @@ namespace openPDCManager.Pages.Monitoring
             m_restartConnectionCycle = false;
             UnsubscribeDataForChart();
             UnsubscribeDataForTree();
-      
+
             //Save selected points to Isolated Storage before exiting this page.
             List<string> pointList = new List<string>();
             foreach (KeyValuePair<string, MeasurementInfo> selectedMeasurement in m_selectedMeasurements)
@@ -149,11 +149,11 @@ namespace openPDCManager.Pages.Monitoring
             if (!string.IsNullOrEmpty(statisticServiceUrl))
                 m_urlForStatistics = statisticServiceUrl + "/timeseriesdata/read/current/" + m_minMaxPointIDs.Key.ToString() + "-" + m_minMaxPointIDs.Value.ToString() + "/XML";
 
-            InitializeColors();            
+            InitializeColors();
             GetDeviceMeasurementData();
             m_deviceIDsWithStatusPointIDs = CommonFunctions.GetDeviceIDsWithStatusPointIDs(null, ((App)Application.Current).NodeValue);
             GetTimeTaggedMeasurementsForStatus(m_urlForStatistics);
-            InitializeChart();            
+            InitializeChart();
         }
 
         #endregion
@@ -161,18 +161,18 @@ namespace openPDCManager.Pages.Monitoring
         #region [ Subscription API Code for Chart ]
 
         void chartSubscriber_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
-        {            
+        {
             if (0 == Interlocked.Exchange(ref m_processingNewMeasurementsForChart, 1))
-            {                    
+            {
                 try
                 {
                     bool timestampProcessed = false;
                     foreach (IMeasurement measurement in e.Argument)
-                    {                  
+                    {
                         if (!timestampProcessed)
                         {
                             timestampProcessed = true;
-                            m_timeStampList.Enqueue(measurement.Timestamp.ToString("hh:mm:ss.fff"));                            
+                            m_timeStampList.Enqueue(measurement.Timestamp.ToString("hh:mm:ss.fff"));
                             if (m_timeStampList.Count > m_numberOfDataPointsToPlot)
                             {
                                 string oldValue;
@@ -182,7 +182,7 @@ namespace openPDCManager.Pages.Monitoring
                         double tempValue = measurement.Value;
                         string tempSignalID = measurement.SignalID.ToString().ToUpper();
                         if (!double.IsNaN(tempValue) && !double.IsInfinity(tempValue))      //process data only if it is not NaN or Infinity.
-                        {                            
+                        {
                             ConcurrentQueue<double> tempCollection;
                             if (m_yAxisDataCollection.TryGetValue(tempSignalID, out tempCollection))
                             {
@@ -220,7 +220,7 @@ namespace openPDCManager.Pages.Monitoring
                                     ChartPlotterDynamic.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate()
                                     {
                                         int colorIndex;
-                                        Math.DivRem(m_yAxisBindingCollection.Count, 10, out colorIndex);                                        
+                                        Math.DivRem(m_yAxisBindingCollection.Count, 10, out colorIndex);
                                         LineGraph lineGraph = null;
 
                                         if (measurementInfo.SignalAcronym == "FREQ")
@@ -255,20 +255,21 @@ namespace openPDCManager.Pages.Monitoring
                         }
                     }
                 }
-                catch { //System.Diagnostics.Debug.WriteLine("Exception Occured"); 
+                catch
+                { //System.Diagnostics.Debug.WriteLine("Exception Occured"); 
                 }
                 finally
                 {
                     Interlocked.Exchange(ref m_processingNewMeasurementsForChart, 0);
                 }
-            }            
+            }
         }
 
         void chartSubscriber_ConnectionEstablished(object sender, EventArgs e)
         {
             //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: Subscription Connection Established.");
             m_subscribedForChart = true;
-            SubscribeDataForChart();                      
+            SubscribeDataForChart();
         }
 
         void chartSubscriber_ConnectionTerminated(object sender, EventArgs e)
@@ -282,7 +283,7 @@ namespace openPDCManager.Pages.Monitoring
 
         void chartSubscriber_ProcessException(object sender, TVA.EventArgs<Exception> e)
         {
-            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: EXCEPTION: " + e.Argument.Message);            
+            System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: EXCEPTION: " + e.Argument.Message);
         }
 
         void chartSubscriber_StatusMessage(object sender, TVA.EventArgs<string> e)
@@ -290,8 +291,8 @@ namespace openPDCManager.Pages.Monitoring
             System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: " + e.Argument);
         }
 
-        #endregion 
-        
+        #endregion
+
         #region [ Subscription API Code for Tree ]
 
         void measurementDataSubscriber_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
@@ -299,54 +300,54 @@ namespace openPDCManager.Pages.Monitoring
             if (0 == Interlocked.Exchange(ref m_processingNewMeasurementsForTree, 1))
             {
                 try
-                {                    
+                {
                     //System.Diagnostics.Debug.WriteLine("*************************************");
                     foreach (DeviceMeasurementData deviceMeasurementData in m_deviceMeasurementDataList)
                     {
                         //if (deviceMeasurementData.IsExpanded)
                         //{
-                            foreach (DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
+                        foreach (DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
+                        {
+                            //if (deviceInfo.IsExpanded)
+                            //{
+                            foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
                             {
-                                //if (deviceInfo.IsExpanded)
-                                //{
-                                    foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
-                                    {                                        
-                                        foreach (IMeasurement measurement in e.Argument)
-                                        {
-                                            if (measurement.SignalID.ToString().ToUpper() == measurementInfo.SignalID.ToUpper())
-                                            {
-                                                measurementInfo.CurrentQuality = measurement.ValueQualityIsGood ? "GOOD" : "BAD";
-                                                measurementInfo.CurrentTimeTag = measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff");
-                                                measurementInfo.CurrentValue = measurement.Value.ToString("0.###");
+                                foreach (IMeasurement measurement in e.Argument)
+                                {
+                                    if (measurement.SignalID.ToString().ToUpper() == measurementInfo.SignalID.ToUpper())
+                                    {
+                                        measurementInfo.CurrentQuality = measurement.ValueQualityIsGood ? "GOOD" : "BAD";
+                                        measurementInfo.CurrentTimeTag = measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff");
+                                        measurementInfo.CurrentValue = measurement.Value.ToString("0.###");
 
-                                                if (measurementInfo.SignalAcronym == "FLAG")
-                                                {
-                                                    if (!deviceMeasurementData.Enabled && deviceMeasurementData.StatusColor != "Transparent")
-                                                    {
-                                                        deviceMeasurementData.StatusColor = "Gray";
-                                                        deviceInfo.StatusColor = "Gray";
-                                                    }
-                                                    else if (!deviceInfo.Enabled)
-                                                        deviceInfo.StatusColor = "Gray";
-                                                    else if (deviceMeasurementData.StatusColor == "Red")
-                                                        deviceInfo.StatusColor = "Red";
-                                                    else if (measurement.ValueQualityIsGood)
-                                                        deviceInfo.StatusColor = "Green";
-                                                    else
-                                                        deviceInfo.StatusColor = "Yellow";
-                                                }
+                                        if (measurementInfo.SignalAcronym == "FLAG")
+                                        {
+                                            if (!deviceMeasurementData.Enabled && deviceMeasurementData.StatusColor != "Transparent")
+                                            {
+                                                deviceMeasurementData.StatusColor = "Gray";
+                                                deviceInfo.StatusColor = "Gray";
                                             }
-                                        }                                     
+                                            else if (!deviceInfo.Enabled)
+                                                deviceInfo.StatusColor = "Gray";
+                                            else if (deviceMeasurementData.StatusColor == "Red")
+                                                deviceInfo.StatusColor = "Red";
+                                            else if (measurement.ValueQualityIsGood)
+                                                deviceInfo.StatusColor = "Green";
+                                            else
+                                                deviceInfo.StatusColor = "Yellow";
+                                        }
                                     }
-                                //}
+                                }
                             }
+                            //}
+                        }
                         //}
                     }
-                    GetTimeTaggedMeasurementsForStatus(m_urlForStatistics); 
-                    RefreshDeviceMeasurementData();                    
+                    GetTimeTaggedMeasurementsForStatus(m_urlForStatistics);
+                    RefreshDeviceMeasurementData();
                 }
                 catch
-                { 
+                {
                     //System.Diagnostics.Debug.WriteLine("Exception Occured"); 
                 }
                 finally
@@ -380,8 +381,8 @@ namespace openPDCManager.Pages.Monitoring
             //System.Diagnostics.Debug.WriteLine("SUBSCRIPTION: " + e.Argument);
         }
 
-        #endregion 
-    
+        #endregion
+
         #region [ Methods ]
 
         void GetMinMaxPointIDs()
@@ -392,7 +393,7 @@ namespace openPDCManager.Pages.Monitoring
         void GetSettingsFromIsolatedStorage()
         {
             m_displayFrequencyAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayFrequencyYAxis"));
-            m_displayPhaseAngleAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayPhaseAngleYAxis"));            
+            m_displayPhaseAngleAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayPhaseAngleYAxis"));
             m_displayVoltageAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayVoltageYAxis"));
             m_displayCurrentAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayCurrentYAxis"));
             m_displayXAxis = Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("DisplayXAxis"));
@@ -446,8 +447,8 @@ namespace openPDCManager.Pages.Monitoring
 
             RefreshDeviceMeasurementData();
             if (m_selectedMeasurements.Count > 0)
-                SubscribeDataForChart();                
-            
+                SubscribeDataForChart();
+
         }
 
         #region [ Methods related to chart data refresh ]
@@ -484,7 +485,7 @@ namespace openPDCManager.Pages.Monitoring
             }
 
             ListBoxCurrentValues.Items.Refresh();
-            lock(m_currentValuesList)
+            lock (m_currentValuesList)
                 ListBoxCurrentValues.ItemsSource = m_currentValuesList;
         }
 
@@ -505,7 +506,7 @@ namespace openPDCManager.Pages.Monitoring
                 m_chartRefreshTimer = null;
             }
         }
-                
+
         void InitializeColors()
         {
             m_lineColors = new List<Color>();
@@ -514,13 +515,13 @@ namespace openPDCManager.Pages.Monitoring
             m_lineColors.Add(Colors.Green);
             m_lineColors.Add(Colors.Red);
             m_lineColors.Add(Colors.Purple);
-            m_lineColors.Add(Colors.Brown);            
-            m_lineColors.Add(Colors.Magenta); 
+            m_lineColors.Add(Colors.Brown);
+            m_lineColors.Add(Colors.Magenta);
             m_lineColors.Add(Colors.Black);
             m_lineColors.Add(Colors.DarkCyan);
-            m_lineColors.Add(Colors.Coral);        
+            m_lineColors.Add(Colors.Coral);
         }
-       
+
         void InitializeChart()
         {
             //Remove labels on X-Axis.
@@ -531,19 +532,19 @@ namespace openPDCManager.Pages.Monitoring
             //legendParent.Children.Remove(ChartPlotterDynamic.Legend.ContentGrid);
 
             ChartPlotterDynamic.LegendVisibility = Visibility.Collapsed;
-            
+
 
             //Set Y-Axis and X-Axis Visibility.
-            ChartPlotterDynamic.MainVerticalAxisVisibility = FrequencyAxisTitle.Visibility = m_displayFrequencyAxis ? Visibility.Visible : Visibility.Collapsed;            
+            ChartPlotterDynamic.MainVerticalAxisVisibility = FrequencyAxisTitle.Visibility = m_displayFrequencyAxis ? Visibility.Visible : Visibility.Collapsed;
             ChartPlotterDynamic.MainHorizontalAxisVisibility = m_displayXAxis ? Visibility.Visible : Visibility.Collapsed;
             TextBlockLeft.Visibility = TextBlockRight.Visibility = ChartPlotterDynamic.MainHorizontalAxisVisibility;
-            PhaseAngleYAxis.Visibility = PhaseAngleAxisTitle.Visibility = m_displayPhaseAngleAxis ? Visibility.Visible : Visibility.Collapsed;            
+            PhaseAngleYAxis.Visibility = PhaseAngleAxisTitle.Visibility = m_displayPhaseAngleAxis ? Visibility.Visible : Visibility.Collapsed;
             VoltageYAxis.Visibility = VoltageAxisTitle.Visibility = m_displayVoltageAxis ? Visibility.Visible : Visibility.Collapsed;
             CurrentYAxis.Visibility = CurrentAxisTitle.Visibility = m_displayCurrentAxis ? Visibility.Visible : Visibility.Collapsed;
 
             //Set viewport rectangle for Frequency and PhaseAngle axis.
             ChartPlotterDynamic.Visible = DataRect.Create(0, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin")), m_numberOfDataPointsToPlot, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax")));
-            PhaseAnglePlotter.Visible = DataRect.Create(0, -180, m_numberOfDataPointsToPlot, 180);            
+            PhaseAnglePlotter.Visible = DataRect.Create(0, -180, m_numberOfDataPointsToPlot, 180);
 
             //Assign x-axis binding collection to x-axis.            
             for (int i = 0; i < m_numberOfDataPointsToPlot; i++)
@@ -563,7 +564,7 @@ namespace openPDCManager.Pages.Monitoring
             m_chartSubscriber.ConnectionEstablished += chartSubscriber_ConnectionEstablished;
             m_chartSubscriber.NewMeasurements += chartSubscriber_NewMeasurements;
             m_chartSubscriber.ConnectionTerminated += chartSubscriber_ConnectionTerminated;
-            m_chartSubscriber.ConnectionString = "server=" + server + ":" + port;            
+            m_chartSubscriber.ConnectionString = "server=" + server + ":" + port;
             m_chartSubscriber.Initialize();
             m_chartSubscriber.Start();
         }
@@ -575,7 +576,7 @@ namespace openPDCManager.Pages.Monitoring
             if (m_selectedMeasurements.Count == 0)
                 UnsubscribeDataForChart();
             else
-            {                
+            {
                 if (m_chartSubscriber == null)
                     StartSubscriptionForChart();
 
@@ -612,8 +613,8 @@ namespace openPDCManager.Pages.Monitoring
             {
                 m_chartSubscriber = null;
             }
-            
-            StopChartRefreshTimer();            
+
+            StopChartRefreshTimer();
         }
 
         void StopSubscriptionForChart()
@@ -623,7 +624,7 @@ namespace openPDCManager.Pages.Monitoring
                 m_chartSubscriber.StatusMessage -= chartSubscriber_StatusMessage;
                 m_chartSubscriber.ProcessException -= chartSubscriber_ProcessException;
                 m_chartSubscriber.ConnectionEstablished -= chartSubscriber_ConnectionEstablished;
-                m_chartSubscriber.NewMeasurements -= chartSubscriber_NewMeasurements;  
+                m_chartSubscriber.NewMeasurements -= chartSubscriber_NewMeasurements;
                 m_chartSubscriber.Stop();
                 m_chartSubscriber.Dispose();
                 m_chartSubscriber = null;
@@ -698,7 +699,7 @@ namespace openPDCManager.Pages.Monitoring
         #endregion
 
         #region [ Methods releated to tree data display ]
-                
+
         void GetDeviceMeasurementData()
         {
             try
@@ -781,13 +782,13 @@ namespace openPDCManager.Pages.Monitoring
         void RefreshDeviceMeasurementData()
         {
             TreeViewDeviceMeasurements.Dispatcher.BeginInvoke((Action)delegate()
-            {   
+            {
                 m_dataForBinding.DeviceMeasurementDataList = m_deviceMeasurementDataList;
-                m_dataForBinding.IsExpanded = false;             
+                m_dataForBinding.IsExpanded = false;
                 TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
                 TreeViewDeviceMeasurements.Items.Refresh();
                 TextBlockLastRefresh.Text = "Last Refresh: " + DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss.fff");
-            });            
+            });
         }
 
         void StartSubscriptionForTreeData()
@@ -803,7 +804,7 @@ namespace openPDCManager.Pages.Monitoring
             m_measurementDataSubscriber.ConnectionTerminated += measurementDataSubscriber_ConnectionTerminated;
             m_measurementDataSubscriber.ConnectionString = "server=" + server + ":" + port;
             m_measurementDataSubscriber.Initialize();
-            m_measurementDataSubscriber.Start(); 
+            m_measurementDataSubscriber.Start();
         }
 
         void SubscribeDataForTree()
@@ -856,130 +857,177 @@ namespace openPDCManager.Pages.Monitoring
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveDialog = new SaveFileDialog();
-            saveDialog.Title = "Save Current Display Settings";
-            saveDialog.Filter = "Input Status Monitoring Display Settings (*.ismsettings)|*.ismsettings|All Files (*.*)|*.*";
-            bool? result = saveDialog.ShowDialog(Window.GetWindow(this));
-            if (result != null && (bool)result == true)
+            try
             {
-                using (StreamWriter writer = new StreamWriter(saveDialog.FileName))
+                SaveFileDialog saveDialog = new SaveFileDialog();
+                saveDialog.Title = "Save Current Display Settings";
+                saveDialog.Filter = "Input Status Monitoring Display Settings (*.ismsettings)|*.ismsettings|All Files (*.*)|*.*";
+                bool? result = saveDialog.ShowDialog(Window.GetWindow(this));
+                if (result != null && (bool)result == true)
                 {
-                    StringBuilder sb = new StringBuilder();
-                    foreach (KeyValuePair<string, MeasurementInfo> selectedMeasurement in m_selectedMeasurements)
+                    using (StreamWriter writer = new StreamWriter(saveDialog.FileName))
                     {
-                        sb.Append(selectedMeasurement.Value.SignalReference + ";");
+                        StringBuilder sb = new StringBuilder();
+                        foreach (KeyValuePair<string, MeasurementInfo> selectedMeasurement in m_selectedMeasurements)
+                        {
+                            sb.Append(selectedMeasurement.Value.SignalReference + ";");
+                        }
+                        writer.Write(sb.ToString());
                     }
-                    writer.Write(sb.ToString());
                 }
             }
+            catch (Exception)
+            {
+                //System.Diagnostics.Debug.WriteLine(ex.ToString());
+            }
+
         }
 
         private void ButtonLoad_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openDialog = new OpenFileDialog();
-            openDialog.Multiselect = false;
-            openDialog.Filter = "Input Status Monitoring Display Settings (*.ismsettings)|*.ismsettings|All Files (*.*)|*.*";
-            bool? result = openDialog.ShowDialog(Window.GetWindow(this));
-            if (result != null && (bool)result == true)
+            try
             {
-                using (StreamReader reader = new StreamReader(openDialog.OpenFile()))
+                OpenFileDialog openDialog = new OpenFileDialog();
+                openDialog.Multiselect = false;
+                openDialog.Filter = "Input Status Monitoring Display Settings (*.ismsettings)|*.ismsettings|All Files (*.*)|*.*";
+                bool? result = openDialog.ShowDialog(Window.GetWindow(this));
+                if (result != null && (bool)result == true)
                 {
-                    string selection = reader.ReadLine();
-                    string[] signalReferences = selection.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    foreach (DeviceMeasurementData deviceMeasurementData in m_dataForBinding.DeviceMeasurementDataList)
+                    using (StreamReader reader = new StreamReader(openDialog.OpenFile()))
                     {
-                        deviceMeasurementData.IsExpanded = false;
-                        foreach (DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
+                        string selection = reader.ReadLine();
+                        string[] signalReferences = selection.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        foreach (DeviceMeasurementData deviceMeasurementData in m_dataForBinding.DeviceMeasurementDataList)
                         {
-                            deviceInfo.IsExpanded = false;
-                            foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
+                            deviceMeasurementData.IsExpanded = false;
+                            foreach (DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
                             {
-                                if (signalReferences.Contains(measurementInfo.SignalReference))
+                                deviceInfo.IsExpanded = false;
+                                foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
                                 {
-                                    measurementInfo.IsSelected = true;
-                                    deviceInfo.IsExpanded = true;
-                                    deviceMeasurementData.IsExpanded = true;
-                                    m_selectedMeasurements.TryAdd(measurementInfo.SignalID.ToUpper(), measurementInfo);
-                                    AddToCurrentValuesList(measurementInfo);
-                                }
-                                else
-                                {
-                                    measurementInfo.IsSelected = false;                                    
-                                    if (m_selectedMeasurements.ContainsKey(measurementInfo.SignalID.ToUpper()))                                        
-                                        RemoveLineGraph(measurementInfo);
-                                    RemoveFromCurrentValuesList(measurementInfo);
+                                    if (signalReferences.Contains(measurementInfo.SignalReference))
+                                    {
+                                        measurementInfo.IsSelected = true;
+                                        deviceInfo.IsExpanded = true;
+                                        deviceMeasurementData.IsExpanded = true;
+                                        m_selectedMeasurements.TryAdd(measurementInfo.SignalID.ToUpper(), measurementInfo);
+                                        AddToCurrentValuesList(measurementInfo);
+                                    }
+                                    else
+                                    {
+                                        measurementInfo.IsSelected = false;
+                                        if (m_selectedMeasurements.ContainsKey(measurementInfo.SignalID.ToUpper()))
+                                            RemoveLineGraph(measurementInfo);
+                                        RemoveFromCurrentValuesList(measurementInfo);
+                                    }
                                 }
                             }
                         }
+                        m_dataForBinding.IsExpanded = false;
+                        TreeViewDeviceMeasurements.Items.Refresh();
+                        TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
                     }
-                    m_dataForBinding.IsExpanded = false;
-                    TreeViewDeviceMeasurements.Items.Refresh();
-                    TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
-                }
 
-                if (m_selectedMeasurements.Count > 0)
-                    SubscribeDataForChart();
+                    if (m_selectedMeasurements.Count > 0)
+                        SubscribeDataForChart();
+                }
             }
+            catch (Exception)
+            {
+                //System.Diagnostics.Debug.WriteLine(ex.ToString());
+            }
+
         }
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            CheckBox checkBox = ((CheckBox)sender);            
-            RemoveLineGraph((MeasurementInfo)checkBox.DataContext);
-            //ThreadPool.QueueUserWorkItem(RemoveFromCurrentValuesList, (MeasurementInfo)checkBox.DataContext);
-            RemoveFromCurrentValuesList((MeasurementInfo)checkBox.DataContext);
+            try
+            {
+                CheckBox checkBox = ((CheckBox)sender);
+                RemoveLineGraph((MeasurementInfo)checkBox.DataContext);
+                //ThreadPool.QueueUserWorkItem(RemoveFromCurrentValuesList, (MeasurementInfo)checkBox.DataContext);
+                RemoveFromCurrentValuesList((MeasurementInfo)checkBox.DataContext);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+            }
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            MeasurementInfo measurementInfo = (MeasurementInfo)((CheckBox)sender).DataContext;
-            //ThreadPool.QueueUserWorkItem(AddToCurrentValuesList, measurementInfo);
-            AddToCurrentValuesList(measurementInfo);
-            if (!m_selectedMeasurements.ContainsKey(measurementInfo.SignalID.ToUpper()))
-                m_selectedMeasurements.TryAdd(measurementInfo.SignalID.ToUpper(), measurementInfo);
-            SubscribeDataForChart();
+            try
+            {
+                MeasurementInfo measurementInfo = (MeasurementInfo)((CheckBox)sender).DataContext;
+                //ThreadPool.QueueUserWorkItem(AddToCurrentValuesList, measurementInfo);
+                AddToCurrentValuesList(measurementInfo);
+                if (!m_selectedMeasurements.ContainsKey(measurementInfo.SignalID.ToUpper()))
+                    m_selectedMeasurements.TryAdd(measurementInfo.SignalID.ToUpper(), measurementInfo);
+                SubscribeDataForChart();
+            }
+            catch (Exception)
+            {
+                //stem.Diagnostics.Debug.WriteLine(ex.ToString());
+            }
         }
 
         private void ButtonGetStatistics_Click(object sender, RoutedEventArgs e)
         {
-            string deviceAcronym = ((Button)sender).Content.ToString();
-            Device deviceInfo = CommonFunctions.GetDeviceByAcronym(null, deviceAcronym);
-            UserControlDeviceDetailInfo.Initialize(deviceInfo);
-            UserControlDeviceDetailInfo.Visibility = Visibility.Visible;
+            try
+            {
+                string deviceAcronym = ((Button)sender).Content.ToString();
+                Device deviceInfo = CommonFunctions.GetDeviceByAcronym(null, deviceAcronym);
+                UserControlDeviceDetailInfo.Initialize(deviceInfo);
+                UserControlDeviceDetailInfo.Visibility = Visibility.Visible;
+            }
+            catch (Exception)
+            {
+                //stem.Diagnostics.Debug.WriteLine(ex.ToString());
+            }
+
         }
 
         private void ButtonEdit_Click(object sender, RoutedEventArgs e)
         {
-            if (((Button)sender).Tag != null)
+            try
             {
-                int deviceId = Convert.ToInt32(((Button)sender).Tag);
-                if (deviceId > 0)
+                if (((Button)sender).Tag != null)
                 {
-                    ManageDevicesUserControl manageDevicesUserControl = new ManageDevicesUserControl();
-                    manageDevicesUserControl.m_deviceID = deviceId;
-                    ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(manageDevicesUserControl);
+                    int deviceId = Convert.ToInt32(((Button)sender).Tag);
+                    if (deviceId > 0)
+                    {
+                        ManageDevicesUserControl manageDevicesUserControl = new ManageDevicesUserControl();
+                        manageDevicesUserControl.m_deviceID = deviceId;
+                        ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(manageDevicesUserControl);
+                    }
+                    else
+                    {
+                        SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Invalid or Dummy Device Selected", SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Information },
+                            ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        sm.ShowPopup();
+                    }
                 }
                 else
                 {
                     SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Invalid or Dummy Device Selected", SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Information },
-                        ButtonType.OkOnly);
+                            ButtonType.OkOnly);
                     sm.Owner = Window.GetWindow(this);
                     sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                     sm.ShowPopup();
                 }
             }
-            else
+            catch (Exception)
             {
-                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Invalid or Dummy Device Selected", SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Information },
-                        ButtonType.OkOnly);
-                sm.Owner = Window.GetWindow(this);
-                sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                sm.ShowPopup();
+
+                //stem.Diagnostics.Debug.WriteLine(ex.ToString());
             }
+
         }
 
         #endregion
-    
+
     }
 }
