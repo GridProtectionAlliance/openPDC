@@ -38,6 +38,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using TVA;
+using TVA.Data;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -62,12 +63,12 @@ namespace ConfigurationSetupUtility.Screens
         /// Creates a new instance of the <see cref="MySqlDatabaseSetupScreen"/> class.
         /// </summary>
         public MySqlDatabaseSetupScreen()
-        {            
+        {
             m_mySqlSetup = new MySqlSetup();
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(MySqlDatabaseSetupScreen_Loaded);
 
-            string[] mySQLConnectorNetVersions = { "6.3.4.0", "6.2.4.0", "6.1.5.0", "6.0.7.0", "5.2.7.0", "5.1.7.0", "5.0.9.0" };
+            string[] mySQLConnectorNetVersions = { "6.3.6.0", "6.3.4.0", "6.2.4.0", "6.1.5.0", "6.0.7.0", "5.2.7.0", "5.1.7.0", "5.0.9.0" };
             string assemblyNamePrefix = "MySql.Data, Version=";
             string assemblyNameSuffix = ", Culture=neutral, PublicKeyToken=c5687fc88969c44d";
             string assemblyName;
@@ -95,10 +96,10 @@ namespace ConfigurationSetupUtility.Screens
             }
 
             if (string.IsNullOrEmpty(m_dataProviderString))
-                m_dataProviderString = "AssemblyName={MySql.Data, Version=6.3.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
+                m_dataProviderString = "AssemblyName={MySql.Data, Version=6.3.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
         }
 
-        
+
 
         #endregion
 
@@ -200,6 +201,36 @@ namespace ConfigurationSetupUtility.Screens
                     return false;
                 }
 
+                bool existing = Convert.ToBoolean(m_state["existing"]);
+                bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+
+                if (existing && !migrate)
+                {
+                    IDbConnection connection = null;
+                    try
+                    {
+                        OpenConnection(ref connection);
+                        if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM UserAccount")) > 0)
+                            m_state["securityUpgrade"] = false;
+                        else
+                            m_state["securityUpgrade"] = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        string failMessage = "Database connection issue. " + ex.Message +
+                        " Check your username and password." +
+                        " Additionally, you may need to modify your connection under advanced settings.";
+
+                        MessageBox.Show(failMessage);
+                        m_newUserNameTextBox.Focus();
+                        return false;
+                    }
+                    finally
+                    {
+                        if (connection != null)
+                            connection.Dispose();
+                    }
+                }
                 return true;
             }
         }
@@ -370,38 +401,12 @@ namespace ConfigurationSetupUtility.Screens
         private void TestConnectionButton_Click(object sender, RoutedEventArgs e)
         {
             IDbConnection connection = null;
-            Dictionary<string, string> settings;
-            string assemblyName, connectionTypeName, adapterTypeName;
-            Assembly assembly;
-            Type connectionType, adapterType;
-            string dataProviderString;
             string databaseName = null;
-
             try
             {
                 databaseName = m_mySqlSetup.DatabaseName;
                 m_mySqlSetup.DatabaseName = null;
-
-                dataProviderString = m_state["mySqlDataProviderString"].ToString();
-                settings = dataProviderString.ParseKeyValuePairs();
-                assemblyName = settings["AssemblyName"].ToNonNullString();
-                connectionTypeName = settings["ConnectionType"].ToNonNullString();
-                adapterTypeName = settings["AdapterType"].ToNonNullString();
-
-                if (string.IsNullOrEmpty(connectionTypeName))
-                    throw new InvalidOperationException("Database connection type was not defined.");
-
-                if (string.IsNullOrEmpty(adapterTypeName))
-                    throw new InvalidOperationException("Database adapter type was not defined.");
-
-                assembly = Assembly.Load(new AssemblyName(assemblyName));
-                connectionType = assembly.GetType(connectionTypeName);
-                adapterType = assembly.GetType(adapterTypeName);
-
-                connection = (IDbConnection)Activator.CreateInstance(connectionType);
-                connection.ConnectionString = m_mySqlSetup.ConnectionString;
-                connection.Open();
-
+                OpenConnection(ref connection);
                 MessageBox.Show("Database connection succeeded.");
             }
             catch
@@ -420,6 +425,35 @@ namespace ConfigurationSetupUtility.Screens
                 if (databaseName != null)
                     m_mySqlSetup.DatabaseName = databaseName;
             }
+        }
+
+        private void OpenConnection(ref IDbConnection connection)
+        {
+            Dictionary<string, string> settings;
+            string assemblyName, connectionTypeName, adapterTypeName;
+            Assembly assembly;
+            Type connectionType, adapterType;
+            string dataProviderString;
+
+            dataProviderString = m_state["mySqlDataProviderString"].ToString();
+            settings = dataProviderString.ParseKeyValuePairs();
+            assemblyName = settings["AssemblyName"].ToNonNullString();
+            connectionTypeName = settings["ConnectionType"].ToNonNullString();
+            adapterTypeName = settings["AdapterType"].ToNonNullString();
+
+            if (string.IsNullOrEmpty(connectionTypeName))
+                throw new InvalidOperationException("Database connection type was not defined.");
+
+            if (string.IsNullOrEmpty(adapterTypeName))
+                throw new InvalidOperationException("Database adapter type was not defined.");
+
+            assembly = Assembly.Load(new AssemblyName(assemblyName));
+            connectionType = assembly.GetType(connectionTypeName);
+            adapterType = assembly.GetType(adapterTypeName);
+
+            connection = (IDbConnection)Activator.CreateInstance(connectionType);
+            connection.ConnectionString = m_mySqlSetup.ConnectionString;
+            connection.Open();
         }
 
         // Occurs when the user chooses to create a new database user.

@@ -28,10 +28,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
+using TVA;
+using TVA.Data;
+using TVA.IO;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -140,6 +145,58 @@ namespace ConfigurationSetupUtility.Screens
                 {
                     if (!Convert.ToBoolean(m_state["existing"]) && File.Exists(m_accessDatabaseFilePathTextBox.Text))
                         return (MessageBox.Show("An Access database already exists at the selected location. Are you sure you want to override the existing configuration?", "Configuration Already Exists", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes);
+
+                    bool existing = Convert.ToBoolean(m_state["existing"]);
+                    bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+
+                    if (existing && !migrate)
+                    {
+                        //check if UserAccount table has any rows.
+                        IDbConnection connection = null;
+                        try
+                        {
+                            string destination = m_state["accessDatabaseFilePath"].ToString();
+                            string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + destination;
+                            string dataProviderString = "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter";
+
+                            Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
+                            Dictionary<string, string> dataProviderSettings = dataProviderString.ParseKeyValuePairs();
+                            string assemblyName = dataProviderSettings["AssemblyName"];
+                            string connectionTypeName = dataProviderSettings["ConnectionType"];
+                            string connectionSetting;
+
+                            Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
+                            Type connectionType = assembly.GetType(connectionTypeName);
+
+                            if (settings.TryGetValue("Data Source", out connectionSetting))
+                            {
+                                settings["Data Source"] = FilePath.GetAbsolutePath(connectionSetting);
+                                connectionString = settings.JoinKeyValuePairs();
+                            }
+
+                            connection = (IDbConnection)Activator.CreateInstance(connectionType);
+                            connection.ConnectionString = connectionString;
+                            connection.Open();
+
+                            if ((int)connection.ExecuteScalar("SELECT COUNT(*) FROM UserAccount") > 0)
+                                m_state["securityUpgrade"] = false;
+                            else
+                                m_state["securityUpgrade"] = true;
+
+                        }
+                        catch (Exception ex)
+                        {
+                            string failMessage = "Database connection issue. " + ex.Message;
+                            MessageBox.Show(failMessage);
+                            m_accessDatabaseFilePathTextBox.Focus();
+                            return false;
+                        }
+                        finally
+                        {
+                            if (connection != null)
+                                connection.Dispose();
+                        }
+                    }
 
                     return true;
                 }

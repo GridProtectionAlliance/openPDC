@@ -18,6 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  11/02/2010 - Mehulbhai P Thakkar
 //       Generated original version of source code.
+//  04/25/2011 - Mehulbhai P Thakkar
+//       Changes to the format of date time display on the screen suggested by Ryan Zuo from Alstom.
 //
 //******************************************************************************************************
 
@@ -197,7 +199,7 @@ namespace openPDCManager.Pages.Monitoring
                                     if (m_currentValuesList.TryGetValue(tempSignalID, out inputMonitorData))
                                     {
                                         inputMonitorData.Value = tempValue.ToString("0.###");
-                                        inputMonitorData.TimeStamp = measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff");
+                                        inputMonitorData.TimeStamp = measurement.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
                                         inputMonitorData.Quality = measurement.ValueQualityIsGood ? "GOOD" : "UNKNOWN";
                                     }
                                 }
@@ -242,7 +244,7 @@ namespace openPDCManager.Pages.Monitoring
                                             if (m_currentValuesList.TryGetValue(tempSignalID, out inputMonitorData))
                                             {
                                                 inputMonitorData.Value = tempValue.ToString("0.###");
-                                                inputMonitorData.TimeStamp = measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff");
+                                                inputMonitorData.TimeStamp = measurement.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
                                                 inputMonitorData.Quality = measurement.ValueQualityIsGood ? "GOOD" : "UNKNOWN";
                                                 inputMonitorData.Background = (SolidColorBrush)lineGraph.LinePen.Brush;
                                             }
@@ -317,7 +319,7 @@ namespace openPDCManager.Pages.Monitoring
                                     if (measurement.SignalID.ToString().ToUpper() == measurementInfo.SignalID.ToUpper())
                                     {
                                         measurementInfo.CurrentQuality = measurement.ValueQualityIsGood ? "GOOD" : "BAD";
-                                        measurementInfo.CurrentTimeTag = measurement.Timestamp.ToString("MM-dd-yyyy hh:mm:ss.fff");
+                                        measurementInfo.CurrentTimeTag = measurement.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
                                         measurementInfo.CurrentValue = measurement.Value.ToString("0.###");
 
                                         if (measurementInfo.SignalAcronym == "FLAG")
@@ -787,7 +789,7 @@ namespace openPDCManager.Pages.Monitoring
                 m_dataForBinding.IsExpanded = false;
                 TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
                 TreeViewDeviceMeasurements.Items.Refresh();
-                TextBlockLastRefresh.Text = "Last Refresh: " + DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss.fff");
+                TextBlockLastRefresh.Text = "Last Refresh: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
             });
         }
 

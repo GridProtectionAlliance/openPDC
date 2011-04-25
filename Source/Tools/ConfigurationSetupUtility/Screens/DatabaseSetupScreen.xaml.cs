@@ -25,7 +25,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
@@ -33,8 +35,6 @@ using Microsoft.Win32;
 using TVA;
 using TVA.Data;
 using TVA.Security.Cryptography;
-using System.Reflection;
-using System.Data;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -257,8 +257,10 @@ namespace ConfigurationSetupUtility.Screens
 
                             try
                             {
-                                connection.ExecuteScalar("SELECT * FROM AuditLog WHERE TableName='_'");
-                                m_state["securityUpgrade"] = false;
+                                if ((int)connection.ExecuteScalar("SELECT COUNT(*) FROM UserAccount") > 0)
+                                    m_state["securityUpgrade"] = false;
+                                else
+                                    m_state["securityUpgrade"] = true;
                             }
                             catch
                             {

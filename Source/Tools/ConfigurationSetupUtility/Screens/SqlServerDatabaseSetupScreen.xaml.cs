@@ -31,6 +31,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using TVA;
+using TVA.Data;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -158,6 +159,38 @@ namespace ConfigurationSetupUtility.Screens
                     MessageBox.Show("Please enter a valid user name for the new user.");
                     m_newUserNameTextBox.Focus();
                     return false;
+                }
+
+                bool existing = Convert.ToBoolean(m_state["existing"]);
+                bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+
+                if (existing && !migrate)
+                {
+                    IDbConnection connection = null;
+
+                    try
+                    {
+                        OpenConnection(ref connection);
+                        if ((int)connection.ExecuteScalar("SELECT COUNT(*) FROM UserAccount") > 0)
+                            m_state["securityUpgrade"] = false;
+                        else
+                            m_state["securityUpgrade"] = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        string failMessage = "Database connection issue. " + ex.Message +
+                        " Check your username and password." +
+                        " Additionally, you may need to modify your connection under advanced settings.";
+
+                        MessageBox.Show(failMessage);
+                        m_newUserNameTextBox.Focus();
+                        return false;
+                    }
+                    finally
+                    {
+                        if (connection != null)
+                            connection.Dispose();
+                    }
                 }
 
                 return true;
@@ -315,38 +348,13 @@ namespace ConfigurationSetupUtility.Screens
         private void TestConnectionButton_Click(object sender, RoutedEventArgs e)
         {
             IDbConnection connection = null;
-            Dictionary<string, string> settings;
-            string assemblyName, connectionTypeName, adapterTypeName;
-            Assembly assembly;
-            Type connectionType, adapterType;
-            string dataProviderString;
             string databaseName = null;
 
             try
             {
                 databaseName = m_sqlServerSetup.DatabaseName;
                 m_sqlServerSetup.DatabaseName = null;
-
-                dataProviderString = m_state["sqlServerDataProviderString"].ToString();
-                settings = dataProviderString.ParseKeyValuePairs();
-                assemblyName = settings["AssemblyName"].ToNonNullString();
-                connectionTypeName = settings["ConnectionType"].ToNonNullString();
-                adapterTypeName = settings["AdapterType"].ToNonNullString();
-
-                if (string.IsNullOrEmpty(connectionTypeName))
-                    throw new InvalidOperationException("Database connection type was not defined.");
-
-                if (string.IsNullOrEmpty(adapterTypeName))
-                    throw new InvalidOperationException("Database adapter type was not defined.");
-
-                assembly = Assembly.Load(new AssemblyName(assemblyName));
-                connectionType = assembly.GetType(connectionTypeName);
-                adapterType = assembly.GetType(adapterTypeName);
-
-                connection = (IDbConnection)Activator.CreateInstance(connectionType);
-                connection.ConnectionString = m_sqlServerSetup.ConnectionString;
-                connection.Open();
-
+                OpenConnection(ref connection);
                 MessageBox.Show("Database connection succeeded.");
             }
             catch
@@ -365,6 +373,35 @@ namespace ConfigurationSetupUtility.Screens
                 if (databaseName != null)
                     m_sqlServerSetup.DatabaseName = databaseName;
             }
+        }
+
+        private void OpenConnection(ref IDbConnection connection)
+        {
+            Dictionary<string, string> settings;
+            string assemblyName, connectionTypeName, adapterTypeName;
+            Assembly assembly;
+            Type connectionType, adapterType;
+            string dataProviderString;
+
+            dataProviderString = m_state["sqlServerDataProviderString"].ToString();
+            settings = dataProviderString.ParseKeyValuePairs();
+            assemblyName = settings["AssemblyName"].ToNonNullString();
+            connectionTypeName = settings["ConnectionType"].ToNonNullString();
+            adapterTypeName = settings["AdapterType"].ToNonNullString();
+
+            if (string.IsNullOrEmpty(connectionTypeName))
+                throw new InvalidOperationException("Database connection type was not defined.");
+
+            if (string.IsNullOrEmpty(adapterTypeName))
+                throw new InvalidOperationException("Database adapter type was not defined.");
+
+            assembly = Assembly.Load(new AssemblyName(assemblyName));
+            connectionType = assembly.GetType(connectionTypeName);
+            adapterType = assembly.GetType(adapterTypeName);
+
+            connection = (IDbConnection)Activator.CreateInstance(connectionType);
+            connection.ConnectionString = m_sqlServerSetup.ConnectionString;
+            connection.Open();
         }
 
         // Occurs when the user chooses to create a new database user.
