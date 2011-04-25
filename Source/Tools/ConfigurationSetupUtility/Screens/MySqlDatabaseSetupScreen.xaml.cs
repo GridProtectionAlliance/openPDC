@@ -255,7 +255,11 @@ namespace ConfigurationSetupUtility.Screens
         /// Allows the screen to update the navigation buttons after a change is made
         /// that would affect the user's ability to navigate to other screens.
         /// </summary>
-        public Action UpdateNavigation { get; set; }
+        public Action UpdateNavigation
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -278,8 +282,8 @@ namespace ConfigurationSetupUtility.Screens
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
                 Visibility newUserVisibility = (existing && !migrate) ? Visibility.Collapsed : Visibility.Visible;
-                string newDatabaseMessage = "Please enter the following information about the database you would like to create.";
-                string oldDatabaseMessage = "Please enter the following information about your existing database.";
+                string newDatabaseMessage = "Please enter the needed information about the\r\nMySQL database you would like to create.";
+                string oldDatabaseMessage = "Please enter the needed information about\r\nyour existing MySQL database.";
 
                 m_state["mySqlSetup"] = m_mySqlSetup;
                 m_mySqlSetup.HostName = m_hostNameTextBox.Text;

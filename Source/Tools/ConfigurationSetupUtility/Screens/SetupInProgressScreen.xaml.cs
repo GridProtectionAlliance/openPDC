@@ -180,7 +180,11 @@ namespace ConfigurationSetupUtility.Screens
         /// Allows the screen to update the navigation buttons after a change is made
         /// that would affect the user's ability to navigate to other screens.
         /// </summary>
-        public Action UpdateNavigation { get; set; }
+        public Action UpdateNavigation
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -260,14 +264,14 @@ namespace ConfigurationSetupUtility.Screens
                     // Set up the initial historian.
                     if (Convert.ToBoolean(m_state["setupHistorian"]))
                         SetUpInitialHistorian(connectionString, dataProviderString);
-                                        
+
                     if (!migrate)
                         SetupAdminUserCredentials(connectionString, dataProviderString);
                 }
 
                 // Modify the openPDC configuration file.
-                ModifyConfigFiles(connectionString, connectionString, dataProviderString, false);
-                
+                ModifyConfigFiles(connectionString, dataProviderString, false);
+
                 m_state["oldOleDbConnectionString"] = m_oldConnectionString;
                 m_state["oldOleDbDataType"] = "Access";
                 m_state["newOleDbConnectionString"] = connectionString;
@@ -387,8 +391,7 @@ namespace ConfigurationSetupUtility.Screens
                 }
 
                 // Modify the openPDC configuration file.
-                string connectionString = mySqlSetup.ConnectionString;
-                ModifyConfigFiles(connectionString, connectionString, dataProviderString, Convert.ToBoolean(m_state["encryptMySqlConnectionStrings"]));
+                ModifyConfigFiles(mySqlSetup.ConnectionString, dataProviderString, Convert.ToBoolean(m_state["encryptMySqlConnectionStrings"]));
                 SaveOldConnectionString();
 
                 OnSetupSucceeded();
@@ -421,7 +424,7 @@ namespace ConfigurationSetupUtility.Screens
                 object dataProviderStringValue;
                 string dataProviderString = null;
 
-                sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;              
+                sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;
                 sqlServerSetup.OutputDataReceived += SqlServerSetup_OutputDataReceived;
                 sqlServerSetup.ErrorDataReceived += SqlServerSetup_ErrorDataReceived;
                 m_state["newOleDbConnectionString"] = sqlServerSetup.OleDbConnectionString;
@@ -511,7 +514,7 @@ namespace ConfigurationSetupUtility.Screens
                             AppendStatusMessage("New database user created successfully.");
                             AppendStatusMessage(string.Empty);
                         }
-                                                
+
                         if (!migrate)
                             SetupAdminUserCredentials(sqlServerSetup.ConnectionString, dataProviderString);
                     }
@@ -519,22 +522,28 @@ namespace ConfigurationSetupUtility.Screens
                     {
                         this.CanGoBack = true;
                         ScreenManager sm = m_state["screenManager"] as ScreenManager;
-                        this.Dispatcher.Invoke((Action)delegate() {
+                        this.Dispatcher.Invoke((Action)delegate()
+                        {
                             while (!(sm.CurrentScreen is SqlServerDatabaseSetupScreen))
                                 sm.GoToPreviousScreen();
-                        });                        
+                        });
                     }
                 }
 
                 // Modify the openPDC configuration file.
-                string serviceConnectionString = sqlServerSetup.PooledConnectionString;
-                string managerConnectionString = serviceConnectionString;
+                string connectionString;
+                bool useIntegratedSecurity = false;
 
                 // Check to see if user requested to use integrated authentication
-                if (m_state.ContainsKey("useSqlServerIntegratedSecurity") && Convert.ToBoolean(m_state["useSqlServerIntegratedSecurity"]))
-                    managerConnectionString = sqlServerSetup.IntegratedSecurityConnectionString;
+                if (m_state.ContainsKey("useSqlServerIntegratedSecurity"))
+                    useIntegratedSecurity = Convert.ToBoolean(m_state["useSqlServerIntegratedSecurity"]);
 
-                ModifyConfigFiles(serviceConnectionString, managerConnectionString, dataProviderString, Convert.ToBoolean(m_state["encryptSqlServerConnectionStrings"]));
+                if (useIntegratedSecurity)
+                    connectionString = sqlServerSetup.IntegratedSecurityConnectionString;
+                else
+                    connectionString = sqlServerSetup.PooledConnectionString;
+
+                ModifyConfigFiles(connectionString, dataProviderString, Convert.ToBoolean(m_state["encryptSqlServerConnectionStrings"]));
                 SaveOldConnectionString();
 
                 OnSetupSucceeded();
@@ -581,7 +590,7 @@ namespace ConfigurationSetupUtility.Screens
                 try
                 {
                     connection = (IDbConnection)Activator.CreateInstance(connectionType);
-                    
+
                     //if (m_state["databaseType"].ToString() == "sql server")
                     //    connection.ConnectionString = connectionString + ";pooling=false;"; // this was done to avoid connection pooling so SQL database can be deleted easily.
                     //else
@@ -605,24 +614,23 @@ namespace ConfigurationSetupUtility.Screens
                 }
                 finally
                 {
-                    if (connection != null)                    
-                        connection.Dispose();                        
+                    if (connection != null)
+                        connection.Dispose();
                 }
 
                 if (dbCount > 0)
                 {
                     StringBuilder sb = new StringBuilder();
-                    sb.Append(string.Format("Database {0} already exists.", databaseName));
+
+                    sb.AppendFormat("Database \"{0}\" already exists.\r\n", databaseName);
                     sb.AppendLine();
                     sb.AppendLine("    Click YES to delete existing database.");
                     sb.AppendLine("    Click NO to go back to change database name.");
                     sb.AppendLine();
                     sb.AppendLine("WARNING: If you delete the existing database ALL configuration in that database will be permanently deleted.");
-                    
-                    bool dropDatabase = false;
-                    if (MessageBox.Show(sb.ToString(), "Database Exists!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                        dropDatabase = true;
-                    
+
+                    bool dropDatabase = (MessageBox.Show(sb.ToString(), "Database Exists!", MessageBoxButton.YesNo) == MessageBoxResult.Yes);
+
                     if (dropDatabase)
                     {
                         if (m_state["databaseType"].ToString() == "sql server")
@@ -630,10 +638,10 @@ namespace ConfigurationSetupUtility.Screens
                             SqlServerSetup sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;
                             sqlServerSetup.DatabaseName = "master";
                             if (!sqlServerSetup.ExecuteStatement(string.Format("USE [master] ALTER DATABASE {0} SET SINGLE_USER WITH ROLLBACK IMMEDIATE DROP DATABASE {0}", databaseName)))
-                                MessageBox.Show(string.Format("Failed to delete database {0}", databaseName), "Delete Database Failed");                                
+                                MessageBox.Show(string.Format("Failed to delete database {0}", databaseName), "Delete Database Failed");
                             else
                                 AppendStatusMessage(string.Format("Dropped database {0} successfully.", databaseName));
-                                
+
                             sqlServerSetup.DatabaseName = databaseName;
                         }
                         else
@@ -647,7 +655,7 @@ namespace ConfigurationSetupUtility.Screens
                         return false;
                     }
                     else
-                        return true;                     
+                        return true;
                 }
                 return false;
             }
@@ -664,7 +672,7 @@ namespace ConfigurationSetupUtility.Screens
             try
             {
                 // Modify the openPDC configuration file.
-                ModifyConfigFiles(m_state["xmlFilePath"].ToString(), string.Empty, string.Empty, false);
+                ModifyConfigFiles(m_state["xmlFilePath"].ToString(), string.Empty, false);
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -680,7 +688,7 @@ namespace ConfigurationSetupUtility.Screens
             try
             {
                 // Modify the openPDC configuration file.
-                ModifyConfigFiles(m_state["webServiceUrl"].ToString(), string.Empty, string.Empty, false);
+                ModifyConfigFiles(m_state["webServiceUrl"].ToString(), string.Empty, false);
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -714,7 +722,7 @@ namespace ConfigurationSetupUtility.Screens
             IDbConnection connection = null;
 
             try
-            {                
+            {
                 IDbCommand historianCommand;
                 string nodeIdQueryString = null;
 
@@ -744,7 +752,7 @@ namespace ConfigurationSetupUtility.Screens
 
                 if (!migrate)
                     defaultNodeCreatedHere = ManageDefaultNode(connection, sampleDataScript, m_defaultNodeAdded);
-                
+
                 if (settings.TryGetValue("Provider", out connectionSetting))
                 {
                     // Check if provider is for Access since it uses braces as Guid delimeters
@@ -797,7 +805,7 @@ namespace ConfigurationSetupUtility.Screens
             IDbConnection connection = null;
 
             try
-            {                
+            {
                 string nodeIdQueryString = null;
 
                 AppendStatusMessage("Attempting to set up administrative user...");
@@ -825,7 +833,7 @@ namespace ConfigurationSetupUtility.Screens
 
                 if (!migrate)
                     defaultNodeCreatedHere = ManageDefaultNode(connection, sampleDataScript, m_defaultNodeAdded);
-                    
+
                 if (settings.TryGetValue("Provider", out connectionSetting))
                 {
                     // Check if provider is for Access since it uses braces as Guid delimeters
@@ -840,8 +848,8 @@ namespace ConfigurationSetupUtility.Screens
 
                 // Get Administrative RoleID
                 IDbCommand roleIdCommand;
-                IDataReader roleIdReader = null;      
-          
+                IDataReader roleIdReader = null;
+
                 // Get the node ID from the database.
                 try
                 {
@@ -850,14 +858,14 @@ namespace ConfigurationSetupUtility.Screens
                     roleIdReader = roleIdCommand.ExecuteReader();
 
                     if (roleIdReader.Read())
-                         adminRoleID = roleIdReader["ID"].ToNonNullString();
+                        adminRoleID = roleIdReader["ID"].ToNonNullString();
                 }
                 finally
                 {
                     if (roleIdReader != null)
                         roleIdReader.Close();
                 }
-                                                
+
                 // Add Administrative User.                
                 IDbCommand adminCredentialCommand = connection.CreateCommand();
                 if (m_state["authenticationType"].ToString() == "windows")
@@ -919,7 +927,7 @@ namespace ConfigurationSetupUtility.Screens
                 }
 
                 adminCredentialCommand.ExecuteNonQuery();
-                
+
                 // Get the admin user ID from the database.
                 IDataReader userIdReader = null;
                 try
@@ -953,7 +961,7 @@ namespace ConfigurationSetupUtility.Screens
                         {
                             adminUserID = "{" + adminUserID + "}";
                             adminRoleID = "{" + adminRoleID + "}";
-                        }                        
+                        }
                     }
                     else
                     {
@@ -962,7 +970,7 @@ namespace ConfigurationSetupUtility.Screens
                     }
 
                     adminCredentialCommand.CommandText = string.Format("INSERT INTO ApplicationRoleUserAccount(ApplicationRoleID, UserAccountID) VALUES ({0}, {1})", adminRoleID, adminUserID);
-                    adminCredentialCommand.ExecuteNonQuery();                    
+                    adminCredentialCommand.ExecuteNonQuery();
                 }
 
                 // Report success to the user.
@@ -987,9 +995,9 @@ namespace ConfigurationSetupUtility.Screens
         private bool ManageDefaultNode(IDbConnection connection, bool sampleDataScript, bool defaultNodeHasBeenAdded)
         {
             bool defaultNodeCreated = false;
-            IDbCommand nodeIdCommand;            
+            IDbCommand nodeIdCommand;
             IDataReader nodeIdReader = null;
-            string nodeId = null;            
+            string nodeId = null;
 
             // Set up default node if it has not been added to in the SetupDefaultHistorian method above.            
             if (!sampleDataScript && !m_defaultNodeAdded)
@@ -1009,9 +1017,9 @@ namespace ConfigurationSetupUtility.Screens
                 nodeIdReader = nodeIdCommand.ExecuteReader();
 
                 if (nodeIdReader.Read())
-                    nodeId = nodeIdReader["ID"].ToNonNullString();                
+                    nodeId = nodeIdReader["ID"].ToNonNullString();
 
-                m_state["selectedNodeId"] = nodeId;                
+                m_state["selectedNodeId"] = nodeId;
             }
             finally
             {
@@ -1032,13 +1040,13 @@ namespace ConfigurationSetupUtility.Screens
             // When a new node added, also add 3 roles to it (Administrator, Editor, Viewer).
             IDbCommand adminCredentialCommand;
             adminCredentialCommand = connection.CreateCommand();
-            adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Administrator', 'Administrator Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+            adminCredentialCommand.CommandText = string.Format("INSERT INTO ApplicationRole(Name, Description, NodeID, UpdatedBy, CreatedBy) VALUES('Administrator', 'Administrator Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
             adminCredentialCommand.ExecuteNonQuery();
 
-            adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Editor', 'Editor Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+            adminCredentialCommand.CommandText = string.Format("INSERT INTO ApplicationRole(Name, Description, NodeID, UpdatedBy, CreatedBy) VALUES('Editor', 'Editor Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
             adminCredentialCommand.ExecuteNonQuery();
 
-            adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Viewer', 'Viewer Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+            adminCredentialCommand.CommandText = string.Format("INSERT INTO ApplicationRole(Name, Description, NodeID, UpdatedBy, CreatedBy) VALUES('Viewer', 'Viewer Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
             adminCredentialCommand.ExecuteNonQuery();
 
         }
@@ -1066,7 +1074,7 @@ namespace ConfigurationSetupUtility.Screens
 
                     if (total > 0)
                         AppendStatusMessage(string.Format("Stopped {0} openPDC Manager instance{1}.", total, total > 1 ? "s" : ""));
-                    
+
                     // Add an extra line for visual separation of process termination status
                     AppendStatusMessage("");
                 }
@@ -1109,7 +1117,7 @@ namespace ConfigurationSetupUtility.Screens
                     AppendStatusMessage("Failed to stop the openPDC Windows service: " + ex.Message + "\r\nModifications continuing anyway...\r\n");
                 }
             }
-            
+
             // If the openPDC service failed to stop or it is installed as stand-alone debug application, we try to stop any remaining running instances
             try
             {
@@ -1141,7 +1149,7 @@ namespace ConfigurationSetupUtility.Screens
         }
 
         // Modifies the configuration files to contain the given connection string and data provider string.
-        private void ModifyConfigFiles(string serviceConnectionString, string managerConnectionString, string dataProviderString, bool encrypted)
+        private void ModifyConfigFiles(string connectionString, string dataProviderString, bool encrypted)
         {
             // Before modification of configuration files we try to stop key process
             AttemptToStopKeyProcesses();
@@ -1157,19 +1165,19 @@ namespace ConfigurationSetupUtility.Screens
             configFile = Directory.GetCurrentDirectory() + "\\openPDC.exe.config";
 
             if (applyChangesToService && File.Exists(configFile))
-                ModifyConfigFile(configFile, serviceConnectionString, dataProviderString, encrypted);
+                ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted);
 
             configFile = Directory.GetCurrentDirectory() + "\\openPDCManager.exe.config";
 
             if (applyChangesToLocalManager && File.Exists(configFile))
-                ModifyConfigFile(configFile, managerConnectionString, dataProviderString, encrypted);
+                ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted);
 
             if (webManagerDir != null)
             {
                 configFile = webManagerDir.ToString() + "\\Web.config";
-                
+
                 if (applyChangesToWebManager && File.Exists(configFile))
-                    ModifyConfigFile(configFile, serviceConnectionString, dataProviderString, encrypted);
+                    ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted);
             }
 
             AppendStatusMessage("Modification of configuration files was successful.");
@@ -1282,7 +1290,7 @@ namespace ConfigurationSetupUtility.Screens
 
             configFile.Save(configFileName);
         }
-              
+
         // Saves the old connection string as an OleDB connection string.
         private void SaveOldConnectionString()
         {

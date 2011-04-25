@@ -217,7 +217,11 @@ namespace ConfigurationSetupUtility.Screens
         /// Allows the screen to update the navigation buttons after a change is made
         /// that would affect the user's ability to navigate to other screens.
         /// </summary>
-        public Action UpdateNavigation { get; set; }
+        public Action UpdateNavigation
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -240,8 +244,8 @@ namespace ConfigurationSetupUtility.Screens
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
                 Visibility newUserVisibility = (existing && !migrate) ? Visibility.Collapsed : Visibility.Visible;
-                string newDatabaseMessage = "Please enter the following information about the database you would like to create.";
-                string oldDatabaseMessage = "Please enter the following information about your existing database.";
+                string newDatabaseMessage = "Please enter the needed information about the\r\nSQL Server database you would like to create.";
+                string oldDatabaseMessage = "Please enter the needed information about\r\nyour existing SQL Server database.";
 
                 m_state["sqlServerSetup"] = m_sqlServerSetup;
                 m_sqlServerSetup.HostName = m_hostNameTextBox.Text;
@@ -382,6 +386,7 @@ namespace ConfigurationSetupUtility.Screens
             Assembly assembly;
             Type connectionType, adapterType;
             string dataProviderString;
+            bool useIntegratedSecurity = false;
 
             dataProviderString = m_state["sqlServerDataProviderString"].ToString();
             settings = dataProviderString.ParseKeyValuePairs();
@@ -400,7 +405,16 @@ namespace ConfigurationSetupUtility.Screens
             adapterType = assembly.GetType(adapterTypeName);
 
             connection = (IDbConnection)Activator.CreateInstance(connectionType);
-            connection.ConnectionString = m_sqlServerSetup.ConnectionString;
+
+            if (m_state.ContainsKey("useSqlServerIntegratedSecurity"))
+                useIntegratedSecurity = Convert.ToBoolean(m_state["useSqlServerIntegratedSecurity"]);
+
+            // Force use of non-pooled connection string such that database can later be deleted if needed
+            if (useIntegratedSecurity)
+                connection.ConnectionString = m_sqlServerSetup.IntegratedSecurityConnectionString + "; pooling=false";
+            else
+                connection.ConnectionString = m_sqlServerSetup.PooledConnectionString + "; pooling=false";
+
             connection.Open();
         }
 
@@ -423,6 +437,13 @@ namespace ConfigurationSetupUtility.Screens
         {
             if (m_state != null)
                 m_state["useSqlServerIntegratedSecurity"] = true;
+
+            m_userNameLabel.IsEnabled = false;
+            m_passwordLabel.IsEnabled = false;
+            m_adminUserNameTextBox.Text = "";
+            m_adminPasswordTextBox.Password = "";
+            m_adminUserNameTextBox.IsEnabled = false;
+            m_adminPasswordTextBox.IsEnabled = false;
         }
 
         // Occurs when the user chooses to not use pass-through authentication.
@@ -430,6 +451,11 @@ namespace ConfigurationSetupUtility.Screens
         {
             if (m_state != null)
                 m_state["useSqlServerIntegratedSecurity"] = false;
+
+            m_userNameLabel.IsEnabled = true;
+            m_passwordLabel.IsEnabled = true;
+            m_adminUserNameTextBox.IsEnabled = true;
+            m_adminPasswordTextBox.IsEnabled = true;
         }
 
         // Occurs when the user changes the user name of the new database user.
@@ -454,17 +480,27 @@ namespace ConfigurationSetupUtility.Screens
                 string password = m_sqlServerSetup.Password;
                 string dataProviderString = m_state["sqlServerDataProviderString"].ToString();
                 bool encrypt = Convert.ToBoolean(m_state["encryptSqlServerConnectionStrings"]);
+                bool useIntegratedSecurity = false;
                 string connectionString;
                 AdvancedSettingsWindow advancedWindow;
 
                 m_sqlServerSetup.Password = null;
-                connectionString = m_sqlServerSetup.ConnectionString;
+
+                if (m_state.ContainsKey("useSqlServerIntegratedSecurity"))
+                    useIntegratedSecurity = Convert.ToBoolean(m_state["useSqlServerIntegratedSecurity"]);
+
+                if (useIntegratedSecurity)
+                    connectionString = m_sqlServerSetup.IntegratedSecurityConnectionString;
+                else
+                    connectionString = m_sqlServerSetup.PooledConnectionString;
+
                 advancedWindow = new AdvancedSettingsWindow(connectionString, dataProviderString, encrypt);
                 advancedWindow.Owner = App.Current.MainWindow;
 
                 if (advancedWindow.ShowDialog() == true)
                 {
-                    m_sqlServerSetup.ConnectionString = advancedWindow.ConnectionString;
+                    // Force use of non-pooled connection string such that database can later be deleted if needed
+                    m_sqlServerSetup.ConnectionString = advancedWindow.ConnectionString + "; pooling=false";
                     m_state["sqlServerDataProviderString"] = advancedWindow.DataProviderString;
                     m_state["encryptSqlServerConnectionStrings"] = advancedWindow.Encrypt;
                 }

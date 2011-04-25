@@ -190,7 +190,7 @@ namespace ConfigurationSetupUtility
 
                 foreach (string key in m_settings.Keys)
                 {
-                    if (string.Compare(key, "User ID", true) != 0 && string.Compare(key, "Password", true) != 0 && string.Compare(key, "pooling", true) != 0)
+                    if (string.Compare(key, "User ID", true) != 0 && string.Compare(key, "Uid", true) != 0 && string.Compare(key, "Password", true) != 0 && string.Compare(key, "Pwd", true) != 0 && string.Compare(key, "pooling", true) != 0)
                     {
                         if (builder.Length > 0)
                             builder.Append("; ");

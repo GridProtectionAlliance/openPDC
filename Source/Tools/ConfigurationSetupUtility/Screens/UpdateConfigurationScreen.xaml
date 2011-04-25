@@ -16,6 +16,9 @@
                 <RadioButton Content="I want to upgrade to the latest schema." Height="18" IsChecked="True" Checked="UpdateConfigurationRadioButton_Checked" Name="m_updateConfigurationRadioButton" />
                 <RadioButton Content="I want to use an existing database as-is." Height="18" Checked="UseExistingConfigurationRadioButton_Checked" Name="m_useExistingConfigurationRadioButton" />
             </StackPanel>
+            <TextBlock TextAlignment="Center" TextWrapping="Wrap" Margin="20">
+                Upgrading to the latest database schema is typically only<LineBreak />needed when moving between different product versions.
+            </TextBlock>
         </StackPanel>
     </DockPanel>
 </UserControl>
