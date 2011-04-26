@@ -209,17 +209,23 @@ namespace openPDCManager.UserControls.CommonControls
                     if (m_wizardDeviceInfoList.Count > 1)
                     {
                         CheckboxConnectToPDC.IsChecked = true;
-                        SystemMessages sm1 = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Information },
-                                    ButtonType.OkOnly);
-                        sm1.Owner = Window.GetWindow(this);
-                        sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                        sm1.ShowPopup();
-                        TextBoxPDCAcronym.Focus();
+                        if (m_deviceToBeUpdated == null)
+                        {
+                            SystemMessages sm1 = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Information },
+                                       ButtonType.OkOnly);
+                            sm1.Owner = Window.GetWindow(this);
+                            sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            sm1.ShowPopup();
+                            TextBoxPDCAcronym.Focus();
+                        }
                     }
                     else
                         CheckboxConnectToPDC.IsChecked = false;
 
                     ChangeSummaryVisibility(Visibility.Visible);
+
+                    if (m_deviceToBeUpdated != null)
+                        AccordianWizard.SelectedIndex = 2;
 
                 }
                 catch (Exception ex)
@@ -477,17 +483,23 @@ namespace openPDCManager.UserControls.CommonControls
                 if (m_wizardDeviceInfoList.Count > 1)
                 {
                     CheckboxConnectToPDC.IsChecked = true;
-                    SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Information },
-                                ButtonType.OkOnly);
-                    sm.Owner = Window.GetWindow(this);
-                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                    sm.ShowPopup();
-                    TextBoxPDCAcronym.Focus();
+                    if (m_deviceToBeUpdated == null)
+                    {
+                        SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Information },
+                                    ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        sm.ShowPopup();
+                        TextBoxPDCAcronym.Focus();
+                    }
                 }
                 else
                     CheckboxConnectToPDC.IsChecked = false;
 
                 ChangeSummaryVisibility(Visibility.Visible);
+
+                if (m_deviceToBeUpdated != null)
+                    AccordianWizard.SelectedIndex = 2;
             }
             catch (Exception ex)
             {

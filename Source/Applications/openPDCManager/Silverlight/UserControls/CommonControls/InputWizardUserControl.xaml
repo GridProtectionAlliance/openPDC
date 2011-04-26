@@ -248,7 +248,7 @@
                                                             <TextBox Text="{Binding Path=Name, Mode=TwoWay}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center" MaxLength="100"/>
                                                         </Border>
                                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                            <ComboBox x:Name="ComboboxVendor" DisplayMemberPath="Value" SelectedItem="{Binding Path=VendorDeviceID, Mode=TwoWay, Converter={StaticResource stringToDictionaryConverter}}" Width="{StaticResource LargeItemSize}" Loaded="ComboboxVendor_Loaded" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
+                                                            <ComboBox x:Name="ComboboxVendor" DisplayMemberPath="Value" SelectedItem="{Binding Path=VendorDeviceID, Mode=TwoWay, Converter={StaticResource stringToDictionaryConverter}, ConverterParameter=VendorDevice}" Width="{StaticResource LargeItemSize}" Loaded="ComboboxVendor_Loaded" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>
                                                         </Border>
                                                         <Border Style="{StaticResource ContentRowCellBorderStyle}">
                                                             <TextBox Text="{Binding Path=Longitude, Mode=TwoWay}" Width="{StaticResource XSmallItemSize}" TextAlignment="Left" Height="{StaticResource XXXSmallItemSize}" VerticalAlignment="Center"/>

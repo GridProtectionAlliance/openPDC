@@ -175,6 +175,7 @@
     <Compile Include="..\Silverlight\Converters\BooleanToVisibilityConverter.cs">
       <Link>Converters\BooleanToVisibilityConverter.cs</Link>
     </Compile>
+    <Compile Include="Converters\StringToDictionaryConverter.cs" />
     <Compile Include="ModalDialogs\HelpMeChoose.xaml.cs">
       <DependentUpon>HelpMeChoose.xaml</DependentUpon>
     </Compile>
@@ -552,9 +553,6 @@
     </Compile>
     <Compile Include="..\Silverlight\Converters\StringToColorConverter.cs">
       <Link>Converters\StringToColorConverter.cs</Link>
-    </Compile>
-    <Compile Include="..\Silverlight\Converters\StringToDictionaryConverter.cs">
-      <Link>Converters\StringToDictionaryConverter.cs</Link>
     </Compile>
     <Compile Include="..\Silverlight\Converters\StringToPhaseConverter.cs">
       <Link>Converters\StringToPhaseConverter.cs</Link>

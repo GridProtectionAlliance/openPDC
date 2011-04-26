@@ -263,33 +263,36 @@ namespace openPDCManager.Data
             if (configurationFrame != null)
             {
                 int parentAccessID = configurationFrame.IDCode;
-                wizardDeviceInfoList = (from cell in configurationFrame.Cells
-                                        select new WizardDeviceInfo()
-                                        {
-                                            Acronym = cell.StationName.Replace(" ", "").ToUpper(),
-                                            Name = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(cell.StationName.ToLower()),
-                                            Longitude = -98.6m,
-                                            Latitude = 37.5m,
-                                            VendorDeviceID = (int?)null,
-                                            AccessID = cell.IDCode,
-                                            ParentAccessID = parentAccessID,
-                                            Include = true,
-                                            DigitalCount = cell.DigitalDefinitions.Count(),
-                                            AnalogCount = cell.AnalogDefinitions.Count(),
-                                            AddDigitals = false,
-                                            AddAnalogs = false,
-                                            IsNew = GetDeviceByAcronym(null, cell.StationName.Replace(" ", "").ToUpper()) == null ? true : false,
-                                            PhasorList = new ObservableCollection<PhasorInfo>((from phasor in cell.PhasorDefinitions
-                                                                                               select new PhasorInfo()
-                                                                                               {
-                                                                                                   Label = phasor.Label,  //CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(phasor.Label.Replace("?", " ").Trim().ToLower()),
-                                                                                                   Type = phasor.PhasorType == PhasorType.Current ? "I" : "V",
-                                                                                                   Phase = "+",
-                                                                                                   DestinationLabel = "",
-                                                                                                   Include = true
-                                                                                               }).ToList())
-                                        }).ToList();
 
+                foreach (IConfigurationCell cell in configurationFrame.Cells)
+                {
+                    Device tempDevice = GetDeviceByAcronym(null, cell.StationName.Replace(" ", "").ToUpper());
+                    wizardDeviceInfoList.Add(new WizardDeviceInfo()
+                        {
+                            Acronym = cell.StationName.Replace(" ", "").ToUpper(),
+                            Name = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(cell.StationName.ToLower()),
+                            Longitude = tempDevice == null ? -98.6m : tempDevice.Longitude == null ? -98.6m : (decimal)tempDevice.Longitude,
+                            Latitude = tempDevice == null ? 37.5m : tempDevice.Latitude == null ? 37.5m : (decimal)tempDevice.Latitude,
+                            VendorDeviceID = tempDevice == null ? (int?)null : tempDevice.VendorDeviceID,
+                            AccessID = cell.IDCode,
+                            ParentAccessID = parentAccessID,
+                            Include = true,
+                            DigitalCount = cell.DigitalDefinitions.Count(),
+                            AnalogCount = cell.AnalogDefinitions.Count(),
+                            AddDigitals = false,
+                            AddAnalogs = false,
+                            IsNew = tempDevice == null ? true : false,
+                            PhasorList = new ObservableCollection<PhasorInfo>((from phasor in cell.PhasorDefinitions
+                                                                               select new PhasorInfo()
+                                                                               {
+                                                                                   Label = phasor.Label,  //CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(phasor.Label.Replace("?", " ").Trim().ToLower()),
+                                                                                   Type = phasor.PhasorType == PhasorType.Current ? "I" : "V",
+                                                                                   Phase = "+",
+                                                                                   DestinationLabel = "",
+                                                                                   Include = true
+                                                                               }).ToList())
+                        });
+                }
             }
 
             List<string> nondistinctAcronymList = new List<string>();
@@ -312,13 +315,6 @@ namespace openPDCManager.Data
             }
 
             return wizardDeviceInfoList;
-            //}
-            //catch (Exception ex)
-            //{
-            //    LogException("ParseConfigurationFrame", ex);
-            //    CustomServiceFault fault = new CustomServiceFault() { UserMessage = "Failed to Parse Configuration Frame", SystemMessage = ex.Message };
-            //    throw new FaultException<CustomServiceFault>(fault);
-            //}
         }
 
         private static IConfigurationFrame s_responseAttachment;
@@ -447,20 +443,20 @@ namespace openPDCManager.Data
                         device.Enabled = true;
                         device.VendorDeviceID = info.VendorDeviceID == null ? (int?)null : info.VendorDeviceID == 0 ? (int?)null : info.VendorDeviceID;
                         device.ParentID = parentID;
-                        device.TimeZone = string.Empty;
                         device.AccessID = info.AccessID;
-                        //Please review from here.										
+                        device.LoadOrder = loadOrder;
+                        device.SkipDisableRealTimeData = skipDisableRealTimeData;
+
+                        device.TimeZone = string.Empty;
                         device.TimeAdjustmentTicks = 0;
                         device.DataLossInterval = 5;
                         device.MeasuredLines = 1;
-                        device.LoadOrder = loadOrder;
                         device.ContactList = string.Empty;
                         device.AllowedParsingExceptions = 10;
                         device.ParsingExceptionWindow = 5;
                         device.DelayedConnectionInterval = 5;
                         device.AllowUseOfCachedConfiguration = true;
                         device.AutoStartDataParsingSequence = true;
-                        device.SkipDisableRealTimeData = skipDisableRealTimeData;
                         device.MeasurementReportingInterval = 100000;
 
                         //If Add Digitals and Add Analogs is checked for the device then, if digitals and analogs are available i.e. count>0 then add them as measurements.		
@@ -484,6 +480,12 @@ namespace openPDCManager.Data
                             device.DataLossInterval = existingDevice.DataLossInterval;
                             device.MeasuredLines = existingDevice.MeasuredLines;
                             device.ContactList = existingDevice.ContactList;
+                            device.AllowedParsingExceptions = existingDevice.AllowedParsingExceptions;
+                            device.ParsingExceptionWindow = existingDevice.ParsingExceptionWindow;
+                            device.DelayedConnectionInterval = existingDevice.DelayedConnectionInterval;
+                            device.AllowUseOfCachedConfiguration = existingDevice.AllowUseOfCachedConfiguration;
+                            device.AutoStartDataParsingSequence = existingDevice.AutoStartDataParsingSequence;
+                            device.MeasurementReportingInterval = existingDevice.MeasurementReportingInterval;
                             SaveDevice(connection, device, false, digitalCount, analogCount);
                         }
                         else
@@ -3250,16 +3252,6 @@ namespace openPDCManager.Data
                     }
                 }
 
-                //try
-                //{
-                //    // Generate Statistical Measurements for the device.
-                //    //CommonPhasorServices.ValidateStatistics(connection.Connection, connection.AdapterType, "'" + device.NodeID + "'", new Action<object, EventArgs<string>>(StatusMessageHandler), new Action<object, EventArgs<Exception>>(ProcessExceptionHandler));
-                //}
-                //catch (Exception ex)
-                //{
-                //    //Do not do anything. If this fails then we dont want to interrupt save operation.
-                //    LogException("SaveDevice: PhasorDataSourceValidation", ex);
-                //}
                 return "Device Information Saved Successfully";
             }
             finally
@@ -5650,14 +5642,18 @@ namespace openPDCManager.Data
                 {
                     inputStreamDevice.DeviceStatisticList.Insert(0, new DeviceStatistic()
                     {
-                        ID = 0, Acronym = "Run-Time Statistics", Name = "", StatisticList = new ObservableCollection<DetailStatisticInfo>(inputStreamDevice.StatisticList)
+                        ID = 0,
+                        Acronym = "Run-Time Statistics",
+                        Name = "",
+                        StatisticList = new ObservableCollection<DetailStatisticInfo>(inputStreamDevice.StatisticList)
                     });
                     inputStreamDevice.StatisticList = null;  //since this is moved to dummy device above "Run-Time Statistics", we don't need it anymore.
                 }
 
                 staticMeasurementDataList.Add(new StatisticMeasurementData()
                 {
-                    SourceType = "Input Streams", SourceStreamInfoList = new ObservableCollection<StreamInfo>(inputStreamInfoList)
+                    SourceType = "Input Streams",
+                    SourceStreamInfoList = new ObservableCollection<StreamInfo>(inputStreamInfoList)
                 });
                 //****************************************************************************
 
@@ -5680,13 +5676,17 @@ namespace openPDCManager.Data
                 {
                     outputStreamDevice.DeviceStatisticList.Insert(0, new DeviceStatistic()
                     {
-                        ID = 0, Acronym = "Run-Time Statistics", Name = "", StatisticList = new ObservableCollection<DetailStatisticInfo>(outputStreamDevice.StatisticList)
+                        ID = 0,
+                        Acronym = "Run-Time Statistics",
+                        Name = "",
+                        StatisticList = new ObservableCollection<DetailStatisticInfo>(outputStreamDevice.StatisticList)
                     });
                     outputStreamDevice.StatisticList = null;
                 }
                 staticMeasurementDataList.Add(new StatisticMeasurementData()
                 {
-                    SourceType = "Output Streams", SourceStreamInfoList = outputStreamInfoList
+                    SourceType = "Output Streams",
+                    SourceStreamInfoList = outputStreamInfoList
                 });
 
                 return staticMeasurementDataList;

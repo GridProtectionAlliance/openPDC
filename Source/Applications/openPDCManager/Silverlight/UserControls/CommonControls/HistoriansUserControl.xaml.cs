@@ -25,26 +25,27 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
 #if SILVERLIGHT
 using openPDCManager.PhasorDataServiceProxy;
 #else
-using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using System.Windows.Media.Imaging;
 #endif
 using openPDCManager.Utilities;
 using openPDCManager.ModalDialogs;
+using System.Windows.Media.Animation;
 
 namespace openPDCManager.UserControls.CommonControls
 {
     public partial class HistoriansUserControl : UserControl
     {
         #region [ Members ]
-                
+
         bool m_inEditMode;
         int m_historianID;
         string m_nodeID;
+        string m_typeName;
+        bool m_isLocal;
 
         #endregion
 
@@ -67,7 +68,7 @@ namespace openPDCManager.UserControls.CommonControls
         }
 
         #endregion
-                
+
         #region [ Control Event Handlers ]
 
         void ListBoxHistorianList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -86,13 +87,16 @@ namespace openPDCManager.UserControls.CommonControls
                 ButtonInitialize.Visibility = System.Windows.Visibility.Visible;
 #endif
                 ButtonSave.Tag = "Update";
+
+                m_typeName = selectedHistorian.TypeName;
+                m_isLocal = selectedHistorian.IsLocal;
             }
         }
 
         void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
 #if SILVERLIGHT
-            Storyboard sb = new Storyboard();
+            System.Windows.Media.Animation.Storyboard sb = new Storyboard();
             sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
             sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
             Storyboard.SetTarget(sb, ButtonSaveTransform);
@@ -126,7 +130,7 @@ namespace openPDCManager.UserControls.CommonControls
         void ButtonClear_Click(object sender, RoutedEventArgs e)
         {
 #if SILVERLIGHT
-            Storyboard sb = new Storyboard();
+            System.Windows.Media.Animation.Storyboard sb = new Storyboard();
             sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
             sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
             Storyboard.SetTarget(sb, ButtonClearTransform);
@@ -173,7 +177,7 @@ namespace openPDCManager.UserControls.CommonControls
         {
             ClearForm();
             App app = (App)Application.Current;
-            m_nodeID = app.NodeValue;            
+            m_nodeID = app.NodeValue;
             GetNodes();
             GetHistorians();
         }

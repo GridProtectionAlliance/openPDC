@@ -22,14 +22,13 @@
 //******************************************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.Windows;
-using openPDCManager.ModalDialogs;
-using openPDCManager.Utilities;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using openPDCManager.Data.ServiceCommunication;
-using System.Collections.Generic;
-using System.Threading;
+using openPDCManager.ModalDialogs;
+using openPDCManager.Utilities;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -44,7 +43,7 @@ namespace openPDCManager.UserControls.CommonControls
         #region [ Methods ]
 
         void Initialize()
-        {            
+        {
             serviceClient = ((App)Application.Current).ServiceClient;
             if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
             {
@@ -98,7 +97,7 @@ namespace openPDCManager.UserControls.CommonControls
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.ShowPopup();
-            }            
+            }
         }
 
         void GetNodes()
@@ -120,23 +119,27 @@ namespace openPDCManager.UserControls.CommonControls
         }
 
         void SaveHistorian(Historian historian, bool isNew)
-        {            
+        {
             try
             {
                 bool continueSave = true;
 
-                if (!isNew && (historian.TypeName != "HistorianAdapters.LocalOutputAdapter" || !historian.IsLocal))
+                if (!isNew)
                 {
-                    SystemMessages sm = new SystemMessages(new Message() { UserMessage = "You are changing your historian type.", SystemMessage = "You are changing your historian type from an in-process local historian to another historian provider. Please note that once the changes are applied, any customizations you may have made to the in-process local historian in the openPDC configuration file will be lost." + Environment.NewLine + "Do you want to continue?", UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
-                    sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                    if ((m_typeName == "HistorianAdapters.LocalOutputAdapter" && historian.TypeName != m_typeName) ||
+                        (m_isLocal && !historian.IsLocal))
                     {
-                        if ((bool)sm.DialogResult)
-                            continueSave = true;
-                        else
-                            continueSave = false;
-                    });  
-                    sm.Owner = Window.GetWindow(this);
-                    sm.ShowPopup();
+                        SystemMessages sm = new SystemMessages(new Message() { UserMessage = "You are changing your historian type.", SystemMessage = "You are changing your historian type from an in-process local historian to another historian provider. Please note that once the changes are applied, any customizations you may have made to the in-process local historian in the openPDC configuration file will be lost." + Environment.NewLine + "Do you want to continue?", UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                        sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                        {
+                            if ((bool)sm.DialogResult)
+                                continueSave = true;
+                            else
+                                continueSave = false;
+                        });
+                        sm.Owner = Window.GetWindow(this);
+                        sm.ShowPopup();
+                    }
                 }
 
                 if (continueSave)
@@ -146,7 +149,7 @@ namespace openPDCManager.UserControls.CommonControls
                             ButtonType.OkOnly);
                     sm.Owner = Window.GetWindow(this);
                     sm.ShowPopup();
-                    GetHistorians();                 
+                    GetHistorians();
                     //make this newly added or updated item as default selected. So user can click initialize right away.
                     ListBoxHistorianList.SelectedItem = ((List<Historian>)ListBoxHistorianList.ItemsSource).Find(c => c.Acronym == historian.Acronym);
                 }

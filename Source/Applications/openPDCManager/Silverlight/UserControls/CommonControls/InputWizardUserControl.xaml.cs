@@ -140,7 +140,9 @@ namespace openPDCManager.UserControls.CommonControls
                     {
                         SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message()
                         {
-                            UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Error
+                            UserMessage = "Please fill in required concentrator information.",
+                            SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.",
+                            UserMessageType = openPDCManager.Utilities.MessageType.Error
                         },
                                  ButtonType.OkOnly);
 #if !SILVERLIGHT
@@ -357,7 +359,9 @@ namespace openPDCManager.UserControls.CommonControls
                 {
                     SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message()
                     {
-                        UserMessage = "Application is busy processing previous request. Please wait.", SystemMessage = "", UserMessageType = openPDCManager.Utilities.MessageType.Information
+                        UserMessage = "Application is busy processing previous request. Please wait.",
+                        SystemMessage = "",
+                        UserMessageType = openPDCManager.Utilities.MessageType.Information
                     }, ButtonType.OkOnly);
                     sm.ShowPopup();
                 }
@@ -378,7 +382,7 @@ namespace openPDCManager.UserControls.CommonControls
             if (m_vendorDeviceList.Count > 0)
             {
                 ((ComboBox)sender).ItemsSource = m_vendorDeviceList;
-                ((ComboBox)sender).SelectedIndex = 0;
+                //((ComboBox)sender).SelectedIndex = 0;
             }
         }
 
