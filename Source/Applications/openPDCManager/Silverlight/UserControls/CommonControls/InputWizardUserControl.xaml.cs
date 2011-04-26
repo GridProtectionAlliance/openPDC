@@ -32,7 +32,6 @@ using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 #if SILVERLIGHT
 using openPDCManager.PhasorDataServiceProxy;
-
 #else
 using openPDCManager.Data.BusinessObjects;
 using openPDCManager.Data;
@@ -139,7 +138,10 @@ namespace openPDCManager.UserControls.CommonControls
                         GetDeviceByAcronym(TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
                     else
                     {
-                        SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Error },
+                        SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message()
+                        {
+                            UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Error
+                        },
                                  ButtonType.OkOnly);
 #if !SILVERLIGHT
                         sm.Owner = Window.GetWindow(this);
@@ -173,10 +175,13 @@ namespace openPDCManager.UserControls.CommonControls
         void ButtonBrowseIniFile_Click(object sender, RoutedEventArgs e)
         {
 #if SILVERLIGHT
-            Storyboard sb = new Storyboard();
-            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-            Storyboard.SetTarget(sb, ButtonBrowseIniFileTransform);
+            System.Windows.Media.Animation.Storyboard sb = new System.Windows.Media.Animation.Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as System.Windows.Media.Animation.Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es)
+            {
+                sb.Stop();
+            });
+            System.Windows.Media.Animation.Storyboard.SetTarget(sb, ButtonBrowseIniFileTransform);
             sb.Begin();
 #endif
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -189,7 +194,7 @@ namespace openPDCManager.UserControls.CommonControls
                 TextBoxIniFile.Text = openFileDialog.File.Name;
                 m_iniFileName = openFileDialog.File.Name;
                 m_iniFileData = openFileDialog.File.OpenRead();
-                SaveIniFile();            
+                SaveIniFile();
 #else
                 TextBoxIniFile.Text = openFileDialog.FileName;
                 m_iniFileName = openFileDialog.FileName;
@@ -201,10 +206,13 @@ namespace openPDCManager.UserControls.CommonControls
         void ButtonBrowseConnectionFile_Click(object sender, RoutedEventArgs e)
         {
 #if SILVERLIGHT
-            Storyboard sb = new Storyboard();
-            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-            Storyboard.SetTarget(sb, ButtonBrowseConnectionFileTransform);
+            System.Windows.Media.Animation.Storyboard sb = new System.Windows.Media.Animation.Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as System.Windows.Media.Animation.Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es)
+            {
+                sb.Stop();
+            });
+            System.Windows.Media.Animation.Storyboard.SetTarget(sb, ButtonBrowseConnectionFileTransform);
             sb.Begin();
 #endif
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -227,10 +235,13 @@ namespace openPDCManager.UserControls.CommonControls
         void ButtonBrowseConfigurationFile_Click(object sender, RoutedEventArgs e)
         {
 #if SILVERLIGHT
-            Storyboard sb = new Storyboard();
-            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-            Storyboard.SetTarget(sb, ButtonBrowseConfigurationFileTransform);
+            System.Windows.Media.Animation.Storyboard sb = new System.Windows.Media.Animation.Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as System.Windows.Media.Animation.Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es)
+            {
+                sb.Stop();
+            });
+            System.Windows.Media.Animation.Storyboard.SetTarget(sb, ButtonBrowseConfigurationFileTransform);
             sb.Begin();
 #endif
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -289,10 +300,13 @@ namespace openPDCManager.UserControls.CommonControls
         void ButtonPrevious_Click(object sender, RoutedEventArgs e)
         {
 #if SILVERLIGHT
-            Storyboard sb = new Storyboard();
-            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-            Storyboard.SetTarget(sb, ButtonPreviousTransform);
+            System.Windows.Media.Animation.Storyboard sb = new System.Windows.Media.Animation.Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as System.Windows.Media.Animation.Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es)
+            {
+                sb.Stop();
+            });
+            System.Windows.Media.Animation.Storyboard.SetTarget(sb, ButtonPreviousTransform);
             sb.Begin();
 #endif
             if (AccordianWizard.SelectedIndex > 0)
@@ -305,10 +319,13 @@ namespace openPDCManager.UserControls.CommonControls
         {
             ButtonNext.IsEnabled = false;
 #if SILVERLIGHT
-            Storyboard sb = new Storyboard();
-            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-            Storyboard.SetTarget(sb, ButtonNextTransform);
+            System.Windows.Media.Animation.Storyboard sb = new System.Windows.Media.Animation.Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as System.Windows.Media.Animation.Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es)
+            {
+                sb.Stop();
+            });
+            System.Windows.Media.Animation.Storyboard.SetTarget(sb, ButtonNextTransform);
             sb.Begin();
 #endif
             //here we only handle finish button. Every other Next button click is handled in the Accordian selection changed event.
@@ -338,7 +355,10 @@ namespace openPDCManager.UserControls.CommonControls
                 }
                 else
                 {
-                    SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Application is busy processing previous request. Please wait.", SystemMessage = "", UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                    SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message()
+                    {
+                        UserMessage = "Application is busy processing previous request. Please wait.", SystemMessage = "", UserMessageType = openPDCManager.Utilities.MessageType.Information
+                    }, ButtonType.OkOnly);
                     sm.ShowPopup();
                 }
             }
@@ -487,10 +507,13 @@ namespace openPDCManager.UserControls.CommonControls
             m_activityWindow.Show();
 
 #if SILVERLIGHT
-            Storyboard sb = new Storyboard();
-            sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
-            sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
-            Storyboard.SetTarget(sb, ButtonRequestConfigurationTransform);
+            System.Windows.Media.Animation.Storyboard sb = new System.Windows.Media.Animation.Storyboard();
+            sb = Application.Current.Resources["ButtonPressAnimation"] as System.Windows.Media.Animation.Storyboard;
+            sb.Completed += new EventHandler(delegate(object obj, EventArgs es)
+            {
+                sb.Stop();
+            });
+            System.Windows.Media.Animation.Storyboard.SetTarget(sb, ButtonRequestConfigurationTransform);
             sb.Begin();
 #endif
             if (!string.IsNullOrEmpty(((App)Application.Current).RemoteStatusServiceUrl))
