@@ -28,7 +28,6 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
 #if SILVERLIGHT
@@ -42,7 +41,6 @@ using Microsoft.Win32;
 using System.Windows.Media.Imaging;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Soap;
-using System.Xml.Serialization;
 using System.Windows.Media;
 #endif
 
@@ -51,7 +49,7 @@ namespace openPDCManager.UserControls.CommonControls
     public partial class InputWizardUserControl : UserControl
     {
         #region [ Members ]
-        
+
         Stream m_configFileData, m_connectionFileData, m_iniFileData;
         ConnectionSettings m_connectionSettings;
         ObservableCollection<WizardDeviceInfo> m_wizardDeviceInfoList;
@@ -63,7 +61,7 @@ namespace openPDCManager.UserControls.CommonControls
         string m_iniFileName = string.Empty;
         string m_iniFilePath = string.Empty;
         bool nextButtonClicked = false;
-        bool m_skipDisableRealTimeData = false;        
+        bool m_skipDisableRealTimeData = false;
         bool m_goToPreviousAccordianItem = false;
 
         #endregion
@@ -85,7 +83,7 @@ namespace openPDCManager.UserControls.CommonControls
             ButtonPrevious.Content = new BitmapImage(new Uri(@"images/Previous.png", UriKind.Relative));
             //ButtonRequestConfiguration.Content = new BitmapImage(new Uri(@"images/RequestData.png", UriKind.Relative));
             ButtonBuildConnectionString.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));
-            ButtonBuildCommandChannel.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));            
+            ButtonBuildCommandChannel.Content = new BitmapImage(new Uri(@"images/Add.png", UriKind.Relative));
 #else
             ButtonManualConfiguration.Visibility = Visibility.Collapsed;
 #endif
@@ -97,7 +95,7 @@ namespace openPDCManager.UserControls.CommonControls
             ButtonRequestConfiguration.Click += new RoutedEventHandler(ButtonRequestConfiguration_Click);
             ButtonBuildConnectionString.Click += new RoutedEventHandler(ButtonBuildConnectionString_Click);
             ButtonBuildCommandChannel.Click += new RoutedEventHandler(ButtonBuildCommandChannel_Click);
-            AccordianWizard.SelectionChanged += new SelectionChangedEventHandler(AccordianWizard_SelectionChanged);            
+            AccordianWizard.SelectionChanged += new SelectionChangedEventHandler(AccordianWizard_SelectionChanged);
             CheckboxConnectToPDC.Checked += new RoutedEventHandler(CheckboxConnectToPDC_Checked);
             CheckboxConnectToPDC.Unchecked += new RoutedEventHandler(CheckboxConnectToPDC_Unchecked);
             ComboboxProtocol.SelectionChanged += new SelectionChangedEventHandler(ComboboxProtocol_SelectionChanged);
@@ -135,12 +133,12 @@ namespace openPDCManager.UserControls.CommonControls
             if (AccordianWizard.SelectedIndex == 2)
             {
                 if ((bool)CheckboxConnectToPDC.IsChecked || m_wizardDeviceInfoList.Count > 1)
-                {                   
+                {
                     CheckboxConnectToPDC.IsChecked = true;
                     if (!string.IsNullOrEmpty(TextBoxPDCAcronym.Text.Replace(" ", "")))
                         GetDeviceByAcronym(TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
                     else
-                    {                        
+                    {
                         SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Error },
                                  ButtonType.OkOnly);
 #if !SILVERLIGHT
@@ -150,7 +148,7 @@ namespace openPDCManager.UserControls.CommonControls
                         sm.ShowPopup();
                         m_goToPreviousAccordianItem = true;
                         TextBoxPDCAcronym.Focus();
-                        ChangeAccordianSelection(AccordianWizard.SelectedIndex - 1);                        
+                        ChangeAccordianSelection(AccordianWizard.SelectedIndex - 1);
                     }
                 }
             }
@@ -196,7 +194,7 @@ namespace openPDCManager.UserControls.CommonControls
                 TextBoxIniFile.Text = openFileDialog.FileName;
                 m_iniFileName = openFileDialog.FileName;
                 m_iniFileData = openFileDialog.OpenFile();
-#endif                                    
+#endif
             }
         }
 
@@ -242,7 +240,7 @@ namespace openPDCManager.UserControls.CommonControls
             if (result != null && result == true)
             {
                 m_activityWindow = new ActivityWindow("Validating Configuration File... Please Wait...");
-                
+
 #if SILVERLIGHT
                 m_activityWindow.Show();
                 TextBoxConfigurationFile.Text = openFileDialog.File.Name;
@@ -274,7 +272,7 @@ namespace openPDCManager.UserControls.CommonControls
                     GetWizardConfigurationInfo(ReadFileBytes(ms));
 #else
                     GetWizardConfigurationInfo(ms);
-#endif                    
+#endif
                 }
                 else
                 {
@@ -283,7 +281,7 @@ namespace openPDCManager.UserControls.CommonControls
 #else
                     GetWizardConfigurationInfo(m_configFileData);
                     m_configFileData.Close();
-#endif                    
+#endif
                 }
             }
         }
@@ -296,7 +294,7 @@ namespace openPDCManager.UserControls.CommonControls
             sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
             Storyboard.SetTarget(sb, ButtonPreviousTransform);
             sb.Begin();
-#endif            
+#endif
             if (AccordianWizard.SelectedIndex > 0)
                 ChangeAccordianSelection(AccordianWizard.SelectedIndex - 1);
 
@@ -335,7 +333,7 @@ namespace openPDCManager.UserControls.CommonControls
                     int accessID;
                     if (m_wizardDeviceInfoList.Count == 1)
                         m_wizardDeviceInfoList[0].AccessID = int.TryParse(TextBoxAccessID.Text, out accessID) ? accessID : m_wizardDeviceInfoList[0].ParentAccessID;
-                    
+
                     SaveWizardConfigurationInfo(app.NodeValue, m_wizardDeviceInfoList, this.ConnectionString(), protocolID, companyID, historianID, interconnectionID, m_parentID, m_skipDisableRealTimeData);
                 }
                 else
@@ -389,7 +387,7 @@ namespace openPDCManager.UserControls.CommonControls
         }
 
         void ComboboxPhase_Loaded(object sender, RoutedEventArgs e)
-        {           
+        {
             ComboBox phaseTypes = (ComboBox)sender;
             phaseTypes.ItemsSource = m_phaseTypes;
             try
@@ -410,7 +408,7 @@ namespace openPDCManager.UserControls.CommonControls
                 //we don't care
             }
         }
-        
+
         void CheckAllDevices_Checked(object sender, RoutedEventArgs e)
         {
             if (m_wizardDeviceInfoList != null)
@@ -428,7 +426,7 @@ namespace openPDCManager.UserControls.CommonControls
 #if !SILVERLIGHT
                 ItemControlDeviceList.Items.Refresh();
 #endif
-            }            
+            }
         }
 
         void CheckAllDevices_Unchecked(object sender, RoutedEventArgs e)
@@ -449,7 +447,7 @@ namespace openPDCManager.UserControls.CommonControls
         }
 
         void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {   
+        {
             WizardDeviceInfo deviceInfo = (WizardDeviceInfo)((CheckBox)sender).DataContext;
             foreach (PhasorInfo phasorInfo in deviceInfo.PhasorList)
             {
@@ -460,7 +458,7 @@ namespace openPDCManager.UserControls.CommonControls
             //var container = ItemControlDeviceList.ItemContainerGenerator.ContainerFromItem(ItemControlDeviceList.Items.CurrentItem) as FrameworkElement;
             //ItemsControl phasorItems = ItemControlDeviceList.ItemTemplate.FindName("ItemControlPhasorList", container) as ItemsControl;
             phasorItems.Items.Refresh();
-#endif            
+#endif
         }
 
         void CheckBox_Unchecked(object sender, RoutedEventArgs e)
@@ -475,26 +473,26 @@ namespace openPDCManager.UserControls.CommonControls
             //var container = ItemControlDeviceList.ItemContainerGenerator.ContainerFromItem(ItemControlDeviceList.Items.CurrentItem) as FrameworkElement;
             //ItemsControl phasorItems = ItemControlDeviceList.ItemTemplate.FindName("ItemControlPhasorList", container) as ItemsControl;
             phasorItems.Items.Refresh();
-#endif            
+#endif
         }
 
         void ButtonRequestConfiguration_Click(object sender, RoutedEventArgs e)
         {
             m_activityWindow = new ActivityWindow("Retrieving Configuration Frame... Please Wait...");
-            
+
 #if !SILVERLIGHT
             m_activityWindow.Owner = Window.GetWindow(this);
             m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 #endif
             m_activityWindow.Show();
-            
+
 #if SILVERLIGHT
             Storyboard sb = new Storyboard();
             sb = Application.Current.Resources["ButtonPressAnimation"] as Storyboard;
             sb.Completed += new EventHandler(delegate(object obj, EventArgs es) { sb.Stop(); });
             Storyboard.SetTarget(sb, ButtonRequestConfigurationTransform);
             sb.Begin();
-#endif           
+#endif
             if (!string.IsNullOrEmpty(((App)Application.Current).RemoteStatusServiceUrl))
             {
 #if SILVERLIGHT
@@ -611,14 +609,14 @@ namespace openPDCManager.UserControls.CommonControls
                         m_wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>(CommonFunctions.ParseConfigurationFrame(configurator.UserControlConfiguratorCreator.ConfigurationFrame));
                         ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
                         if (m_wizardDeviceInfoList.Count > 1)
-                        {                    
+                        {
                             CheckboxConnectToPDC.IsChecked = true;
                             SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Information },
                                 ButtonType.OkOnly);
                             sm.Owner = Window.GetWindow(this);
                             sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                             sm.ShowPopup();
-                            TextBoxPDCAcronym.Focus();                            
+                            TextBoxPDCAcronym.Focus();
                         }
                         else
                             CheckboxConnectToPDC.IsChecked = false;
@@ -649,7 +647,7 @@ namespace openPDCManager.UserControls.CommonControls
 #endif
         }
 
-        private void TextBoxPDCAcronym_TextChanged(object sender, TextChangedEventArgs e)      
+        private void TextBoxPDCAcronym_TextChanged(object sender, TextChangedEventArgs e)
         {
             //bool letContinue = true;
 #if !SILVERLIGHT
@@ -657,7 +655,7 @@ namespace openPDCManager.UserControls.CommonControls
             Device device = CommonFunctions.GetDeviceByAcronym(null, TextBoxPDCAcronym.Text.Replace(" ", "").ToUpper());
             if (device == null)
             {
-              //  letContinue = true;
+                //  letContinue = true;
                 TextBlockPDCMessage.Text = "";
                 TextBlockPDCMessage.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
                 TextBlockPDCMessage.FontWeight = FontWeights.Normal;
@@ -670,7 +668,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             else if (device.IsConcentrator)
             {
-              //  letContinue = true;
+                //  letContinue = true;
                 TextBlockPDCMessage.Text = "PDC device with the same acronym already exists. All " + m_wizardDeviceInfoList.Count.ToString() + " devices will be added to this existing PDC.";
                 TextBlockPDCMessage.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
                 TextBlockPDCMessage.FontWeight = FontWeights.Normal;
@@ -692,7 +690,7 @@ namespace openPDCManager.UserControls.CommonControls
             }
             else
             {
-              //  letContinue = false;
+                //  letContinue = false;
                 TextBlockPDCMessage.Text = "A non-PDC device with the same acronym already exists. Please change acronym to continue.";
                 TextBlockPDCMessage.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 25, 25));
                 TextBlockPDCMessage.FontWeight = FontWeights.Bold;
@@ -722,7 +720,7 @@ namespace openPDCManager.UserControls.CommonControls
         #endregion
 
         #region [ Page Event Handlers ]
-        
+
         void InputWizard_Loaded(object sender, RoutedEventArgs e)
         {
             m_wizardDeviceInfoList = new ObservableCollection<WizardDeviceInfo>();
@@ -751,8 +749,9 @@ namespace openPDCManager.UserControls.CommonControls
             StackPanelSummary.Visibility = Visibility.Collapsed;
 #if !SILVERLIGHT
             CommonFunctions.s_configurationFrame = null;
+            PopulateFieldsForUpdate();
 #endif
-            
+
         }
 
         #endregion
@@ -788,7 +787,7 @@ namespace openPDCManager.UserControls.CommonControls
         //        output.Write(buffer, 0, bytesRead);
         //    }
         //}
-              
+
         void PdcInfoVisualization(Visibility visibility)
         {
             TextBlockPDCName.Visibility = visibility;
@@ -849,12 +848,12 @@ namespace openPDCManager.UserControls.CommonControls
 
             //if (string.IsNullOrEmpty(TextBoxAccessID.Text))
             //    TextBoxAccessID.Text = "0";
-            
+
             //if (!connectionString.EndsWith(";"))
             //    connectionString += ";";
-            
+
             //connectionString += "AccessID=" + TextBoxAccessID.Text;
-                        
+
             if (!string.IsNullOrEmpty(TextBoxAlternateCommandChannel.Text))
             {
                 if (!connectionString.EndsWith(";"))
@@ -866,7 +865,7 @@ namespace openPDCManager.UserControls.CommonControls
 
             return connectionString;
         }
-        
+
         void ChangeAccordianSelection(int index)
         {
             (AccordianWizard.Items[index] as AccordionItem).IsSelected = true;
@@ -879,6 +878,6 @@ namespace openPDCManager.UserControls.CommonControls
         }
 
         #endregion
-        
+
     }
 }

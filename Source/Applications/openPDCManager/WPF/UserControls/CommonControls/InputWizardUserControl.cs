@@ -29,11 +29,10 @@ using System.Windows;
 using openPDCManager.Data;
 using openPDCManager.Data.BusinessObjects;
 using openPDCManager.Data.Entities;
-using openPDCManager.ModalDialogs;
-using openPDCManager.Utilities;
-using openPDCManager.Pages.Devices;
 using openPDCManager.Data.ServiceCommunication;
-using System.Text;
+using openPDCManager.ModalDialogs;
+using openPDCManager.Pages.Devices;
+using openPDCManager.Utilities;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -42,10 +41,111 @@ namespace openPDCManager.UserControls.CommonControls
         #region [ Members ]
 
         bool m_bindingDevices;
+        Device m_deviceToBeUpdated;
+
+        #endregion
+
+        #region [ Constructor ]
+
+        public InputWizardUserControl(Device device)
+            : this()
+        {
+            m_deviceToBeUpdated = device;
+        }
 
         #endregion
 
         #region [ Methods ]
+
+        void PopulateFieldsForUpdate()
+        {
+            if (m_deviceToBeUpdated != null)
+            {
+                m_parentID = null;
+                m_skipDisableRealTimeData = m_deviceToBeUpdated.SkipDisableRealTimeData;
+
+                Dictionary<string, string> connectionSettings = m_deviceToBeUpdated.ConnectionString.ToLower().ParseKeyValuePairs();
+                if (connectionSettings.ContainsKey("commandchannel"))
+                {
+                    TextBoxAlternateCommandChannel.Text = connectionSettings["commandchannel"].Replace("{", "").Replace("}", "");
+                    connectionSettings.Remove("commandchannel");
+                    TextBoxConnectionString.Text = connectionSettings.JoinKeyValuePairs();
+                }
+                else
+                    TextBoxConnectionString.Text = m_deviceToBeUpdated.ConnectionString;
+
+                TextBoxAccessID.Text = m_deviceToBeUpdated.AccessID.ToString();
+                if (m_deviceToBeUpdated.ProtocolID != null && m_deviceToBeUpdated.ProtocolID > 0)
+                {
+                    foreach (KeyValuePair<int, string> item in ComboboxProtocol.Items)
+                    {
+                        if (item.Key == m_deviceToBeUpdated.ProtocolID)
+                        {
+                            ComboboxProtocol.SelectedItem = item;
+                            break;
+                        }
+                    }
+                }
+
+                if (m_deviceToBeUpdated.CompanyID != null && m_deviceToBeUpdated.CompanyID > 0)
+                {
+                    foreach (KeyValuePair<int, string> item in ComboboxCompany.Items)
+                    {
+                        if (item.Key == m_deviceToBeUpdated.CompanyID)
+                        {
+                            ComboboxCompany.SelectedItem = item;
+                            break;
+                        }
+                    }
+                }
+
+                if (m_deviceToBeUpdated.HistorianID != null && m_deviceToBeUpdated.HistorianID > 0)
+                {
+                    foreach (KeyValuePair<int, string> item in ComboboxHistorian.Items)
+                    {
+                        if (item.Key == m_deviceToBeUpdated.HistorianID)
+                        {
+                            ComboboxHistorian.SelectedItem = item;
+                            break;
+                        }
+                    }
+                }
+
+                if (m_deviceToBeUpdated.InterconnectionID != null && m_deviceToBeUpdated.InterconnectionID > 0)
+                {
+                    foreach (KeyValuePair<int, string> item in ComboboxInterconnection.Items)
+                    {
+                        if (item.Key == m_deviceToBeUpdated.InterconnectionID)
+                        {
+                            ComboboxInterconnection.SelectedItem = item;
+                            break;
+                        }
+                    }
+                }
+
+                if (m_deviceToBeUpdated.IsConcentrator)
+                {
+                    CheckboxConnectToPDC.IsChecked = true;
+                    TextBoxPDCAcronym.Text = m_deviceToBeUpdated.Acronym;
+                    TextBoxPDCName.Text = m_deviceToBeUpdated.Name;
+                    if (m_deviceToBeUpdated.VendorDeviceID != null && m_deviceToBeUpdated.VendorDeviceID > 0)
+                    {
+                        foreach (KeyValuePair<int, string> item in ComboboxPDCVendor.Items)
+                        {
+                            if (item.Key == m_deviceToBeUpdated.VendorDeviceID)
+                            {
+                                ComboboxPDCVendor.SelectedItem = item;
+                                break;
+                            }
+                        }
+                    }
+
+                    TextBlockPDCMessage.Text = "PDC device will be updated with loaded configuration.";
+                }
+
+                AccordianWizard.SelectedIndex = 1;
+            }
+        }
 
         void Initialize()
         {
@@ -105,7 +205,7 @@ namespace openPDCManager.UserControls.CommonControls
                     sm.ShowPopup();
 
                     ItemControlDeviceList.ItemsSource = m_wizardDeviceInfoList;
-                                        
+
                     if (m_wizardDeviceInfoList.Count > 1)
                     {
                         CheckboxConnectToPDC.IsChecked = true;
@@ -120,7 +220,7 @@ namespace openPDCManager.UserControls.CommonControls
                         CheckboxConnectToPDC.IsChecked = false;
 
                     ChangeSummaryVisibility(Visibility.Visible);
-                                        
+
                 }
                 catch (Exception ex)
                 {
@@ -133,7 +233,7 @@ namespace openPDCManager.UserControls.CommonControls
                     sm.Owner = Window.GetWindow(this);
                     sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                     sm.ShowPopup();
-                }                
+                }
             });
         }
 
@@ -157,11 +257,11 @@ namespace openPDCManager.UserControls.CommonControls
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.GetProtocolIDByAcronym", ex);
-            }            
+            }
         }
 
         void SaveIniFile()
-        {           
+        {
         }
 
         void GetExecutingAssemblyPath()
@@ -219,7 +319,7 @@ namespace openPDCManager.UserControls.CommonControls
                     device.IsConcentrator = true;
                     device.VendorDeviceID = ((KeyValuePair<int, string>)ComboboxPDCVendor.SelectedItem).Key == 0 ? (int?)null : ((KeyValuePair<int, string>)ComboboxPDCVendor.SelectedItem).Key;
                     int accessID;
-                    device.AccessID = int.TryParse(TextBoxAccessID.Text,out accessID) ? accessID : m_wizardDeviceInfoList.Count > 0 ? m_wizardDeviceInfoList[0].ParentAccessID : 0;
+                    device.AccessID = int.TryParse(TextBoxAccessID.Text, out accessID) ? accessID : m_wizardDeviceInfoList.Count > 0 ? m_wizardDeviceInfoList[0].ParentAccessID : 0;
                     device.NodeID = app.NodeValue;
                     device.ParentID = null;
                     device.Longitude = -98.6m;
@@ -268,7 +368,7 @@ namespace openPDCManager.UserControls.CommonControls
 
                 if (m_activityWindow != null)
                     m_activityWindow.Close();
-                
+
                 sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Success },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
@@ -278,14 +378,14 @@ namespace openPDCManager.UserControls.CommonControls
                 //Update Metadata in the openPDC Service.                
                 try
                 {
-                    WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;                
+                    WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
                     if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                    {                        
+                    {
                         //Send Initialize command to openPDC windows service.
                         if (parentID != null)   // devices are being added to PDC then initialize PDC only and not individual devices.
                         {
                             string runtimeID = CommonFunctions.GetRuntimeID(null, "Device", (int)parentID);
-                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + runtimeID);                         
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + runtimeID);
                         }
                         else    //Otherwise go through the list and intialize each device by retrieving its runtime ID from database.
                         {
@@ -296,11 +396,11 @@ namespace openPDCManager.UserControls.CommonControls
                                     Device device = CommonFunctions.GetDeviceByAcronym(null, deviceInfo.Acronym);
                                     if (device != null)
                                     {
-                                        string runtimeID = CommonFunctions.GetRuntimeID(null, "Device", device.ID);                                        
-                                        CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + runtimeID);                                        
+                                        string runtimeID = CommonFunctions.GetRuntimeID(null, "Device", device.ID);
+                                        CommonFunctions.SendCommandToWindowsService(serviceClient, "Initialize " + runtimeID);
                                     }
                                 }
-                            }                            
+                            }
                         }
 
                         if (historianID != null)
@@ -342,7 +442,7 @@ namespace openPDCManager.UserControls.CommonControls
                     sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                     sm.ShowPopup();
                     CommonFunctions.LogException(null, "SaveWizardConfigurationInfo.RefreshMetadata", ex);
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -353,7 +453,7 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
             }
-            
+
             nextButtonClicked = false;
             if (m_activityWindow != null)
                 m_activityWindow.Close();
@@ -375,18 +475,18 @@ namespace openPDCManager.UserControls.CommonControls
                     m_activityWindow.Close();
 
                 if (m_wizardDeviceInfoList.Count > 1)
-                {                    
+                {
                     CheckboxConnectToPDC.IsChecked = true;
                     SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Please fill in required concentrator information.", SystemMessage = "The current configuration defines more than one device which means this connection is to a concentrated data stream. A unique concentrator acronym is required to identify the concentration device.", UserMessageType = openPDCManager.Utilities.MessageType.Information },
                                 ButtonType.OkOnly);
                     sm.Owner = Window.GetWindow(this);
                     sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                     sm.ShowPopup();
-                    TextBoxPDCAcronym.Focus();                    
+                    TextBoxPDCAcronym.Focus();
                 }
                 else
                     CheckboxConnectToPDC.IsChecked = false;
-                
+
                 ChangeSummaryVisibility(Visibility.Visible);
             }
             catch (Exception ex)
@@ -401,7 +501,7 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
             }
-            
+
         }
 
         void GetConnectionSettings()
@@ -433,7 +533,7 @@ namespace openPDCManager.UserControls.CommonControls
                         TextBoxConnectionString.Text += ";iniFileName=" + m_connectionSettings.configurationFileName + ";refreshConfigFileOnChange=" + m_connectionSettings.refreshConfigurationFileOnChange.ToString() +
                                     ";parseWordCountFromByte=" + m_connectionSettings.parseWordCountFromByte;
                     }
-                                        
+
                     TextBoxAccessID.Text = m_connectionSettings.PmuID.ToString();
 
                     //Select Phasor Protocol type in the combobox based on the protocol in the connection file.
@@ -475,7 +575,7 @@ namespace openPDCManager.UserControls.CommonControls
             try
             {
                 ComboboxHistorian.ItemsSource = CommonFunctions.GetHistorians(null, true, true, false);
-                
+
                 if (ComboboxHistorian.Items.Count > 1)
                     ComboboxHistorian.SelectedIndex = 1;
                 else if (ComboboxHistorian.Items.Count > 0)
@@ -527,7 +627,7 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
-            }            
+            }
         }
 
         void GetVendorDevices()
@@ -548,9 +648,9 @@ namespace openPDCManager.UserControls.CommonControls
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
-            }            
+            }
         }
-        
-#endregion
+
+        #endregion
     }
 }

@@ -23,19 +23,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
+using openPDCManager.Data.ServiceCommunication;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Pages.Manage;
 using openPDCManager.UserControls.CommonControls;
 using openPDCManager.Utilities;
-using openPDCManager.Data.ServiceCommunication;
-using System.Collections.ObjectModel;
-using System.Threading;
 
 namespace openPDCManager.Pages.Devices
 {
@@ -45,10 +44,10 @@ namespace openPDCManager.Pages.Devices
     public partial class BrowseDevicesUserControl : UserControl
     {
         #region [ Members ]
-                
-        List<Device> m_deviceList = new List<Device>();        
+
+        List<Device> m_deviceList = new List<Device>();
         ActivityWindow m_activityWindow;
-        
+
         #endregion
 
         #region [ Constructor ]
@@ -58,7 +57,7 @@ namespace openPDCManager.Pages.Devices
             //Thread.CurrentPrincipal = ((App)Application.Current).Principal;
             InitializeComponent();
             ButtonSearch.Content = new BitmapImage(new Uri(@"images/Search.png", UriKind.Relative));
-            ButtonShowAll.Content = new BitmapImage(new Uri(@"images/CancelSearch.png", UriKind.Relative));                       
+            ButtonShowAll.Content = new BitmapImage(new Uri(@"images/CancelSearch.png", UriKind.Relative));
             UpdateLayout();
 
             Loaded += new RoutedEventHandler(Browse_Loaded);
@@ -104,11 +103,11 @@ namespace openPDCManager.Pages.Devices
         void HyperlinkButton_Click(object sender, RoutedEventArgs e)
         {
             Device device = ((Button)sender).DataContext as Device;
-            
+
             ManageDevicesUserControl manageDevicesUserControl = new ManageDevicesUserControl();
             manageDevicesUserControl.m_deviceID = device.ID;
             manageDevicesUserControl.m_oldAcronym = device.Acronym;
-            ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(manageDevicesUserControl);            
+            ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(manageDevicesUserControl);
         }
 
         void HyperlinkButtonPhasors_Click(object sender, RoutedEventArgs e)
@@ -132,7 +131,7 @@ namespace openPDCManager.Pages.Devices
         {
             SystemMessages sm;
             if (((App)Application.Current).Principal.IsInRole("Administrator, Editor"))
-            {                
+            {
                 try
                 {
                     Device device = new Device();
@@ -358,54 +357,61 @@ namespace openPDCManager.Pages.Devices
         }
 
         private void HyperlinkButtonCreatedOn_Click(object sender, RoutedEventArgs e)
-        {           
+        {
             m_deviceList = (from device in m_deviceList
-                          select device).ToList().OrderBy(d => d.CreatedOn).ToList();
+                            select device).ToList().OrderBy(d => d.CreatedOn).ToList();
             BindData(m_deviceList);
         }
 
         private void HyperlinkButtonAcronym_Click(object sender, RoutedEventArgs e)
         {
             m_deviceList = (from device in m_deviceList
-                          select device).ToList().OrderBy(d => d.Acronym).ToList();
+                            select device).ToList().OrderBy(d => d.Acronym).ToList();
             BindData(m_deviceList);
         }
 
         private void HyperlinkButtonName_Click(object sender, RoutedEventArgs e)
         {
             m_deviceList = (from device in m_deviceList
-                          select device).ToList().OrderBy(d => d.Name).ToList();
+                            select device).ToList().OrderBy(d => d.Name).ToList();
             BindData(m_deviceList);
         }
 
         private void HyperlinkButtonConcentrator_Click(object sender, RoutedEventArgs e)
         {
             m_deviceList = (from device in m_deviceList
-                          select device).ToList().OrderBy(d => d.IsConcentrator).ToList();
+                            select device).ToList().OrderBy(d => d.IsConcentrator).ToList();
             BindData(m_deviceList);
         }
 
-        private void HyperlinkButtonProtocol_Click(object sender, RoutedEventArgs e)
-        {
-            m_deviceList = (from device in m_deviceList
-                          select device).ToList().OrderBy(d => d.ProtocolName).ToList();
-            BindData(m_deviceList);
-        }
+        //private void HyperlinkButtonProtocol_Click(object sender, RoutedEventArgs e)
+        //{
+        //    m_deviceList = (from device in m_deviceList
+        //                  select device).ToList().OrderBy(d => d.ProtocolName).ToList();
+        //    BindData(m_deviceList);
+        //}
 
         private void HyperlinkButtonCompany_Click(object sender, RoutedEventArgs e)
         {
             m_deviceList = (from device in m_deviceList
-                          select device).ToList().OrderBy(d => d.CompanyAcronym).ToList();
+                            select device).ToList().OrderBy(d => d.CompanyAcronym).ToList();
             BindData(m_deviceList);
         }
 
         private void HyperlinkButtonEnabled_Click(object sender, RoutedEventArgs e)
         {
             m_deviceList = (from device in m_deviceList
-                          select device).ToList().OrderBy(d => d.Enabled).ToList();
+                            select device).ToList().OrderBy(d => d.Enabled).ToList();
             BindData(m_deviceList);
         }
-        
+
+        private void ButtonUpdateConfiguration_Click(object sender, RoutedEventArgs e)
+        {
+            Device device = (Device)(((Button)sender).DataContext);
+            InputWizardUserControl uc = new InputWizardUserControl(device);
+            ((MasterLayoutWindow)Window.GetWindow(this)).ContentFrame.Navigate(uc);
+        }
+
         #endregion
 
         #region [ Page Event Handlers ]
@@ -416,7 +422,7 @@ namespace openPDCManager.Pages.Devices
             m_activityWindow.Owner = Window.GetWindow(this);
             m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             m_activityWindow.Show();
-            RefreshDeviceList();            
+            RefreshDeviceList();
         }
 
         #endregion
@@ -429,8 +435,8 @@ namespace openPDCManager.Pages.Devices
             string nodeID = app.NodeValue;
             try
             {
-                m_deviceList = CommonFunctions.GetDeviceList(null, nodeID);             
-                BindData(m_deviceList);                
+                m_deviceList = CommonFunctions.GetDeviceList(null, nodeID);
+                BindData(m_deviceList);
             }
             catch (Exception ex)
             {
@@ -446,7 +452,7 @@ namespace openPDCManager.Pages.Devices
         }
 
         void BindData(List<Device> deviceList)
-        {            
+        {
             //ListBoxDeviceList.ItemsSource = deviceList;                 
             if (deviceList.Count > 0)
                 DataPagerDevices.ItemsSource = new ObservableCollection<Object>(deviceList);
@@ -457,6 +463,7 @@ namespace openPDCManager.Pages.Devices
             }
         }
 
-        #endregion       
+        #endregion
+
     }
 }

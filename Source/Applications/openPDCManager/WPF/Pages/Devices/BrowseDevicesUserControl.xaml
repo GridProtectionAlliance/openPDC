@@ -3,10 +3,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:DefaultButton="clr-namespace:openPDCManager.Utilities"     
     xmlns:cc="clr-namespace:openPDCManager.UserControls.CustomControls"
+             xmlns:converter="clr-namespace:openPDCManager.Converters"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
     >
    <Grid x:Name="GridBrowseDevices">        
         <Border Style="{StaticResource PortletBorderStyle}">
             <StackPanel Orientation="Vertical">
+                <StackPanel.Resources>
+                    <converter:IntegerToVisibilityConverter x:Key="integerToVisibilityConverter" />
+                </StackPanel.Resources>
                 <TextBlock Text="Browse Devices" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
                 <Border Style="{StaticResource HeaderRowBorderStyle}">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
@@ -38,7 +43,7 @@
                             <!--<TextBlock Text="Concentrator" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>-->
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
-                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Protocol" Width="{StaticResource SmallItemSize}" Foreground="#FF000000" HorizontalContentAlignment="Center" Click="HyperlinkButtonProtocol_Click"></Button>
+                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="" Width="{StaticResource LargeItemSize}" Foreground="#FF000000" HorizontalContentAlignment="Center"></Button>
                             <!--<TextBlock Text="Protocol" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>-->
                         </Border>
                         <Border Style="{StaticResource HeaderRowCellBorderStyle}">
@@ -72,16 +77,26 @@
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="{Binding Path=Acronym}" Width="{StaticResource SmallItemSize}" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="HyperlinkButton_Click"/>
+                                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="{Binding Path=Acronym}" Width="{StaticResource SmallItemSize}" ToolTipService.ToolTip="{Binding Path=Name}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="HyperlinkButton_Click"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=Name}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="0"/>
+                                                <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=ProtocolName}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="0"/>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallerItemSize}">
                                                 <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=IsConcentrator}" IsEnabled="False" />
                                             </Border>
-                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
-                                                <TextBlock Text="{Binding Path=ProtocolName}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="0"/>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource LargeItemSize}">
+                                                <!--<TextBlock Text="{Binding Path=ProtocolName}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="0"/>-->
+                                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Update Configuration" HorizontalAlignment="Center" HorizontalContentAlignment="Center" 
+                                                        ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="ButtonUpdateConfiguration_Click">
+                                                    <Button.Visibility>
+                                                        <Binding Path="ParentID" Converter="{StaticResource integerToVisibilityConverter}">
+                                                            <Binding.ConverterParameter>
+                                                                <sys:Boolean>True</sys:Boolean>
+                                                            </Binding.ConverterParameter>
+                                                        </Binding>
+                                                        </Button.Visibility>
+                                                </Button>
                                             </Border>
                                             <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
                                                 <TextBlock Text="{Binding Path=CompanyAcronym}" ToolTipService.ToolTip="{Binding Path=CompanyName}" TextAlignment="Center" Padding="0"/>
