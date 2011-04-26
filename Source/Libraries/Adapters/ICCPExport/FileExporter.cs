@@ -256,7 +256,7 @@ namespace ICCPExport
     /// Represents an action adapter that exports measurements on an interval to a file that can be picked up by other systems such as ICCP.
     /// </summary>
     public class FileExporter : CalculatedMeasurementBase
-    {        
+    {
         #region [ Members ]
 
         // Nested Types
@@ -277,6 +277,7 @@ namespace ICCPExport
         private bool m_useReferenceAngle;
         private bool m_useNumericQuality;
         private int m_exportInterval;
+        private int m_millisecondsPerFrame;
         private string m_companyTagPrefix;
         private bool m_statusDisplayed;
 
@@ -292,7 +293,7 @@ namespace ICCPExport
             get
             {
                 StringBuilder status = new StringBuilder();
-                
+
                 status.AppendFormat("     Using numeric quality: {0}", m_useNumericQuality);
                 status.AppendLine();
                 status.AppendFormat("     Using reference angle: {0}", m_useReferenceAngle);
@@ -370,11 +371,12 @@ namespace ICCPExport
             // Load required parameters
             if (!settings.TryGetValue("exportInterval", out setting))
                 throw new ArgumentException(string.Format(errorMessage, "exportInterval"));
-            
-            m_exportInterval = int.Parse(setting);
 
-            if (m_exportInterval == 0)
-                throw new ArgumentException("exportInterval should not be 0 - Example: exportInterval=5");
+            m_exportInterval = (int)(double.Parse(setting) * 1000.0D);
+            m_millisecondsPerFrame = 1000 / FramesPerSecond;
+
+            if (m_exportInterval <= 0)
+                throw new ArgumentException("exportInterval should not be 0 - Example: exportInterval=5.5");
 
             if (InputMeasurementKeys == null || InputMeasurementKeys.Length == 0)
                 throw new InvalidOperationException("There are no input measurements defined. You must define \"inputMeasurementKeys\" to define which measurements to export.");
@@ -391,11 +393,11 @@ namespace ICCPExport
                     throw new ArgumentException(string.Format(errorMessage, "referenceAngleMeasurement"));
 
                 m_referenceAngleKey = MeasurementKey.Parse(setting);
-                
+
                 // Make sure reference angle is part of input measurement keys collection
                 if (!InputMeasurementKeys.Contains(m_referenceAngleKey))
                     InputMeasurementKeys = InputMeasurementKeys.Concat(new MeasurementKey[] { m_referenceAngleKey }).ToArray();
-                
+
                 // Make sure sure reference angle key is actually an angle measurement
                 SignalType signalType = InputMeasurementKeyTypes[InputMeasurementKeys.IndexOf(key => key == m_referenceAngleKey)];
 
@@ -419,7 +421,7 @@ namespace ICCPExport
                 m_companyTagPrefix = m_companyTagPrefix.EnsureEnd('_');
 
             // Define a default export location - user can override and add multiple locations in config later...
-            m_dataExporter = new MultipleDestinationExporter(ConfigurationSection, m_exportInterval * 1000);
+            m_dataExporter = new MultipleDestinationExporter(ConfigurationSection, m_exportInterval);
             m_dataExporter.StatusMessage += m_dataExporter_StatusMessage;
             m_dataExporter.ProcessException += m_dataExporter_ProcessException;
             m_dataExporter.Initialize(new ExportDestination[] { new ExportDestination(FilePath.GetAbsolutePath(ConfigurationSection + ".txt"), false, "", "", "") });
@@ -478,26 +480,14 @@ namespace ICCPExport
         public override void QueueMeasurementsForProcessing(IEnumerable<IMeasurement> measurements)
         {
             // Don't process measurements unless adapter is enabled
-            if (!Enabled) return;
+            if (!Enabled)
+                return;
 
             List<IMeasurement> inputMeasurements = new List<IMeasurement>();
-            Ticks timestamp;
-            bool sortMeasurement;
 
             foreach (IMeasurement measurement in measurements)
             {
-                timestamp = measurement.Timestamp;
-
-                // Measurement will exported if the following criteria are true:
-                //   A) Timestamp's seconds are an interval of the defined export interval
-                //   B) Timestamp falls within first frame of data in the second
-                //   C) This is a defined input measurement for this adapter
-                sortMeasurement = 
-                        ((DateTime)timestamp).Second % m_exportInterval == 0 && // <-- A
-                        timestamp.DistanceBeyondSecond() < TicksPerFrame / 2 && // <-- B
-                        IsInputMeasurement(measurement.Key);                    // <-- C
-
-                if (sortMeasurement)
+                if (((long)measurement.Timestamp.ToMilliseconds()) % m_exportInterval == 0)
                     inputMeasurements.Add(measurement);
             }
 
@@ -562,7 +552,7 @@ namespace ICCPExport
                                 // Interpret data quality flags - since measurement was missing in this frame we mark it as
                                 // suspect. Could have just missed the time window for sorting.
                                 measurementQuality = (Double.IsNaN(measurementValue) ? DataQuality.Bad : DataQuality.Suspect);
-                                
+
                                 // We'll export zero instead of NaN for bad data
                                 if (measurementQuality == DataQuality.Bad)
                                     measurementValue = 0.0D;

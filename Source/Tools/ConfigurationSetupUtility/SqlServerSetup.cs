@@ -171,6 +171,9 @@ namespace ConfigurationSetupUtility
                     builder.Append(m_settings[key]);
                 }
 
+                if (!m_settings.ContainsKey("User ID") && !m_settings.ContainsKey("Uid"))
+                    builder.Append("; Integrated Security=SSPI");
+
                 return builder.ToString();
             }
             set
