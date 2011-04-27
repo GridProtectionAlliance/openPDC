@@ -159,6 +159,10 @@ namespace TVA.PhasorProtocols
         private bool m_autoStartDataChannel;
         private bool m_processDataValidFlag;
         private ushort m_idCode;
+        private long m_totalLatency;
+        private long m_minimumLatency;
+        private long m_maximumLatency;
+        private long m_latencyMeasurements;
         private int m_hashCode;
         private bool m_disposed;
 
@@ -407,6 +411,65 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Gets the minimum latency in milliseconds over the last test interval.
+        /// </summary>
+        public int MinimumLatency
+        {
+            get
+            {
+                return (int)Ticks.ToMilliseconds(m_minimumLatency);
+            }
+        }
+
+        /// <summary>
+        /// Gets the maximum latency in milliseconds over the last test interval.
+        /// </summary>
+        public int MaximumLatency
+        {
+            get
+            {
+                return (int)Ticks.ToMilliseconds(m_maximumLatency);
+            }
+        }
+
+        /// <summary>
+        /// Gets the average latency in milliseconds over the last test interval.
+        /// </summary>
+        public int AverageLatency
+        {
+            get
+            {
+                if (m_latencyMeasurements == 0)
+                    return -1;
+
+                return (int)Ticks.ToMilliseconds(m_totalLatency / m_latencyMeasurements);
+            }
+        }
+
+        /// <summary>
+        /// Gets the current number of known connected clients on the command channel.
+        /// </summary>
+        public int ConnectedClientCount
+        {
+            get
+            {
+                if (m_commandChannel != null && m_commandChannel.CurrentState == ServerState.Running)
+                {
+                    try
+                    {
+                        return m_commandChannel.ClientIDs.Length;
+                    }
+                    catch (Exception)
+                    {
+                        return 0;
+                    }
+                }
+
+                return 0;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the protocol specific <see cref="IConfigurationFrame"/> used to send to clients for protocol parsing.
         /// </summary>
         public virtual IConfigurationFrame ConfigurationFrame
@@ -540,6 +603,12 @@ namespace TVA.PhasorProtocols
                 status.AppendFormat("               Data format: {0}", m_dataFormat);
                 status.AppendLine();
                 status.AppendFormat("         Coordinate format: {0}", m_coordinateFormat);
+                status.AppendLine();
+                status.AppendFormat("    Minimum output latency: {0}ms over {1} tests", MinimumLatency, m_latencyMeasurements);
+                status.AppendLine();
+                status.AppendFormat("    Maximum output latency: {0}ms over {1} tests", MaximumLatency, m_latencyMeasurements);
+                status.AppendLine();
+                status.AppendFormat("    Average output latency: {0}ms over {1} tests", AverageLatency, m_latencyMeasurements);
                 status.AppendLine();
 
                 if (m_dataFormat == DataFormat.FixedInteger)
@@ -1219,7 +1288,31 @@ namespace TVA.PhasorProtocols
                 // Publish data frame binary image
                 image = dataFrame.BinaryImage;
                 m_publishChannel.MulticastAsync(image, 0, image.Length);
+
+                // Track latency statistics against system time - in order for these statistics
+                // to be useful, the local clock must be fairly accurate
+                long latency = PrecisionTimer.UtcNow.Ticks - (long)dataFrame.Timestamp;
+
+                if (m_minimumLatency > latency || m_minimumLatency == 0)
+                    m_minimumLatency = latency;
+
+                if (m_maximumLatency < latency || m_maximumLatency == 0)
+                    m_maximumLatency = latency;
+
+                m_totalLatency += latency;
+                m_latencyMeasurements++;
             }
+        }
+
+        /// <summary>
+        /// Resets counters related to latency calculations.
+        /// </summary>
+        public void ResetLatencyCounters()
+        {
+            m_minimumLatency = 0;
+            m_maximumLatency = 0;
+            m_totalLatency = 0;
+            m_latencyMeasurements = 0;
         }
 
         /// <summary>

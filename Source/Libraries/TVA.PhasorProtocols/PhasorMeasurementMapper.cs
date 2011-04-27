@@ -206,7 +206,7 @@ namespace TVA.PhasorProtocols
             {
                 m_timeAdjustmentTicks = value;
             }
-        }       
+        }
 
         /// <summary>
         /// Gets the the total number of frames that have been received by the current mapper connection.
@@ -539,7 +539,7 @@ namespace TVA.PhasorProtocols
 
                 IConfigurationCell parsedDevice;
                 string stationName;
-                
+
                 foreach (ConfigurationCell definedDevice in DefinedDevices)
                 {
                     stationName = null;
@@ -548,10 +548,10 @@ namespace TVA.PhasorProtocols
                     if (m_frameParser != null && m_frameParser.ConfigurationFrame != null)
                     {
                         // Attempt to lookup by label (if defined), then by ID code
-                        if ((m_labelDefinedDevices != null && definedDevice.StationName != null && 
+                        if ((m_labelDefinedDevices != null && definedDevice.StationName != null &&
                             m_frameParser.ConfigurationFrame.Cells.TryGetByStationName(definedDevice.StationName, out parsedDevice)) ||
                             m_frameParser.ConfigurationFrame.Cells.TryGetByIDCode(definedDevice.IDCode, out parsedDevice))
-                                stationName = parsedDevice.StationName;
+                            stationName = parsedDevice.StationName;
                     }
 
                     // We will default to defined name if parsed name is unavailable
@@ -731,7 +731,7 @@ namespace TVA.PhasorProtocols
             if (settings.TryGetValue("delayedConnectionInterval", out setting))
             {
                 double interval = double.Parse(setting) * 1000.0D;
-                
+
                 // Minimum delay is one millisecond
                 if (interval < 1.0D)
                     interval = 1.0D;
@@ -900,7 +900,7 @@ namespace TVA.PhasorProtocols
                     deviceName = Name.ToNonNullString("[undefined]").Trim();
                 else
                     deviceName = SharedMapping;
-                
+
                 definedDevice.StationName = deviceName.TruncateRight(definedDevice.MaximumStationNameLength);
                 definedDevice.IDLabel = deviceName.TruncateRight(definedDevice.IDLabelLength);
                 definedDevice.Tag = ID;
@@ -984,7 +984,7 @@ namespace TVA.PhasorProtocols
                     definedDevice.TotalFrames = 0;
                     definedDevice.TimeQualityErrors = 0;
                 }
-             
+
                 m_outOfOrderFrames = 0;
 
                 OnStatusMessage("Statistics reset for all devices associated with this connection.");
@@ -1259,7 +1259,7 @@ namespace TVA.PhasorProtocols
 
             // Track latency statistics against system time - in order for these statistics
             // to be useful, the local clock must be fairly accurate
-            long latency = PrecisionTimer.UtcNow.Ticks - (long)timestamp;
+            long latency = frame.ReceivedTimestamp - (long)timestamp;
 
             if (m_minimumLatency > latency || m_minimumLatency == 0)
                 m_minimumLatency = latency;
@@ -1276,8 +1276,8 @@ namespace TVA.PhasorProtocols
                 try
                 {
                     // Lookup device by its label (if needed), then by its ID code
-                    if ((m_labelDefinedDevices != null && 
-                        m_labelDefinedDevices.TryGetValue(parsedDevice.StationName.ToNonNullString(), out definedDevice)) || 
+                    if ((m_labelDefinedDevices != null &&
+                        m_labelDefinedDevices.TryGetValue(parsedDevice.StationName.ToNonNullString(), out definedDevice)) ||
                         m_definedDevices.TryGetValue(parsedDevice.IDCode, out definedDevice))
                     {
                         // Track latest reporting time for this device
@@ -1471,7 +1471,7 @@ namespace TVA.PhasorProtocols
 
                 m_receivedConfigFrame = true;
             }
-            
+
             m_configurationChanges++;
             m_totalConfigurationFrames++;
         }
