@@ -319,6 +319,7 @@ namespace ConfigurationSetupUtility.Screens
                         List<string> scriptNames = new List<string>();
                         bool initialDataScript = !migrate && Convert.ToBoolean(m_state["initialDataScript"]);
                         bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
+                        bool enableAuditLog = Convert.ToBoolean(m_state["enableAuditLog"]);
                         bool createNewUser = Convert.ToBoolean(m_state["createNewMySqlUser"]);
                         int progress = 0;
 
@@ -330,6 +331,9 @@ namespace ConfigurationSetupUtility.Screens
                             if (sampleDataScript)
                                 scriptNames.Add("SampleDataSet.sql");
                         }
+
+                        if (enableAuditLog)
+                            scriptNames.Add("AuditLog.sql");
 
                         foreach (string scriptName in scriptNames)
                         {
@@ -445,6 +449,7 @@ namespace ConfigurationSetupUtility.Screens
                         List<string> scriptNames = new List<string>();
                         bool initialDataScript = !migrate && Convert.ToBoolean(m_state["initialDataScript"]);
                         bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
+                        bool enableAuditLog = Convert.ToBoolean(m_state["enableAuditLog"]);
                         bool createNewUser = Convert.ToBoolean(m_state["createNewSqlServerUser"]);
                         int progress = 0;
 
@@ -456,6 +461,9 @@ namespace ConfigurationSetupUtility.Screens
                             if (sampleDataScript)
                                 scriptNames.Add("SampleDataSet.sql");
                         }
+
+                        if (enableAuditLog)
+                            scriptNames.Add("AuditLog.sql");
 
                         foreach (string scriptName in scriptNames)
                         {

@@ -51,6 +51,7 @@ namespace ConfigurationSetupUtility.Screens
         private MySqlDatabaseSetupScreen m_mySqlDatabaseSetupScreen;
         private Dictionary<string, object> m_state;
         private bool m_sampleScriptChanged;
+        private bool m_enableAuditLogChanged;
         private string m_oldConnectionString;
         private string m_oldDataProviderString;
 
@@ -178,6 +179,7 @@ namespace ConfigurationSetupUtility.Screens
 
                 m_initialDataScriptCheckBox.Visibility = existingVisibility;
                 m_sampleDataScriptCheckBox.Visibility = existingVisibility;
+                m_enableAuditLogCheckBox.Visibility = existingVisibility;
 
                 // Show new database warning anytime user will be creating a new database
                 if (m_state.TryGetValue("updateConfiguration", out value))
@@ -196,6 +198,9 @@ namespace ConfigurationSetupUtility.Screens
 
                 if (!m_state.ContainsKey("sampleDataScript"))
                     m_state.Add("sampleDataScript", false);
+
+                if (!m_state.ContainsKey("enableAuditLog"))
+                    m_state.Add("enableAuditLog", false);
 
                 // If we are migrating to a new schema we need to check the old database if possible so we can determine if this is a
                 // schema update from a non-security enabled database so that we can request admin credentials for the first time...
@@ -300,6 +305,10 @@ namespace ConfigurationSetupUtility.Screens
 
             if (!m_sampleScriptChanged && m_sampleDataScriptCheckBox != null)
                 m_sampleDataScriptCheckBox.IsChecked = true;
+
+            //hide enable audit log checkbox for MS Access databases as this feature in not available.
+            if (m_enableAuditLogCheckBox != null)
+                m_enableAuditLogCheckBox.Visibility = Visibility.Collapsed;
         }
 
         // Occurs when the user chooses to set up a SQL Server database.
@@ -310,6 +319,14 @@ namespace ConfigurationSetupUtility.Screens
 
             if (!m_sampleScriptChanged && m_sampleDataScriptCheckBox != null)
                 m_sampleDataScriptCheckBox.IsChecked = false;
+
+            if (m_enableAuditLogCheckBox != null)
+            {
+                //Make it visible for SQL Server database.
+                m_enableAuditLogCheckBox.Visibility = Visibility.Visible;
+                if (!m_enableAuditLogChanged)
+                    m_enableAuditLogCheckBox.IsChecked = false;
+            }
         }
 
         // Occurs when the user chooses to set up a MySQL database.
@@ -320,6 +337,14 @@ namespace ConfigurationSetupUtility.Screens
 
             if (!m_sampleScriptChanged && m_sampleDataScriptCheckBox != null)
                 m_sampleDataScriptCheckBox.IsChecked = false;
+
+            if (m_enableAuditLogCheckBox != null)
+            {
+                // Make it visible for MySQL database
+                m_enableAuditLogCheckBox.Visibility = Visibility.Visible;
+                if (!m_enableAuditLogChanged)
+                    m_enableAuditLogCheckBox.IsChecked = false;
+            }
         }
 
         // Occurs when the user chooses to run the initial data script when setting up their database.
@@ -354,6 +379,26 @@ namespace ConfigurationSetupUtility.Screens
         {
             if (m_state != null)
                 m_state["sampleDataScript"] = false;
+        }
+
+        // Occurs when the user explicitly changes the enable audit log check box.
+        private void EnableAuditLogCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            m_enableAuditLogChanged = true;
+        }
+
+        // Occurs when the user chooses to run the enable audit log when setting up their database.
+        private void EnableAuditLogCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (m_state != null)
+                m_state["enableAuditLog"] = true;
+        }
+
+        // Occurs when the user chooses to not run the enable audit log when setting up their database.
+        private void EnableAuditLogCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (m_state != null)
+                m_state["enableAuditLog"] = false;
         }
 
         // Attempts to load old connection string parameters
