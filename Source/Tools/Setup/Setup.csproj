@@ -110,6 +110,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="..\..\Data\MySQL\AuditLog.sql">
       <Link>Database Scripts\MySQL\AuditLog.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\Data\MySQL\InitialDataSet.sql">
       <Link>Database Scripts\MySQL\InitialDataSet.sql</Link>
@@ -125,6 +126,7 @@
     </Content>
     <Content Include="..\..\Data\SQL Server\AuditLog.sql">
       <Link>Database Scripts\SQL Server\AuditLog.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\Data\SQL Server\InitialDataSet.sql">
       <Link>Database Scripts\SQL Server\InitialDataSet.sql</Link>
