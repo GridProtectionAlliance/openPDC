@@ -25,9 +25,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.ServiceProcess;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using System.ServiceProcess;
 
 namespace Setup
 {
@@ -54,7 +54,7 @@ namespace Setup
             try
             {
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
-                labelVersion.Text = string.Format(labelVersion.Text, version.Major, version.Minor, version.Build, version.Revision);
+                labelVersion.Text = string.Format(labelVersion.Text, version.Major, version.Minor, version.Build);
             }
             catch
             {
@@ -77,7 +77,7 @@ namespace Setup
                     {
                         Process net40Install;
                         string netInstallPath = "Installers\\dotNetFx40_Full_x86_x64.exe";
-                        
+
                         if (File.Exists(netInstallPath))
                         {
                             try

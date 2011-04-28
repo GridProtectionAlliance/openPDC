@@ -131,13 +131,11 @@
             // checkBoxConnectionTester
             // 
             this.checkBoxConnectionTester.AutoSize = true;
-            this.checkBoxConnectionTester.Checked = true;
-            this.checkBoxConnectionTester.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxConnectionTester.Location = new System.Drawing.Point(16, 78);
             this.checkBoxConnectionTester.Name = "checkBoxConnectionTester";
-            this.checkBoxConnectionTester.Size = new System.Drawing.Size(160, 20);
+            this.checkBoxConnectionTester.Size = new System.Drawing.Size(199, 20);
             this.checkBoxConnectionTester.TabIndex = 2;
-            this.checkBoxConnectionTester.Text = "PMU Connection Tester";
+            this.checkBoxConnectionTester.Text = "PMU Connection Tester v4.2.7";
             this.checkBoxConnectionTester.UseVisualStyleBackColor = true;
             // 
             // radioButton64bit
@@ -150,7 +148,7 @@
             this.radioButton64bit.TabStop = true;
             this.radioButton64bit.Text = "64-bit version of the openPDC";
             this.toolTip.SetToolTip(this.radioButton64bit, "The 64-bit version of the openPDC is recommended for production deployments.\r\nThi" +
-                    "s will require an available database such as SQL Server or MySQL.");
+        "s will require an available database such as SQL Server or MySQL.");
             this.radioButton64bit.UseVisualStyleBackColor = true;
             // 
             // radioButton32bit
@@ -164,8 +162,8 @@
             this.radioButton32bit.TabStop = true;
             this.radioButton32bit.Text = "32-bit version of the openPDC";
             this.toolTip.SetToolTip(this.radioButton32bit, "If you do not have a database server installed locally you can always\r\ninstall th" +
-                    "e 32-bit version of the openPDC and just use an Access database,\r\nno extra softw" +
-                    "are required.");
+        "e 32-bit version of the openPDC and just use an Access database,\r\nno extra softw" +
+        "are required.");
             this.radioButton32bit.UseVisualStyleBackColor = true;
             // 
             // labelNotes
@@ -208,9 +206,9 @@
             this.labelVersion.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelVersion.Location = new System.Drawing.Point(375, 75);
             this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(125, 13);
+            this.labelVersion.Size = new System.Drawing.Size(105, 13);
             this.labelVersion.TabIndex = 2;
-            this.labelVersion.Text = "Version: {0}.{1}.{2}.{3}";
+            this.labelVersion.Text = "Version: {0}.{1}.{2}";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // pictureBoxLogo
