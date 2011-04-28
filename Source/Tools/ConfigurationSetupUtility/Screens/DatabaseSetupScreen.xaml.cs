@@ -179,7 +179,6 @@ namespace ConfigurationSetupUtility.Screens
 
                 m_initialDataScriptCheckBox.Visibility = existingVisibility;
                 m_sampleDataScriptCheckBox.Visibility = existingVisibility;
-                m_enableAuditLogCheckBox.Visibility = existingVisibility;
 
                 // Show new database warning anytime user will be creating a new database
                 if (m_state.TryGetValue("updateConfiguration", out value))
@@ -201,6 +200,9 @@ namespace ConfigurationSetupUtility.Screens
 
                 if (!m_state.ContainsKey("enableAuditLog"))
                     m_state.Add("enableAuditLog", false);
+
+                if (m_enableAuditLogCheckBox != null)
+                    ManageEnableAuditLogCheckBox();
 
                 // If we are migrating to a new schema we need to check the old database if possible so we can determine if this is a
                 // schema update from a non-security enabled database so that we can request admin credentials for the first time...
@@ -306,9 +308,8 @@ namespace ConfigurationSetupUtility.Screens
             if (!m_sampleScriptChanged && m_sampleDataScriptCheckBox != null)
                 m_sampleDataScriptCheckBox.IsChecked = true;
 
-            //hide enable audit log checkbox for MS Access databases as this feature in not available.
             if (m_enableAuditLogCheckBox != null)
-                m_enableAuditLogCheckBox.Visibility = Visibility.Collapsed;
+                ManageEnableAuditLogCheckBox();
         }
 
         // Occurs when the user chooses to set up a SQL Server database.
@@ -323,7 +324,8 @@ namespace ConfigurationSetupUtility.Screens
             if (m_enableAuditLogCheckBox != null)
             {
                 //Make it visible for SQL Server database.
-                m_enableAuditLogCheckBox.Visibility = Visibility.Visible;
+                ManageEnableAuditLogCheckBox();
+
                 if (!m_enableAuditLogChanged)
                     m_enableAuditLogCheckBox.IsChecked = false;
             }
@@ -341,7 +343,7 @@ namespace ConfigurationSetupUtility.Screens
             if (m_enableAuditLogCheckBox != null)
             {
                 // Make it visible for MySQL database
-                m_enableAuditLogCheckBox.Visibility = Visibility.Visible;
+                ManageEnableAuditLogCheckBox();
                 if (!m_enableAuditLogChanged)
                     m_enableAuditLogCheckBox.IsChecked = false;
             }
@@ -399,6 +401,22 @@ namespace ConfigurationSetupUtility.Screens
         {
             if (m_state != null)
                 m_state["enableAuditLog"] = false;
+        }
+
+        private void ManageEnableAuditLogCheckBox()
+        {
+            bool existing = Convert.ToBoolean(m_state["existing"]);
+            bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+
+            if (!existing || migrate)
+            {
+                m_enableAuditLogCheckBox.Visibility = Visibility.Visible;
+
+                if (m_state.ContainsKey("databaseType") && m_state["databaseType"].ToString() == "access")
+                    m_enableAuditLogCheckBox.Visibility = Visibility.Collapsed;
+            }
+            else
+                m_enableAuditLogCheckBox.Visibility = Visibility.Collapsed;
         }
 
         // Attempts to load old connection string parameters
