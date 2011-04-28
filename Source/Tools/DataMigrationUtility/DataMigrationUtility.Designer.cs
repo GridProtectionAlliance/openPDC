@@ -322,7 +322,7 @@
             this.ExcludedTablesTextBox.Name = "ExcludedTablesTextBox";
             this.ExcludedTablesTextBox.Size = new System.Drawing.Size(535, 20);
             this.ExcludedTablesTextBox.TabIndex = 35;
-            this.ExcludedTablesTextBox.Text = "Runtime,ErrorLog";
+            this.ExcludedTablesTextBox.Text = "Runtime,ErrorLog,AuditLog";
             // 
             // CommaSeparateValuesLabel
             // 

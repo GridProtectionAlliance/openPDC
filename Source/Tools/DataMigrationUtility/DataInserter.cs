@@ -531,16 +531,39 @@ namespace Database
                 }
             }
 
-            // Execute source query
-            //var _with4 = FromTable.Connection.ExecuteReader("SELECT " + colFields.GetList() + " FROM " + FromTable.FullName, CommandBehavior.SequentialAccess, Timeout);
-
-            //order by auto increment field which allows to preserve that value while transfer a data to destination table
-            //
             string selectString = "SELECT " + colFields.GetList() + " FROM " + FromTable.FullName;
+            bool skipKeyValuePreservation = false;
 
-            if (fldAutoInc != null)
-                selectString += " ORDER BY " + fldAutoInc.Name;
+            // Handle special case of self-referencing table
+            if (tblSource.IsReferencedBy(tblSource))
+            {
+                // We need a special order-by for this scenario to make sure referenced rows are inserted before other rows - this also
+                // means no auto-inc preservation is possible on this table
+                skipKeyValuePreservation = true;
+                selectString += " ORDER BY ";
+                int index = 0;
 
+                foreach (Field field in tblSource.Fields)
+                {
+                    foreach (ForeignKeyField foreignKey in field.ForeignKeys)
+                    {
+                        if (string.Compare(tblSource.Name, foreignKey.ForeignKey.Table.Name, true) == 0)
+                        {
+                            selectString += (index > 0 ? ", " : "") + foreignKey.ForeignKey.Name;
+                            index++;
+                        }
+                    }
+                }
+
+            }
+            else
+            {
+                // Order by auto increment field to help preserve the original value while transfering data to destination table
+                if (fldAutoInc != null)
+                    selectString += " ORDER BY " + fldAutoInc.Name;
+            }
+
+            // Execute source query
             OleDbDataReader fromReader = FromTable.Connection.ExecuteReader(selectString, CommandBehavior.SequentialAccess, Timeout);
 
             // Create Sql stubs
@@ -794,7 +817,7 @@ namespace Database
                             if (AddedFirstInsert | (fldAutoInc != null))
                             {
                                 // Added check to preserve ID number for auto-inc fields
-                                if (m_preservePrimaryKeyValue & fldAutoInc != null)
+                                if (!skipKeyValuePreservation && m_preservePrimaryKeyValue && fldAutoInc != null)
                                 {
                                     //Commented Auto increment field for Primary key because if field is auto increment but not primary key then still need to preserve value before it insert to table
                                     //if (ToTable.Fields[fldAutoInc.Name].IsPrimaryKey)
@@ -816,10 +839,11 @@ namespace Database
                                         // Insert record into destination table upto Identity Field Value
                                         ToTable.Connection.ExecuteNonQuery(InsertSql.ToString(), Timeout);
                                         int currentIdentityValue = int.Parse(Common.NotNull(ToTable.Connection.ExecuteScalar(ToTable.IdentitySql, Timeout), "0"));
-                                        //Delete record which is just inserted
+
+                                        // Delete record which was just inserted
                                         ToTable.Connection.ExecuteNonQuery("DELETE FROM " + ToTable.Name + " WHERE " + fldAutoInc.Name + "=" + currentIdentityValue, Timeout);
-                                        //RaiseEvent_SqlFailure(ToTable.Name, new Exception("Data value set to table " + ToTable.Name + " for field " + fldAutoInc.Name));
                                     }
+
                                     //}
                                     //}
                                     //else
