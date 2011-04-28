@@ -23,22 +23,22 @@
 //  09/27/2010 - Mihir Brahmbhatt
 //       Edited code comments.
 //  10/12/2010 - Mihir Brahmbhatt
-//       Updated preserv value functionality for non primary key field
+//       Updated preserve value functionality for auto-inc fields
 //
 //******************************************************************************************************
 
 // James Ritchie Carroll - 2003
 using System;
 using System.Collections;
-using System.Text;
-using System.Data;
-using System.IO;
-using System.Data.OleDb;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
+using System.Data.OleDb;
 using System.Drawing;
+using System.IO;
+using System.Text;
 using TVA.Data;
 using TVA.Reflection;
-using System.Collections.Generic;
 
 namespace Database
 {
@@ -793,7 +793,7 @@ namespace Database
                             // Insert record into destination table
                             if (AddedFirstInsert | (fldAutoInc != null))
                             {
-                                //Added to Check preserve ID Number for Device Table
+                                // Added check to preserve ID number for auto-inc fields
                                 if (m_preservePrimaryKeyValue & fldAutoInc != null)
                                 {
                                     //Commented Auto increment field for Primary key because if field is auto increment but not primary key then still need to preserve value before it insert to table
