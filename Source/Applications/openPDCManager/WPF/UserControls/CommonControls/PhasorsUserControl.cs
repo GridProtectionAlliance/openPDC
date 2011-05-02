@@ -22,14 +22,13 @@
 //******************************************************************************************************
 
 using System;
-using openPDCManager.ModalDialogs;
-using openPDCManager.Utilities;
-using openPDCManager.Data;
+using System.Collections.Generic;
 using System.Windows;
+using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using openPDCManager.Data.ServiceCommunication;
-using System.Collections.Generic;
-using System.Threading;
+using openPDCManager.ModalDialogs;
+using openPDCManager.Utilities;
 
 namespace openPDCManager.UserControls.CommonControls
 {
@@ -48,12 +47,16 @@ namespace openPDCManager.UserControls.CommonControls
         void SavePhasor(Phasor phasor, bool isNew)
         {
             SystemMessages sm;
-            DataConnection connection = new DataConnection();;
+            DataConnection connection = new DataConnection();
+            ;
             try
-            {                
-                string result = CommonFunctions.SavePhasor(connection, phasor, isNew);                
+            {
+                string result = CommonFunctions.SavePhasor(connection, phasor, isNew);
                 //ClearForm();
-                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                sm = new SystemMessages(new Message()
+                {
+                    UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -64,7 +67,7 @@ namespace openPDCManager.UserControls.CommonControls
 
                 //make this newly added or updated item as default selected. So user can click initialize right away.
                 ListBoxPhasorList.SelectedItem = ((List<Phasor>)ListBoxPhasorList.ItemsSource).Find(c => c.Label == phasor.Label);
-                
+
                 //Update Metadata in the openPDC Service.
                 try
                 {
@@ -89,10 +92,14 @@ namespace openPDCManager.UserControls.CommonControls
                         else
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
 
+                        CommonFunctions.SendCommandToWindowsService(serviceClient, "RefreshRoutes");
                     }
                     else
                     {
-                        sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                        sm = new SystemMessages(new openPDCManager.Utilities.Message()
+                        {
+                            UserMessage = "Failed to Perform Configuration Changes", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Information
+                        }, ButtonType.OkOnly);
                         sm.Owner = Window.GetWindow(this);
                         sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                         sm.ShowPopup();
@@ -100,7 +107,10 @@ namespace openPDCManager.UserControls.CommonControls
                 }
                 catch (Exception ex)
                 {
-                    sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                    sm = new SystemMessages(new openPDCManager.Utilities.Message()
+                    {
+                        UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information
+                    }, ButtonType.OkOnly);
                     sm.Owner = Window.GetWindow(this);
                     sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                     sm.ShowPopup();
@@ -110,7 +120,10 @@ namespace openPDCManager.UserControls.CommonControls
             catch (Exception ex)
             {
                 CommonFunctions.LogException(connection, "WPF.SavePhasor", ex);
-                sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Phasor Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Failed to Save Phasor Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -132,7 +145,10 @@ namespace openPDCManager.UserControls.CommonControls
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.GetPhasors", ex);
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasors", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Failed to Retrieve Phasors", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                },
                        ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -153,7 +169,10 @@ namespace openPDCManager.UserControls.CommonControls
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.GetPhasorList", ex);
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasor List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Failed to Retrieve Phasor List", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;

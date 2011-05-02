@@ -232,6 +232,8 @@ namespace HistorianAdapters
         [AdapterCommand("Refreshes metadata using all available and enabled providers.")]
         public override void RefreshMetadata()
         {
+            base.RefreshMetadata();
+
             bool queueEnabled = InternalProcessQueue.Enabled;
 
             try

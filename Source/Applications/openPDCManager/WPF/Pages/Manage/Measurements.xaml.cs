@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,11 +31,9 @@ using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using openPDCManager.Data;
 using openPDCManager.Data.Entities;
+using openPDCManager.Data.ServiceCommunication;
 using openPDCManager.ModalDialogs;
 using openPDCManager.Utilities;
-using openPDCManager.Data.ServiceCommunication;
-using System.Collections.ObjectModel;
-using System.Threading;
 
 namespace openPDCManager.Pages.Manage
 {
@@ -42,15 +41,15 @@ namespace openPDCManager.Pages.Manage
     /// Interaction logic for Measurements.xaml
     /// </summary>
     public partial class Measurements : UserControl
-    {        
+    {
         #region [ Members ]
-             
+
         bool m_inEditMode = false;
         string m_signalID = string.Empty;
         int m_deviceID = 0;
         ActivityWindow m_activityWindow;
         List<Measurement> m_measurementList;
-        
+
         #endregion
 
         #region [ Constructor ]
@@ -63,7 +62,7 @@ namespace openPDCManager.Pages.Manage
             ButtonShowAll.Content = new BitmapImage(new Uri(@"images/CancelSearch.png", UriKind.Relative));
             ButtonSave.Content = new BitmapImage(new Uri(@"images/Save.png", UriKind.Relative));
             ButtonClear.Content = new BitmapImage(new Uri(@"images/Cancel.png", UriKind.Relative));
-            Loaded += new RoutedEventHandler(Measurements_Loaded);            
+            Loaded += new RoutedEventHandler(Measurements_Loaded);
             ButtonClear.Click += new RoutedEventHandler(ButtonClear_Click);
             ButtonSave.Click += new RoutedEventHandler(ButtonSave_Click);
             ListBoxMeasurementList.SelectionChanged += new SelectionChangedEventHandler(ListBoxMeasurementList_SelectionChanged);
@@ -104,7 +103,7 @@ namespace openPDCManager.Pages.Manage
                 else
                     ComboBoxDevice.SelectedIndex = 0;
 
-                if (ComboBoxPhasorSource.Items.Count > 0 )
+                if (ComboBoxPhasorSource.Items.Count > 0)
                 {
                     ComboBoxPhasorSource.SelectedIndex = 0;
                     if (selectedMeasurement.PhasorSourceIndex.HasValue)
@@ -232,7 +231,7 @@ namespace openPDCManager.Pages.Manage
             {
                 GetMeasurementList();
             }
-        }     
+        }
 
         #endregion
 
@@ -244,7 +243,10 @@ namespace openPDCManager.Pages.Manage
             try
             {
                 string result = CommonFunctions.SaveMeasurement(null, measurement, isNew);
-                sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                sm = new SystemMessages(new Message()
+                {
+                    UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -257,7 +259,7 @@ namespace openPDCManager.Pages.Manage
 
                 //make this newly added or updated item as default selected. So user can click initialize right away.
                 ListBoxMeasurementList.SelectedItem = (m_measurementList).Find(c => c.SignalReference == measurement.SignalReference);
-                
+
                 //Update Metadata in the openPDC Service.
                 try
                 {
@@ -266,7 +268,10 @@ namespace openPDCManager.Pages.Manage
                         string runtimeID = CommonFunctions.GetRuntimeID(null, "Historian", (int)measurement.HistorianID);
                         WindowsServiceClient serviceClient = ((App)Application.Current).ServiceClient;
                         if (serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                        {
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + runtimeID + " RefreshMetadata");
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "RefreshRoutes");
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -279,13 +284,16 @@ namespace openPDCManager.Pages.Manage
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.SaveMeasurement", ex);
-                sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Measurement Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Failed to Save Measurement Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
             }
-            
+
         }
 
         void GetPhasors(int deviceID, bool isOptional)
@@ -313,12 +321,15 @@ namespace openPDCManager.Pages.Manage
                         else
                             ComboBoxPhasorSource.SelectedIndex = 0;
                     }
-                }                
+                }
             }
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.GetPhasors", ex);
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Phasors", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Failed to Retrieve Phasors", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -329,11 +340,11 @@ namespace openPDCManager.Pages.Manage
         void GetMeasurementsByDevice()
         {
             try
-            {                
+            {
                 m_measurementList = CommonFunctions.GetMeasurementsByDevice(null, m_deviceID);
-             
+
                 BindData(m_measurementList);
-                
+
                 if (m_activityWindow != null)
                     m_activityWindow.Close();
 
@@ -341,12 +352,15 @@ namespace openPDCManager.Pages.Manage
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.GetMeasurementsByDevice", ex);
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Measurements for Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Failed to Retrieve Measurements for Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 sm.ShowPopup();
-            }            
+            }
         }
 
         void GetDeviceByDeviceID()
@@ -354,12 +368,15 @@ namespace openPDCManager.Pages.Manage
             try
             {
                 Device device = CommonFunctions.GetDeviceByDeviceID(null, m_deviceID);
-                TextBlockHeading.Text = "Manage Measurements For Device: " + device.Acronym;                
+                TextBlockHeading.Text = "Manage Measurements For Device: " + device.Acronym;
             }
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.GetDeviceByDeviceID", ex);
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Failed to Retrieve Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -370,9 +387,9 @@ namespace openPDCManager.Pages.Manage
         void GetMeasurementList()
         {
             try
-            {                
+            {
                 m_measurementList = CommonFunctions.GetMeasurementList(null, ((App)Application.Current).NodeValue);
-             
+
                 BindData(m_measurementList);
 
                 if (m_activityWindow != null)
@@ -381,7 +398,10 @@ namespace openPDCManager.Pages.Manage
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.GetMeasurementList", ex);
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Measurement List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Failed to Retrieve Measurement List", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -393,14 +413,17 @@ namespace openPDCManager.Pages.Manage
         {
             try
             {
-                ComboBoxSignalType.ItemsSource = CommonFunctions.GetSignalTypes(null, false); 
+                ComboBoxSignalType.ItemsSource = CommonFunctions.GetSignalTypes(null, false);
                 if (ComboBoxSignalType.Items.Count > 0)
-                    ComboBoxSignalType.SelectedIndex = 0;                
+                    ComboBoxSignalType.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.GetSignalTypes", ex);
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Signal Types", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Failed to Retrieve Signal Types", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -414,12 +437,15 @@ namespace openPDCManager.Pages.Manage
             {
                 ComboBoxHistorian.ItemsSource = CommonFunctions.GetHistorians(null, true, true, true);
                 if (ComboBoxHistorian.Items.Count > 0)
-                    ComboBoxHistorian.SelectedIndex = 0;                
+                    ComboBoxHistorian.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.GetHistorians", ex);
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Historians", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Failed to Retrieve Historians", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -433,12 +459,15 @@ namespace openPDCManager.Pages.Manage
             {
                 ComboBoxDevice.ItemsSource = CommonFunctions.GetDevices(null, DeviceType.NonConcentrator, ((App)Application.Current).NodeValue, true);
                 if (ComboBoxDevice.Items.Count > 0)
-                    ComboBoxDevice.SelectedIndex = 0;                
+                    ComboBoxDevice.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.GetDevices", ex);
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Devices", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Failed to Retrieve Devices", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -453,7 +482,10 @@ namespace openPDCManager.Pages.Manage
             if (string.IsNullOrEmpty(TextBoxPointTag.Text.CleanText()))
             {
                 isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Point Tag", SystemMessage = "Please provide valid Point Tag value.", UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Invalid Point Tag", SystemMessage = "Please provide valid Point Tag value.", UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                 {
@@ -468,7 +500,10 @@ namespace openPDCManager.Pages.Manage
             if (string.IsNullOrEmpty(TextBoxSignalReference.Text.CleanText()))
             {
                 isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Signal Reference", SystemMessage = "Please provide valid Signal Reference value.", UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Invalid Signal Reference", SystemMessage = "Please provide valid Signal Reference value.", UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                 {
@@ -483,7 +518,10 @@ namespace openPDCManager.Pages.Manage
             if (!TextBoxAdder.Text.IsDouble())
             {
                 isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Adder", SystemMessage = "Please provide valid numeric value for Adder.", UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Invalid Adder", SystemMessage = "Please provide valid numeric value for Adder.", UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                 {
@@ -498,7 +536,10 @@ namespace openPDCManager.Pages.Manage
             if (!TextBoxMultiplier.Text.IsDouble())
             {
                 isValid = false;
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Invalid Multiplier", SystemMessage = "Please provide valid numeric value for Multiplier.", UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Invalid Multiplier", SystemMessage = "Please provide valid numeric value for Multiplier.", UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Closed += new EventHandler(delegate(object sender, EventArgs e)
                 {
@@ -515,7 +556,10 @@ namespace openPDCManager.Pages.Manage
 
         void ClearForm()
         {
-            GridMeasurementDetail.DataContext = new Measurement() { Adder = 0, Multiplier = 1 };
+            GridMeasurementDetail.DataContext = new Measurement()
+            {
+                Adder = 0, Multiplier = 1
+            };
             if (ComboBoxDevice.Items.Count > 0)
                 ComboBoxDevice.SelectedIndex = 0;
             if (ComboBoxHistorian.Items.Count > 0)
@@ -539,8 +583,8 @@ namespace openPDCManager.Pages.Manage
             {
                 DataPagerMeasurements.ItemsSource = null;
                 ListBoxMeasurementList.Items.Refresh();
-            }            
-            
+            }
+
             if (ListBoxMeasurementList.Items.Count > 0)
                 ListBoxMeasurementList.SelectedIndex = 0;
         }

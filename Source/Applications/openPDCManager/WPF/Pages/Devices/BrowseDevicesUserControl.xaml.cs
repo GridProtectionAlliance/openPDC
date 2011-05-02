@@ -137,7 +137,10 @@ namespace openPDCManager.Pages.Devices
                     Device device = new Device();
                     device = ((Button)sender).DataContext as Device;
                     string result = CommonFunctions.SaveDevice(null, device, false, 0, 0);
-                    sm = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                    sm = new SystemMessages(new Message()
+                    {
+                        UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success
+                    },
                             ButtonType.OkOnly);
 
                     //Update Metadata in the openPDC Service.                
@@ -167,15 +170,18 @@ namespace openPDCManager.Pages.Devices
                             if (statHistorian != null)
                             {
                                 string statRuntimeID = CommonFunctions.GetRuntimeID(null, "Historian", statHistorian.ID);
-                                if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                                    CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " RefreshMetadata");
+                                CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke " + statRuntimeID + " RefreshMetadata");
                             }
 
                             CommonFunctions.SendCommandToWindowsService(serviceClient, "Invoke 0 ReloadStatistics");
+                            CommonFunctions.SendCommandToWindowsService(serviceClient, "RefreshRoutes");
                         }
                         else
                         {
-                            SystemMessages sm2 = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                            SystemMessages sm2 = new SystemMessages(new openPDCManager.Utilities.Message()
+                            {
+                                UserMessage = "Failed to Perform Configuration Changes", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Information
+                            }, ButtonType.OkOnly);
                             sm2.Owner = Window.GetWindow(this);
                             sm2.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                             sm2.ShowPopup();
@@ -183,7 +189,10 @@ namespace openPDCManager.Pages.Devices
                     }
                     catch (Exception ex)
                     {
-                        SystemMessages sm1 = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                        SystemMessages sm1 = new SystemMessages(new openPDCManager.Utilities.Message()
+                        {
+                            UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information
+                        }, ButtonType.OkOnly);
                         sm1.Owner = Window.GetWindow(this);
                         sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                         sm1.ShowPopup();
@@ -194,7 +203,10 @@ namespace openPDCManager.Pages.Devices
                 catch (Exception ex)
                 {
                     CommonFunctions.LogException(null, "WPF.SaveDevice", ex);
-                    sm = new SystemMessages(new Message() { UserMessage = "Failed to Save Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                    sm = new SystemMessages(new Message()
+                    {
+                        UserMessage = "Failed to Save Device Information", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                    },
                             ButtonType.OkOnly);
                 }
                 sm.Owner = Window.GetWindow(this);
@@ -204,7 +216,10 @@ namespace openPDCManager.Pages.Devices
             }
             else
             {
-                sm = new SystemMessages(new Message() { UserMessage = "Unauthorized Access", SystemMessage = "You are not authorized to perform this operation.", UserMessageType = MessageType.Warning },
+                sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Unauthorized Access", SystemMessage = "You are not authorized to perform this operation.", UserMessageType = MessageType.Warning
+                },
                             ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -224,9 +239,15 @@ namespace openPDCManager.Pages.Devices
                     device = ((Button)sender).DataContext as Device;
 
                     if (device.IsConcentrator)
-                        sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete concentrator device?", SystemMessage = "Device Acronym: " + device.Acronym + Environment.NewLine + "Deleting concentrator will also delete " + CommonFunctions.GetDeviceListByParentID(null, device.ID).Count() + " associated device(s).", UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                        sm = new SystemMessages(new Message()
+                        {
+                            UserMessage = "Do you want to delete concentrator device?", SystemMessage = "Device Acronym: " + device.Acronym + Environment.NewLine + "Deleting concentrator will also delete " + CommonFunctions.GetDeviceListByParentID(null, device.ID).Count() + " associated device(s).", UserMessageType = MessageType.Confirmation
+                        }, ButtonType.YesNo);
                     else
-                        sm = new SystemMessages(new Message() { UserMessage = "Do you want to delete device?", SystemMessage = "Device Acronym: " + device.Acronym, UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                        sm = new SystemMessages(new Message()
+                        {
+                            UserMessage = "Do you want to delete device?", SystemMessage = "Device Acronym: " + device.Acronym, UserMessageType = MessageType.Confirmation
+                        }, ButtonType.YesNo);
 
                     sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
                     {
@@ -244,7 +265,10 @@ namespace openPDCManager.Pages.Devices
                                 else
                                     result = CommonFunctions.DeleteDevice(null, device.ID);
 
-                                SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success },
+                                SystemMessages sm1 = new SystemMessages(new Message()
+                                {
+                                    UserMessage = result, SystemMessage = string.Empty, UserMessageType = MessageType.Success
+                                },
                                     ButtonType.OkOnly);
                                 sm1.Owner = Window.GetWindow(this);
                                 sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -253,7 +277,10 @@ namespace openPDCManager.Pages.Devices
                             }
                             catch (Exception ex)
                             {
-                                SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = "Failed to Delete Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                                SystemMessages sm1 = new SystemMessages(new Message()
+                                {
+                                    UserMessage = "Failed to Delete Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                                },
                                     ButtonType.OkOnly);
                                 sm1.Owner = Window.GetWindow(this);
                                 sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -283,7 +310,10 @@ namespace openPDCManager.Pages.Devices
                 catch (Exception ex)
                 {
                     CommonFunctions.LogException(null, "WPF.DeleteDevice", ex);
-                    sm = new SystemMessages(new Message() { UserMessage = "Failed to Delete Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                    sm = new SystemMessages(new Message()
+                    {
+                        UserMessage = "Failed to Delete Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                    },
                             ButtonType.OkOnly);
                 }
                 sm.Owner = Window.GetWindow(this);
@@ -292,7 +322,10 @@ namespace openPDCManager.Pages.Devices
             }
             else
             {
-                sm = new SystemMessages(new Message() { UserMessage = "Unauthorized Access", SystemMessage = "You are not authorized to perform this operation.", UserMessageType = MessageType.Warning },
+                sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Unauthorized Access", SystemMessage = "You are not authorized to perform this operation.", UserMessageType = MessageType.Warning
+                },
                             ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -307,7 +340,10 @@ namespace openPDCManager.Pages.Devices
             {
                 Device device = new Device();
                 device = ((Button)sender).DataContext as Device;
-                sm = new SystemMessages(new Message() { UserMessage = "Do you want to make a copy of " + device.Acronym + " device?", SystemMessage = "This will copy device configuration and generate new measurements.", UserMessageType = MessageType.Confirmation }, ButtonType.YesNo);
+                sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Do you want to make a copy of " + device.Acronym + " device?", SystemMessage = "This will copy device configuration and generate new measurements.", UserMessageType = MessageType.Confirmation
+                }, ButtonType.YesNo);
                 sm.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
                 {
                     if ((bool)sm.DialogResult)
@@ -335,7 +371,10 @@ namespace openPDCManager.Pages.Devices
                         }
                         catch (Exception ex)
                         {
-                            SystemMessages sm1 = new SystemMessages(new Message() { UserMessage = "Failed to Create Copy of Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                            SystemMessages sm1 = new SystemMessages(new Message()
+                            {
+                                UserMessage = "Failed to Create Copy of Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                            },
                                 ButtonType.OkOnly);
                             sm1.Owner = Window.GetWindow(this);
                             sm1.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -348,7 +387,10 @@ namespace openPDCManager.Pages.Devices
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.CopyDevice", ex);
-                sm = new SystemMessages(new Message() { UserMessage = "Failed to Create Copy of Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Failed to Create Copy of Device", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
             }
             sm.Owner = Window.GetWindow(this);
@@ -441,7 +483,10 @@ namespace openPDCManager.Pages.Devices
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.GetDeviceList", ex);
-                SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Failed to Retrieve Device List", SystemMessage = ex.Message, UserMessageType = MessageType.Error },
+                SystemMessages sm = new SystemMessages(new Message()
+                {
+                    UserMessage = "Failed to Retrieve Device List", SystemMessage = ex.Message, UserMessageType = MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
