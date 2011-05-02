@@ -51,6 +51,7 @@ namespace AdoAdapters
         private string m_dbConnectionString;
         private string m_dataProviderString;
         private string m_timestampFormat;
+        private bool m_isJetEngine;
 
         private IDbConnection m_connection;
         private long m_measurementCount;
@@ -105,6 +106,7 @@ namespace AdoAdapters
             set
             {
                 m_dbConnectionString = value;
+                m_isJetEngine = m_dbConnectionString.Contains("Microsoft.Jet.OLEDB");
             }
         }
 
@@ -217,6 +219,8 @@ namespace AdoAdapters
             if (!settings.TryGetValue("dbConnectionString", out m_dbConnectionString))
                 m_dbConnectionString = string.Empty;
 
+            m_isJetEngine = m_dbConnectionString.Contains("Microsoft.Jet.OLEDB");
+
             // Get data provider string or default to a generic ODBC connection.
             if (!settings.TryGetValue("dataProviderString", out m_dataProviderString))
                 m_dataProviderString = "AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.Odbc.OdbcConnection; AdapterType=System.Data.Odbc.OdbcDataAdapter";
@@ -288,11 +292,14 @@ namespace AdoAdapters
                     string propertyName = m_fieldNames[fieldName];
                     object value = measurementType.GetProperty(propertyName).GetValue(measurement, null);
 
+                    if (fieldList.Length > 0)
+                        fieldList.Append(',');
                     fieldList.Append(fieldName);
-                    fieldList.Append(',');
+
+                    if (valueList.Length > 0)
+                        valueList.Append(',');
                     valueList.Append('@');
                     valueList.Append(fieldName);
-                    valueList.Append(',');
 
                     parameter.ParameterName = "@" + fieldName;
                     parameter.Direction = ParameterDirection.Input;
@@ -304,7 +311,12 @@ namespace AdoAdapters
                             // signed integer to work with most database field types
                             parameter.Value = Convert.ToInt32(value);
                             break;
+                        case "signalid":
+                            parameter.Value = m_isJetEngine ? "{" + value + "}" : value;
+                            break;
                         case "timestamp":
+                        case "publishedtimestamp":
+                        case "receivedtimestamp":
                             Ticks timestamp = (Ticks)value;
 
                             // If the value is a timestamp, use the timestamp format
@@ -314,6 +326,10 @@ namespace AdoAdapters
                             else
                                 parameter.Value = timestamp.ToString(m_timestampFormat);
                             break;
+                        case "timestampqualityisgood":
+                        case "valuequalityisgood":
+                            parameter.Value = Convert.ToBoolean(value) ? 1 : 0;
+                            break;
                         default:
                             parameter.Value = value;
                             break;
@@ -321,10 +337,6 @@ namespace AdoAdapters
 
                     command.Parameters.Add(parameter);
                 }
-
-                // Remove the trailing comma from each list.
-                fieldList.Remove(fieldList.Length - 1, 1);
-                valueList.Remove(valueList.Length - 1, 1);
 
                 // Set the command text and execute the command.
                 command.CommandText = string.Format(commandString, m_dbTableName, fieldList, valueList);
