@@ -18,6 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  11/18/2010 - Stephen C. Wills
 //       Generated original version of source code.
+//  05/02/2011 - J. Ritchie Carroll
+//       Cast ID field back to a signed integer to work with most database types per suggestion by Hugo.
 //
 //******************************************************************************************************
 
@@ -295,18 +297,26 @@ namespace AdoAdapters
                     parameter.ParameterName = "@" + fieldName;
                     parameter.Direction = ParameterDirection.Input;
 
-                    if (propertyName != "Timestamp")
-                        parameter.Value = value;
-                    else
+                    switch (propertyName.ToLower())
                     {
-                        Ticks timestamp = (Ticks)value;
+                        case "id":
+                            // IMeasurement.ID field is an uint, cast this back to a
+                            // signed integer to work with most database field types
+                            parameter.Value = Convert.ToInt32(value);
+                            break;
+                        case "timestamp":
+                            Ticks timestamp = (Ticks)value;
 
-                        // If the value is a timestamp, use the timestamp format
-                        // specified by the user when inserting the timestamp.
-                        if (m_timestampFormat == null)
-                            parameter.Value = (long)timestamp;
-                        else
-                            parameter.Value = timestamp.ToString(m_timestampFormat);
+                            // If the value is a timestamp, use the timestamp format
+                            // specified by the user when inserting the timestamp.
+                            if (m_timestampFormat == null)
+                                parameter.Value = (long)timestamp;
+                            else
+                                parameter.Value = timestamp.ToString(m_timestampFormat);
+                            break;
+                        default:
+                            parameter.Value = value;
+                            break;
                     }
 
                     command.Parameters.Add(parameter);
@@ -351,6 +361,6 @@ namespace AdoAdapters
         }
 
         #endregion
-      
+
     }
 }
