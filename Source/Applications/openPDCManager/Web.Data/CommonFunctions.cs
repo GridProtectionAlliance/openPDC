@@ -4102,7 +4102,8 @@ namespace openPDCManager.Data
                                        SignalName = item.Field<string>("SignalName"),
                                        SignalAcronym = item.Field<string>("SignalAcronym"),
                                        SignalSuffix = item.Field<string>("SignalTypeSuffix"),
-                                       PhasorLabel = item.Field<string>("PhasorLabel")
+                                       PhasorLabel = item.Field<string>("PhasorLabel"),
+                                       ID = item.Field<string>("ID")
                                    }).ToList();
                 return measurementList;
             }
