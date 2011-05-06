@@ -1165,90 +1165,82 @@ namespace TVA.PhasorProtocols
         /// location in its <see cref="IDataFrame"/> - so this method overrides the default behavior in order
         /// to accomplish this task.
         /// </remarks>
-        protected override bool AssignMeasurementToFrame(IFrame frame, IMeasurement measurement)
+        protected override void AssignMeasurementToFrame(IFrame frame, IMeasurement measurement)
         {
             IDictionary<MeasurementKey, IMeasurement> measurements = frame.Measurements;
 
-            lock (measurements)
+            // Make sure the measurement is a "SignalReferenceMeasurement" (it should be)
+            SignalReferenceMeasurement signalMeasurement = measurement as SignalReferenceMeasurement;
+            IDataFrame dataFrame = frame as IDataFrame;
+
+            if ((object)signalMeasurement != null && dataFrame != null)
             {
-                if (!frame.Published)
+                PhasorValueCollection phasorValues;
+                SignalReference signal = signalMeasurement.SignalReference;
+                IDataCell dataCell = dataFrame.Cells[signal.CellIndex];
+                int signalIndex = signal.Index;
+
+                // Assign measurement to its destination field in the data cell based on signal type
+                switch (signal.Kind)
                 {
-                    // Make sure the measurement is a "SignalReferenceMeasurement" (it should be)
-                    SignalReferenceMeasurement signalMeasurement = measurement as SignalReferenceMeasurement;
-                    IDataFrame dataFrame = frame as IDataFrame;
+                    case SignalKind.Angle:
+                        // Assign "phase angle" measurement to data cell
+                        phasorValues = dataCell.PhasorValues;
+                        if (phasorValues.Count >= signalIndex)
+                            phasorValues[signalIndex - 1].Angle = Angle.FromDegrees(signalMeasurement.AdjustedValue);
+                        break;
+                    case SignalKind.Magnitude:
+                        // Assign "phase magnitude" measurement to data cell
+                        phasorValues = dataCell.PhasorValues;
+                        if (phasorValues.Count >= signalIndex)
+                            phasorValues[signalIndex - 1].Magnitude = signalMeasurement.AdjustedValue;
+                        break;
+                    case SignalKind.Frequency:
+                        // Assign "frequency" measurement to data cell
+                        dataCell.FrequencyValue.Frequency = signalMeasurement.AdjustedValue;
+                        break;
+                    case SignalKind.DfDt:
+                        // Assign "dF/dt" measurement to data cell
+                        dataCell.FrequencyValue.DfDt = signalMeasurement.AdjustedValue;
+                        break;
+                    case SignalKind.Status:
+                        // Assign "common status flags" measurement to data cell
+                        dataCell.CommonStatusFlags = unchecked((uint)signalMeasurement.AdjustedValue);
 
-                    if ((object)signalMeasurement != null && dataFrame != null)
-                    {
-                        PhasorValueCollection phasorValues;
-                        SignalReference signal = signalMeasurement.SignalReference;
-                        IDataCell dataCell = dataFrame.Cells[signal.CellIndex];
-                        int signalIndex = signal.Index;
-
-                        // Assign measurement to its destination field in the data cell based on signal type
-                        switch (signal.Kind)
-                        {
-                            case SignalKind.Angle:
-                                // Assign "phase angle" measurement to data cell
-                                phasorValues = dataCell.PhasorValues;
-                                if (phasorValues.Count >= signalIndex)
-                                    phasorValues[signalIndex - 1].Angle = Angle.FromDegrees(signalMeasurement.AdjustedValue);
-                                break;
-                            case SignalKind.Magnitude:
-                                // Assign "phase magnitude" measurement to data cell
-                                phasorValues = dataCell.PhasorValues;
-                                if (phasorValues.Count >= signalIndex)
-                                    phasorValues[signalIndex - 1].Magnitude = signalMeasurement.AdjustedValue;
-                                break;
-                            case SignalKind.Frequency:
-                                // Assign "frequency" measurement to data cell
-                                dataCell.FrequencyValue.Frequency = signalMeasurement.AdjustedValue;
-                                break;
-                            case SignalKind.DfDt:
-                                // Assign "dF/dt" measurement to data cell
-                                dataCell.FrequencyValue.DfDt = signalMeasurement.AdjustedValue;
-                                break;
-                            case SignalKind.Status:
-                                // Assign "common status flags" measurement to data cell
-                                dataCell.CommonStatusFlags = unchecked((uint)signalMeasurement.AdjustedValue);
-
-                                // Assign by arrival sorting flag for bad synchronization
-                                if (!dataCell.SynchronizationIsValid && AllowSortsByArrival && !IgnoreBadTimestamps)
-                                    dataCell.DataSortingType = DataSortingType.ByArrival;
-                                break;
-                            case SignalKind.Digital:
-                                // Assign "digital" measurement to data cell
-                                DigitalValueCollection digitalValues = dataCell.DigitalValues;
-                                if (digitalValues.Count >= signalIndex)
-                                    digitalValues[signalIndex - 1].Value = unchecked((ushort)signalMeasurement.AdjustedValue);
-                                break;
-                            case SignalKind.Analog:
-                                // Assign "analog" measurement to data cell
-                                AnalogValueCollection analogValues = dataCell.AnalogValues;
-                                if (analogValues.Count >= signalIndex)
-                                    analogValues[signalIndex - 1].Value = signalMeasurement.AdjustedValue;
-                                break;
-                        }
-
-                        // So that we can accurately track the total measurements that were sorted into this frame,
-                        // we also assign measurement to frame's measurement dictionary - this is important since
-                        // in downsampling scenarios more than one of the same measurement can be sorted into a frame
-                        // but this only needs to be counted as "one" sort so that when preemptive publishing is
-                        // enabled you can compare expected measurements to sorted measurements...
-                        measurements[measurement.Key] = measurement;
-
-                        return true;
-                    }
-
-                    // This is not expected to occur - but just in case
-                    if ((object)signalMeasurement == null && measurement != null)
-                        OnProcessException(new InvalidCastException(string.Format("Attempt was made to assign an invalid measurement to phasor data concentration frame, expected a \"SignalReferenceMeasurement\" but received a \"{0}\"", measurement.GetType().Name)));
-
-                    if (dataFrame == null && frame != null)
-                        OnProcessException(new InvalidCastException(string.Format("During measurement assignment, incoming frame was not a phasor data concentration frame, expected a type derived from \"IDataFrame\" but received a \"{0}\"", frame.GetType().Name)));
+                        // Assign by arrival sorting flag for bad synchronization
+                        if (!dataCell.SynchronizationIsValid && AllowSortsByArrival && !IgnoreBadTimestamps)
+                            dataCell.DataSortingType = DataSortingType.ByArrival;
+                        break;
+                    case SignalKind.Digital:
+                        // Assign "digital" measurement to data cell
+                        DigitalValueCollection digitalValues = dataCell.DigitalValues;
+                        if (digitalValues.Count >= signalIndex)
+                            digitalValues[signalIndex - 1].Value = unchecked((ushort)signalMeasurement.AdjustedValue);
+                        break;
+                    case SignalKind.Analog:
+                        // Assign "analog" measurement to data cell
+                        AnalogValueCollection analogValues = dataCell.AnalogValues;
+                        if (analogValues.Count >= signalIndex)
+                            analogValues[signalIndex - 1].Value = signalMeasurement.AdjustedValue;
+                        break;
                 }
+
+                // So that we can accurately track the total measurements that were sorted into this frame,
+                // we also assign measurement to frame's measurement dictionary - this is important since
+                // in downsampling scenarios more than one of the same measurement can be sorted into a frame
+                // but this only needs to be counted as "one" sort so that when preemptive publishing is
+                // enabled you can compare expected measurements to sorted measurements...
+                measurements[measurement.Key] = measurement;
+
+                return;
             }
 
-            return false;
+            // This is not expected to occur - but just in case
+            if ((object)signalMeasurement == null && measurement != null)
+                OnProcessException(new InvalidCastException(string.Format("Attempt was made to assign an invalid measurement to phasor data concentration frame, expected a \"SignalReferenceMeasurement\" but received a \"{0}\"", measurement.GetType().Name)));
+
+            if (dataFrame == null && frame != null)
+                OnProcessException(new InvalidCastException(string.Format("During measurement assignment, incoming frame was not a phasor data concentration frame, expected a type derived from \"IDataFrame\" but received a \"{0}\"", frame.GetType().Name)));
         }
 
         /// <summary>

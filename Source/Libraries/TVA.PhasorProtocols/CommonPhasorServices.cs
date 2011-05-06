@@ -193,7 +193,6 @@ namespace TVA.PhasorProtocols
             #endregion
         }
 
-
         // Fields
         private IAdapterCollection m_parent;
         private InputAdapterCollection m_inputAdapters;

@@ -57,6 +57,8 @@
 //       Added several more run-time statistics to the frame parser (e.g., missing frames, CRC errors).
 //  08/10/2010 - J. Ritchie Carroll
 //       Added code to handle high-resolution input timing to support accurate input simulations.
+//  05/06/2010- Jian (Ryan) Zuo
+//       Updated to exclude non-data frames from frame counts and injected waiting periods.
 //
 //******************************************************************************************************
 
@@ -2433,14 +2435,10 @@ namespace TVA.PhasorProtocols
 
         private void m_frameParser_ReceivedCommandFrame(object sender, EventArgs<ICommandFrame> e)
         {
-            m_frameRateTotal++;
-
             // We don't stop parsing for exceptions thrown in consumer event handlers
             try
             {
-                if (m_transportProtocol == TransportProtocol.File)
-                    MaintainCapturedFrameReplayTiming(e.Argument);
-                else if (m_injectSimulatedTimestamp)
+                if (m_injectSimulatedTimestamp)
                     e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedCommandFrame != null)
@@ -2459,15 +2457,12 @@ namespace TVA.PhasorProtocols
             if (m_configurationFrame == null && m_deviceSupportsCommands && m_autoStartDataParsingSequence && m_phasorProtocol != PhasorProtocol.SelFastMessage)
                 SendDeviceCommand(DeviceCommand.EnableRealTimeData);
 
-            m_frameRateTotal++;
             m_configurationFrame = e.Argument;
 
             // We don't stop parsing for exceptions thrown in consumer event handlers
             try
             {
-                if (m_transportProtocol == TransportProtocol.File)
-                    MaintainCapturedFrameReplayTiming(e.Argument);
-                else if (m_injectSimulatedTimestamp)
+                if (m_injectSimulatedTimestamp)
                     e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedConfigurationFrame != null)
@@ -2509,14 +2504,10 @@ namespace TVA.PhasorProtocols
             if (m_configurationFrame == null && m_phasorProtocol == PhasorProtocol.Macrodyne)
                 SendDeviceCommand(DeviceCommand.SendConfigurationFrame2);
 
-            m_frameRateTotal++;
-
             // We don't stop parsing for exceptions thrown in consumer event handlers
             try
             {
-                if (m_transportProtocol == TransportProtocol.File)
-                    MaintainCapturedFrameReplayTiming(e.Argument);
-                else if (m_injectSimulatedTimestamp)
+                if (m_injectSimulatedTimestamp)
                     e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedHeaderFrame != null)
@@ -2530,14 +2521,10 @@ namespace TVA.PhasorProtocols
 
         private void m_frameParser_ReceivedUndeterminedFrame(object sender, EventArgs<IChannelFrame> e)
         {
-            m_frameRateTotal++;
-
             // We don't stop parsing for exceptions thrown in consumer event handlers
             try
             {
-                if (m_transportProtocol == TransportProtocol.File)
-                    MaintainCapturedFrameReplayTiming(e.Argument);
-                else if (m_injectSimulatedTimestamp)
+                if (m_injectSimulatedTimestamp)
                     e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
                 if (ReceivedUndeterminedFrame != null)
