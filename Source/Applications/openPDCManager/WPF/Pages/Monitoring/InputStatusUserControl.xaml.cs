@@ -20,6 +20,8 @@
 //       Generated original version of source code.
 //  04/25/2011 - Mehulbhai P Thakkar
 //       Changes to the format of date time display on the screen suggested by Ryan Zuo from Alstom.
+//  05/09/2011 - Mehulbhai P Thakkar
+//       Modified timestamp displayed on the chart's lower corner to 24-Hour format as suggested by Ryan Zuo from Alstom.
 //
 //******************************************************************************************************
 
@@ -174,7 +176,7 @@ namespace openPDCManager.Pages.Monitoring
                         if (!timestampProcessed)
                         {
                             timestampProcessed = true;
-                            m_timeStampList.Enqueue(measurement.Timestamp.ToString("hh:mm:ss.fff"));
+                            m_timeStampList.Enqueue(measurement.Timestamp.ToString("HH:mm:ss.fff"));
                             if (m_timeStampList.Count > m_numberOfDataPointsToPlot)
                             {
                                 string oldValue;
