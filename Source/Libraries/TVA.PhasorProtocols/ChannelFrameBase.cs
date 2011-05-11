@@ -232,6 +232,7 @@
 #endregion
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using TimeSeriesFramework;
@@ -259,16 +260,16 @@ namespace TVA.PhasorProtocols
         #region [ Members ]
 
         // Fields
-        private ushort m_idCode;                                            // Numeric identifier of this frame of data (e.g., ID code of the PDC)
-        private IChannelCellCollection<T> m_cells;                          // Collection of "cells" within this frame of data (e.g., PMU's in the PDC frame)
-        private Ticks m_timestamp;                                          // Time, represented as 100-nanosecond ticks, of this frame of data
-        private Ticks m_receivedTimestamp;                                  // Time, represented as 100-nanosecond ticks, of frame received (i.e. created)
-        private Ticks m_publishedTimestamp;                                 // Time, represented as 100-nanosecond ticks, of frame published (post process)
-        private int m_parsedBinaryLength;                                   // Binary length of frame as provided from parsed header
-        private bool m_published;                                           // Determines if this frame of data has been published (IFrame.Published)
-        private int m_sortedMeasurements;                                   // Total measurements published into this frame        (IFrame.SortedMeasurements)
-        private Dictionary<MeasurementKey, IMeasurement> m_measurements;    // Collection of measurements published by this frame  (IFrame.Measurements)
-        private IMeasurement m_lastSortedMeasurement;                       // Last measurement sorted into this frame             (IFrame.LastSortedMeasurement)
+        private ushort m_idCode;                                                    // Numeric identifier of this frame of data (e.g., ID code of the PDC)
+        private IChannelCellCollection<T> m_cells;                                  // Collection of "cells" within this frame of data (e.g., PMU's in the PDC frame)
+        private Ticks m_timestamp;                                                  // Time, represented as 100-nanosecond ticks, of this frame of data
+        private Ticks m_receivedTimestamp;                                          // Time, represented as 100-nanosecond ticks, of frame received (i.e. created)
+        private Ticks m_publishedTimestamp;                                         // Time, represented as 100-nanosecond ticks, of frame published (post process)
+        private int m_parsedBinaryLength;                                           // Binary length of frame as provided from parsed header
+        private bool m_published;                                                   // Determines if this frame of data has been published (IFrame.Published)
+        private int m_sortedMeasurements;                                           // Total measurements published into this frame        (IFrame.SortedMeasurements)
+        private ConcurrentDictionary<MeasurementKey, IMeasurement> m_measurements;  // Collection of measurements published by this frame  (IFrame.Measurements)
+        private IMeasurement m_lastSortedMeasurement;                               // Last measurement sorted into this frame             (IFrame.LastSortedMeasurement)
 
         #endregion
 
@@ -286,7 +287,7 @@ namespace TVA.PhasorProtocols
             m_cells = cells;
             m_timestamp = timestamp;
             m_receivedTimestamp = DateTime.UtcNow.Ticks;
-            m_measurements = new Dictionary<MeasurementKey, IMeasurement>();
+            m_measurements = new ConcurrentDictionary<MeasurementKey, IMeasurement>();
             m_sortedMeasurements = -1;
         }
 
@@ -302,7 +303,7 @@ namespace TVA.PhasorProtocols
             m_cells = (IChannelCellCollection<T>)info.GetValue("cells", typeof(IChannelCellCollection<T>));
             m_timestamp = info.GetInt64("timestamp");
             m_receivedTimestamp = DateTime.UtcNow.Ticks;
-            m_measurements = new Dictionary<MeasurementKey, IMeasurement>();
+            m_measurements = new ConcurrentDictionary<MeasurementKey, IMeasurement>();
             m_sortedMeasurements = -1;
         }
 
@@ -344,7 +345,7 @@ namespace TVA.PhasorProtocols
         /// <remarks>
         /// Represents a dictionary of measurements, keyed by <see cref="MeasurementKey"/>.
         /// </remarks>
-        public IDictionary<MeasurementKey, IMeasurement> Measurements
+        public ConcurrentDictionary<MeasurementKey, IMeasurement> Measurements
         {
             get
             {

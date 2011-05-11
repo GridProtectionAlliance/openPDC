@@ -230,6 +230,7 @@
 #endregion
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -425,7 +426,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        IDictionary<TimeSeriesFramework.MeasurementKey, TimeSeriesFramework.IMeasurement> TimeSeriesFramework.IFrame.Measurements
+        ConcurrentDictionary<TimeSeriesFramework.MeasurementKey, TimeSeriesFramework.IMeasurement> TimeSeriesFramework.IFrame.Measurements
         {
             get
             {

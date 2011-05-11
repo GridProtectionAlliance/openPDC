@@ -33,6 +33,7 @@
 //******************************************************************************************************
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -1167,7 +1168,7 @@ namespace TVA.PhasorProtocols
         /// </remarks>
         protected override void AssignMeasurementToFrame(IFrame frame, IMeasurement measurement)
         {
-            IDictionary<MeasurementKey, IMeasurement> measurements = frame.Measurements;
+            ConcurrentDictionary<MeasurementKey, IMeasurement> measurements = frame.Measurements;
 
             // Make sure the measurement is a "SignalReferenceMeasurement" (it should be)
             SignalReferenceMeasurement signalMeasurement = measurement as SignalReferenceMeasurement;
