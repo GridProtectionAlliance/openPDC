@@ -109,7 +109,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalogChannel.cs" />
     <Compile Include="FileExporter.cs" />
+    <Compile Include="PhasorDataSchema.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
