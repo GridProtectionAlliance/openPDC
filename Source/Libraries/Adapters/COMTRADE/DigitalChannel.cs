@@ -28,7 +28,7 @@ using TVA.Collections;
 namespace Comtrade
 {
     /// <summary>
-    /// Represents a digital channel defintion of the <see cref="PhasorDataSchema"/>.
+    /// Represents a digital channel defintion of the <see cref="Schema"/>.
     /// </summary>
     public class DigitalChannel
     {
@@ -114,7 +114,10 @@ namespace Comtrade
                     m_channelName = parts[1].Trim();
                 }
                 else
+                {
+                    m_stationName = "";
                     m_channelName = parts[0].Trim();
+                }
             }
         }
 

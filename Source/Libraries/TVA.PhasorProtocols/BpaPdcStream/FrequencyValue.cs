@@ -370,7 +370,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                 UnscaledFrequency = EndianOrder.BigEndian.ToInt16(binaryImage, startIndex);
                 return 2;
             }
-            
+
             return base.ParseBodyImage(binaryImage, startIndex, length);
         }
 
@@ -381,10 +381,10 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         // Static Methods
 
         // Calculates binary length of a frequency value based on its definition
-        internal static int CalculateBinaryLength(IFrequencyDefinition definition)
+        internal static uint CalculateBinaryLength(IFrequencyDefinition definition)
         {
             // The frequency definition will determine the binary length based on data format
-            return (new FrequencyValue(null, definition)).BinaryLength;
+            return (uint)(new FrequencyValue(null, definition)).BinaryLength;
         }
 
         // Delegate handler to create a new BPA PDCstream frequency value

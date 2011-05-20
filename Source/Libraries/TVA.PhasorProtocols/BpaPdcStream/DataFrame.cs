@@ -1,3 +1,26 @@
+//******************************************************************************************************
+//  DataFrame.cs - Gbtc
+//
+//  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
+//
+//  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
+//  the NOTICE file distributed with this work for additional information regarding copyright ownership.
+//  The GPA licenses this file to you under the Eclipse Public License -v 1.0 (the "License"); you may
+//  not use this file except in compliance with the License. You may obtain a copy of the License at:
+//
+//      http://www.opensource.org/licenses/eclipse-1.0.php
+//
+//  Unless agreed to in writing, the subject software distributed under the License is distributed on an
+//  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
+//  License for the specific language governing permissions and limitations.
+//
+//  Code Modification History:
+//  ----------------------------------------------------------------------------------------------------
+//  05/20/2011 - Ritchie
+//       Generated original version of source code.
+//
+//******************************************************************************************************
+
 //*******************************************************************************************************
 //  DataFrame.cs - Gbtc
 //
@@ -472,10 +495,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                 int index = 0;
 
                 // Make sure to provide proper frame length for use in the common header image
-                unchecked
-                {
-                    CommonHeader.FrameLength = (ushort)BinaryLength;
-                }
+                CommonHeader.FrameLength = unchecked((ushort)BinaryLength);
 
                 // Copy in common frame header portion of header image
                 CommonHeader.BinaryImage.CopyImage(buffer, ref index, CommonFrameHeader.FixedLength);
@@ -498,13 +518,13 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                     for (int x = 0; x < Cells.Count; x++)
                     {
                         DataCell dataCell = Cells[x];
-                        
+
                         // Add label to data frame header
                         Encoding.ASCII.GetBytes(dataCell.IDLabel).CopyImage(buffer, ref index, 4);
-                        
+
                         // Skip reserved bytes
                         index += 2;
-                        
+
                         // Add offset to data frame header
                         EndianOrder.BigEndian.CopyBytes(offset, buffer, index);
                         index += 2;
@@ -548,6 +568,27 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         #region [ Methods ]
 
         /// <summary>
+        /// Parses the binary image.
+        /// </summary>
+        /// <param name="binaryImage">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <returns>The length of the data that was parsed.</returns>
+        /// <remarks>
+        /// This method is overriden to compensate for lack of CRC in DST files.
+        /// </remarks>
+        public override int Initialize(byte[] binaryImage, int startIndex, int length)
+        {
+            int parsedLength = base.Initialize(binaryImage, startIndex, length);
+
+            // Subtract 2 bytes from total length when using phasor data file format, DST files doesn't use CRC
+            if (ConfigurationFrame.UsePhasorDataFileFormat)
+                parsedLength -= 2;
+
+            return parsedLength;
+        }
+
+        /// <summary>
         /// Parses the binary header image.
         /// </summary>
         /// <param name="binaryImage">Binary image to parse.</param>
@@ -556,44 +597,52 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// <returns>The length of the data that was parsed.</returns>
         protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
         {
-            IDataFrameParsingState state = State;
-            int index = startIndex + CommonFrameHeader.FixedLength;
-
-            // Only need to parse what wan't already parsed in common frame header
-            ConfigurationFrame configurationFrame = state.ConfigurationFrame as ConfigurationFrame;
-
-            // Parse frame timestamp
-            uint secondOfCentury = EndianOrder.BigEndian.ToUInt32(binaryImage, index);
-            m_sampleNumber = EndianOrder.BigEndian.ToUInt16(binaryImage, index + 4);
-            index += 6;
-
-            if (configurationFrame.RevisionNumber == RevisionNumber.Revision0)
-                Timestamp = (new NtpTimeTag(secondOfCentury, 0)).ToDateTime().Ticks + (long)((m_sampleNumber - 1) * configurationFrame.TicksPerFrame);
-            else
-                Timestamp = (new UnixTimeTag(secondOfCentury)).ToDateTime().Ticks + (long)((m_sampleNumber - 1) * configurationFrame.TicksPerFrame);
-
-            // Because in cases where PDCxchng is being used the data cell count will be smaller than the
-            // configuration cell count - we save this count to calculate the offsets later
-            state.CellCount = EndianOrder.BigEndian.ToUInt16(binaryImage, index);
-            index += 2;
-
-            if (state.CellCount > configurationFrame.Cells.Count)
-                throw new InvalidOperationException("Stream/Config File Mismatch: PMU count (" + state.CellCount + ") in stream does not match defined count in configuration file (" + configurationFrame.Cells.Count + ")");
-            
-            // We'll at least retrieve legacy labels if defined (might be useful for debugging dynamic changes in data-stream)
-            if (configurationFrame.StreamType == StreamType.Legacy)
+            if (ConfigurationFrame.UsePhasorDataFileFormat)
             {
-                m_legacyLabels = new string[state.CellCount];
-
-                for (int x = 0; x < state.CellCount; x++)
-                {
-                    m_legacyLabels[x] = Encoding.ASCII.GetString(binaryImage, index, 4);
-                    // We don't need offsets, so we skip them...
-                    index += 8;
-                }
+                // DST files have no extra information per frame that hasn't already been read
+                return 0;
             }
+            else
+            {
+                IDataFrameParsingState state = State;
+                int index = startIndex + CommonFrameHeader.FixedLength;
 
-            return (index - startIndex);
+                // Only need to parse what wan't already parsed in common frame header
+                ConfigurationFrame configurationFrame = state.ConfigurationFrame as ConfigurationFrame;
+
+                // Parse frame timestamp
+                uint secondOfCentury = EndianOrder.BigEndian.ToUInt32(binaryImage, index);
+                m_sampleNumber = EndianOrder.BigEndian.ToUInt16(binaryImage, index + 4);
+                index += 6;
+
+                if (configurationFrame.RevisionNumber == RevisionNumber.Revision0)
+                    Timestamp = (new NtpTimeTag(secondOfCentury, 0)).ToDateTime().Ticks + (long)((m_sampleNumber - 1) * configurationFrame.TicksPerFrame);
+                else
+                    Timestamp = (new UnixTimeTag(secondOfCentury)).ToDateTime().Ticks + (long)((m_sampleNumber - 1) * configurationFrame.TicksPerFrame);
+
+                // Because in cases where PDCxchng is being used the data cell count will be smaller than the
+                // configuration cell count - we save this count to calculate the offsets later
+                state.CellCount = EndianOrder.BigEndian.ToUInt16(binaryImage, index);
+                index += 2;
+
+                if (state.CellCount > configurationFrame.Cells.Count)
+                    throw new InvalidOperationException("Stream/Config File Mismatch: PMU count (" + state.CellCount + ") in stream does not match defined count in configuration file (" + configurationFrame.Cells.Count + ")");
+
+                // We'll at least retrieve legacy labels if defined (might be useful for debugging dynamic changes in data-stream)
+                if (configurationFrame.StreamType == StreamType.Legacy)
+                {
+                    m_legacyLabels = new string[state.CellCount];
+
+                    for (int x = 0; x < state.CellCount; x++)
+                    {
+                        m_legacyLabels[x] = Encoding.ASCII.GetString(binaryImage, index, 4);
+                        // We don't need offsets, so we skip them...
+                        index += 8;
+                    }
+                }
+
+                return (index - startIndex);
+            }
         }
 
         /// <summary>
@@ -634,8 +683,16 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// </remarks>
         protected override bool ChecksumIsValid(byte[] buffer, int startIndex)
         {
-            int sumLength = BinaryLength - 2;
-            return EndianOrder.LittleEndian.ToUInt16(buffer, startIndex + sumLength) == CalculateChecksum(buffer, startIndex, sumLength);
+            if (ConfigurationFrame.UsePhasorDataFileFormat)
+            {
+                // DST files don't use checksums
+                return true;
+            }
+            else
+            {
+                int sumLength = BinaryLength - 2;
+                return EndianOrder.LittleEndian.ToUInt16(buffer, startIndex + sumLength) == CalculateChecksum(buffer, startIndex, sumLength);
+            }
         }
 
         /// <summary>

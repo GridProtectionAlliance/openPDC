@@ -29,7 +29,7 @@ using TVA.PhasorProtocols;
 namespace Comtrade
 {
     /// <summary>
-    /// Represents an analog channel defintion of the <see cref="PhasorDataSchema"/>.
+    /// Represents an analog channel defintion of the <see cref="Schema"/>.
     /// </summary>
     public class AnalogChannel
     {

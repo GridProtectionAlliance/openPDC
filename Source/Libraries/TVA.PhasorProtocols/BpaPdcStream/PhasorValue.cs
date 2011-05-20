@@ -360,10 +360,10 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         // Static Methods
 
         // Calculates binary length of a phasor value based on its definition
-        internal static int CalculateBinaryLength(IPhasorDefinition definition)
+        internal static uint CalculateBinaryLength(IPhasorDefinition definition)
         {
             // The phasor definition will determine the binary length based on data format
-            return (new PhasorValue(null, definition)).BinaryLength;
+            return (uint)(new PhasorValue(null, definition)).BinaryLength;
         }
 
         // Delegate handler to create a new BPA PDCstream phasor value

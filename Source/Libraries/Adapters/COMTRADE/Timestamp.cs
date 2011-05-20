@@ -52,7 +52,7 @@ namespace Comtrade
         public Timestamp(string lineImage)
         {
             // dd/mm/yyyy,hh:mm:ss.ssssss
-            Value = DateTime.ParseExact(lineImage, "dd/MM/yyyy,HH:mm:ss.ffffff", CultureInfo.InvariantCulture).Ticks;
+            Value = DateTime.ParseExact(lineImage.RemoveWhiteSpace(), "dd/MM/yyyy,HH:mm:ss.ffffff", CultureInfo.InvariantCulture).Ticks;
         }
 
         #endregion

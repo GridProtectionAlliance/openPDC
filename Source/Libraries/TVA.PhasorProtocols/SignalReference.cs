@@ -301,8 +301,8 @@ namespace TVA.PhasorProtocols
     /// <summary>
     /// Represents a signal that can be referenced by its constituent components.
     /// </summary>
-	public struct SignalReference : IEquatable<SignalReference>, IComparable<SignalReference>
-	{
+    public struct SignalReference : IEquatable<SignalReference>, IComparable<SignalReference>
+    {
         #region [ Members ]
 
         // Fields
@@ -316,7 +316,7 @@ namespace TVA.PhasorProtocols
         /// Gets or sets the signal index of this <see cref="SignalReference"/>.
         /// </summary>
         public int Index;
-        
+
         /// <summary>
         /// Gets or sets the <see cref="SignalKind"/> of this <see cref="SignalReference"/>.
         /// </summary>
@@ -354,7 +354,7 @@ namespace TVA.PhasorProtocols
                 if (signalType.Length > 2)
                 {
                     Kind = SignalReference.ParseSignalKind(signalType.Substring(0, 2));
-                    
+
                     if (Kind != SignalKind.Unknown)
                         Index = int.Parse(signalType.Substring(2));
                 }
@@ -618,5 +618,5 @@ namespace TVA.PhasorProtocols
         }
 
         #endregion
-	}	
+    }
 }

@@ -1,5 +1,5 @@
 ﻿//******************************************************************************************************
-//  PhasorDataSchema.cs - Gbtc
+//  Schema.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -22,17 +22,17 @@
 //******************************************************************************************************
 
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using TVA.PhasorProtocols;
-using System.IO;
-using System.Collections.Generic;
 
 namespace Comtrade
 {
     #region [ Enumerations ]
 
     /// <summary>
-    /// <see cref="PhasorDataSchema"/> file type enumeration.
+    /// <see cref="Schema"/> file type enumeration.
     /// </summary>
     public enum FileType
     {
@@ -49,9 +49,9 @@ namespace Comtrade
     #endregion
 
     /// <summary>
-    /// Represents the schema for phasor data using the COMTRADE file standard, IEEE Std C37.111-1999.
+    /// Represents the schema for a configuration file in the COMTRADE file standard, IEEE Std C37.111-1999.
     /// </summary>
-    public class PhasorDataSchema
+    public class Schema
     {
         #region [ Members ]
 
@@ -73,9 +73,9 @@ namespace Comtrade
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new instance of the <see cref="PhasorDataSchema"/>.
+        /// Creates a new instance of the <see cref="Schema"/>.
         /// </summary>
-        public PhasorDataSchema()
+        public Schema()
         {
             m_version = 1999;
             m_nominalFrequency = LineFrequency.Hz60;
@@ -84,10 +84,10 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="PhasorDataSchema"/> from an existing configuration file name.
+        /// Creates a new instance of the <see cref="Schema"/> from an existing configuration file name.
         /// </summary>
         /// <param name="fileName">File name of configuration file to parse.</param>
-        public PhasorDataSchema(string fileName)
+        public Schema(string fileName)
         {
             string[] lines = File.ReadAllLines(fileName);
             string[] parts;
@@ -95,7 +95,7 @@ namespace Comtrade
 
             // Parse version line
             parts = lines[lineNumber++].Split(',');
-            
+
             if (parts.Length != 3)
                 throw new InvalidOperationException(string.Format("Unexpected number of line image elements for first configuration file line: {0} - expected 3\r\nImage = {1}", parts.Length, lines[0]));
 
@@ -140,13 +140,15 @@ namespace Comtrade
             NominalFrequency = (LineFrequency)int.Parse(lines[lineNumber++]);
 
             // Parse total number of sample rates
-            List<SampleRate> sampleRates = new List<SampleRate>();
             int totalSampleRates = int.Parse(lines[lineNumber++]);
 
+            // Parse each sample rate
+            List<SampleRate> sampleRates = new List<SampleRate>();
+
             for (int i = 0; i < totalSampleRates; i++)
-			{
+            {
                 sampleRates.Add(new SampleRate(lines[lineNumber++]));
-			}
+            }
 
             SampleRates = sampleRates.ToArray();
 
@@ -166,7 +168,7 @@ namespace Comtrade
         #region [ Properties ]
 
         /// <summary>
-        /// Gets or sets free-form station name for this <see cref="PhasorDataSchema"/>.
+        /// Gets or sets free-form station name for this <see cref="Schema"/>.
         /// </summary>
         public string StationName
         {
@@ -181,7 +183,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets or sets free-form device ID for this <see cref="PhasorDataSchema"/>.
+        /// Gets or sets free-form device ID for this <see cref="Schema"/>.
         /// </summary>
         public string DeviceID
         {
@@ -196,7 +198,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets or sets version number of the IEEE Std C37.111 used by this <see cref="PhasorDataSchema"/>.
+        /// Gets or sets version number of the IEEE Std C37.111 used by this <see cref="Schema"/>.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Only IEEE Std C37.111 version 1999 is supported by this implementation of the phasor data schema.</exception>
         public int Version
@@ -215,7 +217,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets total number of analog and digital channels of this <see cref="PhasorDataSchema"/>.
+        /// Gets total number of analog and digital channels of this <see cref="Schema"/>.
         /// </summary>
         public int TotalChannels
         {
@@ -226,7 +228,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets total number of analog channels of this <see cref="PhasorDataSchema"/>.
+        /// Gets total number of analog channels of this <see cref="Schema"/>.
         /// </summary>
         public int TotalAnalogChannels
         {
@@ -240,7 +242,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets total number of digital channels of this <see cref="PhasorDataSchema"/>.
+        /// Gets total number of digital channels of this <see cref="Schema"/>.
         /// </summary>
         public int TotalDigitalChannels
         {
@@ -254,7 +256,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets or sets analog channels of this <see cref="PhasorDataSchema"/>.
+        /// Gets or sets analog channels of this <see cref="Schema"/>.
         /// </summary>
         public AnalogChannel[] AnalogChannels
         {
@@ -269,7 +271,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets or sets digital channels of this <see cref="PhasorDataSchema"/>.
+        /// Gets or sets digital channels of this <see cref="Schema"/>.
         /// </summary>
         public DigitalChannel[] DigitalChannels
         {
@@ -284,7 +286,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets or sets nominal frequency of this <see cref="PhasorDataSchema"/>.
+        /// Gets or sets nominal frequency of this <see cref="Schema"/>.
         /// </summary>
         public LineFrequency NominalFrequency
         {
@@ -308,7 +310,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets total number of sample rates of this <see cref="PhasorDataSchema"/>.
+        /// Gets total number of sample rates of this <see cref="Schema"/>.
         /// </summary>
         public int TotalSampleRates
         {
@@ -322,7 +324,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets or sets sampling rates of this <see cref="PhasorDataSchema"/>. A file of phasor data will normally be made using a single sampling rate, so this will usually be 1.
+        /// Gets or sets sampling rates of this <see cref="Schema"/>. A file of phasor data will normally be made using a single sampling rate, so this will usually be 1.
         /// </summary>
         public SampleRate[] SampleRates
         {
@@ -337,7 +339,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets or sets start timestamp of this <see cref="PhasorDataSchema"/>.
+        /// Gets or sets start timestamp of this <see cref="Schema"/>.
         /// </summary>
         public Timestamp StartTime
         {
@@ -352,7 +354,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets or sets trigger timestamp of this <see cref="PhasorDataSchema"/>.
+        /// Gets or sets trigger timestamp of this <see cref="Schema"/>.
         /// </summary>
         public Timestamp TriggerTime
         {
@@ -367,7 +369,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets or sets file type of this <see cref="PhasorDataSchema"/>.
+        /// Gets or sets file type of this <see cref="Schema"/>.
         /// </summary>
         public FileType FileType
         {
@@ -382,7 +384,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets or sets the multiplication factor for the time differential (timestamp) field in this <see cref="PhasorDataSchema"/>.
+        /// Gets or sets the multiplication factor for the time differential (timestamp) field in this <see cref="Schema"/>.
         /// </summary>
         public double TimeFactor
         {
@@ -397,7 +399,7 @@ namespace Comtrade
         }
 
         /// <summary>
-        /// Gets the file image of this <see cref="PhasorDataSchema"/>.
+        /// Gets the file image of this <see cref="Schema"/>.
         /// </summary>
         public string FileImage
         {

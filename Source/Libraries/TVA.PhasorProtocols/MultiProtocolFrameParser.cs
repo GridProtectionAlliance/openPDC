@@ -59,6 +59,8 @@
 //       Added code to handle high-resolution input timing to support accurate input simulations.
 //  05/06/2010- Jian (Ryan) Zuo
 //       Updated to exclude non-data frames from frame counts and injected waiting periods.
+//  05/19/2011 - Ritchie
+//       Added DST file support.
 //
 //******************************************************************************************************
 
@@ -147,9 +149,9 @@ namespace TVA.PhasorProtocols
             // Fields
             private PrecisionTimer m_timer;
             private bool m_useWaitHandleA;
+            private SpinLock m_timerTickLock;
             private ManualResetEventSlim m_frameWaitHandleA;
             private ManualResetEventSlim m_frameWaitHandleB;
-            private object m_timerTickLock;
             private int m_framesPerSecond;
             private int m_frameWindowSize;
             private int[] m_frameMilliseconds;
@@ -172,10 +174,10 @@ namespace TVA.PhasorProtocols
             public PrecisionInputTimer(int framesPerSecond)
             {
                 // Create synchronization objects
+                m_timerTickLock = new SpinLock();
                 m_frameWaitHandleA = new ManualResetEventSlim(false);
                 m_frameWaitHandleB = new ManualResetEventSlim(false);
                 m_useWaitHandleA = true;
-                m_timerTickLock = new object();
                 m_framesPerSecond = framesPerSecond;
 
                 // Create a new precision timer for this timer state
@@ -356,9 +358,13 @@ namespace TVA.PhasorProtocols
             {
                 // Slower systems or systems under stress may have trouble keeping up with a 1-ms timer, so
                 // we only process this code if it's not already processing...
-                if (Monitor.TryEnter(m_timerTickLock))
+                bool locked = false;
+
+                try
                 {
-                    try
+                    m_timerTickLock.TryEnter(2, ref locked);
+
+                    if (locked)
                     {
                         DateTime now = PrecisionTimer.UtcNow;
                         int frameMilliseconds, milliseconds = now.Millisecond;
@@ -441,10 +447,11 @@ namespace TVA.PhasorProtocols
                             }
                         }
                     }
-                    finally
-                    {
-                        Monitor.Exit(m_timerTickLock);
-                    }
+                }
+                finally
+                {
+                    if (locked)
+                        m_timerTickLock.Exit(true);
                 }
             }
 
@@ -638,24 +645,24 @@ namespace TVA.PhasorProtocols
         private long m_totalMissingFrames;
         private long m_missingFramesOverflow;
         private long m_totalCrcExceptions;
-        private int m_frameRateTotal;
-        private int m_byteRateTotal;
         private long m_totalBytesReceived;
-        private int m_configuredFrameRate;
         private double m_calculatedFrameRate;
         private double m_calculatedByteRate;
+        private long m_lastFrameReceivedTime;
+        private volatile int m_frameRateTotal;
+        private volatile int m_byteRateTotal;
+        private volatile int m_parsingExceptionCount;
+        private long m_lastParsingExceptionTime;
+        private int m_configuredFrameRate;
         private string m_sourceName;
         private int m_definedFrameRate;
         private double m_ticksPerFrame;
         private bool m_attachedToInputTimer;
-        private long m_lastFrameReceivedTime;
         private bool m_autoStartDataParsingSequence;
         private bool m_skipDisableRealTimeData;
         private bool m_initiatingDataStream;
         private long m_initialBytesReceived;
         private bool m_deviceSupportsCommands;
-        private int m_parsingExceptionCount;
-        private long m_lastParsingExceptionTime;
         private int m_allowedParsingExceptions;
         private Ticks m_parsingExceptionWindow;
         private bool m_enabled;
@@ -1597,6 +1604,9 @@ namespace TVA.PhasorProtocols
 
                         if (settings.TryGetValue("parseWordCountFromByte", out setting))
                             bpaPdcParameters.ParseWordCountFromByte = setting.ParseBoolean();
+
+                        if (settings.TryGetValue("usePhasorDataFileFormat", out setting))
+                            bpaPdcParameters.UsePhasorDataFileFormat = setting.ParseBoolean();
                     }
                     break;
                 case PhasorProtocol.FNet:

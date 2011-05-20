@@ -113,7 +113,7 @@
     <Compile Include="Timestamp.cs" />
     <Compile Include="DigitalChannel.cs" />
     <Compile Include="FileExporter.cs" />
-    <Compile Include="PhasorDataSchema.cs" />
+    <Compile Include="Schema.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleRate.cs" />
   </ItemGroup>

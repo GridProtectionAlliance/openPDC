@@ -252,7 +252,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// Total fixed length of <see cref="CommonFrameHeader"/>.
         /// </summary>
         public const ushort FixedLength = 14;
-        
+
         // Fields
         private FrameType m_frameType;
         private byte m_version;
@@ -262,7 +262,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         private uint m_timebase;
         private uint m_timeQualityFlags;
         private IChannelParsingState m_state;
-		
+
         #endregion
 
         #region [ Constructors ]
@@ -515,7 +515,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                 return new UnixTimeTag(m_timestamp);
             }
         }
-        
+
         /// <summary>
         /// Gets or sets the parsing state for the <see cref="CommonFrameHeader"/> object.
         /// </summary>
