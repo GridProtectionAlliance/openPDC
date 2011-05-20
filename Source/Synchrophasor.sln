@@ -157,7 +157,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF", "Applications\openPDC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacrodyneController", "Tools\MacrodyneController\MacrodyneController.csproj", "{334BA160-26D6-4A3B-92E2-42DEB4381176}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COMTRADE", "Libraries\Adapters\COMTRADE\COMTRADE.csproj", "{9B93C212-786C-45C9-9B90-8CEFD24EF19D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comtrade", "Libraries\Adapters\COMTRADE\Comtrade.csproj", "{9B93C212-786C-45C9-9B90-8CEFD24EF19D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {54CA98CC-2F0A-41F2-879D-0E42B17E8544}
 	EndProjectSection

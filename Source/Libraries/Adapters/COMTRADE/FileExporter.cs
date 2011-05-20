@@ -24,7 +24,7 @@ using TVA.Collections;
 using TVA.IO;
 using TVA.PhasorProtocols;
 
-namespace COMTRADE
+namespace Comtrade
 {
     /// <summary>
     /// Represents an action adapter that exports measurements on an interval to a COMTRADE foramtted file that can be imported into other systems for analysis.

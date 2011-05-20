@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using TVA.Collections;
 using TVA.PhasorProtocols;
 
-namespace COMTRADE
+namespace Comtrade
 {
     /// <summary>
     /// Represents an analog channel defintion of the <see cref="PhasorDataSchema"/>.
@@ -44,8 +44,6 @@ namespace COMTRADE
         private PhasorType m_phasorType;
         private LineFrequency m_nominalFrequency;
         private CoordinateFormat m_coordinateFormat;
-        private List<char> m_validPhaseDesignations;
-        private List<SignalKind> m_validAnalogSignalKinds;
         private string m_circuitComponent;
         private string m_units;
         private double m_multipler;
@@ -77,10 +75,6 @@ namespace COMTRADE
             m_primaryRatio = 1.0;
             m_secondaryRatio = 1.0;
             m_scalingIdentifier = 'P';
-            m_validPhaseDesignations = new List<char>(new char[] { 'A', 'B', 'C', 'R', 'S', 'T', '1', '2', '3', 'P', '+', 'N', '-', 'Z', '0'});
-            m_validPhaseDesignations.Sort();
-            m_validAnalogSignalKinds = new List<SignalKind>(new SignalKind[] { SignalKind.Analog, SignalKind.Angle, SignalKind.Calculation, SignalKind.DfDt, SignalKind.Frequency, SignalKind.Magnitude, SignalKind.Statistic });
-            m_validAnalogSignalKinds.Sort();
         }
 
         /// <summary>
@@ -162,7 +156,7 @@ namespace COMTRADE
             }
             set
             {
-                m_stationName = value.Replace(":", "").Trim();
+                m_stationName = value.Replace(":", "_").Trim();
             }
         }
 
@@ -177,7 +171,7 @@ namespace COMTRADE
             }
             set
             {
-                m_channelName = value.Replace(":", "").Trim();
+                m_channelName = value.Replace(":", "_").Trim();
             }
         }
 
@@ -299,7 +293,7 @@ namespace COMTRADE
                 {
                     char phaseDesignation = char.ToUpper(value[0]);
 
-                    if (m_validPhaseDesignations.BinarySearch(phaseDesignation) < 0)
+                    if (s_validPhaseDesignations.BinarySearch(phaseDesignation) < 0)
                         throw new ArgumentException(value + " is not a valid phase designation.");
 
                     switch (phaseDesignation)
@@ -366,6 +360,9 @@ namespace COMTRADE
             set
             {
                 m_nominalFrequency = value;
+
+                if (m_signalKind == TVA.PhasorProtocols.SignalKind.Frequency)
+                    m_adder = (double)m_nominalFrequency;
             }
         }
 
@@ -381,7 +378,7 @@ namespace COMTRADE
             }
             set
             {
-                if (m_validAnalogSignalKinds.BinarySearch(value) < 0)
+                if (s_validAnalogSignalKinds.BinarySearch(value) < 0)
                     throw new ArgumentException(value + " is not a valid analog signal kind.");
 
                 m_signalKind = value;
@@ -441,8 +438,8 @@ namespace COMTRADE
             }
             set
             {
-                if (!string.IsNullOrWhiteSpace(m_circuitComponent))
-                    m_circuitComponent = value;
+                if (!string.IsNullOrWhiteSpace(value))
+                    m_circuitComponent = value.Trim();
                 else
                     m_circuitComponent = "";
 
@@ -462,8 +459,8 @@ namespace COMTRADE
             }
             set
             {
-                if (!string.IsNullOrWhiteSpace(m_units))
-                    m_units = value;
+                if (!string.IsNullOrWhiteSpace(value))
+                    m_units = value.Trim();
                 else
                     m_units = "";
 
@@ -597,34 +594,53 @@ namespace COMTRADE
             }
         }
 
+        #endregion
+
+        #region [ Methods ]
+
         /// <summary>
-        /// Gets the binary image of the object.
+        /// Converts <see cref="AnalogChannel"/> to its string format.
         /// </summary>
-        public string LineImage
+        public override string ToString()
         {
-            get
-            {
-                string[] values = new string[13];
+            string[] values = new string[13];
 
-                // An,ch_id,ph,ccbm,uu,a,b,skew,min,max,primary,secondary,PS
-                values[0] = Index.ToString();
-                values[1] = Name;
-                values[2] = PhaseID;
-                values[3] = CircuitComponent;
-                values[4] = Units;
-                values[5] = Multiplier.ToString();
-                values[6] = Adder.ToString();
-                values[7] = Skew.ToString();
-                values[8] = MinValue.ToString();
-                values[9] = MaxValue.ToString();
-                values[10] = PrimaryRatio.ToString();
-                values[11] = SecondaryRatio.ToString();
-                values[12] = ScalingIdentifier.ToString();
+            // An,ch_id,ph,ccbm,uu,a,b,skew,min,max,primary,secondary,PS
+            values[0] = Index.ToString();
+            values[1] = Name;
+            values[2] = PhaseID;
+            values[3] = CircuitComponent;
+            values[4] = Units;
+            values[5] = Multiplier.ToString();
+            values[6] = Adder.ToString();
+            values[7] = Skew.ToString();
+            values[8] = MinValue.ToString();
+            values[9] = MaxValue.ToString();
+            values[10] = PrimaryRatio.ToString();
+            values[11] = SecondaryRatio.ToString();
+            values[12] = ScalingIdentifier.ToString();
 
-                return values.ToDelimitedString(',');
-            }
+            return values.ToDelimitedString(',');
         }
 
         #endregion
+
+        #region [ Static ]
+
+        // Static Fields
+        private static List<char> s_validPhaseDesignations;
+        private static List<SignalKind> s_validAnalogSignalKinds;
+
+        // Static Constructor
+        static AnalogChannel()
+        {
+            s_validPhaseDesignations = new List<char>(new char[] { 'A', 'B', 'C', 'R', 'S', 'T', '1', '2', '3', 'P', '+', 'N', '-', 'Z', '0' });
+            s_validPhaseDesignations.Sort();
+
+            s_validAnalogSignalKinds = new List<SignalKind>(new SignalKind[] { SignalKind.Analog, SignalKind.Angle, SignalKind.Calculation, SignalKind.DfDt, SignalKind.Frequency, SignalKind.Magnitude, SignalKind.Statistic });
+            s_validAnalogSignalKinds.Sort();
+        }
+
+        #endregion        
     }
 }
