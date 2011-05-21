@@ -76,7 +76,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// <param name="parent">The reference to parent <see cref="ConfigurationFrame"/> of this <see cref="ConfigurationCell"/>.</param>
         /// <param name="idCode">The numeric ID code for this <see cref="ConfigurationCell"/>.</param>
         /// <param name="nominalFrequency">The nominal <see cref="LineFrequency"/> of the <see cref="FrequencyDefinition"/> of this <see cref="ConfigurationCell"/>.</param>
-        public ConfigurationCell(ConfigurationFrame parent, ushort idCode, LineFrequency nominalFrequency)
+        public ConfigurationCell(ConfigurationFrame parent, ushort idCode, LineFrequency nominalFrequency = LineFrequency.Hz60)
             : this(parent)
         {
             IDCode = idCode;

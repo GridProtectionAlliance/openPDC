@@ -359,10 +359,6 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             {
                 return m_usePhasorDataFileFormat;
             }
-            set
-            {
-                m_usePhasorDataFileFormat = value;
-            }
         }
 
         /// <summary>
@@ -422,7 +418,6 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                 if (m_iniFile != null)
                     baseAttributes.Add("Configuration File Name", m_iniFile.FileName);
 
-                baseAttributes.Add("Using Phasor File Format", UsePhasorDataFileFormat.ToString());
                 baseAttributes.Add("Stream Type", (int)m_streamType + ": " + m_streamType);
                 baseAttributes.Add("Revision Number", (int)m_revisionNumber + ": " + m_revisionNumber);
                 baseAttributes.Add("Packets Per Sample", m_packetsPerSample.ToString());
@@ -448,7 +443,8 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             {
                 // Common frame header will have parsed all phasor data file header information at this point...
                 State.CellCount = unchecked((int)CommonHeader.PmuCount);
-                return 0;
+                
+                return CommonFrameHeader.DstHeaderFixedLength;
             }
             else
             {
@@ -489,7 +485,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             // Load INI file image and associate parsed cells to cells in configuration file...
             Refresh(true);
 
-            // Move past 4 EOH bytes, minus 2 since DST files not not contain a CRC at the end of each frame
+            // Move past 4 EOH bytes, minus 2 since DST files do not contain a CRC at the end of each frame
             if (m_usePhasorDataFileFormat)
                 parsedLength += 2;
 
@@ -544,7 +540,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                                 if (pdcID == -1)
                                 {
                                     // No PDC entry exists, assume this is a PMU
-                                    pmuCell = new ConfigurationCell(this, 0, m_defaultFrequency.NominalFrequency);
+                                    pmuCell = new ConfigurationCell(this, 0);
                                     pmuCell.IDCode = ushort.Parse(m_iniFile[section, "PMU", Cells.Count.ToString()]);
                                     pmuCell.SectionEntry = section; // This will automatically assign ID label as first 4 digits of section
                                     pmuCell.StationName = m_iniFile[section, "Name", section];
@@ -565,7 +561,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                                     for (x = 0; x < pmuCount; x++)
                                     {
                                         // Create a new PMU cell for each PDC entry that exists
-                                        pmuCell = new ConfigurationCell(this, 0, m_defaultFrequency.NominalFrequency);
+                                        pmuCell = new ConfigurationCell(this, 0);
 
                                         // For BPA INI files, PMUs tradionally have an ID number indexed starting at zero or one - so we multiply
                                         // ID by 1000 and add index to attempt to create a fairly unique ID to help optimize downstream parsing
@@ -573,7 +569,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                                         pmuCell.SectionEntry = string.Format("{0}pmu{1}", section, x); // This will automatically assign ID label as first 4 digits of section
                                         pmuCell.StationName = string.Format("{0} - Device {1}", m_iniFile[section, "Name", section], (x + 1));
 
-                                        for (y = 0; y < 2; x++)
+                                        for (y = 0; y < 2; y++)
                                         {
                                             pmuCell.PhasorDefinitions.Add(new PhasorDefinition(pmuCell, y + 1, m_iniFile[section, "Phasor" + ((x * 2) + (y + 1)), DefaultVoltagePhasorEntry]));
                                         }
