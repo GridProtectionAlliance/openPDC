@@ -205,11 +205,11 @@
     </Compile>
     <Compile Include="Utilities\IsolatedStorageManager.cs" />
     <Compile Include="Utilities\PanAndZoomViewer.cs" />
-    <Page Include="..\Silverlight\Resources\CommonResource.xaml">
+    <Resource Include="..\Silverlight\Resources\CommonResource.xaml">
       <Link>Resources\CommonResource.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
+    </Resource>
     <Page Include="..\Silverlight\UserControls\CommonControls\AdapterUserControl.xaml">
       <Link>UserControls\CommonControls\AdapterUserControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
