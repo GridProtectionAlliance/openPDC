@@ -230,21 +230,12 @@ namespace ConfigurationSetupUtility.Screens
         // Gets a list of connection string parameter names as ListBoxItems.
         private List<ListBoxItem> GetConnectionStringParameterNamesList()
         {
-            IEnumerable<string> parameterNames = m_connectionStringParameters.Keys
+            return m_connectionStringParameters.Keys
                 .Union(m_settings.Keys, StringComparer.CurrentCultureIgnoreCase)
                 .OrderBy(name => name)
-                .OrderByDescending(name => IsRequiredParameter(name));
-
-            List<ListBoxItem> itemList = new List<ListBoxItem>();
-
-            foreach (string name in parameterNames)
-            {
-                ListBoxItem item = new ListBoxItem();
-                item.Content = name;
-                itemList.Add(item);
-            }
-
-            return itemList;
+                .OrderByDescending(name => IsRequiredParameter(name))
+                .Select(name => new ListBoxItem() { Content = name })
+                .ToList();
         }
 
         // Gets the value associated with the given parameter.
@@ -306,7 +297,7 @@ namespace ConfigurationSetupUtility.Screens
             // attempt to find the previous selection in the new list and select it.
             if (selectedParameter != null)
             {
-                ListBoxItem itemToSelect = parameterNames.SingleOrDefault(parameter => parameter.Content == selectedParameter.Content);
+                ListBoxItem itemToSelect = parameterNames.SingleOrDefault(parameter => parameter.Content.Equals(selectedParameter.Content));
 
                 if (itemToSelect != null)
                     ParameterNameListBox.SelectedIndex = parameterNames.IndexOf(itemToSelect);
