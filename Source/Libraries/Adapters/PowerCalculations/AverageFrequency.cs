@@ -27,6 +27,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using TimeSeriesFramework;
 using TVA.PhasorProtocols;
@@ -36,6 +37,7 @@ namespace PowerCalculations
     /// <summary>
     /// Calculates a real-time average frequency reporting the average, maximum and minimum values.
     /// </summary>
+    [Description("Average Frequency: calculates a real-time average frequency reporting the average, maximum, and minimum values")]
     public class AverageFrequency : CalculatedMeasurementBase
     {
         #region [ Members ]

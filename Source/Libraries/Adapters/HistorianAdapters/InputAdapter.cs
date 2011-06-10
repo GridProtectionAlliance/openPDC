@@ -37,12 +37,14 @@ using TimeSeriesFramework.Adapters;
 using TVA;
 using TVA.Communication;
 using TVA.Historian;
+using System.ComponentModel;
 
 namespace HistorianAdapters
 {
     /// <summary>
     /// Represents an input adapters that listens for time-series data from TVA Historian.
     /// </summary>
+    [Description("Historian Listener: listens for time-series data from a TVA Historian.")]
     public class InputAdapter : InputAdapterBase
     {
         #region [ Members ]
@@ -67,6 +69,74 @@ namespace HistorianAdapters
         #endregion
 
         #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets the host name or IP address of the TVA Historian.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the host name or IP address of the TVA Historian.")]
+        public string Server
+        {
+            get
+            {
+                return m_historianDataListener.Server;
+            }
+            set
+            {
+                m_historianDataListener.Server = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the port on which the TVA Historian is broadcasting data.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the port on which the TVA Historian is broadcasting data.")]
+        public int Port
+        {
+            get
+            {
+                return m_historianDataListener.Port;
+            }
+            set
+            {
+                m_historianDataListener.Port = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the type of connection used to connect to the TVA Historian.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the type of connection used to connect to the TVA Historian.")]
+        public TransportProtocol Protocol
+        {
+            get
+            {
+                return m_historianDataListener.Protocol;
+            }
+            set
+            {
+                m_historianDataListener.Protocol = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value that indicates whether the listener will initiate the connection to the TVA Historian.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Indicates whether the listener will initiate the connection to the TVA Historian.")]
+        public bool InitiateConnection
+        {
+            get
+            {
+                return m_historianDataListener.ConnectToServer;
+            }
+            set
+            {
+                m_historianDataListener.ConnectToServer = value;
+            }
+        }
 
         /// <summary>
         /// Returns the detailed status of the data input source.

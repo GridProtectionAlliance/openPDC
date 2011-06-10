@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,7 @@ namespace MySqlAdapters
     /// <summary>
     /// Represents an input adapter that reads measurements from a MySQL database table.
     /// </summary>
+    [Description("MySQL: reads measurements from a MySQL database")]
     public class MySqlInputAdapter : InputAdapterBase
     {
 
@@ -70,6 +72,60 @@ namespace MySqlAdapters
         #endregion
 
         #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets the interval of time, in milliseconds, between sending frames into the concentrator.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the interval of time, in milliseconds, between sending frames into the concentrator."),
+        DefaultValue(33)]
+        public int InputInterval
+        {
+            get
+            {
+                return m_inputInterval;
+            }
+            set
+            {
+                m_inputInterval = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the number of measurements that are read from the MySQL database in each frame.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the number of measurements that are read from the MySQL database in each frame."),
+        DefaultValue(5)]
+        public int MeasurementsPerInput
+        {
+            get
+            {
+                return m_measurementsPerInput;
+            }
+            set
+            {
+                m_measurementsPerInput = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the value that determines whether timestamps are simulated for real-time concentration.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Indicate whether timestamps are simulated for real-time concentration."),
+        DefaultValue(false)]
+        public bool FakeTimestamps
+        {
+            get
+            {
+                return m_fakeTimestamps;
+            }
+            set
+            {
+                m_fakeTimestamps = value;
+            }
+        }
 
         /// <summary>
         /// Returns a connection string containing only the key-value pairs

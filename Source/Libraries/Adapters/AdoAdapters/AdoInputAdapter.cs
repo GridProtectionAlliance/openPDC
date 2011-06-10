@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Globalization;
 using System.Linq;
@@ -37,6 +38,7 @@ namespace AdoAdapters
     /// <summary>
     /// Represents an input adapter that reads measurements from a database table.
     /// </summary>
+    [Description("ADO: reads measurements from any ADO data source (e.g., OSI-PI via ODBC).")]
     public class AdoInputAdapter : InputAdapterBase
     {
 
@@ -75,6 +77,115 @@ namespace AdoAdapters
         #region [ Properties ]
 
         /// <summary>
+        /// Gets or sets the table name in the data source from which measurements are read.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the table name in the data source from which measurements are read."),
+        DefaultValue("PICOMP")]
+        public string TableName
+        {
+            get
+            {
+                return m_dbTableName;
+            }
+            set
+            {
+                m_dbTableName = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the connection string used to connect to the data source.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the connection string used to connect to the data source."),
+        DefaultValue("")]
+        public string DbConnectionString
+        {
+            get
+            {
+                return m_dbConnectionString;
+            }
+            set
+            {
+                m_dbConnectionString = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the data provider string used to connect to the data source.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the data provider string used to connect to the data source."),
+        DefaultValue("AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.Odbc.OdbcConnection; AdapterType=System.Data.Odbc.OdbcDataAdapter")]
+        public string DataProviderString
+        {
+            get
+            {
+                return m_dataProviderString;
+            }
+            set
+            {
+                m_dataProviderString = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the format used to read measurements from the data source.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the date and time format used to read timestamps from the data source."),
+        DefaultValue("dd-MMM-yyyy HH:mm:ss.fff")]
+        public string TimestampFormat
+        {
+            get
+            {
+                return m_timestampFormat;
+            }
+            set
+            {
+                m_timestampFormat = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the framerate simulated by this adapter.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the rate at which frames will be sent to the concentrator."),
+        DefaultValue(30)]
+        public int FramesPerSecond
+        {
+            get
+            {
+                return m_framesPerSecond;
+            }
+            set
+            {
+                m_framesPerSecond = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value that determines whether the timestamps should
+        /// be simulated for the purposes of real-time concentration.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Indicate whether timestamps should be simulated for real-time concentration."),
+        DefaultValue(true)]
+        public bool SimulateTimestamps
+        {
+            get
+            {
+                return m_simulateTimestamps;
+            }
+            set
+            {
+                m_simulateTimestamps = value;
+            }
+        }
+
+        /// <summary>
         /// Gets a flag that determines if this <see cref="AdoInputAdapter"/>
         /// uses an asynchronous connection.
         /// </summary>
@@ -108,7 +219,7 @@ namespace AdoAdapters
                 m_dbTableName = "PICOMP";
 
             // Get database connection string or default to empty.
-            if (!settings.TryGetValue("connectionString", out m_dbConnectionString))
+            if (!settings.TryGetValue("dbConnectionString", out m_dbConnectionString))
                 m_dbConnectionString = string.Empty;
 
             // Get data provider string or default to a generic ODBC connection.

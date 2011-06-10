@@ -29,12 +29,14 @@ using MongoDB;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
 using TVA;
+using System.ComponentModel;
 
 namespace MongoAdapters
 {
     /// <summary>
     /// Represents an input adapter that reads measurements from a MongoDB database.
     /// </summary>
+    [Description("MongoDB: reads measurements from a MongoDB database")]
     public class MongoInputAdapter : InputAdapterBase
     {
 
@@ -47,7 +49,7 @@ namespace MongoAdapters
         private string m_server;
         private int m_port;
         private int m_framesPerSecond;
-        private bool m_simulateRealtime;
+        private bool m_simulateRealTime;
 
         private Timer m_timer;
         private Mongo m_mongo;
@@ -69,7 +71,7 @@ namespace MongoAdapters
             m_server = "localhost";
             m_port = 27017;
             m_framesPerSecond = 30;
-            m_simulateRealtime = true;
+            m_simulateRealTime = true;
         }
 
         #endregion
@@ -79,6 +81,9 @@ namespace MongoAdapters
         /// <summary>
         /// Gets or sets the name of the MongoDB database.
         /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the name of the MongoDB database."),
+        DefaultValue("openPDC")]
         public string DatabaseName
         {
             get
@@ -100,6 +105,9 @@ namespace MongoAdapters
         /// <summary>
         /// Gets or sets the name of the measurement collection.
         /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the name of the collection of measurements."),
+        DefaultValue("measurements")]
         public string CollectionName
         {
             get
@@ -121,6 +129,9 @@ namespace MongoAdapters
         /// <summary>
         /// Gets or sets the server on which the MongoDB daemon is running.
         /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the IP or host name of the MongoDB server."),
+        DefaultValue("localhost")]
         public string Server
         {
             get
@@ -142,6 +153,9 @@ namespace MongoAdapters
         /// <summary>
         /// Gets or sets the port on which the MongoDB daemon is listening.
         /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the port on which the MongoDB server is listening."),
+        DefaultValue(27017)]
         public int Port
         {
             get
@@ -157,6 +171,42 @@ namespace MongoAdapters
                 }
 
                 m_port = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the rate at which frames are sent to the concentrator.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the rate at which frames will be sent to the concentrator."),
+        DefaultValue(30)]
+        public int FramesPerSecond
+        {
+            get
+            {
+                return m_framesPerSecond;
+            }
+            set
+            {
+                m_framesPerSecond = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value that determines whether timestamps are simulated for real-time concentration.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Indicate whether timestamps will be simulated for real-time concentration."),
+        DefaultValue(true)]
+        public bool SimulateRealTime
+        {
+            get
+            {
+                return m_simulateRealTime;
+            }
+            set
+            {
+                m_simulateRealTime = value;
             }
         }
 
@@ -199,8 +249,8 @@ namespace MongoAdapters
             if (settings.TryGetValue("framesPerSecond", out setting))
                 m_framesPerSecond = int.Parse(setting);
 
-            if (settings.TryGetValue("simulateRealtime", out setting))
-                m_simulateRealtime = Convert.ToBoolean(setting);
+            if (settings.TryGetValue("simulateRealTime", out setting))
+                m_simulateRealTime = Convert.ToBoolean(setting);
         }
 
         /// <summary>
@@ -265,7 +315,7 @@ namespace MongoAdapters
                 measurements = wrappers.Documents.Select(wrapper => wrapper.GetMeasurement()).ToList();
 
                 // Simulate real-time.
-                if (m_simulateRealtime)
+                if (m_simulateRealTime)
                     measurements.ForEach(measurement => measurement.Timestamp = nowTicks);
 
                 // Set the last-used timestamp to the new value and publish the measurements.

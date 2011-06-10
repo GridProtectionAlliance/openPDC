@@ -22,12 +22,12 @@
 //******************************************************************************************************
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Text;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
 using TVA;
-using System.ComponentModel;
 
 namespace CsvAdapters
 {
@@ -137,7 +137,7 @@ namespace CsvAdapters
 
             // Load optional parameters
 
-            if (settings.TryGetValue("file", out setting))
+            if (settings.TryGetValue("fileName", out setting))
                 m_fileName = setting;
         }
 

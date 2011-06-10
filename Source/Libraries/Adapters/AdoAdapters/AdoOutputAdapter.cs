@@ -74,7 +74,7 @@ namespace AdoAdapters
         #region [ Properties ]
 
         /// <summary>
-        /// Gets or sets the table name used by the <see cref="AdoOutputAdapter"/>.
+        /// Gets or sets the table name in the data source used to archive data.
         /// </summary>
         [ConnectionStringParameter,
         Description("Define the table name in the data source used to archive data."),

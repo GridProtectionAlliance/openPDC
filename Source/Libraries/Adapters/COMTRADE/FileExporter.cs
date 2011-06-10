@@ -15,10 +15,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
 using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 using TVA;
 using TVA.Collections;
 using TVA.IO;
@@ -27,8 +29,9 @@ using TVA.PhasorProtocols;
 namespace Comtrade
 {
     /// <summary>
-    /// Represents an action adapter that exports measurements on an interval to a COMTRADE foramtted file that can be imported into other systems for analysis.
+    /// Represents an action adapter that exports measurements on an interval to a COMTRADE formatted file that can be imported into other systems for analysis.
     /// </summary>
+    [Description("Comtrade: exports measurements to a COMTRADE formatted file that can be imported into other systems for analysis")]
     public class FileExporter : CalculatedMeasurementBase
     {        
         #region [ Members ]
@@ -61,6 +64,94 @@ namespace Comtrade
         #endregion
 
         #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets the interval, in seconds, at which data will be queued for concentration and then exported.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the interval, in seconds, at which data will be queued for concentration and then exported.")]
+        public double ExportInterval
+        {
+            get
+            {
+                return m_exportInterval / 1000.0D;
+            }
+            set
+            {
+                m_exportInterval = (int)(value * 1000.0D);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value that determines whether a reference angle is used to adjust the value of phase angles.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Indicates whether a reference angle is used to adjust the value of phase angles. IMPORTANT: If this is true, ReferenceAngleMeasurement is a required parameter.")]
+        public bool UseReferenceAngle
+        {
+            get
+            {
+                return m_useReferenceAngle;
+            }
+            set
+            {
+                m_useReferenceAngle = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the key of the measurement used to adjust the value of phase angles.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the key of the measurement used to adjust the value of phase angles."),
+        DefaultValue("")]
+        public string ReferenceAngleMeasurement
+        {
+            get
+            {
+                return m_referenceAngleKey.ToString();
+            }
+            set
+            {
+                m_referenceAngleKey = MeasurementKey.Parse(value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the prefix attached to the beginning of the measurements' point tags, excluding the underscore.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the prefix attached to the beginning of the measurements' point tags, excluding the underscore."),
+        DefaultValue(null)]
+        public string CompanyTagPrefix
+        {
+            get
+            {
+                return m_companyTagPrefix;
+            }
+            set
+            {
+                m_companyTagPrefix = value.ToUpper().Trim();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the value that determines whether the measurement quality is represented as a numeric value rather than a symbolic value.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Indicate whether the measurement quality is represented as a numeric value rather than a symbolic value. QUALITIES: Good = 0; Suspect = 20; Bad = 32"),
+        DefaultValue(false)]
+        public bool UseNumericQuality
+        {
+            get
+            {
+                return m_useNumericQuality;
+            }
+            set
+            {
+                m_useNumericQuality = value;
+            }
+        }
 
         /// <summary>
         /// Returns the detailed status of the <see cref="FileExporter"/>.

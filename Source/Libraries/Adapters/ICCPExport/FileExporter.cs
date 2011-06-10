@@ -35,11 +35,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using TimeSeriesFramework;
+using TimeSeriesFramework.Adapters;
 using TVA;
 using TVA.Collections;
 using TVA.IO;
@@ -50,6 +52,7 @@ namespace ICCPExport
     /// <summary>
     /// Represents an action adapter that exports measurements on an interval to a file that can be picked up by other systems such as ICCP.
     /// </summary>
+    [Description("ICCP: exports measurements to a file that can be picked up by other systems")]
     public class FileExporter : CalculatedMeasurementBase
     {
         #region [ Members ]
@@ -80,6 +83,94 @@ namespace ICCPExport
         #endregion
 
         #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets the interval, in seconds, at which data will be queued for concentration and then exported.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the interval, in seconds, at which data will be queued for concentration and then exported.")]
+        public double ExportInterval
+        {
+            get
+            {
+                return m_exportInterval / 1000.0D;
+            }
+            set
+            {
+                m_exportInterval = (int)(value * 1000.0D);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value that determines whether a reference angle is used to adjust the value of phase angles.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Indicates whether a reference angle is used to adjust the value of phase angles. IMPORTANT: If this is true, ReferenceAngleMeasurement is a required parameter.")]
+        public bool UseReferenceAngle
+        {
+            get
+            {
+                return m_useReferenceAngle;
+            }
+            set
+            {
+                m_useReferenceAngle = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the key of the measurement used to adjust the value of phase angles.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the key of the measurement used to adjust the value of phase angles."),
+        DefaultValue("")]
+        public string ReferenceAngleMeasurement
+        {
+            get
+            {
+                return m_referenceAngleKey.ToString();
+            }
+            set
+            {
+                m_referenceAngleKey = MeasurementKey.Parse(value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the prefix attached to the beginning of the measurements' point tags, excluding the underscore.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the prefix attached to the beginning of the measurements' point tags, excluding the underscore."),
+        DefaultValue(null)]
+        public string CompanyTagPrefix
+        {
+            get
+            {
+                return m_companyTagPrefix;
+            }
+            set
+            {
+                m_companyTagPrefix = value.ToUpper().Trim();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the value that determines whether the measurement quality is represented as a numeric value rather than a symbolic value.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Indicate whether the measurement quality is represented as a numeric value rather than a symbolic value. QUALITIES: Good = 0; Suspect = 20; Bad = 32"),
+        DefaultValue(false)]
+        public bool UseNumericQuality
+        {
+            get
+            {
+                return m_useNumericQuality;
+            }
+            set
+            {
+                m_useNumericQuality = value;
+            }
+        }
 
         /// <summary>
         /// Returns the detailed status of the <see cref="FileExporter"/>.
