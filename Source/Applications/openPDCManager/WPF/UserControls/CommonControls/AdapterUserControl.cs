@@ -18,6 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  07/08/2010 - Mehulbhai P Thakkar
 //       Generated original version of source code.
+//  06/30/2011 - Stephen C. Wills - applying changes from Jian (Ryan) Zuo
+//       Modified SaveAdapter() to send the ReloadConfig command to the Windows service.
 //
 //******************************************************************************************************
 
@@ -132,7 +134,29 @@ namespace openPDCManager.UserControls.CommonControls
                 //ClearForm();
 
                 //make this newly added or updated item as default selected. So user can click initialize right away.                
-                ListBoxAdapterList.SelectedItem = ((List<Adapter>)ListBoxAdapterList.ItemsSource).Find(c => c.AdapterName == adapter.AdapterName);                
+                ListBoxAdapterList.SelectedItem = ((List<Adapter>)ListBoxAdapterList.ItemsSource).Find(c => c.AdapterName == adapter.AdapterName);
+
+                // Update Metadata in the openPDC Service.
+                try
+                {
+                    if (serviceClient != null && serviceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                        CommonFunctions.SendCommandToWindowsService(serviceClient, "ReloadConfig"); //we do this to make sure all statistical measurements are in the system.
+                    else
+                    {
+                        sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = "Application is disconnected from the openPDC Service.", UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        sm.ShowPopup();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Perform Configuration Changes", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Information }, ButtonType.OkOnly);
+                    sm.Owner = Window.GetWindow(this);
+                    sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    sm.ShowPopup();
+                    CommonFunctions.LogException(null, "SaveAdapter.RefreshMetadata", ex);
+                }
             }
             catch (Exception ex)
             {
