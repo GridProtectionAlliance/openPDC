@@ -431,12 +431,12 @@ namespace ICCPExport
                                 measurementValue = measurement.AdjustedValue;
 
                                 // Interpret data quality flags
-                                measurementQuality = (measurement.ValueQualityIsGood ? (measurement.TimestampQualityIsGood ? DataQuality.Good : DataQuality.Suspect) : DataQuality.Bad);
+                                measurementQuality = (measurement.ValueQualityIsGood() ? (measurement.TimestampQualityIsGood() ? DataQuality.Good : DataQuality.Suspect) : DataQuality.Bad);
                             }
                             else
                             {
                                 // Didn't find measurement in this frame, try using most recent value
-                                measurementValue = LatestMeasurements[inputMeasurementKey];
+                                measurementValue = LatestMeasurements[inputMeasurementKey.SignalID];
 
                                 // Interpret data quality flags - since measurement was missing in this frame we mark it as
                                 // suspect. Could have just missed the time window for sorting.

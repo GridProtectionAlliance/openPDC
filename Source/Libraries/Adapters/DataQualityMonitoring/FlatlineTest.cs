@@ -328,13 +328,23 @@ namespace DataQualityMonitoring
                         string signalID = measurementRows[0]["SignalID"].ToNonNullString();
 
                         if (signalID != "")
-                            m_lastChange.Add(key, new Measurement(key.ID, key.Source, new Guid(signalID), double.NaN, 0.0, 1.0, timestamp));
+                        {
+                            m_lastChange.Add(key, new Measurement()
+                            {
+                                ID = new Guid(signalID), Key = key, Value = double.NaN, Timestamp = timestamp
+                            });
+                        }
                     }
                 }
 
                 // If the signal ID could not be found, add the measurement without it
                 if (!m_lastChange.ContainsKey(key))
-                    m_lastChange.Add(key, new Measurement(key.ID, key.Source, double.NaN, timestamp));
+                {
+                    m_lastChange.Add(key, new Measurement()
+                    {
+                        Key = key, Value = double.NaN, Timestamp = timestamp
+                    });
+                }
             }
         }
 

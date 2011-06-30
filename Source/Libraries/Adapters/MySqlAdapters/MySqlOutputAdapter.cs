@@ -171,7 +171,7 @@ namespace MySqlAdapters
                 // Create the command string to insert the measurement as a record in the table.
                 StringBuilder commandString = new StringBuilder("INSERT INTO Measurement VALUES ('");
 
-                commandString.Append(measurement.SignalID);
+                commandString.Append(measurement.ID);
                 commandString.Append("','");
                 commandString.Append((long)measurement.Timestamp);
                 commandString.Append("',");
@@ -239,6 +239,6 @@ namespace MySqlAdapters
             "ignore prepare", "shared memory name"
         };
 
-        #endregion        
+        #endregion
     }
 }

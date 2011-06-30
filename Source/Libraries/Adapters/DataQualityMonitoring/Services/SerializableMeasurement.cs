@@ -281,7 +281,7 @@ namespace DataQualityMonitoring
         {
             m_sourceMeasurement = measurement;
             Key = measurement.Key.ToString();
-            SignalID = measurement.SignalID.ToString();
+            SignalID = measurement.ID.ToString();
             Value = measurement.AdjustedValue;
             Timestamp = ((DateTime)measurement.Timestamp).ToString("yyyy-MM-dd HH:mm:ss.fff");
             SignalType = string.Empty;
@@ -296,37 +296,61 @@ namespace DataQualityMonitoring
         /// Gets or sets the <see cref="IMeasurement.Key"/>.
         /// </summary>
         [XmlAttribute(), DataMember(Order = 0)]
-        public string Key { get; set; }
+        public string Key
+        {
+            get;
+            set;
+        }
 
         /// <summary>
-        /// Gets or sets the <see cref="IMeasurement.SignalID"/>.
+        /// Gets or sets the <see cref="ITimeSeriesValue.ID"/>.
         /// </summary>
         [XmlAttribute(), DataMember(Order = 1)]
-        public string SignalID { get; set; }
+        public string SignalID
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets the <see cref="IMeasurement.AdjustedValue"/>.
         /// </summary>
         [XmlAttribute(), DataMember(Order = 2)]
-        public double Value { get; set; }
+        public double Value
+        {
+            get;
+            set;
+        }
 
         /// <summary>
-        /// Gets or sets the <see cref="IMeasurement.Timestamp"/> in <see cref="DateTime"/> string format.
+        /// Gets or sets the <see cref="ITimeSeriesValue.Timestamp"/> in <see cref="DateTime"/> string format.
         /// </summary>
         [XmlAttribute(), DataMember(Order = 3)]
-        public string Timestamp { get; set; }
+        public string Timestamp
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets the signal type of the <see cref="IMeasurement"/>.
         /// </summary>
         [XmlAttribute(), DataMember(Order = 4)]
-        public string SignalType { get; set; }
+        public string SignalType
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets the device of the <see cref="IMeasurement"/>.
         /// </summary>
         [XmlAttribute(), DataMember(Order = 5)]
-        public string Device { get; set; }
+        public string Device
+        {
+            get;
+            set;
+        }
 
         #endregion
 

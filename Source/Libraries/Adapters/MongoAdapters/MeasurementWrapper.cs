@@ -37,7 +37,9 @@ namespace MongoAdapters
         /// <summary>
         /// Creates an empty instance of the <see cref="MeasurementWrapper"/> class.
         /// </summary>
-        public MeasurementWrapper() { }
+        public MeasurementWrapper()
+        {
+        }
 
         /// <summary>
         /// Creates a new instance of the <see cref="MeasurementWrapper"/> class.
@@ -46,10 +48,10 @@ namespace MongoAdapters
         public MeasurementWrapper(IMeasurement measurement)
         {
             Adder = measurement.Adder;
-            ID = unchecked((int)measurement.ID);
+            SignalID = measurement.ID.ToString();
+            ID = unchecked((int)measurement.Key.ID);
             Multiplier = measurement.Multiplier;
-            Source = measurement.Source;
-            SignalID = measurement.SignalID.ToString();
+            Source = measurement.Key.Source;
             TagName = measurement.TagName;
             Timestamp = measurement.Timestamp;
             Value = measurement.Value;
@@ -62,44 +64,76 @@ namespace MongoAdapters
         /// <summary>
         /// The adder used to adjust the value of the measurement.
         /// </summary>
-        public double Adder { get; set; }
+        public double Adder
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// The identification number of the measurement.
         /// PointIDs are unsigned integers, but MongoDB needs to store
         /// them as signed integers.
         /// </summary>
-        public int ID { get; set; }
+        public int ID
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// The multiplier used to adjust the value of the measurement.
         /// </summary>
-        public double Multiplier { get; set; }
+        public double Multiplier
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// String representation of the measurement's signal ID.
         /// </summary>
-        public string SignalID { get; set; }
+        public string SignalID
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// The source of the measurement.
         /// </summary>
-        public string Source { get; set; }
+        public string Source
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// The measurement's tag name.
         /// </summary>
-        public string TagName { get; set; }
+        public string TagName
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// The timestamp associated with the measurement.
         /// </summary>
-        public long Timestamp { get; set; }
+        public long Timestamp
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// The value of the measurement, before applying the adder and multiplier.
         /// </summary>
-        public double Value { get; set; }
+        public double Value
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -111,13 +145,14 @@ namespace MongoAdapters
         /// <returns>The wrapped measurement.</returns>
         public IMeasurement GetMeasurement()
         {
+            Guid signalID = Guid.Parse(this.SignalID);
+
             IMeasurement measurement = new Measurement()
             {
                 Adder = this.Adder,
-                ID = unchecked((uint)this.ID),
+                ID = signalID,
+                Key = new MeasurementKey(signalID, unchecked((uint)this.ID), this.Source),
                 Multiplier = this.Multiplier,
-                Source = this.Source,
-                SignalID = Guid.Parse(this.SignalID),
                 TagName = this.TagName,
                 Timestamp = this.Timestamp,
                 Value = this.Value
@@ -127,6 +162,6 @@ namespace MongoAdapters
         }
 
         #endregion
-        
+
     }
 }

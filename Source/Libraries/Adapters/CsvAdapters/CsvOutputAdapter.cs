@@ -168,7 +168,7 @@ namespace CsvAdapters
 
             foreach (IMeasurement measurement in measurements)
             {
-                builder.Append(measurement.SignalID);
+                builder.Append(measurement.ID);
                 builder.Append(',');
                 builder.Append(measurement.Key);
                 builder.Append(',');

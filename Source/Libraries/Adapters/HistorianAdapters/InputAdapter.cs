@@ -31,13 +31,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
 using TVA;
 using TVA.Communication;
 using TVA.Historian;
-using System.ComponentModel;
 
 namespace HistorianAdapters
 {
@@ -282,7 +282,10 @@ namespace HistorianAdapters
                 List<IMeasurement> measurements = new List<IMeasurement>();
                 foreach (IDataPoint dataPoint in e.Argument)
                 {
-                    measurements.Add(new Measurement((uint)dataPoint.HistorianID, m_historianDataListener.ID, dataPoint.Value, dataPoint.Time));
+                    measurements.Add(new Measurement()
+                    {
+                        Key = new MeasurementKey(Guid.Empty, (uint)dataPoint.HistorianID, m_historianDataListener.ID), Value = dataPoint.Value, Timestamp = dataPoint.Time
+                    });
                 }
                 OnNewMeasurements(measurements);
             }

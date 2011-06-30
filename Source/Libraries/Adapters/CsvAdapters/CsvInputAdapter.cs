@@ -262,15 +262,10 @@ namespace CsvAdapters
                 string[] fields = line.Split(',');
 
                 if (m_columns.ContainsKey("Signal ID"))
-                    measurement.SignalID = new Guid(fields[m_columns["Signal ID"]]);
+                    measurement.ID = new Guid(fields[m_columns["Signal ID"]]);
 
                 if (m_columns.ContainsKey("Measurement Key"))
-                {
-                    string key = fields[m_columns["Measurement Key"]];
-                    string[] splitKey = key.Split(':');
-                    measurement.Source = splitKey[0];
-                    measurement.ID = uint.Parse(splitKey[1]);
-                }
+                    measurement.Key = MeasurementKey.Parse(fields[m_columns["Measurement Key"]], measurement.ID);
 
                 if (m_simulateTimestamp)
                     measurement.Timestamp = currentTime;

@@ -33,7 +33,7 @@ namespace Comtrade
     /// </summary>
     [Description("Comtrade: exports measurements to a COMTRADE formatted file that can be imported into other systems for analysis")]
     public class FileExporter : CalculatedMeasurementBase
-    {        
+    {
         #region [ Members ]
 
         /// Nested Types
@@ -47,7 +47,7 @@ namespace Comtrade
         /// Constants
         private const double SqrtOf3 = 1.7320508075688772935274463415059D;
         //COMTRADE version year 1999
-        private const UInt16 Rev_year = 1999;       
+        private const UInt16 Rev_year = 1999;
 
         /// Fields
         private MultipleDestinationExporter m_dataExporter;
@@ -161,7 +161,7 @@ namespace Comtrade
             get
             {
                 StringBuilder status = new StringBuilder();
-                
+
                 status.AppendFormat("     Using numeric quality: {0}", m_useNumericQuality);
                 status.AppendLine();
                 status.AppendFormat("     Using reference angle: {0}", m_useReferenceAngle);
@@ -239,7 +239,7 @@ namespace Comtrade
             // Load required parameters
             if (!settings.TryGetValue("exportInterval", out setting))
                 throw new ArgumentException(string.Format(errorMessage, "exportInterval"));
-            
+
             m_exportInterval = int.Parse(setting);
 
             if (m_exportInterval == 0)
@@ -368,7 +368,7 @@ namespace Comtrade
                 //   A) Timestamp's seconds are an interval of the defined export interval
                 //   B) Timestamp falls within first frame of data in the second
                 //   C) This is a defined input measurement for this adapter
-                sortMeasurement = 
+                sortMeasurement =
                         ((DateTime)timestamp).Second % m_exportInterval == 0 && // <-- A
                         timestamp.DistanceBeyondSecond() < TicksPerFrame &&     // <-- B
                         IsInputMeasurement(measurement.Key);                    // <-- C
@@ -445,9 +445,9 @@ namespace Comtrade
                     fileData.AppendLine(" ");
 
                     //Get analog channels count
-                    totalAnalogChannels= InputMeasurementKeyTypes.Count(s => s == SignalType.ALOG);
+                    totalAnalogChannels = InputMeasurementKeyTypes.Count(s => s == SignalType.ALOG);
                     //Get digital channels count
-                    totalDigitalChannels= InputMeasurementKeyTypes.Count(s => s == SignalType.DIGI);
+                    totalDigitalChannels = InputMeasurementKeyTypes.Count(s => s == SignalType.DIGI);
                     //Count total analog and digital channels
                     totalChannels = totalAnalogChannels + totalDigitalChannels;
                     //
@@ -459,7 +459,7 @@ namespace Comtrade
                     {
                         inputMeasurementKey = InputMeasurementKeys[i];
                         signalType = InputMeasurementKeyTypes[i];
-                        
+
                         // Look up measurement's tag name
                         if (m_measurementTags.TryGetValue(inputMeasurementKey, out measurementTag))
                         {
@@ -470,12 +470,12 @@ namespace Comtrade
                                 measurementValue = measurement.AdjustedValue;
 
                                 // Interpret data quality flags
-                                measurementQuality = (measurement.ValueQualityIsGood ? (measurement.TimestampQualityIsGood ? DataQuality.Good : DataQuality.Suspect) : DataQuality.Bad);
+                                measurementQuality = (measurement.ValueQualityIsGood() ? (measurement.TimestampQualityIsGood() ? DataQuality.Good : DataQuality.Suspect) : DataQuality.Bad);
                             }
                             else
                             {
                                 // Didn't find measurement in this frame, try using most recent value
-                                measurementValue = LatestMeasurements[inputMeasurementKey];
+                                measurementValue = LatestMeasurements[inputMeasurementKey.SignalID];
 
                                 // Interpret data quality flags - since measurement was missing in this frame we mark it as
                                 // suspect. Could have just missed the time window for sorting.
@@ -494,7 +494,7 @@ namespace Comtrade
                             DataRow[] filteredRows = DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID = '{0}'", inputMeasurementKey));
 
                             // Export measurement value making any needed adjustments based on signal type
-                            if (signalType == SignalType.ALOG || signalType == SignalType.VPHA || 
+                            if (signalType == SignalType.ALOG || signalType == SignalType.VPHA ||
                                     signalType == SignalType.IPHM || signalType == SignalType.VPHA || signalType == SignalType.IPHA)
                             {
                                 //Increment analog channel counter by 1
@@ -511,10 +511,10 @@ namespace Comtrade
                                     //Get phase value from filter row
                                     fileData.Append(filteredRows[0]["Phase"].ToString());
                                     //Magnitude for polar components
-                                    if(signalType == SignalType.VPHA || signalType == SignalType.IPHA)
-                                        fileData.Append("a");  
+                                    if (signalType == SignalType.VPHA || signalType == SignalType.IPHA)
+                                        fileData.Append("a");
                                     else
-                                        fileData.Append("m");  
+                                        fileData.Append("m");
                                     //Get ccbm- circuit component - Currently keep as blank until get more information
                                     fileData.Append(",");
                                     //Get uu - Alphanumeric channel units -- Currently keep as blank until get more information
@@ -538,7 +538,7 @@ namespace Comtrade
                                     //End of Line
                                     fileData.AppendLine(" ");
                                 }
-                                
+
                             }
                             //else if (signalType == SignalType.VPHA || signalType == SignalType.IPHA)
                             //{

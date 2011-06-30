@@ -184,7 +184,7 @@ namespace openPDCManager.Pages.Monitoring
                             }
                         }
                         double tempValue = measurement.Value;
-                        string tempSignalID = measurement.SignalID.ToString().ToUpper();
+                        string tempSignalID = measurement.ID.ToString().ToUpper();
                         if (!double.IsNaN(tempValue) && !double.IsInfinity(tempValue))      //process data only if it is not NaN or Infinity.
                         {
                             ConcurrentQueue<double> tempCollection;
@@ -202,7 +202,7 @@ namespace openPDCManager.Pages.Monitoring
                                     {
                                         inputMonitorData.Value = tempValue.ToString("0.###");
                                         inputMonitorData.TimeStamp = measurement.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                                        inputMonitorData.Quality = measurement.ValueQualityIsGood ? "GOOD" : "UNKNOWN";
+                                        inputMonitorData.Quality = measurement.ValueQualityIsGood() ? "GOOD" : "UNKNOWN";
                                     }
                                 }
                             }
@@ -247,7 +247,7 @@ namespace openPDCManager.Pages.Monitoring
                                             {
                                                 inputMonitorData.Value = tempValue.ToString("0.###");
                                                 inputMonitorData.TimeStamp = measurement.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                                                inputMonitorData.Quality = measurement.ValueQualityIsGood ? "GOOD" : "UNKNOWN";
+                                                inputMonitorData.Quality = measurement.ValueQualityIsGood() ? "GOOD" : "UNKNOWN";
                                                 inputMonitorData.Background = (SolidColorBrush)lineGraph.LinePen.Brush;
                                             }
                                         }
@@ -318,9 +318,9 @@ namespace openPDCManager.Pages.Monitoring
                             {
                                 foreach (IMeasurement measurement in e.Argument)
                                 {
-                                    if (measurement.SignalID.ToString().ToUpper() == measurementInfo.SignalID.ToUpper())
+                                    if (measurement.ID.ToString().ToUpper() == measurementInfo.SignalID.ToUpper())
                                     {
-                                        measurementInfo.CurrentQuality = measurement.ValueQualityIsGood ? "GOOD" : "BAD";
+                                        measurementInfo.CurrentQuality = measurement.ValueQualityIsGood() ? "GOOD" : "BAD";
                                         measurementInfo.CurrentTimeTag = measurement.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
                                         measurementInfo.CurrentValue = measurement.Value.ToString("0.###");
 
@@ -335,7 +335,7 @@ namespace openPDCManager.Pages.Monitoring
                                                 deviceInfo.StatusColor = "Gray";
                                             else if (deviceMeasurementData.StatusColor == "Red")
                                                 deviceInfo.StatusColor = "Red";
-                                            else if (measurement.ValueQualityIsGood)
+                                            else if (measurement.ValueQualityIsGood())
                                                 deviceInfo.StatusColor = "Green";
                                             else
                                                 deviceInfo.StatusColor = "Yellow";
@@ -478,7 +478,9 @@ namespace openPDCManager.Pages.Monitoring
                     {
                         keyValuePair.Value.RaiseDataChanged();
                     }
-                    catch { }
+                    catch
+                    {
+                    }
                 }
             }
 
@@ -595,9 +597,12 @@ namespace openPDCManager.Pages.Monitoring
                     if (subscriptionPoints.Length > 0)
                         subscriptionPoints = subscriptionPoints.Substring(0, subscriptionPoints.Length - 1);
 
-                    string password = openPDCManager.Utilities.Common.GetDataPublisherPassword();
-                    m_chartSubscriber.SynchronizedSubscribe(true, password, m_framesPerSecond, m_lagTime, m_leadTime, subscriptionPoints, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
-                    ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate() { StartChartRefreshTimer(); });
+                    //string password = openPDCManager.Utilities.Common.GetDataPublisherPassword();
+                    m_chartSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, subscriptionPoints, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
+                    ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
+                    {
+                        StartChartRefreshTimer();
+                    });
                 }
             }
         }
@@ -716,7 +721,10 @@ namespace openPDCManager.Pages.Monitoring
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.GetDeviceMeasurementsData", ex);
-                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Current Device Measurements Tree Data", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
+                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message()
+                {
+                    UserMessage = "Failed to Retrieve Current Device Measurements Tree Data", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -818,8 +826,8 @@ namespace openPDCManager.Pages.Monitoring
 
             if (m_subscribedForTree && !string.IsNullOrEmpty(m_measurementDataPointsForSubscription))
             {
-                string password = openPDCManager.Utilities.Common.GetDataPublisherPassword();
-                m_measurementDataSubscriber.UnsynchronizedSubscribe(true, password, true, m_measurementDataPointsForSubscription, m_measurementsDataRefreshInterval);
+                //string password = openPDCManager.Utilities.Common.GetDataPublisherPassword();
+                m_measurementDataSubscriber.UnsynchronizedSubscribe(true, true, m_measurementDataPointsForSubscription, null, true, (double)m_measurementsDataRefreshInterval);
             }
         }
 
@@ -1007,7 +1015,10 @@ namespace openPDCManager.Pages.Monitoring
                     }
                     else
                     {
-                        SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Invalid or Dummy Device Selected", SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Information },
+                        SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message()
+                        {
+                            UserMessage = "Invalid or Dummy Device Selected", SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Information
+                        },
                             ButtonType.OkOnly);
                         sm.Owner = Window.GetWindow(this);
                         sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -1016,7 +1027,10 @@ namespace openPDCManager.Pages.Monitoring
                 }
                 else
                 {
-                    SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Invalid or Dummy Device Selected", SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Information },
+                    SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message()
+                    {
+                        UserMessage = "Invalid or Dummy Device Selected", SystemMessage = string.Empty, UserMessageType = openPDCManager.Utilities.MessageType.Information
+                    },
                             ButtonType.OkOnly);
                     sm.Owner = Window.GetWindow(this);
                     sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;

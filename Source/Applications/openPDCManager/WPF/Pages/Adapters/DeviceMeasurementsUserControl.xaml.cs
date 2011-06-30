@@ -48,7 +48,7 @@ namespace openPDCManager.Pages.Adapters
         ActivityWindow m_activityWindow;
         ObservableCollection<DeviceMeasurementData> m_deviceMeasurementDataList;
         DeviceMeasurementDataForBinding m_dataForBinding;
-        int m_refershInterval = 10;        
+        int m_refreshInterval = 10;
 
         //Subscription API related declarations.
         DataSubscriber m_dataSubscriber;
@@ -67,7 +67,7 @@ namespace openPDCManager.Pages.Adapters
             this.Loaded += new RoutedEventHandler(DeviceMeasurementsUserControl_Loaded);
             this.Unloaded += new RoutedEventHandler(DeviceMeasurementsUserControl_Unloaded);
             m_dataForBinding = new DeviceMeasurementDataForBinding();
-            m_deviceMeasurementDataList = new ObservableCollection<DeviceMeasurementData>();                                 
+            m_deviceMeasurementDataList = new ObservableCollection<DeviceMeasurementData>();
         }
 
         #endregion
@@ -81,14 +81,14 @@ namespace openPDCManager.Pages.Adapters
             m_activityWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             m_activityWindow.Show();
             GetDeviceMeasurementData();
-            int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("MeasurementsDataRefreshInterval").ToString(), out m_refershInterval);
-            TextBlockRefreshInterval.Text = "Refresh Interval: " + m_refershInterval.ToString() + " sec";
+            int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("MeasurementsDataRefreshInterval").ToString(), out m_refreshInterval);
+            TextBlockRefreshInterval.Text = "Refresh Interval: " + m_refreshInterval.ToString() + " sec";
         }
 
         void DeviceMeasurementsUserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             m_restartConnectionCycle = false;
-            UnsubscribeData();                     
+            UnsubscribeData();
         }
 
         #endregion
@@ -118,13 +118,16 @@ namespace openPDCManager.Pages.Adapters
 
                 m_dataForBinding.IsExpanded = false;
                 TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
-                
+
                 SubscribeData();
             }
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "WPF.GetDeviceMeasurementsData", ex);
-                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message() { UserMessage = "Failed to Retrieve Current Device Measurements Tree Data", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error },
+                SystemMessages sm = new SystemMessages(new openPDCManager.Utilities.Message()
+                {
+                    UserMessage = "Failed to Retrieve Current Device Measurements Tree Data", SystemMessage = ex.Message, UserMessageType = openPDCManager.Utilities.MessageType.Error
+                },
                         ButtonType.OkOnly);
                 sm.Owner = Window.GetWindow(this);
                 sm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -133,7 +136,7 @@ namespace openPDCManager.Pages.Adapters
             if (m_activityWindow != null)
                 m_activityWindow.Close();
         }
-                
+
         #endregion
 
         #region [ Subscription API Code ]
@@ -163,8 +166,8 @@ namespace openPDCManager.Pages.Adapters
 
             if (m_subscribed && !string.IsNullOrEmpty(m_measurementForSubscription))
             {
-                string password = openPDCManager.Utilities.Common.GetDataPublisherPassword();
-                m_dataSubscriber.UnsynchronizedSubscribe(true, password, true, m_measurementForSubscription, m_refershInterval);
+                //string password = openPDCManager.Utilities.Common.GetDataPublisherPassword();
+                m_dataSubscriber.UnsynchronizedSubscribe(true, true, m_measurementForSubscription, null, true, (double)m_refreshInterval);
             }
         }
 
@@ -209,25 +212,25 @@ namespace openPDCManager.Pages.Adapters
                 try
                 {
                     foreach (DeviceMeasurementData deviceMeasurementData in m_deviceMeasurementDataList)
-                    {                        
+                    {
                         foreach (DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
-                        {                     
+                        {
                             foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
                             {
                                 foreach (IMeasurement measurement in e.Argument)
                                 {
-                                    if (measurement.SignalID.ToString().ToUpper() == measurementInfo.SignalID.ToUpper())
+                                    if (measurement.ID.ToString().ToUpper() == measurementInfo.SignalID.ToUpper())
                                     {
-                                        measurementInfo.CurrentQuality = measurement.ValueQualityIsGood ? "GOOD" : "BAD";
+                                        measurementInfo.CurrentQuality = measurement.ValueQualityIsGood() ? "GOOD" : "BAD";
                                         measurementInfo.CurrentTimeTag = measurement.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
                                         measurementInfo.CurrentValue = measurement.Value.ToString("0.###");
                                     }
                                 }
-                            }                            
+                            }
                         }
                     }
-                    TreeViewDeviceMeasurements.Dispatcher.BeginInvoke((Action) delegate()
-                    {                    
+                    TreeViewDeviceMeasurements.Dispatcher.BeginInvoke((Action)delegate()
+                    {
                         TreeViewDeviceMeasurements.Items.Refresh();
                         m_dataForBinding.IsExpanded = true;
                         m_dataForBinding.DeviceMeasurementDataList = m_deviceMeasurementDataList;

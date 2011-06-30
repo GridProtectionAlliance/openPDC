@@ -44,7 +44,6 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Xml;
 using Microsoft.Win32;
-using TimeSeriesFramework.Transport;
 using TVA;
 using TVA.IO;
 using TVA.Security.Cryptography;
@@ -196,15 +195,14 @@ namespace ConfigurationSetupUtility.Screens
             string configurationType = m_state["configurationType"].ToString();
             ClearStatusMessages();
 
-            // Establish crypto keys in case they do not exist
+            // Attempt to establish crypto keys in case they do not exist
             try
             {
                 "SetupString".Encrypt(App.CipherLookupKey, CipherStrength.Aes256);
-                "SetupString".Encrypt(DataPublisher.CipherLookupKey, CipherStrength.Aes256);
             }
             catch
             {
-                //AppendStatusMessage(string.Format("WARNING: Failed to establish crypto keys due to exception: {0}", ex.Message));
+                // Keys will be established at run-time otherwise
             }
 
             if (configurationType == "database")
