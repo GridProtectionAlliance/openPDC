@@ -61,7 +61,7 @@ namespace PowerCalculations
         private Dictionary<MeasurementKey, Double> m_unwrapOffsets;
         private List<Double> m_latestCalculatedAngles;
         private IMeasurement[] m_measurements;
-        
+
         #endregion
 
         #region [ Properties ]
@@ -75,7 +75,7 @@ namespace PowerCalculations
             {
                 const int ValuesToShow = 4;
 
-                StringBuilder status = new StringBuilder ();
+                StringBuilder status = new StringBuilder();
 
                 status.AppendFormat("  Last " + ValuesToShow + " calculated angles:");
 
@@ -90,7 +90,7 @@ namespace PowerCalculations
                 status.AppendLine();
                 status.Append(base.Status);
 
-                return status.ToString ();
+                return status.ToString();
             }
         }
 
@@ -223,13 +223,13 @@ namespace PowerCalculations
                             unwrapOffset -= 360;
                         else if (deltaAngle < -300)
                             unwrapOffset += 360;
-                        
+
                         // Reset angle unwrap offset if needed
                         if (unwrapOffset > m_phaseResetAngle)
                             unwrapOffset -= m_phaseResetAngle;
                         else if (unwrapOffset < -m_phaseResetAngle)
                             unwrapOffset += m_phaseResetAngle;
-                        
+
                         // Record last angle unwrap offset
                         m_unwrapOffsets[key] = unwrapOffset;
                     }
@@ -250,7 +250,7 @@ namespace PowerCalculations
                 }
             }
             else
-            { 
+            {
                 // Use stored average value when minimum set is not available
                 if (m_latestCalculatedAngles.Count > 0)
                     angleAverage = m_latestCalculatedAngles.Average() % 360.0D;
@@ -258,16 +258,16 @@ namespace PowerCalculations
                     angleAverage = double.NaN;
 
                 // Mark quality as "bad" when falling back to stored value
-                calculatedMeasurement.ValueQualityIsGood = false;
+                calculatedMeasurement.StateFlags |= MeasurementStateFlags.BadData;
             }
-            
+
             // Convert angle value to the range of -180 to 180
             if (angleAverage > 180)
                 angleAverage -= 360;
 
             if (angleAverage <= -180)
                 angleAverage += 360;
-            
+
             calculatedMeasurement.Value = angleAverage;
 
             // Expose calculated value

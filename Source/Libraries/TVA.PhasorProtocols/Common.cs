@@ -235,15 +235,10 @@
 
 using System;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Soap;
 using System.Runtime.Serialization.Formatters;
-using System.Xml;
+using System.Runtime.Serialization.Formatters.Soap;
 using TimeSeriesFramework;
-using TVA;
 using TVA.Parsing;
-using System.Text;
-using TVA.IO;
-using System.Runtime.Serialization;
 
 namespace TVA.PhasorProtocols
 {
@@ -260,7 +255,7 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Undefined measurement key.
         /// </summary>
-        internal static MeasurementKey UndefinedKey = new MeasurementKey(uint.MaxValue, "__");
+        internal static MeasurementKey UndefinedKey = new MeasurementKey(Guid.Empty, uint.MaxValue, "__");
 
         /// <summary>
         /// This is a common optimized block copy function for binary data.
@@ -335,7 +330,7 @@ namespace TVA.PhasorProtocols
             //string xmlFile = Encoding.Default.GetString(configStream.ReadStream());            
             //xmlFile = xmlFile.Replace("TVA.Phasors", "PhasorProtocols");
             //xmlFile = xmlFile.Replace("TVA.PhasorProtocols", "PhasorProtocols");
-            
+
             xmlSerializer.AssemblyFormat = FormatterAssemblyStyle.Simple;
             xmlSerializer.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
 

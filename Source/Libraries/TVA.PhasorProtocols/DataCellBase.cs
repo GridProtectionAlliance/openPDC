@@ -98,10 +98,9 @@ namespace TVA.PhasorProtocols
         private DigitalValueCollection m_digitalValues;
 
         // IMeasurement implementation fields
-        private uint m_id;
-        private string m_source;
         private MeasurementKey m_key;
-        private Guid m_signalID;
+        private Guid m_id;
+        private MeasurementStateFlags m_stateFlags;
         private string m_tagName;
         private Ticks m_timestamp;
         private Ticks m_receivedTimestamp;
@@ -134,11 +133,11 @@ namespace TVA.PhasorProtocols
             m_digitalValues = new DigitalValueCollection(maximumDigitals);
 
             // Initialize IMeasurement members
-            m_id = uint.MaxValue;
-            m_source = "__";
             m_key = PhasorProtocols.Common.UndefinedKey;
-            m_timestamp = -1;
+            m_stateFlags = MeasurementStateFlags.Normal;
             m_receivedTimestamp = PrecisionTimer.UtcNow.Ticks;
+            m_timestamp = -1;
+            m_adder = 0.0D;
             m_multiplier = 1.0D;
         }
 
@@ -564,7 +563,7 @@ namespace TVA.PhasorProtocols
             string stationName = StationName;
             string measurementID = null;
 
-            if (m_id != uint.MaxValue && m_source != "__")
+            if (m_key.ID != uint.MaxValue && m_key.Source != "__")
                 measurementID = Measurement.ToString(this);
 
             if (!string.IsNullOrWhiteSpace(stationName))
@@ -588,11 +587,11 @@ namespace TVA.PhasorProtocols
         /// <returns>true if the specified object is equal to the <see cref="DataCellBase"/>; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            IMeasurement measurement = obj as IMeasurement;
+            ITimeSeriesValue measurement = obj as ITimeSeriesValue;
 
             // If comparing to another measurment, use hash code for equality
             if (measurement != null)
-                return ((IMeasurement)this).Equals(measurement);
+                return ((ITimeSeriesValue)this).Equals(measurement);
 
             // Otherwise use default equality comparison
             return base.Equals(obj);
@@ -605,7 +604,7 @@ namespace TVA.PhasorProtocols
         /// <remarks>Hash code based on value of measurement key associated with the <see cref="DataCellBase"/>.</remarks>
         public override int GetHashCode()
         {
-            return ((IMeasurement)this).GetHashCode();
+            return ((ITimeSeriesValue)this).GetHashCode();
         }
 
         #endregion
@@ -617,7 +616,65 @@ namespace TVA.PhasorProtocols
         // typically come from (i.e., the IDataCell's values) - the only value the cell itself has
         // to offer is the "CommonStatusFlags" property, which we expose below...
 
-        double IMeasurement.Value
+        BigBinaryValue ITimeSeriesValue.Value
+        {
+            get
+            {
+                return CommonStatusFlags;
+            }
+            set
+            {
+                switch (value.TypeCode)
+                {
+                    case TypeCode.Byte:
+                        CommonStatusFlags = (uint)(Byte)value;
+                        break;
+                    case TypeCode.SByte:
+                        CommonStatusFlags = (uint)(SByte)value;
+                        break;
+                    case TypeCode.Int16:
+                        CommonStatusFlags = (uint)(Int16)value;
+                        break;
+                    case TypeCode.UInt16:
+                        CommonStatusFlags = (UInt16)value;
+                        break;
+                    case TypeCode.Int32:
+                        CommonStatusFlags = (uint)(Int32)value;
+                        break;
+                    case TypeCode.UInt32:
+                        CommonStatusFlags = (UInt32)value;
+                        break;
+                    case TypeCode.Int64:
+                        CommonStatusFlags = (uint)(Int64)value;
+                        break;
+                    case TypeCode.UInt64:
+                        CommonStatusFlags = (uint)(UInt64)value;
+                        break;
+                    case TypeCode.Single:
+                        CommonStatusFlags = (uint)(Single)value;
+                        break;
+                    case TypeCode.Double:
+                        CommonStatusFlags = (uint)(Double)value;
+                        break;
+                    //case TypeCode.Boolean:
+                    //    break;
+                    //case TypeCode.Char:
+                    //    break;
+                    //case TypeCode.DateTime:
+                    //    break;
+                    //case TypeCode.Decimal:
+                    //    break;
+                    //case TypeCode.String:
+                    //    m_value = double.Parse(value);
+                    //    break;
+                    default:
+                        CommonStatusFlags = value;
+                        break;
+                }
+            }
+        }
+
+        double ITimeSeriesValue<double>.Value
         {
             get
             {
@@ -664,7 +721,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        Ticks IMeasurement.Timestamp
+        Ticks ITimeSeriesValue.Timestamp
         {
             get
             {
@@ -703,7 +760,19 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        uint IMeasurement.ID
+        MeasurementKey IMeasurement.Key
+        {
+            get
+            {
+                return m_key;
+            }
+            set
+            {
+                m_key = value;
+            }
+        }
+
+        Guid ITimeSeriesValue.ID
         {
             get
             {
@@ -712,41 +781,6 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_id = value;
-            }
-        }
-
-        string IMeasurement.Source
-        {
-            get
-            {
-                return m_source;
-            }
-            set
-            {
-                m_source = value;
-            }
-        }
-
-        MeasurementKey IMeasurement.Key
-        {
-            get
-            {
-                if (m_key.Equals(PhasorProtocols.Common.UndefinedKey))
-                    m_key = new MeasurementKey(m_id, m_source);
-
-                return m_key;
-            }
-        }
-
-        Guid IMeasurement.SignalID
-        {
-            get
-            {
-                return m_signalID;
-            }
-            set
-            {
-                m_signalID = value;
             }
         }
 
@@ -768,54 +802,26 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        bool IMeasurement.ValueQualityIsGood
+        MeasurementStateFlags IMeasurement.StateFlags
         {
             get
             {
                 // The quality of the status flags "measurement" is always assumed to be good since it consists
                 // of the flags that make up the actual quality of the incoming device data, as a result this
                 // property will always return true so as to not affect archived data quality
-                return true;
+                return m_stateFlags & ~MeasurementStateFlags.BadTime & ~MeasurementStateFlags.BadData;
             }
             set
             {
+                m_stateFlags = value;
+
                 // Updates to data quality are applied to status flags
-                this.DataIsValid = value;
-            }
-        }
+                this.DataIsValid = (m_stateFlags & MeasurementStateFlags.BadData) == 0;
 
-        bool IMeasurement.TimestampQualityIsGood
-        {
-            get
-            {
-                // The quality of the status flags "measurement" is always assumed to be good since it consists
-                // of the flags that make up the actual quality of the incoming device data, as a result this
-                // property will always return true so as to not affect archived data quality
-                return true;
-            }
-            set
-            {
                 // Updates to time quality are applied to status flags
-                this.SynchronizationIsValid = value;
+                this.SynchronizationIsValid = (m_stateFlags & MeasurementStateFlags.BadTime) == 0;
             }
         }
-
-        bool IMeasurement.IsDiscarded
-        {
-            get
-            {
-                // The quality of the status flags "measurement" is always assumed to be good since it consists
-                // of the flags that make up the actual quality of the incoming device data, as a result this
-                // property will always return false so as to not affect archived data quality
-                return false;
-            }
-            set
-            {
-                // Updates to discarded state are applied to status flags
-                m_isDiscarded = value;
-            }
-        }
-
         string IMeasurement.TagName
         {
             get
@@ -828,9 +834,9 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        int IMeasurement.GetHashCode()
+        int ITimeSeriesValue.GetHashCode()
         {
-            return ((IMeasurement)this).Key.GetHashCode();
+            return m_id.GetHashCode();
         }
 
         int IComparable.CompareTo(object obj)
@@ -843,14 +849,14 @@ namespace TVA.PhasorProtocols
             throw new ArgumentException("Measurement can only be compared with other IMeasurements...");
         }
 
-        int IComparable<IMeasurement>.CompareTo(IMeasurement other)
+        int IComparable<ITimeSeriesValue>.CompareTo(ITimeSeriesValue other)
         {
-            return (this as IMeasurement).GetHashCode().CompareTo(other.GetHashCode());
+            return (this as ITimeSeriesValue).GetHashCode().CompareTo(other.GetHashCode());
         }
 
-        bool IEquatable<IMeasurement>.Equals(IMeasurement other)
+        bool IEquatable<ITimeSeriesValue>.Equals(ITimeSeriesValue other)
         {
-            return ((this as IComparable<IMeasurement>).CompareTo(other) == 0);
+            return ((this as IComparable<ITimeSeriesValue>).CompareTo(other) == 0);
         }
 
         #endregion

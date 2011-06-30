@@ -250,10 +250,10 @@ namespace TVA.PhasorProtocols
 
         // Fields
         private IChannelValue<T> m_parent;
-        private uint m_id;
-        private string m_source;
         private MeasurementKey m_key;
-        private Guid m_signalID;
+        private Guid m_id;
+        private MeasurementStateFlags m_stateFlags;
+        private bool m_stateFlagsAssigned;
         private string m_tagName;
         private Ticks m_timestamp;
         private Ticks m_receivedTimestamp;
@@ -261,9 +261,6 @@ namespace TVA.PhasorProtocols
         private int m_valueIndex;
         private double m_adder;
         private double m_multiplier;
-        private int m_dataQualityIsGood;
-        private int m_timeQualityIsGood;
-        private bool m_isDiscarded;
         private MeasurementValueFilterFunction m_measurementValueFilter;
 
         #endregion
@@ -279,14 +276,10 @@ namespace TVA.PhasorProtocols
         {
             m_parent = parent;
             m_valueIndex = valueIndex;
-            m_id = uint.MaxValue;
-            m_source = "__";
             m_key = Common.UndefinedKey;
             m_timestamp = -1;
             m_receivedTimestamp = PrecisionTimer.UtcNow.Ticks;
             m_multiplier = 1.0D;
-            m_dataQualityIsGood = -1;
-            m_timeQualityIsGood = -1;
         }
 
         #endregion
@@ -309,13 +302,9 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets or sets the numeric ID of this <see cref="ChannelValueMeasurement{T}"/>.
+        /// Gets or sets the <see cref="Guid"/> based signal ID of this <see cref="ChannelValueMeasurement{T}"/>, if available.
         /// </summary>
-        /// <remarks>
-        /// <para>In most implementations, this will be a required field.</para>
-        /// <para>Note that this field, in addition to <see cref="Source"/>, typically creates the primary key for a <see cref="ChannelValueMeasurement{T}"/>.</para>
-        /// </remarks>
-        public virtual uint ID
+        public virtual Guid ID
         {
             get
             {
@@ -328,51 +317,17 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets or sets the source of this <see cref="ChannelValueMeasurement{T}"/>.
-        /// </summary>
-        /// <remarks>
-        /// <para>In most implementations, this will be a required field.</para>
-        /// <para>Note that this field, in addition to <see cref="ID"/>, typically creates the primary key for a <see cref="ChannelValueMeasurement{T}"/>.</para>
-        /// <para>This value is typically used to track the archive name in which measurement is stored.</para>
-        /// </remarks>
-        public virtual string Source
-        {
-            get
-            {
-                return m_source;
-            }
-            set
-            {
-                m_source = value;
-            }
-        }
-
-        /// <summary>
         /// Gets the primary key (a <see cref="MeasurementKey"/>, of this <see cref="ChannelValueMeasurement{T}"/>.
         /// </summary>
         public virtual MeasurementKey Key
         {
             get
             {
-                if (m_key.Equals(Common.UndefinedKey))
-                    m_key = new MeasurementKey(m_id, m_source);
-
                 return m_key;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="Guid"/> based signal ID of this <see cref="ChannelValueMeasurement{T}"/>, if available.
-        /// </summary>
-        public virtual Guid SignalID
-        {
-            get
-            {
-                return m_signalID;
             }
             set
             {
-                m_signalID = value;
+                m_key = value;
             }
         }
 
@@ -527,55 +482,21 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets or sets a boolean value that determines if the quality of the timestamp of this <see cref="ChannelValueMeasurement{T}"/> is good.
+        /// Gets or sets <see cref="MeasurementStateFlags"/> associated with this <see cref="ChannelValueMeasurement{T}"/>.
         /// </summary>
-        /// <remarks>This value returns timestamp quality of parent data cell unless assigned an alternate value.</remarks>
-        public virtual bool TimestampQualityIsGood
+        public virtual MeasurementStateFlags StateFlags
         {
             get
             {
-                if (m_timeQualityIsGood == -1)
-                    return (m_parent.Parent.SynchronizationIsValid && Timestamp != -1);
-
-                return (m_timeQualityIsGood != 0);
+                if (m_stateFlagsAssigned)
+                    return m_stateFlags;
+                else
+                    return (m_parent.Parent.SynchronizationIsValid && Timestamp != -1 ? MeasurementStateFlags.Normal : MeasurementStateFlags.BadTime) | (m_parent.Parent.DataIsValid ? MeasurementStateFlags.Normal : MeasurementStateFlags.BadData);
             }
             set
             {
-                m_timeQualityIsGood = (value ? 1 : 0);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a boolean value that determines if the quality of the numeric value of this <see cref="ChannelValueMeasurement{T}"/> is good.
-        /// </summary>
-        /// <remarks>This value returns data quality of parent data cell unless assigned an alternate value.</remarks>
-        public virtual bool ValueQualityIsGood
-        {
-            get
-            {
-                if (m_dataQualityIsGood == -1)
-                    return m_parent.Parent.DataIsValid;
-
-                return (m_dataQualityIsGood != 0);
-            }
-            set
-            {
-                m_dataQualityIsGood = (value ? 1 : 0);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a boolean value that determines if this <see cref="ChannelValueMeasurement{T}"/> has been discarded during sorting.
-        /// </summary>
-        public virtual bool IsDiscarded
-        {
-            get
-            {
-                return m_isDiscarded;
-            }
-            set
-            {
-                m_isDiscarded = value;
+                m_stateFlags = value;
+                m_stateFlagsAssigned = true;
             }
         }
 
@@ -599,6 +520,18 @@ namespace TVA.PhasorProtocols
             }
         }
 
+        BigBinaryValue ITimeSeriesValue.Value
+        {
+            get
+            {
+                return Value;
+            }
+            set
+            {
+                throw new NotImplementedException("Cannot update derived phasor measurement, composite values are read-only");
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
@@ -613,14 +546,14 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="IMeasurement"/> is equal to the current <see cref="ChannelValueMeasurement{T}"/>.
+        /// Determines whether the specified <see cref="ITimeSeriesValue"/> is equal to the current <see cref="ChannelValueMeasurement{T}"/>.
         /// </summary>
-        /// <param name="other">The <see cref="IMeasurement"/> to compare with the current <see cref="ChannelValueMeasurement{T}"/>.</param>
+        /// <param name="other">The <see cref="ITimeSeriesValue"/> to compare with the current <see cref="ChannelValueMeasurement{T}"/>.</param>
         /// <returns>
-        /// true if the specified <see cref="IMeasurement"/> is equal to the current <see cref="ChannelValueMeasurement{T}"/>;
+        /// true if the specified <see cref="ITimeSeriesValue"/> is equal to the current <see cref="ChannelValueMeasurement{T}"/>;
         /// otherwise, false.
         /// </returns>
-        public bool Equals(IMeasurement other)
+        public bool Equals(ITimeSeriesValue other)
         {
             return (CompareTo(other) == 0);
         }
@@ -645,12 +578,12 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Compares the <see cref="ChannelValueMeasurement{T}"/> with an <see cref="IMeasurement"/>.
+        /// Compares the <see cref="ChannelValueMeasurement{T}"/> with an <see cref="ITimeSeriesValue"/>.
         /// </summary>
-        /// <param name="other">The <see cref="IMeasurement"/> to compare with the current <see cref="ChannelValueMeasurement{T}"/>.</param>
+        /// <param name="other">The <see cref="ITimeSeriesValue"/> to compare with the current <see cref="ChannelValueMeasurement{T}"/>.</param>
         /// <returns>A 32-bit signed integer that indicates the relative order of the objects being compared.</returns>
         /// <remarks>Measurement implementations should compare by hash code.</remarks>
-        public int CompareTo(IMeasurement other)
+        public int CompareTo(ITimeSeriesValue other)
         {
             return GetHashCode().CompareTo(other.GetHashCode());
         }
@@ -664,12 +597,12 @@ namespace TVA.PhasorProtocols
         /// <remarks>Measurement implementations should compare by hash code.</remarks>
         public int CompareTo(object obj)
         {
-            IMeasurement other = obj as IMeasurement;
+            ITimeSeriesValue other = obj as ITimeSeriesValue;
 
             if (other != null)
                 return CompareTo(other);
 
-            throw new ArgumentException("Measurement can only be compared with other IMeasurements...");
+            throw new ArgumentException("Measurement can only be compared with other ITimeSeriesValues...");
         }
 
         /// <summary>

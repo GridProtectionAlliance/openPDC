@@ -277,14 +277,26 @@ namespace TVA.PhasorProtocols
             }
         }
 
+
         /// <summary>
-        /// Gets or sets the numeric ID of this <see cref="SignalReferenceMeasurement"/>.
+        /// Gets the primary key (a <see cref="MeasurementKey"/>, of this <see cref="SignalReferenceMeasurement"/>.
         /// </summary>
-        /// <remarks>
-        /// <para>In most implementations, this will be a required field.</para>
-        /// <para>Note that this field, in addition to <see cref="Source"/>, typically creates the primary key for a <see cref="SignalReferenceMeasurement"/>.</para>
-        /// </remarks>
-        public uint ID
+        public MeasurementKey Key
+        {
+            get
+            {
+                return m_measurement.Key;
+            }
+            set
+            {
+                m_measurement.Key = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="Guid"/> based signal ID of this <see cref="SignalReferenceMeasurement"/>, if available.
+        /// </summary>
+        public Guid ID
         {
             get
             {
@@ -297,48 +309,17 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets or sets the source of this <see cref="SignalReferenceMeasurement"/>.
+        /// Gets or sets <see cref="MeasurementStateFlags"/> associated with this <see cref="SignalReferenceMeasurement"/>.
         /// </summary>
-        /// <remarks>
-        /// <para>In most implementations, this will be a required field.</para>
-        /// <para>Note that this field, in addition to <see cref="ID"/>, typically creates the primary key for a <see cref="SignalReferenceMeasurement"/>.</para>
-        /// <para>This value is typically used to track the archive name in which measurement is stored.</para>
-        /// </remarks>
-        public string Source
+        public MeasurementStateFlags StateFlags
         {
             get
             {
-                return m_measurement.Source;
+                return m_measurement.StateFlags;
             }
             set
             {
-                m_measurement.Source = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the primary key (a <see cref="MeasurementKey"/>, of this <see cref="SignalReferenceMeasurement"/>.
-        /// </summary>
-        public MeasurementKey Key
-        {
-            get
-            {
-                return m_measurement.Key;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="Guid"/> based signal ID of this <see cref="SignalReferenceMeasurement"/>, if available.
-        /// </summary>
-        public System.Guid SignalID
-        {
-            get
-            {
-                return m_measurement.SignalID;
-            }
-            set
-            {
-                m_measurement.SignalID = value;
+                m_measurement.StateFlags = value;
             }
         }
 
@@ -474,51 +455,6 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets or sets a boolean value that determines if the quality of the numeric value of this <see cref="SignalReferenceMeasurement"/> is good.
-        /// </summary>
-        public bool ValueQualityIsGood
-        {
-            get
-            {
-                return m_measurement.ValueQualityIsGood;
-            }
-            set
-            {
-                m_measurement.ValueQualityIsGood = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a boolean value that determines if the quality of the timestamp of this <see cref="SignalReferenceMeasurement"/> is good.
-        /// </summary>
-        public bool TimestampQualityIsGood
-        {
-            get
-            {
-                return m_measurement.TimestampQualityIsGood;
-            }
-            set
-            {
-                m_measurement.TimestampQualityIsGood = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a boolean value that determines if this <see cref="SignalReferenceMeasurement"/> has been discarded during sorting.
-        /// </summary>
-        public bool IsDiscarded
-        {
-            get
-            {
-                return m_measurement.IsDiscarded;
-            }
-            set
-            {
-                m_measurement.IsDiscarded = value;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets function used to apply a downsampling filter over a sequence of <see cref="IMeasurement"/> values.
         /// </summary>
         public MeasurementValueFilterFunction MeasurementValueFilter
@@ -533,19 +469,31 @@ namespace TVA.PhasorProtocols
             }
         }
 
+        BigBinaryValue ITimeSeriesValue.Value
+        {
+            get
+            {
+                return ((ITimeSeriesValue)m_measurement).Value;
+            }
+            set
+            {
+                ((ITimeSeriesValue)m_measurement).Value = value;
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
 
         /// <summary>
-        /// Determines whether the specified <see cref="IMeasurement"/> is equal to the current <see cref="SignalReferenceMeasurement"/>.
+        /// Determines whether the specified <see cref="ITimeSeriesValue"/> is equal to the current <see cref="SignalReferenceMeasurement"/>.
         /// </summary>
-        /// <param name="other">The <see cref="IMeasurement"/> to compare with the current <see cref="SignalReferenceMeasurement"/>.</param>
+        /// <param name="other">The <see cref="ITimeSeriesValue"/> to compare with the current <see cref="SignalReferenceMeasurement"/>.</param>
         /// <returns>
-        /// true if the specified <see cref="IMeasurement"/> is equal to the current <see cref="SignalReferenceMeasurement"/>;
+        /// true if the specified <see cref="ITimeSeriesValue"/> is equal to the current <see cref="SignalReferenceMeasurement"/>;
         /// otherwise, false.
         /// </returns>
-        public bool Equals(IMeasurement other)
+        public bool Equals(ITimeSeriesValue other)
         {
             return m_measurement.Equals(other);
         }
@@ -563,12 +511,12 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Compares the <see cref="SignalReferenceMeasurement"/> with an <see cref="IMeasurement"/>.
+        /// Compares the <see cref="SignalReferenceMeasurement"/> with an <see cref="ITimeSeriesValue"/>.
         /// </summary>
-        /// <param name="other">The <see cref="IMeasurement"/> to compare with the current <see cref="SignalReferenceMeasurement"/>.</param>
+        /// <param name="other">The <see cref="ITimeSeriesValue"/> to compare with the current <see cref="SignalReferenceMeasurement"/>.</param>
         /// <returns>A 32-bit signed integer that indicates the relative order of the objects being compared.</returns>
         /// <remarks>Measurement implementations should compare by hash code.</remarks>
-        public int CompareTo(IMeasurement other)
+        public int CompareTo(ITimeSeriesValue other)
         {
             return m_measurement.CompareTo(other);
         }

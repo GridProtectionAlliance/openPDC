@@ -1079,7 +1079,7 @@ namespace TVA.PhasorProtocols
                     if (signal.CellIndex > -1)
                     {
                         // Define measurement key
-                        measurementKey = new MeasurementKey(uint.Parse(measurementRow["PointID"].ToString()), measurementRow["Historian"].ToString());
+                        measurementKey = new MeasurementKey(Guid.Empty, uint.Parse(measurementRow["PointID"].ToString()), measurementRow["Historian"].ToString());
 
                         // It is possible, but not as common, that a single measurement will have multiple destinations
                         // within an outgoing data stream frame, hence the following

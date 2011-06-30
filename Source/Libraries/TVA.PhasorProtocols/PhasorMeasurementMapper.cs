@@ -913,7 +913,7 @@ namespace TVA.PhasorProtocols
         private void LoadDeviceMeasurements()
         {
             Measurement definedMeasurement;
-            MeasurementKey pointID;
+            Guid signalID;
             string signalReference;
 
             m_definedMeasurements = new Dictionary<string, IMeasurement>();
@@ -926,19 +926,18 @@ namespace TVA.PhasorProtocols
                 {
                     try
                     {
-                        // Get measurement's point ID formatted as a measurement key
-                        pointID = MeasurementKey.Parse(row["ID"].ToString());
+                        // Get measurement's signal ID
+                        signalID = new Guid(row["SignalID"].ToNonNullString(Guid.NewGuid().ToString()));
 
                         // Create a measurement with a reference associated with this adapter
-                        definedMeasurement = new Measurement(
-                            pointID.ID,
-                            pointID.Source,
-                            signalReference,
-                            double.Parse(row["Adder"].ToNonNullString("0.0")),
-                            double.Parse(row["Multiplier"].ToNonNullString("1.0")));
-
-                        // Assign signal ID to defined measurement
-                        definedMeasurement.SignalID = new Guid(row["SignalID"].ToNonNullString(Guid.NewGuid().ToString()));
+                        definedMeasurement = new Measurement()
+                        {
+                            ID = signalID,
+                            Key = MeasurementKey.Parse(row["ID"].ToString(), signalID),
+                            TagName = signalReference,
+                            Adder = double.Parse(row["Adder"].ToNonNullString("0.0")),
+                            Multiplier = double.Parse(row["Multiplier"].ToNonNullString("1.0"))
+                        };
 
                         // Add measurement to definition list keyed by signal reference
                         m_definedMeasurements.Add(signalReference, definedMeasurement);
@@ -1210,8 +1209,7 @@ namespace TVA.PhasorProtocols
             {
                 // Assign ID and other relevant attributes to the parsed measurement value
                 parsedMeasurement.ID = definedMeasurement.ID;
-                parsedMeasurement.Source = definedMeasurement.Source;
-                parsedMeasurement.SignalID = definedMeasurement.SignalID;
+                parsedMeasurement.Key = definedMeasurement.Key;
                 parsedMeasurement.Adder = definedMeasurement.Adder;              // Allows for run-time additive measurement value adjustments
                 parsedMeasurement.Multiplier = definedMeasurement.Multiplier;    // Allows for run-time mulplicative measurement value adjustments
 
