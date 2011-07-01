@@ -286,6 +286,24 @@ namespace TVA.PhasorProtocols
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="DataSet"/> based data source available to the <see cref="CommonPhasorServices"/> instance.
+        /// </summary>
+        public override DataSet DataSource
+        {
+            get
+            {
+                return base.DataSource;
+            }
+            set
+            {
+                base.DataSource = value;
+
+                if (m_dataPublisher != null)
+                    m_dataPublisher.DataSource = value;
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
