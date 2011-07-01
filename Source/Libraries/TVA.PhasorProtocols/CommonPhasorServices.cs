@@ -967,7 +967,14 @@ namespace TVA.PhasorProtocols
 
         // Static Methods
 
-        // Apply start-up phasor data source validations
+        /// <summary>
+        /// Apply start-up phasor data source validations
+        /// </summary>
+        /// <param name="connection">The database connection.</param>
+        /// <param name="adapterType">The database adapter type.</param>
+        /// <param name="nodeIDQueryString">Current node ID in proper query format.</param>
+        /// <param name="statusMessage">The delegate which will display a status message to the user.</param>
+        /// <param name="processException">The delegate which will handle exception logging.</param>
         [SuppressMessage("Microsoft.Maintainability", "CA1502"), SuppressMessage("Microsoft.Maintainability", "CA1505")]
         private static void PhasorDataSourceValidation(IDbConnection connection, Type adapterType, string nodeIDQueryString, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
         {
@@ -985,6 +992,7 @@ namespace TVA.PhasorProtocols
                 LoadDefaultProtocol(connection, statusMessage, processException);
                 LoadDefaultSignalType(connection, statusMessage, processException);
                 LoadDefaultStatistic(connection, statusMessage, processException);
+                EstablishDefaultMeasurementKeyCache(connection, adapterType, statusMessage, processException);
 
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Validating signal types..."));
 
@@ -1399,6 +1407,37 @@ namespace TVA.PhasorProtocols
                 command.Parameters.Add(parameter);
                 command.CommandText = commandText;
                 command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Establish default <see cref="MeasurementKey"/> cache.
+        /// </summary>
+        /// <param name="connection">The database connection.</param>
+        /// <param name="adapterType">The database adapter type.</param>
+        /// <param name="statusMessage">The delegate which will display a status message to the user.</param>
+        /// <param name="processException">The delegate which will handle exception logging.</param>
+        private static void EstablishDefaultMeasurementKeyCache(IDbConnection connection, Type adapterType, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
+        {
+            MeasurementKey key;
+            string keyID;
+            string[] elems;
+
+            statusMessage("CommonPhasorServices", new EventArgs<string>("Establishing default measurement key cache..."));
+
+            // Establish default measurement key cache
+            foreach (DataRow measurement in connection.RetrieveData(adapterType, "SELECT ID, SignalID FROM ActiveMeasurement;").Rows)
+            {
+                keyID = measurement["ID"].ToNonNullString();
+
+                if (!string.IsNullOrWhiteSpace(keyID))
+                {
+                    elems = keyID.Split(':');
+
+                    // Cache new measurement key with associated Guid signal ID
+                    if (elems.Length == 2)
+                        key = new MeasurementKey(measurement["SignalID"].ToNonNullString(Guid.Empty.ToString()).ConvertToType<Guid>(), uint.Parse(elems[1].Trim()), elems[0].Trim());
+                }
             }
         }
 
