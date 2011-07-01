@@ -164,8 +164,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{29821B31-3A0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimeSeriesFramework", "TimeSeriesFramework", "{05851E03-6FBC-4774-BCC0-CCD006FE05B1}"
 	ProjectSection(SolutionItems) = preProject
+		Dependencies\TimeSeriesFramework\AdoAdapters.dll = Dependencies\TimeSeriesFramework\AdoAdapters.dll
+		Dependencies\TimeSeriesFramework\AdoAdapters.XML = Dependencies\TimeSeriesFramework\AdoAdapters.XML
+		Dependencies\TimeSeriesFramework\CsvAdapters.dll = Dependencies\TimeSeriesFramework\CsvAdapters.dll
+		Dependencies\TimeSeriesFramework\CsvAdapters.XML = Dependencies\TimeSeriesFramework\CsvAdapters.XML
+		Dependencies\TimeSeriesFramework\DataQualityMonitoring.dll = Dependencies\TimeSeriesFramework\DataQualityMonitoring.dll
+		Dependencies\TimeSeriesFramework\DataQualityMonitoring.XML = Dependencies\TimeSeriesFramework\DataQualityMonitoring.XML
+		Dependencies\TimeSeriesFramework\MongoAdapters.dll = Dependencies\TimeSeriesFramework\MongoAdapters.dll
+		Dependencies\TimeSeriesFramework\MongoAdapters.XML = Dependencies\TimeSeriesFramework\MongoAdapters.XML
+		Dependencies\TimeSeriesFramework\MySqlAdapters.dll = Dependencies\TimeSeriesFramework\MySqlAdapters.dll
+		Dependencies\TimeSeriesFramework\MySqlAdapters.XML = Dependencies\TimeSeriesFramework\MySqlAdapters.XML
+		Dependencies\TimeSeriesFramework\TestingAdapters.dll = Dependencies\TimeSeriesFramework\TestingAdapters.dll
+		Dependencies\TimeSeriesFramework\TestingAdapters.XML = Dependencies\TimeSeriesFramework\TestingAdapters.XML
 		Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll = Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll
 		Dependencies\TimeSeriesFramework\TimeSeriesFramework.xml = Dependencies\TimeSeriesFramework\TimeSeriesFramework.xml
+		Dependencies\TimeSeriesFramework\WavInputAdapter.dll = Dependencies\TimeSeriesFramework\WavInputAdapter.dll
+		Dependencies\TimeSeriesFramework\WavInputAdapter.XML = Dependencies\TimeSeriesFramework\WavInputAdapter.XML
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationSetupUtility", "Tools\ConfigurationSetupUtility\ConfigurationSetupUtility.csproj", "{2A74EACF-8291-47C7-A2ED-0D58771F24E2}"
@@ -251,6 +265,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDCManager.UI", "Libraries\openPDCManager.UI\openPDCManager.UI.csproj", "{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDCManager.UI.WPF", "Libraries\openPDCManager.UI.WPF\openPDCManager.UI.WPF.csproj", "{57261E91-7636-4F92-8D93-744A4AAD7EB0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MongoDB", "MongoDB", "{CA748B74-2934-440D-98CA-DE3BAD3870E9}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\MongoDB\MongoDB.dll = Dependencies\MongoDB\MongoDB.dll
+		Dependencies\MongoDB\MongoDB.GridFS.dll = Dependencies\MongoDB\MongoDB.GridFS.dll
+		Dependencies\MongoDB\MongoDB.GridFS.xml = Dependencies\MongoDB\MongoDB.GridFS.xml
+		Dependencies\MongoDB\MongoDB.xml = Dependencies\MongoDB\MongoDB.xml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
@@ -669,6 +691,7 @@ Global
 		{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{392338BF-FBE0-4672-880B-AB9145DEC7AC} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{05851E03-6FBC-4774-BCC0-CCD006FE05B1} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
+		{CA748B74-2934-440D-98CA-DE3BAD3870E9} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{B1E85C83-F93D-4C3C-BB90-905B93D7C8AD} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{060A349D-E92D-4F13-A857-01609631D3BE} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
