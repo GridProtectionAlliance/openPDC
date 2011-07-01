@@ -28,7 +28,7 @@ using System.Text;
 using openPDCManager.Data.ServiceCommunication;
 using System.Windows;
 using System.Threading;
-using TVA.Services.ServiceProcess;
+using TVA.ServiceProcess;
 using TVA;
 using System.Windows.Controls;
 using System.Windows.Documents;

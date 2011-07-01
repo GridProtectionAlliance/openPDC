@@ -28,7 +28,7 @@
 using System;
 using TVA;
 using TVA.Communication;
-using TVA.Services.ServiceProcess;
+using TVA.ServiceProcess;
 
 namespace openPDCManager.Data.ServiceCommunication
 {

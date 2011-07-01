@@ -21,6 +21,7 @@
     <OldToolsVersion>4.0</OldToolsVersion>
     <UpgradeBackupLocation />
     <TargetFrameworkProfile />
+    <UseIISExpress>false</UseIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -100,8 +101,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Historian.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Services">
-      <HintPath>..\..\..\Dependencies\TVA\TVA.Services.dll</HintPath>
+    <Reference Include="TVA.ServiceModel">
+      <HintPath>..\..\..\Dependencies\TVA\TVA.ServiceModel.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -31,7 +31,7 @@ using openPDCManager.Data;
 using openPDCManager.Data.Entities;
 using openPDCManager.Data.ServiceCommunication;
 using TVA;
-using TVA.Services.ServiceProcess;
+using TVA.ServiceProcess;
 
 namespace openPDCManager.Services.DuplexService
 {   

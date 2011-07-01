@@ -32,7 +32,7 @@ using TimeSeriesFramework;
 using TVA;
 using TVA.IO;
 using TVA.PhasorProtocols;
-using TVA.Services.ServiceProcess;
+using TVA.ServiceProcess;
 
 namespace openPDC
 {

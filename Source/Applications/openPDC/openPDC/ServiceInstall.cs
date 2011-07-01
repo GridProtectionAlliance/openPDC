@@ -24,7 +24,7 @@
 using System.ComponentModel;
 using System.Xml;
 using TimeSeriesFramework;
-using TVA.Services.ServiceProcess;
+using TVA.ServiceProcess;
 
 namespace openPDC
 {
