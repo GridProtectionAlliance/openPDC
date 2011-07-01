@@ -270,9 +270,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdoAdapters", "Libraries\Ad
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WavInputAdapter", "Libraries\Adapters\WavInputAdapter\WavInputAdapter.csproj", "{A579F26B-2C54-4A56-9C8E-99749F5E7DB7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDCManager.UI", "Libraries\openPDCManager.UI\openPDCManager.UI.csproj", "{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDCManager.UI.WPF", "Libraries\openPDCManager.UI.WPF\openPDCManager.UI.WPF.csproj", "{57261E91-7636-4F92-8D93-744A4AAD7EB0}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 32
+		SccNumberOfProjects = 34
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
 		SccLocalPath0 = .
@@ -400,6 +404,14 @@ Global
 		SccProjectTopLevelParentUniqueName31 = Synchrophasor.sln
 		SccProjectName31 = Libraries/Adapters/WavInputAdapter
 		SccLocalPath31 = Libraries\\Adapters\\WavInputAdapter
+		SccProjectUniqueName32 = Libraries\\openPDCManager.UI\\openPDCManager.UI.csproj
+		SccProjectTopLevelParentUniqueName32 = Synchrophasor.sln
+		SccProjectName32 = Libraries/openPDCManager.UI
+		SccLocalPath32 = Libraries\\openPDCManager.UI
+		SccProjectUniqueName33 = Libraries\\openPDCManager.UI.WPF\\openPDCManager.UI.WPF.csproj
+		SccProjectTopLevelParentUniqueName33 = Synchrophasor.sln
+		SccProjectName33 = Libraries/openPDCManager.UI.WPF
+		SccLocalPath33 = Libraries\\openPDCManager.UI.WPF
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor2.vsmdi
@@ -758,6 +770,24 @@ Global
 		{A579F26B-2C54-4A56-9C8E-99749F5E7DB7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A579F26B-2C54-4A56-9C8E-99749F5E7DB7}.Release|x86.ActiveCfg = Release|x86
 		{A579F26B-2C54-4A56-9C8E-99749F5E7DB7}.Release|x86.Build.0 = Release|x86
+		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Deploy|x86.ActiveCfg = Debug|Any CPU
+		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Release|x86.ActiveCfg = Release|Any CPU
+		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Deploy|x86.ActiveCfg = Debug|Any CPU
+		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -776,6 +806,8 @@ Global
 		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{AECB8505-AB0A-4D4C-86A3-4C43F4656FB1} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
+		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
+		{57261E91-7636-4F92-8D93-744A4AAD7EB0} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{F7821DF0-BD48-481E-9DF9-D64AEFD24F57} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{C4B7F8ED-DC60-46EC-B78B-D541C1FA864C} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{D71CBFB5-291F-484E-9DAE-7442F4CA746A} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
