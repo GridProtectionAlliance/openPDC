@@ -83,8 +83,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVA", "TVA", "{4CA4A21E-97E
 		Dependencies\TVA\TVA.Windows.XML = Dependencies\TVA\TVA.Windows.XML
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{392338BF-FBE0-4672-880B-AB9145DEC7AC}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B697ECD-E3BE-485B-BE90-BAAA12F3A68D}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE.txt = LICENSE.txt
@@ -174,6 +172,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimeSeriesFramework", "Time
 		Dependencies\TimeSeriesFramework\TestingAdapters.dll = Dependencies\TimeSeriesFramework\TestingAdapters.dll
 		Dependencies\TimeSeriesFramework\TestingAdapters.XML = Dependencies\TimeSeriesFramework\TestingAdapters.XML
 		Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll = Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll
+		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.dll = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.dll
+		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.dll = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.dll
+		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.XML = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.XML
+		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.XML = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.XML
 		Dependencies\TimeSeriesFramework\TimeSeriesFramework.xml = Dependencies\TimeSeriesFramework\TimeSeriesFramework.xml
 		Dependencies\TimeSeriesFramework\WavInputAdapter.dll = Dependencies\TimeSeriesFramework\WavInputAdapter.dll
 		Dependencies\TimeSeriesFramework\WavInputAdapter.XML = Dependencies\TimeSeriesFramework\WavInputAdapter.XML
@@ -686,7 +688,6 @@ Global
 		{3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{89F8C302-E1C2-4C61-9CFB-CB4879B04B38} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
-		{392338BF-FBE0-4672-880B-AB9145DEC7AC} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{05851E03-6FBC-4774-BCC0-CCD006FE05B1} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{CA748B74-2934-440D-98CA-DE3BAD3870E9} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{B1E85C83-F93D-4C3C-BB90-905B93D7C8AD} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}

@@ -40,7 +40,7 @@ using openPDCManager.UI.WPF.Modal;
 using TVA;
 using TVA.Data;
 using TVA.PhasorProtocols;
-using TVA.Services.ServiceProcess;
+using TVA.ServiceProcess;
 using TimeSeriesFramework.UI;
 
 namespace openPDCManager.UI.WPF.ViewModels
