@@ -251,6 +251,8 @@ namespace TVA.PhasorProtocols
             // Attach to events on new data publishing server reference
             m_dataPublisher.StatusMessage += m_dataPublisher_StatusMessage;
             m_dataPublisher.ProcessException += m_dataPublisher_ProcessException;
+            m_dataPublisher.InputMeasurementKeysUpdated += m_dataPublisher_InputMeasurementKeysUpdated;
+            m_dataPublisher.OutputMeasurementsUpdated += m_dataPublisher_OutputMeasurementsUpdated;
             m_dataPublisher.NewMeasurements += m_dataPublisher_NewMeasurements;
             m_dataPublisher.UnpublishedSamples += m_dataPublisher_UnpublishedSamples;
             m_dataPublisher.DiscardingMeasurements += m_dataPublisher_DiscardingMeasurements;
@@ -304,6 +306,53 @@ namespace TVA.PhasorProtocols
             }
         }
 
+        /// <summary>
+        /// Gets or sets primary keys of input measurements the <see cref="CommonPhasorServices"/> expects, if any.
+        /// </summary>
+        public override MeasurementKey[] InputMeasurementKeys
+        {
+            get
+            {
+                if (m_dataPublisher != null)
+                {
+                    if (base.InputMeasurementKeys != null && base.InputMeasurementKeys.Length > 0)
+                        return m_dataPublisher.InputMeasurementKeys.Concat(base.InputMeasurementKeys).Distinct().ToArray();
+
+                    return m_dataPublisher.InputMeasurementKeys;
+                }
+
+                return base.InputMeasurementKeys;
+            }
+            set
+            {
+                base.InputMeasurementKeys = value;
+            }
+        }
+
+
+        /// <summary>
+        /// Gets or sets output measurements that the <see cref="CommonPhasorServices"/> will produce, if any.
+        /// </summary>
+        public override IMeasurement[] OutputMeasurements
+        {
+            get
+            {
+                if (m_dataPublisher != null)
+                {
+                    if (base.OutputMeasurements != null && base.OutputMeasurements.Length > 0)
+                        return m_dataPublisher.OutputMeasurements.Concat(base.OutputMeasurements).Distinct().ToArray();
+
+                    return m_dataPublisher.OutputMeasurements;
+                }
+
+                return base.OutputMeasurements;
+            }
+            set
+            {
+                base.OutputMeasurements = value;
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
@@ -354,6 +403,8 @@ namespace TVA.PhasorProtocols
                         {
                             m_dataPublisher.StatusMessage -= m_dataPublisher_StatusMessage;
                             m_dataPublisher.ProcessException -= m_dataPublisher_ProcessException;
+                            m_dataPublisher.InputMeasurementKeysUpdated -= m_dataPublisher_InputMeasurementKeysUpdated;
+                            m_dataPublisher.OutputMeasurementsUpdated -= m_dataPublisher_OutputMeasurementsUpdated;
                             m_dataPublisher.NewMeasurements -= m_dataPublisher_NewMeasurements;
                             m_dataPublisher.UnpublishedSamples -= m_dataPublisher_UnpublishedSamples;
                             m_dataPublisher.DiscardingMeasurements -= m_dataPublisher_DiscardingMeasurements;
@@ -933,6 +984,16 @@ namespace TVA.PhasorProtocols
             OnProcessException(e.Argument);
         }
 
+        private void m_dataPublisher_InputMeasurementKeysUpdated(object sender, EventArgs e)
+        {
+            OnInputMeasurementKeysUpdated();
+        }
+
+        private void m_dataPublisher_OutputMeasurementsUpdated(object sender, EventArgs e)
+        {
+            OnOutputMeasurementsUpdated();
+        }
+
         private void m_dataPublisher_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
         {
             OnNewMeasurements(e.Argument);
@@ -1417,9 +1478,9 @@ namespace TVA.PhasorProtocols
         /// <param name="adapterType">The database adapter type.</param>
         /// <param name="statusMessage">The delegate which will display a status message to the user.</param>
         /// <param name="processException">The delegate which will handle exception logging.</param>
+        [SuppressMessage("Microsoft.Usage", "CA1806")]
         private static void EstablishDefaultMeasurementKeyCache(IDbConnection connection, Type adapterType, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
         {
-            MeasurementKey key;
             string keyID;
             string[] elems;
 
@@ -1436,7 +1497,7 @@ namespace TVA.PhasorProtocols
 
                     // Cache new measurement key with associated Guid signal ID
                     if (elems.Length == 2)
-                        key = new MeasurementKey(measurement["SignalID"].ToNonNullString(Guid.Empty.ToString()).ConvertToType<Guid>(), uint.Parse(elems[1].Trim()), elems[0].Trim());
+                        new MeasurementKey(measurement["SignalID"].ToNonNullString(Guid.Empty.ToString()).ConvertToType<Guid>(), uint.Parse(elems[1].Trim()), elems[0].Trim());
                 }
             }
         }
