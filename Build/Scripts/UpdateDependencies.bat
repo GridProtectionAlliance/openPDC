@@ -19,7 +19,7 @@ SET vs="%VS100COMNTOOLS%\..\IDE\devenv.com"
 SET tfs="%VS100COMNTOOLS%\..\IDE\tf.exe"
 SET source1="\\GPAWEB\NightlyBuilds\TVACodeLibrary\Beta\Libraries\*.*"
 SET target1="..\..\Source\Dependencies\TVA"
-SET source2="\\GPAWEB\NightlyBuilds\TimeSeriesFramework\Beta\Libraries\TimeSeriesFramework.*"
+SET source2="\\GPAWEB\NightlyBuilds\TimeSeriesFramework\Beta\Libraries\*.*"
 SET target2="..\..\Source\Dependencies\TimeSeriesFramework"
 SET source3="\\GPAWEB\NightlyBuilds\openHistorian\Beta\Libraries\*.*"
 SET target3="..\..\Source\Dependencies\TVA"
@@ -44,9 +44,9 @@ ECHO Checking out dependencies...
 
 ECHO.
 ECHO Updating dependencies...
-XCOPY %source1% %target1% /Y
-XCOPY %source2% %target2% /Y
-XCOPY %source3% %target3% /Y
+XCOPY %source3% %target3% /Y /U
+XCOPY %source2% %target2% /Y /U
+XCOPY %source1% %target1% /Y /U
 XCOPY "%frameworktools%ConfigCrypter\ConfigCrypter.exe" "%sourcetools%ConfigCrypter.exe" /Y
 XCOPY "%frameworktools%ConfigEditor\ConfigEditor.exe" "%sourcetools%ConfigurationEditor.exe" /Y
 XCOPY "%historiantools%HistorianPlaybackUtility\HistorianPlaybackUtility.exe" "%sourcetools%HistorianPlaybackUtility.exe" /Y
