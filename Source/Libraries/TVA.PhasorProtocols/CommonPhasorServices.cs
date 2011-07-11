@@ -447,7 +447,8 @@ namespace TVA.PhasorProtocols
             m_statisticCalculationTimer.AutoReset = true;
             m_statisticCalculationTimer.Enabled = false;
 
-            ReloadStatistics();
+            // Kick-off initial load of statistics from thread pool since this may take a while
+            ThreadPool.QueueUserWorkItem(LoadStatistics);
 
             // Initialize the data publishing server (load settings from config file)
             if (m_dataPublisher != null)
@@ -783,6 +784,12 @@ namespace TVA.PhasorProtocols
                     m_statisticCalculationTimer.Enabled = false;
                 }
             }
+        }
+
+        private void LoadStatistics(object state)
+        {
+            // Load statistics during host initialization
+            ReloadStatistics();
         }
 
         // Calculate statistics for each device and output stream
