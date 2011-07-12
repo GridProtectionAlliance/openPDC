@@ -34,21 +34,22 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
-using openPDCManager.UI.WPF.Commands;
-using openPDCManager.UI.DataModels;
-using openPDCManager.UI.WPF.Modal;
 using TVA;
 using TVA.Data;
 using TVA.PhasorProtocols;
 using TVA.ServiceProcess;
 using TimeSeriesFramework.UI;
+using openPDCManager.UI.DataModels;
+using TimeSeriesFramework.UI.Commands;
+using TimeSeriesFramework.UI.DataModels;
+using TimeSeriesFramework.UI.Modal;
 
 namespace openPDCManager.UI.WPF.ViewModels
 {
     /// <summary>
     /// Bindable class to hold collection of <see cref="InputWizardDevice"/>.
     /// </summary>
-    internal class InputWizardDevices : PagedViewModelBase<InputWizardDevice, string>
+    internal class InputWizardDevices : PagedViewModelBase<openPDCManager.UI.DataModels.InputWizardDevice, string>
     {
         #region [ Members ]
 
@@ -352,7 +353,7 @@ namespace openPDCManager.UI.WPF.ViewModels
 
                 // Everytime acronym changes, check in the database to see if it already exists.
                 PdcMessage = "";
-                Device device = Device.GetDevice(null, " WHERE Acronym = '" + m_pdcAcronym.ToUpper() + "'");
+                openPDCManager.UI.DataModels.Device device = openPDCManager.UI.DataModels.Device.GetDevice(null, " WHERE Acronym = '" + m_pdcAcronym.ToUpper() + "'");
                 if (device != null)
                 {
                     if (device.IsConcentrator)
@@ -821,15 +822,15 @@ namespace openPDCManager.UI.WPF.ViewModels
         /// </summary>        
         private void ParseConfiguration()
         {
-            ObservableCollection<InputWizardDevice> wizardDeviceList = new ObservableCollection<InputWizardDevice>();
+            ObservableCollection<openPDCManager.UI.DataModels.InputWizardDevice> wizardDeviceList = new ObservableCollection<openPDCManager.UI.DataModels.InputWizardDevice>();
 
             if (m_configurationFrame != null)
             {
                 foreach (IConfigurationCell cell in m_configurationFrame.Cells)
                 {
-                    Device existingDevice = Device.GetDevice(null, "WHERE Acronym = '" + cell.StationName.Replace(" ", "").ToUpper() + "'");
+                    openPDCManager.UI.DataModels.Device existingDevice = openPDCManager.UI.DataModels.Device.GetDevice(null, "WHERE Acronym = '" + cell.StationName.Replace(" ", "").ToUpper() + "'");
 
-                    wizardDeviceList.Add(new InputWizardDevice()
+                    wizardDeviceList.Add(new openPDCManager.UI.DataModels.InputWizardDevice()
                     {
                         Acronym = cell.StationName.Replace(" ", "").ToUpper(),
                         Name = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(cell.StationName.ToLower()),
@@ -844,8 +845,8 @@ namespace openPDCManager.UI.WPF.ViewModels
                         AddDigitals = false,
                         AddAnalogs = false,
                         Existing = existingDevice == null ? false : true,
-                        PhasorList = new ObservableCollection<InputWizardDevicePhasor>((from phasor in cell.PhasorDefinitions
-                                                                                        select new InputWizardDevicePhasor()
+                        PhasorList = new ObservableCollection<openPDCManager.UI.DataModels.InputWizardDevicePhasor>((from phasor in cell.PhasorDefinitions
+                                                                                                                     select new openPDCManager.UI.DataModels.InputWizardDevicePhasor()
                                                                                         {
                                                                                             Label = phasor.Label,
                                                                                             Type = phasor.PhasorType == PhasorType.Current ? "I" : "V",
@@ -1106,7 +1107,7 @@ namespace openPDCManager.UI.WPF.ViewModels
             {
                 if (ConnectToConcentrator && (PdcID == null || PdcID == 0))
                 {
-                    Device device = new Device();
+                    openPDCManager.UI.DataModels.Device device = new openPDCManager.UI.DataModels.Device();
                     device.IsConcentrator = true;
                     device.Acronym = PdcAcronym.ToUpper();
                     device.Name = PdcName;
@@ -1120,9 +1121,9 @@ namespace openPDCManager.UI.WPF.ViewModels
                     device.SkipDisableRealTimeData = SkipDisableRealTimeData;
                     device.ConnectionString = GenerateConnectionString();
                     device.Enabled = true;
-                    Device.Save(null, device);
+                    openPDCManager.UI.DataModels.Device.Save(null, device);
 
-                    device = Device.GetDevice(null, "WHERE Acronym = '" + PdcAcronym.ToUpper() + "'");
+                    device = openPDCManager.UI.DataModels.Device.GetDevice(null, "WHERE Acronym = '" + PdcAcronym.ToUpper() + "'");
                     PdcID = device.ID;
                 }
             }
@@ -1146,14 +1147,14 @@ namespace openPDCManager.UI.WPF.ViewModels
             try
             {
                 int deviceCount = 0;
-                foreach (InputWizardDevice inputWizardDevice in ItemsSource)
+                foreach (openPDCManager.UI.DataModels.InputWizardDevice inputWizardDevice in ItemsSource)
                 {
                     if (inputWizardDevice.Include)
                     {
-                        Device device = Device.GetDevice(database, "WHERE Acronym = '" + inputWizardDevice.Acronym.ToUpper() + "'");
+                        openPDCManager.UI.DataModels.Device device = openPDCManager.UI.DataModels.Device.GetDevice(database, "WHERE Acronym = '" + inputWizardDevice.Acronym.ToUpper() + "'");
                         if (device == null)
                         {
-                            device = new Device();
+                            device = new openPDCManager.UI.DataModels.Device();
                             device.Acronym = inputWizardDevice.Acronym.ToUpper();
                         }
 
@@ -1184,19 +1185,19 @@ namespace openPDCManager.UI.WPF.ViewModels
                         if (!inputWizardDevice.AddDigitals)
                             inputWizardDevice.DigitalCount = 0;
 
-                        Device.SaveWithAnalogsDigitals(database, device, inputWizardDevice.DigitalCount, inputWizardDevice.AnalogCount);
+                        openPDCManager.UI.DataModels.Device.SaveWithAnalogsDigitals(database, device, inputWizardDevice.DigitalCount, inputWizardDevice.AnalogCount);
 
                         if (device.ID == 0)
-                            device.ID = Device.GetDevice(database, "WHERE Acronym = '" + inputWizardDevice.Acronym.ToUpper() + "'").ID;
+                            device.ID = openPDCManager.UI.DataModels.Device.GetDevice(database, "WHERE Acronym = '" + inputWizardDevice.Acronym.ToUpper() + "'").ID;
 
                         int phasorCount = 1;
-                        foreach (InputWizardDevicePhasor inputWizardDevicePhasor in inputWizardDevice.PhasorList)
+                        foreach (openPDCManager.UI.DataModels.InputWizardDevicePhasor inputWizardDevicePhasor in inputWizardDevice.PhasorList)
                         {
-                            Phasor phasor = Phasor.GetPhasor(database, "WHERE DeviceID = " + device.ID + " AND SourceIndex = " + phasorCount);
+                            openPDCManager.UI.DataModels.Phasor phasor = openPDCManager.UI.DataModels.Phasor.GetPhasor(database, "WHERE DeviceID = " + device.ID + " AND SourceIndex = " + phasorCount);
 
                             if (phasor == null)
                             {
-                                phasor = new Phasor();
+                                phasor = new openPDCManager.UI.DataModels.Phasor();
                             }
 
                             phasor.DeviceID = device.ID;
@@ -1204,7 +1205,7 @@ namespace openPDCManager.UI.WPF.ViewModels
                             phasor.Label = inputWizardDevicePhasor.Label;
                             phasor.Type = inputWizardDevicePhasor.Type;
                             phasor.Phase = inputWizardDevicePhasor.Phase;
-                            Phasor.Save(database, phasor);
+                            openPDCManager.UI.DataModels.Phasor.Save(database, phasor);
 
                             phasorCount++;
                         }

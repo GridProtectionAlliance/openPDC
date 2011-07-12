@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using TimeSeriesFramework.UI;
 using TVA.Data;
 
 namespace openPDCManager.UI.DataModels

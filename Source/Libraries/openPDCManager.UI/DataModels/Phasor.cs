@@ -37,6 +37,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using TimeSeriesFramework.UI;
 using TVA.Data;
+using TimeSeriesFramework.UI.DataModels;
 
 namespace openPDCManager.UI.DataModels
 {

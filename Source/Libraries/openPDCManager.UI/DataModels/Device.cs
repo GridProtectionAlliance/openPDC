@@ -44,6 +44,7 @@ using System.Data;
 using TimeSeriesFramework.UI;
 using TVA;
 using TVA.Data;
+using TimeSeriesFramework.UI.DataModels;
 
 namespace openPDCManager.UI.DataModels
 {

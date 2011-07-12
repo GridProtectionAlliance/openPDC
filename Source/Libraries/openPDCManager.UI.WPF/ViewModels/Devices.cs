@@ -27,17 +27,20 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using openPDCManager.UI.WPF.Commands;
+using TimeSeriesFramework.UI;
 using openPDCManager.UI.DataModels;
-using openPDCManager.UI.WPF.Modal;
+using TimeSeriesFramework.UI.Commands;
+using TimeSeriesFramework.UI.DataModels;
 using openPDCManager.UI.WPF.UserControls;
+using TimeSeriesFramework.UI.UserControls;
+using TimeSeriesFramework.UI.Modal;
 
 namespace openPDCManager.UI.WPF.ViewModels
 {
     /// <summary>
     /// Class to hold bindable <see cref="Device"/> collection and current selection information for UI.
     /// </summary>
-    internal class Devices : PagedViewModelBase<Device, int>
+    internal class Devices : PagedViewModelBase<openPDCManager.UI.DataModels.Device, int>
     {
         #region [ Members ]
 
@@ -69,11 +72,11 @@ namespace openPDCManager.UI.WPF.ViewModels
         /// <param name="itemsPerPage"></param>
         /// <param name="autoSave"></param>
         /// <param name="device"><see cref="Device"/> to be edited.</param>
-        public Devices(int itemsPerPage, bool autoSave = true, Device device = null)
+        public Devices(int itemsPerPage, bool autoSave = true, openPDCManager.UI.DataModels.Device device = null)
             : base(itemsPerPage, autoSave)
         {
             m_nodeLookupList = Node.GetLookupList(null);
-            m_concentratorDeviceLookupList = Device.GetLookupList(null, DeviceType.Concentrator, true);
+            m_concentratorDeviceLookupList = openPDCManager.UI.DataModels.Device.GetLookupList(null, openPDCManager.UI.DataModels.DeviceType.Concentrator, true);
             m_companyLookupList = Company.GetLookupList(null, true);
             m_historianLookupList = Historian.GetLookupList(null, true, false);
             m_interconnectionLookupList = Interconnection.GetLookupList(null, true);
@@ -362,7 +365,7 @@ namespace openPDCManager.UI.WPF.ViewModels
             Mouse.OverrideCursor = Cursors.Wait;
             try
             {
-                ItemsSource = Device.Load(null);
+                ItemsSource = openPDCManager.UI.DataModels.Device.Load(null);
             }
             catch (Exception ex)
             {
@@ -393,7 +396,7 @@ namespace openPDCManager.UI.WPF.ViewModels
 
                     if (frame != null)
                     {
-                        DeviceListUserControl deviceListUserControl = new DeviceListUserControl();
+                        openPDCManager.UI.WPF.UserControls.DeviceListUserControl deviceListUserControl = new openPDCManager.UI.WPF.UserControls.DeviceListUserControl();
                         ((System.Windows.Controls.Frame)frame).Navigate(deviceListUserControl);
 
                         if (groupBox != null)
@@ -418,7 +421,7 @@ namespace openPDCManager.UI.WPF.ViewModels
         /// <param name="parameter">Parameter to use for the command provided by commandparameter from UI.</param>
         private void GoToEdit(object parameter)
         {
-            Device deviceToEdit = (Device)parameter;
+            openPDCManager.UI.DataModels.Device deviceToEdit = (openPDCManager.UI.DataModels.Device)parameter;
             UIElement frame = null;
             UIElement groupBox = null;
             TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
@@ -426,7 +429,7 @@ namespace openPDCManager.UI.WPF.ViewModels
 
             if (frame != null)
             {
-                DeviceUserControl deviceUserControl = new DeviceUserControl(deviceToEdit);
+                openPDCManager.UI.WPF.UserControls.DeviceUserControl deviceUserControl = new openPDCManager.UI.WPF.UserControls.DeviceUserControl(deviceToEdit);
                 ((System.Windows.Controls.Frame)frame).Navigate(deviceUserControl);
 
                 if (groupBox != null)
@@ -440,8 +443,8 @@ namespace openPDCManager.UI.WPF.ViewModels
         /// <param name="parameter">Parameter to use for the command provided by commandparameter from UI.</param>
         private void MakeCopy(object parameter)
         {
-            Device deviceToCopy = new Device();
-            deviceToCopy = (Device)parameter;
+            openPDCManager.UI.DataModels.Device deviceToCopy = new openPDCManager.UI.DataModels.Device();
+            deviceToCopy = (openPDCManager.UI.DataModels.Device)parameter;
             string newAcronym; ;
             int i = 1;
             do  // Find unique acronym.
@@ -464,7 +467,7 @@ namespace openPDCManager.UI.WPF.ViewModels
 
             if (frame != null)
             {
-                DeviceUserControl deviceUserControl = new DeviceUserControl(deviceToCopy);
+                openPDCManager.UI.WPF.UserControls.DeviceUserControl deviceUserControl = new openPDCManager.UI.WPF.UserControls.DeviceUserControl(deviceToCopy);
                 ((System.Windows.Controls.Frame)frame).Navigate(deviceUserControl);
 
                 if (groupBox != null)
@@ -475,7 +478,7 @@ namespace openPDCManager.UI.WPF.ViewModels
         private bool DeviceExists(string acronym)
         {
             bool deviceExists = false;
-            foreach (Device device in ItemsSource)
+            foreach (openPDCManager.UI.DataModels.Device device in ItemsSource)
             {
                 if (device.Acronym == acronym)
                     return true;
@@ -489,7 +492,7 @@ namespace openPDCManager.UI.WPF.ViewModels
         /// <param name="parameter">Parameter to use for the command provided by commandparameter from UI.</param>
         private void GoToMeasurements(object parameter)
         {
-            Device device = (Device)parameter;
+            openPDCManager.UI.DataModels.Device device = (openPDCManager.UI.DataModels.Device)parameter;
 
             UIElement frame = null;
             UIElement groupBox = null;
@@ -512,7 +515,7 @@ namespace openPDCManager.UI.WPF.ViewModels
         /// <param name="parameter">Parameter to use for the command provided by commandparameter from UI.</param>
         private void GoToPhasors(object parameter)
         {
-            Device device = (Device)parameter;
+            openPDCManager.UI.DataModels.Device device = (openPDCManager.UI.DataModels.Device)parameter;
 
             UIElement frame = null;
             UIElement groupBox = null;
@@ -521,7 +524,7 @@ namespace openPDCManager.UI.WPF.ViewModels
 
             if (frame != null)
             {
-                PhasorUserControl phasorUserControl = new PhasorUserControl(device.ID);
+                openPDCManager.UI.WPF.UserControls.PhasorUserControl phasorUserControl = new openPDCManager.UI.WPF.UserControls.PhasorUserControl(device.ID);
                 ((System.Windows.Controls.Frame)frame).Navigate(phasorUserControl);
 
                 if (groupBox != null)
@@ -550,7 +553,7 @@ namespace openPDCManager.UI.WPF.ViewModels
                 {
                     if (Confirm("Do you want to send Initialize " + GetCurrentItemName() + "?", "Confirm Initialize"))
                     {
-                        Device.NotifyService(CurrentItem);
+                        openPDCManager.UI.DataModels.Device.NotifyService(CurrentItem);
 
                         Popup("Successfully sent Initialize command.", "Initialize", MessageBoxImage.Information);
                     }

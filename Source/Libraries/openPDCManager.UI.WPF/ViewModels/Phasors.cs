@@ -25,6 +25,7 @@
 
 using System.Collections.Generic;
 using openPDCManager.UI.DataModels;
+using TimeSeriesFramework.UI;
 
 namespace openPDCManager.UI.WPF.ViewModels
 {
