@@ -23,9 +23,9 @@
 
 using System.Windows.Controls;
 using openPDCManager.UI.DataModels;
-using openPDCManager.UI.WPF.ViewModels;
+using openPDCManager.UI.ViewModels;
 
-namespace openPDCManager.UI.WPF.UserControls
+namespace openPDCManager.UI.UserControls
 {
     /// <summary>
     /// Interaction logic for InputWizardUserControl.xaml

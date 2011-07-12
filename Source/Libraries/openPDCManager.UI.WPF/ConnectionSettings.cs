@@ -25,7 +25,7 @@ using System;
 using TVA.Communication;
 using TVA.PhasorProtocols;
 
-namespace openPDCManager.UI.WPF
+namespace openPDCManager.UI
 {
     /// <summary>
     /// Represents connection information defined in PmuConnection file.

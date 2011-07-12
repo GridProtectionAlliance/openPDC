@@ -28,13 +28,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using openPDCManager.UI.DataModels;
-using openPDCManager.UI.WPF.Modal;
+using openPDCManager.UI.Modal;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.Commands;
 using TimeSeriesFramework.UI.DataModels;
 using TimeSeriesFramework.UI.UserControls;
 
-namespace openPDCManager.UI.WPF.ViewModels
+namespace openPDCManager.UI.ViewModels
 {
     /// <summary>
     /// Class to hold bindable <see cref="Device"/> collection and current selection information for UI.
@@ -395,7 +395,7 @@ namespace openPDCManager.UI.WPF.ViewModels
 
                     if (frame != null)
                     {
-                        openPDCManager.UI.WPF.UserControls.DeviceListUserControl deviceListUserControl = new openPDCManager.UI.WPF.UserControls.DeviceListUserControl();
+                        openPDCManager.UI.UserControls.DeviceListUserControl deviceListUserControl = new openPDCManager.UI.UserControls.DeviceListUserControl();
                         ((System.Windows.Controls.Frame)frame).Navigate(deviceListUserControl);
 
                         if (groupBox != null)
@@ -428,7 +428,7 @@ namespace openPDCManager.UI.WPF.ViewModels
 
             if (frame != null)
             {
-                openPDCManager.UI.WPF.UserControls.DeviceUserControl deviceUserControl = new openPDCManager.UI.WPF.UserControls.DeviceUserControl(deviceToEdit);
+                openPDCManager.UI.UserControls.DeviceUserControl deviceUserControl = new openPDCManager.UI.UserControls.DeviceUserControl(deviceToEdit);
                 ((System.Windows.Controls.Frame)frame).Navigate(deviceUserControl);
 
                 if (groupBox != null)
@@ -466,7 +466,7 @@ namespace openPDCManager.UI.WPF.ViewModels
 
             if (frame != null)
             {
-                openPDCManager.UI.WPF.UserControls.DeviceUserControl deviceUserControl = new openPDCManager.UI.WPF.UserControls.DeviceUserControl(deviceToCopy);
+                openPDCManager.UI.UserControls.DeviceUserControl deviceUserControl = new openPDCManager.UI.UserControls.DeviceUserControl(deviceToCopy);
                 ((System.Windows.Controls.Frame)frame).Navigate(deviceUserControl);
 
                 if (groupBox != null)
@@ -523,7 +523,7 @@ namespace openPDCManager.UI.WPF.ViewModels
 
             if (frame != null)
             {
-                openPDCManager.UI.WPF.UserControls.PhasorUserControl phasorUserControl = new openPDCManager.UI.WPF.UserControls.PhasorUserControl(device.ID);
+                openPDCManager.UI.UserControls.PhasorUserControl phasorUserControl = new openPDCManager.UI.UserControls.PhasorUserControl(device.ID);
                 ((System.Windows.Controls.Frame)frame).Navigate(phasorUserControl);
 
                 if (groupBox != null)

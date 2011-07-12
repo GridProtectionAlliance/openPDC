@@ -17,7 +17,7 @@ using System.Windows.Threading;
 using TimeSeriesFramework.UI;
 using TVA.Data;
 
-namespace openPDCManager.UI.WPF.UserControls
+namespace openPDCManager.UI.UserControls
 {
     /// <summary>
     /// Interaction logic for RealTimeStatisticsUserControl.xaml

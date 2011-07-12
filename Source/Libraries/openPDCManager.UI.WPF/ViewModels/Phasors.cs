@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using openPDCManager.UI.DataModels;
 using TimeSeriesFramework.UI;
 
-namespace openPDCManager.UI.WPF.ViewModels
+namespace openPDCManager.UI.ViewModels
 {
     /// <summary>
     /// Class to hold bindable <see cref="Phasor"/> collection and current selection information for UI.

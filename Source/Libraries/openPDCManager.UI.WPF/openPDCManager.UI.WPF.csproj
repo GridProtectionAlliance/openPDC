@@ -114,6 +114,7 @@
     </Compile>
     <Compile Include="UserControls\DeviceMeasurementsUserControl.xaml.cs">
       <DependentUpon>DeviceMeasurementsUserControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="UserControls\DeviceUserControl.xaml.cs">
       <DependentUpon>DeviceUserControl.xaml</DependentUpon>
@@ -164,8 +165,8 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\DeviceMeasurementsUserControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\DeviceUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>

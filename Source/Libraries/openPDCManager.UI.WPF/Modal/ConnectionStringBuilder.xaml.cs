@@ -27,7 +27,7 @@ using System.Windows;
 using System.Windows.Forms;
 using TimeSeriesFramework.UI;
 
-namespace openPDCManager.UI.WPF.Modal
+namespace openPDCManager.UI.Modal
 {
     /// <summary>
     /// Interaction logic for ConnectionStringBuilder.xaml

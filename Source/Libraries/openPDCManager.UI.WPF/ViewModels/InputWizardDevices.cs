@@ -35,7 +35,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using openPDCManager.UI.DataModels;
-using openPDCManager.UI.WPF.Modal;
+using openPDCManager.UI.Modal;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.Commands;
 using TimeSeriesFramework.UI.DataModels;
@@ -44,7 +44,7 @@ using TVA.Data;
 using TVA.PhasorProtocols;
 using TVA.ServiceProcess;
 
-namespace openPDCManager.UI.WPF.ViewModels
+namespace openPDCManager.UI.ViewModels
 {
     /// <summary>
     /// Bindable class to hold collection of <see cref="InputWizardDevice"/>.

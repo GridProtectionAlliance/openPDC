@@ -8,7 +8,7 @@ using openPDCManager.UI.DataModels;
 using TimeSeriesFramework.UI.Commands;
 using TimeSeriesFramework.UI.DataModels;
 
-namespace openPDCManager.UI.WPF.ViewModels
+namespace openPDCManager.UI.ViewModels
 {
     internal class CalculatedMeasurements : PagedViewModelBase<openPDCManager.UI.DataModels.CalculatedMeasurement, int>
     {

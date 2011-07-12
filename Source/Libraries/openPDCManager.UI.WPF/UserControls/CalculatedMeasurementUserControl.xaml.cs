@@ -24,9 +24,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using openPDCManager.UI.WPF.ViewModels;
+using openPDCManager.UI.ViewModels;
 
-namespace openPDCManager.UI.WPF.UserControls
+namespace openPDCManager.UI.UserControls
 {
     /// <summary>
     /// Interaction logic for CalculatedMeasurementUserControl.xaml

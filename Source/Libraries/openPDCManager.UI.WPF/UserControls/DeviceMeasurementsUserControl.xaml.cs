@@ -43,7 +43,7 @@ using System.Threading;
 using TVA;
 using TimeSeriesFramework;
 
-namespace openPDCManager.UI.WPF.UserControls
+namespace openPDCManager.UI.UserControls
 {
     /// <summary>
     /// Interaction logic for DeviceMeasurementsUserControl.xaml
