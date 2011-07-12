@@ -121,6 +121,9 @@
     <Compile Include="UserControls\InputWizardUserControl.xaml.cs">
       <DependentUpon>InputWizardUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\PhasorMeasurementUserControl.xaml.cs">
+      <DependentUpon>PhasorMeasurementUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\PhasorUserControl.xaml.cs">
       <DependentUpon>PhasorUserControl.xaml</DependentUpon>
     </Compile>
@@ -130,6 +133,7 @@
     <Compile Include="ViewModels\CalculatedMeasurements.cs" />
     <Compile Include="ViewModels\Devices.cs" />
     <Compile Include="ViewModels\InputWizardDevices.cs" />
+    <Compile Include="ViewModels\PhasorMeasurements.cs" />
     <Compile Include="ViewModels\Phasors.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -170,6 +174,10 @@
     <Page Include="UserControls\InputWizardUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\PhasorMeasurementUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\PhasorUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>

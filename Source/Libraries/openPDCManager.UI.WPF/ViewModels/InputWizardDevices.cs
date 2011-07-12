@@ -34,15 +34,15 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using openPDCManager.UI.DataModels;
+using openPDCManager.UI.WPF.Modal;
+using TimeSeriesFramework.UI;
+using TimeSeriesFramework.UI.Commands;
+using TimeSeriesFramework.UI.DataModels;
 using TVA;
 using TVA.Data;
 using TVA.PhasorProtocols;
 using TVA.ServiceProcess;
-using TimeSeriesFramework.UI;
-using openPDCManager.UI.DataModels;
-using TimeSeriesFramework.UI.Commands;
-using TimeSeriesFramework.UI.DataModels;
-using TimeSeriesFramework.UI.Modal;
 
 namespace openPDCManager.UI.WPF.ViewModels
 {

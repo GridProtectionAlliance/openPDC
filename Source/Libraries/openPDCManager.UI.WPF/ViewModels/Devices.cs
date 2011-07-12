@@ -27,13 +27,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using TimeSeriesFramework.UI;
 using openPDCManager.UI.DataModels;
+using openPDCManager.UI.WPF.Modal;
+using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.Commands;
 using TimeSeriesFramework.UI.DataModels;
-using openPDCManager.UI.WPF.UserControls;
 using TimeSeriesFramework.UI.UserControls;
-using TimeSeriesFramework.UI.Modal;
 
 namespace openPDCManager.UI.WPF.ViewModels
 {
