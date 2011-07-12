@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using openPDCManager.UI.DataModels;
 using System.Windows.Threading;
+using TimeSeriesFramework.UI;
 using TVA.Data;
 
 namespace openPDCManager.UI.WPF.UserControls
@@ -41,7 +42,7 @@ namespace openPDCManager.UI.WPF.UserControls
         public RealTimeStatisticsUserControl()
         {
             InitializeComponent();
-            database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
+            database = new AdoDataConnection(TimeSeriesFramework.UI.CommonFunctions.DefaultSettingsCategory);
             this.Loaded += new RoutedEventHandler(RealTimeStatistics_Loaded);
             this.Unloaded += new RoutedEventHandler(RealTimeStatisticsUserControl_Unloaded);
             m_dataForBinding = new StatisticMeasurementDataForBinding();
@@ -75,7 +76,7 @@ namespace openPDCManager.UI.WPF.UserControls
 
         void GetMinMaxPointIDs()
         {
-            m_minMaxPointIDs = CommonFunctions.GetMinMaxPointIDs(null, m_nodeID);
+            m_minMaxPointIDs = TimeSeriesFramework.UI.CommonFunctions.GetMinMaxPointIDs(null, m_nodeID);
         }
 
         void GetTimeTaggedMeasurements(string url)
@@ -86,7 +87,7 @@ namespace openPDCManager.UI.WPF.UserControls
                 {
                     m_retrievingData = true;
                     Dictionary<int, TimeTaggedMeasurement> timeTaggedMeasurements = new Dictionary<int, TimeTaggedMeasurement>();
-                    timeTaggedMeasurements = CommonFunctions.GetStatisticMeasurements(url, m_nodeID.ToString());
+                    timeTaggedMeasurements = TimeTaggedMeasurement.GetStatisticMeasurements(url, m_nodeID.ToString());
 
                     if (timeTaggedMeasurements != null)
                     {
@@ -129,7 +130,7 @@ namespace openPDCManager.UI.WPF.UserControls
                 }
                 catch (Exception ex)
                 {
-                    CommonFunctions.LogException(null, "WPF.TimeTaggedMeasurements", ex);
+                    TimeSeriesFramework.UI.CommonFunctions.LogException(null, "WPF.TimeTaggedMeasurements", ex);
                 }
                 finally
                 {
@@ -143,14 +144,14 @@ namespace openPDCManager.UI.WPF.UserControls
 
             try
             {
-                m_statisticMeasurementDataList = CommonFunctions.GetStatisticMeasurementData(null, m_nodeID);
+                m_statisticMeasurementDataList = TimeTaggedMeasurement.GetStatisticMeasurementData(null, m_nodeID);
                 m_dataForBinding.StatisticMeasurementDataList = m_statisticMeasurementDataList;
                 m_dataForBinding.IsExpanded = false;
                 TreeViewRealTimeStatistics.DataContext = m_dataForBinding;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException(null, "WPF.GetStatisticMeasurementData", ex);
+                TimeSeriesFramework.UI.CommonFunctions.LogException(null, "WPF.GetStatisticMeasurementData", ex);
             }
         }
 

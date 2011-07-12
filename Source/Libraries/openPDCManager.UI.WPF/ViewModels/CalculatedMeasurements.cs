@@ -83,7 +83,7 @@ namespace openPDCManager.UI.WPF.ViewModels
             : base(itemsPerPage, autoSave)
         {
             m_nodeLookupList = Node.GetLookupList(null);
-            m_downsamplingMethod = CommonFunctions.GetDownsamplingMethodLookupList();
+            m_downsamplingMethod = TimeSeriesFramework.UI.CommonFunctions.GetDownsamplingMethodLookupList();
         }
 
         #endregion
@@ -130,7 +130,7 @@ namespace openPDCManager.UI.WPF.ViewModels
                 if (CurrentItem == null)
                     RuntimeID = string.Empty;
                 else
-                    RuntimeID = CommonFunctions.GetRuntimeID("CalculatedMeasurement", CurrentItem.ID);
+                    RuntimeID = TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("CalculatedMeasurement", CurrentItem.ID);
             }
         }
 
@@ -140,7 +140,7 @@ namespace openPDCManager.UI.WPF.ViewModels
             {
                 if (Confirm("Do you want to send Initialize " + GetCurrentItemName() + "?", "Confirm Initialize"))
                 {
-                    Popup(CommonFunctions.SendCommandToService("Initialize " + RuntimeID), "Initialize", MessageBoxImage.Information);
+                    Popup(TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + RuntimeID), "Initialize", MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)

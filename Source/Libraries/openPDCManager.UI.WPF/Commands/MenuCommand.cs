@@ -156,8 +156,8 @@ namespace openPDCManager.UI.WPF.Commands
         {
             UIElement frame = null;
             UIElement groupBox = null;
-            CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
 
             if (frame != null)
             {

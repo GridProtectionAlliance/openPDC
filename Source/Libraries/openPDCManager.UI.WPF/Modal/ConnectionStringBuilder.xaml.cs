@@ -202,8 +202,8 @@ namespace openPDCManager.UI.WPF.Modal
 
             m_keyvaluepairs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-            ComboboxParity.ItemsSource = CommonFunctions.GetParities();
-            ComboboxStopBits.ItemsSource = CommonFunctions.GetStopBits();
+            ComboboxParity.ItemsSource = TimeSeriesFramework.UI.CommonFunctions.GetParities();
+            ComboboxStopBits.ItemsSource = TimeSeriesFramework.UI.CommonFunctions.GetStopBits();
 
             if (ComboboxParity.Items.Count > 0)
                 ComboboxParity.SelectedIndex = 0;

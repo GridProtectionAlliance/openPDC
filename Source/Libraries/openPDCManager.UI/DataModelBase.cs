@@ -367,7 +367,7 @@ namespace openPDCManager.UI
             {
                 try
                 {
-                    database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
+                    database = new AdoDataConnection(TimeSeriesFramework.UI.CommonFunctions.DefaultSettingsCategory);
                     return true;
                 }
                 catch (Exception ex)

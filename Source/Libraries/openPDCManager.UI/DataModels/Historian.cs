@@ -37,6 +37,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using TimeSeriesFramework.UI;
 using TVA.Data;
 
 namespace openPDCManager.UI.DataModels
@@ -461,15 +462,15 @@ namespace openPDCManager.UI.DataModels
                         (historian.NodeID == null || historian.NodeID == Guid.Empty) ? database.CurrentNodeID() : database.Guid(historian.NodeID),
                         historian.Acronym.Replace(" ", "").ToUpper(), historian.Name.ToNotNull(), historian.AssemblyName.ToNotNull(), historian.TypeName.ToNotNull(),
                         historian.ConnectionString.ToNotNull(), historian.IsLocal, historian.MeasurementReportingInterval, historian.Description.ToNotNull(),
-                        historian.LoadOrder, historian.Enabled, CommonFunctions.CurrentUser, database.UtcNow(),
-                        CommonFunctions.CurrentUser, database.UtcNow());
+                        historian.LoadOrder, historian.Enabled, TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(),
+                        TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
                 else
                     database.Connection.ExecuteNonQuery("UPDATE Historian SET NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, TypeName = @typeName, " +
                         "ConnectionString = @connectionString, IsLocal = @isLocal, MeasurementReportingInterval = @measurementReportingInterval, Description = @description, " +
                         "LoadOrder = @loadOrder, Enabled = @enabled, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id", DefaultTimeout, database.Guid(historian.NodeID),
                         historian.Acronym.Replace(" ", "").ToUpper(), historian.Name.ToNotNull(), historian.AssemblyName.ToNotNull(), historian.TypeName.ToNotNull(),
                         historian.ConnectionString.ToNotNull(), historian.IsLocal, historian.MeasurementReportingInterval, historian.Description.ToNotNull(),
-                        historian.LoadOrder, historian.Enabled, CommonFunctions.CurrentUser, database.UtcNow(), historian.ID);
+                        historian.LoadOrder, historian.Enabled, TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), historian.ID);
 
                 return "Historian information saved successfully";
             }
@@ -494,11 +495,11 @@ namespace openPDCManager.UI.DataModels
             {
                 if (database == null)
                 {
-                    database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
+                    database = new AdoDataConnection(TimeSeriesFramework.UI.CommonFunctions.DefaultSettingsCategory);
                     createdConnection = true;
                 }
 
-                CommonFunctions.SetCurrentUserContext(database);
+                TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
                 database.Connection.ExecuteNonQuery("DELETE FROM Historian WHERE ID = @historianID", DefaultTimeout, historianID);
 

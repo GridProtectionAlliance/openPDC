@@ -32,6 +32,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using TimeSeriesFramework.UI;
 using TVA.Data;
 
 namespace openPDCManager.UI.DataModels
@@ -320,12 +321,12 @@ namespace openPDCManager.UI.DataModels
                 if (vendor.ID == 0)
                     database.Connection.ExecuteNonQuery("INSERT INTO Vendor (Acronym, Name, PhoneNumber, ContactEmail, URL, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
                         "VALUES (@acronym, @name, @phoneNumber, @contactEmail, @url, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout, vendor.Acronym.Replace(" ", "").ToUpper(),
-                        vendor.Name, vendor.PhoneNumber.ToNotNull(), vendor.ContactEmail.ToNotNull(), vendor.URL.ToNotNull(), CommonFunctions.CurrentUser, database.UtcNow(),
-                        CommonFunctions.CurrentUser, database.UtcNow());
+                        vendor.Name, vendor.PhoneNumber.ToNotNull(), vendor.ContactEmail.ToNotNull(), vendor.URL.ToNotNull(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(),
+                        TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
                 else
                     database.Connection.ExecuteNonQuery("UPDATE Vendor SET Acronym = @acronym, Name = @name, PhoneNumber = @phoneNumber, ContactEmail = @contactEmail, " +
                         "URL = @url, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id", DefaultTimeout, vendor.Acronym.Replace(" ", "").ToUpper(), vendor.Name,
-                        vendor.PhoneNumber.ToNotNull(), vendor.ContactEmail.ToNotNull(), vendor.URL.ToNotNull(), CommonFunctions.CurrentUser, database.UtcNow(), vendor.ID);
+                        vendor.PhoneNumber.ToNotNull(), vendor.ContactEmail.ToNotNull(), vendor.URL.ToNotNull(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), vendor.ID);
 
                 return "Vendor information saved successfully";
             }
@@ -350,12 +351,12 @@ namespace openPDCManager.UI.DataModels
             {
                 if (database == null)
                 {
-                    database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
+                    database = new AdoDataConnection(TimeSeriesFramework.UI.CommonFunctions.DefaultSettingsCategory);
                     createdConnection = true;
                 }
 
                 // Setup current user context for any delete triggers
-                CommonFunctions.SetCurrentUserContext(database);
+                TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
                 database.Connection.ExecuteNonQuery("DELETE FROM Vendor WHER ID = @vendorID", DefaultTimeout, vendorID);
 

@@ -41,6 +41,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using TimeSeriesFramework.UI;
 using TVA;
 using TVA.Data;
 
@@ -1086,8 +1087,8 @@ namespace openPDCManager.UI.DataModels
                         device.ProtocolID.ToNotNull(), device.Longitude.ToNotNull(), device.Latitude.ToNotNull(), device.InterconnectionID.ToNotNull(),
                         BuildConnectionString(device), device.TimeZone.ToNotNull(), device.FramesPerSecond ?? 30, device.TimeAdjustmentTicks, device.DataLossInterval, device.ContactList.ToNotNull(), device.MeasuredLines.ToNotNull(),
                         device.LoadOrder, device.Enabled, device.AllowedParsingExceptions, device.ParsingExceptionWindow, device.DelayedConnectionInterval, device.AllowUseOfCachedConfiguration,
-                        device.AutoStartDataParsingSequence, device.SkipDisableRealTimeData, device.MeasurementReportingInterval, device.ConnectOnDemand, CommonFunctions.CurrentUser,
-                        database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
+                        device.AutoStartDataParsingSequence, device.SkipDisableRealTimeData, device.MeasurementReportingInterval, device.ConnectOnDemand, TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
+                        database.UtcNow(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
                 else
                     database.Connection.ExecuteNonQuery("UPDATE Device SET NodeID = @nodeID, ParentID = @parentID, UniqueID = @uniqueID, Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, " +
                         "CompanyID = @companyID, HistorianID = @historianID, AccessID = @accessID, VendorDeviceID = @vendorDeviceID, ProtocolID = @protocolID, Longitude = @longitude, " +
@@ -1102,7 +1103,7 @@ namespace openPDCManager.UI.DataModels
                         device.ProtocolID.ToNotNull(), device.Longitude.ToNotNull(), device.Latitude.ToNotNull(), device.InterconnectionID.ToNotNull(),
                         BuildConnectionString(device), device.TimeZone.ToNotNull(), device.FramesPerSecond ?? 30, device.TimeAdjustmentTicks, device.DataLossInterval, device.ContactList.ToNotNull(), device.MeasuredLines.ToNotNull(),
                         device.LoadOrder, device.Enabled, device.AllowedParsingExceptions, device.ParsingExceptionWindow, device.DelayedConnectionInterval, device.AllowUseOfCachedConfiguration,
-                        device.AutoStartDataParsingSequence, device.SkipDisableRealTimeData, device.MeasurementReportingInterval, device.ConnectOnDemand, CommonFunctions.CurrentUser,
+                        device.AutoStartDataParsingSequence, device.SkipDisableRealTimeData, device.MeasurementReportingInterval, device.ConnectOnDemand, TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
                         database.UtcNow(), device.ID);
 
 
@@ -1234,7 +1235,7 @@ namespace openPDCManager.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 // Setup current user context for any delete triggers
-                CommonFunctions.SetCurrentUserContext(database);
+                TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
                 database.Connection.ExecuteNonQuery("DELETE FROM Device WHERE ID = @deviceID", DefaultTimeout, deviceID);
 
@@ -1331,25 +1332,25 @@ namespace openPDCManager.UI.DataModels
             if (device.Enabled)
             {
                 if (device.ParentID == null)
-                    CommonFunctions.SendCommandToService("Initialize " + CommonFunctions.GetRuntimeID("Device", device.ID));
+                    TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Device", device.ID));
                 else
-                    CommonFunctions.SendCommandToService("Initialize " + CommonFunctions.GetRuntimeID("Device", (int)device.ParentID));
+                    TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Device", (int)device.ParentID));
             }
             else
             {
                 //we do this to make sure all statistical measurements are in the system.
-                CommonFunctions.SendCommandToService("ReloadConfig");
+                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
             }
 
             if (device.HistorianID != null)
-                CommonFunctions.SendCommandToService("Invoke " + CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID) + " RefreshMetadata");
+                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID) + " RefreshMetadata");
 
             Historian statHistorian = Historian.GetHistorian(null, "WHERE Acronym = 'STAT'");
             if (statHistorian != null)
-                CommonFunctions.SendCommandToService("Invoke " + CommonFunctions.GetRuntimeID("Historian", statHistorian.ID) + " RefreshMetadata");
+                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", statHistorian.ID) + " RefreshMetadata");
 
-            CommonFunctions.SendCommandToService("Invoke 0 ReloadStatistics");
-            CommonFunctions.SendCommandToService("RefreshRoutes");
+            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke 0 ReloadStatistics");
+            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("RefreshRoutes");
         }
 
         private static string ParseConnectionString(string connectionString)

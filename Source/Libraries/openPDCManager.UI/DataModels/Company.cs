@@ -33,6 +33,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using TimeSeriesFramework.UI;
 using TVA.Data;
 
 namespace openPDCManager.UI.DataModels
@@ -323,12 +324,12 @@ namespace openPDCManager.UI.DataModels
                     database.Connection.ExecuteNonQuery("INSERT INTO Company (Acronym, MapAcronym, Name, URL, LoadOrder, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
                         "VALUES (@acronym, @mapAcronym, @name, @url, @loadOrder, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout,
                         company.Acronym.Replace(" ", "").ToUpper(), company.MapAcronym.Replace(" ", "").ToUpper(), company.Name, company.URL.ToNotNull(),
-                        company.LoadOrder, CommonFunctions.CurrentUser, database.UtcNow(),
-                        CommonFunctions.CurrentUser, database.UtcNow());
+                        company.LoadOrder, TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(),
+                        TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
                 else
                     database.Connection.ExecuteNonQuery("UPDATE Company SET Acronym = @acronym, MapAcronym = @mapAcronym, Name = @name, URL = @url, LoadOrder = @loadOrder, " +
                         "UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id", DefaultTimeout, company.Acronym.Replace(" ", "").ToUpper(),
-                        company.MapAcronym.Replace(" ", "").ToUpper(), company.Name, company.URL.ToNotNull(), company.LoadOrder, CommonFunctions.CurrentUser,
+                        company.MapAcronym.Replace(" ", "").ToUpper(), company.Name, company.URL.ToNotNull(), company.LoadOrder, TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
                         database.UtcNow(), company.ID);
 
                 return "Company information saved successfully";
@@ -355,7 +356,7 @@ namespace openPDCManager.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 // Setup current user context for any delete triggers
-                CommonFunctions.SetCurrentUserContext(database);
+                TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
                 database.Connection.ExecuteNonQuery("DELETE FROM Company WHERE ID = @companyID", DefaultTimeout, companyID);
 

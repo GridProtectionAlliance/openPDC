@@ -39,6 +39,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using TimeSeriesFramework.UI;
 using TVA.Data;
 
 namespace openPDCManager.UI.DataModels
@@ -685,8 +686,8 @@ namespace openPDCManager.UI.DataModels
                         calculatedMeasurement.FramesPerSecond, calculatedMeasurement.LagTime, calculatedMeasurement.LeadTime, calculatedMeasurement.UseLocalClockAsRealTime,
                         calculatedMeasurement.AllowSortsByArrival, calculatedMeasurement.LoadOrder, calculatedMeasurement.Enabled, calculatedMeasurement.IgnoreBadTimeStamps,
                         calculatedMeasurement.TimeResolution, calculatedMeasurement.AllowPreemptivePublishing, calculatedMeasurement.DownsamplingMethod,
-                        calculatedMeasurement.PerformTimestampReasonabilityCheck, CommonFunctions.CurrentUser, database.UtcNow(),
-                        CommonFunctions.CurrentUser, database.UtcNow());
+                        calculatedMeasurement.PerformTimestampReasonabilityCheck, TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(),
+                        TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
                 else
                     database.Connection.ExecuteNonQuery("UPDATE CalculatedMeasurement SET NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, " +
                         "TypeName = @typeName, ConnectionString = @connectionString, ConfigSection = @configSection, InputMeasurements = @inputMeasurements, " +
@@ -701,7 +702,7 @@ namespace openPDCManager.UI.DataModels
                         calculatedMeasurement.LagTime, calculatedMeasurement.LeadTime, calculatedMeasurement.UseLocalClockAsRealTime, calculatedMeasurement.AllowSortsByArrival,
                         calculatedMeasurement.LoadOrder, calculatedMeasurement.Enabled, calculatedMeasurement.IgnoreBadTimeStamps, calculatedMeasurement.TimeResolution,
                         calculatedMeasurement.AllowPreemptivePublishing, calculatedMeasurement.DownsamplingMethod, calculatedMeasurement.PerformTimestampReasonabilityCheck,
-                        CommonFunctions.CurrentUser, database.UtcNow(), calculatedMeasurement.ID);
+                        TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), calculatedMeasurement.ID);
 
                 return "Calculated measurement information saved successfully";
             }
@@ -727,7 +728,7 @@ namespace openPDCManager.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 // Setup current user context for any delete triggers
-                CommonFunctions.SetCurrentUserContext(database);
+                TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
                 database.Connection.ExecuteNonQuery("DELETE FROM CalculatedMeasurement WHERE ID = @calculatedMeasurementID", DefaultTimeout, calculatedMeasurementID);
 

@@ -975,14 +975,14 @@ namespace openPDCManager.UI.WPF.ViewModels
         private void RequestConfiguration()
         {
             m_requestConfigurationError = string.Empty;
-            AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
+            AdoDataConnection database = new AdoDataConnection(TimeSeriesFramework.UI.CommonFunctions.DefaultSettingsCategory);
             WindowsServiceClient windowsServiceClient = null;
 
             try
             {
                 s_responseWaitHandle = new ManualResetEvent(false);
 
-                windowsServiceClient = CommonFunctions.GetWindowsServiceClient();
+                windowsServiceClient = TimeSeriesFramework.UI.CommonFunctions.GetWindowsServiceClient();
                 if (windowsServiceClient != null && windowsServiceClient.Helper != null &&
                    windowsServiceClient.Helper.RemotingClient != null && windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
                 {
@@ -1142,7 +1142,7 @@ namespace openPDCManager.UI.WPF.ViewModels
         public void SaveConfiguration()
         {
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
-            AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
+            AdoDataConnection database = new AdoDataConnection(TimeSeriesFramework.UI.CommonFunctions.DefaultSettingsCategory);
             try
             {
                 int deviceCount = 0;

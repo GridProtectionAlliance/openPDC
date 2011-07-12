@@ -35,6 +35,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using TimeSeriesFramework.UI;
 using TVA.Data;
 
 namespace openPDCManager.UI.DataModels
@@ -397,11 +398,11 @@ namespace openPDCManager.UI.DataModels
                 if (phasor.ID == 0)
                     database.Connection.ExecuteNonQuery("INSERT INTO Phasor (DeviceID, Label, Type, Phase, SourceIndex, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
                         "VALUES (@DeviceID, @Label, @Type, @Phase, @sourceIndex, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout, phasor.DeviceID, phasor.Label,
-                        phasor.Type, phasor.Phase, phasor.SourceIndex, CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
+                        phasor.Type, phasor.Phase, phasor.SourceIndex, TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
                 else
                     database.Connection.ExecuteNonQuery("UPDATE Phasor SET DeviceID = @deviceID, Label = @label, Type = @type, Phase = @phase, SourceIndex = @sourceIndex, " +
                         "UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id", DefaultTimeout, phasor.DeviceID, phasor.Label, phasor.Type,
-                        phasor.Phase, phasor.SourceIndex, CommonFunctions.CurrentUser, database.UtcNow(), phasor.ID);
+                        phasor.Phase, phasor.SourceIndex, TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), phasor.ID);
 
                 // Get reference to the device to which phasor is being added.
                 Device device = Device.GetDevice(database, "WHERE ID = " + phasor.DeviceID);
@@ -459,7 +460,7 @@ namespace openPDCManager.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 // Setup current user context for any delete triggers
-                CommonFunctions.SetCurrentUserContext(database);
+                TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
                 database.Connection.ExecuteNonQuery("DELETE FROM Phasor WHERE ID = @phasorID", DefaultTimeout, phasorID);
 

@@ -79,7 +79,7 @@ namespace openPDCManager.UI.WPF.ViewModels
             m_interconnectionLookupList = Interconnection.GetLookupList(null, true);
             m_protocolLookupList = Protocol.GetLookupList(null, true);
             m_vendorDeviceLookupList = VendorDevice.GetLookupList(null, true);
-            m_timezoneLookupList = CommonFunctions.GetTimeZones(true);
+            m_timezoneLookupList = TimeSeriesFramework.UI.CommonFunctions.GetTimeZones(true);
 
             if (device != null)     // i.e. user wants to edit existing device's configuration. So we will load that by default.
                 CurrentItem = device;
@@ -388,8 +388,8 @@ namespace openPDCManager.UI.WPF.ViewModels
                 {
                     UIElement frame = null;
                     UIElement groupBox = null;
-                    CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-                    CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
+                    TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
+                    TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
 
                     if (frame != null)
                     {
@@ -421,8 +421,8 @@ namespace openPDCManager.UI.WPF.ViewModels
             Device deviceToEdit = (Device)parameter;
             UIElement frame = null;
             UIElement groupBox = null;
-            CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
 
             if (frame != null)
             {
@@ -459,8 +459,8 @@ namespace openPDCManager.UI.WPF.ViewModels
             // Go to edit screen.
             UIElement frame = null;
             UIElement groupBox = null;
-            CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
 
             if (frame != null)
             {
@@ -493,8 +493,8 @@ namespace openPDCManager.UI.WPF.ViewModels
 
             UIElement frame = null;
             UIElement groupBox = null;
-            CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
 
             if (frame != null)
             {
@@ -516,8 +516,8 @@ namespace openPDCManager.UI.WPF.ViewModels
 
             UIElement frame = null;
             UIElement groupBox = null;
-            CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
 
             if (frame != null)
             {
@@ -538,7 +538,7 @@ namespace openPDCManager.UI.WPF.ViewModels
                 if (CurrentItem == null)
                     RuntimeID = string.Empty;
                 else
-                    RuntimeID = CommonFunctions.GetRuntimeID("Device", CurrentItem.ID);
+                    RuntimeID = TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Device", CurrentItem.ID);
             }
         }
 

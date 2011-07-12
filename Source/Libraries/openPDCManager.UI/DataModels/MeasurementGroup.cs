@@ -27,6 +27,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using TimeSeriesFramework.UI;
 using TVA.Data;
 
 namespace openPDCManager.UI.DataModels
@@ -413,11 +414,11 @@ namespace openPDCManager.UI.DataModels
                 if (measurementGroup.ID == 0)
                     database.Connection.ExecuteNonQuery("INSERT INTO MeasurementGroup (NodeID, Name, Description, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
                         "VALUES (@nodeID, @name, @description, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout, database.CurrentNodeID(),
-                        measurementGroup.Name, measurementGroup.Description.ToNotNull(), CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
+                        measurementGroup.Name, measurementGroup.Description.ToNotNull(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
                 else
                     database.Connection.ExecuteNonQuery("UPDATE MeasurementGroup SET NodeID = @nodeID, Name = @name, Description = @description, " +
                         "UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id", DefaultTimeout, database.CurrentNodeID(), measurementGroup.Name,
-                        measurementGroup.Description.ToNotNull(), CommonFunctions.CurrentUser, database.UtcNow(), measurementGroup.ID);
+                        measurementGroup.Description.ToNotNull(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), measurementGroup.ID);
 
                 return "Measurement group information saved successfully";
             }
@@ -447,7 +448,7 @@ namespace openPDCManager.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 // Setup current user context for any delete triggers
-                CommonFunctions.SetCurrentUserContext(database);
+                TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
                 database.Connection.ExecuteNonQuery("DELETE FROM MeasurementGroup WHERE ID = @measurementGroupID", DefaultTimeout, measurementGroupID);
 

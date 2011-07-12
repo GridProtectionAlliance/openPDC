@@ -33,6 +33,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using TimeSeriesFramework.UI;
 using TVA.Data;
 
 namespace openPDCManager.UI.DataModels
@@ -583,14 +584,14 @@ namespace openPDCManager.UI.DataModels
                         "@longitude, @latitude, @description, @imagePath, @settings, @menuType, @menuData, @master, @loadOrder, @enabled, " +
                         "@updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout, node.Name, node.CompanyID.ToNotNull(), node.Longitude.ToNotNull(),
                         node.Latitude.ToNotNull(), node.Description.ToNotNull(), node.ImagePath.ToNotNull(), node.Settings.ToNotNull(), node.MenuType, node.MenuData, node.Master, node.LoadOrder, node.Enabled,
-                        CommonFunctions.CurrentUser,
-                        database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
+                        TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
+                        database.UtcNow(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
                 else
                     database.Connection.ExecuteNonQuery("UPDATE Node SET Name = @name, CompanyID = @companyID, Longitude = @longitude, Latitude = @latitude, " +
                         "Description = @description, ImagePath = @imagePath, Settings = @Settings, MenuType = @MenuType, MenuData = @MenuData, Master = @master, LoadOrder = @loadOrder, Enabled = @enabled, " +
                         "UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id", DefaultTimeout, node.Name, node.CompanyID.ToNotNull(), node.Longitude.ToNotNull(),
                         node.Latitude.ToNotNull(), node.Description.ToNotNull(), node.ImagePath.ToNotNull(), node.Settings.ToNotNull(), node.MenuType, node.MenuData, node.Master, node.LoadOrder, node.Enabled,
-                        CommonFunctions.CurrentUser, database.UtcNow(), node.ID);
+                        TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), node.ID);
 
                 return "Node information saved successfully";
             }
@@ -616,7 +617,7 @@ namespace openPDCManager.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 // Setup current user context for any delete triggers
-                CommonFunctions.SetCurrentUserContext(database);
+                TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
                 database.Connection.ExecuteNonQuery("DELETE FROM Node WHERE ID = @nodeID", DefaultTimeout, database.Guid(nodeID));
 

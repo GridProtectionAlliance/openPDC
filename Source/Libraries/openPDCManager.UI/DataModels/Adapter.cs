@@ -35,6 +35,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using TimeSeriesFramework.UI;
 using TVA.Data;
 
 namespace openPDCManager.UI.DataModels
@@ -463,14 +464,14 @@ namespace openPDCManager.UI.DataModels
                         "Enabled, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) Values (@nodeID, @adapterName, @assemblyName, @typeName, @connectionString, @loadOrder, " +
                         "@enabled, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout,
                         (adapter.NodeID == null || adapter.NodeID == Guid.Empty) ? database.CurrentNodeID() : database.Guid(adapter.NodeID), adapter.AdapterName, adapter.AssemblyName,
-                        adapter.TypeName, adapter.ConnectionString.ToNotNull(), adapter.LoadOrder, adapter.Enabled, CommonFunctions.CurrentUser,
-                        database.UtcNow(), CommonFunctions.CurrentUser,
+                        adapter.TypeName, adapter.ConnectionString.ToNotNull(), adapter.LoadOrder, adapter.Enabled, TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
+                        database.UtcNow(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
                         database.UtcNow());
                 else
                     database.Connection.ExecuteNonQuery("UPDATE " + tableName + " SET NodeID = @nodeID, AdapterName = @adapterName, AssemblyName = @assemblyName, " +
                         "TypeName = @typeName, ConnectionString = @connectionString, LoadOrder = @loadOrder, Enabled = @enabled, UpdatedBy = @updatedBy, " +
                         "UpdatedOn = @updatedOn WHERE ID = @id", DefaultTimeout, adapter.NodeID, adapter.AdapterName, adapter.AssemblyName,
-                        adapter.TypeName, adapter.ConnectionString.ToNotNull(), adapter.LoadOrder, adapter.Enabled, CommonFunctions.CurrentUser,
+                        adapter.TypeName, adapter.ConnectionString.ToNotNull(), adapter.LoadOrder, adapter.Enabled, TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
                         database.UtcNow(), adapter.ID);
 
                 return "Adapter information saved successfully";
@@ -498,7 +499,7 @@ namespace openPDCManager.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 // Setup current user context for any delete triggers
-                CommonFunctions.SetCurrentUserContext(database);
+                TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
                 string tableName;
 

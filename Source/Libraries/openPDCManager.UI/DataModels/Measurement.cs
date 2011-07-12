@@ -37,6 +37,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using TimeSeriesFramework.UI;
 using TVA.Data;
 
 namespace openPDCManager.UI.DataModels
@@ -871,15 +872,15 @@ namespace openPDCManager.UI.DataModels
                         "@pointTag, @alternateTag, @signalTypeID, @phasorSourceIndex, @signalReference, @adder, @multiplier, @subscribed, @internal, @description, @enabled, @updatedBy, " +
                         "@updatedOn, @createdBy, @createdOn)", DefaultTimeout, measurement.HistorianID.ToNotNull(), measurement.DeviceID.ToNotNull(), measurement.PointTag,
                         measurement.AlternateTag.ToNotNull(), measurement.SignalTypeID, measurement.PhasorSourceIndex.ToNotNull(), measurement.SignalReference,
-                        measurement.Adder, measurement.Multiplier, measurement.Subscribed, measurement.Internal, measurement.Description.ToNotNull(), measurement.Enabled, CommonFunctions.CurrentUser,
-                        database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
+                        measurement.Adder, measurement.Multiplier, measurement.Subscribed, measurement.Internal, measurement.Description.ToNotNull(), measurement.Enabled, TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
+                        database.UtcNow(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
                 else
                     database.Connection.ExecuteNonQuery("Update Measurement Set HistorianID = @historianID, DeviceID = @deviceID, PointTag = @pointTag, " +
                         "AlternateTag = @alternateTag, SignalTypeID = @signalTypeID, PhasorSourceIndex = @phasorSourceIndex, SignalReference = @signalReference, " +
                         "Adder = @adder, Multiplier = @multiplier, Description = @description, Subscribed = @subscribed, Internal = @internal, Enabled = @enabled, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn " +
                         "Where PointID = @pointID", DefaultTimeout, measurement.HistorianID.ToNotNull(), measurement.DeviceID.ToNotNull(), measurement.PointTag,
                         measurement.AlternateTag.ToNotNull(), measurement.SignalTypeID, measurement.PhasorSourceIndex.ToNotNull(), measurement.SignalReference,
-                        measurement.Adder, measurement.Multiplier, measurement.Description.ToNotNull(), measurement.Subscribed, measurement.Internal, measurement.Enabled, CommonFunctions.CurrentUser, database.UtcNow(),
+                        measurement.Adder, measurement.Multiplier, measurement.Description.ToNotNull(), measurement.Subscribed, measurement.Internal, measurement.Enabled, TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(),
                         measurement.PointID);
 
                 return "Measurement information saved successfully";
@@ -906,7 +907,7 @@ namespace openPDCManager.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 // Setup current user context for any delete triggers
-                CommonFunctions.SetCurrentUserContext(database);
+                TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
                 database.Connection.ExecuteNonQuery("DELETE FROM Measurement WHERE PointID = @pointID", DefaultTimeout, pointID);
 
