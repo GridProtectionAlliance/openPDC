@@ -4,6 +4,70 @@
         <name>MongoAdapters</name>
     </assembly>
     <members>
+        <member name="T:MongoAdapters.MeasurementWrapper">
+            <summary>
+            A wrapper object used for easy insertion to and retrieval from a MongoDB database.
+            </summary>
+        </member>
+        <member name="M:MongoAdapters.MeasurementWrapper.#ctor">
+            <summary>
+            Creates an empty instance of the <see cref="T:MongoAdapters.MeasurementWrapper"/> class.
+            </summary>
+        </member>
+        <member name="M:MongoAdapters.MeasurementWrapper.#ctor(TimeSeriesFramework.IMeasurement)">
+            <summary>
+            Creates a new instance of the <see cref="T:MongoAdapters.MeasurementWrapper"/> class.
+            </summary>
+            <param name="measurement">The measurement to be wrapped by the wrapper.</param>
+        </member>
+        <member name="M:MongoAdapters.MeasurementWrapper.GetMeasurement">
+            <summary>
+            Returns a new measurement equivalent to the one being wrapped.
+            </summary>
+            <returns>The wrapped measurement.</returns>
+        </member>
+        <member name="P:MongoAdapters.MeasurementWrapper.Adder">
+            <summary>
+            The adder used to adjust the value of the measurement.
+            </summary>
+        </member>
+        <member name="P:MongoAdapters.MeasurementWrapper.ID">
+            <summary>
+            The identification number of the measurement.
+            PointIDs are unsigned integers, but MongoDB needs to store
+            them as signed integers.
+            </summary>
+        </member>
+        <member name="P:MongoAdapters.MeasurementWrapper.Multiplier">
+            <summary>
+            The multiplier used to adjust the value of the measurement.
+            </summary>
+        </member>
+        <member name="P:MongoAdapters.MeasurementWrapper.SignalID">
+            <summary>
+            String representation of the measurement's signal ID.
+            </summary>
+        </member>
+        <member name="P:MongoAdapters.MeasurementWrapper.Source">
+            <summary>
+            The source of the measurement.
+            </summary>
+        </member>
+        <member name="P:MongoAdapters.MeasurementWrapper.TagName">
+            <summary>
+            The measurement's tag name.
+            </summary>
+        </member>
+        <member name="P:MongoAdapters.MeasurementWrapper.Timestamp">
+            <summary>
+            The timestamp associated with the measurement.
+            </summary>
+        </member>
+        <member name="P:MongoAdapters.MeasurementWrapper.Value">
+            <summary>
+            The value of the measurement, before applying the adder and multiplier.
+            </summary>
+        </member>
         <member name="T:MongoAdapters.MongoInputAdapter">
             <summary>
             Represents an input adapter that reads measurements from a MongoDB database.
@@ -69,70 +133,6 @@
         <member name="P:MongoAdapters.MongoInputAdapter.UseAsyncConnect">
             <summary>
             Returns false; this adapter connects to MongoDB synchronously.
-            </summary>
-        </member>
-        <member name="T:MongoAdapters.MeasurementWrapper">
-            <summary>
-            A wrapper object used for easy insertion to and retrieval from a MongoDB database.
-            </summary>
-        </member>
-        <member name="M:MongoAdapters.MeasurementWrapper.#ctor">
-            <summary>
-            Creates an empty instance of the <see cref="T:MongoAdapters.MeasurementWrapper"/> class.
-            </summary>
-        </member>
-        <member name="M:MongoAdapters.MeasurementWrapper.#ctor(TimeSeriesFramework.IMeasurement)">
-            <summary>
-            Creates a new instance of the <see cref="T:MongoAdapters.MeasurementWrapper"/> class.
-            </summary>
-            <param name="measurement">The measurement to be wrapped by the wrapper.</param>
-        </member>
-        <member name="M:MongoAdapters.MeasurementWrapper.GetMeasurement">
-            <summary>
-            Returns a new measurement equivalent to the one being wrapped.
-            </summary>
-            <returns>The wrapped measurement.</returns>
-        </member>
-        <member name="P:MongoAdapters.MeasurementWrapper.Adder">
-            <summary>
-            The adder used to adjust the value of the measurement.
-            </summary>
-        </member>
-        <member name="P:MongoAdapters.MeasurementWrapper.ID">
-            <summary>
-            The identification number of the measurement.
-            PointIDs are unsigned integers, but MongoDB needs to store
-            them as signed integers.
-            </summary>
-        </member>
-        <member name="P:MongoAdapters.MeasurementWrapper.Multiplier">
-            <summary>
-            The multiplier used to adjust the value of the measurement.
-            </summary>
-        </member>
-        <member name="P:MongoAdapters.MeasurementWrapper.SignalID">
-            <summary>
-            String representation of the measurement's signal ID.
-            </summary>
-        </member>
-        <member name="P:MongoAdapters.MeasurementWrapper.Source">
-            <summary>
-            The source of the measurement.
-            </summary>
-        </member>
-        <member name="P:MongoAdapters.MeasurementWrapper.TagName">
-            <summary>
-            The measurement's tag name.
-            </summary>
-        </member>
-        <member name="P:MongoAdapters.MeasurementWrapper.Timestamp">
-            <summary>
-            The timestamp associated with the measurement.
-            </summary>
-        </member>
-        <member name="P:MongoAdapters.MeasurementWrapper.Value">
-            <summary>
-            The value of the measurement, before applying the adder and multiplier.
             </summary>
         </member>
         <member name="T:MongoAdapters.MongoOutputAdapter">

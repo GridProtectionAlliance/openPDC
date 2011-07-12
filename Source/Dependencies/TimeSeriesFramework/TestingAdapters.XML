@@ -4,42 +4,6 @@
         <name>TestingAdapters</name>
     </assembly>
     <members>
-        <member name="T:TestingAdapters.VirtualOutputAdapter">
-            <summary>
-            Represents a virtual historian output adapter used for testing purposes - no data gets archived.
-            </summary>
-        </member>
-        <member name="M:TestingAdapters.VirtualOutputAdapter.AttemptConnection">
-            <summary>
-            Attempts to connect to this <see cref="T:TestingAdapters.VirtualOutputAdapter"/>.
-            </summary>
-        </member>
-        <member name="M:TestingAdapters.VirtualOutputAdapter.AttemptDisconnection">
-            <summary>
-            Attempts to disconnect from this <see cref="T:TestingAdapters.VirtualOutputAdapter"/>.
-            </summary>
-        </member>
-        <member name="M:TestingAdapters.VirtualOutputAdapter.ProcessMeasurements(TimeSeriesFramework.IMeasurement[])">
-            <summary>
-            Serializes measurements to data output stream.
-            </summary>
-        </member>
-        <member name="M:TestingAdapters.VirtualOutputAdapter.GetShortStatus(System.Int32)">
-            <summary>
-            Gets a short one-line status of this <see cref="T:TestingAdapters.VirtualOutputAdapter"/>.
-            </summary>
-        </member>
-        <member name="P:TestingAdapters.VirtualOutputAdapter.OutputIsForArchive">
-            <summary>
-            Returns a flag that determines if measurements sent to this <see cref="T:TestingAdapters.VirtualOutputAdapter"/> are
-            destined for archival.
-            </summary>
-        </member>
-        <member name="P:TestingAdapters.VirtualOutputAdapter.UseAsyncConnect">
-            <summary>
-            Gets flag that determines if this <see cref="T:TestingAdapters.VirtualOutputAdapter"/> uses an asynchronous connection.
-            </summary>
-        </member>
         <member name="T:TestingAdapters.RandomValueInputAdapter">
             <summary>
             Represents a class used to stream in random values for input measurements.
@@ -157,6 +121,42 @@
         <member name="P:TestingAdapters.RandomValueInputAdapter.Status">
             <summary>
             Returns the detailed status of the data input source.
+            </summary>
+        </member>
+        <member name="T:TestingAdapters.VirtualOutputAdapter">
+            <summary>
+            Represents a virtual historian output adapter used for testing purposes - no data gets archived.
+            </summary>
+        </member>
+        <member name="M:TestingAdapters.VirtualOutputAdapter.AttemptConnection">
+            <summary>
+            Attempts to connect to this <see cref="T:TestingAdapters.VirtualOutputAdapter"/>.
+            </summary>
+        </member>
+        <member name="M:TestingAdapters.VirtualOutputAdapter.AttemptDisconnection">
+            <summary>
+            Attempts to disconnect from this <see cref="T:TestingAdapters.VirtualOutputAdapter"/>.
+            </summary>
+        </member>
+        <member name="M:TestingAdapters.VirtualOutputAdapter.ProcessMeasurements(TimeSeriesFramework.IMeasurement[])">
+            <summary>
+            Serializes measurements to data output stream.
+            </summary>
+        </member>
+        <member name="M:TestingAdapters.VirtualOutputAdapter.GetShortStatus(System.Int32)">
+            <summary>
+            Gets a short one-line status of this <see cref="T:TestingAdapters.VirtualOutputAdapter"/>.
+            </summary>
+        </member>
+        <member name="P:TestingAdapters.VirtualOutputAdapter.OutputIsForArchive">
+            <summary>
+            Returns a flag that determines if measurements sent to this <see cref="T:TestingAdapters.VirtualOutputAdapter"/> are
+            destined for archival.
+            </summary>
+        </member>
+        <member name="P:TestingAdapters.VirtualOutputAdapter.UseAsyncConnect">
+            <summary>
+            Gets flag that determines if this <see cref="T:TestingAdapters.VirtualOutputAdapter"/> uses an asynchronous connection.
             </summary>
         </member>
     </members>

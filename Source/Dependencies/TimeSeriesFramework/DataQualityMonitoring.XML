@@ -4,70 +4,6 @@
         <name>DataQualityMonitoring</name>
     </assembly>
     <members>
-        <member name="T:DataQualityMonitoring.Services.IOutOfRangeService">
-            <summary>
-            Defines a REST web service for out-of-range measurements.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadAllOutOfRangeMeasurementsAsXml">
-            <summary>
-            Reads all out-of-range measurements from the <see cref="P:DataQualityMonitoring.Services.IOutOfRangeService.Tests"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadAllOutOfRangeMeasurementsAsJson">
-            <summary>
-            Reads all out-of-range measurements from the <see cref="P:DataQualityMonitoring.Services.IOutOfRangeService.Tests"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadOutOfRangeMeasurementsWithSignalTypeAsXml(System.String)">
-            <summary>
-            Reads all out-of-range measurements with the specified signal type and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-            </summary>
-            <param name="signalType">The signal type of the desired out-of-range measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadOutOfRangeMeasurementsWithSignalTypeAsJson(System.String)">
-            <summary>
-            Reads all out-of-range measurements with the specified signal type and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
-            </summary>
-            <param name="signalType">The signal type of the desired out-of-range measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadOutOfRangeMeasurementsFromDeviceAsXml(System.String)">
-            <summary>
-            Reads all out-of-range measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for out-of-range measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadOutOfRangeMeasurementsFromDeviceAsJson(System.String)">
-            <summary>
-            Reads all out-of-range measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for out-of-range measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadOutOfRangeMeasurementsFromTestAsXml(System.String)">
-            <summary>
-            Reads all out-of-range measurements from the specified <see cref="T:DataQualityMonitoring.RangeTest"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-            </summary>
-            <param name="test">The name of the <see cref="T:DataQualityMonitoring.RangeTest"/> to check for out-of-range measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadOutOfRangeMeasurementsFromTestAsJson(System.String)">
-            <summary>
-            Reads all out-of-range measurements from the specified <see cref="T:DataQualityMonitoring.RangeTest"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
-            </summary>
-            <param name="test">The name of the <see cref="T:DataQualityMonitoring.RangeTest"/> to check for out-of-range measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.IOutOfRangeService.Tests">
-            <summary>
-            Gets or collection of <see cref="T:DataQualityMonitoring.RangeTest"/>s used by the web service for its data.
-            </summary>
-        </member>
         <member name="T:DataQualityMonitoring.FlatlineTest">
             <summary>
             Tests measurements to determine whether they have flatlined.
@@ -136,546 +72,6 @@
         <member name="P:DataQualityMonitoring.FlatlineTest.SmtpServer">
             <summary>
             Gets or sets the host name or IP address of the SMTP server used to send email notifications.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.OutOfRangeService">
-            <summary>
-            Represents a REST web service for out-of-range measurements.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.OutOfRangeService"/> class.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadAllOutOfRangeMeasurementsAsXml">
-            <summary>
-            Reads all out-of-range measurements from the <see cref="P:DataQualityMonitoring.Services.OutOfRangeService.Tests"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadAllOutOfRangeMeasurementsAsJson">
-            <summary>
-            Reads all out-of-range measurements from the <see cref="P:DataQualityMonitoring.Services.OutOfRangeService.Tests"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadOutOfRangeMeasurementsWithSignalTypeAsXml(System.String)">
-            <summary>
-            Reads all out-of-range measurements with the specified signal type and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-            </summary>
-            <param name="signalType">The signal type of the desired out-of-range measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadOutOfRangeMeasurementsWithSignalTypeAsJson(System.String)">
-            <summary>
-            Reads all out-of-range measurements with the specified signal type and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
-            </summary>
-            <param name="signalType">The signal type of the desired out-of-range measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadOutOfRangeMeasurementsFromDeviceAsXml(System.String)">
-            <summary>
-            Reads all out-of-range measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for out-of-range measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadOutOfRangeMeasurementsFromDeviceAsJson(System.String)">
-            <summary>
-            Reads all out-of-range measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for out-of-range measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadOutOfRangeMeasurementsFromTestAsXml(System.String)">
-            <summary>
-            Reads all out-of-range measurements from the specified <see cref="T:DataQualityMonitoring.RangeTest"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-            </summary>
-            <param name="test">The name of the <see cref="T:DataQualityMonitoring.RangeTest"/> to check for out-of-range measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadOutOfRangeMeasurementsFromTestAsJson(System.String)">
-            <summary>
-            Reads all out-of-range measurements from the specified <see cref="T:DataQualityMonitoring.RangeTest"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
-            </summary>
-            <param name="test">The name of the <see cref="T:DataQualityMonitoring.RangeTest"/> to check for out-of-range measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.AttachRangeTest(DataQualityMonitoring.RangeTest)">
-            <summary>
-            Attaches a <see cref="T:DataQualityMonitoring.RangeTest"/> to this <see cref="T:DataQualityMonitoring.Services.OutOfRangeService"/>.
-            </summary>
-            <param name="test">The <see cref="T:DataQualityMonitoring.RangeTest"/> to be attached to this <see cref="T:DataQualityMonitoring.Services.OutOfRangeService"/>.</param>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.DetachRangeTest(DataQualityMonitoring.RangeTest)">
-            <summary>
-            Detaches a <see cref="T:DataQualityMonitoring.RangeTest"/> from this <see cref="T:DataQualityMonitoring.Services.OutOfRangeService"/>.
-            </summary>
-            <param name="test">The <see cref="T:DataQualityMonitoring.RangeTest"/> to be detached from this <see cref="T:DataQualityMonitoring.Services.OutOfRangeService"/>.</param>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.OutOfRangeService.Tests">
-            <summary>
-            Gets the collection of <see cref="T:DataQualityMonitoring.RangeTest"/>s that have registered with the service.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.IFlatlineService">
-            <summary>
-            Defines a REST web service for flatlined measurements.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.IFlatlineService.ReadAllFlatlinedMeasurementsAsXml">
-            <summary>
-            Reads all flatlined measurements from the <see cref="P:DataQualityMonitoring.Services.IFlatlineService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.IFlatlineService.ReadAllFlatlinedMeasurementsAsJson">
-            <summary>
-            Reads all flatlined measurements from the <see cref="P:DataQualityMonitoring.Services.IFlatlineService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.IFlatlineService.ReadFlatlinedMeasurementsFromDeviceAsXml(System.String)">
-            <summary>
-            Reads all flatlined measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for flatlined measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.IFlatlineService.ReadFlatlinedMeasurementsFromDeviceAsJson(System.String)">
-            <summary>
-            Reads all flatlined measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for flatlined measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.IFlatlineService.Test">
-            <summary>
-            Gets or sets the <see cref="T:DataQualityMonitoring.FlatlineTest"/> used by the web service for its data.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.TimestampService">
-            <summary>
-            Represents a REST web service for measurements with bad timestamps.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.ITimestampService">
-            <summary>
-            Defines a REST web service for measurements with bad timestamps.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.ITimestampService.ReadAllBadTimestampMeasurementsAsXml">
-            <summary>
-            Reads all measurements with bad timestamps from the <see cref="P:DataQualityMonitoring.Services.ITimestampService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.ITimestampService.ReadAllBadTimestampMeasurementsAsJson">
-            <summary>
-            Reads all measurements with bad timestamps from the <see cref="P:DataQualityMonitoring.Services.ITimestampService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.ITimestampService.ReadBadTimestampMeasurementsFromDeviceAsXml(System.String)">
-            <summary>
-            Reads all measurements with bad timestamps from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for flatlined measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.ITimestampService.ReadBadTimestampMeasurementsFromDeviceAsJson(System.String)">
-            <summary>
-            Reads all measurements with bad timestamps from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for flatlined measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.ITimestampService.Test">
-            <summary>
-            Gets or sets the <see cref="T:DataQualityMonitoring.TimestampTest"/> used by the web service for its data.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.TimestampService.#ctor(DataQualityMonitoring.TimestampTest)">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.TimestampService"/> class.
-            </summary>
-            <param name="test">The test to be used by this <see cref="T:DataQualityMonitoring.Services.TimestampService"/>.</param>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.TimestampService.ReadAllBadTimestampMeasurementsAsXml">
-            <summary>
-            Reads all measurements with bad timestamps from the <see cref="P:DataQualityMonitoring.Services.TimestampService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.TimestampService.ReadAllBadTimestampMeasurementsAsJson">
-            <summary>
-            Reads all measurements with bad timestamps from the <see cref="P:DataQualityMonitoring.Services.TimestampService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.TimestampService.ReadBadTimestampMeasurementsFromDeviceAsXml(System.String)">
-            <summary>
-            Reads all measurements with bad timestamps from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for flatlined measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.TimestampService.ReadBadTimestampMeasurementsFromDeviceAsJson(System.String)">
-            <summary>
-            Reads all measurements with bad timestamps from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for flatlined measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.TimestampService.Test">
-            <summary>
-            Gets or sets the <see cref="T:DataQualityMonitoring.TimestampTest"/> used by the web service for its data.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement">
-            <summary>
-            Represents an out-of-range <see cref="T:TimeSeriesFramework.IMeasurement"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.SerializableMeasurement">
-            <summary>
-            Represents a serializable <see cref="T:TimeSeriesFramework.IMeasurement"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.SerializableMeasurement.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.SerializableMeasurement"/> class.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.SerializableMeasurement.#ctor(TimeSeriesFramework.IMeasurement)">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.SerializableMeasurement"/> class.
-            </summary>
-            <param name="measurement"><see cref="T:TimeSeriesFramework.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.SerializableMeasurement"/> is to be initialized.</param>
-        </member>
-        <member name="M:DataQualityMonitoring.SerializableMeasurement.SetDeviceAndSignalType(System.Data.DataSet)">
-            <summary>
-            Acquires and sets the device and signal type of the source measurement.
-            </summary>
-            <param name="dataSource"><see cref="T:System.Data.DataSet"/> which contains information about the device and the signal type of the source measurement.</param>
-        </member>
-        <member name="M:DataQualityMonitoring.SerializableMeasurement.OnProcessException(System.Exception)">
-            <summary>
-            Raises the <see cref="E:DataQualityMonitoring.SerializableMeasurement.ProcessException"/> event.
-            </summary>
-            <param name="exception"><see cref="T:System.Exception"/> to send to <see cref="E:DataQualityMonitoring.SerializableMeasurement.ProcessException"/> event.</param>
-        </member>
-        <member name="E:DataQualityMonitoring.SerializableMeasurement.ProcessException">
-            <summary>
-            Occurs when an System.Exception is encountered when processing a request.
-            </summary>
-            <remarks><see cref="F:TVA.EventArgs`1.Argument"/> is the exception encountered when processing a request.</remarks>
-        </member>
-        <member name="P:DataQualityMonitoring.SerializableMeasurement.Key">
-            <summary>
-            Gets or sets the <see cref="P:TimeSeriesFramework.IMeasurement.Key"/>.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.SerializableMeasurement.SignalID">
-            <summary>
-            Gets or sets the <see cref="P:TimeSeriesFramework.ITimeSeriesValue.ID"/>.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.SerializableMeasurement.Value">
-            <summary>
-            Gets or sets the <see cref="P:TimeSeriesFramework.IMeasurement.AdjustedValue"/>.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.SerializableMeasurement.Timestamp">
-            <summary>
-            Gets or sets the <see cref="P:TimeSeriesFramework.ITimeSeriesValue.Timestamp"/> in <see cref="T:System.DateTime"/> string format.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.SerializableMeasurement.SignalType">
-            <summary>
-            Gets or sets the signal type of the <see cref="T:TimeSeriesFramework.IMeasurement"/>.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.SerializableMeasurement.Device">
-            <summary>
-            Gets or sets the device of the <see cref="T:TimeSeriesFramework.IMeasurement"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> class.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement.#ctor(TimeSeriesFramework.IMeasurement,System.Double,System.Double)">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> class.
-            </summary>
-            <param name="measurement"><see cref="T:TimeSeriesFramework.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> is to be initialized.</param>
-            <param name="lowRange">The lower boundary of the <see cref="T:TimeSeriesFramework.IMeasurement"/>'s value.</param>
-            <param name="highRange">The upper boundary of the <see cref="T:TimeSeriesFramework.IMeasurement"/>'s value.</param>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement.LowRange">
-            <summary>
-            Gets or sets the lower boundary of the <see cref="T:TimeSeriesFramework.IMeasurement"/>'s value.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement.HighRange">
-            <summary>
-            Gets or sets the upper boundary of the <see cref="T:TimeSeriesFramework.IMeasurement"/>'s value.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.SerializableRangeTest">
-            <summary>
-            Represents a container for <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/>s that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableRangeTest.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableRangeTest.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>.
-            </summary>
-            <param name="acronym">The acronym of the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/></param>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableRangeTest.#ctor(System.Collections.Generic.ICollection{TimeSeriesFramework.IMeasurement},System.Double,System.Double)">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>.
-            </summary>
-            <param name="outOfRangeMeasurements">The collection of out-of-range measurements to be contained by this <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>.</param>
-            <param name="lowRange">The lower boundary of the measurements' values.</param>
-            <param name="highRange">The upper boundary of the measurements' values.</param>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.SerializableRangeTest.Acronym">
-            <summary>
-            Gets or sets the index of the range test.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.SerializableRangeTest.OutOfRangeMeasurements">
-            <summary>
-            Gets or sets the <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/>s contained in the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.SerializableFlatlineTest">
-            <summary>
-            Represents a container for <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/>s that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableFlatlineTest.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> class.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableFlatlineTest.#ctor(System.Collections.Generic.ICollection{TimeSeriesFramework.IMeasurement},System.Int64)">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> class.
-            </summary>
-            <param name="flatlinedMeasurements">The collection of flatlined measurements to be contained by this <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/>.</param>
-            <param name="currentTime">The current time in ticks.</param>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.SerializableFlatlineTest.FlatlinedMeasurements">
-            <summary>
-            Gets or sets the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/>s contained in the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/>.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement">
-            <summary>
-            Represents an <see cref="T:TimeSeriesFramework.IMeasurement"/> with a bad timestamp that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement"/> class.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement.#ctor(TimeSeriesFramework.IMeasurement,TVA.Ticks)">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement"/> class.
-            </summary>
-            <param name="measurement"><see cref="T:TimeSeriesFramework.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> is to be initialized.</param>
-            <param name="arrivalTime">The arrival time of the <see cref="T:TimeSeriesFramework.IMeasurement"/>.</param>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement.TimeOfArrival">
-            <summary>
-            Gets or sets the arrival time of the <see cref="T:TimeSeriesFramework.IMeasurement"/>.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.TimestampTest">
-            <summary>
-            Tests measurements to determine whether their timestamps are good or bad.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.TimestampTest"/> class.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.GetShortStatus(System.Int32)">
-            <summary>
-            Returns a short, one-line status message about the adapter.
-            </summary>
-            <param name="maxLength">The maximum length of the message to be returned.</param>
-            <returns>A short, one-line status message.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.Initialize">
-            <summary>
-            Initializes <see cref="T:DataQualityMonitoring.TimestampTest"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.Start">
-            <summary>
-            Starts this <see cref="T:DataQualityMonitoring.TimestampTest"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.Stop">
-            <summary>
-            Stops this <see cref="T:DataQualityMonitoring.TimestampTest"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{TimeSeriesFramework.IMeasurement})">
-            <summary>
-            Queues a collection of measurements for processing.
-            </summary>
-            <param name="measurements">Collection of measurements to queue for processing.</param>
-            <remarks>
-            The <see cref="T:DataQualityMonitoring.TimestampTest"/> adapter doesn't process any measurements.
-            </remarks>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.Dispose(System.Boolean)">
-            <summary>
-            Releases the unmanaged resources used by the <see cref="T:DataQualityMonitoring.TimestampTest"/> object and optionally releases the managed resources.
-            </summary>
-            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.GetMeasurementsWithBadTimestamps">
-            <summary>
-            Gets all the measurements with bad timestamps.
-            </summary>
-            <returns>A dictionary where the keys are arrival times and the values are <see cref="T:System.Collections.Generic.LinkedList`1"/>s of measurements that arrived at the corresponding time.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.GetBadTimestampMeasurementCount">
-            <summary>
-            Gets the number of measurements with bad timestamps received by this <see cref="T:DataQualityMonitoring.TimestampTest"/>.
-            </summary>
-            <returns>The number of measurements with bad timestamps.</returns>
-        </member>
-        <member name="P:DataQualityMonitoring.TimestampTest.TimeToPurge">
-            <summary>
-            Gets or sets the age, in seconds, at which measurements with bad timestamps are purged from the adapter.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.TimestampTest.WarnInterval">
-            <summary>
-            Gets or sets the amount of time, in seconds, between console updates.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.TimestampTest.ConcentratorName">
-            <summary>
-            Gets or sets the name of the concentrator whose measurements will be checked for bad timestamps.
-            Modifying this property will cause this adapter to search for an action adapter with the name
-            that was supplied to the property. If one is found, it will detach from the current adapter and
-            attach to the other. If one is not found, nothing will happen.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.SerializableRangeTestCollection">
-            <summary>
-            Represents a container for <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>s that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.SerializableRangeTestCollection.RangeTests">
-            <summary>
-            Gets or sets the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>s contained in the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/>.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement">
-            <summary>
-            Represents a flatlined <see cref="T:TimeSeriesFramework.IMeasurement"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/> class.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement.#ctor(TimeSeriesFramework.IMeasurement,System.Int64)">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/> class.
-            </summary>
-            <param name="measurement"><see cref="T:TimeSeriesFramework.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/> is to be initialized.</param>
-            <param name="timeSinceLastChange">The amount of time since the flatlined measurement last changed in ticks.</param>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement.TimeSinceLastChange">
-            <summary>
-            Gets or sets the amount of time in seconds since the <see cref="T:TimeSeriesFramework.IMeasurement"/> last changed its value.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.SerializableTimestampTest">
-            <summary>
-            Represents a container for <see cref="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement"/>s that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableTimestampTest.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableTimestampTest.#ctor(System.Collections.Generic.Dictionary{TVA.Ticks,System.Collections.Generic.LinkedList{TimeSeriesFramework.IMeasurement}})">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/>.
-            </summary>
-            <param name="badTimestampMeasurements">
-            A dictionary where the values are <see cref="T:System.Collections.Generic.LinkedList`1"/>s containing measurements and the keys are the arrival
-            times of the measurements. The measurements are to be stored in this <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/>.
-            </param>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.SerializableTimestampTest.BadTimestampMeasurements">
-            <summary>
-            Gets or sets the <see cref="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement"/>s contained in the <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/>.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.FlatlineService">
-            <summary>
-            Represents a REST web service for flatlined measurements.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.FlatlineService.#ctor(DataQualityMonitoring.FlatlineTest)">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.FlatlineService"/> class.
-            </summary>
-            <param name="test">The test to be used by this <see cref="T:DataQualityMonitoring.Services.FlatlineService"/>.</param>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.FlatlineService.ReadAllFlatlinedMeasurementsAsXml">
-            <summary>
-            Reads all flatlined measurements from the <see cref="P:DataQualityMonitoring.Services.FlatlineService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.FlatlineService.ReadAllFlatlinedMeasurementsAsJson">
-            <summary>
-            Reads all flatlined measurements from the <see cref="P:DataQualityMonitoring.Services.FlatlineService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.FlatlineService.ReadFlatlinedMeasurementsFromDeviceAsXml(System.String)">
-            <summary>
-            Reads all flatlined measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for flatlined measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.FlatlineService.ReadFlatlinedMeasurementsFromDeviceAsJson(System.String)">
-            <summary>
-            Reads all flatlined measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for flatlined measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.FlatlineService.Test">
-            <summary>
-            Gets or sets the <see cref="T:DataQualityMonitoring.FlatlineTest"/> used by the web service for its data.
             </summary>
         </member>
         <member name="T:DataQualityMonitoring.RangeTest">
@@ -809,6 +205,610 @@
         <member name="P:DataQualityMonitoring.RangeTest.WarnInterval">
             <summary>
             Gets or sets how often the <see cref="T:DataQualityMonitoring.RangeTest"/> sends out-of-range notifications to the console.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.FlatlineService">
+            <summary>
+            Represents a REST web service for flatlined measurements.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.IFlatlineService">
+            <summary>
+            Defines a REST web service for flatlined measurements.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IFlatlineService.ReadAllFlatlinedMeasurementsAsXml">
+            <summary>
+            Reads all flatlined measurements from the <see cref="P:DataQualityMonitoring.Services.IFlatlineService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IFlatlineService.ReadAllFlatlinedMeasurementsAsJson">
+            <summary>
+            Reads all flatlined measurements from the <see cref="P:DataQualityMonitoring.Services.IFlatlineService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IFlatlineService.ReadFlatlinedMeasurementsFromDeviceAsXml(System.String)">
+            <summary>
+            Reads all flatlined measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+            </summary>
+            <param name="device">The name of the device to check for flatlined measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IFlatlineService.ReadFlatlinedMeasurementsFromDeviceAsJson(System.String)">
+            <summary>
+            Reads all flatlined measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
+            </summary>
+            <param name="device">The name of the device to check for flatlined measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.IFlatlineService.Test">
+            <summary>
+            Gets or sets the <see cref="T:DataQualityMonitoring.FlatlineTest"/> used by the web service for its data.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.FlatlineService.#ctor(DataQualityMonitoring.FlatlineTest)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.FlatlineService"/> class.
+            </summary>
+            <param name="test">The test to be used by this <see cref="T:DataQualityMonitoring.Services.FlatlineService"/>.</param>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.FlatlineService.ReadAllFlatlinedMeasurementsAsXml">
+            <summary>
+            Reads all flatlined measurements from the <see cref="P:DataQualityMonitoring.Services.FlatlineService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.FlatlineService.ReadAllFlatlinedMeasurementsAsJson">
+            <summary>
+            Reads all flatlined measurements from the <see cref="P:DataQualityMonitoring.Services.FlatlineService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.FlatlineService.ReadFlatlinedMeasurementsFromDeviceAsXml(System.String)">
+            <summary>
+            Reads all flatlined measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+            </summary>
+            <param name="device">The name of the device to check for flatlined measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.FlatlineService.ReadFlatlinedMeasurementsFromDeviceAsJson(System.String)">
+            <summary>
+            Reads all flatlined measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+            </summary>
+            <param name="device">The name of the device to check for flatlined measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> object.</returns>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.FlatlineService.Test">
+            <summary>
+            Gets or sets the <see cref="T:DataQualityMonitoring.FlatlineTest"/> used by the web service for its data.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.IOutOfRangeService">
+            <summary>
+            Defines a REST web service for out-of-range measurements.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadAllOutOfRangeMeasurementsAsXml">
+            <summary>
+            Reads all out-of-range measurements from the <see cref="P:DataQualityMonitoring.Services.IOutOfRangeService.Tests"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadAllOutOfRangeMeasurementsAsJson">
+            <summary>
+            Reads all out-of-range measurements from the <see cref="P:DataQualityMonitoring.Services.IOutOfRangeService.Tests"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadOutOfRangeMeasurementsWithSignalTypeAsXml(System.String)">
+            <summary>
+            Reads all out-of-range measurements with the specified signal type and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+            </summary>
+            <param name="signalType">The signal type of the desired out-of-range measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadOutOfRangeMeasurementsWithSignalTypeAsJson(System.String)">
+            <summary>
+            Reads all out-of-range measurements with the specified signal type and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
+            </summary>
+            <param name="signalType">The signal type of the desired out-of-range measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadOutOfRangeMeasurementsFromDeviceAsXml(System.String)">
+            <summary>
+            Reads all out-of-range measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+            </summary>
+            <param name="device">The name of the device to check for out-of-range measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadOutOfRangeMeasurementsFromDeviceAsJson(System.String)">
+            <summary>
+            Reads all out-of-range measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
+            </summary>
+            <param name="device">The name of the device to check for out-of-range measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadOutOfRangeMeasurementsFromTestAsXml(System.String)">
+            <summary>
+            Reads all out-of-range measurements from the specified <see cref="T:DataQualityMonitoring.RangeTest"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+            </summary>
+            <param name="test">The name of the <see cref="T:DataQualityMonitoring.RangeTest"/> to check for out-of-range measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IOutOfRangeService.ReadOutOfRangeMeasurementsFromTestAsJson(System.String)">
+            <summary>
+            Reads all out-of-range measurements from the specified <see cref="T:DataQualityMonitoring.RangeTest"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
+            </summary>
+            <param name="test">The name of the <see cref="T:DataQualityMonitoring.RangeTest"/> to check for out-of-range measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/> object.</returns>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.IOutOfRangeService.Tests">
+            <summary>
+            Gets or collection of <see cref="T:DataQualityMonitoring.RangeTest"/>s used by the web service for its data.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.ITimestampService">
+            <summary>
+            Defines a REST web service for measurements with bad timestamps.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.ITimestampService.ReadAllBadTimestampMeasurementsAsXml">
+            <summary>
+            Reads all measurements with bad timestamps from the <see cref="P:DataQualityMonitoring.Services.ITimestampService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.ITimestampService.ReadAllBadTimestampMeasurementsAsJson">
+            <summary>
+            Reads all measurements with bad timestamps from the <see cref="P:DataQualityMonitoring.Services.ITimestampService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.ITimestampService.ReadBadTimestampMeasurementsFromDeviceAsXml(System.String)">
+            <summary>
+            Reads all measurements with bad timestamps from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+            </summary>
+            <param name="device">The name of the device to check for flatlined measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.ITimestampService.ReadBadTimestampMeasurementsFromDeviceAsJson(System.String)">
+            <summary>
+            Reads all measurements with bad timestamps from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
+            </summary>
+            <param name="device">The name of the device to check for flatlined measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.ITimestampService.Test">
+            <summary>
+            Gets or sets the <see cref="T:DataQualityMonitoring.TimestampTest"/> used by the web service for its data.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.OutOfRangeService">
+            <summary>
+            Represents a REST web service for out-of-range measurements.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.OutOfRangeService"/> class.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadAllOutOfRangeMeasurementsAsXml">
+            <summary>
+            Reads all out-of-range measurements from the <see cref="P:DataQualityMonitoring.Services.OutOfRangeService.Tests"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadAllOutOfRangeMeasurementsAsJson">
+            <summary>
+            Reads all out-of-range measurements from the <see cref="P:DataQualityMonitoring.Services.OutOfRangeService.Tests"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadOutOfRangeMeasurementsWithSignalTypeAsXml(System.String)">
+            <summary>
+            Reads all out-of-range measurements with the specified signal type and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+            </summary>
+            <param name="signalType">The signal type of the desired out-of-range measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadOutOfRangeMeasurementsWithSignalTypeAsJson(System.String)">
+            <summary>
+            Reads all out-of-range measurements with the specified signal type and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
+            </summary>
+            <param name="signalType">The signal type of the desired out-of-range measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadOutOfRangeMeasurementsFromDeviceAsXml(System.String)">
+            <summary>
+            Reads all out-of-range measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+            </summary>
+            <param name="device">The name of the device to check for out-of-range measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadOutOfRangeMeasurementsFromDeviceAsJson(System.String)">
+            <summary>
+            Reads all out-of-range measurements from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
+            </summary>
+            <param name="device">The name of the device to check for out-of-range measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadOutOfRangeMeasurementsFromTestAsXml(System.String)">
+            <summary>
+            Reads all out-of-range measurements from the specified <see cref="T:DataQualityMonitoring.RangeTest"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+            </summary>
+            <param name="test">The name of the <see cref="T:DataQualityMonitoring.RangeTest"/> to check for out-of-range measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.ReadOutOfRangeMeasurementsFromTestAsJson(System.String)">
+            <summary>
+            Reads all out-of-range measurements from the specified <see cref="T:DataQualityMonitoring.RangeTest"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
+            </summary>
+            <param name="test">The name of the <see cref="T:DataQualityMonitoring.RangeTest"/> to check for out-of-range measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.AttachRangeTest(DataQualityMonitoring.RangeTest)">
+            <summary>
+            Attaches a <see cref="T:DataQualityMonitoring.RangeTest"/> to this <see cref="T:DataQualityMonitoring.Services.OutOfRangeService"/>.
+            </summary>
+            <param name="test">The <see cref="T:DataQualityMonitoring.RangeTest"/> to be attached to this <see cref="T:DataQualityMonitoring.Services.OutOfRangeService"/>.</param>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.OutOfRangeService.DetachRangeTest(DataQualityMonitoring.RangeTest)">
+            <summary>
+            Detaches a <see cref="T:DataQualityMonitoring.RangeTest"/> from this <see cref="T:DataQualityMonitoring.Services.OutOfRangeService"/>.
+            </summary>
+            <param name="test">The <see cref="T:DataQualityMonitoring.RangeTest"/> to be detached from this <see cref="T:DataQualityMonitoring.Services.OutOfRangeService"/>.</param>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.OutOfRangeService.Tests">
+            <summary>
+            Gets the collection of <see cref="T:DataQualityMonitoring.RangeTest"/>s that have registered with the service.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement">
+            <summary>
+            Represents an <see cref="T:TimeSeriesFramework.IMeasurement"/> with a bad timestamp that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.SerializableMeasurement">
+            <summary>
+            Represents a serializable <see cref="T:TimeSeriesFramework.IMeasurement"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.SerializableMeasurement.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.SerializableMeasurement"/> class.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.SerializableMeasurement.#ctor(TimeSeriesFramework.IMeasurement)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.SerializableMeasurement"/> class.
+            </summary>
+            <param name="measurement"><see cref="T:TimeSeriesFramework.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.SerializableMeasurement"/> is to be initialized.</param>
+        </member>
+        <member name="M:DataQualityMonitoring.SerializableMeasurement.SetDeviceAndSignalType(System.Data.DataSet)">
+            <summary>
+            Acquires and sets the device and signal type of the source measurement.
+            </summary>
+            <param name="dataSource"><see cref="T:System.Data.DataSet"/> which contains information about the device and the signal type of the source measurement.</param>
+        </member>
+        <member name="M:DataQualityMonitoring.SerializableMeasurement.OnProcessException(System.Exception)">
+            <summary>
+            Raises the <see cref="E:DataQualityMonitoring.SerializableMeasurement.ProcessException"/> event.
+            </summary>
+            <param name="exception"><see cref="T:System.Exception"/> to send to <see cref="E:DataQualityMonitoring.SerializableMeasurement.ProcessException"/> event.</param>
+        </member>
+        <member name="E:DataQualityMonitoring.SerializableMeasurement.ProcessException">
+            <summary>
+            Occurs when an System.Exception is encountered when processing a request.
+            </summary>
+            <remarks><see cref="F:TVA.EventArgs`1.Argument"/> is the exception encountered when processing a request.</remarks>
+        </member>
+        <member name="P:DataQualityMonitoring.SerializableMeasurement.Key">
+            <summary>
+            Gets or sets the <see cref="P:TimeSeriesFramework.IMeasurement.Key"/>.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.SerializableMeasurement.SignalID">
+            <summary>
+            Gets or sets the <see cref="P:TimeSeriesFramework.ITimeSeriesValue.ID"/>.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.SerializableMeasurement.Value">
+            <summary>
+            Gets or sets the <see cref="P:TimeSeriesFramework.IMeasurement.AdjustedValue"/>.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.SerializableMeasurement.Timestamp">
+            <summary>
+            Gets or sets the <see cref="P:TimeSeriesFramework.ITimeSeriesValue.Timestamp"/> in <see cref="T:System.DateTime"/> string format.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.SerializableMeasurement.SignalType">
+            <summary>
+            Gets or sets the signal type of the <see cref="T:TimeSeriesFramework.IMeasurement"/>.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.SerializableMeasurement.Device">
+            <summary>
+            Gets or sets the device of the <see cref="T:TimeSeriesFramework.IMeasurement"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement"/> class.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement.#ctor(TimeSeriesFramework.IMeasurement,TVA.Ticks)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement"/> class.
+            </summary>
+            <param name="measurement"><see cref="T:TimeSeriesFramework.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> is to be initialized.</param>
+            <param name="arrivalTime">The arrival time of the <see cref="T:TimeSeriesFramework.IMeasurement"/>.</param>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement.TimeOfArrival">
+            <summary>
+            Gets or sets the arrival time of the <see cref="T:TimeSeriesFramework.IMeasurement"/>.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement">
+            <summary>
+            Represents a flatlined <see cref="T:TimeSeriesFramework.IMeasurement"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/> class.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement.#ctor(TimeSeriesFramework.IMeasurement,System.Int64)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/> class.
+            </summary>
+            <param name="measurement"><see cref="T:TimeSeriesFramework.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/> is to be initialized.</param>
+            <param name="timeSinceLastChange">The amount of time since the flatlined measurement last changed in ticks.</param>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement.TimeSinceLastChange">
+            <summary>
+            Gets or sets the amount of time in seconds since the <see cref="T:TimeSeriesFramework.IMeasurement"/> last changed its value.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.SerializableFlatlineTest">
+            <summary>
+            Represents a container for <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/>s that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableFlatlineTest.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> class.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableFlatlineTest.#ctor(System.Collections.Generic.ICollection{TimeSeriesFramework.IMeasurement},System.Int64)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> class.
+            </summary>
+            <param name="flatlinedMeasurements">The collection of flatlined measurements to be contained by this <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/>.</param>
+            <param name="currentTime">The current time in ticks.</param>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableFlatlineTest.FlatlinedMeasurements">
+            <summary>
+            Gets or sets the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/>s contained in the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/>.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement">
+            <summary>
+            Represents an out-of-range <see cref="T:TimeSeriesFramework.IMeasurement"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> class.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement.#ctor(TimeSeriesFramework.IMeasurement,System.Double,System.Double)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> class.
+            </summary>
+            <param name="measurement"><see cref="T:TimeSeriesFramework.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> is to be initialized.</param>
+            <param name="lowRange">The lower boundary of the <see cref="T:TimeSeriesFramework.IMeasurement"/>'s value.</param>
+            <param name="highRange">The upper boundary of the <see cref="T:TimeSeriesFramework.IMeasurement"/>'s value.</param>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement.LowRange">
+            <summary>
+            Gets or sets the lower boundary of the <see cref="T:TimeSeriesFramework.IMeasurement"/>'s value.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement.HighRange">
+            <summary>
+            Gets or sets the upper boundary of the <see cref="T:TimeSeriesFramework.IMeasurement"/>'s value.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.SerializableRangeTest">
+            <summary>
+            Represents a container for <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/>s that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableRangeTest.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableRangeTest.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>.
+            </summary>
+            <param name="acronym">The acronym of the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/></param>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableRangeTest.#ctor(System.Collections.Generic.ICollection{TimeSeriesFramework.IMeasurement},System.Double,System.Double)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>.
+            </summary>
+            <param name="outOfRangeMeasurements">The collection of out-of-range measurements to be contained by this <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>.</param>
+            <param name="lowRange">The lower boundary of the measurements' values.</param>
+            <param name="highRange">The upper boundary of the measurements' values.</param>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableRangeTest.Acronym">
+            <summary>
+            Gets or sets the index of the range test.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableRangeTest.OutOfRangeMeasurements">
+            <summary>
+            Gets or sets the <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/>s contained in the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.SerializableRangeTestCollection">
+            <summary>
+            Represents a container for <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>s that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableRangeTestCollection.RangeTests">
+            <summary>
+            Gets or sets the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>s contained in the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/>.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.SerializableTimestampTest">
+            <summary>
+            Represents a container for <see cref="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement"/>s that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableTimestampTest.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableTimestampTest.#ctor(System.Collections.Generic.Dictionary{TVA.Ticks,System.Collections.Generic.LinkedList{TimeSeriesFramework.IMeasurement}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/>.
+            </summary>
+            <param name="badTimestampMeasurements">
+            A dictionary where the values are <see cref="T:System.Collections.Generic.LinkedList`1"/>s containing measurements and the keys are the arrival
+            times of the measurements. The measurements are to be stored in this <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/>.
+            </param>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableTimestampTest.BadTimestampMeasurements">
+            <summary>
+            Gets or sets the <see cref="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement"/>s contained in the <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/>.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.TimestampService">
+            <summary>
+            Represents a REST web service for measurements with bad timestamps.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.TimestampService.#ctor(DataQualityMonitoring.TimestampTest)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.TimestampService"/> class.
+            </summary>
+            <param name="test">The test to be used by this <see cref="T:DataQualityMonitoring.Services.TimestampService"/>.</param>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.TimestampService.ReadAllBadTimestampMeasurementsAsXml">
+            <summary>
+            Reads all measurements with bad timestamps from the <see cref="P:DataQualityMonitoring.Services.TimestampService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.TimestampService.ReadAllBadTimestampMeasurementsAsJson">
+            <summary>
+            Reads all measurements with bad timestamps from the <see cref="P:DataQualityMonitoring.Services.TimestampService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.TimestampService.ReadBadTimestampMeasurementsFromDeviceAsXml(System.String)">
+            <summary>
+            Reads all measurements with bad timestamps from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
+            </summary>
+            <param name="device">The name of the device to check for flatlined measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.TimestampService.ReadBadTimestampMeasurementsFromDeviceAsJson(System.String)">
+            <summary>
+            Reads all measurements with bad timestamps from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
+            </summary>
+            <param name="device">The name of the device to check for flatlined measurements.</param>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.TimestampService.Test">
+            <summary>
+            Gets or sets the <see cref="T:DataQualityMonitoring.TimestampTest"/> used by the web service for its data.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.TimestampTest">
+            <summary>
+            Tests measurements to determine whether their timestamps are good or bad.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.TimestampTest.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DataQualityMonitoring.TimestampTest"/> class.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.TimestampTest.GetShortStatus(System.Int32)">
+            <summary>
+            Returns a short, one-line status message about the adapter.
+            </summary>
+            <param name="maxLength">The maximum length of the message to be returned.</param>
+            <returns>A short, one-line status message.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.TimestampTest.Initialize">
+            <summary>
+            Initializes <see cref="T:DataQualityMonitoring.TimestampTest"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.TimestampTest.Start">
+            <summary>
+            Starts this <see cref="T:DataQualityMonitoring.TimestampTest"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.TimestampTest.Stop">
+            <summary>
+            Stops this <see cref="T:DataQualityMonitoring.TimestampTest"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.TimestampTest.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{TimeSeriesFramework.IMeasurement})">
+            <summary>
+            Queues a collection of measurements for processing.
+            </summary>
+            <param name="measurements">Collection of measurements to queue for processing.</param>
+            <remarks>
+            The <see cref="T:DataQualityMonitoring.TimestampTest"/> adapter doesn't process any measurements.
+            </remarks>
+        </member>
+        <member name="M:DataQualityMonitoring.TimestampTest.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:DataQualityMonitoring.TimestampTest"/> object and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="M:DataQualityMonitoring.TimestampTest.GetMeasurementsWithBadTimestamps">
+            <summary>
+            Gets all the measurements with bad timestamps.
+            </summary>
+            <returns>A dictionary where the keys are arrival times and the values are <see cref="T:System.Collections.Generic.LinkedList`1"/>s of measurements that arrived at the corresponding time.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.TimestampTest.GetBadTimestampMeasurementCount">
+            <summary>
+            Gets the number of measurements with bad timestamps received by this <see cref="T:DataQualityMonitoring.TimestampTest"/>.
+            </summary>
+            <returns>The number of measurements with bad timestamps.</returns>
+        </member>
+        <member name="P:DataQualityMonitoring.TimestampTest.TimeToPurge">
+            <summary>
+            Gets or sets the age, in seconds, at which measurements with bad timestamps are purged from the adapter.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.TimestampTest.WarnInterval">
+            <summary>
+            Gets or sets the amount of time, in seconds, between console updates.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.TimestampTest.ConcentratorName">
+            <summary>
+            Gets or sets the name of the concentrator whose measurements will be checked for bad timestamps.
+            Modifying this property will cause this adapter to search for an action adapter with the name
+            that was supplied to the property. If one is found, it will detach from the current adapter and
+            attach to the other. If one is not found, nothing will happen.
             </summary>
         </member>
     </members>
