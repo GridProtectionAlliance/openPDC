@@ -398,11 +398,11 @@ namespace openPDCManager.UI.WPF.ViewModels
                 else
                 {
                     if (m_adapterType == AdapterType.Action)
-                        RuntimeID = CommonFunctions.GetRuntimeID("CustomActionAdapter", CurrentItem.ID);
+                        RuntimeID = TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("CustomActionAdapter", CurrentItem.ID);
                     else if (m_adapterType == AdapterType.Input)
-                        RuntimeID = CommonFunctions.GetRuntimeID("CustomInputAdapter", CurrentItem.ID);
+                        RuntimeID = TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("CustomInputAdapter", CurrentItem.ID);
                     else
-                        RuntimeID = CommonFunctions.GetRuntimeID("CustomOutputAdapter", CurrentItem.ID);
+                        RuntimeID = TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("CustomOutputAdapter", CurrentItem.ID);
                 }
 
                 // If the current item changes, but the connection string does not, the
@@ -418,7 +418,7 @@ namespace openPDCManager.UI.WPF.ViewModels
             {
                 if (Confirm("Do you want to send Initialize " + GetCurrentItemName() + "?", "Confirm Initialize"))
                 {
-                    Popup(CommonFunctions.SendCommandToService("Initialize " + RuntimeID), "Initialize", MessageBoxImage.Information);
+                    Popup(TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + RuntimeID), "Initialize", MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
