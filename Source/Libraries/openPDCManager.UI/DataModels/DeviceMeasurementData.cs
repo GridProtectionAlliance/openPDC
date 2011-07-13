@@ -298,6 +298,7 @@ namespace openPDCManager.UI.DataModels
     /// <summary>
     /// Stores information on a device.
     /// </summary>
+#pragma warning disable
     public class DeviceInfo
     {
         public int? ID { get; set; }
@@ -316,6 +317,7 @@ namespace openPDCManager.UI.DataModels
     /// <summary>
     /// Stores information about a measurement
     /// </summary>
+#pragma warning disable
     public class MeasurementInfo
     {
         public int? DeviceID { get; set; }
@@ -338,6 +340,7 @@ namespace openPDCManager.UI.DataModels
     /// <summary>
     /// Class to bind device measurement data to view.
     /// </summary>
+#pragma warning disable
     public class DeviceMeasurementDataForBinding
     {
         public ObservableCollection<DeviceMeasurementData> DeviceMeasurementDataList { get; set; }
