@@ -42,6 +42,11 @@
             Gets or sets the name of the file from which to read measurements.
             </summary>
         </member>
+        <member name="P:WavInputAdapter.WavInputAdapter.RecoveryDelay">
+            <summary>
+            Gets or sets the amount of time, in seconds, needed to recover from a back log.
+            </summary>
+        </member>
         <member name="P:WavInputAdapter.WavInputAdapter.OutputMeasurements">
             <summary>
             Gets or sets the output measurements.
