@@ -5494,6 +5494,137 @@ namespace openPDCManager.Data
 
         #region " Statistics Hierarchy Code"
 
+        /// <summary>
+        /// Gets the statistic info list used by statistic load functions.
+        /// </summary>
+        /// <param name="database">The database connection used to retrieve the statistic info list.</param>
+        /// <param name="deviceID">The ID of the device to which the statistics are associated.</param>
+        /// <returns>A list containing <see cref="DetailStatisticInfo"/> objects that were retrieved from the database.</returns>
+        public static List<DetailStatisticInfo> GetStatisticInfoList(DataConnection connection, int deviceID)
+        {
+            return GetStatisticInfoList(connection, null)
+                .Where(statistic => statistic.DeviceID == deviceID)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Gets the statistic info list used by statistic load functions.
+        /// </summary>
+        /// <param name="database">The database connection used to retrieve the statistic info list.</param>
+        /// <param name="nodeID">The ID of the node to which the statistics are associated.</param>
+        /// <returns>A list containing <see cref="DetailStatisticInfo"/> objects that were retrieved from the database.</returns>
+        public static List<DetailStatisticInfo> GetStatisticInfoList(DataConnection connection, string nodeID)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                DataTable statisticMeasurements;
+                DataTable statisticDefinitions;
+                Func<DataRow, KeyValuePair<DataRow, string>> mapFunction;
+                Func<KeyValuePair<DataRow, string>, DetailStatisticInfo> selectFunction;
+
+                if (connection == null)
+                {
+                    connection = new DataConnection();
+                    createdConnection = true;
+                }
+
+                //****************************************************************************
+                //Third, we need to get statistics measurements from Measurement table, statistic definition from Statistic table. Create relationship between those two.
+                //Then create parent child relationship to above two datatables.
+                IDbCommand commandMeasurements = connection.Connection.CreateCommand();
+                commandMeasurements.CommandType = CommandType.Text;
+                if (nodeID == null)
+                {
+                    commandMeasurements.CommandText = "Select DeviceID, PointID, PointTag, SignalReference From StatisticMeasurement Order By SignalReference";
+                }
+                else
+                {
+                    commandMeasurements.CommandText = "Select DeviceID, PointID, PointTag, SignalReference From StatisticMeasurement Where NodeID = @nodeID Order By SignalReference";
+                    if (commandMeasurements.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
+                        commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", "{" + nodeID + "}"));
+                    else
+                        commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", nodeID));
+                }
+
+                statisticMeasurements = new DataTable("StatisticMeasurements");
+                statisticMeasurements.Load(commandMeasurements.ExecuteReader());
+                //****************************************************************************
+
+                //****************************************************************************
+                //Get Statistic definitions.
+                IDbCommand commandStatistics = connection.Connection.CreateCommand();
+                commandStatistics.CommandType = CommandType.Text;
+                commandStatistics.CommandText = "Select Source, SignalIndex, Name, Description, DataType, DisplayFormat, IsConnectedState, LoadOrder From Statistic Order By Source, SignalIndex";
+                statisticDefinitions = new DataTable("StatisticDefinitions");
+                statisticDefinitions.Load(commandStatistics.ExecuteReader());
+                //****************************************************************************
+
+                // Map function is used to map statistic measurements to their source.
+                mapFunction = measurement =>
+                {
+                    string signalReference = measurement.Field<string>("SignalReference");
+                    string measurementSource = signalReference.Contains("!IS") ? "InputStream" : signalReference.Contains("!OS") ? "OutputStream" : "Device";
+                    return new KeyValuePair<DataRow, string>(measurement, measurementSource);
+                };
+
+                // Select function is used to create DetailStatisticInfo objects from the DataRows obtained from the database.
+                selectFunction = keyValuePair =>
+                {
+                    DataRow measurement;
+                    DataRow statistic;
+                    string signalReference;
+                    string measurementSource;
+                    int measurementIndex;
+
+                    measurement = keyValuePair.Key;
+                    measurementSource = keyValuePair.Value;
+                    signalReference = measurement.Field<string>("SignalReference");
+                    measurementIndex = Convert.ToInt32(signalReference.Substring(signalReference.LastIndexOf("-ST") + 3));
+
+                    statistic = statisticDefinitions.Rows.Cast<DataRow>().Single(row =>
+                    {
+                        bool sameSource = row.Field<string>("Source") == measurementSource;
+                        bool sameIndex = row.Field<int>("SignalIndex") == measurementIndex;
+                        return sameSource && sameIndex;
+                    });
+
+                    return new DetailStatisticInfo()
+                    {
+                        DeviceID = Convert.ToInt32(measurement.Field<object>("DeviceID") ?? -1),
+                        PointID = Convert.ToInt32(measurement.Field<object>("PointID")),
+                        PointTag = measurement.Field<string>("PointTag"),
+                        SignalReference = signalReference,
+                        Statistics = new BasicStatisticInfo()
+                        {
+                            Source = measurementSource,
+                            Name = statistic.Field<string>("Name"),
+                            Description = statistic.Field<string>("Description"),
+                            Quality = "N/A",
+                            TimeTag = "N/A",
+                            Value = "--",
+                            DataType = statistic.Field<object>("DataType").ToNonNullString(),
+                            DisplayFormat = statistic.Field<object>("DisplayFormat").ToNonNullString(),
+                            IsConnectedState = Convert.ToBoolean(statistic.Field<object>("IsConnectedState")),
+                            LoadOrder = Convert.ToInt32(statistic.Field<object>("LoadOrder"))
+                        }
+                    };
+                };
+
+                return statisticMeasurements.Rows.Cast<DataRow>()
+                    .Select(mapFunction)
+                    .OrderBy(pair => pair.Value)
+                    .Select(selectFunction)
+                    .ToList();
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
         public static ObservableCollection<StatisticMeasurementData> GetStatisticMeasurementData(DataConnection connection, string nodeID)
         {
             bool createdConnection = false;
@@ -5560,58 +5691,7 @@ namespace openPDCManager.Data
                 resultTable.Load(commandOutputStream.ExecuteReader());
                 //****************************************************************************
 
-                //****************************************************************************
-                //Third, we need to get statistics measurements from Measurement table, statistic definition from Statistic table. Create relationship between those two.
-                //Then create parent child relationship to above two datatables.
-                IDbCommand commandMeasurements = connection.Connection.CreateCommand();
-                commandMeasurements.CommandType = CommandType.Text;
-                commandMeasurements.CommandText = "Select DeviceID, PointID, PointTag, SignalReference, MeasurementSource From StatisticMeasurement Where NodeID = @nodeID Order By MeasurementSource, SignalReference";
-                if (commandMeasurements.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
-                    commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", "{" + nodeID + "}"));
-                else
-                    commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", nodeID));
-
-                resultTable = new DataTable("StatisticMeasurements");
-                resultSet.Tables.Add(resultTable);
-                resultTable.Load(commandMeasurements.ExecuteReader());
-                //****************************************************************************
-
-                //****************************************************************************
-                //Get Statistic definitions.
-                IDbCommand commandStatistics = connection.Connection.CreateCommand();
-                commandStatistics.CommandType = CommandType.Text;
-                commandStatistics.CommandText = "Select Source, SignalIndex, Name, Description, DataType, DisplayFormat, IsConnectedState, LoadOrder From Statistic Order By Source, SignalIndex";
-                resultTable = new DataTable("StatisticDefinitions");
-                resultSet.Tables.Add(resultTable);
-                resultTable.Load(commandStatistics.ExecuteReader());
-                //****************************************************************************
-
-                List<DetailStatisticInfo> statisticInfoList = new List<DetailStatisticInfo>();
-                statisticInfoList = (from measurement in resultSet.Tables["StatisticMeasurements"].AsEnumerable()
-                                     select new DetailStatisticInfo()
-                                     {
-                                         DeviceID = measurement.Field<object>("DeviceID") == null ? -1 : Convert.ToInt32(measurement.Field<object>("DeviceID")),
-                                         PointID = Convert.ToInt32(measurement.Field<object>("PointID")),
-                                         PointTag = measurement.Field<string>("PointTag"),
-                                         SignalReference = measurement.Field<string>("SignalReference"),
-                                         Statistics = (from statistic in resultSet.Tables["StatisticDefinitions"].AsEnumerable()
-                                                       where statistic.Field<string>("Source") == measurement.Field<string>("MeasurementSource") &&
-                                                          statistic.Field<int>("SignalIndex") == Convert.ToInt32((measurement.Field<string>("SignalReference")).Substring((measurement.Field<string>("SignalReference")).LastIndexOf("-ST") + 3))
-                                                       select new BasicStatisticInfo()
-                                                       {
-                                                           Source = statistic.Field<string>("Source"),
-                                                           Name = statistic.Field<string>("Name"),
-                                                           Description = statistic.Field<string>("Description"),
-                                                           Quality = "N/A",
-                                                           TimeTag = "N/A",
-                                                           Value = "--",
-                                                           DataType = statistic.Field<object>("DataType") == null ? string.Empty : statistic.Field<string>("DataType"),
-                                                           DisplayFormat = statistic.Field<object>("DisplayFormat") == null ? string.Empty : statistic.Field<string>("DisplayFormat"),
-                                                           IsConnectedState = Convert.ToBoolean(statistic.Field<object>("IsConnectedState")),
-                                                           LoadOrder = Convert.ToInt32(statistic.Field<object>("LoadOrder"))
-                                                       }
-                                                       ).First()
-                                     }).ToList();
+                List<DetailStatisticInfo> statisticInfoList = GetStatisticInfoList(connection, nodeID);
 
                 //****************************************************************************
 
@@ -5701,154 +5781,19 @@ namespace openPDCManager.Data
 
         public static Dictionary<int, BasicStatisticInfo> GetBasicStatisticInfoList(DataConnection connection, string nodeID)
         {
-            Dictionary<int, BasicStatisticInfo> basicStatisticInfoList = new Dictionary<int, BasicStatisticInfo>();
-
-            bool createdConnection = false;
-            try
-            {
-                if (connection == null)
-                {
-                    connection = new DataConnection();
-                    createdConnection = true;
-                }
-                DataSet resultSet = new DataSet();
-                resultSet.EnforceConstraints = false;
-                DataTable resultTable;
-
-                IDbCommand commandMeasurements = connection.Connection.CreateCommand();
-                commandMeasurements.CommandType = CommandType.Text;
-                commandMeasurements.CommandText = "Select DeviceID, PointID, PointTag, SignalReference, MeasurementSource From StatisticMeasurement Where NodeID = @nodeID Order By MeasurementSource, SignalReference";
-                if (commandMeasurements.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
-                    commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", "{" + nodeID + "}"));
-                else
-                    commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@nodeID", nodeID));
-
-                resultTable = new DataTable("StatisticMeasurements");
-                resultSet.Tables.Add(resultTable);
-                resultTable.Load(commandMeasurements.ExecuteReader());
-                //****************************************************************************
-
-                //****************************************************************************
-                //Get Statistic definitions.
-                IDbCommand commandStatistics = connection.Connection.CreateCommand();
-                commandStatistics.CommandType = CommandType.Text;
-                commandStatistics.CommandText = "Select Source, SignalIndex, Name, Description, DataType, DisplayFormat, IsConnectedState, LoadOrder From Statistic Order By Source, SignalIndex";
-                resultTable = new DataTable("StatisticDefinitions");
-                resultSet.Tables.Add(resultTable);
-                resultTable.Load(commandStatistics.ExecuteReader());
-                //****************************************************************************
-
-                var tempCollection = (from measurement in resultSet.Tables["StatisticMeasurements"].AsEnumerable()
-                                      select new KeyValuePair<int, BasicStatisticInfo>(Convert.ToInt32(measurement.Field<object>("PointID")),
-                                           (from statistic in resultSet.Tables["StatisticDefinitions"].AsEnumerable()
-                                            where statistic.Field<string>("Source") == measurement.Field<string>("MeasurementSource") &&
-                                            statistic.Field<int>("SignalIndex") == Convert.ToInt32((measurement.Field<string>("SignalReference")).Substring((measurement.Field<string>("SignalReference")).LastIndexOf("-ST") + 3))
-                                            select new BasicStatisticInfo()
-                                            {
-                                                Source = statistic.Field<string>("Source"),
-                                                Name = statistic.Field<string>("Name"),
-                                                Description = statistic.Field<string>("Description"),
-                                                Quality = "N/A",
-                                                TimeTag = "N/A",
-                                                Value = "--",
-                                                DataType = statistic.Field<object>("DataType") == null ? string.Empty : statistic.Field<string>("DataType"),
-                                                DisplayFormat = statistic.Field<object>("DisplayFormat") == null ? string.Empty : statistic.Field<string>("DisplayFormat"),
-                                                IsConnectedState = Convert.ToBoolean(statistic.Field<object>("IsConnectedState")),
-                                                LoadOrder = Convert.ToInt32(statistic.Field<object>("LoadOrder"))
-                                            }
-                                                   ).First()
-                                      )).Distinct();
-
-                foreach (var item in tempCollection)
-                {
-                    basicStatisticInfoList.Add(item.Key, item.Value);
-                }
-            }
-            catch (Exception ex)
-            {
-                LogException(connection, "GetBasicStatisticInfoList", ex);
-            }
-            finally
-            {
-                if (createdConnection && connection != null)
-                    connection.Dispose();
-            }
-
-            return basicStatisticInfoList;
+            return GetStatisticInfoList(connection, nodeID).ToDictionary(statistic => statistic.PointID, statistic => statistic.Statistics);
         }
 
         public static ObservableCollection<DetailStatisticInfo> GetDeviceStatisticMeasurements(DataConnection connection, int deviceID)
         {
-            bool createdConnection = false;
             try
             {
-                if (connection == null)
-                {
-                    connection = new DataConnection();
-                    createdConnection = true;
-                }
-                ObservableCollection<DetailStatisticInfo> deviceStatisticList;
-                DataSet resultSet = new DataSet();
-                resultSet.EnforceConstraints = false;
-                DataTable resultTable;
-
-                IDbCommand commandMeasurements = connection.Connection.CreateCommand();
-                commandMeasurements.CommandType = CommandType.Text;
-                commandMeasurements.CommandText = "Select DeviceID, PointID, PointTag, SignalReference, MeasurementSource From StatisticMeasurement Where DeviceID = @deviceID Order By MeasurementSource, SignalReference";
-                commandMeasurements.Parameters.Add(AddWithValue(commandMeasurements, "@deviceID", deviceID));
-
-                resultTable = new DataTable("StatisticMeasurements");
-                resultSet.Tables.Add(resultTable);
-                resultTable.Load(commandMeasurements.ExecuteReader());
-
-                //****************************************************************************
-                //Get Statistic definitions.
-                IDbCommand commandStatistics = connection.Connection.CreateCommand();
-                commandStatistics.CommandType = CommandType.Text;
-                commandStatistics.CommandText = "Select Source, SignalIndex, Name, Description, DataType, DisplayFormat, IsConnectedState, LoadOrder From Statistic Order By Source, SignalIndex";
-                resultTable = new DataTable("StatisticDefinitions");
-                resultSet.Tables.Add(resultTable);
-                resultTable.Load(commandStatistics.ExecuteReader());
-                //****************************************************************************
-
-                deviceStatisticList = new ObservableCollection<DetailStatisticInfo>(
-                                     (from measurement in resultSet.Tables["StatisticMeasurements"].AsEnumerable()
-                                      select new DetailStatisticInfo()
-                                      {
-                                          DeviceID = measurement.Field<object>("DeviceID") == null ? -1 : Convert.ToInt32(measurement.Field<object>("DeviceID")),
-                                          PointID = Convert.ToInt32(measurement.Field<object>("PointID")),
-                                          PointTag = measurement.Field<string>("PointTag"),
-                                          SignalReference = measurement.Field<string>("SignalReference"),
-                                          Statistics = (from statistic in resultSet.Tables["StatisticDefinitions"].AsEnumerable()
-                                                        where statistic.Field<string>("Source") == measurement.Field<string>("MeasurementSource") &&
-                                                           statistic.Field<int>("SignalIndex") == Convert.ToInt32((measurement.Field<string>("SignalReference")).Substring((measurement.Field<string>("SignalReference")).LastIndexOf("-ST") + 3))
-                                                        select new BasicStatisticInfo()
-                                                        {
-                                                            Source = statistic.Field<string>("Source"),
-                                                            Name = statistic.Field<string>("Name"),
-                                                            Description = statistic.Field<string>("Description"),
-                                                            Quality = "N/A",
-                                                            TimeTag = "N/A",
-                                                            Value = "--",
-                                                            DataType = statistic.Field<object>("DataType") == null ? string.Empty : statistic.Field<string>("DataType"),
-                                                            DisplayFormat = statistic.Field<object>("DisplayFormat") == null ? string.Empty : statistic.Field<string>("DisplayFormat"),
-                                                            IsConnectedState = Convert.ToBoolean(statistic.Field<object>("IsConnectedState")),
-                                                            LoadOrder = Convert.ToInt32(statistic.Field<object>("LoadOrder"))
-                                                        }
-                                                        ).First()
-                                      }).ToList());
-
-                return deviceStatisticList;
+                return new ObservableCollection<DetailStatisticInfo>(GetStatisticInfoList(connection, deviceID));
             }
             catch (Exception ex)
             {
                 LogException(connection, "GetDeviceStatisticMeasurements", ex);
                 return new ObservableCollection<DetailStatisticInfo>();
-            }
-            finally
-            {
-                if (createdConnection && connection != null)
-                    connection.Dispose();
             }
         }
 

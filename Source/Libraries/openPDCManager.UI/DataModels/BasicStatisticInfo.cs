@@ -226,56 +226,8 @@ namespace openPDCManager.UI.DataModels
         /// <returns>Collection of <see cref="BasicStatisticInfo"/></returns>
         public static Dictionary<int, BasicStatisticInfo> Load(AdoDataConnection database, Guid nodeID)
         {
-            bool createdConnection = false;
-            Dictionary<int, BasicStatisticInfo> basicStatisticInfoList = new Dictionary<int, BasicStatisticInfo>();
-
-            try
-            {
-                createdConnection = CreateConnection(ref database);
-
-                DataSet resultSet = new DataSet();
-                resultSet.EnforceConstraints = false;
-                DataTable resultTable = database.Connection.RetrieveData(database.AdapterType, "SELECT DeviceID, PointID, PointTag, SignalReference, MeasurementSource FROM StatisticMeasurement WHERE NodeID = @nodeID ORDER BY MeasurementSource, SignalReference", database.Guid(nodeID));
-                resultSet.Tables.Add(resultTable.Copy());
-                resultSet.Tables[0].TableName = "StatisticMeasurements";
-
-                resultTable = database.Connection.RetrieveData(database.AdapterType, "SELECT Source, SignalIndex, Name, Description, DataType, DisplayFormat, IsConnectedState, LoadOrder FROM Statistic ORDER BY Source, SignalIndex");
-                resultSet.Tables.Add(resultTable.Copy());
-                resultSet.Tables[1].TableName = "StatisticDefinitions";
-
-                var tempCollection = (from measurement in resultSet.Tables["StatisticMeasurements"].AsEnumerable()
-                                      select new KeyValuePair<int, BasicStatisticInfo>(Convert.ToInt32(measurement.Field<object>("PointID")),
-                                           (from statistic in resultSet.Tables["StatisticDefinitions"].AsEnumerable()
-                                            where statistic.Field<string>("Source") == measurement.Field<string>("MeasurementSource") &&
-                                            statistic.Field<int>("SignalIndex") == Convert.ToInt32((measurement.Field<string>("SignalReference")).Substring((measurement.Field<string>("SignalReference")).LastIndexOf("-ST") + 3))
-                                            select new BasicStatisticInfo()
-                                            {
-                                                Source = statistic.Field<string>("Source"),
-                                                Name = statistic.Field<string>("Name"),
-                                                Description = statistic.Field<string>("Description"),
-                                                Quality = "N/A",
-                                                TimeTag = "N/A",
-                                                Value = "--",
-                                                DataType = statistic.Field<object>("DataType") == null ? string.Empty : statistic.Field<string>("DataType"),
-                                                DisplayFormat = statistic.Field<object>("DisplayFormat") == null ? string.Empty : statistic.Field<string>("DisplayFormat"),
-                                                IsConnectedState = Convert.ToBoolean(statistic.Field<object>("IsConnectedState")),
-                                                LoadOrder = Convert.ToInt32(statistic.Field<object>("LoadOrder"))
-                                            }
-                                                   ).First()
-                                      )).Distinct();
-
-                foreach (var item in tempCollection)
-                {
-                    basicStatisticInfoList.Add(item.Key, item.Value);
-                }
-            }
-            finally
-            {
-                if (createdConnection && database != null)
-                    database.Dispose();
-            }
-
-            return basicStatisticInfoList;
+            return TimeTaggedMeasurement.GetStatisticInfoList(database, nodeID)
+                .ToDictionary(statisticInfo => statisticInfo.PointID, statisticInfo => statisticInfo.Statistics);
         }
 
         #endregion
