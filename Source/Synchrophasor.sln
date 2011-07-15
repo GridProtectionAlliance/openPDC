@@ -273,6 +273,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MongoDB", "MongoDB", "{CA74
 		Dependencies\MongoDB\MongoDB.xml = Dependencies\MongoDB\MongoDB.xml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{53255BB7-2046-4606-BF76-7B5C13F49819}"
+	ProjectSection(SolutionItems) = preProject
+		Data\SQLite\InitialDataSet.sql = Data\SQLite\InitialDataSet.sql
+		Data\SQLite\openPDC-InitialDataSet.db = Data\SQLite\openPDC-InitialDataSet.db
+		Data\SQLite\openPDC-SampleDataSet.db = Data\SQLite\openPDC-SampleDataSet.db
+		Data\SQLite\openPDC.db = Data\SQLite\openPDC.db
+		Data\SQLite\openPDC.sql = Data\SQLite\openPDC.sql
+		Data\SQLite\SampleDataSet.sql = Data\SQLite\SampleDataSet.sql
+		Data\SQLite\sqlite3.exe = Data\SQLite\sqlite3.exe
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{44A76C31-308D-4D46-B263-734DD9FA3570}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\SQLite\SQLite.Interop.dll = Dependencies\SQLite\SQLite.Interop.dll
+		Dependencies\SQLite\sqlite3.dll = Dependencies\SQLite\sqlite3.dll
+		Dependencies\SQLite\System.Data.SQLite.dll = Dependencies\SQLite\System.Data.SQLite.dll
+		Dependencies\SQLite\System.Data.SQLite.Linq.dll = Dependencies\SQLite\System.Data.SQLite.Linq.dll
+		Dependencies\SQLite\System.Data.SQLite.Linq.xml = Dependencies\SQLite\System.Data.SQLite.Linq.xml
+		Dependencies\SQLite\System.Data.SQLite.xml = Dependencies\SQLite\System.Data.SQLite.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 27
@@ -690,6 +711,7 @@ Global
 		{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{05851E03-6FBC-4774-BCC0-CCD006FE05B1} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{CA748B74-2934-440D-98CA-DE3BAD3870E9} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
+		{44A76C31-308D-4D46-B263-734DD9FA3570} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{B1E85C83-F93D-4C3C-BB90-905B93D7C8AD} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{060A349D-E92D-4F13-A857-01609631D3BE} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
@@ -721,6 +743,7 @@ Global
 		{9A59B9E0-A36F-4C52-8568-CB004B20885B} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{F0072CE5-12A6-4713-BBD0-B57966ED2339} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{B1AC9848-2909-4A7B-9541-8EA4E89E72F1} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
+		{53255BB7-2046-4606-BF76-7B5C13F49819} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{0BF2447E-252D-4712-B154-E350AF463081} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{27A26713-8779-41AB-AFF1-BAB6BB0228E8} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
