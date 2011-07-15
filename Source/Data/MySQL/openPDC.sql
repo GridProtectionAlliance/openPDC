@@ -811,8 +811,8 @@ SELECT CalculatedMeasurement.NodeID, Runtime.ID, CalculatedMeasurement.Acronym A
  CONCAT(N'timeResolution=', CAST(CalculatedMeasurement.TimeResolution AS CHAR)),
  CONCAT(N'allowPreemptivePublishing=', CAST(CalculatedMeasurement.AllowPreemptivePublishing AS CHAR)),
  CONCAT(N'performTimestampReasonabilityCheck=', CAST(CalculatedMeasurement.PerformTimestampReasonabilityCheck AS CHAR)),
- CONCAT(N'downsamplingMethod=', CalculatedMeasurement.DownsamplingMethod)),
- CONCAT(N'useLocalClockAsRealTime=', CAST(CalculatedMeasurement.UseLocalClockAsRealTime AS CHAR)) AS ConnectionString
+ CONCAT(N'downsamplingMethod=', CalculatedMeasurement.DownsamplingMethod),
+ CONCAT(N'useLocalClockAsRealTime=', CAST(CalculatedMeasurement.UseLocalClockAsRealTime AS CHAR))) AS ConnectionString
 FROM CalculatedMeasurement LEFT OUTER JOIN
  Runtime ON CalculatedMeasurement.ID = Runtime.SourceID AND Runtime.SourceTable = N'CalculatedMeasurement'
 WHERE (CalculatedMeasurement.Enabled <> 0)
