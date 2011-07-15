@@ -1134,8 +1134,8 @@ namespace TVA.PhasorProtocols
                 configFile.Save();
 
                 // Get the needed statistic related IDs
-                int statSignalTypeID = (int)connection.ExecuteScalar("SELECT ID FROM SignalType WHERE Acronym='STAT';");
-                int statHistorianID = (int)connection.ExecuteScalar(string.Format("SELECT ID FROM Historian WHERE Acronym='STAT' AND NodeID={0};", nodeIDQueryString));
+                int statSignalTypeID = Convert.ToInt32(connection.ExecuteScalar("SELECT ID FROM SignalType WHERE Acronym='STAT';"));
+                int statHistorianID = Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT ID FROM Historian WHERE Acronym='STAT' AND NodeID={0};", nodeIDQueryString)));
                 object nodeCompanyID = connection.ExecuteScalar(string.Format("SELECT CompanyID FROM Node WHERE ID={0};", nodeIDQueryString));
 
                 // Load the defined system statistics
