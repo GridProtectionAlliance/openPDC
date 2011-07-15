@@ -140,6 +140,18 @@
       <Link>Database Scripts\SQL Server\SampleDataSet.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\Data\SQLite\InitialDataSet.sql">
+      <Link>Database Scripts\SQLite\InitialDataSet.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Data\SQLite\openPDC.sql">
+      <Link>Database Scripts\SQLite\openPDC.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Data\SQLite\SampleDataSet.sql">
+      <Link>Database Scripts\SQLite\SampleDataSet.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Autorun.inf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
