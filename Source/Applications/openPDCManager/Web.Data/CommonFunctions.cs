@@ -156,7 +156,7 @@ namespace openPDCManager.Data
                 errorLogList = (from item in resultTable.AsEnumerable()
                                 select new ErrorLog()
                                 {
-                                    ID = item.Field<int>("ID"),
+                                    ID = Convert.ToInt32(item.Field<object>("ID")),
                                     Source = item.Field<string>("Source"),
                                     Message = item.Field<string>("Message"),
                                     CreatedOn = Convert.ToDateTime(item.Field<object>("CreatedOn")),
@@ -1042,12 +1042,12 @@ namespace openPDCManager.Data
                 companyList = (from item in resultTable.AsEnumerable()
                                select new Company()
                                {
-                                   ID = item.Field<int>("ID"),
+                                   ID = Convert.ToInt32(item.Field<object>("ID")),
                                    Acronym = item.Field<string>("Acronym"),
                                    MapAcronym = item.Field<string>("MapAcronym"),
                                    Name = item.Field<string>("Name"),
                                    URL = item.Field<string>("URL"),
-                                   LoadOrder = item.Field<int>("LoadOrder")
+                                   LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder"))
                                }).ToList();
                 return companyList;
             }
@@ -1184,26 +1184,26 @@ namespace openPDCManager.Data
                                     select new OutputStream()
                                     {
                                         NodeID = item.Field<object>("NodeID").ToString(),
-                                        ID = item.Field<int>("ID"),
+                                        ID = Convert.ToInt32(item.Field<object>("ID")),
                                         Acronym = item.Field<string>("Acronym"),
                                         Name = item.Field<string>("Name"),
-                                        Type = item.Field<int>("Type"),
+                                        Type = Convert.ToInt32(item.Field<object>("Type")),
                                         ConnectionString = item.Field<string>("ConnectionString"),
-                                        IDCode = item.Field<int>("IDCode"),
+                                        IDCode = Convert.ToInt32(item.Field<object>("IDCode")),
                                         CommandChannel = item.Field<string>("CommandChannel"),
                                         DataChannel = item.Field<string>("DataChannel"),
                                         AutoPublishConfigFrame = Convert.ToBoolean(item.Field<object>("AutoPublishConfigFrame")),
                                         AutoStartDataChannel = Convert.ToBoolean(item.Field<object>("AutoStartDataChannel")),
-                                        NominalFrequency = item.Field<int>("NominalFrequency"),
+                                        NominalFrequency = Convert.ToInt32(item.Field<object>("NominalFrequency")),
                                         FramesPerSecond = Convert.ToInt32(item.Field<object>("FramesPerSecond") ?? 30),
                                         LagTime = item.Field<double>("LagTime"),
                                         LeadTime = item.Field<double>("LeadTime"),
                                         UseLocalClockAsRealTime = Convert.ToBoolean(item.Field<object>("UseLocalClockAsRealTime")),
                                         AllowSortsByArrival = Convert.ToBoolean(item.Field<object>("AllowSortsByArrival")),
-                                        LoadOrder = item.Field<int>("LoadOrder"),
+                                        LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                         Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                         NodeName = item.Field<string>("NodeName"),
-                                        TypeName = item.Field<int>("Type") == 0 ? "IEEE C37.118" : "BPA",
+                                        TypeName = Convert.ToInt32(item.Field<object>("Type")) == 0 ? "IEEE C37.118" : "BPA",
                                         IgnoreBadTimeStamps = Convert.ToBoolean(item.Field<object>("IgnoreBadTimeStamps")),
                                         TimeResolution = Convert.ToInt32(item.Field<object>("TimeResolution")),
                                         AllowPreemptivePublishing = Convert.ToBoolean(item.Field<object>("AllowPreemptivePublishing")),
@@ -1427,10 +1427,10 @@ namespace openPDCManager.Data
                                                select new OutputStreamMeasurement()
                                                {
                                                    NodeID = item.Field<object>("NodeID").ToString(),
-                                                   AdapterID = item.Field<int>("AdapterID"),
-                                                   ID = item.Field<int>("ID"),
-                                                   PointID = item.Field<int>("PointID"),
-                                                   HistorianID = item.Field<int?>("HistorianID"),
+                                                   AdapterID = Convert.ToInt32(item.Field<object>("AdapterID")),
+                                                   ID = Convert.ToInt32(item.Field<object>("ID")),
+                                                   PointID = Convert.ToInt32(item.Field<object>("PointID")),
+                                                   HistorianID = item.NullableInt("HistorianID"),
                                                    SignalReference = item.Field<string>("SignalReference"),
                                                    SourcePointTag = item.Field<string>("SourcePointTag"),
                                                    HistorianAcronym = item.Field<string>("HistorianAcronym")
@@ -1557,13 +1557,13 @@ namespace openPDCManager.Data
                                           select new OutputStreamDevice()
                                           {
                                               NodeID = item.Field<object>("NodeID").ToString(),
-                                              AdapterID = item.Field<int>("AdapterID"),
-                                              ID = item.Field<int>("ID"),
-                                              IdCode = item.Field<int>("IDCode"),
+                                              AdapterID = Convert.ToInt32(item.Field<object>("AdapterID")),
+                                              ID = Convert.ToInt32(item.Field<object>("ID")),
+                                              IdCode = Convert.ToInt32(item.Field<object>("IDCode")),
                                               Acronym = item.Field<string>("Acronym"),
                                               Name = item.Field<string>("Name"),
                                               BpaAcronym = item.Field<string>("BpaAcronym"),
-                                              LoadOrder = item.Field<int>("LoadOrder"),
+                                              LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                               Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                               PhasorDataFormat = item.Field<string>("PhasorDataFormat"),
                                               FrequencyDataFormat = item.Field<string>("FrequencyDataFormat"),
@@ -1607,13 +1607,13 @@ namespace openPDCManager.Data
                                                          select new OutputStreamDevice()
                                                          {
                                                              NodeID = item.Field<object>("NodeID").ToString(),
-                                                             AdapterID = item.Field<int>("AdapterID"),
-                                                             ID = item.Field<int>("ID"),
-                                                             IdCode = item.Field<int>("IDCode"),
+                                                             AdapterID = Convert.ToInt32(item.Field<object>("AdapterID")),
+                                                             ID = Convert.ToInt32(item.Field<object>("ID")),
+                                                             IdCode = Convert.ToInt32(item.Field<object>("IDCode")),
                                                              Acronym = item.Field<string>("Acronym"),
                                                              Name = item.Field<string>("Name"),
                                                              BpaAcronym = item.Field<string>("BpaAcronym"),
-                                                             LoadOrder = item.Field<int>("LoadOrder"),
+                                                             LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                                              Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                                              PhasorDataFormat = item.Field<string>("PhasorDataFormat"),
                                                              FrequencyDataFormat = item.Field<string>("FrequencyDataFormat"),
@@ -1919,12 +1919,12 @@ namespace openPDCManager.Data
                                                 select new OutputStreamDevicePhasor()
                                                 {
                                                     NodeID = item.Field<object>("NodeID").ToString(),
-                                                    OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
-                                                    ID = item.Field<int>("ID"),
+                                                    OutputStreamDeviceID = Convert.ToInt32(item.Field<object>("OutputStreamDeviceID")),
+                                                    ID = Convert.ToInt32(item.Field<object>("ID")),
                                                     Label = item.Field<string>("Label"),
                                                     Type = item.Field<string>("Type"),
                                                     Phase = item.Field<string>("Phase"),
-                                                    LoadOrder = item.Field<int>("LoadOrder"),
+                                                    LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                                     ScalingValue = Convert.ToInt32(item.Field<object>("ScalingValue")),
                                                     PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
                                                     PhaseType = item.Field<string>("Phase") == "+" ? "Positive Sequence" : item.Field<string>("Phase") == "-" ? "Negative Sequence" :
@@ -2049,13 +2049,13 @@ namespace openPDCManager.Data
                                                 select new OutputStreamDeviceAnalog()
                                                 {
                                                     NodeID = item.Field<object>("NodeID").ToString(),
-                                                    OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
-                                                    ID = item.Field<int>("ID"),
+                                                    OutputStreamDeviceID = Convert.ToInt32(item.Field<object>("OutputStreamDeviceID")),
+                                                    ID = Convert.ToInt32(item.Field<object>("ID")),
                                                     Label = item.Field<string>("Label"),
-                                                    Type = item.Field<int>("Type"),
-                                                    LoadOrder = item.Field<int>("LoadOrder"),
+                                                    Type = Convert.ToInt32(item.Field<object>("Type")),
+                                                    LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                                     ScalingValue = Convert.ToInt32(item.Field<object>("ScalingValue")),
-                                                    TypeName = item.Field<int>("Type") == 0 ? "Single point-on-wave" : item.Field<int>("Type") == 1 ? "RMS of analog input" : "Peak of analog input"
+                                                    TypeName = Convert.ToInt32(item.Field<object>("Type")) == 0 ? "Single point-on-wave" : Convert.ToInt32(item.Field<object>("Type")) == 1 ? "RMS of analog input" : "Peak of analog input"
                                                 }).ToList();
                 return outputStreamDeviceAnalogList;
             }
@@ -2174,10 +2174,10 @@ namespace openPDCManager.Data
                                                  select new OutputStreamDeviceDigital()
                                                  {
                                                      NodeID = item.Field<object>("NodeID").ToString(),
-                                                     OutputStreamDeviceID = item.Field<int>("OutputStreamDeviceID"),
-                                                     ID = item.Field<int>("ID"),
+                                                     OutputStreamDeviceID = Convert.ToInt32(item.Field<object>("OutputStreamDeviceID")),
+                                                     ID = Convert.ToInt32(item.Field<object>("ID")),
                                                      Label = item.Field<string>("Label"),
-                                                     LoadOrder = item.Field<int>("LoadOrder"),
+                                                     LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                                      MaskValue = Convert.ToInt32(item.Field<object>("MaskValue"))
                                                  }).ToList();
                 return outputStreamDeviceDigitalList;
@@ -2304,14 +2304,14 @@ namespace openPDCManager.Data
                                  select new Historian()
                                  {
                                      NodeID = item.Field<object>("NodeID").ToString(),
-                                     ID = item.Field<int>("ID"),
+                                     ID = Convert.ToInt32(item.Field<object>("ID")),
                                      Acronym = item.Field<string>("Acronym"),
                                      Name = item.Field<string>("Name"),
                                      ConnectionString = item.Field<string>("ConnectionString"),
                                      Description = item.Field<string>("Description"),
                                      IsLocal = Convert.ToBoolean(item.Field<object>("IsLocal")),
                                      Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-                                     LoadOrder = item.Field<int>("LoadOrder"),
+                                     LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                      TypeName = item.Field<string>("TypeName"),
                                      AssemblyName = item.Field<string>("AssemblyName"),
                                      MeasurementReportingInterval = Convert.ToInt32(item.Field<object>("MeasurementReportingInterval")),
@@ -2479,13 +2479,13 @@ namespace openPDCManager.Data
                             {
                                 ID = item.Field<object>("ID").ToString(),
                                 Name = item.Field<string>("Name"),
-                                CompanyID = item.Field<int?>("CompanyID"),
-                                Longitude = item.Field<decimal?>("Longitude"),
-                                Latitude = item.Field<decimal?>("Latitude"),
+                                CompanyID = item.NullableInt("CompanyID"),
+                                Longitude = item.NullableDecimal("Longitude"),
+                                Latitude = item.NullableDecimal("Latitude"),
                                 Description = item.Field<string>("Description"),
                                 Image = item.Field<string>("ImagePath"),
                                 Master = Convert.ToBoolean(item.Field<object>("Master")),
-                                LoadOrder = item.Field<int>("LoadOrder"),
+                                LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                 Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                 TimeSeriesDataServiceUrl = item.Field<string>("TimeSeriesDataServiceUrl"),
                                 RemoteStatusServiceUrl = item.Field<string>("RemoteStatusServiceUrl"),
@@ -2499,6 +2499,18 @@ namespace openPDCManager.Data
                 if (createdConnection && connection != null)
                     connection.Dispose();
             }
+        }
+
+        public static decimal? NullableDecimal(this DataRow row, string field)
+        {
+            object value = row.Field<object>(field);
+            return (value == null) ? (decimal?)null : Convert.ToDecimal(value);
+        }
+
+        public static int? NullableInt(this DataRow row, string field)
+        {
+            object value = row.Field<object>(field);
+            return (value == null) ? (int?)null : Convert.ToInt32(value);
         }
 
         public static Dictionary<string, string> GetNodes(DataConnection connection, bool enabledOnly, bool isOptional)
@@ -2631,13 +2643,13 @@ namespace openPDCManager.Data
                              {
                                  ID = item.Field<object>("ID").ToString(),
                                  Name = item.Field<string>("Name"),
-                                 CompanyID = item.Field<int?>("CompanyID"),
-                                 Longitude = item.Field<decimal?>("Longitude"),
-                                 Latitude = item.Field<decimal?>("Latitude"),
+                                 CompanyID = item.NullableInt("CompanyID"),
+                                 Longitude = item.NullableDecimal("Longitude"),
+                                 Latitude = item.NullableDecimal("Latitude"),
                                  Description = item.Field<string>("Description"),
                                  Image = item.Field<string>("ImagePath"),
                                  Master = Convert.ToBoolean(item.Field<object>("Master")),
-                                 LoadOrder = item.Field<int>("LoadOrder"),
+                                 LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                  Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                  TimeSeriesDataServiceUrl = item.Field<string>("TimeSeriesDataServiceUrl"),
                                  RemoteStatusServiceUrl = item.Field<string>("RemoteStatusServiceUrl"),
@@ -2685,13 +2697,13 @@ namespace openPDCManager.Data
                              {
                                  ID = item.Field<object>("ID").ToString(),
                                  Name = item.Field<string>("Name"),
-                                 CompanyID = item.Field<int?>("CompanyID"),
-                                 Longitude = item.Field<decimal?>("Longitude"),
-                                 Latitude = item.Field<decimal?>("Latitude"),
+                                 CompanyID = item.NullableInt("CompanyID"),
+                                 Longitude = item.NullableDecimal("Longitude"),
+                                 Latitude = item.NullableDecimal("Latitude"),
                                  Description = item.Field<string>("Description"),
                                  Image = item.Field<string>("ImagePath"),
                                  Master = Convert.ToBoolean(item.Field<object>("Master")),
-                                 LoadOrder = item.Field<int>("LoadOrder"),
+                                 LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                  Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                  TimeSeriesDataServiceUrl = item.Field<string>("TimeSeriesDataServiceUrl"),
                                  RemoteStatusServiceUrl = item.Field<string>("RemoteStatusServiceUrl"),
@@ -2737,7 +2749,7 @@ namespace openPDCManager.Data
                 vendorList = (from item in resultTable.AsEnumerable()
                               select new Vendor()
                               {
-                                  ID = item.Field<int>("ID"),
+                                  ID = Convert.ToInt32(item.Field<object>("ID")),
                                   Acronym = item.Field<string>("Acronym"),
                                   Name = item.Field<string>("Name"),
                                   PhoneNumber = item.Field<string>("PhoneNumber"),
@@ -2855,8 +2867,8 @@ namespace openPDCManager.Data
                 vendorDeviceList = (from item in resultTable.AsEnumerable()
                                     select new VendorDevice()
                                     {
-                                        ID = item.Field<int>("ID"),
-                                        VendorID = item.Field<int>("VendorID"),
+                                        ID = Convert.ToInt32(item.Field<object>("ID")),
+                                        VendorID = Convert.ToInt32(item.Field<object>("VendorID")),
                                         Name = item.Field<string>("Name"),
                                         Description = item.Field<string>("Description"),
                                         URL = item.Field<string>("URL"),
@@ -2984,27 +2996,27 @@ namespace openPDCManager.Data
                               select new Device()
                               {
                                   NodeID = item.Field<object>("NodeID").ToString(),
-                                  ID = item.Field<int>("ID"),
-                                  ParentID = item.Field<int?>("ParentID"),
+                                  ID = Convert.ToInt32(item.Field<object>("ID")),
+                                  ParentID = item.NullableInt("ParentID"),
                                   Acronym = item.Field<string>("Acronym"),
                                   Name = item.Field<string>("Name"),
                                   IsConcentrator = Convert.ToBoolean(item.Field<object>("IsConcentrator")),
-                                  CompanyID = item.Field<int?>("CompanyID"),
-                                  HistorianID = item.Field<int?>("HistorianID"),
-                                  AccessID = item.Field<int>("AccessID"),
-                                  VendorDeviceID = item.Field<int?>("VendorDeviceID"),
-                                  ProtocolID = item.Field<int?>("ProtocolID"),
-                                  Longitude = item.Field<decimal?>("Longitude"),
-                                  Latitude = item.Field<decimal?>("Latitude"),
-                                  InterconnectionID = item.Field<int?>("InterconnectionID"),
+                                  CompanyID = item.NullableInt("CompanyID"),
+                                  HistorianID = item.NullableInt("HistorianID"),
+                                  AccessID = Convert.ToInt32(item.Field<object>("AccessID")),
+                                  VendorDeviceID = item.NullableInt("VendorDeviceID"),
+                                  ProtocolID = item.NullableInt("ProtocolID"),
+                                  Longitude = item.NullableDecimal("Longitude"),
+                                  Latitude = item.NullableDecimal("Latitude"),
+                                  InterconnectionID = item.NullableInt("InterconnectionID"),
                                   ConnectionString = item.Field<string>("ConnectionString"),
                                   TimeZone = item.Field<string>("TimeZone"),
                                   FramesPerSecond = Convert.ToInt32(item.Field<object>("FramesPerSecond") ?? 30),
                                   TimeAdjustmentTicks = Convert.ToInt64(item.Field<object>("TimeAdjustmentTicks")),
                                   DataLossInterval = item.Field<double>("DataLossInterval"),
                                   ContactList = item.Field<string>("ContactList"),
-                                  MeasuredLines = item.Field<int?>("MeasuredLines"),
-                                  LoadOrder = item.Field<int>("LoadOrder"),
+                                  MeasuredLines = item.NullableInt("MeasuredLines"),
+                                  LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                   Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                   CreatedOn = item.Field<DateTime>("CreatedOn"),
                                   AllowedParsingExceptions = Convert.ToInt32(item.Field<object>("AllowedParsingExceptions")),
@@ -3344,27 +3356,27 @@ namespace openPDCManager.Data
                                          select new Device()
                                          {
                                              NodeID = item.Field<object>("NodeID").ToString(),
-                                             ID = item.Field<int>("ID"),
-                                             ParentID = item.Field<int?>("ParentID"),
+                                             ID = Convert.ToInt32(item.Field<object>("ID")),
+                                             ParentID = item.NullableInt("ParentID"),
                                              Acronym = item.Field<string>("Acronym"),
                                              Name = item.Field<string>("Name"),
                                              IsConcentrator = Convert.ToBoolean(item.Field<object>("IsConcentrator")),
-                                             CompanyID = item.Field<int?>("CompanyID"),
-                                             HistorianID = item.Field<int?>("HistorianID"),
-                                             AccessID = item.Field<int>("AccessID"),
-                                             VendorDeviceID = item.Field<int?>("VendorDeviceID"),
-                                             ProtocolID = item.Field<int?>("ProtocolID"),
-                                             Longitude = item.Field<decimal?>("Longitude"),
-                                             Latitude = item.Field<decimal?>("Latitude"),
-                                             InterconnectionID = item.Field<int?>("InterconnectionID"),
+                                             CompanyID = item.NullableInt("CompanyID"),
+                                             HistorianID = item.NullableInt("HistorianID"),
+                                             AccessID = Convert.ToInt32(item.Field<object>("AccessID")),
+                                             VendorDeviceID = item.NullableInt("VendorDeviceID"),
+                                             ProtocolID = item.NullableInt("ProtocolID"),
+                                             Longitude = item.NullableDecimal("Longitude"),
+                                             Latitude = item.NullableDecimal("Latitude"),
+                                             InterconnectionID = item.NullableInt("InterconnectionID"),
                                              ConnectionString = item.Field<string>("ConnectionString"),
                                              TimeZone = item.Field<string>("TimeZone"),
                                              FramesPerSecond = Convert.ToInt32(item.Field<object>("FramesPerSecond") ?? 30),
                                              TimeAdjustmentTicks = Convert.ToInt64(item.Field<object>("TimeAdjustmentTicks")),
                                              DataLossInterval = item.Field<double>("DataLossInterval"),
                                              ContactList = item.Field<string>("ContactList"),
-                                             MeasuredLines = item.Field<int?>("MeasuredLines"),
-                                             LoadOrder = item.Field<int>("LoadOrder"),
+                                             MeasuredLines = item.NullableInt("MeasuredLines"),
+                                             LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                              Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                              CreatedOn = item.Field<DateTime>("CreatedOn"),
                                              AllowedParsingExceptions = Convert.ToInt32(item.Field<object>("AllowedParsingExceptions")),
@@ -3440,27 +3452,27 @@ namespace openPDCManager.Data
                                          select new Device()
                                          {
                                              NodeID = item.Field<object>("NodeID").ToString(),
-                                             ID = item.Field<int>("ID"),
-                                             ParentID = item.Field<int?>("ParentID"),
+                                             ID = Convert.ToInt32(item.Field<object>("ID")),
+                                             ParentID = item.NullableInt("ParentID"),
                                              Acronym = item.Field<string>("Acronym"),
                                              Name = item.Field<string>("Name"),
                                              IsConcentrator = Convert.ToBoolean(item.Field<object>("IsConcentrator")),
-                                             CompanyID = item.Field<int?>("CompanyID"),
-                                             HistorianID = item.Field<int?>("HistorianID"),
-                                             AccessID = item.Field<int>("AccessID"),
-                                             VendorDeviceID = item.Field<int?>("VendorDeviceID"),
-                                             ProtocolID = item.Field<int?>("ProtocolID"),
-                                             Longitude = item.Field<decimal?>("Longitude"),
-                                             Latitude = item.Field<decimal?>("Latitude"),
-                                             InterconnectionID = item.Field<int?>("InterconnectionID"),
+                                             CompanyID = item.NullableInt("CompanyID"),
+                                             HistorianID = item.NullableInt("HistorianID"),
+                                             AccessID = Convert.ToInt32(item.Field<object>("AccessID")),
+                                             VendorDeviceID = item.NullableInt("VendorDeviceID"),
+                                             ProtocolID = item.NullableInt("ProtocolID"),
+                                             Longitude = item.NullableDecimal("Longitude"),
+                                             Latitude = item.NullableDecimal("Latitude"),
+                                             InterconnectionID = item.NullableInt("InterconnectionID"),
                                              ConnectionString = item.Field<string>("ConnectionString"),
                                              TimeZone = item.Field<string>("TimeZone"),
                                              FramesPerSecond = Convert.ToInt32(item.Field<object>("FramesPerSecond") ?? 30),
                                              TimeAdjustmentTicks = Convert.ToInt64(item.Field<object>("TimeAdjustmentTicks")),
                                              DataLossInterval = item.Field<double>("DataLossInterval"),
                                              ContactList = item.Field<string>("ContactList"),
-                                             MeasuredLines = item.Field<int?>("MeasuredLines"),
-                                             LoadOrder = item.Field<int>("LoadOrder"),
+                                             MeasuredLines = item.NullableInt("MeasuredLines"),
+                                             LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                              Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                              CreatedOn = item.Field<DateTime>("CreatedOn"),
                                              AllowedParsingExceptions = Convert.ToInt32(item.Field<object>("AllowedParsingExceptions")),
@@ -3662,13 +3674,13 @@ namespace openPDCManager.Data
                 phasorList = (from item in GetResultSet(command).Tables[0].AsEnumerable()
                               select new Phasor()
                               {
-                                  ID = item.Field<int>("ID"),
-                                  DeviceID = item.Field<int>("DeviceID"),
+                                  ID = Convert.ToInt32(item.Field<object>("ID")),
+                                  DeviceID = Convert.ToInt32(item.Field<object>("DeviceID")),
                                   Label = item.Field<string>("Label"),
                                   Type = item.Field<string>("Type"),
                                   Phase = item.Field<string>("Phase"),
-                                  DestinationPhasorID = item.Field<int?>("DestinationPhasorID"),
-                                  SourceIndex = item.Field<int>("SourceIndex"),
+                                  DestinationPhasorID = item.NullableInt("DestinationPhasorID"),
+                                  SourceIndex = Convert.ToInt32(item.Field<object>("SourceIndex")),
                                   DestinationPhasorLabel = item.Field<string>("DestinationPhasorLabel"),
                                   DeviceAcronym = item.Field<string>("DeviceAcronym"),
                                   PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
@@ -3855,13 +3867,13 @@ namespace openPDCManager.Data
                 Phasor phasor = (Phasor)(from item in resultTable.AsEnumerable()
                                          select new Phasor()
                                          {
-                                             ID = item.Field<int>("ID"),
-                                             DeviceID = item.Field<int>("DeviceID"),
+                                             ID = Convert.ToInt32(item.Field<object>("ID")),
+                                             DeviceID = Convert.ToInt32(item.Field<object>("DeviceID")),
                                              Label = item.Field<string>("Label"),
                                              Type = item.Field<string>("Type"),
                                              Phase = item.Field<string>("Phase"),
-                                             DestinationPhasorID = item.Field<int?>("DestinationPhasorID"),
-                                             SourceIndex = item.Field<int>("SourceIndex"),
+                                             DestinationPhasorID = item.NullableInt("DestinationPhasorID"),
+                                             SourceIndex = Convert.ToInt32(item.Field<object>("SourceIndex")),
                                              DestinationPhasorLabel = item.Field<string>("DestinationPhasorLabel"),
                                              DeviceAcronym = item.Field<string>("DeviceAcronym"),
                                              PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
@@ -3906,13 +3918,13 @@ namespace openPDCManager.Data
                 Phasor phasor = (Phasor)(from item in resultTable.AsEnumerable()
                                          select new Phasor()
                                          {
-                                             ID = item.Field<int>("ID"),
-                                             DeviceID = item.Field<int>("DeviceID"),
+                                             ID = Convert.ToInt32(item.Field<object>("ID")),
+                                             DeviceID = Convert.ToInt32(item.Field<object>("DeviceID")),
                                              Label = item.Field<string>("Label"),
                                              Type = item.Field<string>("Type"),
                                              Phase = item.Field<string>("Phase"),
-                                             DestinationPhasorID = item.Field<int?>("DestinationPhasorID"),
-                                             SourceIndex = item.Field<int>("SourceIndex"),
+                                             DestinationPhasorID = item.NullableInt("DestinationPhasorID"),
+                                             SourceIndex = Convert.ToInt32(item.Field<object>("SourceIndex")),
                                              DestinationPhasorLabel = item.Field<string>("DestinationPhasorLabel"),
                                              DeviceAcronym = item.Field<string>("DeviceAcronym"),
                                              PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
@@ -3973,13 +3985,13 @@ namespace openPDCManager.Data
                 Phasor phasor = (Phasor)(from item in resultTable.AsEnumerable()
                                          select new Phasor()
                                          {
-                                             ID = item.Field<int>("ID"),
-                                             DeviceID = item.Field<int>("DeviceID"),
+                                             ID = Convert.ToInt32(item.Field<object>("ID")),
+                                             DeviceID = Convert.ToInt32(item.Field<object>("DeviceID")),
                                              Label = item.Field<string>("Label"),
                                              Type = item.Field<string>("Type"),
                                              Phase = item.Field<string>("Phase"),
-                                             DestinationPhasorID = item.Field<int?>("DestinationPhasorID"),
-                                             SourceIndex = item.Field<int>("SourceIndex"),
+                                             DestinationPhasorID = item.NullableInt("DestinationPhasorID"),
+                                             SourceIndex = Convert.ToInt32(item.Field<object>("SourceIndex")),
                                              DestinationPhasorLabel = item.Field<string>("DestinationPhasorLabel"),
                                              DeviceAcronym = item.Field<string>("DeviceAcronym"),
                                              PhasorType = item.Field<string>("Type") == "V" ? "Voltage" : "Current",
@@ -4036,13 +4048,13 @@ namespace openPDCManager.Data
                                    select new Measurement()
                                    {
                                        SignalID = item.Field<object>("SignalID").ToString(),
-                                       HistorianID = item.Field<int?>("HistorianID"),
-                                       PointID = item.Field<int>("PointID"),
-                                       DeviceID = item.Field<int?>("DeviceID"),
+                                       HistorianID = item.NullableInt("HistorianID"),
+                                       PointID = Convert.ToInt32(item.Field<object>("PointID")),
+                                       DeviceID = item.NullableInt("DeviceID"),
                                        PointTag = item.Field<string>("PointTag"),
                                        AlternateTag = item.Field<string>("AlternateTag"),
-                                       SignalTypeID = item.Field<int>("SignalTypeID"),
-                                       PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+                                       SignalTypeID = Convert.ToInt32(item.Field<object>("SignalTypeID")),
+                                       PhasorSourceIndex = item.NullableInt("PhasorSourceIndex"),
                                        SignalReference = item.Field<string>("SignalReference"),
                                        Adder = item.Field<double>("Adder"),
                                        Multiplier = item.Field<double>("Multiplier"),
@@ -4085,13 +4097,13 @@ namespace openPDCManager.Data
                                    select new Measurement()
                                    {
                                        SignalID = item.Field<object>("SignalID").ToString(),
-                                       HistorianID = item.Field<int?>("HistorianID"),
-                                       PointID = item.Field<int>("PointID"),
-                                       DeviceID = item.Field<int>("DeviceID"),
+                                       HistorianID = item.NullableInt("HistorianID"),
+                                       PointID = Convert.ToInt32(item.Field<object>("PointID")),
+                                       DeviceID = Convert.ToInt32(item.Field<object>("DeviceID")),
                                        PointTag = item.Field<string>("PointTag"),
                                        AlternateTag = item.Field<string>("AlternateTag"),
-                                       SignalTypeID = item.Field<int>("SignalTypeID"),
-                                       PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+                                       SignalTypeID = Convert.ToInt32(item.Field<object>("SignalTypeID")),
+                                       PhasorSourceIndex = item.NullableInt("PhasorSourceIndex"),
                                        SignalReference = item.Field<string>("SignalReference"),
                                        Adder = item.Field<double>("Adder"),
                                        Multiplier = item.Field<double>("Multiplier"),
@@ -4202,13 +4214,13 @@ namespace openPDCManager.Data
                                    select new Measurement()
                                    {
                                        SignalID = item.Field<object>("SignalID").ToString(),
-                                       HistorianID = item.Field<int?>("HistorianID"),
-                                       PointID = item.Field<int>("PointID"),
-                                       DeviceID = item.Field<int?>("DeviceID"),
+                                       HistorianID = item.NullableInt("HistorianID"),
+                                       PointID = Convert.ToInt32(item.Field<object>("PointID")),
+                                       DeviceID = item.NullableInt("DeviceID"),
                                        PointTag = item.Field<string>("PointTag"),
                                        AlternateTag = item.Field<string>("AlternateTag"),
-                                       SignalTypeID = item.Field<int>("SignalTypeID"),
-                                       PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+                                       SignalTypeID = Convert.ToInt32(item.Field<object>("SignalTypeID")),
+                                       PhasorSourceIndex = item.NullableInt("PhasorSourceIndex"),
                                        SignalReference = item.Field<string>("SignalReference"),
                                        Adder = item.Field<double>("Adder"),
                                        Multiplier = item.Field<double>("Multiplier"),
@@ -4266,13 +4278,13 @@ namespace openPDCManager.Data
                                                         select new Measurement()
                                                         {
                                                             SignalID = item.Field<object>("SignalID").ToString(),
-                                                            HistorianID = item.Field<int?>("HistorianID"),
-                                                            PointID = item.Field<int>("PointID"),
-                                                            DeviceID = item.Field<int>("DeviceID"),
+                                                            HistorianID = item.NullableInt("HistorianID"),
+                                                            PointID = Convert.ToInt32(item.Field<object>("PointID")),
+                                                            DeviceID = Convert.ToInt32(item.Field<object>("DeviceID")),
                                                             PointTag = item.Field<string>("PointTag"),
                                                             AlternateTag = item.Field<string>("AlternateTag"),
-                                                            SignalTypeID = item.Field<int>("SignalTypeID"),
-                                                            PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+                                                            SignalTypeID = Convert.ToInt32(item.Field<object>("SignalTypeID")),
+                                                            PhasorSourceIndex = item.NullableInt("PhasorSourceIndex"),
                                                             SignalReference = item.Field<string>("SignalReference"),
                                                             Adder = item.Field<double>("Adder"),
                                                             Multiplier = item.Field<double>("Multiplier"),
@@ -4334,13 +4346,13 @@ namespace openPDCManager.Data
                                                         select new Measurement()
                                                         {
                                                             SignalID = item.Field<object>("SignalID").ToString(),
-                                                            HistorianID = item.Field<int?>("HistorianID"),
-                                                            PointID = item.Field<int>("PointID"),
-                                                            DeviceID = item.Field<int>("DeviceID"),
+                                                            HistorianID = item.NullableInt("HistorianID"),
+                                                            PointID = Convert.ToInt32(item.Field<object>("PointID")),
+                                                            DeviceID = Convert.ToInt32(item.Field<object>("DeviceID")),
                                                             PointTag = item.Field<string>("PointTag"),
                                                             AlternateTag = item.Field<string>("AlternateTag"),
-                                                            SignalTypeID = item.Field<int>("SignalTypeID"),
-                                                            PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+                                                            SignalTypeID = Convert.ToInt32(item.Field<object>("SignalTypeID")),
+                                                            PhasorSourceIndex = item.NullableInt("PhasorSourceIndex"),
                                                             SignalReference = item.Field<string>("SignalReference"),
                                                             Adder = item.Field<double>("Adder"),
                                                             Multiplier = item.Field<double>("Multiplier"),
@@ -4387,13 +4399,13 @@ namespace openPDCManager.Data
                                    select new Measurement()
                                    {
                                        SignalID = item.Field<object>("SignalID").ToString(),
-                                       HistorianID = item.Field<int?>("HistorianID"),
-                                       PointID = item.Field<int>("PointID"),
-                                       DeviceID = item.Field<int>("DeviceID"),
+                                       HistorianID = item.NullableInt("HistorianID"),
+                                       PointID = Convert.ToInt32(item.Field<object>("PointID")),
+                                       DeviceID = Convert.ToInt32(item.Field<object>("DeviceID")),
                                        PointTag = item.Field<string>("PointTag"),
                                        AlternateTag = item.Field<string>("AlternateTag"),
-                                       SignalTypeID = item.Field<int>("SignalTypeID"),
-                                       PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+                                       SignalTypeID = Convert.ToInt32(item.Field<object>("SignalTypeID")),
+                                       PhasorSourceIndex = item.NullableInt("PhasorSourceIndex"),
                                        SignalReference = item.Field<string>("SignalReference"),
                                        Adder = item.Field<double>("Adder"),
                                        Multiplier = item.Field<double>("Multiplier"),
@@ -4471,13 +4483,13 @@ namespace openPDCManager.Data
                                                         select new Measurement()
                                                         {
                                                             SignalID = item.Field<object>("SignalID").ToString(),
-                                                            HistorianID = item.Field<int?>("HistorianID"),
-                                                            PointID = item.Field<int>("PointID"),
-                                                            DeviceID = item.Field<int>("DeviceID"),
+                                                            HistorianID = item.NullableInt("HistorianID"),
+                                                            PointID = Convert.ToInt32(item.Field<object>("PointID")),
+                                                            DeviceID = Convert.ToInt32(item.Field<object>("DeviceID")),
                                                             PointTag = item.Field<string>("PointTag"),
                                                             AlternateTag = item.Field<string>("AlternateTag"),
-                                                            SignalTypeID = item.Field<int>("SignalTypeID"),
-                                                            PhasorSourceIndex = item.Field<int?>("PhasorSourceIndex"),
+                                                            SignalTypeID = Convert.ToInt32(item.Field<object>("SignalTypeID")),
+                                                            PhasorSourceIndex = item.NullableInt("PhasorSourceIndex"),
                                                             SignalReference = item.Field<string>("SignalReference"),
                                                             Adder = item.Field<double>("Adder"),
                                                             Multiplier = item.Field<double>("Multiplier"),
@@ -4529,15 +4541,15 @@ namespace openPDCManager.Data
                 otherDeviceList = (from item in resultTable.AsEnumerable()
                                    select new OtherDevice()
                                    {
-                                       ID = item.Field<int>("ID"),
+                                       ID = Convert.ToInt32(item.Field<object>("ID")),
                                        Acronym = item.Field<string>("Acronym"),
                                        Name = item.Field<string>("Name"),
                                        IsConcentrator = Convert.ToBoolean(item.Field<object>("IsConcentrator")),
-                                       CompanyID = item.Field<int?>("CompanyID"),
-                                       VendorDeviceID = item.Field<int?>("VendorDeviceID"),
-                                       Longitude = item.Field<decimal?>("Longitude"),
-                                       Latitude = item.Field<decimal?>("Latitude"),
-                                       InterconnectionID = item.Field<int?>("InterconnectionID"),
+                                       CompanyID = item.NullableInt("CompanyID"),
+                                       VendorDeviceID = item.NullableInt("VendorDeviceID"),
+                                       Longitude = item.NullableDecimal("Longitude"),
+                                       Latitude = item.NullableDecimal("Latitude"),
+                                       InterconnectionID = item.NullableInt("InterconnectionID"),
                                        Planned = Convert.ToBoolean(item.Field<object>("Planned")),
                                        Desired = Convert.ToBoolean(item.Field<object>("Desired")),
                                        InProgress = Convert.ToBoolean(item.Field<object>("InProgress")),
@@ -4630,15 +4642,15 @@ namespace openPDCManager.Data
                 OtherDevice otherDevice = (from item in resultTable.AsEnumerable()
                                            select new OtherDevice()
                                            {
-                                               ID = item.Field<int>("ID"),
+                                               ID = Convert.ToInt32(item.Field<object>("ID")),
                                                Acronym = item.Field<string>("Acronym"),
                                                Name = item.Field<string>("Name"),
                                                IsConcentrator = Convert.ToBoolean(item.Field<object>("IsConcentrator")),
-                                               CompanyID = item.Field<int?>("CompanyID"),
-                                               VendorDeviceID = item.Field<int?>("VendorDeviceID"),
-                                               Longitude = item.Field<decimal?>("Longitude"),
-                                               Latitude = item.Field<decimal?>("Latitude"),
-                                               InterconnectionID = item.Field<int?>("InterconnectionID"),
+                                               CompanyID = item.NullableInt("CompanyID"),
+                                               VendorDeviceID = item.NullableInt("VendorDeviceID"),
+                                               Longitude = item.NullableDecimal("Longitude"),
+                                               Latitude = item.NullableDecimal("Latitude"),
+                                               InterconnectionID = item.NullableInt("InterconnectionID"),
                                                Planned = Convert.ToBoolean(item.Field<object>("Planned")),
                                                Desired = Convert.ToBoolean(item.Field<object>("Desired")),
                                                InProgress = Convert.ToBoolean(item.Field<object>("InProgress")),
@@ -4968,7 +4980,7 @@ namespace openPDCManager.Data
                                              select new CalculatedMeasurement()
                                              {
                                                  NodeId = item.Field<object>("NodeID").ToString(),
-                                                 ID = item.Field<int>("ID"),
+                                                 ID = Convert.ToInt32(item.Field<object>("ID")),
                                                  Acronym = item.Field<string>("Acronym"),
                                                  Name = item.Field<string>("Name"),
                                                  AssemblyName = item.Field<string>("AssemblyName"),
@@ -4977,13 +4989,13 @@ namespace openPDCManager.Data
                                                  ConfigSection = item.Field<string>("ConfigSection"),
                                                  InputMeasurements = item.Field<string>("InputMeasurements"),
                                                  OutputMeasurements = item.Field<string>("OutputMeasurements"),
-                                                 MinimumMeasurementsToUse = item.Field<int>("MinimumMeasurementsToUse"),
+                                                 MinimumMeasurementsToUse = Convert.ToInt32(item.Field<object>("MinimumMeasurementsToUse")),
                                                  FramesPerSecond = Convert.ToInt32(item.Field<object>("FramesPerSecond") ?? 30),
                                                  LagTime = item.Field<double>("LagTime"),
                                                  LeadTime = item.Field<double>("LeadTime"),
                                                  UseLocalClockAsRealTime = Convert.ToBoolean(item.Field<object>("UseLocalClockAsRealTime")),
                                                  AllowSortsByArrival = Convert.ToBoolean(item.Field<object>("AllowSortsByArrival")),
-                                                 LoadOrder = item.Field<int>("LoadOrder"),
+                                                 LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                                  Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                                  IgnoreBadTimeStamps = Convert.ToBoolean(item.Field<object>("IgnoreBadTimeStamps")),
                                                  TimeResolution = Convert.ToInt32(item.Field<object>("TimeResolution")),
@@ -5112,12 +5124,12 @@ namespace openPDCManager.Data
                                select new Adapter()
                                {
                                    NodeID = item.Field<object>("NodeID").ToString(),
-                                   ID = item.Field<int>("ID"),
+                                   ID = Convert.ToInt32(item.Field<object>("ID")),
                                    AdapterName = item.Field<string>("AdapterName"),
                                    AssemblyName = item.Field<string>("AssemblyName"),
                                    TypeName = item.Field<string>("TypeName"),
                                    ConnectionString = item.Field<string>("ConnectionString"),
-                                   LoadOrder = item.Field<int>("LoadOrder"),
+                                   LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                    Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                    NodeName = item.Field<string>("NodeName"),
                                    adapterType = adapterType
@@ -5300,14 +5312,14 @@ namespace openPDCManager.Data
                                    select new MapData()
                                    {
                                        NodeID = item.Field<object>("NodeID").ToString(),
-                                       ID = item.Field<int>("ID"),
+                                       ID = Convert.ToInt32(item.Field<object>("ID")),
                                        Acronym = item.Field<string>("Acronym"),
                                        Name = item.Field<string>("Name"),
                                        CompanyMapAcronym = item.Field<string>("CompanyMapAcronym"),
                                        CompanyName = item.Field<string>("CompanyName"),
                                        VendorDeviceName = item.Field<string>("VendorDeviceName"),
-                                       Longitude = item.Field<decimal?>("Longitude"),
-                                       Latitude = item.Field<decimal?>("Latitude"),
+                                       Longitude = item.NullableDecimal("Longitude"),
+                                       Latitude = item.NullableDecimal("Latitude"),
                                        Reporting = Convert.ToBoolean(item.Field<object>("Reporting"))
                                    }).ToList();
                 else
@@ -5315,14 +5327,14 @@ namespace openPDCManager.Data
                                    select new MapData()
                                    {
                                        DeviceType = item.Field<string>("DeviceType"),
-                                       ID = item.Field<int>("ID"),
+                                       ID = Convert.ToInt32(item.Field<object>("ID")),
                                        Acronym = item.Field<string>("Acronym"),
                                        Name = item.Field<string>("Name"),
                                        CompanyMapAcronym = item.Field<string>("CompanyMapAcronym"),
                                        CompanyName = item.Field<string>("CompanyName"),
                                        VendorDeviceName = item.Field<string>("VendorDeviceName"),
-                                       Longitude = item.Field<decimal?>("Longitude"),
-                                       Latitude = item.Field<decimal?>("Latitude"),
+                                       Longitude = item.NullableDecimal("Longitude"),
+                                       Latitude = item.NullableDecimal("Latitude"),
                                        Reporting = Convert.ToBoolean(item.Field<object>("Reporting")),
                                        InProgress = Convert.ToBoolean(item.Field<object>("InProgress")),
                                        Planned = Convert.ToBoolean(item.Field<object>("Planned")),

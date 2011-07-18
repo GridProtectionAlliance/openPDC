@@ -135,6 +135,9 @@
     <Compile Include="Screens\ConfigurationTypeScreen.xaml.cs">
       <DependentUpon>ConfigurationTypeScreen.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Screens\SqliteDatabaseSetupScreen.xaml.cs">
+      <DependentUpon>SqliteDatabaseSetupScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Screens\UserAccountCredentialsSetupScreen.xaml.cs">
       <DependentUpon>UserAccountCredentialsSetupScreen.xaml</DependentUpon>
     </Compile>
@@ -203,6 +206,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Screens\ConfigurationTypeScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\SqliteDatabaseSetupScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

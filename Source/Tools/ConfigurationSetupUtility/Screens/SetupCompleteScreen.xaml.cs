@@ -346,7 +346,7 @@ namespace ConfigurationSetupUtility.Screens
                     if (string.IsNullOrWhiteSpace(dataProviderString))
                         dataProviderString = "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter";
                 }
-                else
+                else if (databaseType == "mysql")
                 {
                     MySqlSetup mySqlSetup = m_state["mySqlSetup"] as MySqlSetup;
                     connectionString = mySqlSetup.ConnectionString;
@@ -358,6 +358,12 @@ namespace ConfigurationSetupUtility.Screens
 
                     if (string.IsNullOrWhiteSpace(dataProviderString))
                         dataProviderString = "AssemblyName={MySql.Data, Version=6.3.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
+                }
+                else
+                {
+                    string destination = m_state["sqliteDatabaseFilePath"].ToString();
+                    connectionString = "Data Source=" + destination + "; Version=3";
+                    dataProviderString = "AssemblyName={System.Data.SQLite, Version=1.0.74.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139}; ConnectionType=System.Data.SQLite.SQLiteConnection; AdapterType=System.Data.SQLite.SQLiteDataAdapter";
                 }
 
                 if (!string.IsNullOrEmpty(connectionString) && !string.IsNullOrEmpty(dataProviderString))

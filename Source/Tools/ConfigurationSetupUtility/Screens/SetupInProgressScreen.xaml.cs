@@ -222,8 +222,10 @@ namespace ConfigurationSetupUtility.Screens
                 SetUpAccessDatabase();
             else if (databaseType == "sql server")
                 SetUpSqlServerDatabase();
-            else
+            else if (databaseType == "mysql")
                 SetUpMySqlDatabase();
+            else
+                SetUpSqliteDatabase();
         }
 
         // Called when the user has asked to set up an access database.
@@ -566,6 +568,63 @@ namespace ConfigurationSetupUtility.Screens
                     sqlServerSetup.OutputDataReceived -= SqlServerSetup_OutputDataReceived;
                     sqlServerSetup.ErrorDataReceived -= SqlServerSetup_ErrorDataReceived;
                 }
+            }
+        }
+
+        // Called when the user has asked to set up a SQLite database.
+        private void SetUpSqliteDatabase()
+        {
+            try
+            {
+                string filePath = null;
+                string destination = m_state["sqliteDatabaseFilePath"].ToString();
+                string connectionString = "Data Source=" + destination + "; Version=3";
+                string dataProviderString = "AssemblyName={System.Data.SQLite, Version=1.0.74.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139}; ConnectionType=System.Data.SQLite.SQLiteConnection; AdapterType=System.Data.SQLite.SQLiteDataAdapter";
+                bool existing = Convert.ToBoolean(m_state["existing"]);
+                bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+
+                if (!existing || migrate)
+                {
+                    bool initialDataScript = !migrate && Convert.ToBoolean(m_state["initialDataScript"]);
+                    bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
+
+                    if (!initialDataScript)
+                        filePath = Directory.GetCurrentDirectory() + "\\Database scripts\\SQLite\\openPDC.db";
+                    else if (!sampleDataScript)
+                        filePath = Directory.GetCurrentDirectory() + "\\Database scripts\\SQLite\\openPDC-InitialDataSet.db";
+                    else
+                        filePath = Directory.GetCurrentDirectory() + "\\Database scripts\\SQLite\\openPDC-SampleDataSet.db";
+
+                    UpdateProgressBar(2);
+                    AppendStatusMessage(string.Format("Attempting to copy file {0} to {1}...", filePath, destination));
+
+                    // Copy the file to the specified path.
+                    File.Copy(filePath, destination, true);
+                    UpdateProgressBar(90);
+                    AppendStatusMessage("File copy successful.");
+                    AppendStatusMessage(string.Empty);
+
+                    // Set up the initial historian.
+                    if (Convert.ToBoolean(m_state["setupHistorian"]))
+                        SetUpInitialHistorian(connectionString, dataProviderString);
+
+                    if (!migrate)
+                        SetupAdminUserCredentials(connectionString, dataProviderString);
+                }
+
+                // Modify the openPDC configuration file.
+                ModifyConfigFiles(connectionString, dataProviderString, false);
+
+                m_state["oldOleDbConnectionString"] = m_oldConnectionString;
+                m_state["oldOleDbDataType"] = "Unspecified";
+                m_state["newOleDbConnectionString"] = connectionString;
+
+                OnSetupSucceeded();
+            }
+            catch (Exception ex)
+            {
+                AppendStatusMessage(ex.Message);
+                OnSetupFailed();
             }
         }
 

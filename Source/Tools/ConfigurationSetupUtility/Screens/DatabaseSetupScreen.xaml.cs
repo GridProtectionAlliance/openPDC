@@ -49,6 +49,7 @@ namespace ConfigurationSetupUtility.Screens
         private AccessDatabaseSetupScreen m_accessDatabaseSetupScreen;
         private SqlServerDatabaseSetupScreen m_sqlServerDatabaseSetupScreen;
         private MySqlDatabaseSetupScreen m_mySqlDatabaseSetupScreen;
+        private SqliteDatabaseSetupScreen m_sqliteDatabaseSetupScreen;
         private Dictionary<string, object> m_state;
         private bool m_sampleScriptChanged;
         private bool m_enableAuditLogChanged;
@@ -85,8 +86,10 @@ namespace ConfigurationSetupUtility.Screens
                     return m_accessDatabaseSetupScreen;
                 else if (databaseType == "sql server")
                     return m_sqlServerDatabaseSetupScreen;
-                else
+                else if (databaseType == "mysql")
                     return m_mySqlDatabaseSetupScreen;
+                else
+                    return m_sqliteDatabaseSetupScreen;
             }
         }
 
@@ -297,6 +300,7 @@ namespace ConfigurationSetupUtility.Screens
             m_accessDatabaseSetupScreen = new AccessDatabaseSetupScreen();
             m_sqlServerDatabaseSetupScreen = new SqlServerDatabaseSetupScreen();
             m_mySqlDatabaseSetupScreen = new MySqlDatabaseSetupScreen();
+            m_sqliteDatabaseSetupScreen = new SqliteDatabaseSetupScreen();
         }
 
         // Occurs when the user chooses to set up an Access database.
@@ -347,6 +351,19 @@ namespace ConfigurationSetupUtility.Screens
                 if (!m_enableAuditLogChanged)
                     m_enableAuditLogCheckBox.IsChecked = false;
             }
+        }
+
+        // Occurs when the user chooses to set up a SQLite database.
+        private void SqliteRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (m_state != null)
+                m_state["databaseType"] = "sqlite";
+
+            if (!m_sampleScriptChanged && m_sampleDataScriptCheckBox != null)
+                m_sampleDataScriptCheckBox.IsChecked = true;
+
+            if (m_enableAuditLogCheckBox != null)
+                ManageEnableAuditLogCheckBox();
         }
 
         // Occurs when the user chooses to run the initial data script when setting up their database.
@@ -412,7 +429,7 @@ namespace ConfigurationSetupUtility.Screens
             {
                 m_enableAuditLogCheckBox.Visibility = Visibility.Visible;
 
-                if (m_state.ContainsKey("databaseType") && m_state["databaseType"].ToString() == "access")
+                if (m_state.ContainsKey("databaseType") && (m_state["databaseType"].ToString() == "access" || m_state["databaseType"].ToString() == "sqlite"))
                     m_enableAuditLogCheckBox.Visibility = Visibility.Collapsed;
             }
             else
