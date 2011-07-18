@@ -208,7 +208,7 @@ namespace openPDCManager.UI.DataModels
                     statistic = statisticDefinitions.Rows.Cast<DataRow>().Single(row =>
                     {
                         bool sameSource = row.Field<string>("Source") == measurementSource;
-                        bool sameIndex = row.Field<int>("SignalIndex") == measurementIndex;
+                        bool sameIndex = row.ConvertField<int>("SignalIndex") == measurementIndex;
                         return sameSource && sameIndex;
                     });
 

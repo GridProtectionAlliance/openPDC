@@ -590,7 +590,7 @@ namespace openPDCManager.UI.DataModels
                     calculatedMeasurementList.Add(new CalculatedMeasurement()
                     {
                         NodeID = database.Guid(row, "NodeID"),
-                        ID = row.Field<int>("ID"),
+                        ID = row.ConvertField<int>("ID"),
                         Acronym = row.Field<string>("Acronym"),
                         Name = row.Field<string>("Name"),
                         AssemblyName = row.Field<string>("AssemblyName"),
@@ -599,13 +599,13 @@ namespace openPDCManager.UI.DataModels
                         ConfigSection = row.Field<string>("ConfigSection"),
                         InputMeasurements = row.Field<string>("InputMeasurements"),
                         OutputMeasurements = row.Field<string>("OutputMeasurements"),
-                        MinimumMeasurementsToUse = row.Field<int>("MinimumMeasurementsToUse"),
+                        MinimumMeasurementsToUse = row.ConvertField<int>("MinimumMeasurementsToUse"),
                         FramesPerSecond = Convert.ToInt32(row.Field<object>("FramesPerSecond") ?? 30),
                         LagTime = row.Field<double>("LagTime"),
                         LeadTime = row.Field<double>("LeadTime"),
                         UseLocalClockAsRealTime = Convert.ToBoolean(row.Field<object>("UseLocalClockAsRealTime")),
                         AllowSortsByArrival = Convert.ToBoolean(row.Field<object>("AllowSortsByArrival")),
-                        LoadOrder = row.Field<int>("LoadOrder"),
+                        LoadOrder = row.ConvertField<int>("LoadOrder"),
                         Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
                         IgnoreBadTimeStamps = Convert.ToBoolean(row.Field<object>("IgnoreBadTimeStamps")),
                         TimeResolution = Convert.ToInt32(row.Field<object>("TimeResolution")),
@@ -647,7 +647,7 @@ namespace openPDCManager.UI.DataModels
                 DataTable calculatedMeasurementTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Name FROM CalculatedMeasurement ORDER BY LoadOrder");
 
                 foreach (DataRow row in calculatedMeasurementTable.Rows)
-                    calculatedMeasurementList[row.Field<int>("ID")] = row.Field<string>("Name");
+                    calculatedMeasurementList[row.ConvertField<int>("ID")] = row.Field<string>("Name");
 
                 return calculatedMeasurementList;
             }

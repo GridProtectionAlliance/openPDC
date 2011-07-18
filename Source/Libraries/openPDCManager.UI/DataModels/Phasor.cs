@@ -326,13 +326,13 @@ namespace openPDCManager.UI.DataModels
                 {
                     phasorList.Add(new Phasor()
                     {
-                        ID = row.Field<int>("ID"),
-                        DeviceID = row.Field<int>("DeviceID"),
+                        ID = row.ConvertField<int>("ID"),
+                        DeviceID = row.ConvertField<int>("DeviceID"),
                         Label = row.Field<string>("Label"),
                         Type = row.Field<string>("Type"),
                         Phase = row.Field<string>("Phase"),
-                        //DestinationPhasorID = row.Field<int>("DestinationPhasorID"),
-                        SourceIndex = row.Field<int>("SourceIndex")
+                        //DestinationPhasorID = row.ConvertField<int>("DestinationPhasorID"),
+                        SourceIndex = row.ConvertField<int>("SourceIndex")
                     });
                 }
 
@@ -371,7 +371,7 @@ namespace openPDCManager.UI.DataModels
                     "ORDER BY SourceIndex", DefaultTimeout, deviceID);
 
                 foreach (DataRow row in phasorTable.Rows)
-                    phasorList[row.Field<int>("ID")] = row.Field<string>("Label");
+                    phasorList[row.ConvertField<int>("ID")] = row.Field<string>("Label");
 
                 return phasorList;
             }
@@ -495,12 +495,12 @@ namespace openPDCManager.UI.DataModels
                 DataRow row = phasorTable.Rows[0];
                 Phasor phasor = new Phasor()
                 {
-                    ID = row.Field<int>("ID"),
-                    DeviceID = row.Field<int>("DeviceID"),
+                    ID = row.ConvertField<int>("ID"),
+                    DeviceID = row.ConvertField<int>("DeviceID"),
                     Label = row.Field<string>("Label"),
                     Type = row.Field<string>("Type"),
                     Phase = row.Field<string>("Phase"),
-                    SourceIndex = row.Field<int>("SourceIndex")
+                    SourceIndex = row.ConvertField<int>("SourceIndex")
                 };
 
                 return phasor;

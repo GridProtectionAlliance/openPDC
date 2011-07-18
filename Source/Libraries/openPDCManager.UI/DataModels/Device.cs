@@ -908,20 +908,20 @@ namespace openPDCManager.UI.DataModels
                     deviceList.Add(new Device()
                     {
                         NodeID = database.Guid(row, "NodeID"),
-                        ID = row.Field<int>("ID"),
-                        ParentID = row.Field<int?>("ParentID"),
+                        ID = row.ConvertField<int>("ID"),
+                        ParentID = row.ConvertNullableField<int>("ParentID"),
                         UniqueID = database.Guid(row, "UniqueID"),
                         Acronym = row.Field<string>("Acronym"),
                         Name = row.Field<string>("Name"),
                         IsConcentrator = Convert.ToBoolean(row.Field<object>("IsConcentrator")),
-                        CompanyID = row.Field<int?>("CompanyID"),
-                        HistorianID = row.Field<int?>("HistorianID"),
-                        AccessID = row.Field<int>("AccessID"),
-                        VendorDeviceID = row.Field<int?>("VendorDeviceID"),
-                        ProtocolID = row.Field<int?>("ProtocolID"),
-                        Longitude = row.Field<decimal?>("Longitude"),
-                        Latitude = row.Field<decimal?>("Latitude"),
-                        InterconnectionID = row.Field<int?>("InterconnectionID"),
+                        CompanyID = row.ConvertNullableField<int>("CompanyID"),
+                        HistorianID = row.ConvertNullableField<int>("HistorianID"),
+                        AccessID = row.ConvertField<int>("AccessID"),
+                        VendorDeviceID = row.ConvertNullableField<int>("VendorDeviceID"),
+                        ProtocolID = row.ConvertNullableField<int>("ProtocolID"),
+                        Longitude = row.ConvertNullableField<decimal>("Longitude"),
+                        Latitude = row.ConvertNullableField<decimal>("Latitude"),
+                        InterconnectionID = row.ConvertNullableField<int>("InterconnectionID"),
                         ConnectionString = ParseConnectionString(row.Field<string>("ConnectionString")),
                         AlternateCommandChannel = ParseAlternateCommand(row.Field<string>("ConnectionString")),
                         TimeZone = row.Field<string>("TimeZone"),
@@ -929,8 +929,8 @@ namespace openPDCManager.UI.DataModels
                         TimeAdjustmentTicks = Convert.ToInt64(row.Field<object>("TimeAdjustmentTicks")),
                         DataLossInterval = row.Field<double>("DataLossInterval"),
                         ContactList = row.Field<string>("ContactList"),
-                        MeasuredLines = row.Field<int?>("MeasuredLines"),
-                        LoadOrder = row.Field<int>("LoadOrder"),
+                        MeasuredLines = row.ConvertNullableField<int>("MeasuredLines"),
+                        LoadOrder = row.ConvertField<int>("LoadOrder"),
                         Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
                         CreatedOn = row.Field<DateTime>("CreatedOn"),
                         AllowedParsingExceptions = Convert.ToInt32(row.Field<object>("AllowedParsingExceptions")),
@@ -994,7 +994,7 @@ namespace openPDCManager.UI.DataModels
                         "NodeID = @nodeID ORDER BY LoadOrder", DefaultTimeout, database.CurrentNodeID());
 
                 foreach (DataRow row in deviceTable.Rows)
-                    deviceList[row.Field<int>("ID")] = row.Field<string>("Acronym");
+                    deviceList[row.ConvertField<int>("ID")] = row.Field<string>("Acronym");
 
                 return deviceList;
             }
@@ -1030,7 +1030,7 @@ namespace openPDCManager.UI.DataModels
                         "NodeID = @nodeID AND ProtocolType = @protocolType ORDER BY LoadOrder", DefaultTimeout, database.CurrentNodeID(), protocolType);
 
                 foreach (DataRow row in deviceTable.Rows)
-                    deviceList[row.Field<int>("ID")] = row.Field<string>("Acronym");
+                    deviceList[row.ConvertField<int>("ID")] = row.Field<string>("Acronym");
 
                 return deviceList;
             }
@@ -1271,20 +1271,20 @@ namespace openPDCManager.UI.DataModels
                 Device device = new Device()
                 {
                     NodeID = database.Guid(row, "NodeID"),
-                    ID = row.Field<int>("ID"),
-                    ParentID = row.Field<int?>("ParentID"),
+                    ID = row.ConvertField<int>("ID"),
+                    ParentID = row.ConvertNullableField<int>("ParentID"),
                     UniqueID = database.Guid(row, "UniqueID"),
                     Acronym = row.Field<string>("Acronym"),
                     Name = row.Field<string>("Name"),
                     IsConcentrator = Convert.ToBoolean(row.Field<object>("IsConcentrator")),
-                    CompanyID = row.Field<int?>("CompanyID"),
-                    HistorianID = row.Field<int?>("HistorianID"),
-                    AccessID = row.Field<int>("AccessID"),
-                    VendorDeviceID = row.Field<int?>("VendorDeviceID"),
-                    ProtocolID = row.Field<int?>("ProtocolID"),
-                    Longitude = row.Field<decimal?>("Longitude"),
-                    Latitude = row.Field<decimal?>("Latitude"),
-                    InterconnectionID = row.Field<int?>("InterconnectionID"),
+                    CompanyID = row.ConvertNullableField<int>("CompanyID"),
+                    HistorianID = row.ConvertNullableField<int>("HistorianID"),
+                    AccessID = row.ConvertField<int>("AccessID"),
+                    VendorDeviceID = row.ConvertNullableField<int>("VendorDeviceID"),
+                    ProtocolID = row.ConvertNullableField<int>("ProtocolID"),
+                    Longitude = row.ConvertNullableField<decimal>("Longitude"),
+                    Latitude = row.ConvertNullableField<decimal>("Latitude"),
+                    InterconnectionID = row.ConvertNullableField<int>("InterconnectionID"),
                     ConnectionString = ParseConnectionString(row.Field<string>("ConnectionString")),
                     AlternateCommandChannel = ParseAlternateCommand(row.Field<string>("ConnectionString")),
                     TimeZone = row.Field<string>("TimeZone"),
@@ -1292,8 +1292,8 @@ namespace openPDCManager.UI.DataModels
                     TimeAdjustmentTicks = Convert.ToInt64(row.Field<object>("TimeAdjustmentTicks")),
                     DataLossInterval = row.Field<double>("DataLossInterval"),
                     ContactList = row.Field<string>("ContactList"),
-                    MeasuredLines = row.Field<int?>("MeasuredLines"),
-                    LoadOrder = row.Field<int>("LoadOrder"),
+                    MeasuredLines = row.ConvertNullableField<int>("MeasuredLines"),
+                    LoadOrder = row.ConvertField<int>("LoadOrder"),
                     Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
                     CreatedOn = row.Field<DateTime>("CreatedOn"),
                     AllowedParsingExceptions = Convert.ToInt32(row.Field<object>("AllowedParsingExceptions")),

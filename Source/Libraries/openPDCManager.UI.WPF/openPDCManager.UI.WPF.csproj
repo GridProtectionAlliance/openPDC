@@ -63,7 +63,7 @@
     <Reference Include="TimeSeriesFramework.UI">
       <HintPath>..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.dll</HintPath>
     </Reference>
-    <Reference Include="TimeSeriesFramework.UI.WPF, Version=1.0.81.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TimeSeriesFramework.UI.WPF, Version=1.0.83.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.dll</HintPath>
     </Reference>
     <Reference Include="TVA.Communication, Version=4.0.2.60, Culture=neutral, processorArchitecture=MSIL">
@@ -72,7 +72,7 @@
     <Reference Include="TVA.Core, Version=4.0.2.60, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Historian, Version=1.1.77.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Historian, Version=1.1.81.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\Dependencies\TVA\TVA.Historian.dll</HintPath>
     </Reference>
     <Reference Include="TVA.Security, Version=4.0.2.60, Culture=neutral, processorArchitecture=MSIL">

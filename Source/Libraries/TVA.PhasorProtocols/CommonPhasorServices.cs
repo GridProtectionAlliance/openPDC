@@ -1161,20 +1161,20 @@ namespace TVA.PhasorProtocols
                     foreach (DataRow statistic in deviceStatistics)
                     {
                         acronym = device.Field<string>("Acronym");
-                        signalIndex = statistic.Field<int>("SignalIndex");
+                        signalIndex = statistic.ConvertField<int>("SignalIndex");
                         signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
 
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
                         {
-                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", device.Field<int?>("CompanyID") ?? 0));
+                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", device.ConvertNullableField<int>("CompanyID") ?? 0));
                             if (string.IsNullOrEmpty(company))
                                 company = configFile.Settings["systemSettings"]["CompanyAcronym"].Value.TruncateRight(3);
 
-                            vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0};", device.Field<int?>("VendorDeviceID") ?? 0));
+                            vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0};", device.ConvertNullableField<int>("VendorDeviceID") ?? 0));
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", device.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
-                            using (IDbCommand command = connection.CreateParameterizedCommand("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, device.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
+                            using (IDbCommand command = connection.CreateParameterizedCommand("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, device.ConvertField<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
                             {
                                 command.ExecuteNonQuery();
                             }
@@ -1190,20 +1190,20 @@ namespace TVA.PhasorProtocols
                     foreach (DataRow statistic in inputStreamStatistics)
                     {
                         acronym = inputStream.Field<string>("Acronym") + "!IS";
-                        signalIndex = statistic.Field<int>("SignalIndex");
+                        signalIndex = statistic.ConvertField<int>("SignalIndex");
                         signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
 
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
                         {
-                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", inputStream.Field<int?>("CompanyID") ?? 0));
+                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", inputStream.ConvertNullableField<int>("CompanyID") ?? 0));
                             if (string.IsNullOrEmpty(company))
                                 company = configFile.Settings["systemSettings"]["CompanyAcronym"].Value.TruncateRight(3);
 
-                            vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0};", inputStream.Field<int?>("VendorDeviceID") ?? 0)); // Modified to retrieve VendorDeviceID into Nullable of Int as it is not a required field.
+                            vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0};", inputStream.ConvertNullableField<int>("VendorDeviceID") ?? 0)); // Modified to retrieve VendorDeviceID into Nullable of Int as it is not a required field.
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", inputStream.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
-                            using (IDbCommand command = connection.CreateParameterizedCommand("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, inputStream.Field<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
+                            using (IDbCommand command = connection.CreateParameterizedCommand("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, inputStream.ConvertField<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
                             {
                                 command.ExecuteNonQuery();
                             }
@@ -1218,7 +1218,7 @@ namespace TVA.PhasorProtocols
                     foreach (DataRow statistic in inputStreamStatistics)
                     {
                         acronym = inputStream.Field<string>("Acronym") + "!IS";
-                        signalIndex = statistic.Field<int>("SignalIndex");
+                        signalIndex = statistic.ConvertField<int>("SignalIndex");
                         signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
 
                         connection.ExecuteNonQuery(string.Format("DELETE FROM Measurement WHERE SignalReference = '{0}';", signalReference));
@@ -1230,12 +1230,12 @@ namespace TVA.PhasorProtocols
                 // Make sure needed output stream statistic measurements exist
                 foreach (DataRow outputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM OutputStream WHERE NodeID = {0};", nodeIDQueryString)).Rows)
                 {
-                    adapterID = outputStream.Field<int>("ID");
+                    adapterID = outputStream.ConvertField<int>("ID");
                     acronym = outputStream.Field<string>("Acronym") + "!OS";
 
                     foreach (DataRow statistic in outputStreamStatistics)
                     {
-                        signalIndex = statistic.Field<int>("SignalIndex");
+                        signalIndex = statistic.ConvertField<int>("SignalIndex");
                         signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
 
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
@@ -1268,7 +1268,7 @@ namespace TVA.PhasorProtocols
                         if (!outputStreamDevices.Any(row => string.Compare(row.Field<string>("Acronym"), deviceSignalReference.Acronym, true) == 0))
                         {
                             // This measurement has a signal reference for a device that is not part of the associated output stream, so we mark it for deletion
-                            measurementIDsToDelete.Add(outputStreamMeasurement.Field<int>("ID"));
+                            measurementIDsToDelete.Add(outputStreamMeasurement.ConvertField<int>("ID"));
                         }
                         else
                         {
@@ -1276,7 +1276,7 @@ namespace TVA.PhasorProtocols
                             if (!validOutputSignalKinds.Any(type => type == deviceSignalReference.Kind))
                             {
                                 // This measurement has a signal reference type that is invalid for an output stream, so we mark it for deletion
-                                measurementIDsToDelete.Add(outputStreamMeasurement.Field<int>("ID"));
+                                measurementIDsToDelete.Add(outputStreamMeasurement.ConvertField<int>("ID"));
                             }
                         }
                     }

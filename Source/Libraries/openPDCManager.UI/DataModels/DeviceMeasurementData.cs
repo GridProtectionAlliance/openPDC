@@ -239,7 +239,7 @@ namespace openPDCManager.UI.DataModels
                 deviceMeasurementDataList = (from pdc in resultSet.Tables["PdcTable"].AsEnumerable()
                                              select new DeviceMeasurementData()
                                              {
-                                                 ID = pdc.Field<int>("ID"),
+                                                 ID = pdc.ConvertField<int>("ID"),
                                                  Acronym = string.IsNullOrEmpty(pdc.Field<string>("Acronym")) ? "DIRECT CONNECTED" : pdc.Field<string>("Acronym"),
                                                  Name = pdc.Field<string>("Name"),
                                                  CompanyName = pdc.Field<string>("CompanyName"),
@@ -250,7 +250,7 @@ namespace openPDCManager.UI.DataModels
                                                                                                     where device.Field<string>("ParentAcronym") == pdc.Field<string>("Acronym")
                                                                                                     select new DeviceInfo()
                                                                                                     {
-                                                                                                        ID = device.Field<int?>("ID"),
+                                                                                                        ID = device.ConvertNullableField<int>("ID"),
                                                                                                         Acronym = device.Field<string>("Acronym"),
                                                                                                         Name = device.Field<string>("Name"),
                                                                                                         CompanyName = device.Field<string>("CompanyName"),
@@ -258,15 +258,15 @@ namespace openPDCManager.UI.DataModels
                                                                                                         VendorDeviceName = device.Field<string>("VendorDeviceName"),
                                                                                                         ParentAcronym = string.IsNullOrEmpty(device.Field<string>("ParentAcronym")) ? "DIRECT CONNECTED" : device.Field<string>("ParentAcronym"),
                                                                                                         IsExpanded = false,
-                                                                                                        StatusColor = device.Field<int?>("ID") == null ? "Transparent" : "Gray",
+                                                                                                        StatusColor = device.ConvertNullableField<int>("ID") == null ? "Transparent" : "Gray",
                                                                                                         Enabled = Convert.ToBoolean(device.Field<object>("Enabled")),
                                                                                                         MeasurementList = new ObservableCollection<MeasurementInfo>((from measurement in resultSet.Tables["MeasurementTable"].AsEnumerable()
-                                                                                                                                                                     where measurement.Field<int?>("DeviceID") == device.Field<int?>("ID")
+                                                                                                                                                                     where measurement.ConvertNullableField<int>("DeviceID") == device.ConvertNullableField<int>("ID")
                                                                                                                                                                      select new MeasurementInfo()
                                                                                                                                                                      {
-                                                                                                                                                                         DeviceID = measurement.Field<int?>("DeviceID"),
+                                                                                                                                                                         DeviceID = measurement.ConvertNullableField<int>("DeviceID"),
                                                                                                                                                                          SignalID = measurement.Field<object>("SignalID").ToString(),
-                                                                                                                                                                         PointID = measurement.Field<int>("PointID"),
+                                                                                                                                                                         PointID = measurement.ConvertField<int>("PointID"),
                                                                                                                                                                          PointTag = measurement.Field<string>("PointTag"),
                                                                                                                                                                          SignalReference = measurement.Field<string>("SignalReference"),
                                                                                                                                                                          SignalAcronym = measurement.Field<string>("SignalAcronym"),
