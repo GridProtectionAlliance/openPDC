@@ -106,15 +106,15 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Infragistics.Silverlight.XamWebMenu.v9.1, Version=9.1.20091.278, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
+    <Reference Include="Infragistics.Silverlight.XamWebMenu.v9.1">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.XamWebMenu.v9.1.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Maps.MapControl, Version=1.0.1.0, Culture=neutral, PublicKeyToken=498d0d22d7936b73, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Maps.MapControl">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Maps.MapControl.Common, Version=1.0.1.0, Culture=neutral, PublicKeyToken=498d0d22d7936b73, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Maps.MapControl.Common">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.Common.dll</HintPath>
     </Reference>
@@ -128,16 +128,16 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Windows.Controls, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Windows.Controls.DataVisualization.Toolkit, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Windows.Controls.DataVisualization.Toolkit">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\Microsoft\Silverlight\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
     </Reference>
-    <Reference Include="System.Windows.Controls.Layout.Toolkit, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Windows.Controls.Layout.Toolkit">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\Microsoft\Silverlight\System.Windows.Controls.Layout.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Controls.Navigation, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Windows.Controls.Toolkit, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Windows.Controls.Toolkit">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\Microsoft\Silverlight\System.Windows.Controls.Toolkit.dll</HintPath>
     </Reference>

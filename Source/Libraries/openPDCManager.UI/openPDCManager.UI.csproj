@@ -48,7 +48,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TimeSeriesFramework, Version=1.0.76.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TimeSeriesFramework">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
     </Reference>
@@ -58,15 +58,15 @@
     <Reference Include="TimeSeriesFramework.UI.WPF">
       <HintPath>..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Communication, Version=4.0.2.60, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Communication">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Core, Version=4.0.2.60, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Core">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Security, Version=4.0.2.60, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Security">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\TVA\TVA.Security.dll</HintPath>
     </Reference>

@@ -129,22 +129,22 @@
     <Reference Include="TimeSeriesFramework">
       <HintPath>..\..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Communication, Version=1.1.59.53605, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Communication">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Core, Version=1.1.59.53605, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Core">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Security, Version=4.0.2.6, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Security">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Security.dll</HintPath>
     </Reference>
     <Reference Include="TVA.ServiceProcess">
       <HintPath>..\..\..\Dependencies\TVA\TVA.ServiceProcess.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Windows, Version=4.0.1.61337, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Windows">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Windows.dll</HintPath>
     </Reference>

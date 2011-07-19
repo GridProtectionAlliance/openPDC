@@ -63,34 +63,34 @@
     <Reference Include="TimeSeriesFramework.UI">
       <HintPath>..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.dll</HintPath>
     </Reference>
-    <Reference Include="TimeSeriesFramework.UI.WPF, Version=1.0.83.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TimeSeriesFramework.UI.WPF">
       <HintPath>..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Communication, Version=4.0.2.60, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Communication">
       <HintPath>..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Core, Version=4.0.2.60, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Core">
       <HintPath>..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Historian, Version=1.1.81.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Historian">
       <HintPath>..\..\Dependencies\TVA\TVA.Historian.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Security, Version=4.0.2.60, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Security">
       <HintPath>..\..\Dependencies\TVA\TVA.Security.dll</HintPath>
     </Reference>
     <Reference Include="TVA.ServiceBus">
       <HintPath>..\..\Dependencies\TVA\TVA.ServiceBus.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.ServiceModel, Version=4.0.2.60, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.ServiceModel">
       <HintPath>..\..\Dependencies\TVA\TVA.ServiceModel.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.ServiceProcess, Version=4.0.2.60, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.ServiceProcess">
       <HintPath>..\..\Dependencies\TVA\TVA.ServiceProcess.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Services, Version=4.0.2.32, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Services">
       <HintPath>..\..\Dependencies\TVA\TVA.Services.dll</HintPath>
     </Reference>
-    <Reference Include="TVA.Windows, Version=4.0.2.60, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="TVA.Windows">
       <HintPath>..\..\Dependencies\TVA\TVA.Windows.dll</HintPath>
     </Reference>
     <Reference Include="UIAutomationProvider" />
