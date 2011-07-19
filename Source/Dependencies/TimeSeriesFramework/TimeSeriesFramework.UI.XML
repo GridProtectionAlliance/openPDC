@@ -122,6 +122,13 @@
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
             <returns>Boolean, indicating if source database is MySQL.</returns>
         </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.IsSqlite(TVA.Data.AdoDataConnection)">
+            <summary>
+            Method to check if source database is SQLite.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
+            <returns>Boolean, indicating if source database is MySQL.</returns>
+        </member>
         <member name="M:TimeSeriesFramework.UI.CommonFunctions.RemoteStatusServerConnectionString(TVA.Data.AdoDataConnection)">
             <summary>
             Retrieves connection string to connect to backend windows service.
