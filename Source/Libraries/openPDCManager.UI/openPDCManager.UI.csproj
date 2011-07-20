@@ -86,6 +86,7 @@
     <Compile Include="DataModels\InputMonitorData.cs" />
     <Compile Include="DataModels\InputWizardDevice.cs" />
     <Compile Include="DataModels\Phasor.cs" />
+    <Compile Include="DataModels\Statistic.cs" />
     <Compile Include="DataModels\TimeTaggedMeasurement.cs" />
     <Compile Include="IsolatedStorageManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
