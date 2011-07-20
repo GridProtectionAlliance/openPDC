@@ -40,6 +40,9 @@
     <Reference Include="Accessibility">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="DynamicDataDisplay">
+      <HintPath>..\..\Dependencies\Microsoft\D3\DynamicDataDisplay.dll</HintPath>
+    </Reference>
     <Reference Include="Hadoop.Replication">
       <HintPath>..\..\Dependencies\TVA\Hadoop.Replication.dll</HintPath>
     </Reference>
@@ -109,6 +112,9 @@
     <Compile Include="UserControls\CalculatedMeasurementUserControl.xaml.cs">
       <DependentUpon>CalculatedMeasurementUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\DeviceDetailInfoUserControl.xaml.cs">
+      <DependentUpon>DeviceDetailInfoUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\DeviceListUserControl.xaml.cs">
       <DependentUpon>DeviceListUserControl.xaml</DependentUpon>
     </Compile>
@@ -118,6 +124,9 @@
     </Compile>
     <Compile Include="UserControls\DeviceUserControl.xaml.cs">
       <DependentUpon>DeviceUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\InputStatusUserControl.xaml.cs">
+      <DependentUpon>InputStatusUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\InputWizardUserControl.xaml.cs">
       <DependentUpon>InputWizardUserControl.xaml</DependentUpon>
@@ -160,6 +169,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UserControls\DeviceDetailInfoUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\DeviceListUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -171,6 +184,10 @@
     <Page Include="UserControls\DeviceUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\InputStatusUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\InputWizardUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>

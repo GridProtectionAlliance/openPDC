@@ -375,6 +375,62 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        public static ObservableCollection<DetailStatisticInfo> GetDeviceStatisticMeasurements(AdoDataConnection connection, int deviceID)
+        {
+            bool createdConnection = false;
+            try
+            {
+                createdConnection = CreateConnection(ref connection);
+
+                ObservableCollection<DetailStatisticInfo> deviceStatisticList;
+                DataSet resultSet = new DataSet();
+                resultSet.EnforceConstraints = false;
+                DataTable resultTable;
+
+                resultTable = connection.Connection.RetrieveData(connection.AdapterType, "SELECT DeviceID, PointID, PointTag, SignalReference, MeasurementSource FROM StatisticMeasurement ORDER BY MeasurementSource, SignalReference");
+                resultTable.TableName = "StatisticMeasurements";
+                resultSet.Tables.Add(resultTable.Copy());
+
+                resultTable = connection.Connection.RetrieveData(connection.AdapterType, "SELECT Source, SignalIndex, Name, Description, DataType, DisplayFormat, IsConnectedState, LoadOrder FROM Statistic ORDER BY Source, SignalIndex");
+                resultTable.TableName = "StatisticDefinitions";
+                resultSet.Tables.Add(resultTable.Copy());
+
+                deviceStatisticList = new ObservableCollection<DetailStatisticInfo>(
+                                     (from measurement in resultSet.Tables["StatisticMeasurements"].AsEnumerable()
+                                      select new DetailStatisticInfo()
+                                      {
+                                          DeviceID = measurement.Field<object>("DeviceID") == null ? -1 : Convert.ToInt32(measurement.Field<object>("DeviceID")),
+                                          PointID = Convert.ToInt32(measurement.Field<object>("PointID")),
+                                          PointTag = measurement.Field<string>("PointTag"),
+                                          SignalReference = measurement.Field<string>("SignalReference"),
+                                          Statistics = (from statistic in resultSet.Tables["StatisticDefinitions"].AsEnumerable()
+                                                        where statistic.Field<string>("Source") == measurement.Field<string>("MeasurementSource") &&
+                                                           statistic.Field<int>("SignalIndex") == Convert.ToInt32((measurement.Field<string>("SignalReference")).Substring((measurement.Field<string>("SignalReference")).LastIndexOf("-ST") + 3))
+                                                        select new BasicStatisticInfo()
+                                                        {
+                                                            Source = statistic.Field<string>("Source"),
+                                                            Name = statistic.Field<string>("Name"),
+                                                            Description = statistic.Field<string>("Description"),
+                                                            Quality = "N/A",
+                                                            TimeTag = "N/A",
+                                                            Value = "--",
+                                                            DataType = statistic.Field<object>("DataType") == null ? string.Empty : statistic.Field<string>("DataType"),
+                                                            DisplayFormat = statistic.Field<object>("DisplayFormat") == null ? string.Empty : statistic.Field<string>("DisplayFormat"),
+                                                            IsConnectedState = Convert.ToBoolean(statistic.Field<object>("IsConnectedState")),
+                                                            LoadOrder = Convert.ToInt32(statistic.Field<object>("LoadOrder"))
+                                                        }
+                                                        ).First()
+                                      }).ToList());
+
+                return deviceStatisticList;
+            }
+            finally
+            {
+                if (createdConnection && connection != null)
+                    connection.Dispose();
+            }
+        }
+
         #endregion
     }
 
