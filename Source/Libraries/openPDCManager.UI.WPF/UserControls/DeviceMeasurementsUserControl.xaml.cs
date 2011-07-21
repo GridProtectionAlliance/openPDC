@@ -142,13 +142,7 @@ namespace openPDCManager.UI.UserControls
         void StartSubscription()
         {
             // Create server connection string
-            string server;
-            StringBuilder b = new StringBuilder();
-            string serverTemp = database.RemoteStatusServerConnectionString();
-            var temp = serverTemp.Split(';');
-            b.Append(temp[0].Substring(0,temp[0].Length - 4));
-            b.Append(temp[1].Substring(temp[1].Length - 4));
-            server = b.ToString();
+            string server = database.DataPublisherPort();
 
             m_dataSubscriber = new DataSubscriber();
             m_dataSubscriber.StatusMessage += dataSubscriber_StatusMessage;
@@ -156,7 +150,7 @@ namespace openPDCManager.UI.UserControls
             m_dataSubscriber.ConnectionEstablished += dataSubscriber_ConnectionEstablished;
             m_dataSubscriber.NewMeasurements += dataSubscriber_NewMeasurements;
             m_dataSubscriber.ConnectionTerminated += dataSubscriber_ConnectionTerminated;
-            m_dataSubscriber.ConnectionString = server;
+            m_dataSubscriber.ConnectionString = "server=localhost:6170";
             m_dataSubscriber.Initialize();
             m_dataSubscriber.Start();
         }

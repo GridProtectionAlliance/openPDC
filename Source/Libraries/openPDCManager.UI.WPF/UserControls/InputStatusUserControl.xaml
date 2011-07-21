@@ -31,55 +31,54 @@
                                 <CheckBox HorizontalAlignment="Left" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}" Content="{Binding Path=SignalReference}" ToolTip="{Binding Path=Description}" TabIndex="{Binding Path=PointID}" IsEnabled="{Binding Path=SignalAcronym, Converter={StaticResource stringToBooleanConverter}}" Width="175" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"/>
                             </Border>
                             <Border>
-                                <TextBlock Text="{Binding Path=CurrentValue}" Foreground="{Binding CurrentQuality, Converter={StaticResource stringToColorConverter}}" ToolTip="{Binding Path=CurrentTimeTag}" TextAlignment="Center" Padding="1"/>
+                                <TextBlock Text="{Binding Path=CurrentValue}" Width="{StaticResource SmallerItemSize}" Foreground="{Binding CurrentQuality, Converter={StaticResource stringToColorConverter}}" ToolTip="{Binding Path=CurrentTimeTag}" TextAlignment="Center" Padding="1"/>
                             </Border>
                             <Border>
-                                <TextBlock Text="{Binding Path=EngineeringUnits}" TextAlignment="Left" Padding="1"/>
+                                <TextBlock Text="{Binding Path=EngineeringUnits}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Left" Padding="1"/>
                             </Border>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                     <!--- ================================================================================= -->
-                    <HierarchicalDataTemplate x:Key="ConnectedDevicesNodeTemplate" ItemTemplate="{StaticResource MeasurementsNodeTemplate}">
+                    <HierarchicalDataTemplate x:Key="ConnectedDevicesNodeTemplate" ItemTemplate="{StaticResource MeasurementsNodeTemplate}" ItemsSource="{Binding Path=MeasurementList, Mode=TwoWay}">
                         <StackPanel Orientation="Horizontal">
                             <StackPanel.Resources>
                                 <converter:StringToSymbolConverter x:Key="ConvertStringToSymbol"/>
                             </StackPanel.Resources>
                             <Ellipse Width="15" Height="15" Margin="5, 0, 5, 0" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>
                             <Border>
-                                <Button Content="{Binding Path=Acronym}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" HorizontalContentAlignment="Left" x:Name="ButtonGetStatistics" Click="ButtonGetStatistics_Click" ></Button>
+                                <Button Content="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" HorizontalContentAlignment="Left" x:Name="ButtonGetStatistics" Click="ButtonGetStatistics_Click" ></Button>
                             </Border>
                             <Border>
                                 <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Device Name" TextAlignment="Left" Padding="1"/>
                             </Border>
                             <Border>
-                                <Button x:Name="ButtonEdit" Visibility="{Binding Path=ID, Converter={StaticResource integerToVisibilityConverter}}" Content="Edit" Tag="{Binding Path=ID}" ToolTipService.ToolTip="Click Here to View/Edit Device Configuration" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Click="ButtonEdit_Click"/>
+                                <Button x:Name="ButtonEdit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Visibility="{Binding Path=ID, Converter={StaticResource integerToVisibilityConverter}}" Content="Edit" Tag="{Binding Path=ID}" ToolTipService.ToolTip="Click Here to View/Edit Device Configuration" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Click="ButtonEdit_Click"/>
                             </Border>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                     <!--- ================================================================================= -->
-                    <HierarchicalDataTemplate x:Key="RootNodeTemplate" ItemsSource="{Binding Path=DeviceList, Mode=TwoWay}" >
+                    <HierarchicalDataTemplate x:Key="RootNodeTemplate" ItemsSource="{Binding Path=DeviceList, Mode=TwoWay}" ItemTemplate="{StaticResource ConnectedDevicesNodeTemplate}">
                         <StackPanel Orientation="Horizontal" Margin="2">
                             <StackPanel.Resources>
                                 <converter:StringToSymbolConverter x:Key="ConvertStringToSymbol"/>
                             </StackPanel.Resources>
                             <Ellipse Width="15" Height="15" Margin="5, 0, 5, 0" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>
                             <Border>
-                                <Button Content="{Binding Path=Acronym}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" HorizontalContentAlignment="Left" Click="ButtonGetStatistics_Click"></Button>
+                                <Button Content="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" HorizontalContentAlignment="Left" Click="ButtonGetStatistics_Click"></Button>
                             </Border>
                             <Border>
                                 <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Concentrator Name" Padding="1"/>
                             </Border>
                             <Border>
-                                <Button x:Name="ButtonEdit" Visibility="{Binding Path=ID, Converter={StaticResource integerToVisibilityConverter}}" Content="Edit" Tag="{Binding Path=ID}" ToolTipService.ToolTip="Click Here to View/Edit Device Configuration" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Click="ButtonEdit_Click"/>
+                                <Button x:Name="ButtonEdit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Visibility="{Binding Path=ID, Converter={StaticResource integerToVisibilityConverter}}" Content="Edit" Tag="{Binding Path=ID}" ToolTipService.ToolTip="Click Here to View/Edit Device Configuration" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Click="ButtonEdit_Click"/>
                             </Border>
                         </StackPanel>
                     </HierarchicalDataTemplate>
 
                     <Style x:Key="ExpandedItemStyle" TargetType="TreeViewItem">
+                        <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}"/>
                     </Style>
                 </StackPanel.Resources>
-
-                <TextBlock Text="Input Status &amp; Monitoring" Grid.Column="0" Foreground="#FFFFFFFF" HorizontalAlignment="Center" Padding="5"/>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -104,10 +103,10 @@
                     </StackPanel>
 
                     <!--Second Row-->
-                    <TreeView x:Name="TreeViewDeviceMeasurements" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Path=DeviceMeasurementDataList, Mode=TwoWay}" ItemContainerStyle="{StaticResource ExpandedItemStyle}" ItemTemplate="{StaticResource RootNodeTemplate}" Height="750" Margin="0" VerticalAlignment="Top"/>
+                    <TreeView x:Name="TreeViewDeviceMeasurements" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Path=DeviceMeasurementDataList, Mode=TwoWay}" ItemContainerStyle="{StaticResource ExpandedItemStyle}" ItemTemplate="{StaticResource RootNodeTemplate}" Height="750" Margin="0" VerticalAlignment="Top" Width="375"/>
 
                     <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top">
-                        <d3:ChartPlotter Name="ChartPlotterDynamic" Margin="5" Height="375">
+                        <d3:ChartPlotter Name="ChartPlotterDynamic" Margin="5" Height="375" Width="650">
 
                             <d3:InjectedPlotter Name="PhaseAnglePlotter" SetViewportBinding="False">
                                 <d3:VerticalAxis Name="PhaseAngleYAxis" Placement="Left"/>
@@ -133,7 +132,7 @@
                             <TextBlock x:Name="TextBlockRight" Canvas.Right="2" Canvas.Bottom="0" />
                         </d3:ChartPlotter>
 
-                        <ListBox x:Name="ListBoxCurrentValues" Margin="5,0,5,0" Padding="0" Height="140" VerticalAlignment="Top">
+                        <ListBox x:Name="ListBoxCurrentValues" Margin="5,0,5,0" Padding="0" Height="140" VerticalAlignment="Top" Width="650">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" DataContext="{Binding Path=Value}">

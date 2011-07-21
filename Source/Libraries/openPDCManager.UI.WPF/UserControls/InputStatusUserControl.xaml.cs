@@ -570,13 +570,7 @@ namespace openPDCManager.UI.UserControls
 
         void StartSubscriptionForChart()
         {
-            string server;
-            StringBuilder b = new StringBuilder();
-            string serverTemp = database.RemoteStatusServerConnectionString();
-            var temp = serverTemp.Split(';');
-            b.Append(temp[0].Substring(0, temp[0].Length - 4));
-            b.Append(temp[1].Substring(temp[1].Length - 4));
-            server = b.ToString();
+            string server = database.RemoteStatusServerConnectionString();
 
             m_chartSubscriber = new DataSubscriber();
             m_chartSubscriber.StatusMessage += chartSubscriber_StatusMessage;
@@ -584,7 +578,7 @@ namespace openPDCManager.UI.UserControls
             m_chartSubscriber.ConnectionEstablished += chartSubscriber_ConnectionEstablished;
             m_chartSubscriber.NewMeasurements += chartSubscriber_NewMeasurements;
             m_chartSubscriber.ConnectionTerminated += chartSubscriber_ConnectionTerminated;
-            m_chartSubscriber.ConnectionString = server;
+            m_chartSubscriber.ConnectionString = "server=localhost:6170";
             m_chartSubscriber.Initialize();
             m_chartSubscriber.Start();
         }
@@ -809,13 +803,7 @@ namespace openPDCManager.UI.UserControls
 
         void StartSubscriptionForTreeData()
         {
-            string server;
-            StringBuilder b = new StringBuilder();
-            string serverTemp = database.RemoteStatusServerConnectionString();
-            var temp = serverTemp.Split(';');
-            b.Append(temp[0].Substring(0, temp[0].Length - 4));
-            b.Append(temp[1].Substring(temp[1].Length - 4));
-            server = b.ToString();
+            string server = database.RemoteStatusServerConnectionString();
 
             m_measurementDataSubscriber = new DataSubscriber();
             m_measurementDataSubscriber.StatusMessage += measurementDataSubscriber_StatusMessage;
@@ -823,7 +811,7 @@ namespace openPDCManager.UI.UserControls
             m_measurementDataSubscriber.ConnectionEstablished += measurementDataSubscriber_ConnectionEstablished;
             m_measurementDataSubscriber.NewMeasurements += measurementDataSubscriber_NewMeasurements;
             m_measurementDataSubscriber.ConnectionTerminated += measurementDataSubscriber_ConnectionTerminated;
-            m_measurementDataSubscriber.ConnectionString = server;
+            m_measurementDataSubscriber.ConnectionString = "server=localhost:6170";
             m_measurementDataSubscriber.Initialize();
             m_measurementDataSubscriber.Start();
         }
@@ -995,8 +983,17 @@ namespace openPDCManager.UI.UserControls
 
         private void ButtonGetStatistics_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                string deviceAcronym = ((Button)sender).Content.ToString();
+                Device deviceInfo = Device.GetDevice(database, "WHERE Acronym = '" + deviceAcronym + "'");
+                UserControlDeviceDetailInfo.Initialize(deviceInfo);
+                UserControlDeviceDetailInfo.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
 
-
+            }
         }
 
         private void ButtonEdit_Click(object sender, RoutedEventArgs e)
