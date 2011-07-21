@@ -28,13 +28,13 @@
                                 <converter:StringToBooleanConverter x:Key="stringToBooleanConverter"/>
                             </StackPanel.Resources>
                             <Border>
-                                <CheckBox HorizontalAlignment="Left" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}" Content="{Binding Path=SignalReference}" ToolTip="{Binding Path=Description}" TabIndex="{Binding Path=PointID}" IsEnabled="{Binding Path=SignalAcronym, Converter={StaticResource stringToBooleanConverter}}" Width="175" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"/>
+                                <CheckBox HorizontalAlignment="Left" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}" Content="{Binding Path=SignalReference}" ToolTip="{Binding Path=Description}" TabIndex="{Binding Path=PointID}" IsEnabled="{Binding Path=SignalAcronym, Converter={StaticResource stringToBooleanConverter}}" Width="100" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"/>
                             </Border>
                             <Border>
-                                <TextBlock Text="{Binding Path=CurrentValue}" Width="{StaticResource SmallerItemSize}" Foreground="{Binding CurrentQuality, Converter={StaticResource stringToColorConverter}}" ToolTip="{Binding Path=CurrentTimeTag}" TextAlignment="Center" Padding="1"/>
+                                <TextBlock Text="{Binding Path=CurrentValue}" Width="{StaticResource XSmallItemSize}" Foreground="{Binding CurrentQuality, Converter={StaticResource stringToColorConverter}}" ToolTip="{Binding Path=CurrentTimeTag}" TextAlignment="Center"/>
                             </Border>
                             <Border>
-                                <TextBlock Text="{Binding Path=EngineeringUnits}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Left" Padding="1"/>
+                                <TextBlock Text="{Binding Path=EngineeringUnits}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Left"/>
                             </Border>
                         </StackPanel>
                     </HierarchicalDataTemplate>
@@ -44,12 +44,12 @@
                             <StackPanel.Resources>
                                 <converter:StringToSymbolConverter x:Key="ConvertStringToSymbol"/>
                             </StackPanel.Resources>
-                            <Ellipse Width="15" Height="15" Margin="5, 0, 5, 0" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>
+                            <Ellipse Width="15" Height="15" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>
                             <Border>
                                 <Button Content="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" HorizontalContentAlignment="Left" x:Name="ButtonGetStatistics" Click="ButtonGetStatistics_Click" ></Button>
                             </Border>
                             <Border>
-                                <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Device Name" TextAlignment="Left" Padding="1"/>
+                                <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Device Name" TextAlignment="Left" VerticalAlignment="Center"/>
                             </Border>
                             <Border>
                                 <Button x:Name="ButtonEdit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Visibility="{Binding Path=ID, Converter={StaticResource integerToVisibilityConverter}}" Content="Edit" Tag="{Binding Path=ID}" ToolTipService.ToolTip="Click Here to View/Edit Device Configuration" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Click="ButtonEdit_Click"/>
@@ -62,12 +62,12 @@
                             <StackPanel.Resources>
                                 <converter:StringToSymbolConverter x:Key="ConvertStringToSymbol"/>
                             </StackPanel.Resources>
-                            <Ellipse Width="15" Height="15" Margin="5, 0, 5, 0" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>
+                            <Ellipse Width="15" Height="15" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>
                             <Border>
-                                <Button Content="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" HorizontalContentAlignment="Left" Click="ButtonGetStatistics_Click"></Button>
+                                <Button Content="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics" Foreground="#FF095188" HorizontalContentAlignment="Left" Click="ButtonGetStatistics_Click" Width="Auto"></Button>
                             </Border>
                             <Border>
-                                <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Concentrator Name" Padding="1"/>
+                                <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Concentrator Name"/>
                             </Border>
                             <Border>
                                 <Button x:Name="ButtonEdit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Visibility="{Binding Path=ID, Converter={StaticResource integerToVisibilityConverter}}" Content="Edit" Tag="{Binding Path=ID}" ToolTipService.ToolTip="Click Here to View/Edit Device Configuration" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Click="ButtonEdit_Click"/>
@@ -97,16 +97,16 @@
                     <TextBlock x:Name="TextBlockLastRefresh" Grid.Row="0"  Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="5"/>
 
                     <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
-                        <Button x:Name="ButtonSave" Content="Save Display Settings" ToolTip="Click Here to Save Current Display Settings" VerticalAlignment="Center" Click="ButtonSave_Click"/>
+                        <Button x:Name="ButtonSave" Content="Save Display Settings" ToolTip="Click Here to Save Current Display Settings" VerticalAlignment="Center" Click="ButtonSave_Click" Width="Auto"/>
                         <TextBlock Text="|" Margin="5,0,5,0" VerticalAlignment="Center"/>
-                        <Button x:Name="ButtonLoad" Content="Load Display Settings" ToolTip="Click Here to Load Previous Display Settings" VerticalAlignment="Center" Margin="0,0,5,0" Click="ButtonLoad_Click"/>
+                        <Button x:Name="ButtonLoad" Content="Load Display Settings" ToolTip="Click Here to Load Previous Display Settings" VerticalAlignment="Center" Click="ButtonLoad_Click" Width="Auto"/>
                     </StackPanel>
 
                     <!--Second Row-->
-                    <TreeView x:Name="TreeViewDeviceMeasurements" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Path=DeviceMeasurementDataList, Mode=TwoWay}" ItemContainerStyle="{StaticResource ExpandedItemStyle}" ItemTemplate="{StaticResource RootNodeTemplate}" Height="750" Margin="0" VerticalAlignment="Top" Width="375"/>
+                    <TreeView x:Name="TreeViewDeviceMeasurements" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Path=DeviceMeasurementDataList, Mode=TwoWay}" ItemContainerStyle="{StaticResource ExpandedItemStyle}" ItemTemplate="{StaticResource RootNodeTemplate}" Height="575" VerticalAlignment="Top" Width="300"/>
 
                     <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top">
-                        <d3:ChartPlotter Name="ChartPlotterDynamic" Margin="5" Height="375" Width="650">
+                        <d3:ChartPlotter Name="ChartPlotterDynamic" Margin="5" Height="275" Width="600">
 
                             <d3:InjectedPlotter Name="PhaseAnglePlotter" SetViewportBinding="False">
                                 <d3:VerticalAxis Name="PhaseAngleYAxis" Placement="Left"/>
@@ -132,7 +132,7 @@
                             <TextBlock x:Name="TextBlockRight" Canvas.Right="2" Canvas.Bottom="0" />
                         </d3:ChartPlotter>
 
-                        <ListBox x:Name="ListBoxCurrentValues" Margin="5,0,5,0" Padding="0" Height="140" VerticalAlignment="Top" Width="650">
+                        <ListBox x:Name="ListBoxCurrentValues" Margin="5,0,5,0" Padding="0" Height="80" VerticalAlignment="Top" Width="600">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" DataContext="{Binding Path=Value}">
@@ -140,22 +140,22 @@
                                             <converter:StringToColorConverter x:Key="stringToColorConverter"/>
                                         </StackPanel.Resources>
                                         <Border>
-                                            <TextBlock Text="{Binding Path=PointID}" TextAlignment="Left" Padding="1"/>
+                                            <TextBlock Text="{Binding Path=PointID}" TextAlignment="Left" Width="30"/>
                                         </Border>
                                         <Border>
-                                            <TextBlock Text="{Binding Path=SignalReference}" ToolTip="{Binding Path=Description}" TextAlignment="Left" Padding="1" Foreground="{Binding Path=Background}"/>
+                                            <TextBlock Text="{Binding Path=SignalReference}" ToolTip="{Binding Path=Description}" TextAlignment="Left"  Width="150" Foreground="{Binding Path=Background}"/>
                                         </Border>
                                         <Border>
-                                            <TextBlock Text="{Binding Path=TimeStamp}" TextAlignment="Left" Padding="1"/>
+                                            <TextBlock Text="{Binding Path=TimeStamp}" TextAlignment="Left"  Width="150"/>
                                         </Border>
                                         <Border>
-                                            <TextBlock Text="{Binding Path=Value}" TextAlignment="Center" Padding="1"/>
+                                            <TextBlock Text="{Binding Path=Value}" TextAlignment="Center"  Width="100"/>
                                         </Border>
                                         <Border>
-                                            <TextBlock Text="{Binding Path=EngineeringUnit}" TextAlignment="Center" Padding="1"/>
+                                            <TextBlock Text="{Binding Path=EngineeringUnit}" TextAlignment="Center"  Width="100"/>
                                         </Border>
                                         <Border>
-                                            <TextBlock Text="{Binding Path=Quality}" TextAlignment="Center" Padding="1" Foreground="{Binding Quality, Converter={StaticResource stringToColorConverter}}"/>
+                                            <TextBlock Text="{Binding Path=Quality}" TextAlignment="Center"  Width="100" Foreground="{Binding Quality, Converter={StaticResource stringToColorConverter}}"/>
                                         </Border>
                                     </StackPanel>
                                 </DataTemplate>

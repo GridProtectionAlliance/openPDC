@@ -119,7 +119,7 @@ namespace openPDCManager.UI.UserControls
                 if (statInfo.PointID < m_minPointID)
                     m_minPointID = statInfo.PointID;
             }
-            m_url = database.RealTimeStatisticServiceUrl() + "/timeseriesdata/read/current" + m_minPointID + "-" + m_maxPointID + "/XML";
+            m_url = database.RealTimeStatisticServiceUrl() + "/timeseriesdata/read/current/" + m_minPointID + "-" + m_maxPointID + "/XML";
         }
 
         void RefreshData()

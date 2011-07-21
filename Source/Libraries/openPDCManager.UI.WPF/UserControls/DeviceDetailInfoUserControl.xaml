@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converter="clr-namespace:TimeSeriesFramework.UI.Converters;assembly=TimeSeriesFramework.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="250" d:DesignWidth="770">
+             d:DesignHeight="175" d:DesignWidth="625">
     <Grid Background="Transparent" x:Name="GridDeviceInfo">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
