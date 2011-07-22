@@ -23,22 +23,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using openPDCManager.UI.DataModels;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Threading;
-using TVA.Data;
+using openPDCManager.UI.DataModels;
 using TimeSeriesFramework.UI;
+using TVA.Data;
 
 namespace openPDCManager.UI.UserControls
 {
@@ -66,7 +57,7 @@ namespace openPDCManager.UI.UserControls
             InitializeComponent();
             database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
         }
- 
+
         #endregion
 
         #region [ Methods ]
@@ -79,7 +70,9 @@ namespace openPDCManager.UI.UserControls
                 {
                     m_nodeID = (Guid)database.CurrentNodeID();
                     GridDeviceInfo.DataContext = deviceInfo;
-                    m_deviceStatisticInfoList = new ObservableCollection<DetailStatisticInfo>(TimeTaggedMeasurement.GetStatisticInfoList(null, m_nodeID));
+                    m_deviceStatisticInfoList = new ObservableCollection<DetailStatisticInfo>(TimeTaggedMeasurement.GetStatisticInfoList(null, m_nodeID)
+                                                                                                .Where(statistic => statistic.DeviceID == deviceInfo.ID)
+                                                                                                .ToList());
                     ListBoxStatisticsList.ItemsSource = m_deviceStatisticInfoList;
                     if (m_deviceStatisticInfoList.Count > 0)
                     {
@@ -91,6 +84,8 @@ namespace openPDCManager.UI.UserControls
                     {
                         int interval = 10;
                         int.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out interval);
+
+                        if (interval == 0) interval = 10;
 
                         m_refreshTimer = new DispatcherTimer();
                         m_refreshTimer.Interval = TimeSpan.FromSeconds(interval);
@@ -149,7 +144,7 @@ namespace openPDCManager.UI.UserControls
         {
             RefreshData();
         }
- 
+
         #endregion
 
         #endregion

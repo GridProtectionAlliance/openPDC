@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converter="clr-namespace:TimeSeriesFramework.UI.Converters;assembly=TimeSeriesFramework.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="175" d:DesignWidth="625">
+             d:DesignHeight="175" d:DesignWidth="600" FontSize="11">
     <Grid Background="Transparent" x:Name="GridDeviceInfo">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -47,22 +47,30 @@
         </StackPanel>
         
         <!--Fifth Row-->
-        <ListBox x:Name="ListBoxStatisticsList" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Background="Transparent" Height="130">
+        <ListBox x:Name="ListBoxStatisticsList" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Background="Transparent" Height="100" Margin="5">
+
             <ListBox.ItemTemplate>
+            
                 <DataTemplate>
+                    
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <StackPanel.Resources>
                             <converter:StringToColorConverter x:Key="stringToColorConverter"/>
                         </StackPanel.Resources>
-                        <TextBlock Text="{Binding Path=SignalReference}" ToolTip="{Binding Path=PointTag}" TextAlignment="Left"/>
+                        <TextBlock Text="{Binding Path=SignalReference}" ToolTip="{Binding Path=PointTag}" TextAlignment="Left" Width="125"/>
                         <StackPanel Orientation="Horizontal" DataContext="{Binding Path=Statistics}">
-                            <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="{Binding Path=Description}" TextAlignment="Left" />
-                            <TextBlock Text="{Binding Path=Value}" Foreground="{Binding Quality, Converter={StaticResource stringToColorConverter}}" ToolTipService.ToolTip="{Binding Path=Quality}" TextAlignment="Center" FontWeight="Bold" />
-                            <TextBlock Text="{Binding Path=TimeTag}" TextAlignment="Center"/>
+                            <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="{Binding Path=Description}" TextAlignment="Left" Width="150" />
+                            <TextBlock Text="{Binding Path=Value}" Foreground="{Binding Quality, Converter={StaticResource stringToColorConverter}}" ToolTipService.ToolTip="{Binding Path=Quality}" TextAlignment="Center" FontWeight="Bold" Width="100" />
+                            <TextBlock Text="{Binding Path=TimeTag}" TextAlignment="Center" Width="125"/>
                         </StackPanel>
                     </StackPanel>
+                
                 </DataTemplate>
+            
             </ListBox.ItemTemplate>
+        
         </ListBox>
+    
     </Grid>
+
 </UserControl>

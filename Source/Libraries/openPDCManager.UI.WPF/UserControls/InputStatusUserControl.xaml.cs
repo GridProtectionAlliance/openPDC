@@ -797,7 +797,7 @@ namespace openPDCManager.UI.UserControls
                 m_dataForBinding.IsExpanded = false;
                 TreeViewDeviceMeasurements.DataContext = m_dataForBinding;
                 TreeViewDeviceMeasurements.Items.Refresh();
-                //TextBlockLastRefresh.Text = "Last Refresh: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                TextBlockLastRefresh.Text = "Last Refresh: " + DateTime.Now.ToString("HH:mm:ss.fff");
             });
         }
 

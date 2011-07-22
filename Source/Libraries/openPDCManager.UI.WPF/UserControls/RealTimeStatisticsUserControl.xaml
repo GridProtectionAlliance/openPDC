@@ -33,12 +33,12 @@
                             </StackPanel.Resources>
                             <TextBlock Text="" Width="{StaticResource BlankItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                             <Border>
-                                <TextBlock Text="{Binding Path=SignalReference}" ToolTipService.ToolTip="{Binding Path=PointTag}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" FontSize="{StaticResource SmallTextSize}" Padding="1"/>
+                                <TextBlock Text="{Binding Path=SignalReference}" ToolTipService.ToolTip="{Binding Path=PointTag}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" FontSize="{StaticResource SmallTextSize}"/>
                             </Border>
                             <Border>
-                                <ListView DataContext="{Binding Path=Statistics}">
+                                <ListView DataContext="{Binding Path=Statistics}" Background="Transparent" BorderThickness="0">
                                     <ListViewItem>
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal" Background="Transparent">
                                             <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="{Binding Path=Description}" Width="{StaticResource LargerItemSize}" TextAlignment="Left" />
                                             <TextBlock Text="{Binding Path=Value}" Foreground="{Binding Quality, Converter={StaticResource stringToColorConverter}}" ToolTipService.ToolTip="{Binding Path=Quality}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontWeight="Bold" />
                                             <TextBlock Text="{Binding Path=TimeTag}" Width="{StaticResource LargerItemSize}" TextAlignment="Center" />
@@ -76,17 +76,16 @@
                     </HierarchicalDataTemplate>
                 </StackPanel.Resources>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>                    
-                    <TextBlock x:Name="TextBlockRefreshInterval" Text="Refresh Interval: 10 sec" Grid.Column="1" />
-                    <TextBlock x:Name="TextBlockLastRefresh" Grid.Column="2" HorizontalAlignment="Right"/>
-                </Grid>
-                
-                <TreeView x:Name="TreeViewRealTimeStatistics" ItemsSource="{Binding Path=StatisticMeasurementDataList, Mode=TwoWay}" BorderThickness="0"
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="TextBlockRefreshInterval" Grid.Column="0" Text="Refresh Interval: 10 sec" HorizontalAlignment="Right" />
+                <TextBlock x:Name="TextBlockLastRefresh" Grid.Column="1" Text="Refresh Interval: 10 sec" HorizontalAlignment="Right" />
+            </Grid>                
+
+            <TreeView x:Name="TreeViewRealTimeStatistics" ItemsSource="{Binding Path=StatisticMeasurementDataList, Mode=TwoWay}" BorderThickness="0"
                           ItemTemplate="{StaticResource RootTemplate}" Height="575" ItemContainerStyle="{StaticResource ExpandedItemStyle}" Background="Transparent"/>
             </StackPanel>
         
