@@ -94,6 +94,7 @@ namespace openPDCManager.UI.UserControls
         Dictionary<int, int> m_deviceIDsWithStatusPointIDs;
         bool m_retrievingData;
         AdoDataConnection database;
+        private MenuDataItem item;
 
         #endregion
         #region [ Constructor ]
@@ -998,8 +999,21 @@ namespace openPDCManager.UI.UserControls
 
         private void ButtonEdit_Click(object sender, RoutedEventArgs e)
         {
+            Device deviceToEdit = Device.GetDevice(database, "WHERE ID = " + ((DeviceInfo)((sender as Button).DataContext)).ID);
 
+            UIElement frame = null;
+            UIElement groupBox = null;
+            CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
+            CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
 
+            if (frame != null)
+            {
+                DeviceUserControl deviceUserControl = new DeviceUserControl(deviceToEdit);
+                ((System.Windows.Controls.Frame)frame).Navigate(deviceUserControl);
+
+                if (groupBox != null)
+                    ((GroupBox)groupBox).Header = "Manage Device Configuration";
+            }
         }
 
         #endregion

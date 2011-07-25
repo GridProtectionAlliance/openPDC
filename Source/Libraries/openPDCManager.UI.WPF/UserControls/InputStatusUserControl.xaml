@@ -46,10 +46,10 @@
                             </StackPanel.Resources>
                             <Ellipse Width="13" Height="13" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>
                             <Border>
-                                <Button Content="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" HorizontalContentAlignment="Left" x:Name="ButtonGetStatistics" Click="ButtonGetStatistics_Click" VerticalAlignment="Center"></Button>
+                                <Button Content="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" HorizontalContentAlignment="Left" x:Name="ButtonGetStatistics" Click="ButtonGetStatistics_Click" VerticalAlignment="Center"/>
                             </Border>
                             <Border>
-                                <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Device Name" TextAlignment="Left" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="DeviceNameLabel" Text="{Binding Path=Name}" ToolTipService.ToolTip="Device Name" TextAlignment="Left" VerticalAlignment="Center" />
                             </Border>
                             <Border>
                                 <Button x:Name="ButtonEdit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Visibility="{Binding Path=ID, Converter={StaticResource integerToVisibilityConverter}}" Content="Edit" Tag="{Binding Path=ID}" ToolTipService.ToolTip="Click Here to View/Edit Device Configuration" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Click="ButtonEdit_Click"/>
@@ -64,7 +64,7 @@
                             </StackPanel.Resources>
                             <Ellipse Width="13" Height="13" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>
                             <Border>
-                                <Button Content="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics" Foreground="#FF095188" HorizontalContentAlignment="Left" Click="ButtonGetStatistics_Click" Width="Auto"></Button>
+                                <Button Content="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics" Foreground="#FF095188" HorizontalContentAlignment="Left" Click="ButtonGetStatistics_Click" Width="Auto"/>
                             </Border>
                             <Border>
                                 <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Concentrator Name" VerticalAlignment="Center"/>

@@ -206,6 +206,9 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST "$(OutDir)..\Applications\openPDC" COPY "$(TargetPath)" "$(OutDir)..\Applications\openPDC"</PostBuildEvent>
