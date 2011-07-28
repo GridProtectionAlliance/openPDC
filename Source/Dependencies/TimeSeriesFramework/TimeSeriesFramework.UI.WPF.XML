@@ -236,6 +236,11 @@
             Gets or sets sub menu items for <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/>.
             </summary>         
         </member>
+        <member name="T:TimeSeriesFramework.UI.MenuItemStyleSelector">
+            <summary>
+            Represents wrapper object around <see cref="T:System.Windows.Controls.StyleSelector"/> class.
+            </summary>
+        </member>
         <member name="T:TimeSeriesFramework.UI.PagedViewModelBase`2">
             <summary>
             Represents an abstract class with paging support which all ViewModel objects derive from.
@@ -788,6 +793,39 @@
             <param name="e">Arguments for the event.</param>
         </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.HistorianUserControl.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.UserControls.HomeUserControl">
+            <summary>
+            Interaction logic for HomeUserControl.xaml
+            </summary>
+            <summary>
+            HomeUserControl
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.#ctor">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.HomeUserControl"/>.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.CommonClickHandler(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handles click event of the buttons on the screen.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.GetMenuDataItem(System.Collections.ObjectModel.ObservableCollection{TimeSeriesFramework.UI.MenuDataItem},System.String,TimeSeriesFramework.UI.MenuDataItem@)">
+            <summary>
+            Recursively finds menu item to navigate to when a button is clicked on the UI.
+            </summary>
+            <param name="items">Collection of menu items.</param>
+            <param name="stringToMatch">Item to search for in menu items collection.</param>
+            <param name="item">Returns a menu item.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.InitializeComponent">
             <summary>
             InitializeComponent
             </summary>
