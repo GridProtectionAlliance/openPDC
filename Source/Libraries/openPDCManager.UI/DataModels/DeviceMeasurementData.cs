@@ -23,12 +23,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Collections.ObjectModel;
+using System.Data;
+using System.Linq;
 using TimeSeriesFramework.UI;
 using TVA.Data;
-using System.Data;
 
 namespace openPDCManager.UI.DataModels
 {
@@ -227,7 +226,10 @@ namespace openPDCManager.UI.DataModels
                 resultSet.Tables.Add(resultTable.Copy());
 
                 //------------------------------------------
-                resultTable = database.Connection.RetrieveData(database.AdapterType, "SELECT DeviceID, SignalID, PointID, PointTag, SignalReference, SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym FROM MeasurementDetail WHERE NodeID = @nodeID AND SignalAcronym <> 'STAT' ORDER BY SignalReference", database.Guid(nodeID));
+                resultTable = database.Connection.RetrieveData(database.AdapterType,
+                    "SELECT DeviceID, SignalID, PointID, PointTag, SignalReference, SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym " +
+                    "FROM MeasurementDetail WHERE NodeID = @nodeID AND SignalAcronym <> 'STAT' AND (Internal = @internal OR Subscribed = @subscribed) ORDER BY SignalReference",
+                    database.Guid(nodeID), true, true);
                 resultTable.TableName = "MeasurementTable";
                 resultSet.Tables.Add(resultTable.Copy());
 

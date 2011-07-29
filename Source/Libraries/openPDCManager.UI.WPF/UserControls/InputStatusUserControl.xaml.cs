@@ -439,7 +439,7 @@ namespace openPDCManager.UI.UserControls
                         foreach (MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
                         {
                             //create a string of measurements to subscribe for real time data
-                            sb.Append(measurementInfo.HistorianAcronym + ":" + measurementInfo.PointID + ";");
+                            sb.Append(measurementInfo.SignalID + ";");
 
                             if (pointList.Contains(measurementInfo.SignalReference))
                             {
@@ -571,15 +571,27 @@ namespace openPDCManager.UI.UserControls
 
         void StartSubscriptionForChart()
         {
-            string server = database.RemoteStatusServerConnectionString();
+            string server = string.Empty;
+            try
+            {
+                Dictionary<string, string> settings = database.RemoteStatusServerConnectionString().ParseKeyValuePairs();
+                if (settings.ContainsKey("server"))
+                    server = settings["server"];
 
+                if (server.Contains(":"))
+                    server = server.Substring(0, server.LastIndexOf(":"));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to parse node connection string." + Environment.NewLine + ex.ToString(), "Parse Node Connection String", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             m_chartSubscriber = new DataSubscriber();
             m_chartSubscriber.StatusMessage += chartSubscriber_StatusMessage;
             m_chartSubscriber.ProcessException += chartSubscriber_ProcessException;
             m_chartSubscriber.ConnectionEstablished += chartSubscriber_ConnectionEstablished;
             m_chartSubscriber.NewMeasurements += chartSubscriber_NewMeasurements;
             m_chartSubscriber.ConnectionTerminated += chartSubscriber_ConnectionTerminated;
-            m_chartSubscriber.ConnectionString = "server=localhost:6170";
+            m_chartSubscriber.ConnectionString = "server=" + server + ":" + database.DataPublisherPort();
             m_chartSubscriber.Initialize();
             m_chartSubscriber.Start();
         }
@@ -600,14 +612,17 @@ namespace openPDCManager.UI.UserControls
                     //StopChartRefreshTimer();
                     StringBuilder sb = new StringBuilder();
                     foreach (KeyValuePair<string, MeasurementInfo> keyValuePair in m_selectedMeasurements)
-                        sb.Append(keyValuePair.Value.HistorianAcronym + ":" + keyValuePair.Value.PointID + ";");
+                        sb.Append(keyValuePair.Value.SignalID + ";");
 
                     string subscriptionPoints = sb.ToString();
                     if (subscriptionPoints.Length > 0)
                         subscriptionPoints = subscriptionPoints.Substring(0, subscriptionPoints.Length - 1);
 
                     //string password = openPDCManager.Utilities.Common.GetDataPublisherPassword();
-                    m_chartSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, subscriptionPoints, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
+                    //m_chartSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, subscriptionPoints, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
+
+                    m_chartSubscriber.UnsynchronizedSubscribe(true, false, subscriptionPoints, null, true);
+
                     ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
                     {
                         StartChartRefreshTimer();
@@ -804,7 +819,20 @@ namespace openPDCManager.UI.UserControls
 
         void StartSubscriptionForTreeData()
         {
-            string server = database.RemoteStatusServerConnectionString();
+            string server = string.Empty;
+            try
+            {
+                Dictionary<string, string> settings = database.RemoteStatusServerConnectionString().ParseKeyValuePairs();
+                if (settings.ContainsKey("server"))
+                    server = settings["server"];
+
+                if (server.Contains(":"))
+                    server = server.Substring(0, server.LastIndexOf(":"));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to parse node connection string." + Environment.NewLine + ex.ToString(), "Parse Node Connection String", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             m_measurementDataSubscriber = new DataSubscriber();
             m_measurementDataSubscriber.StatusMessage += measurementDataSubscriber_StatusMessage;
@@ -812,7 +840,7 @@ namespace openPDCManager.UI.UserControls
             m_measurementDataSubscriber.ConnectionEstablished += measurementDataSubscriber_ConnectionEstablished;
             m_measurementDataSubscriber.NewMeasurements += measurementDataSubscriber_NewMeasurements;
             m_measurementDataSubscriber.ConnectionTerminated += measurementDataSubscriber_ConnectionTerminated;
-            m_measurementDataSubscriber.ConnectionString = "server=localhost:6170";
+            m_measurementDataSubscriber.ConnectionString = "server=" + server + ":" + database.DataPublisherPort();
             m_measurementDataSubscriber.Initialize();
             m_measurementDataSubscriber.Start();
         }
