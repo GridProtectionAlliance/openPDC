@@ -418,8 +418,8 @@ namespace openPDCManager.UI.UserControls
             m_numberOfDataPointsToPlot = 150;
             m_refreshInterval = 250;
             m_measurementsDataRefreshInterval = 10;
-            m_lagTime = 3;
-            m_leadTime = 1;
+            m_lagTime = 4;
+            m_leadTime = 4;
 
             TextBlockRefreshInterval.Text = "Refresh Interval: " + m_measurementsDataRefreshInterval + " sec";
             ChartPlotterDynamic.NewLegendVisible = m_displayLegend;
@@ -619,9 +619,9 @@ namespace openPDCManager.UI.UserControls
                         subscriptionPoints = subscriptionPoints.Substring(0, subscriptionPoints.Length - 1);
 
                     //string password = openPDCManager.Utilities.Common.GetDataPublisherPassword();
-                    //m_chartSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, subscriptionPoints, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
+                    m_chartSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, subscriptionPoints, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
 
-                    m_chartSubscriber.UnsynchronizedSubscribe(true, false, subscriptionPoints, null, true);
+                    //m_chartSubscriber.UnsynchronizedSubscribe(true, false, subscriptionPoints, null, true);
 
                     ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
                     {

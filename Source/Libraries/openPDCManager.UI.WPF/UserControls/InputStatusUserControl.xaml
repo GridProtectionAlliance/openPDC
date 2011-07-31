@@ -106,7 +106,7 @@
                     <TreeView x:Name="TreeViewDeviceMeasurements" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Path=DeviceMeasurementDataList, Mode=TwoWay}" ItemContainerStyle="{StaticResource ExpandedItemStyle}" ItemTemplate="{StaticResource RootNodeTemplate}" Height="575" VerticalAlignment="Top" Width="300"/>
 
                     <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top">
-                        <d3:ChartPlotter Name="ChartPlotterDynamic" Margin="5" Height="275" Width="565">
+                        <d3:ChartPlotter Name="ChartPlotterDynamic" Margin="5" Height="245" Width="565">
 
                             <d3:InjectedPlotter Name="PhaseAnglePlotter" SetViewportBinding="False">
                                 <d3:VerticalAxis Name="PhaseAngleYAxis" Placement="Left"/>

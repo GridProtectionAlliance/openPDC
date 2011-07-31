@@ -38,7 +38,7 @@ namespace openPDCManager.UI.UserControls
     public partial class PhasorMeasurementUserControl : UserControl
     {
         #region [ Constructor ]
-        
+
         /// <summary>
         /// Creates an instance of <see cref="PhasorMeasurementUserControl"/> class.
         /// </summary>
@@ -55,7 +55,7 @@ namespace openPDCManager.UI.UserControls
         {
             InitializeComponent();
             this.Unloaded += new RoutedEventHandler(PhasorMeasurementUserControl_Unloaded);
-            this.DataContext = new PhasorMeasurements(deviceID, 18);
+            this.DataContext = new PhasorMeasurements(deviceID, 15);
         }
 
         #endregion

@@ -41,7 +41,7 @@ namespace openPDCManager.UI.UserControls
         public DeviceListUserControl()
         {
             InitializeComponent();
-            this.DataContext = new Devices(16);
+            this.DataContext = new Devices(14);
         }
 
         #endregion
