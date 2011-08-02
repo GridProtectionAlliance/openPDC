@@ -89,6 +89,7 @@
     <Compile Include="DataModels\Statistic.cs" />
     <Compile Include="DataModels\TimeTaggedMeasurement.cs" />
     <Compile Include="IsolatedStorageManager.cs" />
+    <Compile Include="OutputStreamDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
