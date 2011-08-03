@@ -364,7 +364,7 @@ namespace openPDCManager.UI.DataModels
 		/// </summary>
 		/// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
 		/// <returns>Collection of <see cref="OutputStreamDevice"/>.</returns>
-		public static ObservableCollection<OutputStreamDevice> Load(AdoDataConnection database)
+		public static ObservableCollection<OutputStreamDevice> Load(AdoDataConnection database, int outputStreamID)
 		{
 			bool createdConnection = false;
  
@@ -375,7 +375,7 @@ namespace openPDCManager.UI.DataModels
 				ObservableCollection<OutputStreamDevice> OutputStreamDeviceList = new ObservableCollection<OutputStreamDevice>();
 				DataTable OutputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT NodeID, AdapterID, ID, IDCode, Acronym, BpaAcronym " +
 					"Name, PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat, LoadOrder, Enabled, Virtual  "+
-					"FROM OutputStreamDevice ORDER BY LoadOrder");
+					"FROM OutputStreamDevice WHERE AdapterID = @outputStreamID ORDER BY LoadOrder", DefaultTimeout, outputStreamID);
  
 				foreach (DataRow row in OutputStreamDeviceTable.Rows)
 				{
