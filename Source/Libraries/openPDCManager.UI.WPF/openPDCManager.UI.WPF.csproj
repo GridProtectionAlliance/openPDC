@@ -143,6 +143,7 @@
     <Compile Include="ViewModels\CalculatedMeasurements.cs" />
     <Compile Include="ViewModels\Devices.cs" />
     <Compile Include="ViewModels\InputWizardDevices.cs" />
+    <Compile Include="ViewModels\OutputStreamDevices.cs" />
     <Compile Include="ViewModels\PhasorMeasurements.cs" />
     <Compile Include="ViewModels\Phasors.cs" />
   </ItemGroup>
