@@ -418,8 +418,8 @@ namespace openPDCManager.UI.UserControls
             m_numberOfDataPointsToPlot = 150;
             m_refreshInterval = 250;
             m_measurementsDataRefreshInterval = 10;
-            m_lagTime = 4;
-            m_leadTime = 4;
+            m_lagTime = 10;
+            m_leadTime = 10;
 
             TextBlockRefreshInterval.Text = "Refresh Interval: " + m_measurementsDataRefreshInterval + " sec";
             ChartPlotterDynamic.NewLegendVisible = m_displayLegend;

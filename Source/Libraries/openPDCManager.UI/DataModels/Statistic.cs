@@ -21,7 +21,12 @@
 //
 //******************************************************************************************************
 
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using TimeSeriesFramework.UI;
+using TVA.Data;
 
 namespace openPDCManager.UI.DataModels
 {
@@ -56,31 +61,298 @@ namespace openPDCManager.UI.DataModels
 
         #region [ Properties ]
 
+        /// <summary>
+        /// Gets or sets the current <see cref="Statistic"/>'s ID.
+        /// </summary>
+        // Field is populated by database via auto-increment and has no screen interaction, so no validation attributes are applied
+        public int ID
+        {
+            get
+            {
+                return m_id;
+            }
+            set
+            {
+                m_id = value;
+            }
+        }
 
+        /// <summary>
+        /// Gets or sets the current <see cref="Statistic"/>'s Source.
+        /// </summary>
+        [Required(ErrorMessage = "Statistic Source is a required field, please provide a value.")]
+        [StringLength(20, ErrorMessage = "Statistic Source cannot exceed 20 characters.")]
+        public string Source
+        {
+            get
+            {
+                return m_source;
+            }
+            set
+            {
+                m_source = value;
+                OnPropertyChanged("Source");
+            }
+        }
 
-        #endregion
+        /// <summary>
+        /// Gets or sets the current <see cref="Statistic"/>'s SignalIndex.
+        /// </summary>
+        [Required(ErrorMessage = "Statistic Signal Index is a required field, please provice a value.")]
+        public int SignalIndex
+        {
+            get
+            {
+                return m_signalIndex;
+            }
+            set
+            {
+                m_signalIndex = value;
+                OnPropertyChanged("SignalIndex");
+            }
+        }
 
-        #region [ Constructors ]
+        /// <summary>
+        /// Gets or sets the current <see cref="Statistic"/>'s Name.
+        /// </summary>
+        [Required(ErrorMessage = "Statistic Name is a required field, please provide a value.")]
+        [StringLength(200, ErrorMessage = "Statistic Name cannot exceed 200 characters.")]
+        public string Name
+        {
+            get
+            {
+                return m_name;
+            }
+            set
+            {
+                m_name = value;
+                OnPropertyChanged("Name");
+            }
+        }
 
-        #endregion
+        /// <summary>
+        /// Gets or sets the current <see cref="Statistic"/>'s Description.
+        /// </summary>
+        public string Description
+        {
+            get
+            {
+                return m_description;
+            }
+            set
+            {
+                m_description = value;
+                OnPropertyChanged("Description");
+            }
+        }
 
-        #region [ Methods ]
+        /// <summary>
+        /// Gets or sets the current <see cref="Statistic"/>'s AssemblyName.
+        /// </summary>
+        [Required(ErrorMessage = "Statistic Assembly Name is a required field, please provide a value.")]
+        public string AssemblyName
+        {
+            get
+            {
+                return m_assemblyName;
+            }
+            set
+            {
+                m_assemblyName = value;
+                OnPropertyChanged("AssemblyName");
+            }
+        }
 
-        #endregion
+        /// <summary>
+        /// Gets or sets the current <see cref="Statistic"/>'s TypeName.
+        /// </summary>
+        [Required(ErrorMessage = "Statistic Type Name is a required field, please provide a value.")]
+        public string TypeName
+        {
+            get
+            {
+                return m_typeName;
+            }
+            set
+            {
+                m_typeName = value;
+                OnPropertyChanged("TypeName");
+            }
+        }
 
-        #region [ Operators ]
+        /// <summary>
+        /// Gets or sets the current <see cref="Statistic"/>'s MethodName.
+        /// </summary>
+        [Required(ErrorMessage = "Statistic Method Name is a required field, please provide a value.")]
+        public string MethodName
+        {
+            get
+            {
+                return m_methodName;
+            }
+            set
+            {
+                m_methodName = value;
+                OnPropertyChanged("MethodName");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the current <see cref="Statistic"/>'s Arguments.
+        /// </summary>
+        public string Arguments
+        {
+            get
+            {
+                return m_arguments;
+            }
+            set
+            {
+                m_arguments = value;
+                OnPropertyChanged("Arguments");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the current <see cref="Statistic"/> Enabled.
+        /// </summary>
+        [DefaultValue(true)]
+        public bool Enabled
+        {
+            get
+            {
+                return m_enabled;
+            }
+            set
+            {
+                m_enabled = value;
+                OnPropertyChanged("Enabled");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the current <see cref="Statistic"/>'s DataType.
+        /// </summary>
+        [StringLength(200, ErrorMessage = "Statistic DataType cannot exceed 200 characters.")]
+        public string DataType
+        {
+            get
+            {
+                return m_dataType;
+            }
+            set
+            {
+                m_dataType = value;
+                OnPropertyChanged("DataType");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the current <see cref="Statistic"/>'s DisplayFormat.
+        /// </summary>
+        [StringLength(200, ErrorMessage = "Statistic DisplayFormat cannot exceed 200 characters.")]
+        public string DisplayFormat
+        {
+            get
+            {
+                return m_displayFormat;
+            }
+            set
+            {
+                m_displayFormat = value;
+                OnPropertyChanged("DisplayFormat");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the current <see cref="Statistic"/>'s IsConnectedState.
+        /// </summary>
+        public bool IsConnectedState
+        {
+            get
+            {
+                return m_isConnectedState;
+            }
+            set
+            {
+                m_isConnectedState = value;
+                OnPropertyChanged("IsConnectedState");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the current <see cref="Statistic"/>'s LoadOrder.
+        /// </summary>
+        [DefaultValue(0)]
+        public int LoadOrder
+        {
+            get
+            {
+                return m_loadOrder;
+            }
+            set
+            {
+                m_loadOrder = value;
+                OnPropertyChanged("LoadOrder");
+            }
+        }
 
         #endregion
 
         #region [ Static ]
 
-        // Static Fields
-
-        // Static Constructor
-
-        // Static Properties
-
         // Static Methods
+
+        /// <summary>
+        /// Loads <see cref="Statistic"/> information as an <see cref="ObservableCollection{T}"/> style list.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <returns>Collection of <see cref="Statistic"/>.</returns>
+        // TODO: For now, this method is just a place holder. In future when we create screen to manage Statistic
+        // definitions, we will need to add code to it.
+        public static ObservableCollection<Statistic> Load(AdoDataConnection database)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Gets a <see cref="Dictionary{T1,T2}"/> style list of <see cref="Statistic"/> information.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
+        /// <returns><see cref="Dictionary{T1,T2}"/> type collection of statistics defined in the database.</returns>
+        // TODO: For now, this method is just a place holder. In future when we create screen to manage Statistic
+        // definitions, we will need to add code to it.
+        public static Dictionary<int, string> GetLookupList(AdoDataConnection database, bool isOptional = false)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Saves <see cref="Statistic"/> information into the database.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="statistic">Information about <see cref="Statistic"/>.</param>
+        /// <returns>String, for display use, indicating success.</returns>
+        // TODO: For now, this method is just a place holder. In future when we create screen to manage Statistic
+        // definitions, we will need to add code to it.
+        public static string Save(AdoDataConnection database, Statistic statistic)
+        {
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Deletes specified <see cref="Statistic"/> record from database.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="statisticID">ID of the record to be deleted.</param>
+        /// <returns>String, for display use, indicating success.</returns>
+        // TODO: For now, this method is just a place holder. In future when we create screen to manage Statistic
+        // definitions, we will need to add code to it.
+        public static string Delete(AdoDataConnection database, int statisticID)
+        {
+            return string.Empty;
+        }
 
         #endregion
 
