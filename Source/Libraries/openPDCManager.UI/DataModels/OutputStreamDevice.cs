@@ -16,7 +16,7 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  03/25/2011 - Aniket Salver
+//   08/4/2011 - Aniket Salver
 //       Generated original version of source code.
 //
 //******************************************************************************************************
@@ -412,7 +412,7 @@ namespace openPDCManager.UI.DataModels
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
-        /// <returns><see cref="Dictionary{T1,T2}"/> containing ID and Name of companies defined in the database.</returns>
+        /// <returns><see cref="Dictionary{T1,T2}"/> containing ID and Name of OutputStreamDevice defined in the database.</returns>
         public static Dictionary<int, string> GetLookupList(AdoDataConnection database, bool isOptional = false)
         {
             bool createdConnection = false;
@@ -505,6 +505,7 @@ namespace openPDCManager.UI.DataModels
                     database.Dispose();
             }
         }
+
 
         #endregion
     }

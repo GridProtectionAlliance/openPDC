@@ -1,4 +1,26 @@
-﻿using System;
+﻿//******************************************************************************************************
+//  OutputStreamDeviceAnalog.cs - Gbtc
+//
+//  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
+//
+//  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
+//  the NOTICE file distributed with this work for additional information regarding copyright ownership.
+//  The GPA licenses this file to you under the Eclipse Public License -v 1.0 (the "License"); you may
+//  not use this file except in compliance with the License. You may obtain a copy of the License at:
+//
+//      http://www.opensource.org/licenses/eclipse-1.0.php
+//
+//  Unless agreed to in writing, the subject software distributed under the License is distributed on an
+//  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
+//  License for the specific language governing permissions and limitations.
+//
+//  Code Modification History:
+//  ----------------------------------------------------------------------------------------------------
+//  08/5/2011 - Aniket Salver
+//       Generated original version of source code.
+//
+//******************************************************************************************************
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -275,6 +297,100 @@ namespace openPDCManager.UI.DataModels
 			}
 		}
 
+		/// <summary>
+		/// Gets a <see cref="Dictionary{T1,T2}"/> style list of <see cref="OutputStreamDeviceAnalog"/> information.
+		/// </summary>
+		/// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+		/// <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
+		/// <returns><see cref="Dictionary{T1,T2}"/> containing ID and Name of OutputStreamDeviceAnalog defined in the database.</returns>
+		public static Dictionary<int, string> GetLookupList(AdoDataConnection database, bool isOptional = false)
+		{
+			bool createdConnection = false;
+			try
+			{
+				createdConnection = CreateConnection(ref database);
+
+				Dictionary<int, string> OutputStreamDeviceAnalogList = new Dictionary<int, string>();
+				if (isOptional)
+					OutputStreamDeviceAnalogList.Add(0, "Select OutputStreamDeviceAnalog");
+
+				DataTable OutputStreamDeviceAnalogTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Name FROM OutputStreamDeviceAnalog ORDER BY LoadOrder");
+
+				foreach (DataRow row in OutputStreamDeviceAnalogTable.Rows)
+					OutputStreamDeviceAnalogList[row.ConvertField<int>("ID")] = row.Field<string>("Name");
+
+				return OutputStreamDeviceAnalogList;
+			}
+			finally
+			{
+				if (createdConnection && database != null)
+					database.Dispose();
+			}
+		}
+
+		/// <summary>
+		/// Saves <see cref="OutputStreamDeviceAnalog"/> information to database.
+		/// </summary>
+		/// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+		/// <param name="OutputStreamDeviceAnalog">Information about <see cref="OutputStreamDeviceAnalog"/>.</param>        
+		/// <returns>String, for display use, indicating success.</returns>
+		public static string Save(AdoDataConnection database, OutputStreamDeviceAnalog OutputStreamDeviceAnalog)
+		{
+			bool createdConnection = false;
+			try
+			{
+				createdConnection = CreateConnection(ref database);
+
+				if (OutputStreamDeviceAnalog.ID == 0)
+					database.Connection.ExecuteNonQuery("INSERT INTO OutputStreamDeviceAnalog (NodeID, OutputStreamDeviceID, ID, Label, " +
+						"Type, ScalingValue, LoadOrder, TypeName )" +
+						"VALUES (@nodeID, @outputStreamDeviceID, @id, @label, @type, @scalingValue, @loadOrder, @typeName, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout,
+						OutputStreamDeviceAnalog.NodeID, OutputStreamDeviceAnalog.OutputStreamDeviceID, OutputStreamDeviceAnalog.ID, OutputStreamDeviceAnalog.Label, OutputStreamDeviceAnalog.Type,
+						OutputStreamDeviceAnalog.ScalingValue, OutputStreamDeviceAnalog.LoadOrder, OutputStreamDeviceAnalog.TypeName, CommonFunctions.CurrentUser, database.UtcNow(),
+						CommonFunctions.CurrentUser, database.UtcNow());
+				else
+					database.Connection.ExecuteNonQuery("UPDATE OutputStreamDeviceAnalog SET NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID , ID = @id, Label = @label, Type = @type, " +
+					" ScalingValue = @scalingValue, LoadOrder = @loadOrder,  TypeName= @typeName, " +
+					"UpdatedBy = @updatedBy, UpdatedOn = @updatedOn, CreatedBy = @createdBy, CreatedOn = @createdOn " +
+					 DefaultTimeout, OutputStreamDeviceAnalog.NodeID, OutputStreamDeviceAnalog.OutputStreamDeviceID, OutputStreamDeviceAnalog.ID, OutputStreamDeviceAnalog.Label, OutputStreamDeviceAnalog.Type,
+						OutputStreamDeviceAnalog.ScalingValue, OutputStreamDeviceAnalog.LoadOrder, OutputStreamDeviceAnalog.TypeName, CommonFunctions.CurrentUser, database.UtcNow(), OutputStreamDeviceAnalog.ID);
+
+				return "OutputStreamDeviceAnalog information saved successfully";
+			}
+			finally
+			{
+				if (createdConnection && database != null)
+					database.Dispose();
+			}
+		}
+
+		/// <summary>
+		/// Deletes specified <see cref="OutputStreamDeviceAnalog"/> record from database.
+		/// </summary>
+		/// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+		/// <param name="OutputStreamDeviceAnalogID">ID of the record to be deleted.</param>
+		/// <returns>String, for display use, indicating success.</returns>
+		public static string Delete(AdoDataConnection database, int OutputStreamDeviceAnalogID)
+		{
+			bool createdConnection = false;
+
+			try
+			{
+				createdConnection = CreateConnection(ref database);
+
+				// Setup current user context for any delete triggers
+				CommonFunctions.SetCurrentUserContext(database);
+
+				database.Connection.ExecuteNonQuery("DELETE FROM OutputStreamDeviceAnalog WHERE ID = @OutputStreamDeviceAnalogID", DefaultTimeout, OutputStreamDeviceAnalogID);
+
+				return "OutputStreamDeviceAnalog deleted successfully";
+			}
+			finally
+			{
+				if (createdConnection && database != null)
+					database.Dispose();
+			}
+		}
 
 		#endregion
 	}
