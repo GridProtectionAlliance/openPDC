@@ -24,6 +24,7 @@
 //******************************************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Threading;
@@ -78,9 +79,9 @@ namespace openPDCManager
 
             ButtonErrorLog.Content = new BitmapImage(new Uri(@"images/Log.png", UriKind.Relative));
             ButtonErrorLog.Click += ButtonErrorLog_Click;
-            
+
             ButtonLogo.Content = new BitmapImage(new Uri(@"images/GPALock.png", UriKind.Relative));
-            
+
             UserControlSelectNode.NodeCollectionChanged += new openPDCManager.UserControls.CommonControls.SelectNode.OnNodesChanged(UserControlSelectNode_NodeCollectionChanged);
             UserControlSelectNode.ComboboxNode.SelectionChanged += ComboboxNode_SelectionChanged;
 
@@ -134,11 +135,11 @@ namespace openPDCManager
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {            
+        {
             m_applicationClosing = true;
             Properties.Settings.Default.Save();
             DisconnectFromService();
-            Application.Current.Shutdown();        
+            Application.Current.Shutdown();
         }
 
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -166,15 +167,27 @@ namespace openPDCManager
                     if (m_serviceClient != null)
                         DisconnectFromService();
 
-                    m_serviceClient = new WindowsServiceClient(((App)Application.Current).RemoteStatusServiceUrl);
-                    m_serviceClient.Helper.RemotingClient.ConnectionEstablished += RemotingClient_ConnectionEstablished;
-                    m_serviceClient.Helper.RemotingClient.ConnectionTerminated += RemotingClient_ConnectionTerminated;
-                    m_serviceClient.Helper.RemotingClient.ConnectionAttempt += RemotingClient_ConnectionAttempt;
 
-                    // Start connection cycle
-                    System.Threading.ThreadPool.QueueUserWorkItem(ConnectAsync, null);
+                    Dictionary<string, string> settings = ((App)Application.Current).RemoteStatusServiceUrl.ToLower().ParseKeyValuePairs();
 
-                    ((App)Application.Current).ServiceClient = m_serviceClient;
+                    if (settings.ContainsKey("server"))
+                    {
+                        m_serviceClient = new WindowsServiceClient("server=" + settings["server"].Replace("{", "").Replace("}", ""));
+                        m_serviceClient.Helper.RemotingClient.ConnectionEstablished += RemotingClient_ConnectionEstablished;
+                        m_serviceClient.Helper.RemotingClient.ConnectionTerminated += RemotingClient_ConnectionTerminated;
+                        m_serviceClient.Helper.RemotingClient.ConnectionAttempt += RemotingClient_ConnectionAttempt;
+
+                        // Start connection cycle
+                        System.Threading.ThreadPool.QueueUserWorkItem(ConnectAsync, null);
+
+                        ((App)Application.Current).ServiceClient = m_serviceClient;
+                    }
+                    else
+                    {
+                        SystemMessages sm = new SystemMessages(new Message() { UserMessage = "Please provide proper Remote Status Service Url value for node.", SystemMessage = "Remote Status Service Url value is not set properly for " + ((App)Application.Current).NodeName + " node." + Environment.NewLine + "Please go to Manage => Nodes screen to configure node settings." + Environment.NewLine + "For example: Server=localhost:8500", UserMessageType = MessageType.Error }, ButtonType.OkOnly);
+                        sm.Owner = Window.GetWindow(this);
+                        sm.ShowPopup();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -271,7 +284,7 @@ namespace openPDCManager
                         homePageUserControl.ButtonRestartOpenPDC.IsEnabled = false;
                     }
                 });
-            }            
+            }
         }
 
         private void RemotingClient_ConnectionEstablished(object sender, EventArgs e)

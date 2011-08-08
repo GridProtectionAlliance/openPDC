@@ -325,7 +325,10 @@ namespace openPDCManager.Data
         {
             s_responseMessage = string.Empty;
             s_responseAttachment = null;
-            WindowsServiceClient windowsServiceClient = new WindowsServiceClient(nodeConnectionString);
+
+            Dictionary<string, string> settings = nodeConnectionString.ToLower().ParseKeyValuePairs();
+
+            WindowsServiceClient windowsServiceClient = new WindowsServiceClient("server=" + settings["server"].Replace("{", "").Replace("}", ""));
             try
             {
                 s_responseWaitHandle = new ManualResetEvent(false);
@@ -2630,7 +2633,7 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Select * From NodeDetail WHERE [Name] = @name";
+                command.CommandText = "Select * From NodeDetail WHERE Name = @name";
                 command.Parameters.Add(AddWithValue(command, "@name", name));
 
                 DataTable resultTable = new DataTable();

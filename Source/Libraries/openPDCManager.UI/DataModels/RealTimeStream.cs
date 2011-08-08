@@ -24,6 +24,7 @@
 using System;
 using System.Collections.ObjectModel;
 using TimeSeriesFramework.UI;
+using TVA.Data;
 
 namespace openPDCManager.UI.DataModels
 {
@@ -178,19 +179,27 @@ namespace openPDCManager.UI.DataModels
 
         #endregion
 
-        #region [ Methods ]
-
-        #endregion
-
         #region [ Static ]
 
-        // Static Fields
-
-        // Static Constructor
-
-        // Static Properties
-
         // Static Methods
+
+        public static ObservableCollection<RealTimeStream> Load(AdoDataConnection database, Guid nodeID)
+        {
+            bool createdConnection = false;
+            try
+            {
+                ObservableCollection<RealTimeStream> realTimeStreamList = new ObservableCollection<RealTimeStream>();
+                createdConnection = CreateConnection(ref database);
+
+
+
+                return realTimeStreamList;
+            }
+            finally
+            {
+
+            }
+        }
 
         #endregion
     }
@@ -360,22 +369,6 @@ namespace openPDCManager.UI.DataModels
                 OnPropertyChanged("MeasurementList");
             }
         }
-
-        #endregion
-
-        #region [ Methods ]
-
-        #endregion
-
-        #region [ Static ]
-
-        // Static Fields
-
-        // Static Constructor
-
-        // Static Properties
-
-        // Static Methods
 
         #endregion
     }
@@ -614,22 +607,6 @@ namespace openPDCManager.UI.DataModels
                 OnPropertyChanged("Quality");
             }
         }
-
-        #endregion
-
-        #region [ Methods ]
-
-        #endregion
-
-        #region [ Static ]
-
-        // Static Fields
-
-        // Static Constructor
-
-        // Static Properties
-
-        // Static Methods
 
         #endregion
     }

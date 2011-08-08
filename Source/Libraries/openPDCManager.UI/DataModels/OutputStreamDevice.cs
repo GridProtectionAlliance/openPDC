@@ -23,21 +23,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using TVA.Data;
-using TimeSeriesFramework.UI;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
+using TimeSeriesFramework.UI;
+using TVA.Data;
 
 namespace openPDCManager.UI.DataModels
 {
     /// <summary>
     /// Represents a record of <see cref="OutputStreamDevice"/> information as defined in the database.
     /// </summary>
-    class OutputStreamDevice : DataModelBase
+    public class OutputStreamDevice : DataModelBase
     {
         #region[Members]
 

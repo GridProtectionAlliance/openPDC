@@ -21,13 +21,8 @@
 //
 //******************************************************************************************************
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TimeSeriesFramework.UI.DataModels;
-using TimeSeriesFramework.UI;
 using openPDCManager.UI.DataModels;
+using TimeSeriesFramework.UI;
 
 namespace openPDCManager.UI.ViewModels
 {
@@ -36,7 +31,7 @@ namespace openPDCManager.UI.ViewModels
     /// </summary>
     internal class OutputStreamDevices : PagedViewModelBase<OutputStreamDevice, int>
     {
-     
+
         #region [ Members ]
 
         // Fields
@@ -45,7 +40,7 @@ namespace openPDCManager.UI.ViewModels
         #endregion
 
         #region [ Properties ]
-        
+
         public int OutputStreamID
         {
             get
@@ -92,7 +87,7 @@ namespace openPDCManager.UI.ViewModels
         public override void Load()
         {
             //base.Load();
-            OutputStreamDevice.Load(OutputStreamID);
+            OutputStreamDevice.Load(null, OutputStreamID);
         }
 
         /// <summary>
