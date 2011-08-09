@@ -83,7 +83,7 @@ namespace openPDCManager.UI.ViewModels
         /// <returns>The string based named identifier of the <see cref="PagedViewModelBase{T1, T2}.CurrentItem"/>.</returns>
         public override string GetCurrentItemName()
         {
-            return CurrentItem.Name;
+            return CurrentItem.Label;
         }
 
         #endregion

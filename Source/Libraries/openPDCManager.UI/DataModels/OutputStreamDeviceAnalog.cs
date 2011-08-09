@@ -22,35 +22,33 @@
 //******************************************************************************************************
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TimeSeriesFramework.UI;
-using System.ComponentModel.DataAnnotations;
 using System.Collections.ObjectModel;
-using TVA.Data;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
+using TimeSeriesFramework.UI;
+using TVA.Data;
 
 namespace openPDCManager.UI.DataModels
 {
 	 /// <summary>
 	/// Represents a record of <see cref="OutputStreamDeviceAnalog"/> information as defined in the database.
 	/// </summary>
-	class OutputStreamDeviceAnalog : DataModelBase
+	public class OutputStreamDeviceAnalog : DataModelBase
 	{
 		# region[Members]
 
-		public string m_nodeID; 
-		public int m_outputStreamDeviceID ;
-		public int m_id ;
-		public string m_label ;
-		public int m_type;
-		public int m_scalingValue ;
-		public int m_loadOrder ;
-		public string m_typeName ;
-		public DateTime m_createdOn ;
-		public string m_createdBy ;
-		public DateTime m_updatedOn ;
-		public string m_updatedBy;
+		private string m_nodeID; 
+		private int m_outputStreamDeviceID ;
+		private int m_id ;
+		private string m_label ;
+		private int m_type;
+		private int m_scalingValue ;
+		private int m_loadOrder ;
+		private string m_typeName ;
+		private DateTime m_createdOn ;
+		private string m_createdBy ;
+		private DateTime m_updatedOn ;
+		private string m_updatedBy;
 
 		#endregion
 
