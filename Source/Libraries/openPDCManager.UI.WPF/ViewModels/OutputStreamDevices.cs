@@ -21,10 +21,10 @@
 //
 //******************************************************************************************************
 
-using openPDCManager.UI.DataModels;
+using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
 
-namespace openPDCManager.UI.ViewModels
+namespace openPDC.UI.ViewModels
 {
     /// <summary>
     /// Class to hold bindable <see cref="OutputStreamDevice"/> collection and selected OutputStreamDevice for UI.

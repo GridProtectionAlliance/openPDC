@@ -24,7 +24,7 @@
 using System;
 using System.Windows.Media;
 
-namespace openPDCManager.UI.DataModels
+namespace openPDC.UI.DataModels
 {
     public class InputMonitorData
     {

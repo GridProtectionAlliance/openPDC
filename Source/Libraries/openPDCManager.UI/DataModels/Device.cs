@@ -42,11 +42,11 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using TimeSeriesFramework.UI;
+using TimeSeriesFramework.UI.DataModels;
 using TVA;
 using TVA.Data;
-using TimeSeriesFramework.UI.DataModels;
 
-namespace openPDCManager.UI.DataModels
+namespace openPDC.UI.DataModels
 {
     #region [ Enumerations ]
 

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
-using openPDCManager.UI.DataModels;
 using TimeSeriesFramework.UI.Commands;
 using TimeSeriesFramework.UI.DataModels;
 
-namespace openPDCManager.UI.ViewModels
+namespace openPDC.UI.ViewModels
 {
-    internal class CalculatedMeasurements : PagedViewModelBase<openPDCManager.UI.DataModels.CalculatedMeasurement, int>
+    internal class CalculatedMeasurements : PagedViewModelBase<openPDC.UI.DataModels.CalculatedMeasurement, int>
     {
         #region [ Members ]
 

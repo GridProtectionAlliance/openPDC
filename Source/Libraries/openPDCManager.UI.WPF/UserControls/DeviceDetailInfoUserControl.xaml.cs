@@ -27,11 +27,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using openPDCManager.UI.DataModels;
+using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
 using TVA.Data;
 
-namespace openPDCManager.UI.UserControls
+namespace openPDC.UI.UserControls
 {
     /// <summary>
     /// Interaction logic for DeviceDetailInfoUserControl.xaml

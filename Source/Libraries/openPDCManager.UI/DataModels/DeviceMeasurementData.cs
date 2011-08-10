@@ -29,7 +29,7 @@ using System.Linq;
 using TimeSeriesFramework.UI;
 using TVA.Data;
 
-namespace openPDCManager.UI.DataModels
+namespace openPDC.UI.DataModels
 {
     /// <summary>
     /// Represents a device measurement data object as defined in the database.

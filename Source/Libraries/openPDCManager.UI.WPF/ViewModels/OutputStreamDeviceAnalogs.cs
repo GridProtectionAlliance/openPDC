@@ -21,20 +21,15 @@
 //
 //******************************************************************************************************
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TimeSeriesFramework.UI.DataModels;
+using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
-using openPDCManager.UI.DataModels;
 
-namespace openPDCManager.UI.ViewModels
+namespace openPDC.UI.ViewModels
 {
     // <summary>
     /// Class to hold bindable <see cref="OutputStreamDevice"/> collection and selected OutputStreamDevice for UI.
     /// </summary>
-    internal class OutputStreamDeviceAnalogs : PagedViewModelBase<OutputStreamDeviceAnalog , int >
+    internal class OutputStreamDeviceAnalogs : PagedViewModelBase<OutputStreamDeviceAnalog, int>
     {
         #region [ Properties ]
 

@@ -23,27 +23,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Collections.ObjectModel;
-using TimeSeriesFramework.UI;
-using TimeSeriesFramework.UI.DataModels;
-using TimeSeriesFramework.Transport;
-using TVA.Data;
-using System.Threading;
-using TVA;
 using TimeSeriesFramework;
+using TimeSeriesFramework.Transport;
+using TimeSeriesFramework.UI;
+using TVA;
+using TVA.Data;
 
-namespace openPDCManager.UI.UserControls
+namespace openPDC.UI.UserControls
 {
     /// <summary>
     /// Interaction logic for DeviceMeasurementsUserControl.xaml
@@ -53,11 +44,11 @@ namespace openPDCManager.UI.UserControls
 
         #region [ Members ]
 
-        ObservableCollection<openPDCManager.UI.DataModels.DeviceMeasurementData> m_deviceMeasurementDataList;
-        openPDCManager.UI.DataModels.DeviceMeasurementDataForBinding m_dataForBinding;
+        ObservableCollection<openPDC.UI.DataModels.DeviceMeasurementData> m_deviceMeasurementDataList;
+        openPDC.UI.DataModels.DeviceMeasurementDataForBinding m_dataForBinding;
         int m_refreshInterval;
         AdoDataConnection database;
-        
+
 
         //Subscription API related declarations.
         DataSubscriber m_dataSubscriber;
@@ -75,8 +66,8 @@ namespace openPDCManager.UI.UserControls
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(DeviceMeasurementsUserControl_Loaded);
             this.Unloaded += new RoutedEventHandler(DeviceMeasurementsUserControl_Unloaded);
-            m_dataForBinding = new openPDCManager.UI.DataModels.DeviceMeasurementDataForBinding();
-            m_deviceMeasurementDataList = new ObservableCollection<openPDCManager.UI.DataModels.DeviceMeasurementData>();
+            m_dataForBinding = new openPDC.UI.DataModels.DeviceMeasurementDataForBinding();
+            m_deviceMeasurementDataList = new ObservableCollection<openPDC.UI.DataModels.DeviceMeasurementData>();
             database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
             m_refreshInterval = 10;
         }
@@ -94,7 +85,7 @@ namespace openPDCManager.UI.UserControls
         void DeviceMeasurementsUserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             m_restartConnectionCycle = false;
-            UnsubscribeData();  
+            UnsubscribeData();
         }
 
         #endregion
@@ -105,15 +96,15 @@ namespace openPDCManager.UI.UserControls
         {
             try
             {
-                m_deviceMeasurementDataList = openPDCManager.UI.DataModels.DeviceMeasurementData.Load(null, (Guid)database.CurrentNodeID());
+                m_deviceMeasurementDataList = openPDC.UI.DataModels.DeviceMeasurementData.Load(null, (Guid)database.CurrentNodeID());
                 m_dataForBinding.DeviceMeasurementDataList = m_deviceMeasurementDataList;
 
                 StringBuilder sb = new StringBuilder();
-                foreach (openPDCManager.UI.DataModels.DeviceMeasurementData deviceMeasurementData in m_deviceMeasurementDataList)
+                foreach (openPDC.UI.DataModels.DeviceMeasurementData deviceMeasurementData in m_deviceMeasurementDataList)
                 {
-                    foreach (openPDCManager.UI.DataModels.DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
+                    foreach (openPDC.UI.DataModels.DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
                     {
-                        foreach (openPDCManager.UI.DataModels.MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
+                        foreach (openPDC.UI.DataModels.MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
                             sb.Append(measurementInfo.HistorianAcronym + ":" + measurementInfo.PointID + ";");
                     }
                 }
@@ -203,11 +194,11 @@ namespace openPDCManager.UI.UserControls
             {
                 try
                 {
-                    foreach (openPDCManager.UI.DataModels.DeviceMeasurementData deviceMeasurementData in m_deviceMeasurementDataList)
+                    foreach (openPDC.UI.DataModels.DeviceMeasurementData deviceMeasurementData in m_deviceMeasurementDataList)
                     {
-                        foreach (openPDCManager.UI.DataModels.DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
+                        foreach (openPDC.UI.DataModels.DeviceInfo deviceInfo in deviceMeasurementData.DeviceList)
                         {
-                            foreach (openPDCManager.UI.DataModels.MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
+                            foreach (openPDC.UI.DataModels.MeasurementInfo measurementInfo in deviceInfo.MeasurementList)
                             {
                                 foreach (IMeasurement measurement in e.Argument)
                                 {

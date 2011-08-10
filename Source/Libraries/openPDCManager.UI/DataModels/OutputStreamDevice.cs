@@ -29,7 +29,7 @@ using System.Data;
 using TimeSeriesFramework.UI;
 using TVA.Data;
 
-namespace openPDCManager.UI.DataModels
+namespace openPDC.UI.DataModels
 {
     /// <summary>
     /// Represents a record of <see cref="OutputStreamDevice"/> information as defined in the database.

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="openPDCManager.UI.UserControls.DeviceMeasurementsUserControl"
+﻿<UserControl x:Class="openPDC.UI.UserControls.DeviceMeasurementsUserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 

@@ -23,14 +23,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Collections.ObjectModel;
+using System.Linq;
 using TimeSeriesFramework.UI;
 using TVA.Data;
-using System.Data;
 
-namespace openPDCManager.UI.DataModels
+namespace openPDC.UI.DataModels
 {
     /// <summary>
     /// Represents a Basic statistic info record as defined in the database.
@@ -59,12 +57,12 @@ namespace openPDCManager.UI.DataModels
         /// </summary>
         public string Source
         {
-            get 
-            { 
-                return m_source; 
+            get
+            {
+                return m_source;
             }
-            set 
-            { 
+            set
+            {
                 m_source = value;
                 OnPropertyChanged("Source");
             }

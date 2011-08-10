@@ -22,10 +22,10 @@
 //******************************************************************************************************
 
 using System.Windows.Controls;
-using openPDCManager.UI.DataModels;
-using openPDCManager.UI.ViewModels;
+using openPDC.UI.DataModels;
+using openPDC.UI.ViewModels;
 
-namespace openPDCManager.UI.UserControls
+namespace openPDC.UI.UserControls
 {
     /// <summary>
     /// Interaction logic for DeviceUserControl.xaml

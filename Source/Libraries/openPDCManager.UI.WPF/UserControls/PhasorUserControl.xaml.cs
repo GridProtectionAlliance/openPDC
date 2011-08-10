@@ -26,9 +26,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using openPDCManager.UI.ViewModels;
+using openPDC.UI.ViewModels;
 
-namespace openPDCManager.UI.UserControls
+namespace openPDC.UI.UserControls
 {
     /// <summary>
     /// Interaction logic for PhasorUserControl.xaml

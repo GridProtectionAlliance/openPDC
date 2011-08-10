@@ -28,7 +28,7 @@ using System.ComponentModel.DataAnnotations;
 using TimeSeriesFramework.UI;
 using TVA.Data;
 
-namespace openPDCManager.UI.DataModels
+namespace openPDC.UI.DataModels
 {
     /// <summary>
     /// Represents a record of <see cref="Statistic"/> information as defined in the database.

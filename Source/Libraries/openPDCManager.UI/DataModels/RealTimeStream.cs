@@ -22,11 +22,13 @@
 //******************************************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using TimeSeriesFramework.UI;
 using TVA.Data;
 
-namespace openPDCManager.UI.DataModels
+namespace openPDC.UI.DataModels
 {
     /// <summary>
     /// Represents a real-time stream of subscribed data.
@@ -183,15 +185,114 @@ namespace openPDCManager.UI.DataModels
 
         // Static Methods
 
-        public static ObservableCollection<RealTimeStream> Load(AdoDataConnection database, Guid nodeID)
+        /// <summary>
+        /// Loads <see cref="RealTimeStream"/> information as an <see cref="ObservableCollection{T}"/> style list.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <returns>Collection of <see cref="RealTimeStream"/>.</returns>
+        public static ObservableCollection<RealTimeStream> Load(AdoDataConnection database)
         {
             bool createdConnection = false;
             try
             {
-                ObservableCollection<RealTimeStream> realTimeStreamList = new ObservableCollection<RealTimeStream>();
+                ObservableCollection<RealTimeStream> realTimeStreamList = null;
                 createdConnection = CreateConnection(ref database);
 
+                DataSet resultSet = new DataSet();
+                resultSet.EnforceConstraints = false;
 
+                // Get PDCs list.
+                resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Acronym, Name, CompanyName, Enabled FROM DeviceDetail " +
+                    "WHERE NodeID = @nodeID AND IsConcentrator = @isConcentrator AND Enabled = @enabled ORDER BY Acronym", DefaultTimeout, database.CurrentNodeID(), true, true));
+
+                resultSet.Tables[0].TableName = "PdcTable";
+
+                // Add a dummy device row in PDC table to associate PMUs which are not PDC and connected directly.
+                DataRow row = resultSet.Tables["PdcTable"].NewRow();
+                row["ID"] = 0;
+                row["Acronym"] = string.Empty;
+                row["Name"] = "Devices Connected Directly";
+                row["CompanyName"] = string.Empty;
+                row["Enabled"] = false;
+                resultSet.Tables["PdcTable"].Rows.Add(row);
+
+                // Get Non-PDC device list.
+                resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Acronym, Name,CompanyName, ProtocolName, VendorDeviceName, " +
+                    "ParentAcronym, Enabled FROM DeviceDetail WHERE NodeID = @nodeID AND IsConcetrator = @isConcentrator AND Enabled = @enabled ORDER BY Acronym",
+                    DefaultTimeout, database.CurrentNodeID(), false, true));
+
+                resultSet.Tables[1].TableName = "DeviceTable";
+
+                // Get non-statistics Measurements list.
+                resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, "SELECT DeviceID, SignalID, PointID, PointTag, SignalReference, " +
+                    "SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym FROM MeasurementDetail WHERE NodeID = @nodeID AND " +
+                    "SignalAcronym <> @signalAcronym ORDER BY SignalReference", DefaultTimeout, database.CurrentNodeID(), "STAT"));
+
+                resultSet.Tables[2].TableName = "MeasurementTable";
+
+                // If any non-statistic measurement has DeviceID set to NULL, then we will treat it as a calculated measurement.
+                // And associate it with a dummy device "CALCULATED" record as defined below.
+                if (resultSet.Tables[2].Select("DeviceID IS NULL").GetLength(0) > 0)
+                {
+                    row = resultSet.Tables["DeviceTable"].NewRow();
+                    row["ID"] = DBNull.Value;
+                    row["Acronym"] = "CALCULATED";
+                    row["Name"] = "CALCULATED MEASUREMENTS";
+                    row["CompanyName"] = string.Empty;
+                    row["ProtocolName"] = string.Empty;
+                    row["VendorDeviceName"] = string.Empty;
+                    row["ParentAcronym"] = string.Empty;
+                    row["Enabled"] = false;
+                    resultSet.Tables["DeviceTable"].Rows.Add(row);
+                }
+
+                realTimeStreamList = new ObservableCollection<RealTimeStream>(
+                        from pdc in resultSet.Tables["PdcTable"].AsEnumerable()
+                        select new RealTimeStream()
+                        {
+                            ID = pdc.ConvertField<int>("ID"),
+                            Acronym = string.IsNullOrEmpty(pdc.Field<string>("Acronym")) ? "DIRECT CONNECTED" : pdc.Field<string>("Acronym"),
+                            Name = pdc.Field<string>("Name"),
+                            CompanyName = pdc.Field<string>("CompanyName"),
+                            StatusColor = string.IsNullOrEmpty(pdc.Field<string>("Acronym")) ? "Transparent" : "Gray",
+                            Enabled = Convert.ToBoolean(pdc.Field<object>("Enabled")),
+                            Expanded = false,
+                            DeviceList = new ObservableCollection<RealTimeDevice>(
+                                    from device in resultSet.Tables["DeviceTable"].AsEnumerable()
+                                    where device.Field<string>("ParentAcronym") == pdc.Field<string>("Acronym")
+                                    select new RealTimeDevice()
+                                    {
+                                        ID = device.ConvertNullableField<int>("ID"),
+                                        Acronym = device.Field<string>("Acronym"),
+                                        ProtocolName = device.Field<string>("ProtocolName"),
+                                        VendorDeviceName = device.Field<string>("VendorDeviceName"),
+                                        ParentAcronym = string.IsNullOrEmpty(device.Field<string>("ParentAcronym")) ? "DIRECT CONNECTED" : device.Field<string>("ParentAcronym"),
+                                        Expanded = false,
+                                        StatusColor = device.ConvertNullableField<int>("ID") == null ? "Transparent" : "Gray",
+                                        Enabled = Convert.ToBoolean(device.Field<object>("Enabled")),
+                                        MeasurementList = new ObservableCollection<RealTimeMeasurement>(
+                                                from measurement in resultSet.Tables["MeasurementTable"].AsEnumerable()
+                                                where measurement.ConvertNullableField<int>("DeviceID") == device.ConvertNullableField<int>("ID")
+                                                select new RealTimeMeasurement()
+                                                {
+                                                    DeviceID = measurement.ConvertNullableField<int>("DeviceID"),
+                                                    SignalID = Guid.Parse(measurement.Field<object>("SignalID").ToString()),
+                                                    PointID = measurement.ConvertField<int>("PointID"),
+                                                    PointTag = measurement.Field<string>("PointTag"),
+                                                    SignalReference = measurement.Field<string>("SignalReference"),
+                                                    Description = measurement.Field<string>("description"),
+                                                    SignalName = measurement.Field<string>("SignalName"),
+                                                    EngineeringUnit = measurement.Field<string>("EngineeringUnits"),
+                                                    Expanded = false,
+                                                    TimeTag = "N/A",
+                                                    Value = "--",
+                                                    Quality = "N/A"
+                                                }
+                                            )
+                                    }
+                                )
+                        }
+                    );
 
                 return realTimeStreamList;
             }
@@ -199,6 +300,42 @@ namespace openPDCManager.UI.DataModels
             {
 
             }
+        }
+
+        /// <summary>
+        /// Retrieves <see cref="Dictionary{T1,T2}"/> type collection.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
+        /// <returns><see cref="Dictionary{T1,T2}"/> type collection.</returns>
+        /// <remarks>This is only a place holder method with no implementation.</remarks>
+        public static Dictionary<int, string> GetLookupList(AdoDataConnection database, bool isOptional = false)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Saves <see cref="RealTimeStream"/> information into the database.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="stream">Information about <see cref="RealTimeStream"/>.<see cref=""/></param>
+        /// <returns>String, for display use, indicating success.</returns>
+        /// <remarks>This is only a place holder method with no implementation.</remarks>
+        public static string Save(AdoDataConnection database, RealTimeStream stream)
+        {
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Deletes <see cref="RealTimeStream"/> record from the database.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="streamID">ID of the record to be deleted.</param>
+        /// <returns>String, for display use, indicating success.</returns>
+        /// <remarks>This is only a place holder method with no implementation.</remarks>
+        public static string Delete(AdoDataConnection database, int streamID)
+        {
+            return string.Empty;
         }
 
         #endregion
@@ -387,6 +524,7 @@ namespace openPDCManager.UI.DataModels
         private string m_id;
         private int m_pointID;
         private string m_pointTag;
+        private string m_signalReference;
         private string m_description;
         private string m_signalName;
         private string m_engineeringUnit;
@@ -477,6 +615,22 @@ namespace openPDCManager.UI.DataModels
             {
                 m_pointTag = value;
                 OnPropertyChanged("PointTag");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets SignalReference for <see cref="RealTimeMeasurement"/>.
+        /// </summary>
+        public string SignalReference
+        {
+            get
+            {
+                return m_signalReference;
+            }
+            set
+            {
+                m_signalReference = value;
+                OnPropertyChanged("SignalReference");
             }
         }
 

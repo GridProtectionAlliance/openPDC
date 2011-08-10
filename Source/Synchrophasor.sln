@@ -259,9 +259,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Help Me Choose Diagrams", "
 		Documentation\Help Me Choose Diagrams\HMC - Use Local Clock as RealTime.vsd = Documentation\Help Me Choose Diagrams\HMC - Use Local Clock as RealTime.vsd
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDCManager.UI", "Libraries\openPDCManager.UI\openPDCManager.UI.csproj", "{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC.UI", "Libraries\openPDCManager.UI\openPDC.UI.csproj", "{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDCManager.UI.WPF", "Libraries\openPDCManager.UI.WPF\openPDCManager.UI.WPF.csproj", "{57261E91-7636-4F92-8D93-744A4AAD7EB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC.UI.WPF", "Libraries\openPDCManager.UI.WPF\openPDC.UI.WPF.csproj", "{57261E91-7636-4F92-8D93-744A4AAD7EB0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MongoDB", "MongoDB", "{CA748B74-2934-440D-98CA-DE3BAD3870E9}"
 	ProjectSection(SolutionItems) = preProject
@@ -394,11 +394,11 @@ Global
 		SccProjectTopLevelParentUniqueName24 = Synchrophasor.sln
 		SccProjectName24 = Applications/openPDCManager/WebInstaller
 		SccLocalPath24 = Applications\\openPDCManager\\WebInstaller
-		SccProjectUniqueName25 = Libraries\\openPDCManager.UI\\openPDCManager.UI.csproj
+		SccProjectUniqueName25 = Libraries\\openPDCManager.UI\\openPDC.UI.csproj
 		SccProjectTopLevelParentUniqueName25 = Synchrophasor.sln
 		SccProjectName25 = Libraries/openPDCManager.UI
 		SccLocalPath25 = Libraries\\openPDCManager.UI
-		SccProjectUniqueName26 = Libraries\\openPDCManager.UI.WPF\\openPDCManager.UI.WPF.csproj
+		SccProjectUniqueName26 = Libraries\\openPDCManager.UI.WPF\\openPDC.UI.WPF.csproj
 		SccProjectTopLevelParentUniqueName26 = Synchrophasor.sln
 		SccProjectName26 = Libraries/openPDCManager.UI.WPF
 		SccLocalPath26 = Libraries\\openPDCManager.UI.WPF

@@ -38,14 +38,14 @@ using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.Charts;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 using Microsoft.Win32;
-using openPDCManager.UI.DataModels;
+using openPDC.UI.DataModels;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Transport;
 using TimeSeriesFramework.UI;
 using TVA;
 using TVA.Data;
 
-namespace openPDCManager.UI.UserControls
+namespace openPDC.UI.UserControls
 {
     /// <summary>
     /// Interaction logic for InputStatusUserControl.xaml

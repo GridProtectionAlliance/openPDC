@@ -1,30 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Collections.ObjectModel;
-using openPDCManager.UI.DataModels;
 using System.Windows.Threading;
+using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
 using TVA.Data;
 
-namespace openPDCManager.UI.UserControls
+namespace openPDC.UI.UserControls
 {
     /// <summary>
     /// Interaction logic for RealTimeStatisticsUserControl.xaml
     /// </summary>
     public partial class RealTimeStatisticsUserControl : UserControl
     {
-        #region [ Members ] 
+        #region [ Members ]
 
         ObservableCollection<StatisticMeasurementData> m_statisticMeasurementDataList;
         StatisticMeasurementDataForBinding m_dataForBinding;
@@ -33,7 +24,7 @@ namespace openPDCManager.UI.UserControls
         string m_url;
         Guid m_nodeID;
         bool m_retrievingData;
-        AdoDataConnection database; 
+        AdoDataConnection database;
 
         #endregion
         /// <summary>
@@ -168,7 +159,7 @@ namespace openPDCManager.UI.UserControls
         {
             GetStatisticMeasurementData();
             GetMinMaxPointIDs();
-            
+
             if (string.IsNullOrEmpty(database.RealTimeStatisticServiceUrl()))
             {
                 m_url = string.Empty;

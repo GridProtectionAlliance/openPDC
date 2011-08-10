@@ -29,10 +29,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
-using openPDCManager.UI.DataModels;
+using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI.ViewModels;
 
-namespace openPDCManager.UI.ViewModels
+namespace openPDC.UI.ViewModels
 {
     /// <summary>
     /// Class to hold bindable <see cref="TimeSeriesFramework.UI.DataModels.Measurement"/> collection.

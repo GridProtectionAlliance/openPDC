@@ -8,8 +8,8 @@
     <ProjectGuid>{57261E91-7636-4F92-8D93-744A4AAD7EB0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>openPDCManager.UI</RootNamespace>
-    <AssemblyName>openPDCManager.UI.WPF</AssemblyName>
+    <RootNamespace>openPDC.UI</RootNamespace>
+    <AssemblyName>openPDC.UI.WPF</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -25,7 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\Build\Output\Debug\Libraries\openPDCManager.UI.WPF.XML</DocumentationFile>
+    <DocumentationFile>..\..\..\Build\Output\Debug\Libraries\openPDC.UI.WPF.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,7 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\Build\Output\Release\Libraries\openPDCManager.UI.WPF.XML</DocumentationFile>
+    <DocumentationFile>..\..\..\Build\Output\Release\Libraries\openPDC.UI.WPF.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility">
@@ -149,9 +149,9 @@
     <Compile Include="ViewModels\Phasors.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\openPDCManager.UI\openPDCManager.UI.csproj">
+    <ProjectReference Include="..\openPDCManager.UI\openPDC.UI.csproj">
       <Project>{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}</Project>
-      <Name>openPDCManager.UI</Name>
+      <Name>openPDC.UI</Name>
     </ProjectReference>
     <ProjectReference Include="..\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj">
       <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>

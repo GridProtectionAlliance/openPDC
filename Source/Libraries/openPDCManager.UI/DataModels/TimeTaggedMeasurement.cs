@@ -33,7 +33,7 @@ using TimeSeriesFramework.UI;
 using TVA;
 using TVA.Data;
 
-namespace openPDCManager.UI.DataModels
+namespace openPDC.UI.DataModels
 {
     /// <summary>
     /// Represents a time-tagged measurement for real-time statistics.
@@ -99,7 +99,7 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
-        #endregion        
+        #endregion
 
         #region [ Static ]
 
@@ -199,7 +199,7 @@ namespace openPDCManager.UI.DataModels
                     string signalReference;
                     string measurementSource;
                     int measurementIndex;
-                    
+
                     measurement = keyValuePair.Key;
                     measurementSource = keyValuePair.Value;
                     signalReference = measurement.Field<string>("SignalReference");
@@ -491,6 +491,6 @@ namespace openPDCManager.UI.DataModels
         public ObservableCollection<StatisticMeasurementData> StatisticMeasurementDataList { get; set; }
         public bool IsExpanded { get; set; }
     }
-    
+
 
 }

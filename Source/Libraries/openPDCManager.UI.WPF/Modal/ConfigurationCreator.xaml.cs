@@ -30,7 +30,7 @@ using TVA;
 using TVA.PhasorProtocols;
 using TVA.PhasorProtocols.Anonymous;
 
-namespace openPDCManager.UI.Modal
+namespace openPDC.UI.Modal
 {
     /// <summary>
     /// Interaction logic for ConfigurationCreator.xaml

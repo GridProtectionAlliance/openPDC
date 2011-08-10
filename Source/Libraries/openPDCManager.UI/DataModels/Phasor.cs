@@ -36,10 +36,10 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using TimeSeriesFramework.UI;
-using TVA.Data;
 using TimeSeriesFramework.UI.DataModels;
+using TVA.Data;
 
-namespace openPDCManager.UI.DataModels
+namespace openPDC.UI.DataModels
 {
     /// <summary>
     /// Represents a record of <see cref="Phasor"/> information as defined in the database.

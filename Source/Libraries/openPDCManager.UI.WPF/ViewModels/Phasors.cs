@@ -24,10 +24,10 @@
 //******************************************************************************************************
 
 using System.Collections.Generic;
-using openPDCManager.UI.DataModels;
+using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
 
-namespace openPDCManager.UI.ViewModels
+namespace openPDC.UI.ViewModels
 {
     /// <summary>
     /// Class to hold bindable <see cref="Phasor"/> collection and current selection information for UI.

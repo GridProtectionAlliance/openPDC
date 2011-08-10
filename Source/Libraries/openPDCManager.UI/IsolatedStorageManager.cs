@@ -25,9 +25,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Text;
-using System.Diagnostics;
 
-namespace openPDCManager.UI
+namespace openPDC.UI
 {
     public static class IsolatedStorageManager
     {
