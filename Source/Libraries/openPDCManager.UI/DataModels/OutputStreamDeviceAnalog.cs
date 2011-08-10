@@ -257,7 +257,7 @@ namespace openPDCManager.UI.DataModels
 		/// </summary>
 		/// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
 		/// <returns>Collection of <see cref="OutputStreamDeviceAnalog"/>.</returns>
-		public static ObservableCollection<OutputStreamDeviceAnalog> Load(AdoDataConnection database, int outputStreamID)
+		public static ObservableCollection<OutputStreamDeviceAnalog> Load(AdoDataConnection database, int outputStreamDeviceID) 
 		{
 			bool createdConnection = false;
 
