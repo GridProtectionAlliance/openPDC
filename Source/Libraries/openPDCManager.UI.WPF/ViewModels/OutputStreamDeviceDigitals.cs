@@ -1,5 +1,5 @@
 ﻿//******************************************************************************************************
-//  OutputStreamDeviceAnalogs.cs - Gbtc
+//  OutputStreamDeviceDigitals.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -16,7 +16,7 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  08/08/2011 - Aniket Salver
+//  08/011/2011 - Aniket Salver
 //       Generated original version of source code.
 //
 //******************************************************************************************************
@@ -27,9 +27,9 @@ using TimeSeriesFramework.UI;
 namespace openPDC.UI.ViewModels
 {
     // <summary>
-    /// Class to hold bindable <see cref="OutputStreamDeviceAnalog"/> collection and selected OutputStreamDeviceAnalog for UI.
+    /// Class to hold bindable <see cref="OutputStreamDeviceDigital"/> collection and selected OutputStreamDeviceDigital for UI.
     /// </summary>
-    internal class OutputStreamDeviceAnalogs : PagedViewModelBase<OutputStreamDeviceAnalog, int>
+    internal class OutputStreamDeviceDigitals : PagedViewModelBase<OutputStreamDeviceDigital, int>
     {
         #region [ Properties ]
 
@@ -49,11 +49,11 @@ namespace openPDC.UI.ViewModels
         #region [ Constructor ]
 
         /// <summary>
-        /// Creates an instance of <see cref="OutputStreamDeviceAnalogs "/> class.
+        /// Creates an instance of <see cref="OutputStreamDeviceDigitals "/> class.
         /// </summary>
         /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
         /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
-        public OutputStreamDeviceAnalogs(int itemsPerPage, bool autoSave = true)
+        public OutputStreamDeviceDigitals(int itemsPerPage, bool autoSave = true)
             : base(itemsPerPage, autoSave)
         {
 
