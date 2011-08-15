@@ -16,7 +16,7 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  08/11/2011 - Aniket Salver
+//  08/15/2011 - Aniket Salver
 //       Generated original version of source code.
 //
 //******************************************************************************************************
@@ -364,7 +364,69 @@ namespace openPDC.UI.DataModels
 			}
 		}
 
+		/// <summary>
+		/// Saves <see cref="OutputStreamDevicePhasor"/> information to database.
+		/// </summary>
+		/// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+		/// <param name="OutputStreamDevicePhasor">Information about <see cref="OutputStreamDevicePhasor"/>.</param>        
+		/// <returns>String, for display use, indicating success.</returns>
+		public static string Save(AdoDataConnection database, OutputStreamDevicePhasor OutputStreamDevicePhasor)
+		{
+			bool createdConnection = false;
+			try
+			{
+				createdConnection = CreateConnection(ref database);
 
+				if (OutputStreamDevicePhasor.ID == 0)
+					database.Connection.ExecuteNonQuery("INSERT INTO OutputStreamDevicePhasor (NodeID, OutputStreamDeviceID, ID, Label, Type, Phase " +
+						" ScalingValue, LoadOrder, TypeName, PhasorType, PhaseType )" +
+						"VALUES (@nodeID, @outputStreamDeviceID, @id, @label, @type, @type, @phase, @scalingValue, @loadOrder, @phasorName, @phaseType, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout,
+						OutputStreamDevicePhasor.NodeID, OutputStreamDevicePhasor.OutputStreamDeviceID, OutputStreamDevicePhasor.ID, OutputStreamDevicePhasor.Label, OutputStreamDevicePhasor.Type,
+						OutputStreamDevicePhasor.Phase, OutputStreamDevicePhasor.ScalingValue, OutputStreamDevicePhasor.LoadOrder, OutputStreamDevicePhasor.PhasorType, OutputStreamDevicePhasor.PhaseType, CommonFunctions.CurrentUser, database.UtcNow(),
+						CommonFunctions.CurrentUser, database.UtcNow());
+				else
+					database.Connection.ExecuteNonQuery("UPDATE OutputStreamDevicePhasor SET NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID , ID = @id, Label = @label, Type = @type, Phase = @phase " +
+					" ScalingValue = @scalingValue, LoadOrder = @loadOrder,  PhasorType = @typeName, PhaseType = @PhaseType" +
+					"UpdatedBy = @updatedBy, UpdatedOn = @updatedOn, CreatedBy = @createdBy, CreatedOn = @createdOn " +
+					 DefaultTimeout, OutputStreamDevicePhasor.NodeID, OutputStreamDevicePhasor.OutputStreamDeviceID, OutputStreamDevicePhasor.ID, OutputStreamDevicePhasor.Label, OutputStreamDevicePhasor.Type,
+						OutputStreamDevicePhasor.Phase, OutputStreamDevicePhasor.ScalingValue, OutputStreamDevicePhasor.LoadOrder, OutputStreamDevicePhasor.PhasorType, OutputStreamDevicePhasor.PhaseType, CommonFunctions.CurrentUser, database.UtcNow(), OutputStreamDevicePhasor.ID);
+
+				return "OutputStreamDevicePhasor information saved successfully";
+			}
+			finally
+			{
+				if (createdConnection && database != null)
+					database.Dispose();
+			}
+		}
+
+		/// <summary>
+		/// Deletes specified <see cref="OutputStreamDevicePhasor"/> record from database.
+		/// </summary>
+		/// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+		/// <param name="OutputStreamDevicePhasorID">ID of the record to be deleted.</param>
+		/// <returns>String, for display use, indicating success.</returns>
+		public static string Delete(AdoDataConnection database, int OutputStreamDevicePhasorID)
+		{
+			bool createdConnection = false;
+
+			try
+			{
+				createdConnection = CreateConnection(ref database);
+
+				// Setup current user context for any delete triggers
+				CommonFunctions.SetCurrentUserContext(database);
+
+				database.Connection.ExecuteNonQuery("DELETE FROM OutputStreamDevicePhasor WHERE ID = @OutputStreamDevicePhasorID", DefaultTimeout, OutputStreamDevicePhasorID);
+
+				return "OutputStreamDevicePhasor deleted successfully";
+			}
+			finally
+			{
+				if (createdConnection && database != null)
+					database.Dispose();
+			}
+		}
 
 		#endregion
 	}
