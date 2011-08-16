@@ -145,6 +145,7 @@
     <Compile Include="ViewModels\InputWizardDevices.cs" />
     <Compile Include="ViewModels\OutputStreamDeviceAnalogs.cs" />
     <Compile Include="ViewModels\OutputStreamDeviceDigitals.cs" />
+    <Compile Include="ViewModels\OutputStreamDevicePhasors.cs" />
     <Compile Include="ViewModels\OutputStreamDevices.cs" />
     <Compile Include="ViewModels\PhasorMeasurements.cs" />
     <Compile Include="ViewModels\Phasors.cs" />
