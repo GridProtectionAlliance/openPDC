@@ -1775,6 +1775,9 @@ namespace TVA.PhasorProtocols
                 m_dataChannel.ConnectionAttempt += m_dataChannel_ConnectionAttempt;
                 m_dataChannel.ConnectionException += m_dataChannel_ConnectionException;
                 m_dataChannel.ConnectionTerminated += m_dataChannel_ConnectionTerminated;
+                m_dataChannel.ReceiveDataException += m_dataChannel_ReceiveDataException;
+                m_dataChannel.ReceiveDataTimeout += m_dataChannel_ReceiveDataTimeout;
+                m_dataChannel.SendDataException += m_dataChannel_SendDataException;
 
                 // Attempt connection to device
                 m_dataChannel.ReceiveDataHandler = Write;
@@ -1791,6 +1794,9 @@ namespace TVA.PhasorProtocols
                 m_serverBasedDataChannel.ClientDisconnected += m_serverBasedDataChannel_ClientDisconnected;
                 m_serverBasedDataChannel.ServerStarted += m_serverBasedDataChannel_ServerStarted;
                 m_serverBasedDataChannel.ServerStopped += m_serverBasedDataChannel_ServerStopped;
+                m_serverBasedDataChannel.ReceiveClientDataException += m_serverBasedDataChannel_ReceiveClientDataException;
+                m_serverBasedDataChannel.ReceiveClientDataTimeout += m_serverBasedDataChannel_ReceiveClientDataTimeout;
+                m_serverBasedDataChannel.SendClientDataException += m_serverBasedDataChannel_SendClientDataException;
 
                 // Listen for device connection
                 m_serverBasedDataChannel.ReceiveClientDataHandler = Write;
@@ -2384,6 +2390,21 @@ namespace TVA.PhasorProtocols
                 ConnectionTerminated(this, EventArgs.Empty);
         }
 
+        private void m_dataChannel_SendDataException(object sender, EventArgs<Exception> e)
+        {
+            OnParsingException(e.Argument, "Data channel send exception: {0}", e.Argument.Message);
+        }
+
+        private void m_dataChannel_ReceiveDataTimeout(object sender, EventArgs e)
+        {
+            OnParsingException(new TimeoutException("Data channel timeout."));
+        }
+
+        private void m_dataChannel_ReceiveDataException(object sender, EventArgs<Exception> e)
+        {
+            OnParsingException(e.Argument, "Data channel receive exception: {0}", e.Argument.Message);
+        }
+
         #endregion
 
         #region [ Server Based Data Channel Event Handlers ]
@@ -2409,6 +2430,21 @@ namespace TVA.PhasorProtocols
         {
             if (ServerStopped != null)
                 ServerStopped(this, EventArgs.Empty);
+        }
+
+        private void m_serverBasedDataChannel_SendClientDataException(object sender, EventArgs<Guid, Exception> e)
+        {
+            OnParsingException(e.Argument2, "Server based data channel send exception: {0}", e.Argument2.Message);
+        }
+
+        private void m_serverBasedDataChannel_ReceiveClientDataTimeout(object sender, EventArgs<Guid> e)
+        {
+            OnParsingException(new TimeoutException("Server based data channel timeout."));
+        }
+
+        private void m_serverBasedDataChannel_ReceiveClientDataException(object sender, EventArgs<Guid, Exception> e)
+        {
+            OnParsingException(e.Argument2, "Server based data channel receive exception: {0}", e.Argument2.Message);
         }
 
         #endregion
