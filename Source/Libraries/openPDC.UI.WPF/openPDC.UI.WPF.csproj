@@ -151,7 +151,7 @@
     <Compile Include="ViewModels\Phasors.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\openPDCManager.UI\openPDC.UI.csproj">
+    <ProjectReference Include="..\openPDC.UI\openPDC.UI.csproj">
       <Project>{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}</Project>
       <Name>openPDC.UI</Name>
     </ProjectReference>

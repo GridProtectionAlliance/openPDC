@@ -258,10 +258,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Help Me Choose Diagrams", "
 		Documentation\Help Me Choose Diagrams\HMC - Use Local Clock as RealTime.vsd = Documentation\Help Me Choose Diagrams\HMC - Use Local Clock as RealTime.vsd
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC.UI", "Libraries\openPDCManager.UI\openPDC.UI.csproj", "{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC.UI.WPF", "Libraries\openPDCManager.UI.WPF\openPDC.UI.WPF.csproj", "{57261E91-7636-4F92-8D93-744A4AAD7EB0}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MongoDB", "MongoDB", "{CA748B74-2934-440D-98CA-DE3BAD3870E9}"
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\MongoDB\MongoDB.dll = Dependencies\MongoDB\MongoDB.dll
@@ -290,6 +286,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{44A76C
 		Dependencies\SQLite\System.Data.SQLite.Linq.xml = Dependencies\SQLite\System.Data.SQLite.Linq.xml
 		Dependencies\SQLite\System.Data.SQLite.xml = Dependencies\SQLite\System.Data.SQLite.xml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC.UI", "Libraries\openPDC.UI\openPDC.UI.csproj", "{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC.UI.WPF", "Libraries\openPDC.UI.WPF\openPDC.UI.WPF.csproj", "{57261E91-7636-4F92-8D93-744A4AAD7EB0}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
@@ -393,14 +393,14 @@ Global
 		SccProjectTopLevelParentUniqueName24 = Synchrophasor.sln
 		SccProjectName24 = Applications/openPDCManager/WebInstaller
 		SccLocalPath24 = Applications\\openPDCManager\\WebInstaller
-		SccProjectUniqueName25 = Libraries\\openPDCManager.UI\\openPDC.UI.csproj
+		SccProjectUniqueName25 = Libraries\\openPDC.UI\\openPDC.UI.csproj
 		SccProjectTopLevelParentUniqueName25 = Synchrophasor.sln
-		SccProjectName25 = Libraries/openPDCManager.UI
-		SccLocalPath25 = Libraries\\openPDCManager.UI
-		SccProjectUniqueName26 = Libraries\\openPDCManager.UI.WPF\\openPDC.UI.WPF.csproj
+		SccProjectName25 = Libraries/openPDC.UI
+		SccLocalPath25 = Libraries\\openPDC.UI
+		SccProjectUniqueName26 = Libraries\\openPDC.UI.WPF\\openPDC.UI.WPF.csproj
 		SccProjectTopLevelParentUniqueName26 = Synchrophasor.sln
-		SccProjectName26 = Libraries/openPDCManager.UI.WPF
-		SccLocalPath26 = Libraries\\openPDCManager.UI.WPF
+		SccProjectName26 = Libraries/openPDC.UI.WPF
+		SccLocalPath26 = Libraries\\openPDC.UI.WPF
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor2.vsmdi
@@ -681,8 +681,8 @@ Global
 		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Deploy|Any CPU.ActiveCfg = Release|Any CPU
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Deploy|Any CPU.Build.0 = Release|Any CPU
+		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Deploy|Any CPU.Build.0 = Debug|Any CPU
 		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Deploy|x86.ActiveCfg = Debug|Any CPU
 		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Release|Any CPU.Build.0 = Release|Any CPU
@@ -690,8 +690,8 @@ Global
 		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Deploy|Any CPU.ActiveCfg = Release|Any CPU
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Deploy|Any CPU.Build.0 = Release|Any CPU
+		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Deploy|Any CPU.Build.0 = Debug|Any CPU
 		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Deploy|x86.ActiveCfg = Debug|Any CPU
 		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Release|Any CPU.Build.0 = Release|Any CPU
