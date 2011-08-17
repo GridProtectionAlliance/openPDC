@@ -37,9 +37,6 @@
     <DocumentationFile>..\..\..\Build\Output\Release\Libraries\openPDC.UI.WPF.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Accessibility">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="DynamicDataDisplay">
       <HintPath>..\..\Dependencies\Microsoft\D3\DynamicDataDisplay.dll</HintPath>
     </Reference>
@@ -125,6 +122,9 @@
     <Compile Include="UserControls\DeviceUserControl.xaml.cs">
       <DependentUpon>DeviceUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\InputStatusMonitorUserControl.xaml.cs">
+      <DependentUpon>InputStatusMonitorUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\InputStatusUserControl.xaml.cs">
       <DependentUpon>InputStatusUserControl.xaml</DependentUpon>
     </Compile>
@@ -188,6 +188,10 @@
     <Page Include="UserControls\DeviceUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\InputStatusMonitorUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\InputStatusUserControl.xaml">
       <SubType>Designer</SubType>

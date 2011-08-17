@@ -85,9 +85,9 @@
                       SelectedItem="{tsfBinding:Column Path=ProtocolID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource ProtocolLookupList}}"/>
                 
                 <TextBlock Grid.Row="8" Grid.Column="0" Text="Select INI File"
-                           Visibility="{Binding Path=DataContext.ProtocolIsBpaPdcStream, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                           Visibility="{Binding Path=DataContext.ProtocolIsBpaPdcStream, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                 <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="1"
-                            Visibility="{Binding Path=DataContext.ProtocolIsBpaPdcStream, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            Visibility="{Binding Path=DataContext.ProtocolIsBpaPdcStream, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}, Converter={StaticResource ObjectToVisibilityConverter}}">
                     <TextBox Text="{tsfBinding:Column Path=DataContext.IniFileName, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"  Width="{StaticResource XXXLargeItemSize}" />
                     <Button Command="{Binding Path=DataContext.BrowseIniFileCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"
                         Content=" .. " ToolTip="Browse to ini file" Width="Auto"/>
@@ -154,20 +154,20 @@
 
                 <CheckBox x:Name="CheckBoxConnectToConcentrator" IsChecked="{tsfBinding:Column Path=DataContext.ConnectToConcentrator, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=1}}"  Content="Connection is to Concentrator" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="3" />
 
-                <TextBlock Grid.Row="9" Grid.Column="0" Text="PDC Acronym" Visibility="{Binding ElementName=CheckBoxConnectToConcentrator, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <TextBlock Grid.Row="9" Grid.Column="0" Text="PDC Acronym" Visibility="{Binding ElementName=CheckBoxConnectToConcentrator, Path=IsChecked, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                 <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2"
-                            Visibility="{Binding ElementName=CheckBoxConnectToConcentrator, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            Visibility="{Binding ElementName=CheckBoxConnectToConcentrator, Path=IsChecked, Converter={StaticResource ObjectToVisibilityConverter}}">
                     <TextBox Text="{tsfBinding:Column Path=DataContext.PdcAcronym, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"  Width="{StaticResource SmallItemSize}" />
                     <TextBlock Text="{tsfBinding:Column Path=DataContext.PdcMessage, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}" Width="Auto" TextWrapping="Wrap"/>
                 </StackPanel>
 
-                <TextBlock Grid.Row="10" Grid.Column="0" Text="PDC Name" Visibility="{Binding ElementName=CheckBoxConnectToConcentrator, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <TextBlock Grid.Row="10" Grid.Column="0" Text="PDC Name" Visibility="{Binding ElementName=CheckBoxConnectToConcentrator, Path=IsChecked, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                 <TextBox Text="{tsfBinding:Column Path=DataContext.PdcName, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=1}}" Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="3" 
-                         Visibility="{Binding ElementName=CheckBoxConnectToConcentrator, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                         Visibility="{Binding ElementName=CheckBoxConnectToConcentrator, Path=IsChecked, Converter={StaticResource ObjectToVisibilityConverter}}"/>
 
-                <TextBlock Grid.Row="11" Grid.Column="0" Text="PDC Device Vendor" Visibility="{Binding ElementName=CheckBoxConnectToConcentrator, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <TextBlock Grid.Row="11" Grid.Column="0" Text="PDC Device Vendor" Visibility="{Binding ElementName=CheckBoxConnectToConcentrator, Path=IsChecked, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                 <ComboBox Grid.Row="11" Grid.Column="1" ItemsSource="{Binding Source={StaticResource VendorDeviceLookupList}}" DisplayMemberPath="Value"
-                      Visibility="{Binding ElementName=CheckBoxConnectToConcentrator, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      Visibility="{Binding ElementName=CheckBoxConnectToConcentrator, Path=IsChecked, Converter={StaticResource ObjectToVisibilityConverter}}"
                       SelectedItem="{tsfBinding:Column Path=DataContext.PdcVendorDeviceID, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=1}, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource VendorDeviceLookupList}}"/>
 
                 <Border Grid.Row="12" Grid.Column="1" Grid.ColumnSpan="3" BorderThickness="1" Margin="2" BorderBrush="#FF333333" />
@@ -226,7 +226,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <TextBox Text="{tsfBinding:Column Path=Acronym}" Margin="0"/>
                                     <TextBlock Style="{StaticResource RequiredMarker}" Margin="0"
-                                               Visibility="{tsfBinding:Column Path=Existing, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                               Visibility="{tsfBinding:Column Path=Existing, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </sdk:DataGridTemplateColumn.CellTemplate>                        

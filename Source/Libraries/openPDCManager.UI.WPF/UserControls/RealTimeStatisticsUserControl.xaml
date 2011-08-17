@@ -2,8 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:converter="clr-namespace:TimeSeriesFramework.UI.Converters;assembly=TimeSeriesFramework.UI"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"              
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     
@@ -28,9 +27,6 @@
                                                         
                     <HierarchicalDataTemplate x:Key="StatisticTemplate">
                         <StackPanel Orientation="Horizontal" Margin="2">
-                            <StackPanel.Resources>
-                                <converter:StringToColorConverter x:Key="stringToColorConverter"/>
-                            </StackPanel.Resources>
                             <TextBlock Text="" Width="{StaticResource BlankItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
                             <Border>
                                 <TextBlock Text="{Binding Path=SignalReference}" ToolTipService.ToolTip="{Binding Path=PointTag}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" FontSize="{StaticResource SmallTextSize}"/>
@@ -40,7 +36,7 @@
                                     <ListViewItem>
                                         <StackPanel Orientation="Horizontal" Background="Transparent">
                                             <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="{Binding Path=Description}" Width="{StaticResource LargerItemSize}" TextAlignment="Left" />
-                                            <TextBlock Text="{Binding Path=Value}" Foreground="{Binding Quality, Converter={StaticResource stringToColorConverter}}" ToolTipService.ToolTip="{Binding Path=Quality}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontWeight="Bold" />
+                                            <TextBlock Text="{Binding Path=Value}" Foreground="{Binding Quality, Converter={StaticResource StringToStatusColorConverter}}" ToolTipService.ToolTip="{Binding Path=Quality}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontWeight="Bold" />
                                             <TextBlock Text="{Binding Path=TimeTag}" Width="{StaticResource LargerItemSize}" TextAlignment="Center" />
                                         </StackPanel>
                                     </ListViewItem>

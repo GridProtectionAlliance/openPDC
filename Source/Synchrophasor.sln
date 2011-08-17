@@ -174,7 +174,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimeSeriesFramework", "Time
 		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.dll = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.dll
 		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.XML = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.XML
 		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.XML = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.XML
-		Dependencies\TimeSeriesFramework\TimeSeriesFramework.xml = Dependencies\TimeSeriesFramework\TimeSeriesFramework.xml
 		Dependencies\TimeSeriesFramework\WavInputAdapter.dll = Dependencies\TimeSeriesFramework\WavInputAdapter.dll
 		Dependencies\TimeSeriesFramework\WavInputAdapter.XML = Dependencies\TimeSeriesFramework\WavInputAdapter.XML
 	EndProjectSection

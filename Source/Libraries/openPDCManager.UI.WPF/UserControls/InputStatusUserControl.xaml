@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0"
-             xmlns:converter="clr-namespace:TimeSeriesFramework.UI.Converters;assembly=TimeSeriesFramework.UI"
+             xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0"             
              xmlns:uc="clr-namespace:openPDC.UI.UserControls"
              mc:Ignorable="d" FontSize="11">
     <UserControl.Resources>
@@ -19,19 +18,15 @@
 
             <StackPanel Orientation="Vertical">
                 <StackPanel.Resources>
-                    <converter:IntegerToVisibilityConverter x:Key="integerToVisibilityConverter"/>
+                    
                     <!--- ================================================================================= -->
                     <HierarchicalDataTemplate x:Key="MeasurementsNodeTemplate">
-                        <StackPanel Orientation="Horizontal" Margin="-25,0,0,0">
-                            <StackPanel.Resources>
-                                <converter:StringToColorConverter x:Key="stringToColorConverter"/>
-                                <converter:StringToBooleanConverter x:Key="stringToBooleanConverter"/>
-                            </StackPanel.Resources>
+                        <StackPanel Orientation="Horizontal" Margin="-25,0,0,0">                            
                             <Border>
-                                <CheckBox HorizontalAlignment="Left" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}" Content="{Binding Path=SignalReference}" ToolTip="{Binding Path=Description}" TabIndex="{Binding Path=PointID}" IsEnabled="{Binding Path=SignalAcronym, Converter={StaticResource stringToBooleanConverter}}" Width="100" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"/>
+                                <CheckBox HorizontalAlignment="Left" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}" Content="{Binding Path=SignalReference}" ToolTip="{Binding Path=Description}" TabIndex="{Binding Path=PointID}" IsEnabled="{Binding Path=SignalAcronym, Converter={StaticResource StringToBooleanConverter}}" Width="100" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"/>
                             </Border>
                             <Border>
-                                <TextBlock Text="{Binding Path=CurrentValue}" Width="{StaticResource XSmallItemSize}" Foreground="{Binding CurrentQuality, Converter={StaticResource stringToColorConverter}}" ToolTip="{Binding Path=CurrentTimeTag}" TextAlignment="Center"/>
+                                <TextBlock Text="{Binding Path=CurrentValue}" Width="{StaticResource XSmallItemSize}" Foreground="{Binding CurrentQuality, Converter={StaticResource StringToStatusColorConverter}}" ToolTip="{Binding Path=CurrentTimeTag}" TextAlignment="Center"/>
                             </Border>
                             <Border>
                                 <TextBlock Text="{Binding Path=EngineeringUnits}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Left"/>
@@ -41,10 +36,7 @@
                     <!--- ================================================================================= -->
                     <HierarchicalDataTemplate x:Key="ConnectedDevicesNodeTemplate" ItemTemplate="{StaticResource MeasurementsNodeTemplate}" ItemsSource="{Binding Path=MeasurementList, Mode=TwoWay}">
                         <StackPanel Orientation="Horizontal" Margin="-5,0,0,0">
-                            <StackPanel.Resources>
-                                <converter:StringToSymbolConverter x:Key="ConvertStringToSymbol"/>
-                            </StackPanel.Resources>
-                            <Ellipse Width="13" Height="13" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>
+                            <Ellipse Width="13" Height="13" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource StringToStatusColorConverter}}"/>
                             <Border>
                                 <Button Content="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics" FontWeight="Normal" Foreground="#FF095188" HorizontalContentAlignment="Left" x:Name="ButtonGetStatistics" Click="ButtonGetStatistics_Click" VerticalAlignment="Center"/>
                             </Border>
@@ -52,17 +44,15 @@
                                 <TextBlock x:Name="DeviceNameLabel" Text="{Binding Path=Name}" ToolTipService.ToolTip="Device Name" TextAlignment="Left" VerticalAlignment="Center" />
                             </Border>
                             <Border>
-                                <Button x:Name="ButtonEdit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Visibility="{Binding Path=ID, Converter={StaticResource integerToVisibilityConverter}}" Content="Edit" Tag="{Binding Path=ID}" ToolTipService.ToolTip="Click Here to View/Edit Device Configuration" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Click="ButtonEdit_Click"/>
+                                <Button x:Name="ButtonEdit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Visibility="{Binding Path=ID, Converter={StaticResource ObjectToVisibilityConverter}}" Content="Edit" Tag="{Binding Path=ID}" ToolTipService.ToolTip="Click Here to View/Edit Device Configuration" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Click="ButtonEdit_Click"/>
                             </Border>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                     <!--- ================================================================================= -->
                     <HierarchicalDataTemplate x:Key="RootNodeTemplate" ItemsSource="{Binding Path=DeviceList, Mode=TwoWay}" ItemTemplate="{StaticResource ConnectedDevicesNodeTemplate}">
                         <StackPanel Orientation="Horizontal" Margin="2">
-                            <StackPanel.Resources>
-                                <converter:StringToSymbolConverter x:Key="ConvertStringToSymbol"/>
-                            </StackPanel.Resources>
-                            <Ellipse Width="13" Height="13" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}"/>
+                           
+                            <Ellipse Width="13" Height="13" VerticalAlignment="Center" Fill="{Binding Path=StatusColor, Converter={StaticResource StringToStatusColorConverter}}"/>
                             <Border>
                                 <Button Content="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics" Foreground="#FF095188" HorizontalContentAlignment="Left" Click="ButtonGetStatistics_Click" Width="Auto"/>
                             </Border>
@@ -70,7 +60,7 @@
                                 <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="Concentrator Name" VerticalAlignment="Center"/>
                             </Border>
                             <Border>
-                                <Button x:Name="ButtonEdit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Visibility="{Binding Path=ID, Converter={StaticResource integerToVisibilityConverter}}" Content="Edit" Tag="{Binding Path=ID}" ToolTipService.ToolTip="Click Here to View/Edit Device Configuration" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Click="ButtonEdit_Click"/>
+                                <Button x:Name="ButtonEdit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Visibility="{Binding Path=ID, Converter={StaticResource ObjectToVisibilityConverter}}" Content="Edit" Tag="{Binding Path=ID}" ToolTipService.ToolTip="Click Here to View/Edit Device Configuration" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Click="ButtonEdit_Click"/>
                             </Border>
                         </StackPanel>
                     </HierarchicalDataTemplate>
@@ -136,9 +126,7 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" DataContext="{Binding Path=Value}">
-                                        <StackPanel.Resources>
-                                            <converter:StringToColorConverter x:Key="stringToColorConverter"/>
-                                        </StackPanel.Resources>
+                                       
                                         <Border>
                                             <TextBlock Text="{Binding Path=PointID}" TextAlignment="Left" Width="25"/>
                                         </Border>
@@ -155,7 +143,7 @@
                                             <TextBlock Text="{Binding Path=EngineeringUnit}" TextAlignment="Center"  Width="100"/>
                                         </Border>
                                         <Border>
-                                            <TextBlock Text="{Binding Path=Quality}" TextAlignment="Center"  Width="75" Foreground="{Binding Quality, Converter={StaticResource stringToColorConverter}}"/>
+                                            <TextBlock Text="{Binding Path=Quality}" TextAlignment="Center"  Width="75" Foreground="{Binding Quality, Converter={StaticResource StringToStatusColorConverter}}"/>
                                         </Border>
                                     </StackPanel>
                                 </DataTemplate>

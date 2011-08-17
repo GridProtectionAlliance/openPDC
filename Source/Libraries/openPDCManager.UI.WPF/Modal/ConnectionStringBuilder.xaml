@@ -65,7 +65,7 @@
                     <TextBox x:Name="TextBoxLocalPort" Grid.Row="0" Grid.Column="1" Text="4712" Width="75"/>
                     <CheckBox x:Name="CheckboxEnableMulticast" Content="Enable Multicast/Remote Udp" FontWeight="Bold" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5" IsChecked="False" />
                     <StackPanel x:Name="StackPanelMulticastOptions" Orientation="Vertical" Grid.Row="1" Grid.Column="2" 
-                                Visibility="{Binding ElementName=CheckboxEnableMulticast, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                Visibility="{Binding ElementName=CheckboxEnableMulticast, Path=IsChecked, Converter={StaticResource ObjectToVisibilityConverter}}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Host IP" Width="75"/>
                             <TextBox x:Name="TextBoxHostIPUdp" Width="125"/>
