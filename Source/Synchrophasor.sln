@@ -291,6 +291,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC.UI", "Libraries\ope
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC.UI.WPF", "Libraries\openPDC.UI.WPF\openPDC.UI.WPF.csproj", "{57261E91-7636-4F92-8D93-744A4AAD7EB0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "x86", "x86", "{AD1920D4-64C4-43C9-903D-3C78981C8850}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\SQLite\x86\System.Data.SQLite.dll = Dependencies\SQLite\x86\System.Data.SQLite.dll
+		Dependencies\SQLite\x86\System.Data.SQLite.Linq.dll = Dependencies\SQLite\x86\System.Data.SQLite.Linq.dll
+		Dependencies\SQLite\x86\System.Data.SQLite.Linq.xml = Dependencies\SQLite\x86\System.Data.SQLite.Linq.xml
+		Dependencies\SQLite\x86\System.Data.SQLite.xml = Dependencies\SQLite\x86\System.Data.SQLite.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 27
@@ -751,5 +759,6 @@ Global
 		{334BA160-26D6-4A3B-92E2-42DEB4381176} = {C4B7F8ED-DC60-46EC-B78B-D541C1FA864C}
 		{A4C500AC-70AC-4869-8A08-E10CCD45F64F} = {D71CBFB5-291F-484E-9DAE-7442F4CA746A}
 		{933BE44C-B124-4ACC-8BE8-A6A22AAC4413} = {FA2FA252-1D16-4911-BF7E-36C6E1C338E4}
+		{AD1920D4-64C4-43C9-903D-3C78981C8850} = {53255BB7-2046-4606-BF76-7B5C13F49819}
 	EndGlobalSection
 EndGlobal

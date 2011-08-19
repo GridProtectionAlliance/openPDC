@@ -1,0 +1,866 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>testlinq</name>
+    </assembly>
+    <members>
+        <member name="T:testlinq.northwindEFEntities">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="M:testlinq.northwindEFEntities.#ctor">
+            <summary>
+            Initializes a new northwindEFEntities object using the connection string found in the 'northwindEFEntities' section of the application configuration file.
+            </summary>
+        </member>
+        <member name="M:testlinq.northwindEFEntities.#ctor(System.String)">
+            <summary>
+            Initialize a new northwindEFEntities object.
+            </summary>
+        </member>
+        <member name="M:testlinq.northwindEFEntities.#ctor(System.Data.EntityClient.EntityConnection)">
+            <summary>
+            Initialize a new northwindEFEntities object.
+            </summary>
+        </member>
+        <member name="M:testlinq.northwindEFEntities.AddToCategories(testlinq.Categories)">
+            <summary>
+            Deprecated Method for adding a new object to the Categories EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+            </summary>
+        </member>
+        <member name="M:testlinq.northwindEFEntities.AddToCustomers(testlinq.Customers)">
+            <summary>
+            Deprecated Method for adding a new object to the Customers EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+            </summary>
+        </member>
+        <member name="M:testlinq.northwindEFEntities.AddToEmployees(testlinq.Employees)">
+            <summary>
+            Deprecated Method for adding a new object to the Employees EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+            </summary>
+        </member>
+        <member name="M:testlinq.northwindEFEntities.AddToInternationalOrders(testlinq.InternationalOrders)">
+            <summary>
+            Deprecated Method for adding a new object to the InternationalOrders EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+            </summary>
+        </member>
+        <member name="M:testlinq.northwindEFEntities.AddToOrderDetails(testlinq.OrderDetails)">
+            <summary>
+            Deprecated Method for adding a new object to the OrderDetails EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+            </summary>
+        </member>
+        <member name="M:testlinq.northwindEFEntities.AddToOrders(testlinq.Orders)">
+            <summary>
+            Deprecated Method for adding a new object to the Orders EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+            </summary>
+        </member>
+        <member name="M:testlinq.northwindEFEntities.AddToPreviousEmployees(testlinq.PreviousEmployees)">
+            <summary>
+            Deprecated Method for adding a new object to the PreviousEmployees EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+            </summary>
+        </member>
+        <member name="M:testlinq.northwindEFEntities.AddToProducts(testlinq.Products)">
+            <summary>
+            Deprecated Method for adding a new object to the Products EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+            </summary>
+        </member>
+        <member name="M:testlinq.northwindEFEntities.AddToRegions(testlinq.Regions)">
+            <summary>
+            Deprecated Method for adding a new object to the Regions EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+            </summary>
+        </member>
+        <member name="M:testlinq.northwindEFEntities.AddToSuppliers(testlinq.Suppliers)">
+            <summary>
+            Deprecated Method for adding a new object to the Suppliers EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+            </summary>
+        </member>
+        <member name="M:testlinq.northwindEFEntities.AddToTerritories(testlinq.Territories)">
+            <summary>
+            Deprecated Method for adding a new object to the Territories EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+            </summary>
+        </member>
+        <member name="P:testlinq.northwindEFEntities.Categories">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.northwindEFEntities.Customers">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.northwindEFEntities.Employees">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.northwindEFEntities.InternationalOrders">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.northwindEFEntities.OrderDetails">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.northwindEFEntities.Orders">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.northwindEFEntities.PreviousEmployees">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.northwindEFEntities.Products">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.northwindEFEntities.Regions">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.northwindEFEntities.Suppliers">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.northwindEFEntities.Territories">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="T:testlinq.Categories">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="M:testlinq.Categories.CreateCategories(System.Int64,System.String)">
+            <summary>
+            Create a new Categories object.
+            </summary>
+            <param name="categoryID">Initial value of the CategoryID property.</param>
+            <param name="categoryName">Initial value of the CategoryName property.</param>
+        </member>
+        <member name="P:testlinq.Categories.CategoryID">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Categories.CategoryName">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Categories.Description">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Categories.Picture">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Categories.Products">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="T:testlinq.Customers">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="M:testlinq.Customers.CreateCustomers(System.String,System.String)">
+            <summary>
+            Create a new Customers object.
+            </summary>
+            <param name="customerID">Initial value of the CustomerID property.</param>
+            <param name="companyName">Initial value of the CompanyName property.</param>
+        </member>
+        <member name="P:testlinq.Customers.CustomerID">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Customers.CompanyName">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Customers.ContactName">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Customers.ContactTitle">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Customers.Address">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Customers.City">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Customers.Region">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Customers.PostalCode">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Customers.Country">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Customers.Phone">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Customers.Fax">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Customers.Orders">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="T:testlinq.Employees">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="M:testlinq.Employees.CreateEmployees(System.Int64,System.String,System.String)">
+            <summary>
+            Create a new Employees object.
+            </summary>
+            <param name="employeeID">Initial value of the EmployeeID property.</param>
+            <param name="lastName">Initial value of the LastName property.</param>
+            <param name="firstName">Initial value of the FirstName property.</param>
+        </member>
+        <member name="P:testlinq.Employees.EmployeeID">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.LastName">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.FirstName">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.Title">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.TitleOfCourtesy">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.BirthDate">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.HireDate">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.Address">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.City">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.Region">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.PostalCode">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.Country">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.HomePhone">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.Extension">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.Photo">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.Notes">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.PhotoPath">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Employees.Territories">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="T:testlinq.InternationalOrders">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="M:testlinq.InternationalOrders.CreateInternationalOrders(System.Int64,System.String,System.Decimal)">
+            <summary>
+            Create a new InternationalOrders object.
+            </summary>
+            <param name="orderID">Initial value of the OrderID property.</param>
+            <param name="customsDescription">Initial value of the CustomsDescription property.</param>
+            <param name="exciseTax">Initial value of the ExciseTax property.</param>
+        </member>
+        <member name="P:testlinq.InternationalOrders.OrderID">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.InternationalOrders.CustomsDescription">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.InternationalOrders.ExciseTax">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.InternationalOrders.Orders">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.InternationalOrders.OrdersReference">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="T:testlinq.OrderDetails">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="M:testlinq.OrderDetails.CreateOrderDetails(System.Int64,System.Int64,System.Decimal,System.Int16,System.Single)">
+            <summary>
+            Create a new OrderDetails object.
+            </summary>
+            <param name="orderID">Initial value of the OrderID property.</param>
+            <param name="productID">Initial value of the ProductID property.</param>
+            <param name="unitPrice">Initial value of the UnitPrice property.</param>
+            <param name="quantity">Initial value of the Quantity property.</param>
+            <param name="discount">Initial value of the Discount property.</param>
+        </member>
+        <member name="P:testlinq.OrderDetails.OrderID">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.OrderDetails.ProductID">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.OrderDetails.UnitPrice">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.OrderDetails.Quantity">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.OrderDetails.Discount">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.OrderDetails.Orders">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.OrderDetails.OrdersReference">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.OrderDetails.Products">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.OrderDetails.ProductsReference">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="T:testlinq.Orders">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="M:testlinq.Orders.CreateOrders(System.Int64)">
+            <summary>
+            Create a new Orders object.
+            </summary>
+            <param name="orderID">Initial value of the OrderID property.</param>
+        </member>
+        <member name="P:testlinq.Orders.OrderID">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.EmployeeID">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.OrderDate">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.RequiredDate">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.ShippedDate">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.Freight">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.ShipName">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.ShipAddress">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.ShipCity">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.ShipRegion">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.ShipPostalCode">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.ShipCountry">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.Customers">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.CustomersReference">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.InternationalOrders">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.InternationalOrdersReference">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Orders.OrderDetails">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="T:testlinq.PreviousEmployees">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="M:testlinq.PreviousEmployees.CreatePreviousEmployees(System.Int64,System.String,System.String)">
+            <summary>
+            Create a new PreviousEmployees object.
+            </summary>
+            <param name="employeeID">Initial value of the EmployeeID property.</param>
+            <param name="lastName">Initial value of the LastName property.</param>
+            <param name="firstName">Initial value of the FirstName property.</param>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.EmployeeID">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.LastName">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.FirstName">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.Title">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.TitleOfCourtesy">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.BirthDate">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.HireDate">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.Address">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.City">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.Region">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.PostalCode">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.Country">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.HomePhone">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.Extension">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.Photo">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.Notes">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.PreviousEmployees.PhotoPath">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="T:testlinq.Products">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="M:testlinq.Products.CreateProducts(System.Int64,System.String,System.Boolean)">
+            <summary>
+            Create a new Products object.
+            </summary>
+            <param name="productID">Initial value of the ProductID property.</param>
+            <param name="productName">Initial value of the ProductName property.</param>
+            <param name="discontinued">Initial value of the Discontinued property.</param>
+        </member>
+        <member name="P:testlinq.Products.ProductID">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Products.ProductName">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Products.QuantityPerUnit">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Products.UnitPrice">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Products.UnitsInStock">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Products.UnitsOnOrder">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Products.ReorderLevel">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Products.Discontinued">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Products.DiscontinuedDate">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Products.Categories">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Products.CategoriesReference">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Products.OrderDetails">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Products.Suppliers">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Products.SuppliersReference">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="T:testlinq.Regions">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="M:testlinq.Regions.CreateRegions(System.Int64,System.String)">
+            <summary>
+            Create a new Regions object.
+            </summary>
+            <param name="regionID">Initial value of the RegionID property.</param>
+            <param name="regionDescription">Initial value of the RegionDescription property.</param>
+        </member>
+        <member name="P:testlinq.Regions.RegionID">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Regions.RegionDescription">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Regions.Territories">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="T:testlinq.Suppliers">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="M:testlinq.Suppliers.CreateSuppliers(System.Int64,System.String)">
+            <summary>
+            Create a new Suppliers object.
+            </summary>
+            <param name="supplierID">Initial value of the SupplierID property.</param>
+            <param name="companyName">Initial value of the CompanyName property.</param>
+        </member>
+        <member name="P:testlinq.Suppliers.SupplierID">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Suppliers.CompanyName">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Suppliers.ContactName">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Suppliers.ContactTitle">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Suppliers.Address">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Suppliers.City">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Suppliers.Region">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Suppliers.PostalCode">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Suppliers.Country">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Suppliers.Phone">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Suppliers.Fax">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Suppliers.HomePage">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Suppliers.Products">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="T:testlinq.Territories">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="M:testlinq.Territories.CreateTerritories(System.Int64,System.String)">
+            <summary>
+            Create a new Territories object.
+            </summary>
+            <param name="territoryID">Initial value of the TerritoryID property.</param>
+            <param name="territoryDescription">Initial value of the TerritoryDescription property.</param>
+        </member>
+        <member name="P:testlinq.Territories.TerritoryID">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Territories.TerritoryDescription">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Territories.Regions">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Territories.RegionsReference">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+        <member name="P:testlinq.Territories.Employees">
+            <summary>
+            No Metadata Documentation available.
+            </summary>
+        </member>
+    </members>
+</doc>
